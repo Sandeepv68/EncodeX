@@ -51,39 +51,45 @@ EncodeX brings the full power of **FFmpeg** to a modern, intuitive desktop app �
 
 Want an AI assistant to do the work? EncodeX also ships a built-in **MCP server**, so tools like Claude Desktop, Cursor, VS Code, and custom agents can convert and manage your media for you over the [Model Context Protocol](https://modelcontextprotocol.io) — still entirely on your own machine.
 
-Everything runs **locally on your computer** — no accounts, no uploads, no watermarks, no subscriptions.
+Conversion runs **locally on your computer** — no accounts, no media uploads, no watermarks, no subscriptions. The Copilot assistant contacts a cloud AI provider only if you configure one.
 
 ## Why EncodeX?
 
 - ✅ **Free forever** — open source (MIT), no paid tier
-- ✅ **100% private** — your files never leave your machine
-- ✅ **No account, no sign-up, no tracking**
+- ✅ **Local conversion** — media is processed on your machine
+- ✅ **No account, no sign-up**
+- ✅ **Opt-out telemetry** — error reporting and usage analytics are on by default and can be turned off in Settings
 - ✅ **No watermarks, no file-size limits, no ads**
 - ✅ **FFmpeg powered** — 51 video codecs, 27 audio codecs, 56 pixel formats
 - ✅ **Hardware acceleration** — NVIDIA, Intel, AMD, Apple Silicon for fast encodes
 - ✅ **Batch processing** — convert whole folders at once
 - ✅ **AI-ready MCP server** — drive EncodeX from Claude, Cursor, VS Code, and custom agents
-- ✅ **Cross-platform** — Windows 10+, macOS 11+, Linux
-- ✅ **35+ languages** with RTL support
+- ✅ **Cross-platform** — Windows, macOS, and Linux (x64 and arm64)
+- ✅ **56 locales** with RTL support
 
 ## ✨ Features
 
 - **🔄 Media Conversion** — 51 video codecs, 27 audio codecs, 56 pixel formats with codec/bitrate/scale/quality controls
-- **🌀 Rotation & Mirror** — Rotate videos and images 90°, 180°, or 270° clockwise and flip them horizontally or vertically; MP4/MOV/MKV stream-copy stores rotation as lossless metadata
-- **🎛️ Conversion Profiles** — 140+ pre-configured presets across 8 categories (YouTube, Instagram, TikTok, Apple, Android, ProRes, HLS, and more) with custom profile creation and recently-used tracking
+- **🌀 Rotation & Mirror** — Rotate videos and images 90°, 180°, or 270° clockwise and flip them horizontally or vertically; in stream-copy mode, MP4/MOV/MKV outputs store rotation as lossless metadata
+- **🎛️ Conversion Profiles** — 115 pre-configured presets across 8 categories (YouTube, Instagram, TikTok, Apple, Android, ProRes, HLS, and more) with custom profile creation and recently-used tracking
 - **⚡ Hardware Acceleration** — NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, Media Foundation, auto-detected
 - **✂️ Video Cutting** — Frame-accurate trimming with a built-in player (rawvideo + PCM pipes, Canvas + Web Audio) and zoomable timeline (waveform + thumbnail montage)
-- **📋 Batch Queue** — Parallel processing (up to 4 concurrent jobs) with real-time progress, per-job errors, pause/resume, drag-and-drop reordering, job option editing, status filters, JSON export/import, and when-done power actions (shutdown/sleep/hibernate)
+- **🤖 Copilot** — AI assistant page (`/copilot`) with 13 operations; AI provider is `rules` (offline, default), OpenAI, Anthropic, Gemini, or a local model
+- **🎞️ Remux & Demux** — change containers with stream copy, add subtitles, audio, cover art, or chapters, or extract individual streams
+- **🎛️ Video Filters** — 8 filter presets (crop, framerate, deinterlace, denoise, sharpen, color, grayscale, blur) plus custom filter chains
+- **🧭 Getting Started** — dashboard card with six goals: Ask Copilot, Convert, Compress, Extract audio, Trim, Remux
+- **📜 Terms & Conditions** — a first-run terms dialog gates the app
+- **📋 Batch Queue** — Parallel processing (up to 4 concurrent jobs, default 1) with real-time progress, per-job errors, pause/resume, drag-and-drop reordering, job option editing, status filters, JSON export/import, and when-done power actions (shutdown/sleep/hibernate)
 - **🖼️ Image Compression** — JPEG/PNG/WebP/BMP/GIF/TIFF with quality/scale, EXIF viewer, RGB/luma histograms
 - **🎵 Audio Extraction** — Any of 27 audio codecs from any video file
 - **ℹ️ Media Info** — Full per-stream probe: codec, profile, resolution, color metadata, frame rate, etc.
 - **⌨️ CLI Mode** — Headless scripting with subcommands (`convert`, `info`, `capabilities`, `compress`, `extract-audio`, `remux`, `demux`, `batch`)
-- **🤖 MCP Server** — Built-in [Model Context Protocol](https://modelcontextprotocol.io) server: 16 core tools (15 operations plus an app-only `commit_operation` used by the user-approval gate), 3 resources, and 4 prompts over stdio (`encodex --mcp`), plus an embedded localhost HTTP endpoint that adds 6 GUI-parity tools (live queue, preview, timeline, system info, updates) for 22 in total. Run one-off conversions or manage async jobs from Claude Desktop, Claude Code, Cursor, VS Code, or any MCP client
+- **🤖 MCP Server** — Built-in [Model Context Protocol](https://modelcontextprotocol.io) server: 36 model-visible tools, 3 resources, and 4 prompts over stdio (`encodex --mcp`), plus an optional embedded localhost HTTP endpoint (off by default) that adds 6 GUI-parity tools (live queue, preview, timeline, system info, updates) for 42 model-visible tools in total. Run one-off conversions or manage async jobs from Claude Desktop, Claude Code, Cursor, VS Code, or any MCP client
 - **⚙️ 3 Transcoder Cores** — FFmpeg API (fluent-ffmpeg), FFmpeg CLI (child_process), BMF Framework
-- **🌍 56 Locales** — 35 languages with RTL support (Arabic, Hebrew)
-- **⌨️ Keyboard Shortcuts** — 60+ shortcuts across every page with an in-app help dialog (`Ctrl+/`)
-- **🔄 In-App Updates** — Checks GitHub Releases, downloads platform installer, real-time progress
-- **🛡️ Error Handling** — 16 typed error codes, global snackbar, inline banners, React error boundaries
+- **🌍 56 Locales** — with RTL support (Arabic, Hebrew)
+- **⌨️ Keyboard Shortcuts** — 82 shortcuts in 11 help sections, with an in-app help dialog (`Ctrl+/`)
+- **🔄 In-App Updates** — Checks GitHub Releases, downloads the platform installer when you ask (never installed automatically), real-time progress
+- **🛡️ Error Handling** — 28 typed error codes, global snackbar, inline banners, React error boundaries
 - **🌗 Dark/Light Theme** — System-aware with manual toggle, persistent preferences
 
 See [docs/FEATURES.md](docs/FEATURES.md) for the full feature breakdown, supported formats, and codec lists.
@@ -223,15 +229,15 @@ npm run dist
 | `npm run start`          | Launch compiled app from `dist/` via `electron .`           |
 | `npm run electron:dev`   | Vite + Electron dev environment                             |
 | `npm run dev:start`      | Build then launch                                           |
-| `npm run format`         | `prettier --write` on all `src` TypeScript/JSON             |
-| `npm run format:check`   | `prettier --check` on all `src` TypeScript/JSON             |
+| `npm run format`         | `prettier --write` on TypeScript/JS in `src`, `e2e`, `perf`, `scripts`, `bin`, and root |
+| `npm run format:check`   | `prettier --check` on the same patterns                     |
 | `npm run pack`           | Build + electron-builder `--dir`                            |
 | `npm run dist`           | Build + electron-builder (NSIS/DMG/AppImage)                |
 
 ## 🧪 Testing
 
 ```bash
-npm test           # Run all 123 test files / 1603 tests
+npm test           # Run unit tests (314 test/spec files under src/)
 npm run test:watch
 npm run test:coverage
 npm run test:unit
@@ -243,7 +249,7 @@ See [docs/TESTING.md](docs/TESTING.md) for the full test suite breakdown, test s
 
 ## 🌐 Website & Docs
 
-- **[encodex.in](https://encodex.in)** — product site, features tour, and release blog, in 8 languages
+- **[encodex.in](https://encodex.in)** — product site, features tour, and release blog
 - **Guides** — [FFmpeg GUI](https://encodex.in/ffmpeg-gui), [Video converter](https://encodex.in/video-converter), [Compressor](https://encodex.in/video-compressor), [Extract audio](https://encodex.in/extract-audio-from-video)
 
 ## 📚 Documentation

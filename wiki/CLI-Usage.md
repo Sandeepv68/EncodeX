@@ -1,6 +1,6 @@
 # 💻 CLI Usage
 
-Build first, then invoke the compiled CLI via the `encodex` command (the `bin/encodex.js` launcher wraps the Electron binary). CLI mode auto-activates when two positional arguments (input + output) are given, or explicitly with `--cli`. Passing `--mcp` instead starts the headless MCP server over stdio (see [[MCP]]):
+Build first, then invoke the compiled CLI via the `encodex` command (the `bin/encodex.js` launcher wraps the Electron binary). CLI mode auto-activates with `--cli`, `-h`/`--help`, any subcommand or alias name, or two or more non-flag positional arguments (input + output). Passing `--mcp` instead starts the headless MCP server over stdio (see [[MCP]]):
 
 ```bash
 # Convert a file (subcommand form)
@@ -41,7 +41,7 @@ encodex convert input.mp4 output.mp4 --transcoder FFTOOL
 encodex --mcp
 ```
 
-Legacy flat usage (`encodex in.mp4 out.mp4`, `encodex --info in.mp4`) is shimmed into the matching subcommand automatically.
+Legacy flat usage (`encodex in.mp4 out.mp4`) is shimmed into the matching subcommand automatically once CLI mode is active. `encodex --info in.mp4` has only one positional argument, so it does not enter CLI mode by itself — use `encodex info in.mp4` or add `--cli`.
 
 To make `encodex` available globally, run `npm link` from the project root (or `npm install -g .`). The raw `npx electron . --cli ...` form still works as an alternative.
 
@@ -55,6 +55,8 @@ To make `encodex` available globally, run `npm link` from the project root (or `
 | `compress`      | Compress an image                                                 |
 | `extract-audio` | Extract the audio stream (default codec `libmp3lame`). Alias: `audio` |
 | `batch`         | Convert multiple inputs (files, globs, or directories) with a queue |
+| `remux`         | Stream-copy a media file into another container without re-encoding. Alias: `rmx` |
+| `demux`         | Extract each stream into a separate file. Alias: `split` |
 
 ## ⚙️ Global Options
 
@@ -89,6 +91,8 @@ Global options can be placed before or after the subcommand name.
 | `--no-video`             | Exclude the video stream from the output (audio-only)         |
 | `--hwaccel / --no-hwaccel` | Toggle hardware acceleration                               |
 | `--hwaccel-mode <auto\|encode>` | Hardware acceleration mode (default: `auto`)            |
+| `--filters <chain>`      | Video filter chain (comma-separated)                           |
+| `--preset <preset_id>`   | Curated video filter preset (repeatable)                       |
 | `--info`                 | Print media info for the input and exit                        |
 
 ## 🖼️ Compress Options
@@ -116,7 +120,39 @@ Global options can be placed before or after the subcommand name.
 | `--output-dir <dir>`     | Output directory for converted files                           |
 | `--suffix <s>`           | Suffix appended to derived output names (default: `_encodex_converted`) |
 
-Batch also accepts all convert encoding options (`-v/--video-codec`, `-a/--audio-codec`, `--bitrate-video`, `--bitrate-audio`, `-q/--qscale`, `--pix-fmt`, `-s/--scale`, `--copy`, `--no-audio`, `--no-video`) and applies them to every job.
+Batch also accepts all convert encoding options (`-v/--video-codec`, `-a/--audio-codec`, `--bitrate-video`, `--bitrate-audio`, `-q/--qscale`, `--pix-fmt`, `-s/--scale`, `--copy`, `--no-audio`, `--no-video`, `--filters`, `--preset`) and applies them to every job.
+
+## 🔀 Remux Options
+
+| Option                   | Description                                                    |
+| ------------------------ | -------------------------------------------------------------- |
+| `-o, --output <file>`    | Output file (defaults to the input path with the target extension) |
+| `-f, --format <container>` | Target container (e.g. `mkv`, `mp4`, `mov`)                  |
+| `--map <spec>`           | Stream to copy as `0:<type>:<ordinal>` (repeatable; default: all streams) |
+| `--add-subtitle <file[::codec]>` | Embed an external subtitle file (repeatable)           |
+| `--add-audio <file>`     | Embed an external audio file (repeatable)                      |
+| `--thumbnail <image>`    | Embed cover art (MKV/WebM attach, MP4/MOV disposition)         |
+| `--chapters <file>`      | Import chapters from an FFMETADATA file                        |
+| `--no-chapters`          | Drop the source chapters instead of copying them               |
+| `--subtitle-codec <codec>` | Subtitle codec for added subtitles (default: the container's first choice) |
+| `--no-subtitles`         | Drop source subtitle streams                                   |
+| `--audio-sync <seconds>` | Shift the primary file's audio (positive = later)              |
+| `--set-sync <seconds>`   | Shift the preceding `--add-subtitle`/`--add-audio` input (repeatable) |
+| `--filters <chain>`      | Video filter chain (comma-separated, repeatable). Filters force a re-encode instead of a lossless copy |
+
+## ✂️ Demux Options
+
+| Option                   | Description                                                    |
+| ------------------------ | -------------------------------------------------------------- |
+| `--output-dir <dir>`     | Directory to write the extracted streams into (created when missing) |
+| `--video`                | Extract video streams only                                     |
+| `--audio`                | Extract audio streams only                                     |
+| `--subtitles`            | Extract subtitle streams only                                  |
+| `--all`                  | Extract every stream kind (default)                            |
+| `--video-container <ext>` | Re-encode video into this container (e.g. `mp4`, `mkv`)      |
+| `--audio-codec <codec>`  | Re-encode audio with this encoder (e.g. `mp3`, `flac`, `aac`)  |
+| `--subtitle-format <format>` | Convert text subtitles to this format (`srt`, `ass`, `copy`) |
+| `--video-filters <chain>` | Video filter chain for the re-encoded video stream (comma-separated, repeatable) |
 
 ## 🚪 Exit Codes
 
@@ -131,4 +167,4 @@ Batch also accepts all convert encoding options (`-v/--video-codec`, `-a/--audio
 
 ## 🔌 MCP Mode
 
-`encodex --mcp` starts the Model Context Protocol server in non-interactive stdio mode, exposing the 13 core tools to MCP hosts while keeping stdout reserved for JSON-RPC protocol messages (all logs route to stderr). The Electron main process runs headless: Chromium's GPU acceleration is disabled and no windows are spawned. Equivalently, the compiled entry can be started directly with `node dist/mcp/index.js`. See the [[MCP]] page for the tool catalogue, client configuration, and the embedded HTTP variant.
+`encodex --mcp` starts the Model Context Protocol server in non-interactive stdio mode, exposing 36 model-visible tools (37 registrations including the app-only `commit_operation`) to MCP hosts while keeping stdout reserved for JSON-RPC protocol messages (all logs route to stderr). The Electron main process runs headless: Chromium's GPU acceleration is disabled and no windows are spawned. Equivalently, the compiled entry can be started directly with `node dist/mcp/index.js`. See the [[MCP]] page for the tool catalogue, client configuration, and the embedded HTTP variant.

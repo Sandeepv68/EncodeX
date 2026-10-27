@@ -18,7 +18,9 @@ Se você precisa de um **conversor de vídeo para desktop**, algo rápido para u
 - Tudo para MP4 para máxima compatibilidade
 - Ajuste **resolução, taxa de quadros e bitrate** para reprodução perfeita
 - Use **aceleração de hardware** (NVENC, QSV, AMF, VAAPI, VideoToolbox) para velocidade
-- **Gire e espelhe vídeos** – corrija clipes tortos sem perda (MP4, MOV, MKV) ou com uma recodificação rápida
+- **Gire e espelhe vídeos** – corrija clipes tortos sem perda (MP4, MOV, MKV) no modo stream-copy, ou com uma recodificação rápida
+- **Faça remux sem recodificar** – troque de contêiner como MP4↔MKV e mantenha os streams originais quando os codecs são compatíveis
+- **Planeje com o Copilot** – descreva o resultado que você quer e o Copilot planeja a conversão, offline por padrão, com provedores opcionais OpenAI, Anthropic, Gemini ou local
 
 ### Instale uma vez, converta offline, sem limites
 

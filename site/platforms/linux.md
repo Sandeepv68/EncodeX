@@ -14,8 +14,8 @@ Linux users get exactly what they'd hope for from a free tool:
 
 - **AppImage build** — runs on most distributions without installers
 - **Open source (MIT)** — inspect the code, or build it yourself
-- **VAAPI hardware acceleration** — fast encodes with AMD, Intel, and NVIDIA GPUs
-- **Headless CLI** — script conversions for servers and automation
+- **VAAPI hardware acceleration** — fast encodes on AMD and Intel GPUs; NVIDIA GPUs use NVENC
+- **CLI** — script conversions and automation
 - **Offline & private** — your videos never leave your machine
 
 ### What Can You Do With EncodeX on Linux?
@@ -37,9 +37,9 @@ chmod +x EncodeX.AppImage
 
 ## FAQ
 
-**Does EncodeX support Wayland?** Yes, the app runs on both X11 and Wayland sessions.
+**What Linux build is available?** An AppImage that runs on most modern Linux distributions.
 
-**Can I use EncodeX on a headless Linux server?** Yes — EncodeX includes a [CLI mode](/cli) for scripting conversions without a desktop.
+**Can I script conversions on Linux?** Yes — EncodeX includes a [CLI mode](/cli) for automation.
 
 **Is EncodeX for Linux really free?** Yes — 100% free, open source (MIT), no ads, no accounts.
 

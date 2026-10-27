@@ -1,6 +1,6 @@
 ---
 title: "MP4-Videos kostenlos komprimieren – MP4-Dateigröße reduzieren | EncodeX"
-description: "Komprimiere MP4-Videos kostenlos mit EncodeX unter Windows, Mac und Linux. Verkleinere MP4-Dateien ohne sichtbaren Qualitätsverlust. Keine Uploads, keine Wasserzeichen, keine Anmeldung."
+description: "Komprimiere MP4-Videos kostenlos mit EncodeX unter Windows, Mac und Linux. Verkleinere MP4-Dateien bei hoher Qualität. Keine Uploads, keine Wasserzeichen, keine Anmeldung."
 ogImage: "https://encodex.in/images/convert.webp"
 ---
 
@@ -18,9 +18,9 @@ MP4 ist überall – genau deshalb muss es geschrumpft werden:
 - **Speicherplatz** – Smartphone-Clips fressen schnell Speicherplatz
 - **Schnelleres Teilen** – kleinere Dateien übertragen in Sekunden
 
-## MP4 ohne Qualitätsverlust komprimieren
+## MP4 komprimieren und Qualität hoch halten
 
-EncodeX re-encodiert dein MP4 mit intelligenteren Einstellungen – einem modernen Codec wie **H.265/HEVC oder AV1** und einer angepassten Bitrate –, sodass du eine **viel kleinere Datei erhältst, die trotzdem großartig aussieht**:
+EncodeX re-encodiert dein MP4 mit intelligenteren Einstellungen – einem modernen Codec wie **H.265/HEVC oder AV1** und einer angepassten Bitrate –, sodass du eine **kleinere Datei erhältst, die trotzdem gut aussieht**:
 
 1. [Lade EncodeX kostenlos herunter](/de/download)
 2. Ziehe deine **.mp4**-Datei in das Fenster
@@ -38,7 +38,7 @@ Ein bestimmtes Zielformat – etwa „unter 10 MB"? EncodeX hat dafür Presets. 
 
 ## Häufig gestellte Fragen
 
-**Wie klein können komprimierte MP4-Dateien werden?** Das hängt von Quelle und Einstellungen ab, aber EncodeX verkleinert Dateien oft auf einen Bruchteil ihrer Größe und behält dabei eine visuell ähnliche Qualität.
+**Wie klein können komprimierte MP4-Dateien werden?** Das hängt von Quelle und Einstellungen ab. EncodeX versucht, die visuelle Qualität nahe am Original zu halten und gleichzeitig die Dateigröße zu reduzieren.
 
 **Wird meine Videoqualität durch die Komprimierung verringert?** EncodeX gleicht Größe und Qualität automatisch aus. Du bestimmst, wie aggressiv du sein willst, und kannst das Ergebnis vor dem Speichern in der Vorschau ansehen.
 

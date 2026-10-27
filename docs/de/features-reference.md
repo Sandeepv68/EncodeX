@@ -6,17 +6,17 @@ EncodeX ist ein plattformübergreifendes Multimedia-Konvertierungstool, das die 
 
 ### Medienkonvertierung
 
-Konvertieren Sie zwischen Video-/Audioformaten mit granularer Kontrolle über Codecauswahl (51 Video-Codecs aus Software- und Hardware-Encoder-Familien, 27 Audio-Codecs), Bitrate, Ausgabeauflösung (mit optionaler Erhaltung des Seitenverhältnisses), Pixelformat (56 Formate gruppiert nach Bittiefe), Qualitätsstufe (qscale), Einbeziehung der Audiospur und Wahl des Transcoder-Kerns. Mehrere Dateien können über die Batch-Warteschlange eingereiht werden (siehe unten).
+Konvertieren Sie zwischen Video-/Audioformaten mit granularer Kontrolle über Codecauswahl (51 Video-Codecs aus Software- und Hardware-Encoder-Familien, 27 Audio-Codecs), Bitrate, Ausgabeauflösung (mit optionaler Erhaltung des Seitenverhältnisses), Pixelformat (56 Formate gruppiert nach Bittiefe), Qualitätsstufe (qscale), Einbeziehung der Audiospur, Wahl des Transcoder-Kerns und Videofilter (8 vorkonfigurierte Vorlagen: Zuschneiden, Bildrate, Deinterlacing, Entrauschen, Schärfen, Farbe, Graustufen, Weichzeichnen). Mehrere Dateien können über die Batch-Warteschlange eingereiht werden (siehe unten).
 
 ### Medienrotation & Spiegelung
 
-Drehen Sie Videos und Bilder um 90°, 180° oder 270° im Uhrzeigersinn und spiegeln Sie sie horizontal oder vertikal — auf der Konvertieren-Seite und in der Batch-Warteschlange (Transcodieren- und Bildkomprimierung-Panels sowie der Dialog für Job-Optionen). Die Drehung nutzt FFmpegs `transpose`-Filter (`transpose=1` bzw. `transpose=2,transpose=2` bzw. `transpose=2`), kombiniert mit `hflip`/`vflip` in einer einzigen `-vf`-Filterkette neben `scale`; Spiegelungen werden immer neu kodiert. Im Stream-Copy-Modus wird die Drehung verlustfrei als `-metadata:s:v rotate=N` gespeichert — nur für MP4/MOV/MKV-Ausgaben; andere Container und Bildausgaben nutzen immer den Pixel-Weg (Neukodierung).
+Drehen Sie Videos und Bilder um 90°, 180° oder 270° im Uhrzeigersinn und spiegeln Sie sie horizontal oder vertikal — auf der Konvertieren-Seite und in der Batch-Warteschlange (Transcodieren- und Bildkomprimierung-Panels sowie der Dialog für Job-Optionen). Die Drehung nutzt FFmpegs `transpose`-Filter (`transpose=1` bzw. `transpose=2,transpose=2` bzw. `transpose=2`), kombiniert mit `hflip`/`vflip` in einer einzigen `-vf`-Filterkette neben `scale`; Spiegelungen werden immer neu kodiert. Im Stream-Copy-Modus wird die Drehung verlustfrei als `-metadata:s:v rotate=N` gespeichert — nur für MP4/MOV/MKV-Ausgaben; andere Container und Bildausgaben nutzen immer den Pixel-Weg (Neukodierung). MP4/MOV/MKV-Ausgaben speichern die Drehung im Stream-Copy-Modus als verlustfreie Metadaten.
 
 ### Konvertierungsprofile
 
 Wenden Sie vorkonfigurierte Encoding-Voreinstellungen an, um Konvertierungseinstellungen sofort auszufüllen. Profile kapseln eine vollständige Encoding-Konfiguration — Containerformat, Video-Codec, Audio-Codec, Bitrate, CRF/Qualität, Skalierung, Pixelformat und erweiterte FFmpeg-Argumente — sodass Sie nicht jede Einstellung manuell konfigurieren müssen.
 
-- **Über 140 eingebaute Profile** in 8 Kategorien: Web & Social (YouTube, Instagram, TikTok, Facebook, X), Geräte (Apple, Android, Spielkonsolen), Video-Codecs, Professionell (ProRes, DNxHD/HR, FFV1), Streaming (HLS, DASH), Audio, Bilder und Erweitert
+- **115 eingebaute Profile** in 8 Kategorien: Web & Social (YouTube, Instagram, TikTok, Facebook, X), Geräte (Apple, Android, Spielkonsolen), Video-Codecs, Professionell (ProRes, DNxHD/HR, FFV1), Streaming (HLS, DASH), Audio, Bilder und Erweitert
 - **Benutzerdefinierte Profile** — erstellen, bearbeiten und löschen Sie eigene Profile; im lokalen Speicher gespeichert
 - **Zuletzt verwendet** — Schnellzugriff auf die letzten 5 angewendeten Profile
 - **Kategoriefilter** — Profile nach Kategorie mit Icon-Badges durchsuchen
@@ -27,6 +27,15 @@ Profile sind auf der Konvertieren-Seite und in der Batch-Warteschlange verfügba
 ### Verlustfreies Kopieren
 
 Stream-Kopie von Video- oder Audiospuren ohne Re-Encoding (`-c copy`). Nützlich für schnelle Containerwechsel, Remuxing oder wenn Qualitätserhaltung entscheidend ist.
+
+### Remux & Demux
+
+- **Remux** — ändern Sie den Container, während die Streams per Stream-Kopie übernommen werden (kein Re-Encoding), mit optionalem Stream-Mapping, hinzugefügten Untertiteln/Audio, Cover-Art, Kapitel-Import oder -Entfernung, Auswahl des Untertitel-Codecs und Audio-Sync-Offsets.
+- **Demux** — extrahieren Sie jeden Video-, Audio- und Untertitelstream in eine eigene Datei, mit optionaler Konvertierung pro Stream-Art (Video-Container, Audio-Codec, Untertitelformat) und Videofiltern für neu kodierte Videos.
+
+### Copilot (KI-Assistent)
+
+Die Copilot-Seite plant anhand eines natürlichsprachlichen Ziels die Arbeit an Dateien und Ordnern. Sie unterstützt 13 Operationen: sechs über die Warteschlange (`convert`, `remux`, `demux`, `extract_audio`, `compress_image`, `cut`) und sieben schreibgeschützte Medienanalyse-Operationen (`analyze`, `transcribe`, `summarize`, `chapters`, `search_transcript`, `translate`, `find_similar`). Pläne können von der deterministischen Offline-Engine `rules` (Standard) oder von OpenAI, Anthropic, Gemini oder einer lokalen Laufzeit erzeugt werden. Das Übernehmen eines Plans nutzt die Batch-Warteschlange; API-Schlüssel werden an den Hauptprozess gesendet, vor der Speicherung verschlüsselt und niemals an den Renderer zurückgegeben; die Einstellungen zeigen nur an, ob ein Schlüssel vorhanden ist, sowie einen maskierten Hinweis.
 
 ### Hardwarebeschleunigung
 
@@ -72,13 +81,24 @@ Verarbeiten Sie mehrere Dateien mit konfigurierbaren Operationen (Transkodierung
 
 Eigene Einstellungsseite für Thema, Hardwarebeschleunigung (an/aus, Modus, Encoder-Typ), Fenster immer im Vordergrund, Autostart, Batch-Konkurrenz und die When-done-Power-Aktion. Präferenzen persistieren im `localStorage` und greifen beim Start.
 
+### MCP Server {#mcp-server}
+
+EncodeX kann als [Model Context Protocol](https://modelcontextprotocol.io)-Server fungieren, sodass KI-Assistenten und Automatisierungs-Clients EncodeX direkt bedienen können. Es stehen zwei Oberflächen zur Verfügung:
+
+- **Eigenständiger stdio-Server** — gestartet mit `encodex --mcp` (oder `node dist/mcp/index.js`); spricht JSON-RPC über stdio, wobei stdout für Protokollnachrichten reserviert ist. Dies ist der Modus, den MCP-Hosts verwenden, die einen Serverprozess starten.
+- **Eingebetteter HTTP-Server** — ein optionaler Streamable-HTTP-Endpunkt unter `http://127.0.0.1:8765/mcp`, der bei laufender GUI über **Einstellungen → MCP Server** aktiviert wird. Er teilt sich denselben Tool-Kern und die Aufgabenwarteschlange der laufenden App.
+
+Die stdio-Oberfläche stellt 36 modellseitig sichtbare Tools bereit (37 Registrierungen, einschließlich des nur app-internen `commit_operation`); die eingebettete HTTP-Oberfläche fügt 6 GUI-Paritäts-Tools hinzu (`get_queue_state`, `cancel_all_jobs`, `get_timeline`, `extract_preview`, `get_system_info`, `check_for_updates`), insgesamt 42 modellseitig sichtbare Tools (43 Registrierungen). Beide Oberflächen bieten 3 Ressourcen (`encodex://profiles`, `encodex://capabilities`, `encodex://codecs`) und 4 Prompt-Vorlagen (`convert-video`, `extract-audio`, `compress-image`, `batch-convert`). Konvertierungen laufen asynchron: Job starten und anschließend `get_job` oder `list_jobs` für Fortschritt und Ergebnisse abfragen.
+
+Der eingebettete Server bindet nur an Loopback, validiert den `Origin`-Header, unterstützt ein optionales Bearer-Token (in konstanter Zeit verglichen) und akzeptiert auf `/mcp` ausschließlich `GET`, `POST` und `DELETE`. Alle Sitzungen werden beim Stoppen des Servers oder beim Beenden der App zwangsgeschlossen. MCP-Einstellungen (aktiviert, Port, Token) persistieren in `mcp-settings.json` im Benutzerdatenverzeichnis.
+
 ### Tastaturkürzel
 
 Ein zentrales Shortcut-Register (`src/renderer/constants/shortcuts.ts`) definiert über 60 Kürzel in neun Bereichen (global, convert, media info, image compress, audio extract, video cut, batch queue, logs, dashboard). Highlights:
 
 - `Ctrl+/` — Shortcut-Hilfsdialog öffnen
-- `Alt+1`…`Alt+9` — direkt zu einer Seite springen
-- `Ctrl+O` / `Ctrl+Shift+S` / `Ctrl+Enter` — Eingabe wählen / Ausgabe wählen / Job starten (seitenübergreifend konsistent)
+- `Alt+0`…`Alt+9` — direkt zu einer Seite springen (inkl. Remux auf `Alt+0`)
+- `Ctrl+O` / `Ctrl+Shift+S` / `Ctrl+Enter` — Eingabe wählen / Ausgabe wählen / Job starten (konsistent auf allen Seiten)
 - `Ctrl+Shift+P` / `Ctrl+Shift+C` — aktiven Job pausieren / abbrechen
 - Batch-Warteschlange: `Ctrl+E` Export, `Ctrl+I` Import, `1`–`5` Statusfilter, `F` Suche fokussieren
 - Video-Cut-Player: `Leertaste` Play/Pause, `M` stumm, Pfeiltasten zum Spulen
@@ -123,7 +143,7 @@ Rechts-nach-links-Layout für arabische und hebräische Locales (`ar-SA`, `ar-AE
 
 ### Internationalisierung
 
-56 Locales in 35 Sprachen:
+56 Locales (36 Sprach-Basissubtags):
 
 | Sprache     | Locales                                    |
 | ----------- | ------------------------------------------ |
@@ -165,11 +185,11 @@ Rechts-nach-links-Layout für arabische und hebräische Locales (`ar-SA`, `ar-AE
 
 ### Integrierte Updates
 
-Eigenes Update-Management, das GitHub Releases auf neue Versionen prüft, den Nutzer über Verfügbarkeit informiert, den plattformspezifischen Installer (`.exe` / `.dmg` / `.AppImage`) in der App mit Echtzeit-Fortschritt herunterlädt und den Installer nach Abschluss startet. Der Versionsvergleich nutzt Semver mit Entfernung von Pre-release-Suffixen. Der Update-Fluss ist vollständig in die About-Seite integriert, mit „Nach Updates suchen“-Button und einem globalen Dialog.
+Eigenes Update-Management, das GitHub Releases auf neue Versionen prüft, den Nutzer über Verfügbarkeit informiert, den plattformspezifischen Installer (`.exe` / `.dmg` / `.AppImage`) in der App mit Echtzeit-Fortschritt herunterlädt und dem Nutzer erlaubt, sofort zu installieren oder die Installation für den nächsten Neustart zu planen. Der Versionsvergleich folgt der Semver-Priorität einschließlich Pre-Release-Identifiers; Build-Metadaten werden ignoriert. Falls GitHub einen SHA-256- oder SHA-512-Asset-Digest veröffentlicht, wird der Download dagegen verifiziert. Es gibt keine Codesignierung/Notarisierung, und Updates werden niemals automatisch installiert. Der Update-Fluss ist vollständig in die About-Seite integriert, mit „Nach Updates suchen“-Button und einem globalen Dialog.
 
 ### Fehlerbehandlung
 
-Strukturiertes Fehlersystem mit typisierten Codes (`ErrorCode`), lokalisierten Benutzermeldungen, globaler Error-Snackbar, Inline-Error-Bannern, Toast-Benachrichtigungen, verschachtelten React-Error-Boundaries und einer App-internen Fehlerhistorie (Limit 50). Alle Fehler werden über `formatError()` normalisiert und über IPC propagiert.
+Strukturiertes Fehlersystem mit 28 typisierten Codes (`ErrorCode`), lokalisierten Benutzermeldungen, globaler Error-Snackbar, Inline-Error-Bannern, Toast-Benachrichtigungen, verschachtelten React-Error-Boundaries und einer App-internen Fehlerhistorie (Limit 50). Alle Fehler werden über `formatError()` normalisiert und über IPC propagiert.
 
 ## Unterstützte Medienformate
 

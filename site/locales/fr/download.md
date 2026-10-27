@@ -23,7 +23,7 @@ Vous hésitez ? Prenez la version recommandée — si ce n'est pas la bonne, Win
 
 ### Autres plateformes
 
-[macOS](#mac) · [Linux](#linux) · [Windows ARM64](#windows) · [Windows 32 bits](#windows)
+[macOS](#mac) · [Linux](#linux) · [Windows ARM64](#windows)
 
 ## <OsIcon name="apple" /> Mac
 
@@ -34,11 +34,13 @@ Vous hésitez ? Prenez la version recommandée — si ce n'est pas la bonne, Win
 **Vous ne savez pas quel Mac vous avez ?** Cliquez sur le logo Apple (<OsIcon name="apple" label="Logo Apple" />) en haut à gauche de l'écran, choisissez « À propos de ce Mac » et regardez la ligne « Puce ». S'il est écrit « Apple M1 » (ou M2/M3/M4), prenez Apple Silicon. S'il est écrit « Intel », prenez Intel.
 
 ::: warning Premier lancement sur Mac — une étape en plus
-Comme EncodeX est gratuit et open source (et non vendu sur le Mac App Store), macOS peut afficher un message indiquant que l'appli « ne peut pas être ouverte » au premier lancement. C'est normal et sans danger :
+EncodeX est gratuit et open source, n'est pas vendu sur le Mac App Store, et ses versions macOS ne sont ni signées ni notariées par Apple. macOS peut donc afficher un message indiquant que l'appli « ne peut pas être ouverte » au premier lancement. Pour l'ouvrir :
 
 1. Trouvez EncodeX dans votre dossier Applications
 2. Maintenez la touche **Contrôle** et cliquez sur l'appli, puis choisissez **Ouvrir**
 3. Dans la fenêtre qui apparaît, cliquez encore sur **Ouvrir**
+
+Sur les versions récentes de macOS, l'option Contrôle-clic peut ne pas être proposée. Dans ce cas, ouvrez **Réglages Système → Confidentialité et sécurité** et choisissez **Ouvrir quand même** pour EncodeX.
 
 Il n'y a qu'à le faire une fois — ensuite il s'ouvre normalement.
 :::
@@ -61,15 +63,14 @@ chmod +x EncodeX-*.AppImage
 Rien de spécial — si votre machine a quelques années au plus, tout va bien :
 
 - **Système :** Windows 10+, macOS 11+ ou un Linux moderne
-- **Disque :** environ 400 Mo (l'appli embarque tout ce qu'il lui faut — aucun téléchargement supplémentaire)
+- **Disque :** assez de place pour l'appli et vos fichiers convertis
 - **Mémoire :** une quantité normale suffit
 
-> **Pourquoi EncodeX fait-il ~400 Mo ?**
-> EncodeX embarque le moteur FFmpeg et tous les composants pris en charge, si bien que vous n'installez jamais FFmpeg, de codecs ou quoi que ce soit séparément — et vous ne téléchargez aucun extra plus tard. Rien n'est envoyé en ligne et rien ne tourne dans le cloud : chaque conversion se fait [localement sur votre ordinateur](/fr/features).
+EncodeX embarque le moteur FFmpeg : vous n'installez donc ni FFmpeg ni de codecs séparément. Chaque conversion se fait [localement sur votre ordinateur](/fr/features).
 
 ## Rester à jour
 
-Quand une nouvelle version sort, EncodeX vous prévient dans l'appli et peut télécharger et lancer la mise à jour pour vous — inutile de revenir sur cette page.
+Quand une nouvelle version sort, EncodeX consulte GitHub Releases et vous prévient dans l'appli. Vous choisissez de télécharger et d'installer la mise à jour, ou de l'installer au prochain redémarrage. Les mises à jour ne sont jamais installées automatiquement : inutile de revenir sur cette page.
 
 ## Versions précédentes
 
@@ -83,11 +84,11 @@ Si quelque chose ne fonctionne pas ou si vous avez une question, écrivez à **[
 
 ## Confidentialité
 
-Nous comprenons que la confiance compte. Chaque conversion se fait sur votre ordinateur — vos fichiers ne sont jamais envoyés, suivis ni stockés sur un serveur. Consultez la [politique de confidentialité](/fr/privacy).
+Nous comprenons que la confiance compte. Chaque conversion se fait sur votre ordinateur, et vos fichiers ne sont jamais envoyés ni stockés sur un serveur. La remontée d'erreurs et les statistiques d'usage sont activées par défaut, et vous pouvez les désactiver dans les Réglages. Consultez la [politique de confidentialité](/fr/privacy).
 
 ## Sécurité
 
-Chaque version inclut des [sommes de contrôle SHA-256 vérifiables et des builds signés](/fr/security) — et si vous trouvez un problème, vous pouvez le signaler de manière privée. Consultez la [page sécurité](/fr/security) pour plus de détails.
+Chaque version publie des [sommes de contrôle SHA-256](/fr/security) à côté des installateurs, et si vous trouvez un problème, vous pouvez le signaler de manière privée. Les versions ne sont pas signées numériquement. Consultez la [page sécurité](/fr/security) pour plus de détails.
 
 ## Pour les développeurs : compilez-le vous-même
 

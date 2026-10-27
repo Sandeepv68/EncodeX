@@ -52,7 +52,7 @@ Na CLI ou na interface, o fluxo é idêntico — você escolhe uma meta, o Encod
 No terminal, o mesmo perfil «Telefone» está a uma flag de distância:
 
 ```bash
-encodex convert vacation.mkv vacation.mp4 --profile phone
+encodex convert vacation.mkv vacation.mp4 --profile iphone-1080p
 ```
 
 ## Por que usar a CLI do EncodeX?

@@ -4,7 +4,7 @@ EncodeX ist kostenlos und wird von Freiwilligen gebaut — und Sie müssen kein 
 
 - **Sagen Sie uns, wenn etwas kaputtgeht.** Stürzt die App ab oder lässt sich eine Datei nicht konvertieren, [eröffnen Sie ein Issue](https://github.com/Sandeepv68/EncodeX/issues) und beschreiben Sie, was passiert ist. Fehlerberichte von normalen Nutzern sind Gold wert.
 - **Bringen Sie Ideen ein.** Sie wünschen sich, EncodeX könnte etwas, das es noch nicht kann? Sagen Sie es — viele Funktionen entstanden aus Nutzervorschlägen.
-- **Übersetzen Sie.** EncodeX spricht über 35 Sprachen, und Übersetzer sind immer willkommen. Fehlt Ihre Sprache oder klingt sie holprig, können Sie nachhelfen.
+- **Übersetzen Sie.** EncodeX unterstützt 56 Gebietsschemata, und Übersetzer sind immer willkommen. Fehlt Ihre Sprache oder klingt sie holprig, können Sie nachhelfen.
 - **Erzählen Sie weiter.** Teilen Sie EncodeX mit Freunden, schreiben Sie eine Rezension oder erstellen Sie ein Tutorial.
 
 ## Kontakt
@@ -31,13 +31,14 @@ npm start            # gebaute App starten
 - **State** — Zustand-Stores für den globalen Zustand.
 - **IPC** — alle Kanäle in `src/shared/ipc-channels.ts`.
 - **Konstanten** — feste Werte in den Konstantendateien unter `src/shared/`.
-- **i18n** — alle sichtbaren Texte in `src/renderer/i18n/locales/`.
+- **i18n** — alle sichtbaren Texte in `src/renderer/i18n/locales/`. Darauf achten, dass alle Gebietsschemata synchron bleiben.
 
 ### Pull-Request-Prozess
 
 1. Sicherstellen, dass der Build durchläuft: `npm run build`
 2. Sprachdateien aktualisieren, wenn UI-Texte ergänzt oder geändert werden.
-3. Jeden PR auf ein einzelnes Thema beschränken.
+3. Für größere Änderungen zuerst ein Issue eröffnen.
+4. Jeden PR auf ein einzelnes Thema beschränken.
 
 ## Verhaltenskodex
 

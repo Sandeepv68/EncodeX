@@ -1,17 +1,17 @@
 ---
-title: "Sicherheit bei EncodeX — Verifizierbar, signiert, Open Source"
-description: "So hält Sie EncodeX sicher: Open-Source-Code, SHA-256-Checksummen für jeden Download, Code-Signierung auf macOS und Windows und ein verifizierbarer Update-Prozess — plus wie Sie eine Schwachstelle melden."
+title: "Sicherheit bei EncodeX — Open Source, Prüfsummen & Meldung"
+description: "So hält Sie EncodeX sicher: Open-Source-Code, mit jeder Version veröffentlichte SHA-256-Prüfsummen, ein GitHub-Digest-Check bei Updates und wie Sie eine Schwachstelle melden. Release-Builds sind nicht code-signiert."
 ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # Sicherheit bei EncodeX
 
-EncodeX ist Open Source, daher muss Sicherheit nicht auf Vertrauen beruhen — jede Version wird aus öffentlichem Code gebaut, wird mit **SHA-256-Checksummen** ausgeliefert, die Sie verifizieren können, und ist, wo möglich, **code-signiert**, damit Ihr Betriebssystem bestätigen kann, dass sie wirklich von uns stammt.
+EncodeX ist Open Source, daher muss Sicherheit nicht auf Vertrauen beruhen. Jede Version wird aus öffentlichem Code gebaut und veröffentlicht **SHA-256-Prüfsummen**, die Sie mit Ihrem Download vergleichen können. Release-Builds sind **nicht code-signiert**, daher kann Ihr Betriebssystem eine Warnung über einen „unbekannten Entwickler" anzeigen.
 
 ## Was wir ausliefern, können Sie verifizieren
 
-- **Open Source.** Die gesamte App — einschließlich der Medienverarbeitungs-Pipeline und des gebündelten FFmpeg-Builds — lebt in [unserem Repository](https://github.com/Sandeepv68/EncodeX). Jede*r kann exakt prüfen, was die App tut.
-- **SHA-256-Checksummen.** Jede Version veröffentlicht Checksummen neben den Binaries. Vergleichen Sie die heruntergeladene Datei mit dem veröffentlichten Hash, bevor Sie installieren:
+- **Open Source.** Die gesamte App — einschließlich der Medienverarbeitungs-Pipeline und der Release-Skripte — lebt in [unserem Repository](https://github.com/Sandeepv68/EncodeX). Jede*r kann exakt prüfen, was die App tut.
+- **SHA-256-Prüfsummen.** Jede Version veröffentlicht eine `SHA256SUMS.txt`-Datei neben den Binaries. Vergleichen Sie die heruntergeladene Datei mit dem veröffentlichten Hash, bevor Sie installieren:
 
 ```bash
 # Windows (PowerShell)
@@ -21,16 +21,15 @@ Get-FileHash .\EncodeX-Setup-1.0.0.exe -Algorithm SHA256
 shasum -a 256 ./EncodeX-1.0.0.dmg
 ```
 
-- **Code-Signierung.** Die Versionen für Windows und macOS sind signiert, sodass Ihr OS „verifizierter Herausgeber"/„Apple" statt einer „Unbekannte Entwickler"-Warnung zeigt.
-- **Verifizierbare Updates.** Die App lädt nur von uns signierte Updates über HTTPS herunter. Die Update-Signatur wird lokal validiert, bevor etwas ersetzt wird.
+- **Verifizierte Updates.** Der Updater prüft GitHub Releases. Wenn GitHub für die Update-Datei einen SHA-256- oder SHA-512-Digest veröffentlicht, überprüft die App den Download dagegen. Der Updater überprüft keine kryptografische Signatur. Updates werden niemals automatisch installiert; Sie entscheiden, wann Sie installieren.
 
 ## Hinweis zu macOS Gatekeeper
 
-Da EncodeX kostenlos und Open Source ist (und nicht über den Mac App Store verkauft wird), kann macOS beim ersten Mal eine „Kann nicht geöffnet werden"-Meldung zeigen — das ist die **Gatekeeper**-Prüfung für standardmäßig unsignierte Apps. Der Build ist echt; zum Öffnen Control-klicken Sie die App in Programme und wählen einmal **Öffnen**. Danach öffnet sie sich normal.
+Da EncodeX kostenlos und Open Source ist, nicht über den Mac App Store verkauft wird und seine macOS-Builds nicht von Apple code-signiert oder notarisiert sind, kann macOS beim ersten Mal eine „Kann nicht geöffnet werden"-Meldung zeigen. Der Build ist der auf der Releases-Seite veröffentlichte. Zum Öffnen Control-klicken Sie die App in Programme und wählen einmal **Öffnen**. Bei neueren macOS-Versionen müssen Sie eventuell stattdessen **Systemeinstellungen → Datenschutz & Sicherheit → Dennoch öffnen** verwenden.
 
 ## Das gebündelte FFmpeg
 
-EncodeX bündelt seinen eigenen FFmpeg-Build, statt einen System-Binary aufzurufen. Der exakte Build (Version, Quelle und Konfiguration) ist in unserer [technischen Architektur](/de/docs/architecture) dokumentiert und wird in CI aus der Quelle reproduziert — so verhalten sich Konvertierungen überall gleich, und der Binary, den Sie ausführen, ist der, den wir gebaut haben.
+EncodeX liefert vorgebaute FFmpeg- und FFprobe-Binaries aus (aus den Paketen `ffmpeg-static` und `ffprobe-static`), statt einen System-Binary aufzurufen. Die Konvertierungen laufen als Kindprozess auf Ihrem Gerät. Wie die Engine eingebunden ist, erklärt unsere [technische Architektur](/de/docs/architecture).
 
 ## Eine Schwachstelle melden
 

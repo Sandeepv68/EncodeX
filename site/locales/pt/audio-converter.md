@@ -36,8 +36,8 @@ O EncodeX está disponível em todos os principais sistemas operacionais desktop
 ## Privado, gratuito e honesto
 
 - **Tudo fica no seu computador** — sem uploads, sem contas
-- **Sem marcas d'água** e **sem paywalls ocultos** — gratuito para sempre e código aberto
-- **Acelerado por hardware** onde possível, para conversões rápidas
+- **Sem marcas d'Água** e **sem paywalls ocultos** — gratuito para sempre e código aberto
+- **Conversões rápidas** — escolha o codec e a taxa de bits que melhor atendem às suas necessidades
 
 ## Perguntas frequentes
 

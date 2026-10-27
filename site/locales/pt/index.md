@@ -54,7 +54,7 @@ Os assistentes de IA agora podem operar seu kit de mídia local. Peça ao Claude
   <div class="card">
     <span class="card-emoji">⚙️</span>
     <p class="card-head">Automação de verdade</p>
-    <p>19 ferramentas cobrem conversões, extração de áudio, compressão de imagens, informações de mídia, tarefas em lote, prévias e atualizações — para os agentes encadearem trabalho real.</p>
+    <p>36 ferramentas cobrem conversões, extração de áudio, compressão de imagens, informações de mídia, tarefas em lote, prévias e atualizações — para os agentes encadearem trabalho real.</p>
   </div>
 </div>
 
@@ -244,7 +244,7 @@ O EncodeX é **completamente grátis, para sempre** — sem contas, sem assinatu
   </div>
   <div class="card">
     <span class="card-emoji">🌎</span>
-    <p class="card-head">Mais de 35 idiomas</p>
+    <p class="card-head">Mais de 56 idiomas</p>
     <p>Incluindo escritas da direita para a esquerda, como árabe e hebraico — toda tela traduzida.</p>
   </div>
   <div class="card">
@@ -289,7 +289,7 @@ O EncodeX tem três faces. Use a **interface de arrastar e soltar** para tarefas
   </div>
   <div class="card">
     <span class="card-emoji">🎛️</span>
-    <p class="card-head">140+ perfis prontos</p>
+    <p class="card-head">115 perfis prontos</p>
     <p>YouTube, Instagram, TikTok, dispositivos Apple, ProRes, HLS e mais. Escolha um, as configurações se preenchem.</p>
   </div>
   <div class="card">

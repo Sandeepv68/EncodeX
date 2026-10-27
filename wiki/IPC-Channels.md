@@ -18,6 +18,8 @@ All channel names are centralized in `src/shared/ipc-channels.ts`. The preload s
 | `get-image-file-info` | `filePath`                               | `ImageFileInfo \| null`       |
 | `get-video-preview`   | `filePath`                               | `string \| null` (data URL)   |
 | `get-capabilities`    | —                                        | `EncoderCapabilities \| null` |
+| `get-bmf-status`      | —                                        | `BmfStatus`                   |
+| `copilot-plan`        | `CopilotPlanRequest`                     | `CopilotPlan`                 |
 | `convert-file`        | `input, output, options, transcoderType` | `void`                        |
 | `cancel-conversion`   | —                                        | `void`                        |
 | `pause-conversion`    | —                                        | `void`                        |
@@ -37,7 +39,7 @@ All channel names are centralized in `src/shared/ipc-channels.ts`. The preload s
 | `queue-resume`        | —                                        | `void`                        |
 | `queue-export`        | —                                        | `number` (count exported)     |
 | `queue-import`        | —                                        | `number` (count imported)     |
-| `reveal-file`         | `filePath`                               | `void`                        |
+| `queue-reveal`        | `filePath`                               | `void`                        |
 | `set-launch-at-login` | `enabled`                                | `void`                        |
 | `player-open`         | `filePath`                               | `number` (generation token)   |
 | `player-seek`         | `time`                                   | `number` (generation token)   |
@@ -50,10 +52,19 @@ All channel names are centralized in `src/shared/ipc-channels.ts`. The preload s
 | `install-update`      | `installerPath`                          | `void`                        |
 | `cancel-download`     | —                                        | `void`                        |
 | `open-release-notes`  | `url`                                    | `void`                        |
+| `schedule-install-on-restart` | `installerPath, version`          | `void`                        |
+| `cancel-install-on-restart` | —                                  | `void`                        |
+| `get-pending-install` | —                                        | `PendingInstall \| null`      |
 | `monitoring-get-state` | —                                       | `{ enabled, backend }`        |
 | `monitoring-set-enabled` | `enabled`                              | `{ enabled, backend }`        |
+| `analytics-get-state` | —                                        | `{ enabled, backend }`        |
+| `analytics-set-enabled` | `enabled`                              | `{ enabled, backend }`        |
 | `mcp-settings-get`    | —                                        | `McpSettings`                 |
 | `mcp-settings-set`    | `settings`                               | `McpSettings` (sanitized)     |
+| `ai-settings-get`     | —                                        | `AiSettingsView` (key redacted) |
+| `ai-settings-set`     | `AiSettingsUpdate`                       | `AiSettingsView` (sanitized)  |
+| `ai-connect-test`     | `candidate?`                             | `AiConnectTestResult`         |
+| `ai-models-list`      | `candidate?`                             | `AiModelsListResult`          |
 | `dev-capture-screenshot` | —                                     | `string` (dev-mode only PNG path) |
 
 ## 📤 Send-only (renderer to main)
@@ -89,6 +100,7 @@ All channel names are centralized in `src/shared/ipc-channels.ts`. The preload s
 | `update-progress`          | `UpdateProgress`              |
 | `update-downloaded`        | `string` (installer path)     |
 | `update-error`             | `string` (error message)      |
+| `audit-entry`              | `AuditEntry`                  |
 
 ## 🧩 `window.electronAPI` (contextBridge API)
 
@@ -109,6 +121,8 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `getImageFileInfo(filePath)` — dimensions + size
 - `getVideoPreview(filePath)` — single-frame thumbnail
 - `getCapabilities()` — probe available encoders
+- `getBmfStatus()` — check whether the BMF CLI tools are on `PATH`
+- `copilotPlan(request)` — build a deterministic conversion plan for the given inputs and goal
 - `convertFile(input, output, options, transcoderType)` — start conversion
 - `pauseConversion()` / `resumeConversion()` / `cancelConversion()`
 - `queueAdd(...)` / `queueRemove(id)` / `queueList()` / `queueCancelAll()`
@@ -116,7 +130,7 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `queueSetWhenDone(config)` / `queueMoveTo(id, pos)` / `queueUpdateOptions(id, opts)`
 - `queueStart()` / `queuePause()` / `queueResume()`
 - `queueExport()` / `queueImport()`
-- `revealFile(filePath)` — open in system file manager
+- `revealFile(filePath)` — open in system file manager (channel `queue-reveal`)
 - `setLaunchAtLogin(enabled)` — toggle launch at login
 - `playerOpen(filePath)` / `playerSeek(time)` / `playerClose()` / `playerGetFrame()`
 - `extractWaveform(filePath, duration)` / `extractThumbnails(filePath, duration)`
@@ -124,9 +138,12 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `windowSetAlwaysOnTop(flag)`
 - `rejectTerms()` — quit the app (used when the terms gate is declined; bypasses close confirmation)
 - `monitoringGetState()` / `monitoringSetEnabled(enabled)` — query/toggle error-monitoring consent
+- `analyticsGetState()` / `analyticsSetEnabled(enabled)` — query/toggle usage analytics
 - `mcpGetSettings()` / `mcpSetSettings(settings)` — read/update embedded MCP server settings
+- `aiGetSettings()` / `aiSetSettings(update)` / `aiConnectTest(candidate?)` / `aiListModels(candidate?)` — read/update and probe the Copilot AI provider
 - `captureDevScreenshot()` — save a PNG of the window (dev mode only; rejects otherwise)
 - `checkForUpdates()` / `downloadUpdate()` / `installUpdate(path)` / `cancelDownload()` / `openReleaseNotes(url)`
+- `scheduleInstallOnRestart(path, version)` / `cancelRestartInstall()` / `getPendingInstall()` — manage a deferred update install
 
 ### Event listeners (each returns a cleanup function)
 
@@ -137,3 +154,4 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `onPlayerFrame(cb)` / `onPlayerAudio(cb)` / `onPlayerError(cb)`
 - `onLogMessage(cb)`
 - `onUpdateAvailable(cb)` / `onUpdateNotAvailable(cb)` / `onUpdateProgress(cb)` / `onUpdateDownloaded(cb)` / `onUpdateError(cb)`
+- `onAuditEntry(cb)` — mutating-operation audit stream

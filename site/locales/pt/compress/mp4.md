@@ -1,6 +1,6 @@
 ---
 title: "Comprimir vídeos MP4 grátis – Reduzir o tamanho de arquivos MP4 | EncodeX"
-description: "Comprima vídeos MP4 grátis com o EncodeX no Windows, Mac e Linux. Reduza o tamanho dos arquivos MP4 sem perder qualidade visível. Sem uploads, sem marcas d'água, sem cadastro."
+description: "Comprima vídeos MP4 grátis com o EncodeX no Windows, Mac e Linux. Reduza o tamanho dos arquivos MP4 mantendo a qualidade alta. Sem uploads, sem marcas d'água, sem cadastro."
 ogImage: "https://encodex.in/images/convert.webp"
 ---
 
@@ -18,9 +18,9 @@ O MP4 está em toda parte — e é exatamente por isso que as pessoas precisam r
 - **Armazenamento** — os clipes do celular ocupam espaço no disco rapidamente
 - **Compartilhamento mais rápido** — arquivos menores transferem em segundos
 
-## Comprimir MP4 sem perder qualidade
+## Comprimir MP4 mantendo a qualidade alta
 
-O EncodeX re-encodea seu MP4 com configurações mais inteligentes — um codec moderno como **H.265/HEVC ou AV1** e um bitrate ajustado — para você obter um **arquivo muito menor que continua com ótima aparência**:
+O EncodeX re-encodea seu MP4 com configurações mais inteligentes — um codec moderno como **H.265/HEVC ou AV1** e um bitrate ajustado — para você obter um **arquivo menor que continua com boa aparência**:
 
 1. [Baixe o EncodeX grátis](/pt/download)
 2. Arraste seu arquivo **.mp4** para a janela
@@ -38,7 +38,7 @@ Quer um tamanho alvo específico — como "menos de 10 MB"? O EncodeX tem preset
 
 ## FAQ
 
-**Qual o menor tamanho que arquivos MP4 comprimidos podem ter?** Depende da origem e das configurações, mas o EncodeX costuma reduzir os arquivos a uma fração do tamanho mantendo qualidade visualmente semelhante.
+**Qual o menor tamanho que arquivos MP4 comprimidos podem ter?** Depende da origem e das configurações. O EncodeX busca manter a qualidade visual próxima à do original enquanto reduz o tamanho do arquivo.
 
 **Comprimir vai reduzir a qualidade do meu vídeo?** O EncodeX equilibra tamanho e qualidade automaticamente. Você escolhe o quão agressivo quer ser e pode visualizar o resultado antes de salvar.
 

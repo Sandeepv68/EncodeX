@@ -12,7 +12,7 @@ Linux users deserve a great **FFmpeg GUI** too. **EncodeX** is a free, open-sour
 EncodeX gives Linux users a full **FFmpeg GUI** with the same clean experience on every platform:
 
 - **Convert** video and audio — MP4, MKV, AVI, MOV, WebM, MP3, FLAC, WAV and more
-- **Compress** videos to shrink file size while keeping quality
+- **Compress** videos to shrink file size with control over quality
 - **Trim** clips with a visual timeline
 - **Extract** audio from video and save it as MP3
 - **Batch process** folders automatically

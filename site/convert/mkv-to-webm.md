@@ -20,18 +20,18 @@ Common reasons people convert **MKV to WebM**:
 
 ## Convert MKV to WebM and Save Space
 
-WebM builds on **VP9** and the newer **AV1** codecs, which typically deliver about **half the file size** of H.264 at similar quality. EncodeX handles the encode for you:
+WebM builds on **VP9** and the newer **AV1** codecs, which are designed to produce smaller files than H.264 at similar quality. EncodeX handles the encode for you:
 
 1. [Download EncodeX for free](/download)
 2. Drag your **.mkv** file onto the window
 3. Choose **WebM** and click Convert
 
-WebM is the right pick when size matters more than compatibility with older devices. You can also **batch-convert** a whole folder of MKV files to WebM at once, and hardware acceleration keeps it fast.
+WebM is the right pick when size matters more than compatibility with older devices. You can also **batch-convert** a whole folder of MKV files to WebM at once. The default WebM encoder is software VP9 (libvpx-vp9); hardware VP9 encoders are separate options on supported GPUs.
 
 ### A Fast, Private MKV to WebM Converter
 
 - **Offline** — your video never leaves your computer
-- **Hardware accelerated** — uses your GPU for speed
+- **Hardware VP9 encoders** — optional, on supported GPUs
 - **VP9 / AV1 ready** — the most efficient web codecs
 - **No watermarks** and free forever
 - Works on **Windows, Mac, and Linux**
@@ -40,7 +40,7 @@ WebM is the right pick when size matters more than compatibility with older devi
 
 **Why should I convert MKV to WebM?** WebM is the open web format used by Chrome, Firefox, and YouTube. It offers smaller files than MKV at similar quality, especially with VP9 or AV1 encoding.
 
-**Will I lose quality converting MKV to WebM?** No. EncodeX keeps your video and audio sharp, and thanks to VP9 and AV1 you usually end up with a smaller file rather than a lower-quality one.
+**Will I lose quality converting MKV to WebM?** EncodeX re-encodes to VP9 with settings that keep quality high. VP9 and AV1 are efficient codecs, so files are often smaller at similar quality.
 
 **Can I convert many MKV files at once?** Yes. EncodeX supports batch converting an entire folder of MKV files to WebM.
 

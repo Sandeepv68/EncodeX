@@ -1,6 +1,6 @@
 # 💻 CLI Usage
 
-Build first, then invoke the compiled CLI via the `encodex` command (the `bin/encodex.js` launcher wraps the Electron binary). CLI mode auto-activates when two positional arguments (input + output) are given, or explicitly with `--cli`:
+Build first, then invoke the compiled CLI via the `encodex` command (the `bin/encodex.js` launcher wraps the Electron binary). CLI mode activates explicitly with `--cli`, `-h`/`--help`, or any subcommand/alias name, or automatically when at least two non-flag positional arguments (input + output) are given:
 
 ```bash
 # Convert a file (subcommand form)
@@ -70,7 +70,7 @@ encodex batch 'videos/**/*.mov' --concurrency 2 --output-dir converted
 encodex convert input.mp4 output.mp4 --transcoder FFTOOL
 ```
 
-Legacy flat usage (`encodex in.mp4 out.mp4`, `encodex --info in.mp4`) is shimmed into the matching subcommand automatically. `remux` and `demux` are only reachable as explicit subcommands (or their `rmx`/`split` aliases) - a bare two-positional invocation always stays a `convert`.
+Once CLI mode is active, legacy flat usage (`encodex in.mp4 out.mp4`, `encodex --info in.mp4`) is shimmed into the matching subcommand automatically. `encodex --info in.mp4` on its own has one positional argument and opens the GUI unless `--cli` is also passed. `remux` and `demux` are only reachable as explicit subcommands (or their `rmx`/`split` aliases) - a bare two-positional invocation always stays a `convert`.
 
 To make `encodex` available globally, run `npm link` from the project root (or `npm install -g .`). The raw `npx electron . --cli ...` form still works as an alternative.
 
@@ -122,7 +122,7 @@ Global options can be placed before or after the subcommand name.
 | `--hwaccel-mode <auto\|encode>` | Hardware acceleration mode (default: `auto`)             |
 | `--filters <chain>`        | Video filter chain, comma-separated (e.g. `fps=30,eq=brightness=0.1`) |
 | `--preset <id>`            | Curated filter preset (repeatable; ids: `crop`, `framerate`, `deinterlace`, `denoise`, `sharpen`, `color`, `grayscale`, `blur`) |
-| `--info`                    | Print media info for the input and exit                        |
+| `--info`                    | Print media info for the input and exit (requires CLI mode, e.g. `--cli`) |
 
 Filters force a re-encode: combining `--filters`/`--preset` with `--copy` is
 rejected. Presets are expanded before the free-form chain while resolving
@@ -245,7 +245,7 @@ node dist/mcp/index.js
 npx electron . --mcp
 ```
 
-stdout is reserved for MCP JSON-RPC messages; all status and logging output is redirected to stderr, and the process stays alive until stdin closes. The server exposes 16 tools (15 operations plus the app-only `commit_operation`), 3 resources, and 4 prompts — see [`MCP.md`](MCP.md) for the full catalogue and client configuration.
+stdout is reserved for MCP JSON-RPC messages; all status and logging output is redirected to stderr, and the process stays alive until stdin closes. The stdio server exposes 36 model-visible tools (37 registrations, including the app-only `commit_operation`) with 3 resources and 4 prompts; the embedded HTTP surface adds 6 GUI-parity tools for 42 model-visible tools (43 registrations) — see [`MCP.md`](MCP.md) for the full catalogue and client configuration.
 
 | Option  | Description                                                        |
 | ------- | ------------------------------------------------------------------ |

@@ -8,14 +8,18 @@ Todos los nombres de canal están centralizados en `src/shared/ipc-channels.ts`.
 | --------------------- | ---------------------------------------- | ----------------------------- |
 | `select-file`         | `filters?`                               | `string \| null`              |
 | `select-files`        | `filters?`                               | `string[]`                    |
+| `select-folder-files` | —                                        | `string[]`                    |
 | `select-output`       | —                                        | `string \| null`              |
 | `select-directory`    | —                                        | `string \| null`              |
+| `expand-paths`        | `paths`                                  | `string[]`                    |
 | `get-media-info`      | `filePath, transcoderType`               | `MediaInfo`                   |
 | `get-image-info`      | `filePath`                               | `ImageExifData \| null`       |
 | `get-image-preview`   | `filePath`                               | `string \| null` (data URL)   |
 | `get-image-file-info` | `filePath`                               | `ImageFileInfo \| null`       |
 | `get-video-preview`   | `filePath`                               | `string \| null` (data URL)   |
 | `get-capabilities`    | —                                        | `EncoderCapabilities \| null` |
+| `get-bmf-status`      | —                                        | `BmfStatus`                   |
+| `copilot-plan`        | `CopilotPlanRequest`                     | `CopilotPlan`                 |
 | `convert-file`        | `input, output, options, transcoderType` | `void`                        |
 | `cancel-conversion`   | —                                        | `void`                        |
 | `pause-conversion`    | —                                        | `void`                        |
@@ -35,7 +39,7 @@ Todos los nombres de canal están centralizados en `src/shared/ipc-channels.ts`.
 | `queue-resume`        | —                                        | `void`                        |
 | `queue-export`        | —                                        | `number` (cantidad exportada)     |
 | `queue-import`        | —                                        | `number` (cantidad importada)     |
-| `reveal-file`         | `filePath`                               | `void`                        |
+| `queue-reveal`        | `filePath`                               | `void`                        |
 | `set-launch-at-login` | `enabled`                                | `void`                        |
 | `player-open`         | `filePath`                               | `number` (token de generación)   |
 | `player-seek`         | `time`                                   | `number` (token de generación)   |
@@ -48,6 +52,20 @@ Todos los nombres de canal están centralizados en `src/shared/ipc-channels.ts`.
 | `install-update`      | `installerPath`                          | `void`                        |
 | `cancel-download`     | —                                        | `void`                        |
 | `open-release-notes`  | `url`                                    | `void`                        |
+| `schedule-install-on-restart` | `installerPath, version`         | `void`                        |
+| `cancel-install-on-restart` | —                                  | `void`                        |
+| `get-pending-install` | —                                        | `PendingInstall \| null`      |
+| `monitoring-get-state` | —                                       | `{ enabled }`                 |
+| `monitoring-set-enabled` | `enabled`                             | `{ enabled, backend }`        |
+| `analytics-get-state` | —                                        | `{ enabled, backend }`        |
+| `analytics-set-enabled` | `enabled`                              | `{ enabled, backend }`        |
+| `mcp-settings-get`    | —                                        | `McpSettings`                 |
+| `mcp-settings-set`    | `settings`                               | `McpSettings`                 |
+| `ai-settings-get`     | —                                        | `AiSettingsView`              |
+| `ai-settings-set`     | `update`                                 | `AiSettingsView`              |
+| `ai-connect-test`     | `candidate?`                             | `AiConnectTestResult`         |
+| `ai-models-list`      | `candidate?`                             | `AiModelsListResult`          |
+| `dev-capture-screenshot` | —                                     | `string` (ruta del PNG)       |
 
 ## Send-only (renderer a main)
 
@@ -58,6 +76,7 @@ Todos los nombres de canal están centralizados en `src/shared/ipc-channels.ts`.
 | `window-close`             | —         |
 | `window-confirm-close`     | —         |
 | `window-set-always-on-top` | `boolean` |
+| `terms-reject`             | —         |
 
 ## Eventos (main a renderer)
 
@@ -76,6 +95,7 @@ Todos los nombres de canal están centralizados en `src/shared/ipc-channels.ts`.
 | `player-audio`             | `PlayerAudioChunk`            |
 | `player-error`             | `string`                      |
 | `log-message`              | `LogEntry`                    |
+| `audit-entry`              | `AuditEntry`                  |
 | `update-available`         | `UpdateInfo`                  |
 | `update-not-available`     | —                             |
 | `update-progress`          | `UpdateProgress`              |
@@ -91,14 +111,18 @@ El script preload expone todo el IPC vía `window.electronAPI` (tipado en `src/r
 - `getPathForFile(file) -> string`
 - `selectFile(filters?) -> Promise<string | null>`
 - `selectFiles(filters?) -> Promise<string[]>`
+- `selectFolderFiles() -> Promise<string[]>`
 - `selectOutput() -> Promise<string | null>`
 - `selectDirectory() -> Promise<string | null>`
+- `expandPaths(paths) -> Promise<string[]>`
+- `copilotPlan(request) -> Promise<CopilotPlan>`
 - `getMediaInfo(filePath, transcoderType) -> Promise<MediaInfo>`
 - `getImageInfo(filePath) -> Promise<ImageExifData | null>`
 - `getImagePreview(filePath) -> Promise<string | null>`
 - `getImageFileInfo(filePath) -> Promise<ImageFileInfo | null>`
 - `getVideoPreview(filePath) -> Promise<string | null>`
 - `getCapabilities() -> Promise<EncoderCapabilities | null>`
+- `getBmfStatus() -> Promise<BmfStatus>`
 - `convertFile(input, output, options, transcoderType) -> Promise<void>`
 - `pauseConversion() -> Promise<void>`
 - `resumeConversion() -> Promise<void>`
@@ -136,6 +160,21 @@ El script preload expone todo el IPC vía `window.electronAPI` (tipado en `src/r
 - `installUpdate(installerPath) -> Promise<void>`
 - `cancelDownload() -> Promise<void>`
 - `openReleaseNotes(url) -> Promise<void>`
+- `scheduleInstallOnRestart(installerPath, version) -> Promise<void>`
+- `cancelRestartInstall() -> Promise<void>`
+- `getPendingInstall() -> Promise<PendingInstall | null>`
+- `rejectTerms() -> void`
+- `monitoringGetState() -> Promise<{ enabled }>`
+- `monitoringSetEnabled(enabled) -> Promise<{ enabled, backend }>`
+- `analyticsGetState() -> Promise<{ enabled, backend }>`
+- `analyticsSetEnabled(enabled) -> Promise<{ enabled, backend }>`
+- `mcpGetSettings() -> Promise<McpSettings>`
+- `mcpSetSettings(settings) -> Promise<McpSettings>`
+- `aiGetSettings() -> Promise<AiSettingsView>`
+- `aiSetSettings(update) -> Promise<AiSettingsView>`
+- `aiConnectTest(candidate?) -> Promise<AiConnectTestResult>`
+- `aiListModels(candidate?) -> Promise<AiModelsListResult>`
+- `captureDevScreenshot() -> Promise<string>`
 
 ### Listeners de eventos (cada uno devuelve una función de limpieza)
 
@@ -152,6 +191,7 @@ El script preload expone todo el IPC vía `window.electronAPI` (tipado en `src/r
 - `onPlayerAudio(cb) -> () => void`
 - `onPlayerError(cb) -> () => void`
 - `onLogMessage(cb) -> () => void`
+- `onAuditEntry(cb) -> () => void`
 - `onUpdateAvailable(cb) -> () => void`
 - `onUpdateNotAvailable(cb) -> () => void`
 - `onUpdateProgress(cb) -> () => void`

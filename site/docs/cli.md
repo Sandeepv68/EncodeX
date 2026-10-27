@@ -5,7 +5,7 @@ description: "EncodeX CLI reference: subcommands, options, batch processing, for
 
 # CLI Usage
 
-Build first, then invoke the compiled CLI via the `encodex` command (the `bin/encodex.js` launcher wraps the Electron binary). CLI mode auto-activates when two positional arguments (input + output) are given, or explicitly with `--cli`:
+Build first, then invoke the compiled CLI via the `encodex` command (the `bin/encodex.js` launcher wraps the Electron binary). CLI mode activates explicitly with `--cli`, `-h`/`--help`, or any subcommand/alias name, or automatically when at least two non-flag positional arguments (input + output) are given:
 
 ```bash
 # Convert a file (subcommand form)
@@ -43,7 +43,7 @@ encodex batch 'videos/**/*.mov' --concurrency 2 --output-dir converted
 encodex convert input.mp4 output.mp4 --transcoder FFTOOL
 ```
 
-Legacy flat usage (`encodex in.mp4 out.mp4`, `encodex --info in.mp4`) is shimmed into the matching subcommand automatically.
+Once CLI mode is active, legacy flat usage (`encodex in.mp4 out.mp4`, `encodex --info in.mp4`) is shimmed into the matching subcommand. `encodex --info in.mp4` on its own has one positional argument and opens the GUI unless `--cli` is also passed.
 
 To make `encodex` available globally, run `npm link` from the project root (or `npm install -g .`). The raw `npx electron . --cli ...` form still works as an alternative.
 
@@ -57,6 +57,8 @@ To make `encodex` available globally, run `npm link` from the project root (or `
 | `compress`         | Compress an image                                                 |
 | `extract-audio`    | Extract the audio stream (default codec `libmp3lame`). Alias: `audio` |
 | `batch`            | Convert multiple inputs (files, globs, or directories) with a queue |
+| `remux`            | Stream-copy a file into another container without re-encoding. Alias: `rmx` |
+| `demux`            | Extract each stream of a file into a separate file. Alias: `split` |
 
 ## Global Options
 
@@ -76,6 +78,7 @@ Global options can be placed before or after the subcommand name.
 
 | Option                      | Description                                                    |
 | --------------------------- | -------------------------------------------------------------- |
+| `-o, --output <file>`       | Output file (overrides the positional output)                  |
 | `-v, --video-codec <codec>` | Video codec (e.g. `libx264`, `libx265`, `copy`)                |
 | `-a, --audio-codec <codec>` | Audio codec (e.g. `aac`, `libmp3lame`, `copy`)                 |
 | `-q, --qscale <qscale>`     | Quality scale (1–31)                                           |
@@ -89,8 +92,10 @@ Global options can be placed before or after the subcommand name.
 | `--copy`                    | Lossless stream copy                                           |
 | `--no-audio`                | Exclude the audio stream from the output                       |
 | `--no-video`                | Exclude the video stream from the output (audio-only)          |
-| `--hwaccel / --no-hwaccel`  | Toggle hardware acceleration                                   |
+| `--hwaccel`                 | Enable hardware acceleration                                   |
 | `--hwaccel-mode <auto\\|encode>` | Hardware acceleration mode (default: `auto`)             |
+| `--filters <chain>`         | Video filter chain (comma-separated)                           |
+| `--preset <preset_id>`      | Curated video filter preset (repeatable)                       |
 | `--info`                    | Print media info for the input and exit                        |
 
 ## Compress Options
@@ -110,6 +115,38 @@ Global options can be placed before or after the subcommand name.
 | `-a, --audio-codec <codec>` | Audio codec (default: `libmp3lame`)                            |
 | `--bitrate-audio <bitrate>` | Audio bitrate (e.g. `192k`)                                    |
 
+## Remux Options
+
+| Option                          | Description                                                    |
+| ------------------------------- | -------------------------------------------------------------- |
+| `-o, --output <file>`           | Output file (defaults to the input path with the target extension) |
+| `-f, --format <container>`      | Target container (e.g. `mkv`, `mp4`, `mov`)                    |
+| `--map <spec>`                  | Stream to copy as `0:<type>:<ordinal>` (repeatable; default: all streams) |
+| `--add-subtitle <file[::codec]>`| Embed an external subtitle file (repeatable); optional per-file codec |
+| `--add-audio <file>`            | Embed an external audio file (repeatable)                      |
+| `--thumbnail <image>`           | Embed cover art (MKV/WebM attach, MP4/MOV disposition)         |
+| `--chapters <file>`             | Import chapters from an FFMETADATA file                        |
+| `--no-chapters`                 | Drop the source chapters instead of copying them               |
+| `--subtitle-codec <codec>`      | Subtitle codec for added subtitles (default: the container's first choice) |
+| `--no-subtitles`                | Drop source subtitle streams                                   |
+| `--audio-sync <seconds>`        | Shift the primary file's audio (positive = later)              |
+| `--set-sync <seconds>`          | Shift the preceding added subtitle/audio input (repeatable)    |
+| `--filters <chain>`             | Video filter chain (repeatable); filters force a re-encode     |
+
+## Demux Options
+
+| Option                          | Description                                                    |
+| ------------------------------- | -------------------------------------------------------------- |
+| `--output-dir <dir>`            | Directory for extracted streams (created when missing)         |
+| `--video`                       | Extract video streams only                                     |
+| `--audio`                       | Extract audio streams only                                     |
+| `--subtitles`                   | Extract subtitle streams only                                  |
+| `--all`                         | Extract every stream kind (default)                            |
+| `--video-container <ext>`       | Re-encode video into this container (e.g. `mp4`, `mkv`)        |
+| `--audio-codec <codec>`         | Re-encode audio with this encoder (e.g. `mp3`, `flac`, `aac`)  |
+| `--subtitle-format <format>`    | Convert text subtitles to this format (`srt`, `ass`, `copy`)   |
+| `--video-filters <chain>`       | Filter chain for the re-encoded video stream (repeatable)      |
+
 ## Batch Options
 
 | Option                      | Description                                                    |
@@ -118,7 +155,7 @@ Global options can be placed before or after the subcommand name.
 | `--output-dir <dir>`        | Output directory for converted files                           |
 | `--suffix <s>`              | Suffix appended to derived output names (default: `_encodex_converted`) |
 
-Batch also accepts all convert encoding options (`-v/--video-codec`, `-a/--audio-codec`, `--bitrate-video`, `--bitrate-audio`, `-q/--qscale`, `--pix-fmt`, `-s/--scale`, `--copy`, `--no-audio`, `--no-video`) and applies them to every job.
+Batch also accepts all convert encoding options (`-v/--video-codec`, `-a/--audio-codec`, `--bitrate-video`, `--bitrate-audio`, `-q/--qscale`, `--pix-fmt`, `-s/--scale`, `--copy`, `--no-audio`, `--no-video`, `--filters`, `--preset`) and applies them to every job.
 
 ## MCP Server Mode {#mcp-server-mode}
 
@@ -135,7 +172,7 @@ node dist/mcp/index.js
 npx electron . --mcp
 ```
 
-stdout is reserved for MCP JSON-RPC messages; all status and logging output is redirected to stderr, and the process stays alive until stdin closes. The server exposes 19 tools, 3 resources, and 4 prompts — see the [feature reference](/docs/features-reference#mcp-server) for the full catalogue.
+stdout is reserved for MCP JSON-RPC messages; all status and logging output is redirected to stderr, and the process stays alive until stdin closes. The stdio server exposes 36 model-visible tools (37 registrations, including the app-only `commit_operation`) with 3 resources and 4 prompts. The embedded HTTP surface adds 6 GUI tools for 42 model-visible tools (43 registrations) — see the [feature reference](/docs/features-reference#mcp-server) for the full catalogue.
 
 | Option  | Description                                                          |
 | ------- | -------------------------------------------------------------------- |

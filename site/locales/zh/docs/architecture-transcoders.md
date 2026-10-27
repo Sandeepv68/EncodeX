@@ -2,7 +2,7 @@
 
 ## Transcoder 抽象
 
-所有媒体后端都遵循 `ITranscoder`（`src/main/transcoders/interface.ts`）：
+所有媒体后端都遵循 `ITranscoder`（`src/main/transcoders/types.ts`）：
 
 ```ts
 export interface ITranscoder {

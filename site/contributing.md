@@ -9,7 +9,7 @@ EncodeX is free and built by volunteers — and you don't need to be a programme
 
 - **Tell us when something breaks.** If the app crashes or a file won't convert, [open an issue](https://github.com/Sandeepv68/EncodeX/issues) and describe what happened. Bug reports from everyday users are gold.
 - **Suggest ideas.** Wish EncodeX did something it doesn't? Tell us — many features start as user suggestions.
-- **Translate.** EncodeX speaks 35+ languages, and translators are always welcome. If your language is missing or sounds awkward, you can help fix that.
+- **Translate.** EncodeX ships with 56 locales, and translators are always welcome. If your language is missing or sounds awkward, you can help fix that.
 - **Spread the word.** Share EncodeX with friends, write a review, or make a tutorial.
 
 ## Get in Touch

@@ -23,7 +23,7 @@ EncodeX zieht den Ton aus fast jedem Videoformat – **MP4, MKV, MOV, AVI, WebM,
 2. Ihre **Videodatei** auf das Fenster ziehen
 3. **Audio extrahieren** wählen, ein Audioformat auswählen und auf **Konvertieren** klicken
 
-Ganz einfach. Sie können sogar **einen ganzen Ordner Videos auf einmal** als Audio extrahieren.
+Ganz einfach. Sie können sogar **einen ganzen Ordner Videos auf einmal** als Audio extrahieren — oder **Copilot** bitten, die Extraktion in einfacher Sprache zu planen.
 
 ## Wann sich das Extrahieren lohnt
 
@@ -36,7 +36,7 @@ Ganz einfach. Sie können sogar **einen ganzen Ordner Videos auf einmal** als Au
 
 - **Offline** – Ihr Video verlässt nie Ihren Computer
 - **Keine Uploads, keine Konten, keine Wasserzeichen**
-- **Hardwarebeschleunigt** wo möglich, für schnelle Extraktion
+- **Nur Audio** — das Video wird nicht neu kodiert, daher bleibt die Extraktion schnell
 - Kostenlos und **Open Source**, auf **Windows, Mac und Linux**
 
 ## Häufig gestellte Fragen

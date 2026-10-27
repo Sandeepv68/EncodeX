@@ -12,7 +12,7 @@ EncodeX is a free app for your computer that fixes common file problems in a few
 - **Trim a video** to keep only the parts you want
 - **Make photos smaller** so they're easy to email or upload
 
-It works on Windows, Mac, and Linux, it's completely free, and it speaks 35 languages.
+It works on Windows, Mac, and Linux, it's completely free, and its interface is available in 56 locales.
 
 ## Change Video & Audio Formats
 
@@ -26,9 +26,9 @@ You can convert between virtually every video and audio format you'll ever run i
 
 ## Pick a Profile and Go
 
-Don't want to fiddle with settings? EncodeX comes with over 140 ready-made conversion profiles — each one a carefully tuned preset for a specific use case. Want to export a video for YouTube at 1080p? There's a profile for that. Need an Instagram Reel in the right format? That's one click away. Rendering ProRes for a video editor? Covered.
+Don't want to fiddle with settings? EncodeX comes with 115 ready-made conversion profiles — each one a preset for a specific use case. Want to export a video for YouTube at 1080p? There's a profile for that. Need an Instagram Reel in the right format? That's one click away. Rendering ProRes for a video editor? Covered.
 
-Profiles are organized into 8 categories: Web & Social (YouTube, Instagram, TikTok, Facebook, X), Devices (Apple, Android, gaming consoles), Video codecs, Professional (ProRes, DNxHD/HR), Streaming (HLS, DASH), Audio, Images, and Advanced. Pick one, and all the right settings fill in automatically — codec, bitrate, quality, resolution, and more. You can still tweak anything after applying a profile.
+Profiles are organized into 8 categories: Web & Social (YouTube, Instagram, TikTok, Facebook, X), Devices (iPhone, iPad, Apple TV, Android, gaming consoles), Video, Professional (ProRes, DNxHR, CineForm, and more), Streaming (HLS, DASH), Audio, Images, and Advanced. Pick one, and all the right settings fill in automatically — codec, bitrate, quality, resolution, and more. You can still tweak anything after applying a profile.
 
 If you find yourself using the same custom settings over and over, save them as your own profile. You can create, edit, and delete custom profiles, and EncodeX remembers your 5 most recently used ones for quick access.
 
@@ -62,7 +62,11 @@ Works with all the common photo types: JPG, PNG, WebP, GIF, BMP, TIFF, and more.
 
 Shot a video with your phone held the wrong way? EncodeX rotates any video or photo 90°, 180°, or 270° clockwise and mirrors it horizontally or vertically — sideways clips, flipped selfies, and portrait video you want in landscape are fixed in a click.
 
-Keep the same MP4, MOV, or MKV format and the rotation is saved as lossless metadata — no re-encoding, no quality loss. Any other format (or a mirror) re-encodes the frames, and it all works in the batch queue too.
+In stream-copy mode, for MP4, MOV, or MKV files, the rotation is saved as lossless metadata with no re-encoding. In every other case (other formats, mirroring, or a normal conversion), the frames are re-encoded. Rotation also works in the batch queue.
+
+## Video Filters
+
+Beyond rotation, EncodeX includes 8 video filter presets: crop, frame rate, deinterlace, denoise, sharpen, color, grayscale, and blur. You can also write a custom filter chain for more control.
 
 ## Convert Many Files at Once
 
@@ -73,7 +77,15 @@ Have 50 videos to convert? Don't do them one by one. Drag them all into the queu
 - Add files while it's running
 - Pause, resume, or cancel anytime
 - Reorder the list by dragging
-- Get notified when everything's done — or have the computer shut down automatically when the queue finishes
+- Get notified when everything's done — or have the computer shut down, sleep, or hibernate when the queue finishes
+
+## Remux and Demux
+
+Need a different container, not a different encoding? **Remux** copies the existing streams into a new container (for example MP4 to MKV), and can add subtitles, extra audio tracks, cover art, or chapters. **Demux** goes the other way: it pulls individual video, audio, or subtitle streams out of a file, with optional conversion for each one.
+
+## Ask Copilot
+
+The built-in **Copilot** page takes a plain-language request and turns it into EncodeX jobs. It can queue conversions, remux, demux, extract audio, compress images, and cut videos, and it can analyze, summarize, or translate media. It works offline by default with a built-in rules router. You can optionally connect OpenAI, Anthropic, Gemini, or a local model.
 
 ## Let an AI Assistant Drive
 
@@ -84,7 +96,7 @@ There are two ways to connect:
 - **Standalone stdio server** — run `encodex --mcp` (or `node dist/mcp/index.js`). Ideal for desktop AI apps that launch a server on demand.
 - **Embedded localhost server** — turn it on in **Settings → MCP Server** while the GUI is running, then point clients at `http://127.0.0.1:8765/mcp`. This mode adds live queue, preview, timeline, system, and update tools on top of the same core.
 
-Across both modes the server exposes **19 tools**, **3 resources** (profiles, capabilities, codecs), and **4 prompt templates** (convert video, extract audio, compress image, batch convert). Conversions run asynchronously, so an assistant can start a long job and check back on it later.
+The standalone server exposes **36 tools**; the embedded server exposes **42** (the same 36 plus 6 GUI tools). Both also provide **3 resources** (profiles, capabilities, codecs) and **4 prompt templates** (convert video, extract audio, compress image, batch convert). Conversions run asynchronously, so an assistant can start a long job and check back on it later.
 
 ### Private and safe by design
 
@@ -103,18 +115,18 @@ Curious about a file? EncodeX can tell you everything about it in plain terms �
 
 ## Speed That Feels Effortless
 
-On most modern computers, EncodeX automatically uses the graphics chip (the part normally used for games) to make conversions dramatically faster. You don't have to configure anything — it detects what your computer has and uses it. Big files that would normally take ages finish in a fraction of the time.
+On computers with a supported GPU, EncodeX detects the hardware encoders available (NVIDIA NVENC, Intel Quick Sync, AMD AMF, Linux VAAPI, or Apple VideoToolbox) and uses them for video. You don't have to configure anything. Hardware encoding applies to video only; audio-only conversions run in software.
 
 ## It Fits Your Style
 
 - **Light or dark look** — follows your system, or switch manually
-- **35+ languages** — including Spanish, French, German, Hindi, Chinese, Japanese, Arabic, and Hebrew (with proper right-to-left layout)
+- **56 locales** — including Spanish, French, German, Hindi, Chinese, Japanese, Arabic, and Hebrew (with proper right-to-left layout)
 - **Keyboard shortcuts** — for those who prefer not to touch the mouse
-- **Keeps itself up to date** — EncodeX tells you when a new version is ready and installs it for you
+- **Keeps you up to date** — EncodeX checks GitHub Releases and tells you when a new version is ready. You choose to download and install it, or install on the next restart. Updates are not installed automatically.
 
 ## Private by Design
 
-Everything runs on your own computer — your files never leave it. No accounts, no uploads, no tracking.
+Everything runs on your own computer, and your files never leave it. There are no accounts and no uploads. Error reporting and usage analytics are on by default, use anonymous categorical events, and can be turned off in Settings.
 
 ## For the Curious: Under the Hood
 

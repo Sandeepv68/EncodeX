@@ -31,7 +31,7 @@ renderer कभी प्रोसेस स्पॉन नहीं करत�
 | [फ़ीचर संदर्भ](/hi/docs/features-reference) | फ़ीचर्स, समर्थित मीडिया फ़ॉर्मेट, कोडेक तालिकाएँ, वैलिडेशन यूटिलिटीज़ |
 | [CLI उपयोग](/hi/docs/cli) | CLI उपयोग, सबकमांड्स, सभी विकल्प तालिकाएँ |
 | [IPC चैनल](/hi/docs/ipc) | IPC चैनल (request/send-only/events), electronAPI ब्रिज |
-| [टेस्टिंग](/hi/docs/testing) | टेस्ट सूट (123 फ़ाइलें, 1603 टेस्ट), टेस्ट सेटअप, E2E specs |
+| [टेस्टिंग](/hi/docs/testing) | टेस्ट सूट (`src/` में 314 test/spec फ़ाइलें, `e2e/` में 39, 11 perf suites), टेस्ट सेटअप, E2E specs |
 | [प्रोजेक्ट संरचना](/hi/docs/project-structure) | एनोटेशन के साथ पूर्ण निर्देशिका ट्री |
 | [अपडेट मैनेजर](/hi/docs/update-manager) | इन-ऐप अपडेट मैनेजर का कार्यान्वयन |
 

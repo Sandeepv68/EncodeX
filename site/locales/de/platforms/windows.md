@@ -14,7 +14,7 @@ Windows-Nutzer lieben EncodeX, weil es einfach funktioniert:
 
 - **Ein-Klick-Installation** — ein Standard-`.exe`-Installationsprogramm, ohne Admin-Komplikationen
 - **Volle FFmpeg-Leistung** — konvertieren, komprimieren, schneiden und extrahieren ohne einen einzigen Befehl einzugeben
-- **NVIDIA- und Intel-Hardwarebeschleunigung** — NVENC und Quick Sync für schnelle Encodierungen
+- **NVIDIA-, Intel- und AMD-Hardwarebeschleunigung** — NVENC, Quick Sync und AMF für schnelle Encodierungen
 - **Batch-Ordner** — verarbeiten Sie Hunderte von Dateien auf einmal
 - **Offline & privat** — Ihre Videos verlassen nie Ihren PC
 

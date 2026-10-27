@@ -4,7 +4,7 @@ EncodeX ist kostenlos und wird von Freiwilligen gebaut — und Sie müssen kein 
 
 - **Sagen Sie uns, wenn etwas kaputtgeht.** Stürzt die App ab oder lässt sich eine Datei nicht konvertieren, [eröffnen Sie ein Issue](https://github.com/Sandeepv68/EncodeX/issues) und beschreiben Sie, was passiert ist. Fehlerberichte von normalen Nutzern sind Gold wert.
 - **Bringen Sie Ideen ein.** Sie wünschen sich, EncodeX könnte etwas, das es noch nicht kann? Sagen Sie es — viele Funktionen entstanden aus Nutzervorschlägen.
-- **Übersetzen Sie.** EncodeX spricht über 35 Sprachen, und Übersetzer sind immer willkommen. Fehlt Ihre Sprache oder klingt sie holprig, können Sie nachhelfen.
+- **Übersetzen Sie.** EncodeX wird mit 56 Locales ausgeliefert, und Übersetzer sind immer willkommen. Fehlt Ihre Sprache oder klingt sie holprig, können Sie nachhelfen.
 - **Erzählen Sie weiter.** Teilen Sie EncodeX mit Freunden, schreiben Sie eine Rezension oder erstellen Sie ein Tutorial.
 
 ## Kontakt

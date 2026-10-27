@@ -28,7 +28,9 @@ If that looks like a foreign language to you, you're not alone. A **FFmpeg GUI**
 - **Compress videos** to shrink file size without wrecking quality
 - **Trim clips** visually — drag two handles on a timeline, done
 - **Extract audio** from a video and save it as an MP3
-- **Rotate and mirror videos** — fix sideways clips, losslessly for MP4/MOV/MKV
+- **Rotate and mirror videos** — fix sideways clips losslessly for MP4/MOV/MKV in stream-copy mode, or with a quick re-encode
+- **Remux and demux** — change containers without re-encoding, or split every stream into its own file
+- **Plan with Copilot** — describe the job in plain language; 13 operations with an offline rules engine by default and optional OpenAI, Anthropic, Gemini, or local providers
 - **Batch process** whole folders of files in one go
 
 ## Lightning Fast: Hardware Acceleration Built In
@@ -37,13 +39,13 @@ EncodeX **automatically uses your GPU** to make conversions dramatically faster 
 
 - **NVIDIA** users get NVENC; **Intel** gets Quick Sync (QSV); **AMD** gets AMF
 - **Apple Silicon/Mac** users get VideoToolbox
-- **Linux** users get VAAPI — no matter the GPU brand
+- **Linux** users get VAAPI on AMD and Intel GPUs; NVIDIA GPUs use NVENC
 
 Chances are your hardware already has a fast encoder inside. EncodeX finds it and switches it on for you — so a long conversion finishes in a fraction of the time.
 
 ## It's Open Source and Private
 
-Because EncodeX is built on FFmpeg and is fully [open source](https://github.com/Sandeepv68/EncodeX), everything runs **on your own computer**. Nothing is uploaded, no accounts are required, and there are **no watermarks** on your files.
+Because EncodeX is built on FFmpeg and is fully [open source](https://github.com/Sandeepv68/EncodeX), media processing runs **on your own computer** — files are not uploaded, no accounts are required, and there are **no watermarks** on your files. Error reporting and usage analytics are on by default and can be turned off in Settings.
 
 ## Available on Every Desktop OS
 

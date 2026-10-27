@@ -19,7 +19,7 @@ EncodeX extracts the audio track from your video and saves it as an **MP3**, the
 ### The Perfect MP3 From Video
 
 - **Full control** — pick bitrate (128–320 kbps) and sample rate
-- **Native tracks used** — no quality loss from re-mixing
+- **Original audio track used** — encoded directly from your video
 - **Batch mode** — extract MP3 from a whole folder of videos at once
 - **Offline** — your files never leave your computer
 
@@ -34,7 +34,7 @@ We can't link to anything that violates copyright — make sure you only extract
 
 ## FAQ
 
-**Does extracting MP3 from a video keep the quality?** Yes. EncodeX reads the original audio track and encodes it to MP3 with the settings you choose. Use 320 kbps for near-lossless sound.
+**Does extracting MP3 from a video keep the quality?** MP3 is a lossy format, so the output will not be identical to the source. EncodeX reads the original audio track and encodes it to MP3 with the settings you choose; 320 kbps gives the highest MP3 quality.
 
 **Can I extract MP3 from MKV files?** Yes — any video container works, including MKV, MP4, MOV, AVI, and WebM.
 

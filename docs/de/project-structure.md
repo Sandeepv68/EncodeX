@@ -4,7 +4,7 @@
 src/
 ├── test-setup.ts                      # Vitest global setup: jest-dom matchers + i18n/electronAPI mocks
 ├── main/                              # Electron main process
-│   ├── index.ts                       # Entry: CLI detection, splash + main window, console bridging
+│   ├── index.ts                       # Entry: CLI/MCP detection, splash + main window, console bridging
 │   ├── cli/                            # Commander-based CLI entry (subcommands)
 │   │   ├── cli.ts                       # Entry: legacy shim, subcommand dispatch, exit codes
 │   │   ├── cli-options.ts               # Shared global options + CliExitError
@@ -13,42 +13,59 @@ src/
 │   │   ├── cli-convert.ts               # convert subcommand
 │   │   ├── cli-info.ts                  # info + capabilities subcommands
 │   │   ├── cli-compress.ts              # compress + extract-audio subcommands
+│   │   ├── cli-remux.ts                 # remux subcommand
+│   │   ├── cli-demux.ts                 # demux subcommand
 │   │   └── cli-batch.ts                 # batch subcommand (JobQueue + MultiBar)
 │   ├── capabilities.ts                # Encoder probing (ffmpeg -encoders / -hwaccels)
 │   ├── process-utils.ts               # Child-process helpers (spawn, suspend, resume, kill)
+│   ├── media-binaries.ts              # FFmpeg/FFprobe binary resolution
+│   ├── power-actions.ts               # Shutdown / sleep / hibernate when the queue drains
+│   ├── ai/                            # Copilot planning, provider connectors, AI settings
+│   ├── analytics/                     # Aptabase usage-analytics provider + consent
+│   ├── monitoring/                    # Sentry error-monitoring provider + consent
+│   ├── security/                      # Content-Security-Policy and security policy
+│   ├── mcp/                           # Embedded HTTP server, GUI tools, MCP settings
 │   ├── image-info.ts                  # EXIF extraction + RGB/luma histogram via ffmpeg
 │   ├── image-preview.ts               # Downscaled base64 image previews
 │   ├── image-file-info.ts             # Image dimensions/size probing
 │   ├── video-preview.ts               # Single-frame video thumbnails
 │   ├── updater.ts                      # GitHub Releases update checker, download, install
 │   ├── ffprobe-static.d.ts            # Module declaration for ffprobe-static
+│   ├── generated/                     # Build-time generated config (git-ignored)
+│   │   ├── aptabaseBuildConfig.ts     # Analytics key/environment baked at build time
+│   │   └── sentryBuildConfig.ts       # Monitoring DSN baked at build time
 │   ├── ipc/                           # IPC handler modules (error-wrapped)
 │   │   ├── handlers.ts                # Central registration + error wrapper
-│   │   ├── dialogs.ts                 # select-file / select-files / select-output
+│   │   ├── dialogs.ts                 # select-file / select-files / select-folder-files / select-output / expand-paths
 │   │   ├── conversion.ts              # convert / cancel / pause / resume
 │   │   ├── queue.ts                   # queue CRUD + cancel-all
 │   │   ├── player.ts                  # player open / seek / close / get-frame
 │   │   ├── timeline.ts                # extract-waveform / extract-thumbnails
 │   │   ├── image.ts                   # image info / preview / file info
-│   │   ├── capabilities.ts            # get-capabilities
+│   │   ├── capabilities.ts            # get-capabilities / get-bmf-status
+│   │   ├── copilot.ts                 # copilot-plan
+│   │   ├── dev.ts                     # dev-capture-screenshot
 │   │   ├── window.ts                  # minimize / maximize / close / always-on-top
-│   │   ├── updater.ts                 # check / download / install updates
-│   │   ├── system.ts                  # reveal-file / set-launch-at-login
+│   │   ├── updater.ts                 # check / download / install / schedule-on-restart
+│   │   ├── system.ts                  # queue-reveal / set-launch-at-login
 │   │   ├── send.ts                    # Event broadcast helpers
 │   │   └── types.ts                   # Type-safe main->renderer sender signature
 │   ├── player/
 │   │   ├── frame-decoder.ts           # Rawvideo frame + PCM audio pipe decoder
 │   │   └── types.ts                   # Decoded frame/audio structures + config types
 │   ├── queue/
-│   │   └── job-queue.ts               # Concurrency-capped batch queue (1-4 parallel jobs) with EventEmitter
+│   │   ├── job-queue.ts               # Concurrency-capped batch queue (1-4 parallel jobs) with EventEmitter
+│   │   ├── persistence.ts             # Queue snapshot + settings persistence
+│   │   └── queue-transfer.ts          # Queue import/export format
 │   ├── timeline/
 │   │   └── timeline-media.ts          # Waveform + thumbnail-montage extraction
 │   └── transcoders/
-│       ├── types.ts                   # ITranscoder contract + raw ffprobe JSON shapes
-│       ├── factory.ts                 # Transcoder factory (FFMPEG | FFTOOL | BMF)
-│       ├── ffmpeg-core.ts             # fluent-ffmpeg API core
-│       ├── fftool-core.ts             # Direct CLI invocation via child_process
-│       ├── bmf-core.ts                # BMF framework CLI wrapper
+│       ├── index.ts                   # Transcoder factory
+│       ├── interface.ts              # ITranscoder interface
+│       ├── types.ts                   # Transcoder types
+│       ├── ffmpeg-core.ts             # fluent-ffmpeg backend
+│       ├── fftool-core.ts             # Raw ffmpeg CLI backend
+│       ├── bmf-core.ts                # BMF backend
 │       ├── ffmpeg-utils.ts            # Shared command/flag builders
 │       ├── ffprobe-mapper.ts          # ffprobe JSON -> MediaInfo normalization
 │       └── hwaccel.ts                 # Hardware-acceleration filter/flag resolution

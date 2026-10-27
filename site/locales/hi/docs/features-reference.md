@@ -6,7 +6,7 @@ EncodeX एक क्रॉस-प्लेटफ़ॉर्म मल्टी
 
 ### Media conversion
 
-Video/audio formats के बीच convert करें codec selection (software और hardware encoder families में 51 video codecs, 27 audio codecs), bitrate, output resolution (optional aspect-ratio preservation के साथ), pixel format (bit depth द्वारा grouped 56 formats), quality scale (qscale), audio track inclusion, और transcoder core selection पर granular controls के साथ। कई files Batch Queue के माध्यम से queue की जा सकती हैं (नीचे देखें)।
+Video/audio formats के बीच convert करें codec selection (software और hardware encoder families में 51 video codecs, 27 audio codecs), bitrate, output resolution (optional aspect-ratio preservation के साथ), pixel format (bit depth द्वारा grouped 56 formats), quality scale (qscale), audio track inclusion, transcoder core selection, और video filters (8 curated presets: crop, framerate, deinterlace, denoise, sharpen, color, grayscale, blur) पर granular controls के साथ। कई files Batch Queue के माध्यम से queue की जा सकती हैं (नीचे देखें)।
 
 ### मीडिया रोटेशन और मिरर
 
@@ -16,7 +16,7 @@ Video/audio formats के बीच convert करें codec selection (softw
 
 Conversion settings को तुरंत भरने के लिए pre-configured encoding presets apply करें। Profiles एक पूर्ण encoding configuration encapsulate करते हैं — container format, video codec, audio codec, bitrate, CRF/quality, scale, pixel format, और advanced FFmpeg arguments — ताकि आपको हर setting manually configure न करनी पड़े।
 
-- **8 categories में 140+ built-in profiles**: Web & Social (YouTube, Instagram, TikTok, Facebook, X), Devices (Apple, Android, gaming consoles), Video codecs, Professional (ProRes, DNxHD/HR, FFV1), Streaming (HLS, DASH), Audio, Images, और Advanced
+- **8 categories में 115 built-in profiles**: Web & Social (YouTube, Instagram, TikTok, Facebook, X), Devices (Apple, Android, gaming consoles), Video codecs, Professional (ProRes, DNxHD/HR, FFV1), Streaming (HLS, DASH), Audio, Images, और Advanced
 - **Custom profiles** — अपने खुद के profiles create, edit और delete करें; local storage में saved रहते हैं
 - **हाल ही में उपयोग किए गए** — पिछले 5 applied profiles तक quick access
 - **Category filtering** — icon badges के साथ category द्वारा profiles browse करें
@@ -48,11 +48,20 @@ Video files से audio tracks extract करें। Output AAC, MP3, AC3, FL
 
 Frame-accurate start/end time या duration selection के साथ video segments preview और cut करें। Built-in player शामिल है जो video frames decode करता है (FFmpeg rawvideo pipe से HTML Canvas element तक) और audio (अलग S16LE PCM pipe से float में convert करके Web Audio API को feed) lockstep में, zoomable multi-track timeline के साथ: video thumbnail montage, audio waveform, keep/dim region shading, drag-to-trim handles, और scrubbing playhead।
 
+### Copilot (AI सहायक)
+
+Copilot पेज (`/copilot`) फ़ाइलों और फ़ोल्डरों पर एक प्राकृतिक-भाषा लक्ष्य से काम की योजना बनाता है। यह 13 operations सपोर्ट करता है: छह queue-backed (`convert`, `remux`, `demux`, `extract_audio`, `compress_image`, `cut`) और सात केवल-पठन media-intelligence operations (`analyze`, `transcribe`, `summarize`, `chapters`, `search_transcript`, `translate`, `find_similar`)। Plans deterministic, offline `rules` engine (डिफ़ॉल्ट) से, या OpenAI, Anthropic, Gemini, या local runtime से बन सकते हैं। Plan commit करने पर Batch Queue उपयोग होती है; API keys main process को भेजी जाती हैं, संग्रहण से पहले encrypt होती हैं, और कभी renderer को वापस नहीं भेजी जातीं।
+
+### Remux और Demux
+
+- **Remux** — re-encode किए बिना stream copy करते हुए container बदलें, वैकल्पिक stream mapping, जोड़े गए subtitles/audio, cover art, chapter import या हटाने, subtitle codec चयन, और audio-sync offsets के साथ।
+- **Demux** — हर video/audio/subtitle stream को अलग फ़ाइल में extract करें, प्रति-प्रकार रूपांतरण (video container, audio codec, subtitle format) और re-encoded video के लिए video filters के साथ।
+
 ### Batch queue
 
-Configurable operations (transcode, audio extraction, image compression) के साथ multiple files process करें। Jobs review dialog के माध्यम से added होते हैं जहाँ output names और options queue में enter करने से पहले adjust किए जा सकते हैं।
+Configurable operations (transcode, audio extraction, image compression, remux, demux) के साथ multiple files process करें। Jobs review dialog के माध्यम से added होते हैं जहाँ output names और options queue में enter करने से पहले adjust किए जा सकते हैं।
 
-- **Parallel processing** — 4 jobs concurrently तक run करें (`MAX_QUEUE_CONCURRENCY = 4`); concurrency cap runtime पर configurable और persisted है।
+- **Parallel processing** — 4 jobs concurrently तक run करें (`MAX_QUEUE_CONCURRENCY = 4`); डिफ़ॉल्ट 1 है; concurrency cap runtime पर configurable और persisted है।
 - **Queue lifecycle** — पूरी queue start, pause, और resume; cancel all; completed/failed jobs clear; individual jobs remove।
 - **Reordering** — queued jobs का drag-and-drop reordering (drop area के साथ), जो job की new position report करने वाले `QUEUE_MOVE_TO` channel द्वारा backed है।
 - **Job editing** — किसी भी queued job के start होने से पहले उसके options (और optionally output path) replace करें (`QUEUE_UPDATE_OPTIONS`)।
@@ -70,7 +79,7 @@ Configurable operations (transcode, audio extraction, image compression) के 
 
 ### Settings
 
-Theme, hardware acceleration (enable/disable, mode, encoder type), window always-on-top, launch-at-login, batch queue concurrency, when-done power action, और MCP सर्वर (enable/disable, port, access token) के लिए dedicated settings page। Preferences `localStorage` में persist होती हैं और startup पर effective होती हैं।
+Theme, hardware acceleration (enable/disable, mode, encoder type), window always-on-top, launch-at-login, batch queue concurrency, when-done power action, MCP सर्वर (enable/disable, port, access token), AI provider/model/key editor, और telemetry opt-out (error reporting + usage analytics, डिफ़ॉल्ट रूप से ON) के लिए dedicated settings page। सामान्य preferences `localStorage` में persist होती हैं और main process के साथ sync होती हैं; MCP settings `mcp-settings.json` में persist होती हैं, और AI keys main process द्वारा encrypt होती हैं।
 
 ### MCP सर्वर {#mcp-server}
 
@@ -79,16 +88,16 @@ EncodeX एक [Model Context Protocol](https://modelcontextprotocol.io) सर�
 - **स्टैंडअलोन stdio सर्वर** — `encodex --mcp` (या `node dist/mcp/index.js`) से launch, stdio पर JSON-RPC बोलता है और protocol messages के लिए stdout reserved रहता है। यह वह mode है जिसे MCP hosts इस्तेमाल करते हैं जो एक server process spawn करते हैं।
 - **Embedded HTTP सर्वर** — `http://127.0.0.1:8765/mcp` पर एक opt-in Streamable HTTP endpoint, जो GUI चलते समय **Settings → MCP Server** से enabled होता है। यह उसी tool core और चल रहे ऐप का job queue share करता है।
 
-stdio surface 13 core tools expose करता है (`ping`, `convert_media`, `get_job`, `list_jobs`, `cancel_job`, `get_media_info`, `list_capabilities`, `list_profiles`, `get_profile`, `compress_image`, `extract_audio`, `cut_video`, `batch_convert`); embedded HTTP surface कुल 19 के लिए 6 GUI-parity tools (`get_queue_state`, `cancel_all_jobs`, `get_timeline`, `extract_preview`, `get_system_info`, `check_for_updates`) जोड़ता है। दोनों surfaces 3 resources (`encodex://profiles`, `encodex://capabilities`, `encodex://codecs`) और 4 prompt templates (`convert-video`, `extract-audio`, `compress-image`, `batch-convert`) expose करते हैं। Conversions asynchronous हैं: एक job start करें, फिर progress और results के लिए `get_job` या `list_jobs` poll करें।
+stdio surface 36 model-visible tools expose करता है (37 registrations, app-only `commit_operation` सहित); embedded HTTP surface 6 GUI-parity tools (`get_queue_state`, `cancel_all_jobs`, `get_timeline`, `extract_preview`, `get_system_info`, `check_for_updates`) जोड़ता है, जिससे कुल 42 model-visible tools (43 registrations) होते हैं। दोनों surfaces 3 resources (`encodex://profiles`, `encodex://capabilities`, `encodex://codecs`) और 4 prompt templates (`convert-video`, `extract-audio`, `compress-image`, `batch-convert`) expose करते हैं। Conversions asynchronous हैं: एक job start करें, फिर progress और results के लिए `get_job` या `list_jobs` poll करें।
 
 Embedded सर्वर सिर्फ़ loopback से binds होता है, `Origin` header validate करता है, optional bearer token support करता है (constant time में compared), और `/mcp` पर केवल `GET`, `POST` और `DELETE` accept करता है। सर्वर stop होने या ऐप quit होने पर सभी sessions force-close हो जाते हैं। MCP settings (enabled, port, token) user-data directory में `mcp-settings.json` में persist होती हैं।
 
 ### Keyboard shortcuts
 
-एक central shortcut registry (`src/renderer/constants/shortcuts.ts`) nine sections (global, convert, media info, image compress, audio extract, video cut, batch queue, logs, dashboard) में 60+ shortcuts define करता है। Highlights:
+एक central shortcut registry (`src/renderer/constants/shortcuts.ts`) 11 sections (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard) में 82 shortcuts define करता है। Highlights:
 
 - `Ctrl+/` — shortcuts help dialog open करें
-- `Alt+1`…`Alt+9` — सीधे किसी page पर jump करें
+- `Alt+0`…`Alt+9` — सीधे किसी page पर jump करें (`Alt+0` पर Remux)
 - `Ctrl+O` / `Ctrl+Shift+S` / `Ctrl+Enter` — input pick / output pick / job start (pages में consistent)
 - `Ctrl+Shift+P` / `Ctrl+Shift+C` — active job pause / cancel
 - Batch queue: `Ctrl+E` export, `Ctrl+I` import, `1`–`5` status filters, `F` search focus
@@ -106,7 +115,7 @@ Jobs active होने पर window close करना confirmation flow स�
 
 ### Dashboard
 
-हर tool के लिए quick-action tiles वाला landing page (number keys `1`–`6` सीधे jump करते हैं) और seasonal easter-egg branding (नीचे देखें)।
+हर tool के लिए quick-action tiles वाला landing page (number keys `1`–`8` सीधे jump करते हैं) और seasonal easter-egg branding (नीचे देखें)।
 
 ### Easter eggs
 
@@ -134,7 +143,7 @@ Arabic और Hebrew locales (`ar-SA`, `ar-AE`, `ar-JO`, `he-IL`) के लि�
 
 ### Internationalization
 
-35 languages में 56 locales:
+56 locales:
 
 | भाषा        | Locales                                    |
 | ----------- | ------------------------------------------ |
@@ -176,11 +185,11 @@ Arabic और Hebrew locales (`ar-SA`, `ar-AE`, `ar-JO`, `he-IL`) के लि�
 
 ### In-app updates
 
-Custom update manager जो GitHub Releases check करता है new versions के लिए, availability की notify करता है, platform-specific installer (`.exe` / `.dmg` / `.AppImage`) in-app real-time progress reporting के साथ download करता है, और completion पर installer launch करता है। Version comparison semver pre-release suffix stripping के साथ use करता है। Update flow fully About page में integrated है "Check for Updates" button और global dialog के साथ।
+Custom update manager जो GitHub Releases check करता है new versions के लिए, availability की notify करता है, platform-specific installer (`.exe` / `.dmg` / `.AppImage`) in-app real-time progress reporting के साथ download करता है, और user के चुनने पर installer launch करता है या अगले restart पर install schedule करता है। Version comparison semver precedence use करता है, pre-release identifiers सहित; build metadata ignore होता है। जब GitHub `sha256` या `sha512` asset digest publish करता है, download उसके against verify होता है। Updates अपने-आप install नहीं होते। Update flow fully About page में integrated है "Check for Updates" button और global dialog के साथ।
 
 ### Error handling
 
-Typed error codes (`ErrorCode`), user-facing localized messages, global error snackbar, inline error banners, toast notifications, nested React error boundaries, और in-app error history (cap 50) के साथ structured error system। सभी errors `formatError()` के माध्यम से normalize होते हैं और IPC across propagate होते हैं।
+28 typed error codes (`ErrorCode`), user-facing localized messages, global error snackbar, inline error banners, toast notifications, nested React error boundaries, और in-app error history (cap 50) के साथ structured error system। सभी errors `formatError()` के माध्यम से normalize होते हैं और IPC across propagate होते हैं।
 
 ## Supported media formats
 

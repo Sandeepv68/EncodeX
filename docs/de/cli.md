@@ -1,6 +1,6 @@
 # CLI-Nutzung
 
-Zuerst bauen, dann die kompilierte CLI über den Befehl `encodex` aufrufen (der Launcher `bin/encodex.js` umhüllt die Electron-Binary). Der CLI-Modus aktiviert sich automatisch, wenn zwei positionale Argumente (Eingabe + Ausgabe) übergeben werden, oder explizit mit `--cli`:
+Zuerst bauen, dann die kompilierte CLI über den Befehl `encodex` aufrufen (der Launcher `bin/encodex.js` umhüllt die Electron-Binary). Der CLI-Modus wird explizit mit `--cli`, `-h`/`--help` oder jedem Unterbefehl/Alias aktiviert, oder automatisch, wenn mindestens zwei Nicht-Flag-Positionsargumente (Eingabe + Ausgabe) übergeben werden:
 
 ```bash
 # Convert a file (subcommand form)
@@ -38,7 +38,7 @@ encodex batch 'videos/**/*.mov' --concurrency 2 --output-dir converted
 encodex convert input.mp4 output.mp4 --transcoder FFTOOL
 ```
 
-Die veraltete flache Nutzung (`encodex in.mp4 out.mp4`, `encodex --info in.mp4`) wird automatisch per Shim auf das passende Subcommand gemappt.
+Ist der CLI-Modus aktiv, wird die veraltete flache Nutzung (`encodex in.mp4 out.mp4`, `encodex --info in.mp4`) automatisch per Shim auf das passende Subcommand gemappt. `encodex --info in.mp4` allein hat nur ein Positionsargument und öffnet die GUI, es sei denn, `--cli` wird ebenfalls übergeben. `remux` und `demux` sind nur als explizite Unterbefehle (oder deren Aliase `rmx`/`split`) erreichbar — ein reiner Aufruf mit zwei Positionsargumenten bleibt immer ein `convert`.
 
 Um `encodex` global verfügbar zu machen, führen Sie `npm link` im Projektstamm aus (oder `npm install -g .`). Die rohe Form `npx electron . --cli ...` funktioniert weiterhin als Alternative.
 
@@ -51,7 +51,9 @@ Um `encodex` global verfügbar zu machen, führen Sie `npm link` im Projektstamm
 | `capabilities`     | Verfügbare Transcoder-Fähigkeiten auflisten (Tabelle oder `--json`) |
 | `compress`         | Bild komprimieren                                                 |
 | `extract-audio`    | Audiostream extrahieren (Standard-Codec `libmp3lame`). Alias: `audio` |
-| `batch`            | Mehrere Eingaben (Dateien, Globs oder Verzeichnisse) mit Warteschlange konvertieren |
+| `remux`             | Streams verlustfrei in einen anderen Container kopieren. Alias: `rmx` |
+| `demux`             | Jeden Stream einer Datei in eine separate Datei extrahieren. Alias: `split` |
+| `batch`             | Mehrere Eingaben (Dateien, Globs oder Verzeichnisse) mit Warteschlange konvertieren |
 
 ## Globale Optionen
 
@@ -66,6 +68,7 @@ Globale Optionen können vor oder nach dem Subcommand-Namen stehen.
 | `--no-color`                | ANSI-Farben deaktivieren                                       |
 | `--json`                    | Maschinenlesbare JSON-Ausgabe (Status nach stderr geroutet)    |
 | `--timeout <seconds>`       | Konvertierungs-Timeout in Sekunden (Standard: `300`)           |
+| `-o, --output <file>`       | Ausgabedatei (überschreibt das Positionsargument)              |
 
 ## Convert-Optionen
 
@@ -84,9 +87,11 @@ Globale Optionen können vor oder nach dem Subcommand-Namen stehen.
 | `--copy`                    | Verlustfreie Stream-Kopie                                      |
 | `--no-audio`                | Schließt den Audiostream aus der Ausgabe aus                   |
 | `--no-video`                | Schließt den Videostream aus der Ausgabe aus (nur Audio)       |
-| `--hwaccel / --no-hwaccel`  | Hardwarebeschleunigung umschalten                              |
-| `--hwaccel-mode <auto\\|encode>` | Hardwarebeschleunigungs-Modus (Standard: `auto`)          |
-| `--info`                    | Medieninfos der Eingabe ausgeben und beenden                   |
+| `--hwaccel`                 | Hardwarebeschleunigung aktivieren                              |
+| `--hwaccel-mode <auto\|encode>` | Hardwarebeschleunigungs-Modus (Standard: `auto`)          |
+| `--filters <chain>`         | Videofilterkette (kommagetrennt)                                |
+| `--preset <preset_id>`      | Vorkonfigurierte Videofiltervorlage (wiederholbar)              |
+| `--info`                    | Medieninfos der Eingabe ausgeben und beenden (erfordert CLI-Modus, z. B. `--cli`) |
 
 ## Compress-Optionen
 
@@ -113,7 +118,25 @@ Globale Optionen können vor oder nach dem Subcommand-Namen stehen.
 | `--output-dir <dir>`        | Ausgabeverzeichnis für konvertierte Dateien                    |
 | `--suffix <s>`              | Suffix für abgeleitete Ausgabenamen (Standard: `_encodex_converted`) |
 
-Batch akzeptiert außerdem alle Convert-Encoding-Optionen (`-v/--video-codec`, `-a/--audio-codec`, `--bitrate-video`, `--bitrate-audio`, `-q/--qscale`, `--pix-fmt`, `-s/--scale`, `--copy`, `--no-audio`, `--no-video`) und wendet sie auf jeden Job an.
+Batch akzeptiert außerdem alle Convert-Encoding-Optionen (`-v/--video-codec`, `-a/--audio-codec`, `--bitrate-video`, `--bitrate-audio`, `-q/--qscale`, `--pix-fmt`, `-s/--scale`, `--copy`, `--no-audio`, `--no-video`, `--filters`, `--preset`) und wendet sie auf jeden Job an. Remux/Demux sind nur als explizite Unterbefehle verfügbar.
+
+## MCP-Server-Modus
+
+Sie können EncodeX auch als [Model Context Protocol](https://modelcontextprotocol.io)-Server ausführen:
+
+```bash
+# Aus gebuildetem Projekt
+node dist/mcp/index.js
+
+# Über Electron-CLI
+npx electron . --mcp
+```
+
+stdout ist für MCP-JSON-RPC-Nachrichten reserviert; Status- und Logging-Ausgabe wird auf stderr umgeleitet, und der Prozess bleibt bis zum Schließen von stdin aktiv. Der Standalone-stdio-Server gibt 36 modellsichtbare Tools (37 Registrierungen, einschließlich des app-exklusiven `commit_operation`) mit 3 Ressourcen und 4 Prompts frei; die eingebettete HTTP-Oberfläche fügt 6 GUI-äquivalente Tools für insgesamt 42 modellsichtbare Tools (43 Registrierungen) hinzu — siehe [`MCP.md`](../MCP.md) für den vollständigen Katalog und die Client-Konfiguration.
+
+| Option  | Beschreibung                                                        |
+| ------- | ------------------------------------------------------------------ |
+| `--port` | Port für den eingebetteten MCP-HTTP-Server (überschreibt Einstellungen) |
 
 ## Exit-Codes
 

@@ -18,7 +18,9 @@ Ya necesites un **convertidor de vídeo de escritorio**, algo rápido para un so
 - Cualquier cosa a MP4 para máxima compatibilidad
 - Cambia la **resolución, la velocidad de fotogramas y la tasa de bits** para una reproducción impecable
 - Usa **aceleración por hardware** (NVENC, QSV, AMF, VAAPI, VideoToolbox) para más velocidad
-- **Gira y refleja vídeos** – corrige clips de lado sin pérdida (MP4, MOV, MKV) o con un re-encode rápido
+- **Gira y refleja vídeos** – corrige clips de lado sin pérdida (MP4, MOV, MKV) en modo copia de flujo, o con una recodificación rápida
+- **Remux sin recodificar** — cambia de contenedor, como MP4↔MKV, y conserva los flujos originales cuando los códecs son compatibles
+- **Planifica con Copilot** — describe el resultado que quieres y Copilot planifica la conversión, sin conexión por defecto, con proveedores opcionales de OpenAI, Anthropic, Gemini o locales
 
 ### Instala una vez, convierte sin conexión, sin límites
 

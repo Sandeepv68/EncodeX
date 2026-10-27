@@ -1,6 +1,6 @@
 # Utilisation CLI
 
-Compilez d'abord, puis invoquez le CLI compilé via la commande `encodex` (le lanceur `bin/encodex.js` enveloppe le binaire Electron). Le mode CLI s'active automatiquement lorsque deux arguments positionnels (entrée + sortie) sont fournis, ou explicitement avec `--cli` :
+Compilez d'abord, puis invoquez le CLI compilé via la commande `encodex` (le lanceur `bin/encodex.js` enveloppe le binaire Electron). Le mode CLI s'active explicitement avec `--cli`, `-h`/`--help`, ou par le nom de n'importe quelle sous-commande ou alias, ou automatiquement lorsqu'au moins deux arguments positionnels hors options (entrée + sortie) sont fournis :
 
 ```bash
 # Convert a file (subcommand form)
@@ -38,7 +38,7 @@ encodex batch 'videos/**/*.mov' --concurrency 2 --output-dir converted
 encodex convert input.mp4 output.mp4 --transcoder FFTOOL
 ```
 
-L'usage à plat hérité (`encodex in.mp4 out.mp4`, `encodex --info in.mp4`) est automatiquement transformé en shim vers la sous-commande correspondante.
+Une fois le mode CLI actif, l'usage à plat hérité (`encodex in.mp4 out.mp4`, `encodex --info in.mp4`) est automatiquement transformé en shim vers la sous-commande correspondante. `encodex --info in.mp4` seul ne contient qu'un seul argument positionnel : il ouvre l'interface graphique, sauf si `--cli` est également passé.
 
 Pour rendre `encodex` disponible globalement, exécutez `npm link` depuis la racine du projet (ou `npm install -g .`). La forme brute `npx electron . --cli ...` reste une alternative fonctionnelle.
 
@@ -51,6 +51,8 @@ Pour rendre `encodex` disponible globalement, exécutez `npm link` depuis la rac
 | `capabilities`     | Lister les capacités transcoder disponibles (table ou `--json`)   |
 | `compress`         | Compresser une image                                              |
 | `extract-audio`    | Extraire le flux audio (codec par défaut `libmp3lame`). Alias : `audio` |
+| `remux`            | Copier les flux dans un autre conteneur sans réencodage. Alias : `rmx` |
+| `demux`            | Extraire chaque flux d'un fichier dans un fichier séparé. Alias : `split` |
 | `batch`            | Convertir plusieurs entrées (fichiers, globs ou répertoires) avec une file |
 
 ## Options globales
@@ -71,6 +73,7 @@ Les options globales peuvent être placées avant ou après le nom de la sous-co
 
 | Option                      | Description                                                    |
 | --------------------------- | -------------------------------------------------------------- |
+| `-o, --output <file>`       | Fichier de sortie (remplace la sortie positionnelle)           |
 | `-v, --video-codec <codec>` | Codec vidéo (ex. `libx264`, `libx265`, `copy`)                 |
 | `-a, --audio-codec <codec>` | Codec audio (ex. `aac`, `libmp3lame`, `copy`)                  |
 | `-q, --qscale <qscale>`     | Échelle de qualité (1–31)                                      |
@@ -84,9 +87,43 @@ Les options globales peuvent être placées avant ou après le nom de la sous-co
 | `--copy`                    | Copie de flux sans perte                                       |
 | `--no-audio`                | Exclut le flux audio de la sortie                              |
 | `--no-video`                | Exclut le flux vidéo de la sortie (audio seul)                 |
-| `--hwaccel / --no-hwaccel`  | Bascule l'accélération matérielle                              |
+| `--hwaccel`                 | Active l'accélération matérielle                               |
 | `--hwaccel-mode <auto\\|encode>` | Mode d'accélération matérielle (défaut : `auto`)          |
-| `--info`                    | Affiche les infos média de l'entrée et quitte                  |
+| `--filters <chain>`         | Chaîne de filtres vidéo, séparés par des virgules              |
+| `--preset <preset_id>`      | Préréglage de filtre vidéo (répétable)                         |
+| `--info`                    | Affiche les infos média de l'entrée et quitte (nécessite le mode CLI, par ex. `--cli`) |
+
+## Options remux
+
+| Option                          | Description                                                    |
+| ------------------------------- | -------------------------------------------------------------- |
+| `-o, --output <file>`           | Fichier de sortie (par défaut, le chemin d'entrée avec l'extension cible) |
+| `-f, --format <container>`      | Conteneur cible (ex. `mkv`, `mp4`, `mov`)                      |
+| `--map <spec>`                  | Flux à copier sous la forme `0:<type>:<ordinal>` (répétable ; par défaut : tous les flux) |
+| `--add-subtitle <file[::codec]>`| Intégrer un fichier de sous-titres externe (répétable) ; codec par fichier facultatif |
+| `--add-audio <file>`            | Intégrer un fichier audio externe (répétable)                  |
+| `--thumbnail <image>`           | Intégrer une jaquette (attache MKV/WebM, disposition MP4/MOV)  |
+| `--chapters <file>`             | Importer les chapitres depuis un fichier FFMETADATA            |
+| `--no-chapters`                 | Supprimer les chapitres source au lieu de les copier           |
+| `--subtitle-codec <codec>`      | Codec des sous-titres ajoutés (défaut : le premier choix du conteneur) |
+| `--no-subtitles`                | Supprimer les flux de sous-titres source                       |
+| `--audio-sync <seconds>`        | Décaler l'audio du fichier principal (positif = plus tard)     |
+| `--set-sync <seconds>`          | Décaler l'entrée de sous-titres/audio ajoutée précédente (répétable) |
+| `--filters <chain>`             | Chaîne de filtres vidéo (répétable) ; les filtres imposent un réencodage |
+
+## Options demux
+
+| Option                          | Description                                                    |
+| ------------------------------- | -------------------------------------------------------------- |
+| `--output-dir <dir>`            | Répertoire des flux extraits (créé si absent)                  |
+| `--video`                       | Extraire uniquement les flux vidéo                             |
+| `--audio`                       | Extraire uniquement les flux audio                             |
+| `--subtitles`                   | Extraire uniquement les flux de sous-titres                    |
+| `--all`                         | Extraire tous les types de flux (défaut)                       |
+| `--video-container <ext>`       | Réencoder la vidéo dans ce conteneur (ex. `mp4`, `mkv`)        |
+| `--audio-codec <codec>`         | Réencoder l'audio avec cet encodeur (ex. `mp3`, `flac`, `aac`) |
+| `--subtitle-format <format>`    | Convertir les sous-titres texte dans ce format (`srt`, `ass`, `copy`) |
+| `--video-filters <chain>`       | Chaîne de filtres pour le flux vidéo réencodé (répétable)      |
 
 ## Options compress
 
@@ -113,7 +150,7 @@ Les options globales peuvent être placées avant ou après le nom de la sous-co
 | `--output-dir <dir>`        | Répertoire de sortie des fichiers convertis                    |
 | `--suffix <s>`              | Suffixe ajouté aux noms de sortie dérivés (défaut : `_encodex_converted`) |
 
-Batch accepte aussi toutes les options d'encodage de convert (`-v/--video-codec`, `-a/--audio-codec`, `--bitrate-video`, `--bitrate-audio`, `-q/--qscale`, `--pix-fmt`, `-s/--scale`, `--copy`, `--no-audio`, `--no-video`) et les applique à chaque tâche.
+Batch accepte aussi toutes les options d'encodage de convert (`-v/--video-codec`, `-a/--audio-codec`, `--bitrate-video`, `--bitrate-audio`, `-q/--qscale`, `--pix-fmt`, `-s/--scale`, `--copy`, `--no-audio`, `--no-video`, `--filters`, `--preset`) et les applique à chaque tâche.
 
 ## Mode serveur MCP {#mcp-server-mode}
 
@@ -130,13 +167,13 @@ node dist/mcp/index.js
 npx electron . --mcp
 ```
 
-stdout est réservé aux messages MCP JSON-RPC ; toutes les sorties de statut et de journalisation sont redirigées vers stderr, et le processus reste actif jusqu'à la fermeture de stdin. Le serveur expose 19 outils, 3 ressources et 4 prompts — voir la [référence des fonctionnalités](/fr/docs/features-reference#mcp-server) pour le catalogue complet.
+stdout est réservé aux messages MCP JSON-RPC ; toutes les sorties de statut et de journalisation sont redirigées vers stderr, et le processus reste actif jusqu'à la fermeture de stdin. Le serveur stdio expose 36 outils visibles par le modèle (37 enregistrements, dont l'outil réservé à l'app `commit_operation`), 3 ressources et 4 prompts — voir la [référence des fonctionnalités](/fr/docs/features-reference#mcp-server) pour le catalogue complet.
 
 | Option  | Description                                                          |
 | ------- | -------------------------------------------------------------------- |
 | `--mcp` | Exécuter comme serveur MCP stdio (pas de GUI, pas de sous-commande CLI, pas de `app.exit`) |
 
-Une seconde surface facultative est le **serveur HTTP intégré** dans l'interface graphique en cours d'exécution (`http://127.0.0.1:8765/mcp`), qui ajoute des outils de file d'attente en direct, d'aperçu, de timeline, de système et de mises à jour, en plus du même cœur. Activez-le dans **Réglages → Serveur MCP** ; voir la [référence des fonctionnalités](/fr/docs/features-reference#mcp-server) pour le modèle de sécurité.
+Une seconde surface facultative est le **serveur HTTP intégré** dans l'interface graphique en cours d'exécution (`http://127.0.0.1:8765/mcp`), qui ajoute 6 outils de parité GUI (file d'attente en direct, aperçu, timeline, système et mises à jour) pour 42 outils visibles par le modèle (43 enregistrements), en plus du même cœur. Activez-le dans **Réglages → Serveur MCP** ; voir la [référence des fonctionnalités](/fr/docs/features-reference#mcp-server) pour le modèle de sécurité.
 
 ## Codes de sortie
 

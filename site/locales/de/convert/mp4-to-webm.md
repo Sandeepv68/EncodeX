@@ -20,18 +20,18 @@ Häufige Gründe für die Konvertierung von **MP4 zu WebM**:
 
 ## MP4 zu WebM konvertieren und Speicherplatz sparen
 
-WebM basiert auf den **VP9** (und dem neueren **AV1**) Codecs, die etwa **die Hälfte der Dateigröße** von H.264 bei ähnlicher Qualität liefern. EncodeX übernimmt die Kodierung für dich:
+WebM basiert auf den **VP9** (und dem neueren **AV1**) Codecs, die dafür ausgelegt sind, bei ähnlicher Qualität kleinere Dateien als H.264 zu erzeugen. EncodeX übernimmt die Kodierung für dich:
 
 1. [Lade EncodeX kostenlos herunter](/de/download)
 2. Ziehe deine **.mp4**-Datei in das Fenster
 3. Wähle **WebM** und klicke auf Konvertieren
 
-WebM ist eine großartige Wahl, wenn die Größe wichtiger ist als die Kompatibilität mit alten Geräten. Du kannst auch einen **ganzen Ordner** mit MP4-Dateien auf einmal zu WebM konvertieren, und die Hardware-Beschleunigung hält es schnell.
+WebM ist eine großartige Wahl, wenn die Größe wichtiger ist als die Kompatibilität mit alten Geräten. Du kannst auch einen **ganzen Ordner** mit MP4-Dateien auf einmal zu WebM konvertieren. Der Standard-WebM-Encoder ist Software-VP9 (libvpx-vp9); Hardware-VP9-Encoder sind separate Optionen auf unterstützten GPUs.
 
 ### Ein schneller, privater MP4 zu WebM Konverter
 
 - **Offline** — dein Video verlässt nie deinen Computer
-- **Hardware-beschleunigt** — nutzt deine GPU für Geschwindigkeit
+- **Hardware-VP9-Encoder** — optional, auf unterstützten GPUs
 - **VP9 / AV1 bereit** — die effizientesten Web-Codecs
 - **Keine Wasserzeichen** und kostenlos für immer
 - Funktioniert auf **Windows, Mac und Linux**

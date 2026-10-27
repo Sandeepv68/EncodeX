@@ -14,7 +14,7 @@ Windows 用户喜欢 EncodeX，因为它简单易用：
 
 - **一键安装** —— 标准的 `.exe` 安装程序，无需管理员权限
 - **完整的 FFmpeg 功能** —— 无需输入任何命令即可转换、压缩、剪切和提取
-- **NVIDIA 和 Intel 硬件加速** —— NVENC 和 Quick Sync 实现快速编码
+- **NVIDIA、Intel 和 AMD 硬件加速** —— NVENC、Quick Sync 和 AMF 实现快速编码
 - **批量文件夹处理** —— 一次处理数百个文件
 - **离线且私密** —— 你的视频永远不会离开你的电脑
 

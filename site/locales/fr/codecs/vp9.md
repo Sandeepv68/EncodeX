@@ -12,7 +12,7 @@ ogImage: "https://encodex.in/images/home_dashboard.webp"
 
 VP9 offre beaucoup de performances pour un codec gratuit :
 
-- **Excellente compression** — environ la moitié de la taille de H.264 à qualité similaire
+- **Excellente compression** — en général des fichiers plus petits que H.264 à qualité similaire
 - **Libre de droits** et standard ouvert
 - **Prêt pour le web** — supporté par les navigateurs modernes, YouTube et Android
 - **Excellent pour le streaming** — efficace sur du contenu haute résolution et haute fréquence de rafraîchissement

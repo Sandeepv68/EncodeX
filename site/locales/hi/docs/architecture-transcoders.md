@@ -2,7 +2,7 @@
 
 ## Transcoder एब्स्ट्रैक्शन
 
-सभी मीडिया बैकएंड `ITranscoder` (`src/main/transcoders/interface.ts`) का पालन करते हैं:
+सभी मीडिया बैकएंड `ITranscoder` (`src/main/transcoders/types.ts`) का पालन करते हैं:
 
 ```ts
 export interface ITranscoder {

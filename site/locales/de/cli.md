@@ -35,7 +35,7 @@ CLI oder GUI — der Ablauf ist identisch: Sie wählen ein Ziel, EncodeX überni
   <div class="wf-step">
     <span class="wf-num">2</span>
     <p class="card-head">Wählen</p>
-    <p>📱 Handy</p>
+    <p>📱 iPhone</p>
   </div>
   <div class="wf-step">
     <span class="wf-num">3</span>
@@ -49,20 +49,19 @@ CLI oder GUI — der Ablauf ist identisch: Sie wählen ein Ziel, EncodeX überni
   </div>
 </div>
 
-Aus dem Terminal ist dasselbe „Handy"-Profil einen Schalter entfernt:
+Aus dem Terminal ist dasselbe Ziel nur einen Befehl entfernt:
 
 ```bash
-encodex convert vacation.mkv vacation.mp4 --profile phone
+encodex convert vacation.mkv vacation.mp4 --video-codec libx264 --audio-codec aac -s 1920x1080
 ```
 
 ## Warum die EncodeX CLI verwenden?
 
-- **Skripten Sie es** — automatisieren Sie Konvertierungen in Cron-Jobs, CI-Pipelines und Servern
-- **Konsistent** — derselbe Engine und dieselben Profile wie die grafische Oberfläche
+- **Skripten Sie es** — automatisieren Sie Konvertierungen in Skripten und CI-Pipelines
+- **Konsistent** — dieselbe FFmpeg-Engine wie die grafische Oberfläche
 - **Stapelfreundlich** — Glob-Muster und `--concurrency` für parallele Arbeit
 - **Lesbar** — Befehle, die Sie ohne Handbuch eingeben können
 - **Plattformübergreifend** — funktioniert auf Windows, macOS und Linux
-- **Kopflos** — kein Desktop erforderlich, perfekt für Server
 
 ## CLI-Befehle
 
@@ -70,10 +69,12 @@ encodex convert vacation.mkv vacation.mp4 --profile phone
 | ------------------ | ------------------------------------------------------- |
 | `encodex convert`  | Konvertiert eine einzelne Datei zwischen zwei Formaten   |
 | `encodex batch`    | Konvertiert viele Dateien mit Glob-Mustern parallel      |
-| `encodex compress`  | Komprimiert eine Video- oder Bilddatei                  |
+| `encodex compress`  | Komprimiert eine Bilddatei                              |
 | `encodex extract-audio` | Extrahiert die Audiospur aus einem Video           |
+| `encodex remux`    | Kopiert Streams ohne Neukodierung in einen anderen Container |
+| `encodex demux`    | Extrahiert jeden Stream in eine separate Datei          |
 | `encodex info`     | Untersucht eine Datei und gibt deren technische Details aus |
-| `encodex capabilities` | Listet unterstützte Formate und Encoder auf          |
+| `encodex capabilities` | Listet verfügbare Encoder und Hardwarebeschleunigungsmethoden auf |
 
 ## CLI erhalten
 
@@ -83,9 +84,9 @@ Die CLI wird mit **jeder EncodeX-Installation** ausgeliefert — laden Sie die A
 
 ## FAQ
 
-**Brauche ich die grafische Oberfläche, um die CLI zu verwenden?** Nein, die CLI arbeitet eigenständig. Sie ist in jeder Installation von EncodeX enthalten.
+**Brauche ich die grafische Oberfläche, um die CLI zu verwenden?** Nein — die CLI läuft aus Ihrem Terminal und benötigt kein GUI-Fenster. Sie ist in jeder Installation von EncodeX enthalten.
 
-**Kann ich die EncodeX CLI auf einem Server verwenden?** Ja — sie ist kopflos und funktioniert daher hervorragend in Skripts, CI und Serverumgebungen.
+**Kann ich die EncodeX CLI in Skripten verwenden?** Ja — sie unterstützt `--json`-Ausgabe und Standard-Exitcodes für die Automatisierung.
 
 **Ist die EncodeX CLI wirklich kostenlos?** Ja — EncodeX ist für immer kostenlos und Open Source (MIT).
 

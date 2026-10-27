@@ -1,66 +1,66 @@
----
-title: "GUI do FFmpeg – Interface de desktop poderosa para FFmpeg | EncodeX"
-description: "Uma GUI do FFmpeg gratuita e de código aberto para Windows, Mac e Linux. Converta vídeos e áudio, comprima arquivos, corte clipes e extraia áudio — sem precisar da linha de comando."
+﻿---
+title: "GUI do FFmpeg â€“ Interface de desktop poderosa para FFmpeg | EncodeX"
+description: "Uma GUI do FFmpeg gratuita e de cÃ³digo aberto para Windows, Mac e Linux. Converta vÃ­deos e Ã¡udio, comprima arquivos, corte clipes e extraia Ã¡udio â€” sem precisar da linha de comando."
 ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # Uma GUI poderosa para FFmpeg
 
-**FFmpeg** é o motor por trás da maioria das ferramentas de conversão de vídeo — mas é um programa de linha de comando intimidante. **EncodeX** oferece uma **interface de FFmpeg** amigável e visual que coloca todo esse poder em uma interface que qualquer pessoa pode usar — sem digitar um único comando.
+**FFmpeg** Ã© o motor por trÃ¡s da maioria das ferramentas de conversÃ£o de vÃ­deo â€” mas Ã© um programa de linha de comando intimidante. **EncodeX** oferece uma **interface de FFmpeg** amigÃ¡vel e visual que coloca todo esse poder em uma interface que qualquer pessoa pode usar â€” sem digitar um Ãºnico comando.
 
 ## Por que uma GUI em volta do FFmpeg?
 
-O FFmpeg é incrivelmente poderoso. O problema é que você precisa lembrar de comandos como:
+O FFmpeg Ã© incrivelmente poderoso. O problema Ã© que vocÃª precisa lembrar de comandos como:
 
 ```bash
 ffmpeg -i input.mkv -c:v libx264 -crf 18 -c:a aac output.mp4
 ```
 
-Se isso parece uma língua estrangeira para você, você não está sozinho. Uma **GUI do FFmpeg** transforma isso em menus e botões simples:
+Se isso parece uma lÃ­ngua estrangeira para vocÃª, vocÃª nÃ£o estÃ¡ sozinho. Uma **GUI do FFmpeg** transforma isso em menus e botÃµes simples:
 
 - **Escolha um arquivo** arrastando-o para a janela
-- **Escolha a saída** — um dispositivo, uma plataforma ou um formato como MP4
+- **Escolha a saÃ­da** â€” um dispositivo, uma plataforma ou um formato como MP4
 - **Clique em Converter** e deixe o EncodeX cuidar do resto
 
-## O que você pode fazer com a GUI do FFmpeg do EncodeX
+## O que vocÃª pode fazer com a GUI do FFmpeg do EncodeX
 
-- **Converta vídeos e áudio** entre dezenas de formatos — MP4, MKV, AVI, MOV, WebM, MP3, FLAC, WAV e mais
-- **Comprima vídeos** para reduzir o tamanho do arquivo sem arruinar a qualidade
-- **Corte clipes visualmente** — arraste duas alças em uma linha do tempo, pronto
-- **Extraia o áudio de um vídeo** e salve como MP3
-- **Gire e espelhe vídeos** – corrija clipes tortos, sem perda para MP4/MOV/MKV
-- **Processe pastas inteiras em lote** em uma única passagem
+- **Converta vÃ­deos e Ã¡udio** entre dezenas de formatos â€” MP4, MKV, AVI, MOV, WebM, MP3, FLAC, WAV e mais
+- **Comprima vÃ­deos** para reduzir o tamanho do arquivo sem arruinar a qualidade
+- **Corte clipes visualmente** â€” arraste duas alÃ§as em uma linha do tempo, pronto
+- **Extraia o Ã¡udio de um vÃ­deo** e salve como MP3
+- **Gire e espelhe vÃ­deos** â€“ corrija clipes tortos, sem perda para MP4/MOV/MKV
+- **Processe pastas inteiras em lote** em uma Ãºnica passagem
 
-## Ultra-rápido: aceleração de hardware integrada
+## Ultra-rÃ¡pido: aceleraÃ§Ã£o de hardware integrada
 
-EncodeX **usa sua GPU automaticamente** para tornar as conversões muito mais rápidas do que a codificação por software normal. Sem configuração, sem caçar drivers — simplesmente funciona:
+EncodeX **usa sua GPU automaticamente** para tornar as conversÃµes muito mais rÃ¡pidas do que a codificaÃ§Ã£o por software normal. Sem configuraÃ§Ã£o, sem caÃ§ar drivers â€” simplesmente funciona:
 
-- Usuários de **NVIDIA** ganham NVENC; **Intel** ganha Quick Sync (QSV); **AMD** ganha AMF
-- Usuários de **Apple Silicon/Mac** ganham VideoToolbox
-- Usuários de **Linux** ganham VAAPI — independentemente da marca da GPU
+- UsuÃ¡rios de **NVIDIA** ganham NVENC; **Intel** ganha Quick Sync (QSV); **AMD** ganha AMF
+- UsuÃ¡rios de **Apple Silicon/Mac** ganham VideoToolbox
+- UsuÃ¡rios de **Linux** ganham VAAPI â€” independentemente da marca da GPU
 
-É bem provável que seu hardware já tenha um codificador rápido embutido. EncodeX o encontra e ativa para você — assim uma conversão longa termina em uma fração do tempo.
+Ã‰ bem provÃ¡vel que seu hardware jÃ¡ tenha um codificador rÃ¡pido embutido. EncodeX o encontra e ativa para vocÃª â€” assim uma conversÃ£o longa termina em uma fraÃ§Ã£o do tempo.
 
-## É de código aberto e privado
+## Ã‰ de cÃ³digo aberto e privado
 
-Como o EncodeX é construído sobre o FFmpeg e é totalmente [código aberto](https://github.com/Sandeepv68/EncodeX), tudo roda **no seu próprio computador**. Nada é enviado, sem contas necessárias e **sem marcas d'água** nos seus arquivos.
+Como o EncodeX Ã© construÃ­do sobre o FFmpeg e Ã© totalmente [cÃ³digo aberto](https://github.com/Sandeepv68/EncodeX), tudo roda **no seu prÃ³prio computador**. Nada Ã© enviado, sem contas necessÃ¡rias e **sem marcas d'Ã¡gua** nos seus arquivos.
 
-## Disponível em todos os sistemas desktop
+## DisponÃ­vel em todos os sistemas desktop
 
-O EncodeX roda em Windows, macOS e Linux — uma verdadeira **interface gráfica do FFmpeg** multiplataforma.
+O EncodeX roda em Windows, macOS e Linux â€” uma verdadeira **interface grÃ¡fica do FFmpeg** multiplataforma.
 
 - [GUI do FFmpeg para Windows](/pt/ffmpeg-gui/windows)
 - [GUI do FFmpeg para Mac](/pt/ffmpeg-gui/macos)
 - [GUI do FFmpeg para Linux](/pt/ffmpeg-gui/linux)
 
-## A melhor alternativa à GUI do FFmpeg
+## A melhor alternativa Ã  GUI do FFmpeg
 
-Procurando a **melhor GUI do FFmpeg** — ou uma **alternativa à GUI do FFmpeg** ao HandBrake ou Shutter Encoder? O EncodeX é gratuito, de código aberto e deliberadamente simples de usar, mas ainda oferece opções avançadas de codificação para quem as desejar. Confira nossa comparação da [alternativa ao HandBrake](/pt/handbrake-alternative).
+Procurando a **melhor GUI do FFmpeg** â€” ou uma **alternativa Ã  GUI do FFmpeg** ao HandBrake ou Shutter Encoder? O EncodeX Ã© gratuito, de cÃ³digo aberto e deliberadamente simples de usar, mas ainda oferece opÃ§Ãµes avanÃ§adas de codificaÃ§Ã£o para quem as desejar. Confira nossa comparaÃ§Ã£o da [alternativa ao HandBrake](/pt/handbrake-alternative).
 
 ## Comece agora
 
-- [Baixe o EncodeX gratuitamente](/pt/download) — disponível para Windows, Mac e Linux
-- [Veja todos os recursos](/pt/features) — um tour completo pelo aplicativo
-- [Aprenda o que é realmente o FFmpeg](/pt/learn/what-is-ffmpeg) — uma explicação em linguagem simples
-- [HandBrake vs EncodeX](/pt/handbrake-alternative) — veja como as ferramentas se comparam
-- [Qual formato de vídeo escolher?](/pt/learn/what-format-to-use) — escolha a saída certa
+- [Baixe o EncodeX gratuitamente](/pt/download) â€” disponÃ­vel para Windows, Mac e Linux
+- [Veja todos os recursos](/pt/features) â€” um tour completo pelo aplicativo
+- [Aprenda o que Ã© realmente o FFmpeg](/pt/learn/what-is-ffmpeg) â€” uma explicaÃ§Ã£o em linguagem simples
+- [HandBrake vs EncodeX](/pt/handbrake-alternative) â€” veja como as ferramentas se comparam
+- [Qual formato de vÃ­deo escolher?](/pt/learn/what-format-to-use) â€” escolha a saÃ­da certa

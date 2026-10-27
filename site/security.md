@@ -1,17 +1,17 @@
 ---
-title: "Security at EncodeX — Verifiable, Signable, Open Source"
-description: "How EncodeX keeps you safe: open-source code, SHA-256 checksums for every download, code-signing on macOS and Windows, and an update pipeline you can verify. Plus how to report a vulnerability."
+title: "Security at EncodeX — Open Source, Checksums & Reporting"
+description: "How EncodeX keeps you safe: open-source code, SHA-256 checksums published with each release, a GitHub-digest check on updates, and how to report a vulnerability. Release builds are not code-signed."
 ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # Security at EncodeX
 
-EncodeX is open source, so security doesn't have to be taken on faith — every release is built from public code, ships with **SHA-256 checksums** you can verify, and where possible is **code-signed** so your operating system can confirm it really came from us.
+EncodeX is open source, so security doesn't have to be taken on faith. Every release is built from public code and publishes **SHA-256 checksums** you can compare against your download. Release builds are **not code-signed**, so your operating system may show an "unknown developer" or "unidentified developer" warning.
 
 ## What we ship you can verify
 
-- **Open source.** The entire app — including the media-processing pipeline and the bundled FFmpeg build — lives in [our repository](https://github.com/Sandeepv68/EncodeX). Anyone can audit exactly what the app does.
-- **SHA-256 checksums.** Every release publishes checksums alongside the binaries. Compare the downloaded file against the published hash before you install:
+- **Open source.** The entire app, including the media-processing pipeline and the release scripts, lives in [our repository](https://github.com/Sandeepv68/EncodeX). Anyone can audit exactly what the app does.
+- **SHA-256 checksums.** Each release publishes a `SHA256SUMS.txt` file alongside the binaries. Compare the downloaded file against the published hash before you install:
 
 ```bash
 # Windows (PowerShell)
@@ -21,16 +21,15 @@ Get-FileHash .\EncodeX-Setup-1.0.0.exe -Algorithm SHA256
 shasum -a 256 ./EncodeX-1.0.0.dmg
 ```
 
-- **Code signing.** Windows and macOS releases are signed, so your OS shows "verified publisher"/"Apple" instead of an "unknown developer" warning.
-- **Verifiable updates.** The app only downloads updates signed by us over HTTPS. The update signature is validated locally before anything is replaced.
+- **Verified updates.** The updater checks GitHub Releases. When GitHub publishes a SHA-256 or SHA-512 digest for the update file, the app verifies the download against it. The updater does not verify a cryptographic signature. Updates are never installed automatically; you choose when to install.
 
 ## macOS Gatekeeper note
 
-Because EncodeX is free and open source (and not sold through the Mac App Store), macOS may show a "can't be opened" message the first time — this is the **Gatekeeper** check that unsigned-by-default apps face. The build is real; to open it, Control-click the app in Applications and choose **Open**, once. After that it opens normally.
+Because EncodeX is free and open source, is not sold through the Mac App Store, and its macOS builds are not code-signed or notarized, macOS may show a "can't be opened" message the first time. The build is the one published on the releases page. To open it, Control-click the app in Applications and choose **Open**, once. On recent macOS versions you may need to use **System Settings → Privacy & Security → Open Anyway** instead.
 
 ## The bundled FFmpeg
 
-EncodeX bundles its own FFmpeg build rather than calling a system binary. The exact build (version, source, and configuration) is documented in our [technical architecture](/docs/architecture) and reproduced from source in CI — so conversions behave identically everywhere, and the binary you run is the binary we built.
+EncodeX ships prebuilt FFmpeg and FFprobe binaries (from the `ffmpeg-static` and `ffprobe-static` packages) rather than calling a system binary. The conversions run as a child process on your device. See our [technical architecture](/docs/architecture) for how the engine is wired in.
 
 ## Reporting a vulnerability
 

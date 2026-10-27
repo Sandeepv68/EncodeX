@@ -12,7 +12,7 @@ Si quieres el poder de **FFmpeg** sin aprender la línea de comandos, **EncodeX*
 EncodeX da a los usuarios de Windows un **frontend de FFmpeg** completo que convierte comandos de codificación complicados en simples botones:
 
 - **Convierte** vídeo y audio entre docenas de formatos — MP4, MKV, AVI, MOV, WebM y más
-- **Comprime** vídeos para reducir el tamaño manteniendo la calidad
+- **Comprime** vídeos para reducir el tamaño con control sobre la calidad
 - **Recorta** clips arrastrando controles en una línea de tiempo visual
 - **Extrae** el audio de un vídeo y lo guarda como MP3
 - **Procesa por lotes** carpetas enteras a la vez

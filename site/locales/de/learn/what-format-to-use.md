@@ -34,7 +34,7 @@ MP4 ist der universelle Container und H.264 der kompatibelste Codec dafür. Wenn
 
 Wenn Sie die beste Qualität pro Megabyte wollen, wechseln Sie zu einem neueren Codec:
 
-- **H.265 / HEVC** — ungefähr halb so groß wie H.264 bei ähnlicher Qualität. Großartig zum Archivieren von 4K oder zum Verkleinern einer Sammlung. Etwas weniger kompatibel mit älteren Geräten.
+- **H.265 / HEVC** — oft kleiner als H.264 bei ähnlicher Qualität. Großartig zum Archivieren von 4K oder zum Verkleinern einer Sammlung. Etwas weniger kompatibel mit älteren Geräten.
 - **AV1** — die neueste Option, noch kleinere Dateien, dafür langsamer beim Encodieren und nur auf neueren Geräten hardwareunterstützt.
 
 Beide behalten den MP4-Container, also spielen die Dateien heute fast überall.
@@ -65,7 +65,7 @@ Manchmal sieht eine Datei schon super aus — Sie wollen nur einen anderen Conta
 
 ## Unsicher? EncodeX kann für Sie wählen
 
-Sie müssen nichts davon wissen, um das Ergebnis zu bekommen. EncodeX enthält **über 140 integrierte Profile**: Wählen Sie ein Ziel wie „Handy" oder „YouTube 1080p", und Format, Codec und Einstellungen werden für Sie gewählt.
+Sie müssen nichts davon wissen, um das Ergebnis zu bekommen. EncodeX enthält **115 integrierte Profile**: Wählen Sie ein Ziel wie „iPhone" oder „YouTube 1080p", und Format, Codec und Einstellungen werden für Sie gewählt.
 
 - **Machen Sie es mit EncodeX** → [Download](/de/) oder wählen Sie Ihr Ziel auf der [Startseite](/de/).
 

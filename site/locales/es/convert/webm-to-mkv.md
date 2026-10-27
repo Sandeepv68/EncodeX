@@ -18,20 +18,20 @@ Razones comunes para convertir **WebM a MKV**:
 - Prefieres el **contenedor abierto Matroska** al WebM de Google
 - Descargaste **vídeos VP9 / AV1** y quieres un formato más completo a su alrededor
 
-## Convierte WebM a MKV sin perder calidad
+## Convierte WebM a MKV con alta calidad
 
-EncodeX remuxa tu **WebM a MKV** sin re-codificar, así que la calidad y la velocidad se mantienen perfectas:
+Cuando los códecs son compatibles con MKV, EncodeX puede copiar los flujos de tu **WebM a MKV** sin recodificar. De lo contrario, recodifica con ajustes que mantienen alta la calidad:
 
 1. [Descarga EncodeX gratis](/es/download)
 2. Arrastra tu archivo **.webm** a la ventana
 3. Elige **MKV** y haz clic en Convertir
 
-Como WebM y MKV comparten códecs similares como **VP9** y **AV1**, la conversión es rápida — a menudo solo copiar las pistas a un nuevo contenedor. También puedes **convertir por lotes** una carpeta entera de archivos WebM a la vez.
+Como WebM y MKV aceptan códecs como **VP9** y **AV1**, una copia de flujos puede ser rápida — a menudo solo se copian las pistas a un nuevo contenedor. También puedes **convertir por lotes** una carpeta entera de archivos WebM a la vez.
 
 ### Un convertidor de WebM a MKV rápido y privado
 
 - **Sin conexión** — tu vídeo nunca sale de tu computadora
-- **Remux sin pérdida** — sin re-codificación, sin pérdida de calidad
+- **Copia de flujos sin pérdida cuando los códecs son compatibles** — sin recodificar en ese modo
 - **Sin marcas de agua** y gratis para siempre
 - Funciona en **Windows, Mac y Linux**
 

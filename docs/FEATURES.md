@@ -6,7 +6,7 @@ EncodeX is a cross-platform multimedia conversion tool that brings the power of 
 
 ### Media Conversion
 
-Convert between video/audio formats with granular controls over codec selection (51 video codecs across software and hardware encoder families, 27 audio codecs), bitrate, output resolution (with optional aspect-ratio preservation), pixel format (56 formats grouped by bit depth), quality scale (qscale), audio track inclusion, and transcoder core selection. Multiple files can be queued through the Batch Queue (see below).
+Convert between video/audio formats with granular controls over codec selection (51 video codecs across software and hardware encoder families, 27 audio codecs), bitrate, output resolution (with optional aspect-ratio preservation), pixel format (56 formats grouped by bit depth), quality scale (qscale), audio track inclusion, transcoder core selection, and video filters (8 curated presets: crop, framerate, deinterlace, denoise, sharpen, color, grayscale, blur). Multiple files can be queued through the Batch Queue (see below).
 
 ### Media Rotation & Mirroring
 
@@ -26,12 +26,12 @@ Filters require **re-encoding**, so each surface states the consequence before y
 
 ### Conversion Profiles
 
-Choose from 140+ built-in conversion presets organized into 8 categories to instantly configure codec, bitrate, quality, resolution, and container settings — no manual tweaking required. Categories include:
+Choose from 115 built-in conversion profiles organized into 8 categories to instantly configure codec, bitrate, quality, resolution, and container settings — no manual tweaking required. Categories include:
 
 - **Web & Social** — optimized presets for YouTube, Instagram, TikTok, Facebook, and X (Twitter)
-- **Devices** — Apple (iPhone, iPad, Mac, Apple TV), Android, gaming consoles (PlayStation, Xbox, Nintendo Switch)
+- **Devices** — Apple (iPhone, iPad, Apple TV), Android, gaming consoles (PlayStation, Xbox, Nintendo Switch)
 - **Video Codecs** — codec-specific presets (H.264, H.265/HEVC, VP8, VP9, AV1, ProRes, DNxHD/HR, FFV1, and more)
-- **Professional** — broadcast and post-production formats (ProRes 422/4444, DNxHD/HR, XDCAM, XAVC)
+- **Professional** — broadcast and post-production formats (ProRes 422/4444, DNxHD/HR, FFV1)
 - **Streaming** — HLS and DASH adaptive streaming presets
 - **Audio** — audio-only presets (MP3, AAC, FLAC, Opus, WAV) with configurable bitrate and sample rate
 - **Images** — image conversion presets for JPEG, PNG, WebP, and AVIF with quality controls
@@ -77,16 +77,20 @@ Extract audio tracks from video files. Output as AAC, MP3, AC3, FLAC, WAV, Vorbi
 
 Preview and cut video segments with frame-accurate start/end time or duration selection. Includes a built-in player that decodes video frames (via an FFmpeg rawvideo pipe to an HTML Canvas element) and audio (via a separate S16LE PCM pipe converted to float and fed to the Web Audio API) in lockstep, with a zoomable multi-track timeline: video thumbnail montage, audio waveform, keep/dim region shading, drag-to-trim handles, and a scrubbing playhead.
 
+### Copilot (AI Assistant)
+
+The Copilot page (`/copilot`) plans work from a natural-language goal against files and folders. It supports 13 operations: six queue-backed (`convert`, `remux`, `demux`, `extract_audio`, `compress_image`, `cut`) and seven read-only media-intelligence operations (`analyze`, `transcribe`, `summarize`, `chapters`, `search_transcript`, `translate`, `find_similar`). Plans can be produced by the deterministic offline `rules` engine (the default) or by OpenAI, Anthropic, Gemini, or a local runtime. Committing a plan reuses the Batch Queue; API keys are sent to the main process, encrypted before storage, and never returned to the renderer.
+
 ### Media Remuxing
 
-Repackage a file's streams into a different container **without re-encoding** — every stream is stream-copied, so quality is bit-identical and the operation is fast. Pick a source file, choose a target container (the output extension follows it), and tick the streams to keep; unchecked streams are dropped.
+Repackage a file's streams into a different container **without re-encoding** — every stream is stream-copied and the operation is fast. Pick a source file, choose a target container (the output extension follows it), and tick the streams to keep; unchecked streams are dropped.
 
 - **Stream composition** — each kept stream becomes an explicit `-map` spec; auxiliary inputs are appended in a fixed order (subtitles → audio → cover art) and mapped by 1-based input index (`1:0`, `2:0`, …).
 - **Added subtitles** — attach external `.srt`, `.ass`, or `.vtt` files as extra tracks, each with a target codec (the container's first allowed subtitle codec is the default; a codec the container cannot store raises a warning).
 - **Added audio tracks** — attach external `.m4a`, `.aac`, `.mp3`, `.flac`, `.opus`, `.ogg`, or `.wav` files; the source's own audio streams stay mappable, and the added track's codec/channel info is probed for display.
 - **Cover art** — attach a `.jpg`, `.jpeg`, or `.png` thumbnail. MKV/WebM store it as an `attached_pic` picture stream; MP4/MOV embed it as a video stream with an `attached_pic` disposition. Containers that cannot store cover art (e.g. AVI) surface a warning.
 - **Chapters** — source chapters are copied by default (`-map_chapters 0`); an FFMETADATA chapters file can be imported to replace them. Containers without chapter metadata (e.g. MP4) drop them with a warning.
-- **A/V sync and per-track delay** — shift the primary audio against the video, or delay any added track, with a signed seconds offset applied as `-itsoffset` during stream copy (e.g. `-0.5` = 0.5 s earlier). Lossless: only timestamps move.
+- **A/V sync and per-track delay** — shift the primary audio against the video, or delay any added track, with a signed seconds offset applied as `-itsoffset` during stream copy (e.g. `-0.5` = 0.5 s earlier). The streams stay copied; only timestamps are adjusted.
 - **Live compatibility warnings** — a non-blocking panel reports container/codec mismatches for the current selection (error-level findings block the run, warning-level ones do not).
 
 Available from the GUI (`/remux`), the CLI (`encodex remux`), and the MCP `remux_media` tool, including per-file batch jobs.
@@ -128,10 +132,10 @@ Dedicated settings page for theme, hardware acceleration (enable/disable, mode, 
 
 ### Keyboard Shortcuts
 
-A central shortcut registry (`src/renderer/constants/shortcuts.ts`) defines 70 shortcuts across eleven sections (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). Highlights:
+A central shortcut registry (`src/renderer/constants/shortcuts.ts`) defines 82 shortcuts across eleven sections (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). Highlights:
 
 - `Ctrl+/` — open the shortcuts help dialog
-- `Alt+1`…`Alt+9` — jump directly to a page
+- `Alt+0`…`Alt+9` — jump directly to a page (including Remux on `Alt+0`)
 - `Ctrl+O` / `Ctrl+Shift+S` / `Ctrl+Enter` — pick input / pick output / start the job (consistent across pages)
 - `Ctrl+Shift+P` / `Ctrl+Shift+C` — pause / cancel the active job
 - Batch queue: `Ctrl+E` export, `Ctrl+I` import, `1`–`5` status filters, `F` focus search
@@ -178,7 +182,7 @@ Right-to-left layout support for Arabic and Hebrew locales (`ar-SA`, `ar-AE`, `a
 
 ### Internationalization
 
-56 locales across 35 languages:
+56 locales:
 
 | Language    | Locales                                    |
 | ----------- | ------------------------------------------ |
@@ -222,11 +226,11 @@ Every locale file carries the exact same key set as `en-US.json` — enforced in
 
 ### In-App Updates
 
-Custom update manager that checks GitHub Releases for new versions, notifies the user of availability, downloads the platform-specific installer (`.exe` / `.dmg` / `.AppImage`) in-app with real-time progress reporting, and launches the installer on completion. Version comparison uses semver with pre-release suffix stripping. The update flow is fully integrated into the About page with a "Check for Updates" button and a global dialog.
+Custom update manager that checks GitHub Releases for new versions, notifies the user of availability, downloads the platform-specific installer (`.exe` / `.dmg` / `.AppImage`) in-app with real-time progress reporting, and lets the user install immediately or schedule the install for the next restart. Version comparison follows semver precedence, including pre-release identifiers; build metadata is ignored. When GitHub publishes a SHA-256 or SHA-512 asset digest, the download is verified against it. There is no code signing/notarization, and updates are never installed automatically. The update flow is fully integrated into the About page with a "Check for Updates" button and a global dialog.
 
 ### Error Handling
 
-Structured error system with typed error codes (`ErrorCode`), user-facing localized messages, a global error snackbar, inline error banners, toast notifications, nested React error boundaries, and an in-app error history (cap 50). All errors are normalized through `formatError()` and propagated across IPC.
+Structured error system with 28 typed error codes (`ErrorCode`), user-facing localized messages, a global error snackbar, inline error banners, toast notifications, nested React error boundaries, and an in-app error history (cap 50). All errors are normalized through `formatError()` and propagated across IPC.
 
 ## 🎞️ Supported Media Formats
 
@@ -282,15 +286,15 @@ Structured error system with typed error codes (`ErrorCode`), user-facing locali
 
 EncodeX ships a built-in [Model Context Protocol](https://modelcontextprotocol.io) server so MCP hosts — Claude Desktop, Claude Code, VS Code, Cursor, and custom/headless agents — can drive the same media engine as the GUI and CLI.
 
-- **Standalone (stdio):** `encodex --mcp` / `node dist/mcp/index.js` exposes 16 tools (15 operations plus the app-only `commit_operation`).
-- **Embedded (Streamable HTTP):** toggled in **Settings → MCP Server** (`http://127.0.0.1:8765/mcp`, loopback-only, optional bearer token); adds 6 GUI-parity tools for **22** total.
-- **Resources:** `encodex://profiles`, `encodex://capabilities`, `encodex://codecs` (JSON), plus five interactive `ui://` views.
+- **Standalone (stdio):** `encodex --mcp` / `node dist/mcp/index.js` exposes 36 model-visible tools (37 registrations, including the app-only `commit_operation`).
+- **Embedded (Streamable HTTP):** toggled in **Settings → MCP Server** (`http://127.0.0.1:8765/mcp`, loopback-only, optional bearer token); adds 6 GUI-parity tools for **42** model-visible tools (43 registrations).
+- **Resources:** `encodex://profiles`, `encodex://capabilities`, `encodex://codecs` (JSON), plus eleven interactive `ui://` views.
 - **Prompts:** `convert-video`, `extract-audio`, `compress-image`, `batch-convert`.
 - **Async jobs:** conversion tools return a `jobId` immediately; poll with `get_job` / `list_jobs`, cancel with `cancel_job`. Under MCP Apps hosts the mutating tools first return a confirmation the user approves.
 
 ### Interactive views (MCP Apps / SEP-1865)
 
-The server is MCP Apps compliant: it advertises the `io.modelcontextprotocol/ui` extension and serves five self-contained `ui://` views that compatible hosts render in a sandboxed iframe — a **live queue** dashboard, a **per-job** progress card, a **media-info** table, a **conversion form**, and a generic **confirmation card**. Mutating operations never run straight from a model call in these hosts: the tool returns a proposal, the view shows it, and the work runs only when the user approves (via the app-only `commit_operation`). Views pass data via `structuredContent` (never HTML interpolation) and can call tools back, including confirm-gated `cancel_job`. Hosts without the extension fall back to the JSON text payload and run immediately. See [`MCP_UI.md`](MCP_UI.md).
+The server is MCP Apps compliant: it advertises the `io.modelcontextprotocol/ui` extension and serves eleven self-contained `ui://` views that compatible hosts render in a sandboxed iframe — a **live queue** dashboard, a **per-job** progress card, a **media-info** table, a **conversion form**, a generic **confirmation card**, a media **inspector**, a conversion **plan**, a **size-target lab**, an **error explanation** card, a **batch** dashboard, and a **workflow** dry-run/report. Mutating operations never run straight from a model call in these hosts: the tool returns a proposal, the view shows it, and the work runs only when the user approves (via the app-only `commit_operation`). Views pass data via `structuredContent` (never HTML interpolation) and can call tools back, including confirm-gated `cancel_job`. Hosts without the extension fall back to the JSON text payload and run immediately. See [`MCP_UI.md`](MCP_UI.md).
 
 Full reference: [`MCP.md`](MCP.md) and [`MCP_UI.md`](MCP_UI.md).
 

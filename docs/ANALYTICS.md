@@ -88,7 +88,7 @@ All events are defined in `src/shared/analytics/events.ts`. Categories:
 | ux          | `window_maximize_toggled`, `window_close_requested`, `window_close_deferred`         |
 | onboarding  | `terms_accepted`, `onboarding_started`, `onboarding_goal_selected`, `onboarding_dismissed` |
 | nav         | `dashboard_card_clicked`, `dashboard_shortcut_used`, `tool_opened`, `locale_changed`  |
-| convert     | `conversion_started/completed/failed`, `codec_changed`, `transcoder_changed`, `preview_opened` |
+| convert     | `conversion_started/completed/failed`, `remux_started/completed/failed`, `demux_started/completed/failed`, `codec_changed`, `transcoder_changed`, `copy_mode_toggled`, `preview_opened` |
 | image       | `compress_started/completed/failed`, `compress_format_changed`                        |
 | audio       | `audio_extract_started/completed/failed`, `audio_codec_changed`                       |
 | cut         | `video_cut_started/completed/failed`, `timeline_zoom_changed`, `media_playback_toggled` |
@@ -100,8 +100,11 @@ All events are defined in `src/shared/analytics/events.ts`. Categories:
 | hw          | `hw_accel_detected`                                                                   |
 | cli         | `cli_invoked`, `cli_completed`                                                        |
 
-See `src/shared/analytics/events.ts` for the full catalog, payload schemas, and
-tier map (`v1` = launch cut, `v2` = gated follow-up).
+`conversion_started` and `conversion_completed` carry `hasVideoFilters` and
+`filterCount` alongside the existing codec/transcoder fields. Remux and demux
+events stay in the `convert` group; Copilot has no separate analytics group in
+this release. See `src/shared/analytics/events.ts` for the full catalog, payload
+schemas, and tier map (`v1` = launch cut, `v2` = gated follow-up).
 
 ## Recommended dashboard queries
 

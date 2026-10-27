@@ -23,7 +23,7 @@ EncodeX saca el sonido de casi cualquier formato de vídeo — **MP4, MKV, MOV, 
 2. Arrastra tu **archivo de vídeo** a la ventana
 3. Elige **Extraer audio**, selecciona un formato y haz clic en **Convertir**
 
-Muy sencillo. Incluso puedes **extraer por lotes** una carpeta entera de vídeos a audio de una sola vez.
+Muy sencillo. Incluso puedes **extraer por lotes** una carpeta entera de vídeos a audio de una sola vez — o pedirle a **Copilot** que planifique la extracción en lenguaje sencillo.
 
 ## Cuándo es útil extraer audio
 
@@ -36,7 +36,7 @@ Muy sencillo. Incluso puedes **extraer por lotes** una carpeta entera de vídeos
 
 - **Sin conexión** — tu vídeo nunca sale de tu computadora
 - **Sin subidas, sin cuentas, sin marcas de agua**
-- **Acelerado por hardware** donde es posible, para extraer rápido
+- **Salida solo de audio** — el vídeo no se recodifica, así que la extracción sigue siendo rápida
 - Gratis y **de código abierto**, en **Windows, Mac y Linux**
 
 ## Preguntas frecuentes

@@ -8,14 +8,18 @@
 | --------------------- | ---------------------------------------- | ----------------------------- |
 | `select-file`         | `filters?`                               | `string \| null`              |
 | `select-files`        | `filters?`                               | `string[]`                    |
+| `select-folder-files` | —                                        | `string[]`                    |
 | `select-output`       | —                                        | `string \| null`              |
 | `select-directory`    | —                                        | `string \| null`              |
+| `expand-paths`        | `paths`                                  | `string[]`                    |
 | `get-media-info`      | `filePath, transcoderType`               | `MediaInfo`                   |
 | `get-image-info`      | `filePath`                               | `ImageExifData \| null`       |
 | `get-image-preview`   | `filePath`                               | `string \| null` (data URL)   |
 | `get-image-file-info` | `filePath`                               | `ImageFileInfo \| null`       |
 | `get-video-preview`   | `filePath`                               | `string \| null` (data URL)   |
 | `get-capabilities`    | —                                        | `EncoderCapabilities \| null` |
+| `get-bmf-status`      | —                                        | `BmfStatus`                   |
+| `copilot-plan`        | `CopilotPlanRequest`                     | `CopilotPlan`                 |
 | `convert-file`        | `input, output, options, transcoderType` | `void`                        |
 | `cancel-conversion`   | —                                        | `void`                        |
 | `pause-conversion`    | —                                        | `void`                        |
@@ -35,7 +39,7 @@
 | `queue-resume`        | —                                        | `void`                        |
 | `queue-export`        | —                                        | `number` (count exported)     |
 | `queue-import`        | —                                        | `number` (count imported)     |
-| `reveal-file`         | `filePath`                               | `void`                        |
+| `queue-reveal`        | `filePath`                               | `void`                        |
 | `set-launch-at-login` | `enabled`                                | `void`                        |
 | `player-open`         | `filePath`                               | `number` (generation token)   |
 | `player-seek`         | `time`                                   | `number` (generation token)   |
@@ -48,6 +52,20 @@
 | `install-update`      | `installerPath`                          | `void`                        |
 | `cancel-download`     | —                                        | `void`                        |
 | `open-release-notes`  | `url`                                    | `void`                        |
+| `schedule-install-on-restart` | `installerPath, version`        | `void`                        |
+| `cancel-install-on-restart` | —                                  | `void`                        |
+| `get-pending-install` | —                                        | `PendingInstall \| null`      |
+| `monitoring-get-state` | —                                       | `{ enabled }`                 |
+| `monitoring-set-enabled` | `enabled`                             | `{ enabled, backend }`        |
+| `analytics-get-state` | —                                        | `{ enabled, backend }`        |
+| `analytics-set-enabled` | `enabled`                              | `{ enabled, backend }`        |
+| `mcp-settings-get`    | —                                        | `McpSettings`                 |
+| `mcp-settings-set`    | `settings`                               | `McpSettings`                 |
+| `ai-settings-get`     | —                                        | `AiSettingsView`              |
+| `ai-settings-set`     | `update`                                 | `AiSettingsView`              |
+| `ai-connect-test`     | `candidate?`                             | `AiConnectTestResult`         |
+| `ai-models-list`      | `candidate?`                             | `AiModelsListResult`          |
+| `dev-capture-screenshot` | —                                     | `string` (PNG path)           |
 
 ## 仅发送（renderer 到 main）
 
@@ -58,6 +76,7 @@
 | `window-close`             | —         |
 | `window-confirm-close`     | —         |
 | `window-set-always-on-top` | `boolean` |
+| `terms-reject`             | —         |
 
 ## 事件（main 到 renderer）
 
@@ -76,6 +95,7 @@
 | `player-audio`             | `PlayerAudioChunk`            |
 | `player-error`             | `string`                      |
 | `log-message`              | `LogEntry`                    |
+| `audit-entry`              | `AuditEntry`                  |
 | `update-available`         | `UpdateInfo`                  |
 | `update-not-available`     | —                             |
 | `update-progress`          | `UpdateProgress`              |
@@ -93,12 +113,16 @@ preload 脚本通过 `window.electronAPI` 暴露全部 IPC（类型定义在 `sr
 - `selectFiles(filters?) -> Promise<string[]>`
 - `selectOutput() -> Promise<string | null>`
 - `selectDirectory() -> Promise<string | null>`
+- `selectFolderFiles() -> Promise<string[]>`
+- `expandPaths(paths) -> Promise<string[]>`
+- `copilotPlan(request) -> Promise<CopilotPlan>`
 - `getMediaInfo(filePath, transcoderType) -> Promise<MediaInfo>`
 - `getImageInfo(filePath) -> Promise<ImageExifData | null>`
 - `getImagePreview(filePath) -> Promise<string | null>`
 - `getImageFileInfo(filePath) -> Promise<ImageFileInfo | null>`
 - `getVideoPreview(filePath) -> Promise<string | null>`
 - `getCapabilities() -> Promise<EncoderCapabilities | null>`
+- `getBmfStatus() -> Promise<BmfStatus>`
 - `convertFile(input, output, options, transcoderType) -> Promise<void>`
 - `pauseConversion() -> Promise<void>`
 - `resumeConversion() -> Promise<void>`
@@ -136,6 +160,21 @@ preload 脚本通过 `window.electronAPI` 暴露全部 IPC（类型定义在 `sr
 - `installUpdate(installerPath) -> Promise<void>`
 - `cancelDownload() -> Promise<void>`
 - `openReleaseNotes(url) -> Promise<void>`
+- `scheduleInstallOnRestart(installerPath, version) -> Promise<void>`
+- `cancelRestartInstall() -> Promise<void>`
+- `getPendingInstall() -> Promise<PendingInstall | null>`
+- `rejectTerms() -> void`
+- `monitoringGetState() -> Promise<{ enabled }>`
+- `monitoringSetEnabled(enabled) -> Promise<{ enabled, backend }>`
+- `analyticsGetState() -> Promise<{ enabled, backend }>`
+- `analyticsSetEnabled(enabled) -> Promise<{ enabled, backend }>`
+- `mcpGetSettings() -> Promise<McpSettings>`
+- `mcpSetSettings(settings) -> Promise<McpSettings>`
+- `aiGetSettings() -> Promise<AiSettingsView>`
+- `aiSetSettings(update) -> Promise<AiSettingsView>`
+- `aiConnectTest(candidate?) -> Promise<AiConnectTestResult>`
+- `aiListModels(candidate?) -> Promise<AiModelsListResult>`
+- `captureDevScreenshot() -> Promise<string>`
 
 ### 事件监听器（每个都返回清理函数）
 
@@ -152,6 +191,7 @@ preload 脚本通过 `window.electronAPI` 暴露全部 IPC（类型定义在 `sr
 - `onPlayerAudio(cb) -> () => void`
 - `onPlayerError(cb) -> () => void`
 - `onLogMessage(cb) -> () => void`
+- `onAuditEntry(cb) -> () => void`
 - `onUpdateAvailable(cb) -> () => void`
 - `onUpdateNotAvailable(cb) -> () => void`
 - `onUpdateProgress(cb) -> () => void`

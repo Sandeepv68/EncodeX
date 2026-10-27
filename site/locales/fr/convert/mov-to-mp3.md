@@ -32,7 +32,7 @@ Vous pouvez choisir le **débit binaire (128–320 kbps)** pour le bon équilibr
 ### Un convertisseur MOV en MP3 rapide et privé
 
 - **Hors ligne** — vos fichiers ne quittent jamais votre ordinateur
-- **Accéléré par le matériel** — utilise votre GPU pour la rapidité
+- **Traitement audio seul** — aucun réencodage vidéo nécessaire
 - **Sans filigrane** et gratuit pour toujours
 - Fonctionne sur **Windows, Mac et Linux**
 
@@ -40,7 +40,7 @@ Vous pouvez choisir le **débit binaire (128–320 kbps)** pour le bon équilibr
 
 **Puis-je extraire du MP3 d'un fichier MOV ?** Oui. EncodeX lit la piste audio de tout fichier MOV et l'enregistre en MP3 — aucun ré-encodage de la vidéo n'est nécessaire.
 
-**La conversion MOV en MP3 conserve-t-elle la qualité audio ?** EncodeX utilise la piste audio d'origine de votre MOV. Choisissez 320 kbps pour un son presque sans perte.
+**La conversion MOV en MP3 conserve-t-elle la qualité audio ?** Pas à l'identique : EncodeX utilise la piste audio d'origine de votre MOV, mais le MP3 est un format avec perte. Une nouvelle compression avec perte a lieu, même si la qualité reste bonne à un débit élevé ; choisissez 320 kbps.
 
 **Puis-je convertir plusieurs fichiers MOV en MP3 d'un coup ?** Oui. EncodeX convertit tout un dossier de fichiers MOV en MP3 en une seule fois.
 

@@ -13,7 +13,7 @@ ogImage: "https://encodex.in/images/home_dashboard.webp"
 Les utilisateurs de Mac choisissent EncodeX car il est conçu selon la façon de travailler du Mac :
 
 - **Prêt pour Apple Silicon** — une version native Apple Silicon avec support Intel
-- **Accélération matérielle VideoToolbox** — encodages rapides sur les puces de la série M
+- **Accélération matérielle VideoToolbox** — encodages rapides sur Apple Silicon et Mac Intel
 - **Glisser-déposer** — aucune connaissance de terminal requise
 - **Dossiers par lots** — traitez des centaines de fichiers en une seule fois
 - **Hors ligne et privé** — vos vidéos ne quittent jamais votre Mac

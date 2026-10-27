@@ -32,7 +32,7 @@ Du kannst die **Bitrate (128–320 kbps)** wählen — das richtige Gleichgewich
 ### Ein schneller, privater MP4 zu MP3 Konverter
 
 - **Offline** — deine Dateien verlassen nie deinen Computer
-- **Hardware-beschleunigt** — nutzt deine GPU für Geschwindigkeit
+- **Nur Audio-Verarbeitung** — kein Video-Re-Encoding nötig
 - **Keine Wasserzeichen** und für immer kostenlos
 - Funktioniert auf **Windows, Mac und Linux**
 
@@ -40,7 +40,7 @@ Du kannst die **Bitrate (128–320 kbps)** wählen — das richtige Gleichgewich
 
 **Was ist eine MP4-zu-MP3-Konvertierung?** Bei der MP4-zu-MP3-Konvertierung wird die Audiospur aus einer MP4-Videodatei herausgelöst und als MP3-Audiodatei gespeichert, sodass du den Ton ohne das Video behältst.
 
-**Geht bei der MP4-zu-MP3-Konvertierung Audioqualität verloren?** Nein. EncodeX verwendet die Original-Audiospur aus deinem MP4. Verwende 320 kbps für fast verlustfreien Klang oder eine niedrigere Bitrate für kleinere Dateien.
+**Geht bei der MP4-zu-MP3-Konvertierung Audioqualität verloren?** Einige Qualität geht verloren, weil MP3 ein verlustbehaftetes Format ist und die Ausgabe nicht identisch mit der Quelle sein wird. EncodeX verwendet die Original-Audiospur aus deinem MP4; 320 kbps liefert die höchste MP3-Qualität, niedrigere Bitraten ergeben kleinere Dateien.
 
 **Kann ich viele MP4-Dateien auf einmal in MP3 konvertieren?** Ja. EncodeX konvertiert einen ganzen Ordner voller MP4-Dateien in einem Durchgang in MP3.
 

@@ -12,7 +12,7 @@ ogImage: "https://encodex.in/images/home_dashboard.webp"
 
 AV1 est le codec du futur, déjà utilisé par YouTube, Netflix et les navigateurs :
 
-- **Meilleure compression** — jusqu'à ~30 % plus petit que H.265 à qualité égale
+- **Meilleure compression** — conçu pour des fichiers plus petits que H.265 à qualité comparable, selon le contenu
 - **Sans redevance** et standard ouvert
 - **Pérenne** — pris en charge par les navigateurs modernes et les appareils récents
 - **Idéal pour l'archivage et la vidéo web** où la taille compte le plus

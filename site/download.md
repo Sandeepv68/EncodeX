@@ -27,7 +27,7 @@ The download button above is right for almost everyone — **Windows 10/11 · 64
 
 **To install:** open the file you downloaded and follow the steps on screen.
 
-Not sure which one to pick? Go with the recommended one — if it doesn't match, Windows will tell you. Under **Other downloads** you'll also find a **Windows ARM64** build (Snapdragon laptops) and a 32-bit build (very old computers).
+Not sure which one to pick? Go with the recommended one — if it doesn't match, Windows will tell you. Under **Other downloads** you'll also find a **Windows ARM64** build (Snapdragon laptops).
 
 ### Other platforms
 
@@ -42,18 +42,20 @@ The download button above shows **Apple Silicon** first on M-series Macs (M1/M2/
 **Not sure which Mac you have?** Click the Apple logo (<OsIcon name="apple" label="Apple logo" />) in the top-left corner of your screen, choose "About This Mac", and look at the Chip line. If it says "Apple M1" (or M2/M3/M4), pick Apple Silicon. If it says "Intel", pick Intel.
 
 ::: warning First launch on Mac — one extra step
-Because EncodeX is free and open-source (and not sold through the Mac App Store), macOS may show a message saying the app "can't be opened" the first time. This is normal and safe to get past:
+EncodeX is free and open-source, is not sold through the Mac App Store, and its macOS builds are not code-signed or notarized by Apple. macOS may show a message saying the app "can't be opened" the first time. To open it:
 
 1. Find EncodeX in your Applications folder
 2. Hold the **Control** key and click the app, then choose **Open**
 3. In the box that appears, click **Open** again
+
+On recent macOS versions this Control-click step may not be offered. If so, open **System Settings → Privacy & Security** and choose **Open Anyway** for EncodeX.
 
 You only need to do this once — after that it opens normally.
 :::
 
 ## <OsIcon name="linux" /> Linux
 
-The download button above is right for most Linux computers — **x86_64**. Under **Other downloads** you'll also find **ARM64** and **ARMv7** builds.
+The download button above is right for most Linux computers — **x86_64**. Under **Other downloads** you'll also find an **ARM64** build.
 
 **To run:** an AppImage is a single file — no installation needed. Just make it runnable and double-click it:
 
@@ -69,15 +71,14 @@ chmod +x EncodeX-*.AppImage
 Nothing special — if your computer is from the last several years, you're fine:
 
 - **Operating system:** Windows 10+, macOS 11+, or a modern Linux
-- **Disk space:** about 400 MB (the app includes everything it needs — no extra downloads)
+- **Disk space:** enough room for the app and your converted files
 - **Memory:** any normal amount works
 
-> **Why is EncodeX about 400 MB?**
-> EncodeX bundles the FFmpeg engine and every supported component, so you never install FFmpeg, codecs, or anything else separately — and you never download extras later. Nothing is uploaded and nothing runs in the cloud — every conversion happens [locally on your computer](/features#private-by-design).
+EncodeX bundles the FFmpeg engine, so you don't install FFmpeg or codecs separately. Every conversion happens [locally on your computer](/features#private-by-design).
 
 ## Keeping It Up to Date
 
-When a new version comes out, EncodeX lets you know inside the app and can download and start the update for you — no need to revisit this page.
+When a new version comes out, EncodeX checks GitHub Releases and lets you know inside the app. You choose whether to download and install it, or install it on the next restart. Updates are not installed automatically, so there's no need to revisit this page.
 
 ## Previous Versions
 
@@ -91,11 +92,11 @@ If something isn't working or you have a question, send an email to **[developer
 
 ## Privacy
 
-We understand trust matters. Every conversion happens on your computer — your files are never uploaded, tracked, or stored on a server. Read the [full privacy policy](/privacy).
+We understand trust matters. Every conversion happens on your computer, and your files are never uploaded or stored on a server. Error reporting and usage analytics are on by default, and you can turn them off in Settings. Read the [full privacy policy](/privacy).
 
 ## Security
 
-Every release ships with verifiable [SHA-256 checksums and signed builds](/security) — and if you find a problem, you can report it privately. See the [security page](/security) for details.
+Each release publishes [SHA-256 checksums](/security) alongside the installers, and if you find a problem, you can report it privately. Release builds are not code-signed. See the [security page](/security) for details.
 
 ## Learn More
 

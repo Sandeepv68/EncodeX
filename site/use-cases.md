@@ -13,7 +13,7 @@ Pick a use case below to learn how.
 
   <div class="card">
     <h3>📹 Compress video for upload</h3>
-    <p>Shrink large video files before sharing on social media, email, or chat — without sacrificing visible quality.</p>
+    <p>Shrink large video files before sharing on social media, email, or chat — with control over the quality you keep.</p>
     <a href="/video-compressor">Learn more →</a>
   </div>
 
@@ -25,13 +25,13 @@ Pick a use case below to learn how.
 
   <div class="card">
     <h3>🔄 Convert between formats</h3>
-    <p>MOV to MP4, WebM to AVI, MKV to MP4 — change the container while keeping the original quality.</p>
+    <p>MOV to MP4, WebM to AVI, MKV to MP4 — re-encode to a new format, or remux when you only need a different container.</p>
     <a href="/video-converter">Learn more →</a>
   </div>
 
   <div class="card">
     <h3>✂️ Trim and cut clips</h3>
-    <p>Remove dead air, trim intros, and cut highlights without re-encoding the whole file.</p>
+    <p>Remove dead air, trim intros, and cut highlights on a visual timeline.</p>
     <a href="/features#trim-videos">Learn more →</a>
   </div>
 
@@ -61,7 +61,7 @@ Pick a use case below to learn how.
 
   <div class="card">
     <h3>🤖 Automate with an AI assistant</h3>
-    <p>EncodeX ships with a built-in MCP server — connect Claude, Cursor, VS Code, or any MCP client and ask it to convert, extract, compress, or track a batch job in plain language, all locally.</p>
+    <p>EncodeX ships with a built-in MCP server and Copilot — connect Claude, Cursor, VS Code, or any MCP client, or use Copilot's 13 operations to convert, remux, demux, extract, compress, cut, or analyze media in plain language. Copilot uses an offline rules engine by default, with optional OpenAI, Anthropic, Gemini, or local providers.</p>
     <a href="/mcp">Learn more →</a>
   </div>
 
@@ -82,7 +82,7 @@ Pick a use case below to learn how.
 ## Related pages
 
 - [Video converter](/video-converter) — convert between MP4, MKV, WebM, AVI, and more.
-- [Video compressor](/video-compressor) — shrink file size while keeping quality.
+- [Video compressor](/video-compressor) — shrink file size with control over quality.
 - [Audio extractor](/extract-audio-from-video) — extract audio tracks from any video.
 - [FFmpeg GUI](/ffmpeg-gui) — what EncodeX is, how it works, and why it's built the way it is.
 - [Download](/download) — free download for Windows, macOS, and Linux.

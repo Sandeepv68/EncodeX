@@ -130,7 +130,7 @@ node dist/mcp/index.js
 npx electron . --mcp
 ```
 
-stdout 保留给 MCP JSON-RPC 消息；所有状态和日志输出都重定向到 stderr，进程在 stdin 关闭前保持运行。服务器提供 19 个工具、3 个资源和 4 个提示模板——完整目录请参阅[功能参考](/zh/docs/features-reference#mcp-server)。
+stdout 保留给 MCP JSON-RPC 消息；所有状态和日志输出都重定向到 stderr，进程在 stdin 关闭前保持运行。服务器提供 36 个工具、3 个资源和 4 个提示模板——完整目录请参阅[功能参考](/zh/docs/features-reference#mcp-server)。
 
 | Option  | Description                                                          |
 | ------- | -------------------------------------------------------------------- |

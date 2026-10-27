@@ -4,7 +4,7 @@
 
 ### Árvore de renderização
 
-As dez páginas são divididas com `React.lazy` e carregadas sob uma `ErrorBoundary` por página:
+As treze páginas são divididas com `React.lazy` e carregadas sob uma `ErrorBoundary` por página:
 
 | Página          | Rota           | Objetivo                                                       |
 | --------------- | -------------- | -------------------------------------------------------------- |
@@ -14,9 +14,12 @@ As dez páginas são divididas com `React.lazy` e carregadas sob uma `ErrorBound
 | ImageCompress   | `/image-compress` | Compressão de imagens + EXIF + histogramas                  |
 | AudioExtract    | `/audio-extract` | Extração de faixas de áudio para qualquer um dos 27 codecs   |
 | VideoCut        | `/video-cut`   | Player + timeline com zoom + corte                             |
+| Remux           | `/remux`       | Troca de contêiner com cópia de streams + streams/capítulos adicionados |
+| Demux           | `/demux`       | Extração por stream com conversão opcional por tipo            |
 | BatchQueue      | `/batch`       | Gestão da fila (adicionar/remover/cancelar tudo)               |
+| Copilot         | `/copilot`     | Planejamento em linguagem natural com provedores de IA opcionais |
 | Logs            | `/logs`        | Visualizador de logs em tempo real com filtro por nível + download |
-| Settings        | `/settings`    | Tema, hwaccel, sempre no topo                                  |
+| Settings        | `/settings`    | Tema, telemetria, servidor MCP, provedor de IA, hwaccel        |
 | About           | `/about`       | Informações do app, créditos, botão "Verificar atualizações"   |
 
 ### Hooks
@@ -40,9 +43,21 @@ Stores Zustand em `src/renderer/stores/`:
 | `settingsStore`   | Configurações + persistência em `localStorage` (`encodex-theme`, etc.) |
 | `logStore`        | Entradas de log agregadas (limite 2000), estado do filtro, download  |
 | `toastStore`      | Fila de toasts                                                      |
-| `updateStore`     | Estado do ciclo de vida das atualizações (check, available, downloading, downloaded, error) |
+| `updateStore`     | Estado do ciclo de vida das atualizações (check, available, downloading, downloaded, restart-scheduled, error) |
+| `remuxStore`      | Plano de remux (contêiner de destino, streams adicionados, capítulos, capa, sincronização) |
+| `demuxStore`      | Seleção de streams do demux e opções de conversão por tipo      |
+| `copilotChats`    | Conversas salvas do Copilot e histórico de planos               |
+| `aiSettingsStore` / `aiConnectionStore` | Configurações de provedores de IA e estado da verificação de conectividade |
+| `profileStore`    | Seleção de perfis integrados/personalizados e perfis usados recentemente |
+| `termsStore`      | Estado de aceitação dos Termos e Condições                      |
+| `auditStore`      | Entradas de auditoria de operações mutáveis enviadas pelo main  |
 
 Os stores são o único lugar onde o estado da UI muda; os componentes assinam com `useXStore(selector)`.
+
+## Copilot & IA
+
+A página Copilot (`pages/Copilot.tsx`) transforma um objetivo em linguagem natural sobre arquivos e pastas em um plano revisável. Os planos suportam 13 operações: seis baseadas na fila (`convert`, `remux`, `demux`, `extract_audio`, `compress_image`, `cut`) e sete operações somente leitura de inteligência de mídia (`analyze`, `transcribe`, `summarize`, `chapters`, `search_transcript`, `translate`, `find_similar`). O planejamento usa por padrão o motor determinístico `rules` offline, ou um dos provedores `openai`, `anthropic`, `gemini` ou `local`. Confirmar um plano reutiliza a Fila de lotes; resultados somente leitura permanecem no painel. As chaves de API são enviadas ao processo principal, criptografadas antes do armazenamento e nunca retornadas ao renderer — as configurações expõem apenas `hasKey` e uma dica mascarada.
+
 
 ## Fila de lotes
 
@@ -93,7 +108,7 @@ A *compressão de imagens em si* é apenas uma conversão: a página Image Compr
 
 ## Tratamento de erros
 
-O sistema de erros (`src/shared/errors.ts`) define 16 códigos tipados — `FILE_NOT_FOUND`, `FFMPEG_NOT_FOUND`, `FFPROBE_NOT_FOUND`, `CONVERSION_FAILED`, `INVALID_FORMAT`, `PROBE_FAILED`, `QUEUE_ERROR`, `PLAYER_ERROR`, `CANCELLED`, `BMF_NOT_AVAILABLE`, `OUTPUT_NOT_SPECIFIED`, `INPUT_NOT_SPECIFIED`, `OUTPUT_EXISTS`, `INVALID_QUEUE_FILE`, `PERMISSION_DENIED`, `UNKNOWN` — cada um com uma mensagem padrão voltada ao usuário.
+O sistema de erros (`src/shared/errors.ts`) define 28 códigos tipados — `FILE_NOT_FOUND`, `FFMPEG_NOT_FOUND`, `FFPROBE_NOT_FOUND`, `CONVERSION_FAILED`, `INVALID_FORMAT`, `PROBE_FAILED`, `QUEUE_ERROR`, `PLAYER_ERROR`, `CANCELLED`, `BMF_NOT_AVAILABLE`, `OUTPUT_NOT_SPECIFIED`, `INPUT_NOT_SPECIFIED`, `OUTPUT_EXISTS`, `INVALID_QUEUE_FILE`, `FILTERS_REQUIRE_RE_ENCODE`, `INVALID_VIDEO_FILTERS`, `STREAM_NOT_FOUND`, `INCOMPATIBLE_CONTAINER`, `AUXILIARY_INPUT_NOT_FOUND`, `PERMISSION_DENIED`, `OPERATION_TIMED_OUT`, `UNSAFE_ARGUMENTS`, `TRANSCRIPTION_UNAVAILABLE`, `TRANSLATION_UNAVAILABLE`, `AI_NOT_CONFIGURED`, `AI_CONNECTOR_FAILED`, `AI_RESPONSE_INVALID`, `UNKNOWN` — cada um com uma mensagem padrão voltada ao usuário.
 
 O fluxo é sempre o mesmo:
 
@@ -119,7 +134,7 @@ A página Logs (`pages/Logs.tsx`) agrega ambas as fontes com filtragem por níve
 
 ## Internacionalização & RTL
 
-- i18next é inicializado em `renderer/i18n/config.ts` com 56 locales em 35 idiomas.
+- i18next é inicializado em `renderer/i18n/config.ts` com 56 locales.
 - `DirectionProvider` (cache Emotion com `stylis-plugin-rtl`) alterna o layout para RTL nas locales árabe e hebraica (`ar-SA`, `ar-AE`, `ar-JO`, `he-IL`).
 - `useLanguageDirection` detecta a direção da locale atual; a direção do app deriva dela e troca automaticamente na mudança de idioma.
 - `localeMeta.ts` guarda metadados de locales e bandeiras para o `LanguageMenu`.

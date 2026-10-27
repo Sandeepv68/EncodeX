@@ -13,7 +13,7 @@ Elige un caso de uso para aprender cómo.
 
   <div class="card">
     <h3>📹 Comprimir un vídeo para subirlo</h3>
-    <p>Reduce el tamaño de archivos de vídeo grandes antes de compartirlos en redes sociales, por correo o en chats — sin sacrificar la calidad visible.</p>
+    <p>Reduce el tamaño de archivos de vídeo grandes antes de compartirlos en redes sociales, por correo o en chats — con control sobre la calidad que conservas.</p>
     <a href="/es/video-compressor">Saber más →</a>
   </div>
 
@@ -25,13 +25,13 @@ Elige un caso de uso para aprender cómo.
 
   <div class="card">
     <h3>🔄 Convertir entre formatos</h3>
-    <p>De MOV a MP4, de WebM a AVI, de MKV a MP4 — cambia el contenedor conservando la calidad original.</p>
+    <p>De MOV a MP4, de WebM a AVI, de MKV a MP4 — recodifica a un nuevo formato, o haz remux cuando solo necesites otro contenedor.</p>
     <a href="/es/video-converter">Saber más →</a>
   </div>
 
   <div class="card">
     <h3>✂️ Recortar clips</h3>
-    <p>Elimina tiempos muertos, recorta las introducciones y corta los mejores momentos sin volver a codificar todo el archivo.</p>
+    <p>Elimina tiempos muertos, recorta las introducciones y corta los mejores momentos en una línea de tiempo visual.</p>
     <a href="/es/features#recortar-videos">Saber más →</a>
   </div>
 
@@ -61,7 +61,7 @@ Elige un caso de uso para aprender cómo.
 
   <div class="card">
     <h3>🤖 Automatiza con un asistente de IA</h3>
-    <p>EncodeX incluye un servidor MCP integrado — conecta Claude, Cursor, VS Code o cualquier cliente MCP y pídele en lenguaje natural que convierta, extraiga, comprima o supervise un trabajo por lotes, todo localmente.</p>
+    <p>EncodeX incluye un servidor MCP y Copilot integrados — conecta Claude, Cursor, VS Code o cualquier cliente MCP, o usa las 13 operaciones de Copilot para convertir, hacer remux, demux, extraer, comprimir, recortar o analizar medios en lenguaje natural. Copilot usa un motor de reglas sin conexión por defecto, con proveedores opcionales de OpenAI, Anthropic, Gemini o locales.</p>
     <a href="/es/mcp">Saber más →</a>
   </div>
 
@@ -82,7 +82,7 @@ Elige un caso de uso para aprender cómo.
 ## Páginas relacionadas
 
 - [Conversor de vídeo](/es/video-converter) — convierte entre MP4, MKV, WebM, AVI y más.
-- [Compresor de vídeo](/es/video-compressor) — reduce el tamaño del archivo manteniendo la calidad.
+- [Compresor de vídeo](/es/video-compressor) — reduce el tamaño del archivo con control sobre la calidad.
 - [Extractor de audio](/es/extract-audio-from-video) — extrae pistas de audio de cualquier vídeo.
 - [GUI de FFmpeg](/es/ffmpeg-gui) — qué es EncodeX, cómo funciona y por qué está diseñado así.
 - [Descargar](/es/download) — descarga gratuita para Windows, macOS y Linux.

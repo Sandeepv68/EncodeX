@@ -51,40 +51,48 @@ EncodeX 是一款免费、开源的 FFmpeg 图形界面，将 FFmpeg 的全部�
 
 想让 AI 助手替你干活？EncodeX 还内置了 **MCP 服务器**，让 Claude Desktop、Cursor、VS Code 和自定义 Agent 等工具可以通过 [Model Context Protocol](https://modelcontextprotocol.io) 帮你转换和管理媒体——仍然完全在你的电脑上进行。
 
+转换完全在您的电脑上本地进行 — 无需账户、无需上传媒体、无水印、无订阅。只有在您配置云端 AI 提供方时，Copilot 助手才会连接该提供方。
+
 ## 为什么选择 EncodeX？
 
 - ✅ **永久免费** — 开源 (MIT)，无付费层级
-- ✅ **100% 私密** — 您的文件永远不会离开您的电脑
-- ✅ **无需账户、无需注册、无追踪**
+- ✅ **本地转换** — 媒体在您的电脑上处理
+- ✅ **无需账户、无需注册**
+- ✅ **可退出的遥测** — 错误报告和用量分析默认开启，可在设置中关闭
 - ✅ **无水印、无文件大小限制、无广告**
 - ✅ **FFmpeg 驱动** — 51 种视频编解码器、27 种音频编解码器、56 种像素格式
 - ✅ **硬件加速** — NVIDIA、Intel、AMD、Apple Silicon，实现快速编码
 - ✅ **批量处理** — 一次转换整个文件夹
 - ✅ **AI 就绪的 MCP 服务器** — 通过 Claude、Cursor、VS Code 和自定义 Agent 驱动 EncodeX
-- ✅ **跨平台** — Windows 10+、macOS 11+、Linux
-- ✅ **35+ 种语言**，支持 RTL
+- ✅ **跨平台** — Windows、macOS 和 Linux（x64 与 arm64）
+- ✅ **56 个 locale**，支持 RTL
 
 ## ✨ 功能特性
 
 - **🔄 媒体转换** — 51 种视频编解码器、27 种音频编解码器、56 种像素格式，支持编解码器/码率/缩放/质量设置
 - **🌀 旋转与镜像** — 将视频和图片顺时针旋转 90°、180° 或 270°，并支持水平或垂直翻转；MP4/MOV/MKV 流复制时，旋转会以无损元数据方式保存
-- **🎛️ 转换配置文件** — 8 个类别（YouTube、Instagram、TikTok、Apple、Android、ProRes、HLS 等）中 140+ 个预配置预设，支持自定义配置文件创建和最近使用跟踪
+- **🎛️ 转换配置文件** — 8 个类别（YouTube、Instagram、TikTok、Apple、Android、ProRes、HLS 等）中 115 个预配置预设，支持自定义配置文件创建和最近使用跟踪
 - **⚡ 硬件加速** — NVIDIA NVENC、Intel QSV、AMD AMF、VAAPI、Apple VideoToolbox、Media Foundation
 - **✂️ 视频裁剪** — 借助内置播放器实现逐帧精确裁剪（rawvideo + PCM 管道、Canvas + Web Audio），并提供可缩放的进度条（波形 + 缩略图拼接）
-- **📋 批量队列** — 并行处理（最多 4 个并发任务），支持实时进度、逐任务错误、暂停/继续、拖拽重新排序、任务选项编辑、状态筛选、JSON 导出/导入，以及完成后的电源操作（关机/睡眠/休眠）
+- **🤖 Copilot** — AI 助手页面（`/copilot`），提供 13 种操作；AI 提供方为 `rules`（离线，默认）、OpenAI、Anthropic、Gemini 或本地模型
+- **🎞️ Remux 与 Demux** — 通过流复制更改容器、添加字幕、音频、封面或章节，或提取单个流
+- **🎛️ 视频滤镜** — 8 个滤镜预设（裁剪、帧率、去隔行、降噪、锐化、色彩、灰度、模糊），以及自定义滤镜链
+- **🧭 快速入门** — 仪表盘卡片，包含六个目标：询问 Copilot、转换、压缩、提取音频、裁剪、Remux
+- **📜 条款与条件** — 首次运行时的条款对话框会拦截应用的使用
+- **📋 批量队列** — 并行处理（最多 4 个并发任务，默认 1 个），支持实时进度、逐任务错误、暂停/继续、拖拽重新排序、任务选项编辑、状态筛选、JSON 导出/导入，以及完成后的电源操作（关机/睡眠/休眠）
 - **🖼️ 图片压缩** — JPEG/PNG/WebP/BMP/GIF/TIFF，支持质量/缩放设置、EXIF 查看器、RGB/亮度直方图
 - **🎵 音频提取** — 从任意视频文件中提取任意一种（共 27 种）音频编解码器
 - **ℹ️ 媒体信息** — 完整的逐流探测：编解码器、配置、分辨率、色彩元数据、帧率等
-- **⌨️ CLI 模式** — 无头脚本，支持子命令（`convert`、`info`、`capabilities`、`compress`、`extract-audio`、`batch`）
-- **🤖 MCP 服务器** — 内置 [Model Context Protocol](https://modelcontextprotocol.io) 服务器：通过 stdio（`encodex --mcp`）提供 13 个核心工具、3 个资源和 4 个提示模板，此外还有一个嵌入式 localhost HTTP 端点，新增 6 个与 GUI 对等的工具（实时队列、预览、时间轴、系统信息、更新）。兼容 Claude Desktop、Claude Code、Cursor、VS Code 以及任何 MCP 客户端
+- **⌨️ CLI 模式** — 无头脚本，支持子命令（`convert`、`info`、`capabilities`、`compress`、`extract-audio`、`remux`、`demux`、`batch`）
+- **🤖 MCP 服务器** — 内置 [Model Context Protocol](https://modelcontextprotocol.io) 服务器：通过 stdio（`encodex --mcp`）提供 36 个模型可见工具、3 个资源和 4 个提示模板，此外还有一个可选的嵌入式 localhost HTTP 端点（默认关闭），新增 6 个与 GUI 对等的工具（实时队列、预览、时间轴、系统信息、更新），共 42 个模型可见工具。兼容 Claude Desktop、Claude Code、Cursor、VS Code 以及任何 MCP 客户端
 - **⚙️ 3 个转码核心** — FFmpeg API（fluent-ffmpeg）、FFmpeg CLI（child_process）、BMF Framework
-- **🌍 56 种语言环境** — 35 种语言，支持 RTL（阿拉伯语、希伯来语）
-- **⌨️ 键盘快捷键** — 每个页面都有 60+ 快捷键，并提供应用内帮助对话框（`Ctrl+/`）
+- **🌍 56 个 locale** — 支持 RTL（阿拉伯语、希伯来语）
+- **⌨️ 键盘快捷键** — 82 个快捷键，分为 11 个帮助分区，并提供应用内帮助对话框（`Ctrl+/`）
 - **🔔 活动提示点** — 实时导航指示器，悬停弹出窗口可让您一眼看到每个任务的进度
 - **🛡️ 关闭确认** — 在任务仍在运行时关闭窗口前进行提醒
 - **🎉 彩蛋** — 在特殊日期显示节日主题的应用图标
-- **🔄 应用内更新** — 检查 GitHub Releases、下载平台安装程序、实时进度
-- **🛡️ 错误处理** — 16 个带类型的错误码、全局 snackbar、内联横幅、React 错误边界
+- **🔄 应用内更新** — 检查 GitHub Releases、按需下载平台安装程序（绝不自动安装）、实时进度
+- **🛡️ 错误处理** — 28 个带类型的错误码、全局 snackbar、内联横幅、React 错误边界
 - **🌗 深色/浅色主题** — 跟随系统并支持手动切换，偏好设置持久保存
 
 如需完整的功能详解、支持的格式以及编解码器列表，请参阅 [功能参考](./features-reference.md)。
@@ -207,8 +215,8 @@ npm run dist
 | `npm run start`            | 通过 `electron .` 从 `dist/` 启动已编译的应用                |
 | `npm run electron:dev`     | Vite + Electron 开发环境                                    |
 | `npm run dev:start`        | 先构建再启动                                                |
-| `npm run format`           | 对所有 `src` 中的 TypeScript/JSON 执行 `prettier --write`   |
-| `npm run format:check`     | 对所有 `src` 中的 TypeScript/JSON 执行 `prettier --check`   |
+| `npm run format`           | 对 `src`、`e2e`、`perf`、`scripts`、`bin` 和根目录中的 TypeScript/JS 执行 `prettier --write` |
+| `npm run format:check`     | 对相同范围执行 `prettier --check`                           |
 | `npm run pack`             | 构建 + electron-builder `--dir`                             |
 | `npm run dist`             | 构建 + electron-builder（NSIS/DMG/AppImage）                |
 
@@ -232,7 +240,7 @@ encodex --mcp
 ## 🧪 测试
 
 ```bash
-npm test           # 运行全部 123 个测试文件 / 1603 个测试
+npm test           # 运行单元测试（`src/` 下 314 个 test/spec 文件）
 npm run test:watch
 npm run test:coverage
 npm run test:unit
@@ -248,7 +256,7 @@ npm run test:e2e   # 需要先构建
 | -------- | ----------- |
 | [功能参考](./features-reference.md) | 功能特性、支持的媒体格式、编解码器表格、校验工具 |
 | [CLI 用法](./cli.md) | CLI 用法、子命令、所有选项表格、退出码 |
-| [MCP 服务器](docs/MCP.md) | MCP 服务器工具目录、客户端配置、嵌入式 HTTP 服务器、安全 |
+| [MCP 服务器](../MCP.md) | MCP 服务器工具目录、客户端配置、嵌入式 HTTP 服务器、安全 |
 | [测试](./testing.md) | 测试套件、测试设置、E2E 规范 |
 | [IPC 通道](./ipc.md) | IPC 通道、electronAPI 桥接、所有方法与事件 |
 | [项目结构](./project-structure.md) | 带注释的完整目录树 |

@@ -31,17 +31,34 @@ src/
 │   │   ├── handlers.ts                # Central registration + error wrapper
 │   │   ├── dialogs.ts                 # select-file / select-files / select-folder-files / select-output / select-directory / expand-paths
 │   │   ├── conversion.ts              # convert / cancel / pause / resume
+│   │   ├── copilot.ts                 # copilot-plan handler
 │   │   ├── queue.ts                   # queue CRUD + cancel-all + move/update/export/import
 │   │   ├── player.ts                  # player open / seek / close / get-frame
 │   │   ├── timeline.ts                # extract-waveform / extract-thumbnails
 │   │   ├── image.ts                   # image info / preview / file info
-│   │   ├── capabilities.ts            # get-capabilities
+│   │   ├── capabilities.ts            # get-capabilities / get-bmf-status
 │   │   ├── window.ts                  # minimize / maximize / close / always-on-top / terms-reject / close-confirmation
-│   │   ├── updater.ts                 # check / download / install updates
-│   │   ├── system.ts                  # reveal-file / set-launch-at-login
+│   │   ├── updater.ts                 # check / download / install / schedule-install-on-restart
+│   │   ├── system.ts                  # queue-reveal / set-launch-at-login
 │   │   ├── dev.ts                     # dev-capture-screenshot (dev mode only)
 │   │   ├── send.ts                    # Event broadcast helpers
 │   │   └── types.ts                   # Type-safe main->renderer sender signature
+│   ├── ai/                            # Copilot AI providers and routing
+│   │   ├── connectors.ts              # Provider connectors (OpenAI, Anthropic, Gemini, local)
+│   │   ├── intelligence.ts            # Analysis / plan generation
+│   │   ├── model-resolution.ts        # Model aliases and defaults
+│   │   ├── models.ts                  # Model catalogue
+│   │   ├── operation-router.ts        # Maps planned actions to engine operations
+│   │   ├── provider-registry.ts       # Provider registration / selection
+│   │   ├── settings.ts                # AI settings persistence + secret encryption
+│   │   └── settings-ipc.ts            # ai-settings-* / ai-connect-test / ai-models-list bridge
+│   ├── analytics/                     # Aptabase usage-analytics adapters
+│   │   ├── aptabaseMainProvider.ts    # Aptabase provider
+│   │   ├── consent.ts                 # userData analytics-consent.json load/save
+│   │   ├── ipcBridge.ts               # analytics-get-state / analytics-set-enabled handlers
+│   │   └── providerFactory.ts         # Provider selection
+│   ├── security/
+│   │   └── csp.ts                     # Content-Security-Policy headers
 │   ├── mcp/                           # Embedded MCP server (GUI mode)
 │   │   ├── http-server.ts             # Streamable HTTP transport (127.0.0.1, DNS-rebinding guard, bearer token)
 │   │   ├── gui-tools.ts               # 6 GUI-parity tools (queue state, preview, timeline, system info, updates)
@@ -73,8 +90,9 @@ src/
 │   ├── index.ts                       # Entry: stdio handshake, tool/resources/prompts registration
 │   ├── run.ts                         # Raw fd 0/1 stdio transport + server startup/shutdown
 │   ├── server.ts                      # Server wiring: tools, resources, prompts, protocol lifecycle
-│   ├── operations.ts                  # 13 core MCP tool implementations (convert, info, batch, …)
+│   ├── operations.ts                  # MCP tool implementations (convert, analyze, plan, batch, …)
 │   ├── conversion-options.ts          # MCP call -> ConversionOptions mapping + arg parsing
+│   ├── ui/                            # MCP Apps approval bridge + UI resource registry
 │   └── jobs/
 │       └── manager.ts                 # In-memory async job manager (shared with GUI queue in embedded mode)
 ├── preload/
@@ -91,14 +109,14 @@ src/
 │   ├── monitoring/
 │   │   ├── sentryRendererProvider.ts  # Renderer Sentry adapter (events flow to main; DSN never in bundle)
 │   │   └── providerFactory.ts         # Renderer provider selection (queries consent from main)
-│   ├── components/                    # Shared UI components (39 modules incl. ErrorBoundary, UpdateDialog, ProfileSelector, TermsDialog, GettingStartedCard)
+│   ├── components/                    # Shared UI components (49 modules incl. copilot/ and settings/ subfolders)
 │   ├── constants/
-│   │   └── shortcuts.ts               # 60+ keyboard shortcuts registry (9 sections) + tooltip hints
+│   │   └── shortcuts.ts               # 82 keyboard shortcuts registry (11 sections) + tooltip hints
 │   ├── hooks/                         # useConversion, useErrorHandler, useFormErrors, useMediaTask, useCapabilities, useHotkeys, useFieldId
-│   ├── i18n/                          # i18next config, RTL provider, 56 locales / 35 languages
-│   ├── pages/                         # 10 code-split page components (Convert, BatchQueue, Dashboard, MediaInfo, ImageCompress, AudioExtract, VideoCut, Settings, Logs, About)
-│   ├── stores/                        # 14 Zustand stores (queue, conversion, settings, profile, terms, batchConfig, audioExtract, videoCut, logs, errors, toasts, update, task, dismissedAlerts)
-│   ├── styles/                        # Extracted MUI style constants per component (42+ modules)
+│   ├── i18n/                          # i18next config, RTL provider, 56 locales (36 base language subtags)
+│   ├── pages/                         # 13 code-split page components (Convert, Remux, Demux, Copilot, BatchQueue, Dashboard, MediaInfo, ImageCompress, AudioExtract, VideoCut, Settings, Logs, About)
+│   ├── stores/                        # 20 Zustand stores (queue, conversion, settings, profile, terms, batchConfig, audioExtract, videoCut, logs, errors, toasts, update, task, dismissedAlerts, aiSettings, aiConnection, audit, copilotChats, remux, demux)
+│   ├── styles/                        # Extracted MUI style constants per component (48 modules + Copilot/Settings subfolders)
 │   └── utils/                         # formatters, preview cache helpers, easter egg dates, batch options
 └── shared/                            # Code shared between processes
     ├── app-constants.ts               # App-wide constants
@@ -108,7 +126,7 @@ src/
     ├── types.ts                       # Domain interfaces (ConversionOptions, MediaInfo, ...)
     ├── terms.ts                       # Versioned Terms & Conditions (TERMS_VERSION)
     ├── logger.ts                      # Timestamped logger (main/renderer)
-    ├── log-constants.ts               # Shared log message constants (406 exported)
+    ├── log-constants.ts               # Shared log message constants (527 exported)
     ├── validation.ts                  # Time/scale/bitrate/range validation helpers
     ├── math.ts                        # Math helpers (clamp, round, percent)
     ├── progress.ts                    # Progress/ETA computation helpers
@@ -120,6 +138,13 @@ src/
     ├── hwaccel-settings.ts            # Hardware-acceleration settings types/constants
     ├── transcoder-constants.ts        # Transcoder flags, defaults, labels
     ├── mcp-settings.ts                # MCP settings contract + port constants/sanitizers
+    ├── mcp-ui.ts                      # MCP Apps UI resource contract
+    ├── copilot.ts                     # Copilot plan request/result contracts
+    ├── video-filters.ts               # Curated video filter presets + chain normalization
+    ├── remux-utils.ts                 # Remux/demux argument builders and validation
+    ├── audit.ts                       # Mutating-operation audit entry contract + guard
+    ├── ai/                            # Copilot/AI contracts and planners (analyze, recommend, workflow, STT, translation, …)
+    │   └── settings.ts                # AiSettingsView / AiSettingsUpdate / connect-test results
     ├── profiles/                      # Conversion profiles
     │   ├── builtin.ts                 # 115 built-in profiles across 8 categories
     │   ├── categories.ts              # Profile category metadata (web-social, devices, video, professional, streaming, audio, images, advanced)
@@ -141,7 +166,7 @@ e2e/                                  # Playwright-based end-to-end tests
 │   ├── control.ts                     # Typed helpers for driving mock electronAPI
 │   ├── main-store.js                  # In-memory state backing the mock preload
 │   └── preload.js                     # Mock preload (replaces real preload in test mode)
-└── specs/                             # 13 E2E spec files
+└── specs/                             # 31 E2E spec files (39 e2e files total)
     ├── shell.spec.ts
     ├── convert.spec.ts
     ├── batch.spec.ts
@@ -160,8 +185,11 @@ perf/                                 # Performance benchmarks (Vitest config pe
 ├── conversion-benchmark.perf.test.ts # End-to-end conversion benchmarks
 ├── extraction.perf.test.ts           # Waveform/thumbnail extraction
 ├── ipc-overhead.perf.test.ts         # IPC round-trip latency
+├── job-card-render.perf.test.tsx     # Job card render cost
 ├── large-file.perf.test.ts           # Large media handling
 ├── memory-leak.perf.test.ts          # Peak RSS / leak detection
+├── phase8-io.perf.test.ts            # I/O pipeline benchmarks
+├── phase8-queue.perf.test.ts         # Queue pipeline benchmarks
 ├── process-lifecycle.perf.test.ts    # Main process boot/shutdown
 ├── queue-concurrency.perf.test.ts    # Parallel queue scaling
 ├── startup.perf.test.ts              # Cold-start timings

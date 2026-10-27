@@ -20,24 +20,22 @@ It's great software. But it's not for everyone — which is why a modern HandBra
 | -------------- | -------------------------------- | ---------------------------- |
 | **Price**      | Free forever, open source (MIT)  | Free, open source (GPL)      |
 | **FFmpeg based** | Yes                             | Yes                          |
-| **Presets**    | 140+ across 8 categories         | Good set, mostly file-based  |
+| **Presets**    | 115 across 8 categories          | Good set, mostly file-based  |
 | **Hardware encoding** | NVENC, QSV, AMF, VAAPI, VideoToolbox | Partial               |
-| **Batch queue**| Full parallel queue (4 jobs)     | Queue, sequential            |
+| **Batch queue**| Parallel queue (up to 4 jobs)    | Queue, sequential            |
 | **Audio extraction** | One click, 27 codecs         | Limited                      |
 | **Image compression** | JPEG/PNG/WebP…              | Not really                   |
 | **Bulk trim**  | Frame-accurate with timeline     | Cutting is video-only        |
-| **CLI mode**   | Yes — readable commands          | Linode/CLI limited           |
+| **CLI mode**   | Yes — readable commands          | HandBrakeCLI limited         |
 | **Platforms**  | Windows, macOS, Linux            | Windows, macOS, Linux        |
 | **Uploads**    | None — 100% offline              | None — 100% offline          |
 
 ## How This Comparison Was Made
 
-We compared capabilities each tool actually ships today — GUI layout, preset depth, hardware
-encoding support, batch behavior, and extra tools — using each product's current documentation and
-release notes. We only claim features we can verify: anything labeled "partial" or "limited" means
+This comparison is based on each product's published documentation and release notes at the time of
+writing; features can vary by version and platform. Anything labeled "partial" or "limited" means
 the capability exists but with caveats (for example, HandBrake's hardware encoding support varies by
-platform and build, and its CLI is documented separately from the GUI app). If a row is split across
-more tools below, the same verification applies.
+platform and build, and its CLI is documented separately from the GUI app).
 
 ## EncodeX vs HandBrake vs FFmpeg CLI vs Shutter Encoder
 
@@ -46,9 +44,9 @@ more tools below, the same verification applies.
 | **Interface**          | GUI + CLI    | GUI (+ CLI)  | CLI only     | GUI             |
 | **Built on FFmpeg**    | Yes          | Yes          | Is FFmpeg    | Yes             |
 | **Free & open source** | Yes (MIT)    | Yes (GPL)    | Yes (GPL)    | Yes (proprietary license) |
-| **Task-based presets** | 140+ profiles | File-based sets | Scripts only  | Library-based  |
+| **Task-based presets** | 115 profiles | File-based sets | Scripts only  | Library-based  |
 | **Hardware encoding**  | NVENC, QSV, AMF, VAAPI, VideoToolbox | Partial (varies by platform) | Via flags (manual setup) | NVENC + others |
-| **Parallel batch**     | Yes (4 jobs)  | Sequential   | Via scripting | Yes            |
+| **Parallel batch**     | Yes (up to 4) | Sequential   | Via scripting | Yes            |
 | **Image compression**  | Yes (JPEG/PNG/WebP) | No       | Via flags     | Yes            |
 | **Audio extraction**   | One click (27 codecs) | Limited | Via flags | Yes |
 | **100% offline**       | Yes          | Yes          | Yes          | Yes            |
@@ -61,8 +59,9 @@ the advanced options reachable.
 ## Why Switch to EncodeX?
 
 - **A gentler learning curve** — the GUI is task-based ("Convert", "Compress", "Cut"), not codec-based
-- **More formats and codecs** — 51 video, 27 audio, 56 pixel formats
+- **Broad format and codec support** — 51 video, 27 audio, 56 pixel formats
 - **Better batch support** — up to 4 parallel jobs with pause/resume and drag-and-drop ordering
+- **Built-in Copilot** — 13 operations across convert, remux, demux, extract, compress, cut, and media analysis, with an offline rules engine by default and optional OpenAI, Anthropic, Gemini, or local providers
 - **Built for macOS** — native Apple Silicon build with VideoToolbox
 - **Active, friendly community** — we're open source and always improving
 

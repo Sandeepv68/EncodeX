@@ -54,7 +54,7 @@ AI 助手现在可以操作您的本地媒体工具箱。让 Claude、Cursor 或
   <div class="card">
     <span class="card-emoji">⚙️</span>
     <p class="card-head">真正的自动化</p>
-    <p>19 个工具覆盖转换、音频提取、图片压缩、媒体信息、批量任务、预览和更新——让 Agent 可以串联起真正的工作。</p>
+    <p>36 个工具覆盖转换、音频提取、图片压缩、媒体信息、批量任务、预览和更新——让 Agent 可以串联起真正的工作。</p>
   </div>
 </div>
 
@@ -146,7 +146,7 @@ AI 助手现在可以操作您的本地媒体工具箱。让 Claude、Cursor 或
 
 ## 选目标，而不是选编码
 
-140 多个内置配置文件替你完成设置。你只要说出你想要什么。
+115 多个内置配置文件替你完成设置。你只要说出你想要什么。
 
 <div class="card-grid three-col">
   <div class="card">
@@ -289,7 +289,7 @@ EncodeX 有三重身份。日常任务用**拖放式界面**，需要脚本时�
   </div>
   <div class="card">
     <span class="card-emoji">🎛️</span>
-    <p class="card-head">140+ 现成配置文件</p>
+    <p class="card-head">115 现成配置文件</p>
     <p>YouTube、Instagram、TikTok、Apple 设备、ProRes、HLS 等。选一个，设置自动填好。</p>
   </div>
   <div class="card">

@@ -14,6 +14,7 @@ Node.js-Umgebung. Besitzt den Anwendungs-Lebenszyklus und alle privilegierten F�
 - Dekodiert Videoframes und Audio-PCM für den integrierten Player (`player/frame-decoder.ts`).
 - Extrahiert Wellenformen und Thumbnail-Montagen (`timeline/timeline-media.ts`).
 - Liest EXIF-Daten, Histogramme, Bildabmessungen und Vorschauen (`image-*.ts`, `video-preview.ts`).
+- Hostet die Copilot-Planungspipeline und die Provider-Anbindungen (`ai/`), die Nutzungsanalytik (`analytics/`), das Fehlermonitoring (`monitoring/`), die Sicherheitsrichtlinie (`security/`) und den eingebetteten MCP-Server (`mcp/`).
 - Brückt die Renderer-`console`-Ausgabe in das Log-System (`patchConsole` in `index.ts`).
 
 ### Preload-Skript (`src/preload/index.ts`)
@@ -26,7 +27,7 @@ Browser-Umgebung, in der Entwicklung von Vite serviert, in Produktion aus `dist/
 
 ### Geteilte Ebene (`src/shared/`)
 
-Reines TypeScript, von allen drei Prozessen importiert. Enthält das IPC-Kanal-Register, Domänentypen, das Fehlersystem, den Logger, Konstanten, Codec-Listen, Validierungs-Helper und Log-Meldungs-Konstanten. Da `package.json` keine separaten Paketgrenzen nutzt, wird dieses Verzeichnis über relative Imports von jeder Prozesswurzel referenziert.
+Reines TypeScript, von allen drei Prozessen importiert. Enthält das IPC-Kanal-Register, Domänentypen, das Fehlersystem, den Logger, Konstanten, Codec-Listen, Validierungs-Helper, Log-Meldungs-Konstanten, die Copilot/AI-Verträge (`ai/`, `copilot.ts`), den Video-Filter-Katalog (`video-filters.ts`), die Remux-Hilfsfunktionen (`remux-utils.ts`), den Audit-Log-Vertrag (`audit.ts`) und die MCP-Einstellungs-/UI-Verträge. Da `package.json` keine separaten Paketgrenzen nutzt, wird dieses Verzeichnis über relative Imports von jeder Prozesswurzel referenziert.
 
 ## Build-System
 
@@ -53,20 +54,21 @@ Die gesamte FFmpeg/FFprobe-Binärauflösung ist in `src/main/media-binaries.ts` 
 ## Startsequenz
 
 1. `main/index.ts` läuft. Es prüft `process.argv` in `isCliMode()`.
-2. **CLI-Modus** (explizit `--cli`/`--help`, oder >=2 positionale Argumente): registriert keine Fenster. Bei `app.whenReady()` ruft es `runCli()` auf und beendet sich mit `SUCCESS`- oder `ERROR`-Code.
-3. **GUI-Modus**: aktiviert den Switch `autoplay-policy`, erstellt ein nicht-interaktives Splash-Fenster (sofort sichtbar), dann das rahmenlose Hauptfenster (`show: false`).
-4. `registerIpcHandlers(mainWindow)` verdrahtet alle IPC-Module; `patchConsole` ersetzt `console.*`, damit Hauptprozess-Logs über den Kanal `log-message` an den Renderer weitergeleitet werden.
-5. Das Hauptfenster wird bei `ready-to-show` gezeigt, woraufhin die Splash geschlossen wird.
-6. In Produktion wird der Renderer aus `dist/renderer/index.html` geladen; in Entwicklung von `http://localhost:5173` mit offenen DevTools.
+2. **CLI-Modus** (explizit `--cli`, `-h`/`--help`, jeder Subcommand- oder Alias-Name, oder 2+ positionale Argumente ohne Flags): registriert keine Fenster. Bei `app.whenReady()` ruft es `runCli()` auf und beendet sich mit `SUCCESS`- oder `ERROR`-Code.
+3. **MCP-Modus** (`--mcp`): startet weder Fenster noch die CLI; er führt den stdio-MCP-Server aus, bis stdin geschlossen wird.
+4. **GUI-Modus**: aktiviert den Switch `autoplay-policy`, erstellt ein nicht-interaktives Splash-Fenster (sofort sichtbar), dann das rahmenlose Hauptfenster (`show: false`).
+5. `registerIpcHandlers(mainWindow)` verdrahtet alle IPC-Module; `patchConsole` ersetzt `console.*`, damit Hauptprozess-Logs über den Kanal `log-message` an den Renderer weitergeleitet werden.
+6. Das Hauptfenster wird bei `ready-to-show` gezeigt, woraufhin die Splash geschlossen wird.
+7. In Produktion wird der Renderer aus `dist/renderer/index.html` geladen; in Entwicklung von `http://localhost:5173` mit offenen DevTools.
 
 ## CLI-Modus
 
 `src/main/cli/cli.ts` nutzt **commander** mit Subcommands. Wenn `runCli()` ausgeführt wird:
 
-1. Ein Legacy-Shim mappt flache Nutzung (`encodex in.mp4 out.mp4` -> `convert`, `encodex --info in.mp4` -> `info`) auf das passende Subcommand.
+1. Sobald der CLI-Modus aktiv ist, mappt ein Legacy-Shim flache Nutzung (`encodex in.mp4 out.mp4` -> `convert`, `encodex --info in.mp4` -> `info`) auf das passende Subcommand. (`encodex --info in.mp4` allein hat nur ein positionales Argument und öffnet daher die GUI, sofern nicht zusätzlich `--cli` übergeben wird.)
 2. Jedes Subcommand parst seine eigenen Optionen plus geteilte Globals (`--transcoder`, `--theme`, `--verbose`, `--quiet`, `--no-color`, `--json`, `--timeout`).
 3. `info`/`capabilities` geben standardmäßig menschenlesbare Tabellen aus, mit `--json` JSON.
-4. `convert`/`compress`/`extract-audio`/`batch` bauen ein `ConversionOptions`-Objekt und rufen `transcoder.convert(...)` auf (batch treibt eine In-Memory-`JobQueue` mit einem `MultiBar` an).
+4. `convert`/`compress`/`extract-audio`/`remux`/`demux`/`batch` bauen `ConversionOptions`-Objekte und rufen `transcoder.convert(...)` auf; remux und demux bauen zuerst validierte Stream-Pläne, und batch treibt eine In-Memory-`JobQueue` mit einem `MultiBar` an.
 5. Der Fortschritt geht nach `stdout` (mit Watchdog-Timeout), Status-/Erfolgszeilen respektieren das Routing von `--json`/`--quiet`/`--verbose`, und der Prozess endet über `mapCliErrorToExitCode` (usage=2, abgebrochen=3, nicht gefunden=4, timeout=5, Erfolg=0).
 
 Die CLI nutzt exakt dieselbe Transcoder-Pipeline wie die GUI — es gibt keinen separaten Encoding-Pfad zu pflegen.
@@ -75,11 +77,11 @@ Die CLI nutzt exakt dieselbe Transcoder-Pipeline wie die GUI — es gibt keinen 
 
 Die wichtigste Architekturentscheidung ist, dass alle prozessübergreifenden Verträge in `src/shared/` leben:
 
-- **`types.ts`** — `ConversionOptions`, `MediaInfo`, `MediaStreamInfo`, `QueueJob`, `ConversionProgress`, `PlayerFrame`, `PlayerAudioChunk`, `WaveformData`, `ThumbnailStrip`, `EncoderCapabilities`, `LogEntry`, `FileItem`, `ConversionOperation`, `UpdateInfo`, `UpdateAsset`, `UpdateProgress`.
+- **`types.ts`** — `ConversionOptions`, `MediaInfo`, `MediaStreamInfo`, `QueueJob`, `ConversionProgress`, `PlayerFrame`, `PlayerAudioChunk`, `WaveformData`, `ThumbnailStrip`, `EncoderCapabilities`, `LogEntry`, `FileItem`, `ConversionOperation`, `UpdateInfo`, `UpdateAsset`, `UpdateProgress`, `PendingInstall`, `AuditEntry`.
 - **`ipc-channels.ts`** — das Konstantenobjekt `IPC`, die einzige Quelle der Wahrheit für jede Kanal-Zeichenkette. Main, preload und renderer importieren alle daraus, sodass ein Kanalname nie zwischen Prozessen driften kann.
 - **`errors.ts`** — das typisierte Fehlersystem (siehe [Fehlerbehandlung](/de/docs/architecture-renderer#error-handling)).
 - **`constants.ts` / `app-constants.ts`** — numerische Limits und UI-Layoutwerte (Fenstergrößen, Waveform-Buckets, Thumbnail-Abmessungen, Fehlerhistorien-Limit usw.).
 - **`transcoder-constants.ts` / `hwaccel-settings.ts`** — FFmpeg-Flags, Defaults, Progress-Muster und Hardwarebeschleunigungs-Einstellungen.
 - **`media-options.ts` / `codec-containers.ts` / `codec-classification.ts`** — die kuratierten Listen von 51 Video-Codecs, 27 Audio-Codecs, 56 Pixelformaten, Container-Kompatibilitätsregeln und Codec-Familien-Helfern.
 - **`validation.ts`** — reine Funktionen zur Validierung von Zeit/Skalierung/Bitrate/Bereich, genutzt sowohl von den Renderer-Formularen als auch der CLI.
-- **`logger.ts` / `log-constants.ts`** — ein zeitgestempelter Logger plus ~406 geteilte Log-Meldungsvorlagen, damit Logs prozessübergreifend konsistent bleiben.
+- **`logger.ts` / `log-constants.ts`** — ein zeitgestempelter Logger plus 527 geteilte Log-Meldungsvorlagen, damit Logs prozessübergreifend konsistent bleiben.

@@ -6,7 +6,7 @@ EncodeX est un outil multimédia de conversion multiplateforme qui met la puissa
 
 ### Conversion média
 
-Convertissez entre formats vidéo/audio avec un contrôle fin : sélection du codec (51 codecs vidéo couvrant les familles logicielles et matérielles, 27 codecs audio), bitrate, résolution de sortie (avec préservation facultative du ratio), format de pixels (56 formats regroupés par profondeur de bits), échelle de qualité (qscale), inclusion de la piste audio et choix du cœur transcoder. Plusieurs fichiers peuvent être mis en file via la file par lots (voir ci-dessous).
+Convertissez entre formats vidéo/audio avec un contrôle fin : sélection du codec (51 codecs vidéo couvrant les familles logicielles et matérielles, 27 codecs audio), bitrate, résolution de sortie (avec préservation facultative du ratio), format de pixels (56 formats regroupés par profondeur de bits), échelle de qualité (qscale), inclusion de la piste audio, choix du cœur transcoder et filtres vidéo (8 préréglages : recadrage, fréquence d'images, désentrelacement, débruitage, netteté, couleur, niveaux de gris, flou). Plusieurs fichiers peuvent être mis en file via la file par lots (voir ci-dessous).
 
 ### Rotation et miroir des médias
 
@@ -16,7 +16,7 @@ Faites pivoter vidéos et images de 90°, 180° ou 270° dans le sens horaire et
 
 Appliquez des préréglages d'encodage pour remplir instantanément les paramètres de conversion. Les profils encapsulent une configuration d'encodage complète — format de conteneur, codec vidéo, codec audio, débit, CRF/qualité, échelle, format de pixels et arguments FFmpeg avancés — afin que vous n'ayez pas à configurer chaque paramètre manuellement.
 
-- **Plus de 140 profils intégrés** dans 8 catégories : Web et Réseaux sociaux (YouTube, Instagram, TikTok, Facebook, X), Appareils (Apple, Android, consoles de jeux), Codecs vidéo, Professionnel (ProRes, DNxHD/HR, FFV1), Streaming (HLS, DASH), Audio, Images et Avancé
+- **115 profils intégrés** dans 8 catégories : Web et Réseaux sociaux (YouTube, Instagram, TikTok, Facebook, X), Appareils (Apple, Android, consoles de jeux), Codecs vidéo, Professionnel (ProRes, DNxHD/HR, FFV1), Streaming (HLS, DASH), Audio, Images et Avancé
 - **Profils personnalisés** — créez, modifiez et supprimez vos propres profils ; stockés dans le stockage local
 - **Dernière utilisation** — accès rapide aux 5 derniers profils appliqués
 - **Filtre par catégorie** — parcourez les profils par catégorie avec des badges d'icônes
@@ -27,6 +27,15 @@ Les profils sont disponibles sur la page Conversion et dans la file par lots. La
 ### Copie sans perte
 
 Copie de flux vidéo ou audio sans ré-encodage (`-c copy`). Utile pour changer rapidement de conteneur, faire du remux, ou lorsque la préservation de la qualité est critique.
+
+### Remux & Demux
+
+- **Remux** — changer de conteneur en copie de flux (sans réencodage), avec mapping de flux facultatif, sous-titres et pistes audio ajoutés, jaquette, import ou suppression des chapitres, choix du codec de sous-titres et décalages de synchronisation audio.
+- **Demux** — extraire chaque flux vidéo/audio/sous-titres dans son propre fichier, avec conversion facultative par type (conteneur vidéo, codec audio, format de sous-titres) et filtres vidéo pour la vidéo réencodée.
+
+### Copilot (assistant IA)
+
+La page Copilot planifie un travail à partir d'un objectif en langage naturel portant sur des fichiers et dossiers. Elle prend en charge 13 opérations : six adossées à la file (`convert`, `remux`, `demux`, `extract_audio`, `compress_image`, `cut`) et sept opérations d'intelligence média en lecture seule (`analyze`, `transcribe`, `summarize`, `chapters`, `search_transcript`, `translate`, `find_similar`). Les plans peuvent être produits par le moteur déterministe hors ligne `rules` (par défaut), ou par OpenAI, Anthropic, Gemini ou un runtime local. Valider un plan réutilise la file par lots ; les clés API sont envoyées au processus principal, chiffrées avant stockage, et ne sont jamais renvoyées au renderer ; les réglages n'exposent que la présence d'une clé et un indice masqué.
 
 ### Accélération matérielle
 
@@ -50,9 +59,9 @@ Prévisualisez et découpez des segments vidéo avec une sélection précise à 
 
 ### File d'attente par lots
 
-Traitez plusieurs fichiers avec des opérations configurables (transcodage, extraction audio, compression d'image). Les tâches sont ajoutées via un dialogue de revue où noms de sortie et options peuvent être ajustés avant leur entrée dans la file.
+Traitez plusieurs fichiers avec des opérations configurables (transcodage, extraction audio, compression d'image, remux, demux). Les tâches sont ajoutées via un dialogue de revue où noms de sortie et options peuvent être ajustés avant leur entrée dans la file.
 
-- **Traitement parallèle** — jusqu'à 4 tâches simultanées (`MAX_QUEUE_CONCURRENCY = 4`) ; le plafond de concurrence est configurable à l'exécution et persisté.
+- **Traitement parallèle** — jusqu'à 4 tâches simultanées (`MAX_QUEUE_CONCURRENCY = 4`) ; le plafond de concurrence vaut 1 par défaut, est configurable à l'exécution et persisté.
 - **Cycle de vie de la file** — démarrer, mettre en pause et reprendre toute la file ; tout annuler ; purger les tâches terminées/en échec ; supprimer des tâches individuelles.
 - **Réordonnancement** — glisser-déposer des tâches en attente (avec zone de dépôt), adossé à un canal `QUEUE_MOVE_TO` qui signale la nouvelle position de la tâche.
 - **Édition des tâches** — remplacer les options (et facultativement le chemin de sortie) de toute tâche en attente avant son démarrage (`QUEUE_UPDATE_OPTIONS`).
@@ -70,7 +79,7 @@ Traitez plusieurs fichiers avec des opérations configurables (transcodage, extr
 
 ### Réglages
 
-Page de réglages dédiée pour le thème, l'accélération matérielle (activer/désactiver, mode, type d'encodeur), toujours au premier plan, lancement à la connexion, concurrence de la file par lots, action d'alimentation après fin et le serveur MCP (activer/désactiver, port, jeton d'accès). Les préférences persistent dans `localStorage` et prennent effet au démarrage.
+Page de réglages dédiée pour le thème, l'accélération matérielle (activer/désactiver, mode, type d'encodeur), toujours au premier plan, lancement à la connexion, concurrence de la file par lots, action d'alimentation après fin, le serveur MCP (activer/désactiver, port, jeton d'accès), l'éditeur de fournisseur/modèle/clé IA et la désactivation de la télémétrie (rapports d'erreurs + statistiques d'utilisation, activés par défaut). Les préférences standard persistent dans `localStorage` et sont synchronisées avec le processus principal ; les réglages MCP persistent dans `mcp-settings.json`, et les clés IA sont chiffrées par le processus principal.
 
 ### Serveur MCP {#mcp-server}
 
@@ -79,16 +88,16 @@ EncodeX peut agir comme serveur [Model Context Protocol](https://modelcontextpro
 - **Serveur stdio autonome** — lancé avec `encodex --mcp` (ou `node dist/mcp/index.js`), parlant JSON-RPC via stdio avec stdout réservé aux messages du protocole. C'est le mode utilisé par les hôtes MCP qui démarrent un processus serveur.
 - **Serveur HTTP intégré** — point de terminaison Streamable HTTP opt-in à `http://127.0.0.1:8765/mcp`, activé depuis **Réglages → Serveur MCP** pendant que l'interface graphique tourne. Il partage le même cœur d'outils et la file de tâches de l'application en cours d'exécution.
 
-La surface stdio expose 13 outils de base (`ping`, `convert_media`, `get_job`, `list_jobs`, `cancel_job`, `get_media_info`, `list_capabilities`, `list_profiles`, `get_profile`, `compress_image`, `extract_audio`, `cut_video`, `batch_convert`) ; la surface HTTP intégrée ajoute 6 outils de parité GUI (`get_queue_state`, `cancel_all_jobs`, `get_timeline`, `extract_preview`, `get_system_info`, `check_for_updates`), pour un total de 19. Les deux surfaces exposent 3 ressources (`encodex://profiles`, `encodex://capabilities`, `encodex://codecs`) et 4 modèles de prompts (`convert-video`, `extract-audio`, `compress-image`, `batch-convert`). Les conversions sont asynchrones : lancez une tâche, puis interrogez `get_job` ou `list_jobs` pour la progression et les résultats.
+La surface stdio expose 36 outils visibles par le modèle (37 enregistrements, dont l'outil réservé à l'app `commit_operation`) ; la surface HTTP intégrée ajoute 6 outils de parité GUI (`get_queue_state`, `cancel_all_jobs`, `get_timeline`, `extract_preview`, `get_system_info`, `check_for_updates`), pour un total de 42 outils visibles par le modèle (43 enregistrements). Les deux surfaces exposent 3 ressources (`encodex://profiles`, `encodex://capabilities`, `encodex://codecs`) et 4 modèles de prompts (`convert-video`, `extract-audio`, `compress-image`, `batch-convert`). Les conversions sont asynchrones : lancez une tâche, puis interrogez `get_job` ou `list_jobs` pour la progression et les résultats.
 
 Le serveur intégré écoute uniquement en loopback, valide l'en-tête `Origin`, prend en charge un jeton bearer facultatif (comparé en temps constant) et n'accepte que `GET`, `POST` et `DELETE` sur `/mcp`. Toutes les sessions sont fermées de force lorsque le serveur s'arrête ou que l'application quitte. Les réglages MCP (activé, port, jeton) persistent dans `mcp-settings.json` dans le répertoire user-data.
 
 ### Raccourcis clavier
 
-Un registre central de raccourcis (`src/renderer/constants/shortcuts.ts`) définit plus de 60 raccourcis répartis en neuf sections (global, convert, media info, image compress, audio extract, video cut, batch queue, logs, dashboard). Points saillants :
+Un registre central de raccourcis (`src/renderer/constants/shortcuts.ts`) définit 82 raccourcis répartis en onze sections (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). Points saillants :
 
 - `Ctrl+/` — ouvrir le dialogue d'aide des raccourcis
-- `Alt+1`…`Alt+9` — sauter directement à une page
+- `Alt+0`…`Alt+9` — sauter directement à une page (y compris Remux sur `Alt+0`)
 - `Ctrl+O` / `Ctrl+Shift+S` / `Ctrl+Enter` — choisir l'entrée / choisir la sortie / lancer la tâche (cohérent entre pages)
 - `Ctrl+Shift+P` / `Ctrl+Shift+C` — mettre en pause / annuler la tâche active
 - File par lots : `Ctrl+E` export, `Ctrl+I` import, `1`–`5` filtres de statut, `F` focus recherche
@@ -106,7 +115,7 @@ Fermer la fenêtre alors que des tâches sont actives passe par un flux de confi
 
 ### Tableau de bord
 
-Une page d'accueil avec tuiles d'actions rapides pour chaque outil (touches numériques `1`–`6` pour y sauter) et un branding saisonnier œuf de Pâque (voir ci-dessous).
+Une page d'accueil avec tuiles d'actions rapides pour chaque outil (touches numériques `1`–`8` pour y sauter) et un branding saisonnier œuf de Pâque (voir ci-dessous).
 
 ### Œufs de Pâque
 
@@ -134,7 +143,7 @@ Mise en page droite-à-gauche pour les locales arabes et hébraïques (`ar-SA`, 
 
 ### Internationalisation
 
-56 locales couvrant 35 langues :
+56 locales :
 
 | Langue      | Locales                                    |
 | ----------- | ------------------------------------------ |
@@ -176,11 +185,11 @@ Mise en page droite-à-gauche pour les locales arabes et hébraïques (`ar-SA`, 
 
 ### Mises à jour intégrées
 
-Gestionnaire de mises à jour personnalisé qui consulte GitHub Releases pour de nouvelles versions, notifie l'utilisateur de leur disponibilité, télécharge l'installateur spécifique à la plateforme (`.exe` / `.dmg` / `.AppImage`) dans l'app avec report de progression en temps réel, puis lance l'installateur une fois terminé. La comparaison de versions utilise semver avec suppression des suffixes pre-release. Le flux de mise à jour est entièrement intégré à la page About avec un bouton « Rechercher des mises à jour » et un dialogue global.
+Gestionnaire de mises à jour personnalisé qui consulte GitHub Releases pour de nouvelles versions, notifie l'utilisateur de leur disponibilité, télécharge l'installateur spécifique à la plateforme (`.exe` / `.dmg` / `.AppImage`) dans l'app avec report de progression en temps réel, et lance l'installateur lorsque l'utilisateur choisit d'installer (ou programme l'installation au prochain redémarrage). La comparaison de versions suit la précédence semver, y compris les identifiants de pre-release ; les métadonnées de build sont ignorées. Lorsque GitHub publie un condensé `sha256` ou `sha512` pour un asset, le téléchargement est vérifié par rapport à ce condensé. Les mises à jour ne sont jamais installées automatiquement. Le flux de mise à jour est entièrement intégré à la page About avec un bouton « Rechercher des mises à jour » et un dialogue global.
 
 ### Gestion des erreurs
 
-Système d'erreurs structuré avec codes typés (`ErrorCode`), messages localisés destinés à l'utilisateur, snackbar d'erreurs globale, bannières d'erreurs inline, notifications toast, React error boundaries imbriquées et historique d'erreurs intégré (plafond 50). Toutes les erreurs sont normalisées via `formatError()` et propagées à travers IPC.
+Système d'erreurs structuré avec 28 codes typés (`ErrorCode`), messages localisés destinés à l'utilisateur, snackbar d'erreurs globale, bannières d'erreurs inline, notifications toast, React error boundaries imbriquées et historique d'erreurs intégré (plafond 50). Toutes les erreurs sont normalisées via `formatError()` et propagées à travers IPC.
 
 ## Formats média pris en charge
 

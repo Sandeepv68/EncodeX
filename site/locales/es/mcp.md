@@ -17,7 +17,7 @@ Prueba a decir:
 - *"Reduce las fotos de `~/Pics` y guarda los resultados en `~/Output`."*
 - *"Convierte todos los MKV de `~/Downloads` a MP4."*
 
-EncodeX es un **servidor MCP FFmpeg** gratuito y de código abierto con una app de escritorio alrededor — un servidor MCP local para la automatización de medios con IA. Sin nube, sin subidas, sin cuenta.
+EncodeX es un **servidor MCP FFmpeg** gratuito y de código abierto con una app de escritorio alrededor — un servidor MCP local para la automatización de medios con IA. Sin servicio en la nube de EncodeX, sin subidas de medios, sin cuenta.
 
 ```mermaid
 flowchart TD
@@ -35,12 +35,13 @@ Tú permaneces en tu app de IA favorita. EncodeX hace el trabajo pesado en segun
 
 ## ¿Qué puede hacer un asistente mediante MCP?
 
-El servidor MCP expone **19 herramientas, 3 recursos y 4 prompts**:
+El servidor stdio independiente expone **36 herramientas visibles para el modelo, 3 recursos y 4 prompts** (37 registros, incluida una herramienta exclusiva de la app). El servidor integrado añade **6 herramientas de GUI** para un total de **42 herramientas**:
 
 - **Convertir** video y audio entre formatos
 - **Extraer** audio de archivos de video
 - **Comprimir** videos e imágenes a tamaños menores
 - **Recortar** y cortar clips
+- **Remux y demux** — cambiar contenedores o dividir flujos
 - **Ejecutar y supervisar trabajos por lotes asíncronos** — encolar trabajo, consultar el estado, obtener resultados
 
 El catálogo completo de herramientas está en la [referencia de funciones](/docs/features-reference#mcp-server).
@@ -59,13 +60,13 @@ stdout transporta el protocolo MCP; todos los registros van a stderr, así que n
 
 ### 2. Servidor integrado (Configuración → Servidor MCP)
 
-¿Ya tienes EncodeX abierto? Activa **Configuración → Servidor MCP** y apunta tu cliente a:
+¿Ya tienes EncodeX abierto? El servidor integrado está desactivado de forma predeterminada. Activa **Configuración → Servidor MCP** y apunta tu cliente a:
 
 ```
 http://127.0.0.1:8765/mcp
 ```
 
-Este modo añade herramientas de **cola**, **vista previa**, **línea de tiempo**, **sistema** y **actualizaciones** en vivo sobre el mismo núcleo.
+Este modo añade 6 herramientas de GUI sobre el mismo núcleo: estado de la cola en vivo, cancelar todo, línea de tiempo, vista previa, información del sistema y comprobación de actualizaciones.
 
 ## Conecta con un solo clic
 
@@ -75,10 +76,10 @@ Copia la configuración para tu cliente y pégala — EncodeX se encarga del res
 
 ## Privado por diseño
 
-- **Todo el procesamiento es local** — los archivos nunca se suben y nada se envía a la nube
+- **El procesamiento de medios es local** — los archivos no se suben a un servicio en la nube
 - **Solo bucle local** — el servidor integrado se vincula a `127.0.0.1` y valida la cabecera `Origin`
 - **Token de acceso opcional** — protege el endpoint con un token de tipo bearer (comparado en tiempo constante)
-- **Sin cuenta necesaria** — MCP funciona totalmente sin conexión
+- **Sin cuenta necesaria** — el servidor MCP en sí no necesita cuenta
 
 ## Cómo empezar
 
@@ -96,7 +97,7 @@ Sí. El servidor MCP está integrado en la app EncodeX, gratuita y de código ab
 
 ### ¿Usar MCP sube mis archivos?
 
-No. EncodeX funciona totalmente sin conexión. El servidor MCP controla el mismo motor FFmpeg local, así que tu contenido nunca sale de tu computadora.
+No. El servidor MCP controla el mismo motor FFmpeg local, así que tu contenido nunca sale de tu computadora.
 
 ### ¿Qué asistentes de IA pueden conectarse?
 

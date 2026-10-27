@@ -14,6 +14,7 @@ Ambiente Node.js. Possui o ciclo de vida da aplicação e todas as capacidades p
 - Decodifica frames de vídeo e áudio PCM para o player embutido (`player/frame-decoder.ts`).
 - Extrai formas de onda e montagens de miniaturas (`timeline/timeline-media.ts`).
 - Lê dados EXIF, histogramas, dimensões de imagem e previews (`image-*.ts`, `video-preview.ts`).
+- Hospeda o pipeline de planejamento do Copilot e conectores de provedores (i/), análise de uso (nalytics/), monitoramento de erros (monitoring/), a política de segurança (security/), e o servidor MCP embutido (mcp/).
 - Ponteia a saída de `console` do renderer para o sistema de logs (`patchConsole` em `index.ts`).
 
 ### Script preload (`src/preload/index.ts`)

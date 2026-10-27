@@ -32,7 +32,7 @@ You can pick the **bitrate (128–320 kbps)** for the right balance of size and 
 ### A Fast, Private MP4 to MP3 Converter
 
 - **Offline** — your files never leave your computer
-- **Hardware accelerated** — uses your GPU for speed
+- **Audio-only processing** — no video re-encoding needed
 - **No watermarks** and free forever
 - Works on **Windows, Mac, and Linux**
 
@@ -40,7 +40,7 @@ You can pick the **bitrate (128–320 kbps)** for the right balance of size and 
 
 **What is MP4 to MP3 conversion?** MP4 to MP3 conversion takes the audio track out of an MP4 video file and saves it as an MP3 audio file, so you keep the sound without the video.
 
-**Does MP4 to MP3 conversion lose audio quality?** No. EncodeX uses the original audio track from your MP4. Use 320 kbps for near-lossless sound, or a lower bitrate for smaller files.
+**Does MP4 to MP3 conversion lose audio quality?** Some quality is lost, because MP3 is a lossy format and the output will not be identical to the source. EncodeX uses the original audio track from your MP4; 320 kbps gives the highest MP3 quality, and lower bitrates give smaller files.
 
 **Can I batch-convert many MP4 files to MP3?** Yes. EncodeX converts an entire folder of MP4 files to MP3 in one go.
 

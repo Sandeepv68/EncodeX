@@ -18,20 +18,20 @@ Motivos comuns para a conversão de **WebM para MKV**:
 - Você prefere o **contêiner aberto Matroska** ao WebM do Google
 - Você baixou **vídeos VP9 / AV1** e quer um formato mais rico ao redor deles
 
-## Converta WebM para MKV sem perder qualidade
+## Converta WebM para MKV com alta qualidade
 
-O EncodeX faz a remuxagem do seu **WebM para MKV** sem re-codificação, então qualidade e velocidade ficam perfeitas:
+Quando os codecs cabem no MKV, o EncodeX pode copiar os streams do seu **WebM para MKV** sem recodificação. Caso contrário, ele recodifica com configurações que mantêm a qualidade alta:
 
 1. [Baixe o EncodeX gratuitamente](/pt/download)
 2. Arraste seu arquivo **.webm** para a janela
 3. Escolha **MKV** e clique em Converter
 
-Como WebM e MKV compartilham codecs semelhantes, como **VP9** e **AV1**, a conversão é rápida — muitas vezes basta copiar os fluxos para um novo contêiner. Você também pode **converter uma pasta inteira de arquivos WebM em lote**.
+Como WebM e MKV aceitam codecs como **VP9** e **AV1**, uma cópia de streams pode ser rápida — basta copiar os fluxos para um novo contêiner. Você também pode **converter uma pasta inteira de arquivos WebM em lote**.
 
 ### Um conversor rápido e privado de WebM para MKV
 
 - **Offline** — seu vídeo nunca sai do seu computador
-- **Remuxagem sem perdas** — sem re-codificação, sem perda de qualidade
+- **Cópia de streams quando os codecs cabem** — sem recodificação nesse modo
 - **Sem marcas d'água** e gratuito para sempre
 - Funciona no **Windows, Mac e Linux**
 
@@ -39,7 +39,7 @@ Como WebM e MKV compartilham codecs semelhantes, como **VP9** e **AV1**, a conve
 
 **Por que devo converter WebM em MKV?** O MKV suporta legendas, capítulos e várias faixas de áudio, então é um lar melhor para montar uma biblioteca pessoal de filmes ou música.
 
-**Vou perder qualidade convertendo WebM para MKV?** Não. O EncodeX remuxa os fluxos em vez de re-codificá-los, então o vídeo e o áudio permanecem exatamente como eram.
+**Vou perder qualidade convertendo WebM para MKV?** Depende do modo. A cópia de streams mantém vídeo e áudio idênticos quando os codecs cabem no MKV. Caso contrário, o EncodeX recodifica com configurações que mantêm a qualidade alta.
 
 **Posso converter muitos arquivos WebM de uma vez?** Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos WebM para MKV.
 

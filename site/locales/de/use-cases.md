@@ -13,7 +13,7 @@ Wählen Sie unten einen Anwendungsfall aus.
 
   <div class="card">
     <h3>📹 Video für den Upload komprimieren</h3>
-    <p>Verkleinern Sie große Videodateien, bevor Sie sie in sozialen Netzwerken, per E-Mail oder im Chat teilen — ohne sichtbaren Qualitätsverlust.</p>
+    <p>Verkleinern Sie große Videodateien, bevor Sie sie in sozialen Netzwerken, per E-Mail oder im Chat teilen — mit Kontrolle über die Qualität, die Sie behalten.</p>
     <a href="/de/video-compressor">Mehr erfahren →</a>
   </div>
 
@@ -25,13 +25,13 @@ Wählen Sie unten einen Anwendungsfall aus.
 
   <div class="card">
     <h3>🔄 Zwischen Formaten konvertieren</h3>
-    <p>MOV in MP4, WebM in AVI, MKV in MP4 — Container wechseln und dabei die Originalqualität bewahren.</p>
+    <p>MOV in MP4, WebM in AVI, MKV in MP4 — in ein neues Format neu kodieren oder remuxen, wenn Sie nur einen anderen Container brauchen.</p>
     <a href="/de/video-converter">Mehr erfahren →</a>
   </div>
 
   <div class="card">
     <h3>✂️ Clips kürzen und schneiden</h3>
-    <p>Entfernen Sie tote Zeit, trimmen Sie Intros und schneiden Sie Highlights — ohne die gesamte Datei neu zu encodieren.</p>
+    <p>Entfernen Sie tote Zeit, trimmen Sie Intros und schneiden Sie Highlights auf einer visuellen Zeitleiste.</p>
     <a href="/de/features#videos-zuschneiden">Mehr erfahren →</a>
   </div>
 
@@ -61,7 +61,7 @@ Wählen Sie unten einen Anwendungsfall aus.
 
   <div class="card">
     <h3>🤖 Mit einem KI-Assistenten automatisieren</h3>
-    <p>EncodeX enthält einen integrierten MCP-Server — verbinden Sie Claude, Cursor, VS Code oder jeden MCP-Client und bitten Sie ihn in natürlicher Sprache, zu konvertieren, Audio zu extrahieren, zu komprimieren oder einen Stapeljob zu verfolgen — alles lokal.</p>
+    <p>EncodeX enthält einen integrierten MCP-Server und Copilot — verbinden Sie Claude, Cursor, VS Code oder jeden MCP-Client, oder nutzen Sie Copilots 13 Operationen, um Medien in einfacher Sprache zu konvertieren, zu remuxen, zu demuxen, zu extrahieren, zu komprimieren, zu schneiden oder zu analysieren. Copilot nutzt standardmäßig eine Offline-Regel-Engine, optional mit OpenAI, Anthropic, Gemini oder lokalen Anbietern.</p>
     <a href="/de/mcp">Mehr erfahren →</a>
   </div>
 
@@ -82,7 +82,7 @@ Wählen Sie unten einen Anwendungsfall aus.
 ## Verwandte Seiten
 
 - [Videokonverter](/de/video-converter) — konvertieren Sie zwischen MP4, MKV, WebM, AVI und mehr.
-- [Videokompressor](/de/video-compressor) — Dateigröße reduzieren und Qualität erhalten.
+- [Videokompressor](/de/video-compressor) — Dateigröße mit Kontrolle über die Qualität reduzieren.
 - [Audio-Extraktor](/de/extract-audio-from-video) — Tonspuren aus jedem Video extrahieren.
 - [FFmpeg-GUI](/de/ffmpeg-gui) — was EncodeX ist, wie es funktioniert und warum es so gebaut ist.
 - [Download](/de/download) — kostenlos für Windows, macOS und Linux.

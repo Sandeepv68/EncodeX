@@ -6,7 +6,7 @@ ogImage: "https://encodex.in/images/home_dashboard.webp"
 hero:
   name: EncodeX<br>मुफ़्त और ओपन-सोर्स · Windows · macOS · Linux
   text: FFmpeg की ताकत। कमांड लाइन के बिना।
-  tagline: Windows, macOS और Linux के लिए एक मुफ़्त, ओपन-सोर्स स्मार्ट मीडिया कन्वर्टर। वीडियो कन्वर्ट करें, ऑडियो निकालें, क्लिप ट्रिम करें और फ़ाइलें छोटी करें — सब कुछ आपके कंप्यूटर पर चलता है, कुछ भी बाहर नहीं जाता। अब MCP के साथ, Claude, Cursor या VS Code जैसे AI असिस्टेंट प्राकृतिक भाषा में उसी इंजन को चला सकते हैं।
+  tagline: Windows, macOS और Linux के लिए एक मुफ़्त, ओपन-सोर्स स्मार्ट मीडिया कन्वर्टर। वीडियो कन्वर्ट करें, ऑडियो निकालें, क्लिप ट्रिम करें और फ़ाइलें छोटी करें — रूपांतरण आपके कंप्यूटर पर चलता है और आपका मीडिया कभी बाहर नहीं जाता। अब बिल्ट-इन MCP सर्वर के साथ, Claude, Cursor या VS Code जैसे AI असिस्टेंट प्राकृतिक भाषा में उसी इंजन को चला सकते हैं।
   image:
     src: /images/home_dashboard.webp
     alt: एक लोड किया हुआ वीडियो और चुना हुआ YouTube 1080p प्रोफ़ाइल के साथ EncodeX डैशबोर्ड
@@ -43,7 +43,7 @@ AI असिस्टेंट अब आपके लोकल मीडिय�
   <div class="card">
     <span class="card-emoji">🔒</span>
     <p class="card-head">अब भी 100% लोकल</p>
-    <p>MCP सर्वर सिर्फ़ localhost पर सुनता है और आपके मीडिया को कभी अपलोड नहीं करता। GUI की तरह ही आपकी फ़ाइलें आपके कंप्यूटर पर रहती हैं।</p>
+    <p>MCP सर्वर स्थानीय रूप से चलता है। Embedded सर्वर सिर्फ़ localhost पर सुनता है, और आपके मीडिया को कभी अपलोड नहीं किया जाता। GUI की तरह ही आपकी फ़ाइलें आपके कंप्यूटर पर रहती हैं।</p>
   </div>
   <div class="card">
     <span class="card-emoji">🧩</span>
@@ -53,7 +53,7 @@ AI असिस्टेंट अब आपके लोकल मीडिय�
   <div class="card">
     <span class="card-emoji">⚙️</span>
     <p class="card-head">असली ऑटोमेशन</p>
-    <p>19 टूल conversions, audio extraction, image compression, media info, batch jobs, previews और updates कवर करते हैं — ताकि agents असली काम को जोड़ सकें।</p>
+    <p>स्टैंडअलोन सर्वर में 36 टूल (embedded में 42) conversions, audio extraction, image compression, media info, batch jobs और बहुत कुछ कवर करते हैं — ताकि agents असली काम को जोड़ सकें।</p>
   </div>
 </div>
 
@@ -73,7 +73,7 @@ EncodeX को बताइए कि आप क्या करना चाह
   <div class="card">
     <span class="card-emoji">📦</span>
     <p class="card-head">बड़ी फ़ाइलें छोटी करें</p>
-    <p>छोटे MP4 और MKV जो ईमेल, चैट और अपलोड सीमा में फिट हों — बमुश्किल दिखने वाले फ़र्क़ के साथ।</p>
+    <p>MP4 और MKV को दोबारा एनकोड करके छोटा करें, ताकि वे ईमेल, चैट और अपलोड सीमा में फिट हों। आकार और क्वालिटी के बीच का समझौता आप तय करते हैं।</p>
     <p><a href="/hi/video-compressor">वीडियो कंप्रेसर →</a></p>
   </div>
   <div class="card">
@@ -97,7 +97,7 @@ EncodeX को बताइए कि आप क्या करना चाह
   <div class="card">
     <span class="card-emoji">🖼️</span>
     <p class="card-head">इमेज ठीक करें और हल्की करें</p>
-    <p>शेयर करने के लिए फ़ोटो छोटी करें और तिरछी क्लिप घुमाएँ — फ़ॉर्मैट रहने पर बिना क्वालिटी लॉस।</p>
+    <p>शेयर करने के लिए फ़ोटो छोटी करें और तिरछी क्लिप घुमाएँ। लॉसलेस रोटेशन सिर्फ़ MP4, MOV या MKV में स्ट्रीम-कॉपी मोड में लागू होता है।</p>
     <p><a href="/hi/features">सभी फ़ीचर →</a></p>
   </div>
 </div>
@@ -115,7 +115,7 @@ EncodeX को बताइए कि आप क्या करना चाह
   <div class="wf-step">
     <span class="wf-num">2</span>
     <p class="card-head">चुनें</p>
-    <p>📱 फ़ोन चुनें — EncodeX MP4 1080p चुन लेगा।</p>
+    <p>कोई प्रोफ़ाइल चुनें, जैसे MP4 या YouTube 1080p — EncodeX सेटिंग्स भर देता है।</p>
   </div>
   <div class="wf-step">
     <span class="wf-num">3</span>
@@ -131,7 +131,7 @@ EncodeX को बताइए कि आप क्या करना चाह
 
 <div class="privacy-band">
   <h2>आपके वीडियो कभी आपके कंप्यूटर से बाहर नहीं जाते।</h2>
-  <p>EncodeX अंतर्निहित FFmpeg इंजन से आपके मीडिया को स्थानीय रूप से प्रोसेस करता है। कुछ भी अपलोड नहीं होता, कुछ भी ट्रैक नहीं होता और कुछ भी सर्वर पर सेव नहीं होता।</p>
+  <p>EncodeX अंतर्निहित FFmpeg इंजन से आपके मीडिया को स्थानीय रूप से बदलता है। आपका मीडिया कभी अपलोड नहीं होता। Error reporting और usage analytics डिफ़ॉल्ट रूप से चालू रहते हैं, और आप इन्हें Settings में बंद कर सकते हैं।</p>
   <ul class="checklist">
     <li>✅ कोई क्लाउड अपलोड नहीं</li>
     <li>✅ खाते की आवश्यकता नहीं</li>
@@ -140,18 +140,18 @@ EncodeX को बताइए कि आप क्या करना चाह
     <li>✅ कोई फ़ाइल आकार सीमा नहीं</li>
     <li>✅ ऑफ़लाइन काम करता है</li>
   </ul>
-  <p><a href="/hi/privacy">जानें EncodeX आपकी निजता की रक्षा कैसे करता है →</a> · <a href="/hi/security">जानें कि रिलीज़ कैसे साइन और वेरिफ़ाई होती हैं →</a></p>
+  <p><a href="/hi/privacy">जानें EncodeX आपकी निजता की रक्षा कैसे करता है →</a> · <a href="/hi/security">जानें कि रिलीज़ कैसे प्रकाशित और वेरिफ़ाई होती हैं →</a></p>
 </div>
 
 ## लक्ष्य चुनें, कोडेक नहीं
 
-140 से ज़्यादा बिल्ट-इन प्रोफ़ाइलें सेटिंग्स कर देती हैं। आप बस बताइए क्या चाहिए।
+115 बिल्ट-इन प्रोफ़ाइलें सेटिंग्स कर देती हैं। आप बस बताइए क्या चाहिए।
 
 <div class="card-grid three-col">
   <div class="card">
-    <p class="card-head">📱 फ़ोन</p>
-    <p>छोटा MP4 जो हर जगह चलता है।</p>
-    <p><a href="/hi/video-converter">MP4 →</a></p>
+    <p class="card-head">📱 iPhone और iPad</p>
+    <p>Apple डिवाइस के लिए बनी प्रोफ़ाइलें।</p>
+    <p><a href="/hi/features">डिवाइस प्रोफ़ाइलें →</a></p>
   </div>
   <div class="card">
     <p class="card-head">▶️ YouTube</p>
@@ -170,7 +170,7 @@ EncodeX को बताइए कि आप क्या करना चाह
   </div>
   <div class="card">
     <p class="card-head">📧 ईमेल</p>
-    <p>साइज़ सीमा में फिट होने वाला छोटा MP4।</p>
+    <p>ईमेल के लिए छोटा MP4।</p>
     <p><a href="/hi/compress/mp4">MP4 कंप्रेस करें →</a></p>
   </div>
   <div class="card">
@@ -190,12 +190,12 @@ EncodeX को बताइए कि आप क्या करना चाह
   <div class="card">
     <span class="card-emoji">📱</span>
     <p class="card-head">"ये वीडियो मेरे फ़ोन पर नहीं चल रहा!"</p>
-    <p>कैमरे, दोस्त या किसी वेबसाइट से आई फ़ाइल आपका डिवाइस समझ नहीं पा रहा। EncodeX उसे एक ऐसे फ़ॉर्मैट में बदल देता है जो हर जगह चलता है।</p>
+    <p>कैमरे, दोस्त या किसी वेबसाइट से आई फ़ाइल आपका डिवाइस समझ नहीं पा रहा। EncodeX उसे एक ऐसे फ़ॉर्मैट में बदल देता है जो ज़्यादा डिवाइस पर चलता है।</p>
   </div>
   <div class="card">
     <span class="card-emoji">📧</span>
     <p class="card-head">"फ़ाइल बहुत बड़ी है, भेज नहीं पा रहा।"</p>
-    <p>ईमेल और मैसेजिंग ऐप्स की साइज़ लिमिट होती है। EncodeX फ़ाइलें छोटी कर देता है ताकि वो भेजी जा सकें — कोई ख़ास फ़र्क़ दिखे बिना।</p>
+    <p>ईमेल और मैसेजिंग ऐप्स की साइज़ लिमिट होती है। EncodeX फ़ाइलों को दोबारा एनकोड करके छोटा करता है — आकार कितना हो, यह आप चुनते हैं।</p>
   </div>
   <div class="card">
     <span class="card-emoji">🎵</span>
@@ -229,7 +229,7 @@ EncodeX **हमेशा के लिए पूरी तरह मुफ़�
   <div class="card">
     <span class="card-emoji">🔒</span>
     <p class="card-head">प्राइवेट</p>
-    <p>सब कुछ आपके अपने कंप्यूटर पर होता है। कुछ भी कभी कहीं अपलोड नहीं होता।</p>
+    <p>रूपांतरण आपके अपने कंप्यूटर पर होता है। आपका मीडिया कभी अपलोड नहीं होता।</p>
   </div>
   <div class="card">
     <span class="card-emoji">🆓</span>
@@ -239,11 +239,11 @@ EncodeX **हमेशा के लिए पूरी तरह मुफ़�
   <div class="card">
     <span class="card-emoji">⚡</span>
     <p class="card-head">हार्डवेयर एक्सेलरेटेड</p>
-    <p>अपने ग्राफ़िक्स चिप का अपने आप उपयोग करके रूपांतरण बहुत तेज़ कर देता है।</p>
+    <p>समर्थित GPU एनकोडर वीडियो के लिए अपने आप इस्तेमाल होता है, जिससे रूपांतरण तेज़ होते हैं।</p>
   </div>
   <div class="card">
     <span class="card-emoji">🌎</span>
-    <p class="card-head">35+ भाषाएँ</p>
+    <p class="card-head">56 लोकेल</p>
     <p>अरबी और हिब्रू जैसी दाएँ-से-बाएँ लिपियाँ भी शामिल — हर स्क्रीन अनुवादित है।</p>
   </div>
   <div class="card">
@@ -260,7 +260,7 @@ EncodeX **हमेशा के लिए पूरी तरह मुफ़�
 
 ## सभी के लिए सरल। डेवलपर्स के लिए शक्तिशाली।
 
-EncodeX की तीन पहचान हैं। रोज़ के कामों के लिए **ड्रैग-एंड-ड्रॉप इंटरफ़ेस** इस्तेमाल करें, स्क्रिप्टिंग के लिए **हेडलेस मोड** चुनें, या बिल्ट-इन MCP सर्वर के ज़रिए एक **AI असिस्टेंट** कनेक्ट करें।
+EncodeX के कई रूप हैं। रोज़ के कामों के लिए **ड्रैग-एंड-ड्रॉप इंटरफ़ेस** इस्तेमाल करें, स्क्रिप्टिंग के लिए **हेडलेस मोड** चुनें, बिल्ट-इन MCP सर्वर के ज़रिए एक **AI असिस्टेंट** कनेक्ट करें, या **Copilot** पेज पर अपना काम सादी भाषा में बताएँ।
 
 <div class="card-grid three-col">
   <div class="card">
@@ -288,13 +288,18 @@ EncodeX की तीन पहचान हैं। रोज़ के का
   </div>
   <div class="card">
     <span class="card-emoji">🎛️</span>
-    <p class="card-head">140+ तैयार प्रोफ़ाइलें</p>
+    <p class="card-head">115 तैयार प्रोफ़ाइलें</p>
     <p>YouTube, Instagram, TikTok, Apple डिवाइस, ProRes, HLS और बहुत कुछ। एक चुनें, सेटिंग्स अपने आप भर जाती हैं।</p>
   </div>
   <div class="card">
     <span class="card-emoji">🌀</span>
     <p class="card-head">घुमाएँ और तिरछी क्लिप सही करें</p>
-    <p>90°, 180° या 270°, साथ ही मिरर — MP4/MOV/MKV रहने पर बिना क्वालिटी लॉस।</p>
+    <p>90°, 180° या 270°, साथ ही मिरर। लॉसलेस मेटाडेटा रोटेशन सिर्फ़ MP4, MOV या MKV में स्ट्रीम-कॉपी मोड में लागू होता है।</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">💬</span>
+    <p class="card-head">Copilot</p>
+    <p>Copilot पेज पर बताएँ आपको क्या चाहिए। वह काम सही टूल को भेजता है, डिफ़ॉल्ट रूप से ऑफ़लाइन काम करता है, और आप चाहें तो अपना AI प्रोवाइडर जोड़ सकते हैं।</p>
   </div>
 </div>
 
@@ -352,7 +357,7 @@ EncodeX की तीन पहचान हैं। रोज़ के का
   </div>
   <div class="card">
     <p class="card-head"><a href="/hi/video-compressor">वीडियो कंप्रेसर</a></p>
-    <p>गुणवत्ता बनाए रखते हुए आकार घटाएँ – MP4, MKV और बहुत कुछ।</p>
+    <p>वीडियो फ़ाइल का आकार घटाएँ – MP4, MKV और बहुत कुछ।</p>
   </div>
   <div class="card">
     <p class="card-head"><a href="/hi/audio-converter">ऑडियो कन्वर्टर</a></p>
@@ -372,7 +377,7 @@ EncodeX की तीन पहचान हैं। रोज़ के का
   </div>
   <div class="card">
     <p class="card-head"><a href="/hi/codecs/h265">H.265 / HEVC</a></p>
-    <p>समान गुणवत्ता पर H.264 का लगभग आधा आकार।</p>
+    <p>समान गुणवत्ता पर अक्सर H.264 से छोटी फ़ाइलें, पर एनकोडिंग धीमी होती है।</p>
   </div>
   <div class="card">
     <p class="card-head"><a href="/hi/learn/what-is-ffmpeg">FFmpeg क्या है?</a></p>
@@ -384,7 +389,7 @@ EncodeX की तीन पहचान हैं। रोज़ के का
   </div>
   <div class="card">
     <p class="card-head"><a href="/hi/convert/mp4-to-mkv">MP4 से MKV</a></p>
-    <p>MP4 को MKV में बदलें — बिना गुणवत्ता घटाए, सबटाइटल संरक्षित।</p>
+    <p>MP4 को बिना री-एनकोड किए MKV में रीमक्स करें, जब स्ट्रीम MKV के साथ संगत हों।</p>
   </div>
   <div class="card">
     <p class="card-head"><a href="/hi/convert/mp4-to-webm">MP4 से WebM</a></p>
@@ -400,7 +405,7 @@ EncodeX की तीन पहचान हैं। रोज़ के का
   </div>
   <div class="card">
     <p class="card-head"><a href="/hi/compress/mp4">MP4 कंप्रेस करें</a></p>
-    <p>ईमेल, चैट और अपलोड सीमा के लिए MP4 वीडियो छोटा करें।</p>
+    <p>MP4 वीडियो को ईमेल, चैट और अपलोड सीमा के लिए छोटे आकार में दोबारा एनकोड करें।</p>
   </div>
   <div class="card">
     <p class="card-head"><a href="/hi/compress/mkv">MKV कंप्रेस करें</a></p>
@@ -412,7 +417,7 @@ EncodeX की तीन पहचान हैं। रोज़ के का
   </div>
   <div class="card">
     <p class="card-head"><a href="/hi/convert/mov-to-mp4">MOV से MP4</a></p>
-    <p>Apple की MOV फ़ाइलें हर डिवाइस और ऐप पर चलाने के लिए बदलें।</p>
+    <p>Apple की MOV फ़ाइलें ज़्यादा डिवाइस और ऐप पर चलाने के लिए बदलें।</p>
   </div>
   <div class="card">
     <p class="card-head"><a href="/hi/convert/mkv-to-webm">MKV से WebM</a></p>
@@ -436,7 +441,7 @@ EncodeX की तीन पहचान हैं। रोज़ के का
   </div>
   <div class="card">
     <p class="card-head"><a href="/hi/convert/flv-to-mp4">FLV से MP4</a></p>
-    <p>Flash युग की FLV वीडियो को हर जगह चलने वाले MP4 में बदलें।</p>
+    <p>Flash युग की FLV वीडियो को व्यापक रूप से समर्थित MP4 में बदलें।</p>
   </div>
   <div class="card">
     <p class="card-head"><a href="/hi/convert/flv-to-mkv">FLV से MKV</a></p>
@@ -444,7 +449,7 @@ EncodeX की तीन पहचान हैं। रोज़ के का
   </div>
   <div class="card">
     <p class="card-head"><a href="/hi/convert/m4v-to-mp4">M4V से MP4</a></p>
-    <p>iTunes और Apple की वीडियो फ़ाइलें किसी भी डिवाइस पर चलाएँ।</p>
+    <p>iTunes और Apple की वीडियो फ़ाइलें ज़्यादा डिवाइस पर चलाएँ।</p>
   </div>
   <div class="card">
     <p class="card-head"><a href="/hi/convert/wmv-to-mp4">WMV से MP4</a></p>
@@ -476,6 +481,6 @@ EncodeX की तीन पहचान हैं। रोज़ के का
 
 <div class="cta-card">
   <h2>आज़माने को तैयार हैं?</h2>
-  <p>इंस्टॉल होने में सिर्फ़ दो मिनट — और ये हमेशा के लिए मुफ़्त है।</p>
+  <p>इंस्टॉल करें, और यह मुफ़्त में इस्तेमाल करें।</p>
   <p><strong><a href="/hi/download">⬇️ EncodeX अभी डाउनलोड करें</a></strong> · <a href="/hi/features">पूरा टूर देखें</a></p>
 </div>

@@ -23,7 +23,7 @@ EncodeX pulls the sound from almost any video format — **MP4, MKV, MOV, AVI, W
 2. Drag your **video file** into the window
 3. Choose **Extract Audio**, pick an audio format, and click **Convert**
 
-Super simple. You can even **batch extract** an entire folder of videos into audio all at once while you get on with something else.
+Super simple. You can even **batch extract** an entire folder of videos into audio all at once while you get on with something else — or ask **Copilot** to plan the extraction in plain language.
 
 ## When Extracting Audio Is Useful
 
@@ -36,7 +36,7 @@ Super simple. You can even **batch extract** an entire folder of videos into aud
 
 - **Offline** — your video never leaves your computer
 - **No uploads, no accounts, no watermarks**
-- **Hardware accelerated** where possible, for fast extraction
+- **Audio-only output** — the video isn't re-encoded, so extraction stays quick
 - Free and **open source**, on **Windows, Mac and Linux**
 
 ## FAQ

@@ -2,14 +2,14 @@
 
 EncodeX ships a full [Model Context Protocol](https://modelcontextprotocol.io) server so MCP hosts — Claude Desktop, Claude Code, VS Code, Cursor, and custom/headless agents — can probe media, convert, compress, extract audio, cut, remux, demux, batch-process, and (opt-in) read live GUI state. It runs over the same media engine as the CLI, so behavior is identical across surfaces.
 
-The server is also [MCP Apps](https://modelcontextprotocol.io) (SEP-1865) compliant: in hosts that support the extension, the job tools render as interactive views (queue dashboard, job progress card, media-info table, conversion form). See [`MCP_UI.md`](MCP_UI.md) for the view catalogue; hosts without the extension fall back to the JSON text payloads documented here.
+The server is also [MCP Apps](https://modelcontextprotocol.io) (SEP-1865) compliant: in hosts that support the extension, the job and media-intelligence tools render as interactive views (queue dashboard, job progress card, media-info table, conversion form, inspector, plan, size-target lab, error card, batch dashboard, and workflow report). See [`MCP_UI.md`](MCP_UI.md) for the view catalogue; hosts without the extension fall back to the JSON text payloads documented here.
 
-There are two launch modes that share one tool/resource/prompt catalogue:
+There are two launch modes that share one core catalogue:
 
 | Mode | Transport | Launched by | Surface |
 | ---- | --------- | ----------- | ------- |
-| **Standalone** | stdio | `encodex --mcp` or `node dist/mcp/index.js` | 15 core tools + app-only `commit_operation` = **16** |
-| **Embedded** | Streamable HTTP | Toggle in **Settings → MCP Server** | 15 core + app-only `commit_operation` + 6 GUI-parity tools = **22** |
+| **Standalone** | stdio | `encodex --mcp` or `node dist/mcp/index.js` | 36 model-visible tools + app-only `commit_operation` = **37 registrations** |
+| **Embedded** | Streamable HTTP | Toggle in **Settings → MCP Server** | 36 core + app-only `commit_operation` + 6 GUI-parity tools = **43 registrations (42 model-visible)** |
 
 Related docs: [`CLI.md`](CLI.md), [`IPC.md`](IPC.md), [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
@@ -149,6 +149,34 @@ When a client advertises MCP Apps, the mutating tools below answer with a confir
 | `demux_media` | `input`, `outputDir?`, `video?`, `audio?`, `subtitles?`, `all?`, `videoContainer?`, `audioCodec?`, `subtitleCodec?`, `videoFilters?`, `transcoder?` | `{ total, transcoder, jobs: [{ kind, streamIndex, copy, codec, output, jobId, status }], warnings }` |
 | `commit_operation` | `tool` (the confirmed operation), `args` (its exact arguments) | The confirmed operation's result. App-only (`_meta.ui.visibility: ['app']`); never callable by the model. |
 
+### Media intelligence & workflow tools (both modes)
+
+These tools run locally and never call a cloud model. Planning, diagnosis, and reporting tools are deterministic; transcription and translation use local runtimes. Planning tools return proposals only; nothing runs until the plan is committed through `execute_workflow` or the underlying operation tool.
+
+| Tool | Key inputs | Returns |
+| ---- | ---------- | ------- |
+| `analyze_media` | `input`, `focus?` (`compat`/`quality`/`size`) | Plain-language diagnosis: findings by severity + suggested next steps |
+| `recommend_settings` | `input`, `intent`, `constraints?` | Reviewable plan: `convert_media` args, profile id, rationale, confidence |
+| `estimate_conversion` | `input`, `args?` | Estimated output size/duration + hardware-encoder availability (`isEstimated: true`) |
+| `validate_output` | `output`, `expect?` | Pass/fail per constraint (size ceiling, resolution, codec, container, streams, duration) |
+| `compress_to_target` | `input`, `maxBytes`, `intent?`, codec/bitrate options, `maxCandidates?`, `output?`, `transcoder?` | Measured size-target loop: winning candidate, every attempt, estimates |
+| `analyze_folder` | `path`, `intent?`, `recursive?`, `maxFiles?`, `transcoder?` | Per-file space-savings breakdown + folder total (projections) |
+| `explain_error` | `code?`, `message?`, `detail?`, `jobId?`, `input?`, `tool?`, `args?` | Plain-language explanation, likely causes, suggested fixes |
+| `advise_encoding` | `input` | Recommended encoder + GPU usage with trade-offs |
+| `quality_report` | `source`, `output`, `expect?` | Source-vs-output checks (resolution, audio, codec, duration) + findings |
+| `find_similar_media` | `inputs[]`, `method?` (`hash`/`metadata`), `threshold?`, `recursive?`, `maxCandidates?` | Duplicate/near-duplicate clusters |
+| `transcribe_media` | `input`, `language?`, `format?` (`srt`/`vtt`/`ass`), `modelPath?`, `timeoutMs?` | Timed segments + optional subtitle text (local whisper.cpp) |
+| `translate_subtitles` | `input?` or `segments[]`, `targetLanguage`, `sourceLanguage?`, `format?`, `provider?` | Translated segments/subtitles, timing preserved (local provider) |
+| `generate_chapters` | `input?` or `segments[]`, duration bounds, `maxChapters?` | Chapters, YouTube timestamps, FFmpeg chapter metadata |
+| `search_transcript` | `input?` or `segments[]`, `query`, `maxMatches?`, `context?` | Ranked passages, best span, ready-to-use `cut_video` args |
+| `summarize_media` | `input?` or `segments[]`, `maxSentences?`, `maxTopics?` | Extractive summary + topic list |
+| `find_highlights` | `input`, `durationSeconds?`, `samples?`, `sceneThreshold?`, `maxHighlights?`, `maxThumbnails?` | Scene boundaries, ranked highlight spans, thumbnail candidates |
+| `plan_social_pack` | `input`, `platforms?`, `maxDurationSeconds?`, `outputDir?` | Per-platform clips + runnable workflow (not executed) |
+| `plan_edit` | `input?` or `segments[]`, `scenes?`, `intent` (remove intro/outro/silence, keep range/first/last) | Exact cut span + `cut_video` args |
+| `plan_agent` | `inputs[]`, `intent`, `constraints?`, `recursive?`, `maxFiles?`, `minSavings?`, `outputDir?` | Per-file actions, skips, runnable workflow |
+| `plan_workflow` | `steps[]` (typed DAG) | Dry-run: execution order, dependencies, validation issues |
+| `execute_workflow` | `steps[]` | Per-step report with job ids and outputs; confirmation-gated in MCP Apps hosts |
+
 ### GUI-parity tools (embedded mode only)
 
 | Tool | Key inputs | Returns |
@@ -172,7 +200,7 @@ When a client advertises MCP Apps, the mutating tools below answer with a confir
 
 ### MCP Apps views
 
-When a host supports MCP Apps, five `ui://` resources render as interactive views (MIME `text/html;profile=mcp-app`):
+When a host supports MCP Apps, eleven `ui://` resources render as interactive views (MIME `text/html;profile=mcp-app`):
 
 | URI | Rendered by |
 | --- | ----------- |
@@ -180,7 +208,13 @@ When a host supports MCP Apps, five `ui://` resources render as interactive view
 | `ui://encodex/job` | `get_job` |
 | `ui://encodex/media-info` | `get_media_info` |
 | `ui://encodex/convert` | `convert_media` |
-| `ui://encodex/confirm` | all other mutating tools (proposal the user approves) |
+| `ui://encodex/confirm` | `compress_image`, `extract_audio`, `cut_video`, `remux_media`, `demux_media` (proposal the user approves) |
+| `ui://encodex/inspector` | `analyze_media` |
+| `ui://encodex/plan` | `recommend_settings`, `estimate_conversion` |
+| `ui://encodex/lab` | `compress_to_target` |
+| `ui://encodex/error` | `explain_error` |
+| `ui://encodex/batch` | `batch_convert` confirmation + live per-file dashboard |
+| `ui://encodex/workflow` | `plan_workflow`, `execute_workflow` |
 
 See [`MCP_UI.md`](MCP_UI.md) for what each view shows, the `structuredContent` shapes, the user-approval gate, and the bidirectional actions (including confirm-gated cancel).
 
@@ -414,9 +448,9 @@ npm run mcp:smoke            # node dist/mcp/index.js
 npm run mcp:smoke:electron   # electron . --mcp (requires a display / xvfb on Linux)
 ```
 
-Both assert the handshake, the 16-tool stdio catalogue, the MCP Apps surface (the `io.modelcontextprotocol/ui` capability plus every `ui://` view resource), and a live `ping`. (The 6 GUI-parity tools are only reachable through the embedded HTTP server.)
+Both assert the handshake, the 37-registration stdio catalogue (36 model-visible), the MCP Apps surface (the `io.modelcontextprotocol/ui` capability plus every `ui://` view resource), and a live `ping`. (The 6 GUI-parity tools are only reachable through the embedded HTTP server.)
 
-For the complete local surface — every stdio tool with real FFmpeg conversions, the standalone HTTP transport with its auth/topology guards, and the 22-tool embedded server exactly as `.vscode/mcp.json` dials it:
+For the complete local surface — every stdio tool with real FFmpeg conversions, the standalone HTTP transport with its auth/topology guards, and the 43-registration (42 model-visible) embedded server exactly as `.vscode/mcp.json` dials it:
 
 ```bash
 npm run build

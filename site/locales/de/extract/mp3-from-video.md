@@ -19,7 +19,7 @@ EncodeX extrahiert die Tonspur aus deinem Video und speichert sie als **MP3**, d
 ### Das perfekte MP3 aus Videos
 
 - **Volle Kontrolle** – wähle Bitrate (128–320 kbps) und Abtastrate
-- **Native Spuren werden verwendet** – kein Qualitätsverlust durch Neu-Abmischung
+- **Original-Tonspur wird verwendet** – direkt aus deinem Video encodiert
 - **Stapelmodus** – extrahiere MP3 aus einem ganzen Ordner voller Videos auf einmal
 - **Offline** – deine Dateien verlassen nie deinen Computer
 
@@ -34,7 +34,7 @@ Wir können auf nichts verlinken, das das Urheberrecht verletzt – stelle siche
 
 ## Häufig gestellte Fragen
 
-**Bleibt beim Extrahieren von MP3 aus einem Video die Qualität erhalten?** Ja. EncodeX liest die Original-Tonspur und encodiert sie mit den von dir gewählten Einstellungen in MP3. Verwende 320 kbps für fast verlustfreien Klang.
+**Bleibt beim Extrahieren von MP3 aus einem Video die Qualität erhalten?** MP3 ist ein verlustbehaftetes Format, daher ist die Ausgabe nicht identisch mit der Quelle. EncodeX liest die Original-Tonspur und encodiert sie mit den von dir gewählten Einstellungen in MP3; 320 kbps liefert die höchste MP3-Qualität.
 
 **Kann ich MP3 aus MKV-Dateien extrahieren?** Ja – jeder Video-Container funktioniert, einschließlich MKV, MP4, MOV, AVI und WebM.
 

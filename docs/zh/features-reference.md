@@ -6,7 +6,7 @@ EncodeX 是一款跨平台多媒体转换工具，将 FFmpeg 的强大能力带�
 
 ### 媒体转换
 
-在视频/音频格式之间转换，可精细控制编解码器选择（51 种视频编解码器，涵盖软件与硬件编码器家族；27 种音频编解码器）、比特率、输出分辨率（可选保持宽高比）、像素格式（56 种格式按位深分组）、质量等级（qscale）、音轨包含与否以及 transcoder 核心选择。多个文件可通过批处理队列排队处理（见下文）。
+在视频/音频格式之间转换，可精细控制编解码器选择（51 种视频编解码器，涵盖软件与硬件编码器家族；27 种音频编解码器）、比特率、输出分辨率（可选保持宽高比）、像素格式（56 种格式按位深分组）、质量等级（qscale）、音轨包含与否、transcoder 核心选择以及视频滤镜（8 个精选预设：crop、framerate、deinterlace、denoise、sharpen、color、grayscale、blur）。多个文件可通过批处理队列排队处理（见下文）。
 
 ### 媒体旋转与镜像
 
@@ -16,7 +16,7 @@ EncodeX 是一款跨平台多媒体转换工具，将 FFmpeg 的强大能力带�
 
 应用预配置的编码预设以立即填充转换设置。配置文件封装了完整的编码配置——容器格式、视频编解码器、音频编解码器、比特率、CRF/质量、缩放、像素格式和高级 FFmpeg 参数——这样你就不必手动配置每一项设置。
 
-- **8 个类别中的 140+ 内置配置文件**：Web 与社交（YouTube、Instagram、TikTok、Facebook、X）、设备（Apple、Android、游戏主机）、视频编解码器、专业（ProRes、DNxHD/HR、FFV1）、流媒体（HLS、DASH）、音频、图片和高级
+- **8 个类别中的 115 内置配置文件**：Web 与社交（YouTube、Instagram、TikTok、Facebook、X）、设备（Apple、Android、游戏主机）、视频、专业（ProRes、DNxHD/HR、FFV1）、流媒体（HLS、DASH）、音频、图片和高级
 - **自定义配置文件**——创建、编辑和删除你自己的配置文件；保存在本地存储中
 - **最近使用**——快速访问最近应用的 5 个配置文件
 - **类别筛选**——通过带图标徽章的类别浏览配置文件
@@ -27,6 +27,15 @@ EncodeX 是一款跨平台多媒体转换工具，将 FFmpeg 的强大能力带�
 ### 无损复制
 
 无需重新编码即可流复制视频或音轨（`-c copy`）。适用于快速更改容器格式、remux 或对画质保持要求极高的场景。
+
+### Remux 与 Demux
+
+- **Remux** — 在流复制的同时更改容器，可选流映射、添加外部字幕/音频、封面、章节导入或删除、字幕编解码器选择以及音频同步偏移。
+- **Demux** — 将每个视频/音频/字幕流提取为独立文件，可选按类型转换（视频容器、音频编解码器、字幕格式），并可对重新编码的视频应用视频滤镜。
+
+### Copilot（AI 助手）
+
+Copilot 页面根据自然语言目标针对文件和文件夹规划工作。支持 13 种操作：六种由队列支持（`convert`、`remux`、`demux`、`extract_audio`、`compress_image`、`cut`），以及七种只读媒体智能操作（`analyze`、`transcribe`、`summarize`、`chapters`、`search_transcript`、`translate`、`find_similar`）。计划可由确定性的离线 `rules` 引擎（默认）生成，也可由 OpenAI、Anthropic、Gemini 或本地运行时生成。提交计划会复用批处理队列。API 密钥会发送到主进程，加密后存储，且永远不会返回给 renderer；设置中只显示密钥是否存在以及脱敏提示。
 
 ### 硬件加速
 
@@ -50,9 +59,9 @@ EncodeX 是一款跨平台多媒体转换工具，将 FFmpeg 的强大能力带�
 
 ### 批处理队列
 
-以可配置的操作（转码、提取音频、压缩图像）处理多个文件。任务通过一个审阅对话框添加，在进入队列之前可调整输出名称和选项。
+以可配置的操作（转码、提取音频、压缩图像、remux、demux）处理多个文件。任务通过一个审阅对话框添加，在进入队列之前可调整输出名称和选项。
 
-- **并行处理** — 最多同时运行 4 个任务（`MAX_QUEUE_CONCURRENCY = 4`）；并发上限可在运行时配置并持久化。
+- **并行处理** — 最多同时运行 4 个任务（`MAX_QUEUE_CONCURRENCY = 4`）；并发上限默认为 1，可在运行时配置并持久化。
 - **队列生命周期** — 启动、暂停和恢复整个队列；全部取消；清除已完成/失败的任务；移除单个任务。
 - **重新排序** — 拖放重排队列中的任务（带放置区域），底层由 `QUEUE_MOVE_TO` 通道支持，报告任务的新位置。
 - **任务编辑** — 在任何排队任务开始前替换其选项（及可选的输出路径）（`QUEUE_UPDATE_OPTIONS`）。
@@ -70,14 +79,25 @@ EncodeX 是一款跨平台多媒体转换工具，将 FFmpeg 的强大能力带�
 
 ### 设置
 
-专用设置页面，用于主题、硬件加速（启用/禁用、模式、编码器类型）、窗口置顶、开机自启、批处理队列并发数以及完成后电源操作。偏好设置持久化到 `localStorage` 并在启动时生效。
+专用设置页面，用于主题、硬件加速（启用/禁用、模式、编码器类型）、窗口置顶、开机自启、批处理队列并发数、完成后电源操作、MCP 服务器（启用/禁用、端口、访问令牌）、AI 提供方/模型/密钥编辑器，以及遥测退出选项（错误报告 + 用量分析，默认开启）。普通偏好设置持久化到 `localStorage` 并同步到主进程；MCP 设置持久化到 `mcp-settings.json`，AI 密钥由主进程加密。
+
+### MCP Server {#mcp-server}
+
+EncodeX 可以作为 [Model Context Protocol](https://modelcontextprotocol.io) 服务器运行，使 AI 助手和自动化客户端能够直接操作它。提供两种接入方式：
+
+- **独立 stdio 服务器** — 通过 `encodex --mcp`（或 `node dist/mcp/index.js`）启动，在 stdio 上使用 JSON-RPC 通信，stdout 保留用于协议消息。这是 MCP 宿主启动服务器进程时使用的模式。
+- **内嵌 HTTP 服务器** — 一个可选的 Streamable HTTP 端点，位于 `http://127.0.0.1:8765/mcp`，在 GUI 运行期间通过**设置 → MCP 服务器**启用。它与同一个工具核心以及正在运行的应用的任务队列共享状态。
+
+stdio 接口暴露 36 个模型可见工具（37 个注册项，包含仅应用内使用的 `commit_operation`）；内嵌 HTTP 接口额外提供 6 个 GUI 对等工具（`get_queue_state`、`cancel_all_jobs`、`get_timeline`、`extract_preview`、`get_system_info`、`check_for_updates`），共计 42 个模型可见工具（43 个注册项）。两种接口都暴露 3 个资源（`encodex://profiles`、`encodex://capabilities`、`encodex://codecs`）和 4 个提示模板（`convert-video`、`extract-audio`、`compress-image`、`batch-convert`）。转换是异步的：先启动任务，然后轮询 `get_job` 或 `list_jobs` 获取进度和结果。
+
+内嵌服务器仅绑定回环地址，校验 `Origin` 头，支持可选的 Bearer 令牌（以恒定时间比较），并且在 `/mcp` 上仅接受 `GET`、`POST` 和 `DELETE`。服务器停止或应用退出时，所有会话都会被强制关闭。MCP 设置（启用状态、端口、令牌）持久化在用户数据目录下的 `mcp-settings.json` 中。
 
 ### 键盘快捷键
 
-中央快捷键注册表（`src/renderer/constants/shortcuts.ts`）定义了九个分区（global、convert、media info、image compress、audio extract、video cut、batch queue、logs、dashboard）共 60 多个快捷键。亮点：
+中央快捷键注册表（`src/renderer/constants/shortcuts.ts`）定义了 11 个分区（global、convert、media info、image compress、audio extract、video cut、remux、demux、batch queue、logs、dashboard）共 82 个快捷键。亮点：
 
 - `Ctrl+/` — 打开快捷键帮助对话框
-- `Alt+1`…`Alt+9` — 直接跳转到某个页面
+- `Alt+0`…`Alt+9` — 直接跳转到某个页面（`Alt+0` 为 Remux）
 - `Ctrl+O` / `Ctrl+Shift+S` / `Ctrl+Enter` — 选择输入 / 选择输出 / 开始任务（各页面保持一致）
 - `Ctrl+Shift+P` / `Ctrl+Shift+C` — 暂停 / 取消当前任务
 - 批处理队列：`Ctrl+E` 导出、`Ctrl+I` 导入、`1`–`5` 状态过滤、`F` 聚焦搜索
@@ -95,7 +115,7 @@ EncodeX 是一款跨平台多媒体转换工具，将 FFmpeg 的强大能力带�
 
 ### 仪表板
 
-落地页为每个工具提供快速操作磁贴（数字键 `1`–`6` 直接跳转），并有季节性彩蛋品牌标识（见下文）。
+落地页为每个工具提供快速操作磁贴（数字键 `1`–`8` 直接跳转），并有季节性彩蛋品牌标识（见下文）。
 
 ### 彩蛋
 
@@ -123,7 +143,7 @@ Toast 通知（success/info/warning/error），持续时间可配置，提供非
 
 ### 国际化
 
-覆盖 35 种语言的 56 个 locale：
+56 个 locale：
 
 | 语言        | Locales                                    |
 | ----------- | ------------------------------------------ |
@@ -165,11 +185,11 @@ Toast 通知（success/info/warning/error），持续时间可配置，提供非
 
 ### 应用内更新
 
-自定义更新管理器，检查 GitHub Releases 获取新版本，通知用户可用性，在应用内下载平台对应的安装程序（`.exe` / `.dmg` / `.AppImage`）并实时报告进度，完成后启动安装程序。版本比较使用 semver 并剥离 pre-release 后缀。更新流程完全集成到 About 页面，配有"检查更新"按钮和全局对话框。
+自定义更新管理器，检查 GitHub Releases 获取新版本，通知用户可用性，在应用内下载平台对应的安装程序（`.exe` / `.dmg` / `.AppImage`）并实时报告进度；用户可选择立即安装，或安排在下次重启时安装。版本比较遵循 semver 优先级规则（包括预发布标识符），忽略构建元数据。当 GitHub 发布 `sha256` 或 `sha512` 资产摘要时，下载内容会据此校验。更新不会自动安装。更新流程完全集成到 About 页面，配有"检查更新"按钮和全局对话框。
 
 ### 错误处理
 
-结构化错误系统，带有类型化错误码（`ErrorCode`）、面向用户的本地化消息、全局错误 snackbar、内联错误横幅、toast 通知、嵌套 React error boundaries 和应用内错误历史（上限 50）。所有错误都通过 `formatError()` 规范化并通过 IPC 传播。
+结构化错误系统，带有 28 个类型化错误码（`ErrorCode`）、面向用户的本地化消息、全局错误 snackbar、内联错误横幅、toast 通知、嵌套 React error boundaries 和应用内错误历史（上限 50）。所有错误都通过 `formatError()` 规范化并通过 IPC 传播。
 
 ## 支持的媒体格式
 

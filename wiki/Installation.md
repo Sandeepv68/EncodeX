@@ -82,6 +82,6 @@ The [Testing page](Testing) covers the full testing script list; the [Contributi
 | Build      | Vite 8, TypeScript 5 |
 | Testing    | Vitest 4, Playwright |
 | Media      | FFmpeg (bundled via ffmpeg-static) |
-| i18n       | i18next (56 locales / 35 languages) |
+| i18n       | i18next (56 locales, 36 base language subtags) |
 | AI         | @modelcontextprotocol/sdk (MCP server) |
 | Monitoring | provider-agnostic layer with a Sentry adapter |

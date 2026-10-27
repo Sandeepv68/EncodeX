@@ -49,42 +49,50 @@
 
 EncodeX मुफ़्त, ओपन-सोर्स FFmpeg GUI है जो FFmpeg की पूरी शक्ति को एक आधुनिक, सहज desktop interface में लाता है। यह आपको मीडिया को formats के बीच convert करने, audio extract करने, videos cut करने, और images compress करने देता है — सब कुछ एक clean, responsive UI के माध्यम से, batch queue, hardware acceleration, CLI mode, और पूर्ण internationalization के साथ।
 
-AI असिस्टेंट से काम करवाना चाहते हैं? EncodeX एक **बिल्ट-इन MCP सर्वर** के साथ भी आता है, ताकि Claude Desktop, Cursor, VS Code और custom agents जैसे टूल [Model Context Protocol](https://modelcontextprotocol.io) के माध्यम से आपके मीडिया को convert और manage कर सकें — और वह भी 100% आपके अपने कंप्यूटर पर।
+AI असिस्टेंट से काम करवाना चाहते हैं? EncodeX एक **बिल्ट-इन MCP सर्वर** के साथ भी आता है, ताकि Claude Desktop, Cursor, VS Code और custom agents जैसे टूल [Model Context Protocol](https://modelcontextprotocol.io) के माध्यम से आपके मीडिया को convert और manage कर सकें — और यह सब आपके अपने कंप्यूटर पर ही रहता है।
+
+रूपांतरण **आपके कंप्यूटर पर स्थानीय रूप से** चलता है — कोई खाता नहीं, कोई media upload नहीं, कोई watermark नहीं, कोई subscription नहीं। Copilot असिस्टेंट केवल तभी cloud AI provider से संपर्क करता है जब आप एक configure करते हैं।
 
 ## EncodeX क्यों?
 
 - ✅ **हमेशा मुफ़्त** — ओपन सोर्स (MIT), कोई paid tier नहीं
-- ✅ **100% प्राइवेट** — आपकी फ़ाइलें कभी आपकी मशीन से बाहर नहीं जातीं
-- ✅ **कोई खाता नहीं, कोई साइन-अप नहीं, कोई tracking नहीं**
+- ✅ **स्थानीय रूपांतरण** — मीडिया आपकी मशीन पर process होता है
+- ✅ **कोई खाता नहीं, कोई साइन-अप नहीं**
+- ✅ **Opt-out telemetry** — error reporting और usage analytics डिफ़ॉल्ट रूप से ON हैं और Settings में बंद किए जा सकते हैं
 - ✅ **कोई watermark नहीं, कोई file-size सीमा नहीं, कोई ads नहीं**
 - ✅ **FFmpeg powered** — 51 video codecs, 27 audio codecs, 56 pixel formats
 - ✅ **हार्डवेयर त्वरण** — NVIDIA, Intel, AMD, Apple Silicon तेज़ encodes के लिए
 - ✅ **बैच प्रोसेसिंग** — पूरे फ़ोल्डर एक साथ convert करें
 - ✅ **AI-रेडी MCP सर्वर** — Claude, Cursor, VS Code और custom agents से EncodeX चलाएँ
-- ✅ **क्रॉस-प्लेटफ़ॉर्म** — Windows 10+, macOS 11+, Linux
-- ✅ **35+ भाषाएँ** RTL समर्थन के साथ
+- ✅ **क्रॉस-प्लेटफ़ॉर्म** — Windows, macOS, और Linux (x64 और arm64)
+- ✅ **56 locales** RTL समर्थन के साथ
 
 ## ✨ विशेषताएँ
 
 - **🔄 मीडिया रूपांतरण** — 51 video codecs, 27 audio codecs, 56 pixel formats जिनमें codec/bitrate/scale/quality नियंत्रण हैं
-- **🌀 रोटेशन और मिरर** — वीडियो और छवियों को 90°, 180° या 270° दक्षिणावर्त घुमाएँ और उन्हें क्षैतिज या लंबवत फ़्लिप करें; MP4/MOV/MKV स्ट्रीम-कॉपी में रोटेशन बिना क्वालिटी लॉस के मेटाडेटा के रूप में सहेजा जाता है
-- **🎛️ रूपांतरण प्रोफ़ाइल** — 8 श्रेणियों (YouTube, Instagram, TikTok, Apple, Android, ProRes, HLS आदि) में 140+ पूर्व-कॉन्फ़िगर किए गए प्रीसेट, कस्टम प्रोफ़ाइल निर्माण और हाल ही में उपयोग की गई प्रोफ़ाइलों की ट्रैकिंग के साथ
+- **🌀 रोटेशन और मिरर** — वीडियो और छवियों को 90°, 180° या 270° दक्षिणावर्त घुमाएँ और उन्हें क्षैतिज या लंबवत फ़्लिप करें; स्ट्रीम-कॉपी मोड में MP4/MOV/MKV आउटपुट रोटेशन को बिना क्वालिटी लॉस के मेटाडेटा के रूप में सहेजते हैं
+- **🎛️ रूपांतरण प्रोफ़ाइल** — 8 श्रेणियों (YouTube, Instagram, TikTok, Apple, Android, ProRes, HLS आदि) में 115 पूर्व-कॉन्फ़िगर किए गए प्रीसेट, कस्टम प्रोफ़ाइल निर्माण और हाल ही में उपयोग की गई प्रोफ़ाइलों की ट्रैकिंग के साथ
 - **⚡ हार्डवेयर त्वरण** — NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, Media Foundation
 - **✂️ वीडियो कटिंग** — एक built-in player (rawvideo + PCM pipes, Canvas + Web Audio) के साथ frame-accurate trimming और zoomable timeline (waveform + thumbnail montage)
-- **📋 बैच क्यू** — real-time progress, per-job errors, pause/resume, drag-and-drop reordering, job option editing, status filters, JSON export/import, और when-done power actions (shutdown/sleep/hibernate) के साथ समानांतर प्रोसेसिंग (अधिकतम 4 समवर्ती jobs)
+- **🤖 Copilot** — AI असिस्टेंट पेज (`/copilot`) जिसमें 13 operations हैं; AI provider `rules` है (offline, डिफ़ॉल्ट), OpenAI, Anthropic, Gemini, या एक local model
+- **🎞️ Remux और Demux** — stream copy से container बदलें, subtitles, audio, cover art, या chapters जोड़ें, या अलग-अलग streams extract करें
+- **🎛️ वीडियो फ़िल्टर** — 8 filter presets (crop, framerate, deinterlace, denoise, sharpen, color, grayscale, blur) और custom filter chains
+- **🧭 Getting Started** — डैशबोर्ड कार्ड जिसमें छह लक्ष्य हैं: Ask Copilot, Convert, Compress, Extract audio, Trim, Remux
+- **📜 Terms & Conditions** — पहली बार चलने पर terms dialog ऐप को gate करता है
+- **📋 बैच क्यू** — real-time progress, per-job errors, pause/resume, drag-and-drop reordering, job option editing, status filters, JSON export/import, और when-done power actions (shutdown/sleep/hibernate) के साथ समानांतर प्रोसेसिंग (अधिकतम 4 समवर्ती jobs, डिफ़ॉल्ट 1)
 - **🖼️ इमेज कम्प्रेशन** — JPEG/PNG/WebP/BMP/GIF/TIFF जिनमें quality/scale, EXIF viewer, RGB/luma histograms हैं
 - **🎵 ऑडियो एक्सट्रैक्शन** — किसी भी video file से 27 audio codecs में से कोई भी
 - **ℹ️ मीडिया जानकारी** — प्रत्येक stream का पूर्ण per-stream probe: codec, profile, resolution, color metadata, frame rate, आदि
-- **⌨️ CLI मोड** — subcommands (`convert`, `info`, `capabilities`, `compress`, `extract-audio`, `batch`) के साथ headless scripting
-- **🤖 MCP सर्वर** — बिल्ट-इन [Model Context Protocol](https://modelcontextprotocol.io) सर्वर: stdio पर 13 core tools, 3 resources और 4 prompts (`encodex --mcp`), साथ ही एक embedded localhost HTTP endpoint जो 6 GUI-parity tools (live queue, preview, timeline, system info, updates) जोड़ता है। Claude Desktop, Claude Code, Cursor, VS Code या किसी भी MCP client से one-off conversions चलाएँ या async jobs manage करें
+- **⌨️ CLI मोड** — subcommands (`convert`, `info`, `capabilities`, `compress`, `extract-audio`, `remux`, `demux`, `batch`) के साथ headless scripting
+- **🤖 MCP सर्वर** — बिल्ट-इन [Model Context Protocol](https://modelcontextprotocol.io) सर्वर: stdio पर 36 model-visible tools, 3 resources और 4 prompts (`encodex --mcp`), साथ ही एक वैकल्पिक embedded localhost HTTP endpoint (डिफ़ॉल्ट रूप से बंद) जो 6 GUI-parity tools (live queue, preview, timeline, system info, updates) जोड़ता है, कुल 42 model-visible tools के लिए। Claude Desktop, Claude Code, Cursor, VS Code या किसी भी MCP client से one-off conversions चलाएँ या async jobs manage करें
 - **⚙️ 3 ट्रांसकोडर कोर** — FFmpeg API (fluent-ffmpeg), FFmpeg CLI (child_process), BMF Framework
-- **🌍 56 लोकेल** — RTL समर्थन (Arabic, Hebrew) के साथ 35 भाषाएँ
-- **⌨️ कीबोर्ड शॉर्टकट** — एक in-app help dialog (`Ctrl+/`) के साथ हर पेज पर 60+ शॉर्टकट
+- **🌍 56 लोकेल** — RTL समर्थन (Arabic, Hebrew) के साथ
+- **⌨️ कीबोर्ड शॉर्टकट** — 11 सेक्शनों में 82 शॉर्टकट, एक in-app help dialog (`Ctrl+/`) के साथ
 - **🔔 गतिविधि संकेत** — hover popovers के साथ live nav indicators जो एक नज़र में प्रति-job प्रगति दिखाते हैं
 - **🛡️ बंद करने की पुष्टि** — jobs चलते समय window बंद करने से पहले चेतावनी देता है
 - **🎉 ईस्टर एग्स** — विशेष तिथियों पर holiday-themed app logos
-- **🔄 ऐप के भीतर अपडेट** — GitHub Releases की जाँच करता है, platform installer डाउनलोड करता है, real-time progress
-- **🛡️ एरर हैंडलिंग** — 16 typed error codes, global snackbar, inline banners, React error boundaries
+- **🔄 ऐप के भीतर अपडेट** — GitHub Releases की जाँच करता है, जब आप चाहें तब platform installer डाउनलोड करता है (अपडेट कभी अपने-आप install नहीं होते), real-time progress
+- **🛡️ एरर हैंडलिंग** — 28 typed error codes, global snackbar, inline banners, React error boundaries
 - **🌗 डार्क/लाइट थीम** — manual toggle के साथ system-aware, persistent preferences
 
 पूरी फ़ीचर सूची, समर्थित formats और codec सूचियों के लिए [फ़ीचर्स](features-reference.md) देखें।
@@ -207,8 +215,8 @@ npm run dist
 | `npm run start`          | `electron .` के माध्यम से `dist/` से compiled app launch करें           |
 | `npm run electron:dev`   | Vite + Electron dev environment                             |
 | `npm run dev:start`      | Build फिर launch                                           |
-| `npm run format`         | सभी `src` TypeScript/JSON पर `prettier --write`             |
-| `npm run format:check`   | सभी `src` TypeScript/JSON पर `prettier --check`             |
+| `npm run format`         | `src`, `e2e`, `perf`, `scripts`, `bin` और root की TypeScript/JS फ़ाइलों पर `prettier --write` |
+| `npm run format:check`   | उन्हीं patterns पर `prettier --check`                        |
 | `npm run pack`           | Build + electron-builder `--dir`                            |
 | `npm run dist`           | Build + electron-builder (NSIS/DMG/AppImage)                |
 
@@ -221,6 +229,8 @@ encodex convert input.mp4 output.avi --video-codec libx265 --audio-codec aac
 encodex info input.mp4 --json
 encodex compress photo.png -f jpg -q 30
 encodex extract-audio input.mp4
+encodex remux input.mkv -o output.mp4
+encodex demux input.mkv --output-dir parts
 encodex batch 'videos/**/*.mov' --concurrency 2 --output-dir converted
 
 # AI असिस्टेंट और ऑटोमेशन के लिए MCP सर्वर के रूप में चलाएँ
@@ -232,7 +242,7 @@ encodex --mcp
 ## 🧪 टेस्टिंग
 
 ```bash
-npm test           # सभी 123 test files / 1603 tests चलाएँ
+npm test           # unit tests चलाएँ (src/ में 314 test/spec files)
 npm run test:watch
 npm run test:coverage
 npm run test:unit
@@ -248,7 +258,7 @@ npm run test:e2e   # build आवश्यक है
 | -------- | ----------- |
 | [फ़ीचर्स](features-reference.md) | Features, समर्थित media formats, codec tables, validation utilities |
 | [CLI उपयोग](cli.md) | CLI usage, subcommands, सभी option tables, exit codes |
-| [MCP सर्वर](mcp.md) | MCP server tool catalogue, client configs, embedded HTTP server, security |
+| [MCP सर्वर](../MCP.md) | MCP server tool catalogue, client configs, embedded HTTP server, security |
 | [टेस्टिंग](testing.md) | Test suite, test setup, E2E specs |
 | [IPC चैनल](ipc.md) | IPC channels, electronAPI bridge, सभी methods और events |
 | [प्रोजेक्ट संरचना](project-structure.md) | annotations के साथ पूर्ण directory tree |

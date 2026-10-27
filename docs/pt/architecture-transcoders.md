@@ -2,7 +2,7 @@
 
 ## Abstração de transcoder
 
-Todos os backends de mídia aderem a `ITranscoder` (`src/main/transcoders/interface.ts`):
+Todos os backends de mídia aderem a `ITranscoder` (`src/main/transcoders/types.ts`):
 
 ```ts
 export interface ITranscoder {

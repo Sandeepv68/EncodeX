@@ -6,7 +6,7 @@ EncodeX es una herramienta multiplataforma de conversión multimedia que lleva l
 
 ### Conversión multimedia
 
-Convierte entre formatos de vídeo/audio con control granular sobre la selección de códecs (51 códecs de vídeo entre familias de codificadores por software y hardware, 27 códecs de audio), bitrate, resolución de salida (con conservación opcional de la relación de aspecto), formato de píxel (56 formatos agrupados por profundidad de bits), escala de calidad (qscale), inclusión de pista de audio y selección del núcleo transcoder. Se pueden poner varios archivos en cola mediante la Cola por lotes (ver abajo).
+Convierte entre formatos de vídeo/audio con control granular sobre la selección de códecs (51 códecs de vídeo entre familias de codificadores por software y hardware, 27 códecs de audio), bitrate, resolución de salida (con conservación opcional de la relación de aspecto), formato de píxel (56 formatos agrupados por profundidad de bits), escala de calidad (qscale), inclusión de pista de audio y selección del núcleo transcoder y filtros de vídeo (8 preajustes curados: recorte, tasa de fotogramas, desentrelazado, reducción de ruido, nitidez, color, escala de grises y desenfoque). Se pueden poner varios archivos en cola mediante la Cola por lotes (ver abajo).
 
 ### Rotación y espejo multimedia
 
@@ -16,7 +16,7 @@ Rota vídeos e imágenes 90°, 180° o 270° en el sentido de las agujas del rel
 
 Aplica preconfiguraciones de codificación para rellenar al instante los ajustes de conversión. Los perfiles encapsulan una configuración de codificación completa — formato de contenedor, códec de vídeo, códec de audio, bitrate, CRF/calidad, escala, formato de píxel y argumentos FFmpeg avanzados — para que no tengas que configurar cada ajuste manualmente.
 
-- **Más de 140 perfiles integrados** en 8 categorías: Web y Social (YouTube, Instagram, TikTok, Facebook, X), Dispositivos (Apple, Android, consolas de juego), Códecs de vídeo, Profesional (ProRes, DNxHD/HR, FFV1), Streaming (HLS, DASH), Audio, Imágenes y Avanzado
+- **115 perfiles integrados** en 8 categorías: Web y Social (YouTube, Instagram, TikTok, Facebook, X), Dispositivos (Apple: iPhone, iPad y Apple TV; Android; consolas de juego), Códecs de vídeo, Profesional (ProRes, DNxHD/HR, FFV1), Streaming (HLS, DASH), Audio, Imágenes y Avanzado
 - **Perfiles personalizados** — crea, edita y elimina tus propios perfiles; guardados en el almacenamiento local
 - **Uso reciente** — acceso rápido a los últimos 5 perfiles aplicados
 - **Filtrado por categoría** — navega por categoría con insignias de iconos
@@ -24,9 +24,18 @@ Aplica preconfiguraciones de codificación para rellenar al instante los ajustes
 
 Los perfiles están disponibles en la página de Conversión y en la Cola por lotes. Seleccionar un perfil rellena automáticamente todos los campos de codificación relevantes, y aun así permite sobrescribir manualmente.
 
+### Copilot (asistente de IA)
+
+La página Copilot (`/copilot`) planifica trabajo a partir de un objetivo en lenguaje natural sobre archivos y carpetas. Admite 13 operaciones: seis respaldadas por la cola (`convert`, `remux`, `demux`, `extract_audio`, `compress_image`, `cut`) y siete operaciones de inteligencia multimedia de solo lectura (`analyze`, `transcribe`, `summarize`, `chapters`, `search_transcript`, `translate`, `find_similar`). Los planes pueden generarse con el motor determinista `rules` sin conexión (por defecto) o con OpenAI, Anthropic, Gemini o un entorno de ejecución local. Confirmar un plan reutiliza la cola por lotes; las claves de API se envían al proceso principal, se cifran antes de almacenarse y nunca se devuelven al renderer.
+
 ### Copia sin pérdida
 
 Copia de stream de las pistas de vídeo o audio sin recodificar (`-c copy`). Útil para cambios rápidos de contenedor, remuxing o cuando preservar la calidad es crítico.
+
+### Remux y demux
+
+- **Remux** — cambia el contenedor copiando los streams (sin recodificar), con mapeo de streams opcional, subtítulos o audio añadidos, carátula, importación o eliminación de capítulos, selección del códec de subtítulos y desfases de sincronización de audio.
+- **Demux** — extrae cada stream de vídeo, audio o subtítulo en su propio archivo, con conversión opcional por tipo (contenedor de vídeo, códec de audio, formato de subtítulos) y filtros de vídeo para el vídeo recodificado.
 
 ### Aceleración por hardware
 
@@ -72,12 +81,23 @@ Procesa múltiples archivos con operaciones configurables (transcodificar, extra
 
 Página de ajustes dedicada para tema, aceleración por hardware (activar/desactivar, modo, tipo de codificador), ventana siempre visible, lanzar al inicio, concurrencia de la cola por lotes y la acción de energía al terminar. Las preferencias persisten en `localStorage` y surten efecto al arrancar.
 
+### Servidor MCP {#mcp-server}
+
+EncodeX puede actuar como un servidor [Model Context Protocol](https://modelcontextprotocol.io) para que los asistentes de IA y los clientes de automatización lo operen directamente. Hay dos superficies disponibles:
+
+- **Servidor stdio independiente** — se lanza con `encodex --mcp` (o `node dist/mcp/index.js`), hablando JSON-RPC por stdio con stdout reservado para los mensajes del protocolo. Es el modo que usan los hosts MCP que inician un proceso de servidor.
+- **Servidor HTTP integrado** — un endpoint Streamable HTTP opcional en `http://127.0.0.1:8765/mcp`, activado desde **Ajustes → Servidor MCP** mientras la GUI está en ejecución. Comparte el mismo núcleo de herramientas y la cola de trabajos de la app en ejecución.
+
+La superficie stdio expone 36 herramientas visibles para el modelo (37 registros, incluida `commit_operation`, disponible solo en la app); la superficie HTTP integrada añade 6 herramientas de paridad con la GUI (`get_queue_state`, `cancel_all_jobs`, `get_timeline`, `extract_preview`, `get_system_info`, `check_for_updates`) para un total de 42 herramientas visibles para el modelo (43 registros). Ambas superficies exponen 3 recursos (`encodex://profiles`, `encodex://capabilities`, `encodex://codecs`) y 4 plantillas de prompt (`convert-video`, `extract-audio`, `compress-image`, `batch-convert`). Las conversiones son asincrónicas: inicia un trabajo y luego consulta `get_job` o `list_jobs` para ver el progreso y los resultados.
+
+El servidor integrado se vincula solo a loopback, valida la cabecera `Origin`, soporta un token bearer opcional (comparado en tiempo constante) y acepta únicamente `GET`, `POST` y `DELETE` en `/mcp`. Todas las sesiones se cierran a la fuerza cuando el servidor se detiene o la app se cierra. Los ajustes MCP (activado, puerto, token) persisten en `mcp-settings.json` en el directorio de datos del usuario.
+
 ### Atajos de teclado
 
-Un registro central de atajos (`src/renderer/constants/shortcuts.ts`) define más de 60 atajos en nueve secciones (global, convert, media info, image compress, audio extract, video cut, batch queue, logs, dashboard). Aspectos destacados:
+Un registro central de atajos (`src/renderer/constants/shortcuts.ts`) define 82 atajos en once secciones (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). Aspectos destacados:
 
 - `Ctrl+/` — abrir el diálogo de ayuda de atajos
-- `Alt+1`…`Alt+9` — saltar directamente a una página
+- `Alt+0`…`Alt+9` — saltar directamente a una página (incluido Remux en `Alt+0`)
 - `Ctrl+O` / `Ctrl+Shift+S` / `Ctrl+Enter` — elegir entrada / elegir salida / iniciar el trabajo (consistente entre páginas)
 - `Ctrl+Shift+P` / `Ctrl+Shift+C` — pausar / cancelar el trabajo activo
 - Cola por lotes: `Ctrl+E` exportar, `Ctrl+I` importar, `1`–`5` filtros de estado, `F` enfocar búsqueda
@@ -123,7 +143,7 @@ Soporte de layout de derecha a izquierda para los locales árabe y hebreo (`ar-S
 
 ### Internacionalización
 
-56 locales en 35 idiomas:
+56 locales:
 
 | Idioma      | Locales                                    |
 | ----------- | ------------------------------------------ |
@@ -165,11 +185,11 @@ Soporte de layout de derecha a izquierda para los locales árabe y hebreo (`ar-S
 
 ### Actualizaciones integradas
 
-Gestor de actualizaciones personalizado que revisa GitHub Releases en busca de versiones nuevas, notifica al usuario de su disponibilidad, descarga el instalador específico de la plataforma (`.exe` / `.dmg` / `.AppImage`) dentro de la app con reporte de progreso en tiempo real y lanza el instalador al terminar. La comparación de versiones usa semver con eliminación de sufijos pre-release. El flujo de actualización está totalmente integrado en la página About con un botón "Buscar actualizaciones" y un diálogo global.
+Gestor de actualizaciones personalizado que revisa GitHub Releases en busca de versiones nuevas, notifica al usuario de su disponibilidad, descarga el instalador específico de la plataforma (`.exe` / `.dmg` / `.AppImage`) dentro de la app con reporte de progreso en tiempo real y permite instalar de inmediato o programar la instalación para el siguiente reinicio. La comparación de versiones sigue la precedencia de semver, incluidos los identificadores de pre-release; los metadatos de build se ignoran. Cuando GitHub publica un digest SHA-256 o SHA-512 del asset, la descarga se verifica contra él. No hay firma de código ni notarización, y las actualizaciones nunca se instalan automáticamente. El flujo de actualización está totalmente integrado en la página About con un botón "Buscar actualizaciones" y un diálogo global.
 
 ### Manejo de errores
 
-Sistema de errores estructurado con códigos tipados (`ErrorCode`), mensajes localizados orientados al usuario, snackbar global de errores, banners de error en línea, notificaciones toast, React error boundaries anidados y un historial de errores dentro de la app (tope 50). Todos los errores se normalizan mediante `formatError()` y se propagan a través de IPC.
+Sistema de errores estructurado con 28 códigos de error tipados (`ErrorCode`), mensajes localizados orientados al usuario, snackbar global de errores, banners de error en línea, notificaciones toast, React error boundaries anidados y un historial de errores dentro de la app (tope 50). Todos los errores se normalizan mediante `formatError()` y se propagan a través de IPC.
 
 ## Formatos multimedia soportados
 

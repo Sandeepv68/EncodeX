@@ -28,7 +28,9 @@ ffmpeg -i input.mkv -c:v libx264 -crf 18 -c:a aac output.mp4
 - **压缩视频**——在不毁掉画质的前提下减小文件大小
 - **可视化剪辑片段**——在时间轴上拖动两个手柄，完成
 - **从视频中提取音频**并保存为 MP3
-- **旋转与镜像视频** – 修正侧拍的片段，MP4/MOV/MKV 无损
+- **旋转与镜像视频** – 修正侧拍的片段：MP4/MOV/MKV 可在流复制模式下无损处理，也可快速重新编码
+- **重新封装与分离** — 不重新编码即可更换容器，或将每个流拆分为独立文件
+- **Copilot 规划** — 用自然语言描述任务；13 项操作，默认使用离线规则引擎，并可选择 OpenAI、Anthropic、Gemini 或本地模型提供商
 - **一键批量处理整个文件夹**
 
 ## 疾速体验：内置硬件加速
@@ -37,13 +39,13 @@ EncodeX **自动利用你的 GPU**，让转换速度远超普通软件编码。�
 
 - **NVIDIA** 用户使用 NVENC；**Intel** 使用 Quick Sync (QSV)；**AMD** 使用 AMF
 - **Apple Silicon/Mac** 用户使用 VideoToolbox
-- **Linux** 用户使用 VAAPI——不限 GPU 品牌
+- **Linux** 用户在 AMD 和 Intel GPU 上使用 VAAPI；NVIDIA GPU 使用 NVENC
 
 你的硬件很可能已经内置了高速编码器。EncodeX 会找到它并自动启用——漫长的转换任务只需很短时间即可完成。
 
 ## 开源且私密
 
-由于 EncodeX 基于 FFmpeg 构建且完全[开源](https://github.com/Sandeepv68/EncodeX)，一切都在**你自己的电脑**上运行。不上传任何东西，无需账户，文件上**没有水印**。
+由于 EncodeX 基于 FFmpeg 构建且完全[开源](https://github.com/Sandeepv68/EncodeX)，媒体处理在**你自己的电脑**上运行——文件不会上传，无需账户，文件上**没有水印**。错误报告和使用分析默认开启，可在设置中关闭。
 
 ## 可用于所有桌面系统
 

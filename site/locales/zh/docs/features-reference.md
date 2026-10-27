@@ -16,7 +16,7 @@ EncodeX 是一款跨平台多媒体转换工具，将 FFmpeg 的强大能力带�
 
 应用预配置的编码预设以立即填充转换设置。配置文件封装了完整的编码配置——容器格式、视频编解码器、音频编解码器、比特率、CRF/质量、缩放、像素格式和高级 FFmpeg 参数——这样你就不必手动配置每一项设置。
 
-- **8 个类别中的 140+ 内置配置文件**：Web 与社交（YouTube、Instagram、TikTok、Facebook、X）、设备（Apple、Android、游戏主机）、视频编解码器、专业（ProRes、DNxHD/HR、FFV1）、流媒体（HLS、DASH）、音频、图片和高级
+- **8 个类别中的 115 内置配置文件**：Web 与社交（YouTube、Instagram、TikTok、Facebook、X）、设备（Apple、Android、游戏主机）、视频编解码器、专业（ProRes、DNxHD/HR、FFV1）、流媒体（HLS、DASH）、音频、图片和高级
 - **自定义配置文件**——创建、编辑和删除你自己的配置文件；保存在本地存储中
 - **最近使用**——快速访问最近应用的 5 个配置文件
 - **类别筛选**——通过带图标徽章的类别浏览配置文件
@@ -27,6 +27,15 @@ EncodeX 是一款跨平台多媒体转换工具，将 FFmpeg 的强大能力带�
 ### 无损复制
 
 无需重新编码即可流复制视频或音轨（`-c copy`）。适用于快速更改容器格式、remux 或对画质保持要求极高的场景。
+
+### 封装与解封装
+
+- **Remux（重新封装）** — 在流复制的前提下更换容器（不重新编码），支持可选的流映射、添加字幕/音频、封面图、章节导入或移除、字幕编码器选择以及音频同步偏移。
+- **Demux（解封装）** — 将每个视频/音频/字幕流提取到各自的文件中，支持按类型的可选转换（视频容器、音频编码器、字幕格式）以及针对重新编码视频的视频滤镜。
+
+### Copilot（AI 助手）
+
+Copilot 页面根据针对文件和文件夹的自然语言目标来规划工作。它支持 13 种操作：六种基于队列的操作（`convert`、`remux`、`demux`、`extract_audio`、`compress_image`、`cut`）和七种只读的媒体智能操作（`analyze`、`transcribe`、`summarize`、`chapters`、`search_transcript`、`translate`、`find_similar`）。计划可以由确定性的离线 `rules` 引擎生成（默认），也可以由 OpenAI、Anthropic、Gemini 或本地运行时生成。提交计划时会复用批处理队列。API 密钥会被发送到主进程，在存储前加密，且绝不会返回给渲染进程；设置中只显示密钥是否存在以及掩码提示。
 
 ### 硬件加速
 
@@ -70,7 +79,7 @@ EncodeX 是一款跨平台多媒体转换工具，将 FFmpeg 的强大能力带�
 
 ### 设置
 
-专用设置页面，用于主题、硬件加速（启用/禁用、模式、编码器类型）、窗口置顶、开机自启、批处理队列并发数、完成后电源操作以及 MCP 服务器（启用/禁用、端口、访问令牌）。偏好设置持久化到 `localStorage` 并在启动时生效。
+专用设置页面，用于主题、硬件加速（启用/禁用、模式、编码器类型）、窗口置顶、开机自启、批处理队列并发数、完成后电源操作、MCP 服务器（启用/禁用、端口、访问令牌）、AI 提供方/模型/密钥编辑器，以及遥测关闭选项（错误报告 + 使用分析，默认开启）。标准偏好设置持久化到 `localStorage` 并与主进程同步；MCP 设置持久化到 `mcp-settings.json`，AI 密钥则由主进程加密。
 
 ### MCP 服务器 {#mcp-server}
 
@@ -79,7 +88,7 @@ EncodeX 可以作为 [Model Context Protocol](https://modelcontextprotocol.io) �
 - **独立的 stdio 服务器** — 通过 `encodex --mcp`（或 `node dist/mcp/index.js`）启动，使用 stdio 上的 JSON-RPC，stdout 保留给协议消息。这是生成服务器进程的 MCP 主机所使用的模式。
 - **嵌入式 HTTP 服务器** — 一个可选的 Streamable HTTP 端点，位于 `http://127.0.0.1:8765/mcp`，在 GUI 运行时从 **设置 → MCP 服务器** 启用。它与运行中的应用共享同一套工具核心和任务队列。
 
-stdio 端提供 13 个核心工具（`ping`、`convert_media`、`get_job`、`list_jobs`、`cancel_job`、`get_media_info`、`list_capabilities`、`list_profiles`、`get_profile`、`compress_image`、`extract_audio`、`cut_video`、`batch_convert`）；嵌入式 HTTP 端额外提供 6 个与 GUI 对等的工具（`get_queue_state`、`cancel_all_jobs`、`get_timeline`、`extract_preview`、`get_system_info`、`check_for_updates`），合计 19 个。两端都提供 3 个资源（`encodex://profiles`、`encodex://capabilities`、`encodex://codecs`）和 4 个提示模板（`convert-video`、`extract-audio`、`compress-image`、`batch-convert`）。转换是异步的：启动任务后，轮询 `get_job` 或 `list_jobs` 查看进度和结果。
+stdio 端提供 36 个模型可见的工具（37 个注册项，包括仅供应用使用的 `commit_operation`）；嵌入式 HTTP 端额外提供 6 个与 GUI 对等的工具（`get_queue_state`、`cancel_all_jobs`、`get_timeline`、`extract_preview`、`get_system_info`、`check_for_updates`），合计 42 个模型可见的工具（43 个注册项）。两端都提供 3 个资源（`encodex://profiles`、`encodex://capabilities`、`encodex://codecs`）和 4 个提示模板（`convert-video`、`extract-audio`、`compress-image`、`batch-convert`）。转换是异步的：启动任务后，轮询 `get_job` 或 `list_jobs` 查看进度和结果。
 
 嵌入式服务器只绑定到 loopback，会校验 `Origin` 请求头，支持可选的 bearer 令牌（常量时间比较），并且只接受 `/mcp` 上的 `GET`、`POST` 和 `DELETE` 方法。服务器停止或应用退出时，所有会话都会被强制关闭。MCP 设置（启用状态、端口、令牌）持久化到用户数据目录下的 `mcp-settings.json` 中。
 
@@ -134,7 +143,7 @@ Toast 通知（success/info/warning/error），持续时间可配置，提供非
 
 ### 国际化
 
-覆盖 35 种语言的 56 个 locale：
+覆盖 56 种语言的 56 个 locale：
 
 | 语言        | Locales                                    |
 | ----------- | ------------------------------------------ |

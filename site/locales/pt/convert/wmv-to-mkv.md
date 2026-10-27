@@ -19,7 +19,7 @@ Razões comuns para migrar de **WMV para MKV**:
 - Você está **montando uma biblioteca** para Plex, Jellyfin ou Kodi
 - Você quer um **arquivo menor** com um codec moderno e flexível
 
-## WMV para MKV sem perder qualidade
+## WMV para MKV com alta qualidade
 
 O EncodeX converte seu **WMV para MKV** de forma limpa mantendo a **qualidade do seu vídeo** alta:
 
@@ -38,7 +38,7 @@ O EncodeX cuida dos codecs, resolução e bitrate por você e oferece uma verdad
 
 ## Perguntas frequentes
 
-**Converter WMV para MKV perde qualidade?** Não. O EncodeX mantém a qualidade do seu vídeo alta enquanto converte seu WMV em um contêiner MKV moderno.
+**Converter WMV para MKV perde qualidade?** O EncodeX recodifica com configurações que mantêm a qualidade alta. Uma cópia de streams sem perdas só é possível quando os codecs de origem cabem no contêiner MKV.
 
 **Por que converter WMV para MKV em vez de MP4?** MKV é um contêiner mais flexível que suporta legendas, pistas de áudio ilimitadas e capítulos — ideal para arquivamento e servidores de mídia. MP4 é melhor para máxima compatibilidade com dispositivos.
 

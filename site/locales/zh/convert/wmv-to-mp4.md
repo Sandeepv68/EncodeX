@@ -1,6 +1,6 @@
 ---
 title: "WMV 转 MP4 转换器——免费转换 WMV 视频 | EncodeX"
-description: "使用 EncodeX 免费将 WMV 转换为 MP4。一款适用于 Windows、Mac 和 Linux 的快速离线 WMV 转 MP4 转换器。无水印、无上传、无画质损失。"
+description: "使用 EncodeX 免费将 WMV 转换为 MP4。一款适用于 Windows、Mac 和 Linux 的快速离线 WMV 转 MP4 转换器。无水印、无上传。"
 ogImage: "https://encodex.in/images/convert.webp"
 ---
 
@@ -19,7 +19,7 @@ WMV 文件通常无法在 Mac、手机、平板、电视或现代浏览器和剪
 - 你想在**无法读取 WMV 的软件中编辑**
 - 你想要一个**更小的文件**分享或发送邮件
 
-## 无损地将 WMV 转为 MP4
+## 高画质将 WMV 转为 MP4
 
 EncodeX 将你的 **WMV 干净地转为 MP4**，同时保留**视频画质**：
 

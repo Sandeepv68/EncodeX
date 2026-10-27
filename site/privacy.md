@@ -16,12 +16,12 @@ EncodeX is a desktop application that processes all media **locally and offline*
 - **100% offline** — all conversion, compression, and extraction happens on your device
 - **No account** — nothing to sign up for, no profile to maintain
 - **No uploads** — your media is never transmitted to us or anyone else
-- **Consent-gated telemetry only** — the only outbound data is optional, anonymous, categorical usage & error events that you can switch off in Settings
+- **Telemetry you can turn off** — error reporting and anonymous, categorical usage analytics are on by default, and one switch in Settings disables both. Update checks and configured AI providers also make network requests (see below)
 - **Open source** — anyone can inspect exactly what the app does
 
 ## What We Don't Collect
 
-EncodeX does not collect, transmit, or store any of your media files, folder names, or anything else that could identify you. Because the app runs entirely on your computer, there is nothing for us to gather — the only outbound data is the optional, anonymous telemetry described below.
+EncodeX does not collect, transmit, or store any of your media files, folder names, or anything else that could identify you. Conversion runs on your computer. The app does send error reports and anonymous usage events by default, and it can also make the outbound requests listed below. You can turn error reporting and usage analytics off in Settings.
 
 ## What We Do
 
@@ -49,19 +49,24 @@ To be completely transparent, here is every piece of data EncodeX collects — o
 
 ### The desktop app
 
-- **Consent-gated crash & diagnostics reporting.** The app can report crash diagnostics and anonymous error information to Sentry — and it is **on by default, with a visible toggle in Settings** to turn it off at any time. Everything is governed by a single consent switch — _Usage data & error reporting_ in Settings (persisted locally as `monitoring-consent.json` and `analytics-consent.json`).
-- **Categorical-only usage events.** When enabled, the app records anonymous, categorical-only events — things like "conversion started" or "profile applied" — through a dedicated usage-analytics pipeline. By taxonomy design, these payloads contain **no media content, no file names, no folder paths, and no file sizes.** If you disable telemetry, nothing leaves your computer.
-- **No uploads, no cloud processing.** Even with telemetry enabled, your actual media files are never transmitted. Encoding, converting, compressing, or extracting happens entirely in-process on your device.
+- **Error reporting.** The app can send crash and error diagnostics to Sentry. It is **on by default, with a toggle in Settings** to turn it off at any time. A single switch, _Usage data & error reporting_ in Settings, controls both error reporting and usage analytics. The choice is stored locally in `monitoring-consent.json` and `analytics-consent.json`.
+- **Categorical-only usage analytics.** When enabled, the app records anonymous, categorical events grouped by feature area (for example navigation, conversion, queue, and updates) through a usage-analytics pipeline. By design, these payloads contain **no media content, no file names, and no folder paths.** If you turn the switch off, these events are not sent.
+- **No uploads, no cloud processing.** Even with telemetry enabled, your media files are never transmitted. Conversion, compression, and extraction happen on your device.
+
+### Other network requests
+
+- **Update checks** — when you check for updates, the app queries GitHub Releases.
+- **AI providers** — Copilot and AI features use the built-in rules router by default, which works offline. Requests go to OpenAI, Anthropic, or Gemini only if you configure one of those providers. The local provider runs on your machine.
 
 ### In plain terms
 
 - There is **no account** — nothing to sign up for, no profile to maintain
 - Your files **never leave your computer** — no uploads, no cloud processing
-- The app works **fully offline** — telemetry is the only thing that can connect out, it's consent-gated, categorical-only, and can be switched off
+- Conversion works **fully offline**. Error reporting, usage analytics, update checks, and configured AI providers are the only network activity, and you control the first and last of these.
 
 ## How It Works
 
-There's no cloud to send your files to. EncodeX bundles the FFmpeg engine directly into the app and runs every conversion **in-process on your device** — the same way your web browser renders a page without it being "sent to a server." If you'd like to verify that, the whole app (including its media-processing pipeline) is open source and documented in the [technical architecture](/docs/architecture).
+There's no cloud to send your files to. EncodeX bundles the FFmpeg engine with the app and runs each conversion as a **local child process on your device**, so media is read and written on your computer. If you'd like to verify that, the whole app (including its media-processing pipeline) is open source and documented in the [technical architecture](/docs/architecture).
 
 ## Updates
 
