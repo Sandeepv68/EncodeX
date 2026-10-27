@@ -50,14 +50,23 @@ const branchFloor = Number(process.env.COVERAGE_BRANCH_FLOOR ?? DEFAULT_BRANCH_F
 /**
  * Reads the committed baseline.
  *
+ * The file is read directly rather than checked for first: an
+ * existsSync-then-read pair is a check-then-act race on the same path, and
+ * CodeQL flags it as one.
+ *
  * @returns {object | null} The parsed baseline, or null when there is none.
  */
 function loadBaseline() {
-  if (!fs.existsSync(BASELINE_FILE)) return null;
-  return JSON.parse(fs.readFileSync(BASELINE_FILE, 'utf8'));
+  try {
+    return JSON.parse(fs.readFileSync(BASELINE_FILE, 'utf8'));
+  } catch (error) {
+    if (error?.code === 'ENOENT') return null;
+    throw error;
+  }
 }
 
-if (!fs.existsSync(BASELINE_FILE)) {
+const baseline = loadBaseline();
+if (baseline === null) {
   console.error(
     `No coverage baseline at ${BASELINE_FILE}.\n` +
       'Record one with `npm run coverage:baseline` (after running both coverage tiers) and commit it.',
@@ -75,7 +84,6 @@ try {
   process.exit(1);
 }
 
-const baseline = loadBaseline();
 const platforms = baseline?.platforms ?? {};
 const platformNames = Object.keys(platforms);
 

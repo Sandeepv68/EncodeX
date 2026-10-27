@@ -98,11 +98,13 @@ for (const entry of entries) {
 }
 
 let baseline = { platforms: {} };
-if (fs.existsSync(BASELINE_FILE)) {
-  try {
-    const parsed = JSON.parse(fs.readFileSync(BASELINE_FILE, 'utf8'));
-    baseline = { ...parsed, platforms: parsed.platforms ?? {} };
-  } catch (error) {
+try {
+  // Read the existing baseline directly rather than checking for it first:
+  // an existsSync-then-read pair is a check-then-act race on the same path.
+  const parsed = JSON.parse(fs.readFileSync(BASELINE_FILE, 'utf8'));
+  baseline = { ...parsed, platforms: parsed.platforms ?? {} };
+} catch (error) {
+  if (error?.code !== 'ENOENT') {
     console.error(`Cannot read ${BASELINE_FILE}: ${error.message}`);
     process.exit(1);
   }
