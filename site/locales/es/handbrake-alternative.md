@@ -20,19 +20,19 @@ Es un excelente software. Pero no es para todos — por eso una alternativa mode
 | -------------- | -------------------------------- | ---------------------------- |
 | **Precio**     | Gratuito para siempre, código abierto (MIT) | Gratuito, código abierto (GPL) |
 | **Basado en FFmpeg** | Sí                            | Sí                           |
-| **Preajustes** | 140+ en 8 categorías            | Buen conjunto, mayormente basado en archivos |
+| **Preajustes**    | 115 en 8 categorías             | Buen conjunto, mayormente basado en archivos |
 | **Codificación por hardware** | NVENC, QSV, AMF, VAAPI, VideoToolbox | Parcial              |
-| **Cola por lotes** | Cola paralela completa (4 trabajos) | Cola, secuencial         |
+| **Cola por lotes** | Cola paralela (hasta 4 trabajos) | Cola, secuencial         |
 | **Extracción de audio** | Un clic, 27 códecs           | Limitada                     |
 | **Compresión de imágenes** | JPEG/PNG/WebP…              | No realmente                 |
 | **Recorte por lotes** | Precisión por cuadros con línea de tiempo | Recorte solo de vídeo  |
-| **Modo CLI**    | Sí — comandos legibles           | Linode/CLI limitada          |
+| **Modo CLI**    | Sí — comandos legibles           | HandBrakeCLI limitada        |
 | **Plataformas** | Windows, macOS, Linux            | Windows, macOS, Linux        |
 | **Subidas**     | Ninguna — 100% sin conexión      | Ninguna — 100% sin conexión  |
 
 ## Cómo se hizo esta comparación
 
-Comparamos las capacidades que cada herramienta ofrece hoy realmente — diseño de interfaz, profundidad de preajustes, soporte de codificación por hardware, comportamiento por lotes y herramientas extra — usando la documentación actual y las notas de lanzamiento de cada producto. Solo afirmamos lo que podemos verificar: cualquier cosa marcada como "parcial" o "limitada" significa que la capacidad existe pero con condiciones (por ejemplo, la codificación por hardware de HandBrake varía según la plataforma y la compilación, y su CLI se documenta aparte de la app gráfica). Si una fila se repite en más herramientas abajo, se aplica la misma verificación.
+Esta comparación se basa en la documentación publicada y las notas de lanzamiento de cada producto en el momento de escribirla; las funciones pueden variar según la versión y la plataforma. Cualquier cosa marcada como "parcial" o "limitada" significa que la capacidad existe pero con condiciones (por ejemplo, la codificación por hardware de HandBrake varía según la plataforma y la compilación, y su CLI se documenta aparte de la app gráfica).
 
 ## EncodeX vs HandBrake vs FFmpeg CLI vs Shutter Encoder
 
@@ -41,9 +41,9 @@ Comparamos las capacidades que cada herramienta ofrece hoy realmente — diseño
 | **Interfaz**           | GUI + CLI    | GUI (+ CLI)  | Solo CLI     | GUI             |
 | **Basado en FFmpeg**   | Sí           | Sí           | Es FFmpeg    | Sí              |
 | **Gratis y código abierto** | Sí (MIT) | Sí (GPL)       | Sí (GPL)     | Sí (licencia propietaria) |
-| **Preajustes por tarea** | Más de 140  | Conjuntos por archivo | Solo scripts | Basada en bibliotecas |
+| **Preajustes por tarea** | 115 perfiles | Conjuntos por archivo | Solo scripts | Basada en bibliotecas |
 | **Codificación por hardware** | NVENC, QSV, AMF, VAAPI, VideoToolbox | Parcial (varía por plataforma) | Vía flags (configuración manual) | NVENC y otros |
-| **Lote en paralelo**   | Sí (4 trabajos) | Secuencial  | Vía scripts   | Sí             |
+| **Lote en paralelo**   | Sí (hasta 4) | Secuencial   | Vía scripts   | Sí             |
 | **Compresión de imágenes** | Sí (JPEG/PNG/WebP) | No   | Vía flags      | Sí             |
 | **Extracción de audio** | Un clic (27 códecs) | Limitada | Vía flags | Sí             |
 | **100% sin conexión**  | Sí           | Sí           | Sí            | Sí             |
@@ -53,8 +53,9 @@ En resumen: **HandBrake** es el mejor extractor de discos de código abierto, **
 ## ¿Por qué cambiar a EncodeX?
 
 - **Una curva de aprendizaje más suave** — la interfaz gráfica está basada en tareas ("Convertir", "Comprimir", "Cortar"), no en códecs
-- **Más formatos y códecs** — 51 de vídeo, 27 de audio, 56 formatos de píxeles
+- **Amplio soporte de formatos y códecs** — 51 de vídeo, 27 de audio, 56 formatos de píxeles
 - **Mejor soporte por lotes** — hasta 4 trabajos en paralelo con pausa/reanudación y ordenamiento por arrastrar y soltar
+- **Copilot integrado** — 13 operaciones de conversión, remux, demux, extracción, compresión, recorte y análisis multimedia, con un motor de reglas sin conexión por defecto y proveedores opcionales de OpenAI, Anthropic, Gemini o locales
 - **Diseñado para macOS** — compilación nativa para Apple Silicon con VideoToolbox
 - **Comunidad activa y amigable** — somos de código abierto y siempre mejorando
 

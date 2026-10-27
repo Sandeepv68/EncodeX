@@ -35,7 +35,7 @@ Você permanece no seu app de IA favorito. O EncodeX faz o trabalho pesado em se
 
 ## O que um assistente pode fazer via MCP?
 
-O servidor MCP expõe **19 ferramentas, 3 recursos e 4 prompts**:
+O servidor MCP expõe **36 ferramentas, 3 recursos e 4 prompts**:
 
 - **Converter** vídeo e áudio entre formatos
 - **Extrair** áudio de arquivos de vídeo

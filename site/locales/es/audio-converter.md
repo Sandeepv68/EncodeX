@@ -37,7 +37,7 @@ EncodeX está disponible en todos los sistemas de escritorio importantes:
 
 - **Todo queda en tu computadora** — sin subidas, sin cuentas
 - **Sin marcas de agua** y **sin suscripciones ocultas** — es gratis para siempre y de código abierto
-- **Acelerado por hardware** cuando es posible, para conversiones rápidas
+- **Conversiones rápidas** — eliges un códec y una tasa de bits que se ajusten a tus necesidades
 
 ## Preguntas frecuentes
 

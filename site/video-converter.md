@@ -18,7 +18,9 @@ Whether you need a **desktop video converter**, something fast for a single file
 - Anything to MP4 for maximum compatibility
 - Change the **resolution, frame rate, and bitrate** for flawless playback
 - Use **hardware acceleration** (NVENC, QSV, AMF, VAAPI, VideoToolbox) for speed
-- **Rotate and mirror videos** — fix sideways clips losslessly (MP4, MOV, MKV) or with a quick re-encode
+- **Rotate and mirror videos** — fix sideways clips losslessly (MP4, MOV, MKV) in stream-copy mode, or with a quick re-encode
+- **Remux without re-encoding** — switch containers like MP4↔MKV and keep the original streams when the codecs are compatible
+- **Plan with Copilot** — describe the result you want and Copilot plans the conversion, offline by default, with optional OpenAI, Anthropic, Gemini, or local providers
 
 ### Install Once, Convert Offline, No Limits
 

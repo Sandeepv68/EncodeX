@@ -19,7 +19,7 @@ Raisons courantes pour passer d'**FLV à MKV** :
 - Vous **créez une bibliothèque** pour Plex, Jellyfin ou Kodi
 - Vous voulez un **fichier plus petit et moderne** à archiver ou à conserver
 
-## Convertir FLV en MKV sans perte de qualité
+## Convertir FLV en MKV en gardant une qualité élevée
 
 EncodeX re-code votre **FLV en un MKV moderne** proprement, en conservant une **qualité vidéo** élevée :
 
@@ -38,7 +38,7 @@ EncodeX gère les codecs, la résolution et le débit pour vous, afin d'obtenir 
 
 ## FAQ
 
-**La conversion de FLV en MKV perd-elle de la qualité ?** Non. EncodeX re-code votre FLV dans un conteneur MKV moderne tout en conservant une qualité vidéo élevée.
+**La conversion de FLV en MKV perd-elle de la qualité ?** EncodeX re-code votre FLV avec des réglages qui gardent une qualité vidéo élevée. Une copie de flux sans perte n'est possible que si les codecs source sont compatibles avec le conteneur MKV.
 
 **Pourquoi convertir FLV en MKV ?** FLV est un format de l'ère Flash qui ne se lit plus sur les appareils et applications modernes. MKV offre un conteneur flexible et moderne qui fonctionne avec les lecteurs et serveurs multimédias actuels.
 

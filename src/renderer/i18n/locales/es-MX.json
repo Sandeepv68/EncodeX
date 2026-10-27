@@ -57,7 +57,9 @@
       "convert": "Convertir un video",
       "compress": "Comprimir un archivo",
       "extract": "Extraer audio",
-      "trim": "Recortar un clip"
+      "trim": "Recortar un clip",
+      "remux": "Remultiplexar un archivo",
+      "copilot": "Pregunta a Copilot"
     }
   },
   "closeConfirm": {
@@ -814,10 +816,20 @@
   },
   "about": {
     "title": "Acerca de EncodeX",
-    "subtitle": "Un conjunto de herramientas multimedia gratuito y de código abierto basado en FFmpeg. Convierte, inspecciona, comprime, extrae, corta y procesa por lotes audio, vídeo e imágenes, todo en un solo lugar.",
-    "description": "EncodeX es un conjunto de herramientas multimedia multiplataforma que lleva el poder de FFmpeg a una interfaz de escritorio moderna e intuitiva. Convierte audio, vídeo e imágenes entre formatos con un control preciso de códecs, tasa de bits, resolución, formato de píxeles y calidad; copia pistas sin pérdida para un remuxing instantáneo; extrae audio de vídeo; y corta vídeo con un reproductor de vista previa preciso por fotogramas. La codificación acelerada por hardware es compatible con NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox y Microsoft Media Foundation, con detección automática de las familias de codificadores disponibles a partir del binario de FFmpeg incluido en tiempo de ejecución. Los trabajos por lotes se ejecutan a través de una cola persistente con progreso en tiempo real, y un modo CLI sin interfaz gráfica expone las mismas capacidades para scripting y automatización.",
+    "subtitle": "Un conjunto de herramientas multimedia gratuito y de código abierto basado en FFmpeg. Convierte, comprime, extrae, recorta y procesa por lotes audio, video e imágenes, o controla el mismo motor desde la CLI, un servidor MCP o el asistente de IA Copilot.",
+    "description": "EncodeX es un conjunto de herramientas multimedia multiplataforma que lleva la potencia de FFmpeg a una interfaz de escritorio moderna e intuitiva. Convierte audio, video e imágenes con control detallado de códecs, tasa de bits, resolución, formato de píxel y calidad; copia pistas sin pérdida; rota y refleja archivos multimedia; aplica filtros de video; y recorta videos con un reproductor de vista previa preciso al cuadro. Los perfiles de conversión configuran los destinos comunes con un clic, y puedes guardar los tuyos. La codificación acelerada por hardware es compatible con NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox y Microsoft Media Foundation; las familias de codificadores se detectan automáticamente desde el FFmpeg incluido en tiempo de ejecución. La cola por lotes procesa trabajos en paralelo con progreso en vivo, persistencia e importación y exportación. Además de la interfaz gráfica, una CLI sin interfaz, un servidor MCP independiente e integrado y el asistente de IA Copilot permiten que scripts y asistentes controlen el mismo motor multimedia.",
     "logoAlt": "Logotipo de EncodeX",
     "featuresTitle": "Lo que puedes hacer",
+    "featureConvert": "Convierte video, audio e imágenes con control detallado de códecs, tasa de bits, resolución y calidad, además de rotación y filtros",
+    "featureRemux": "Remultiplexa o desmultiplexa flujos sin pérdida, y agrega subtítulos, pistas de audio adicionales, portadas y capítulos",
+    "featureMediaInfo": "Inspecciona códecs, flujos, color y metadatos de cualquier archivo multimedia",
+    "featureImage": "Comprime imágenes con control de calidad y resolución, además de datos EXIF e histogramas",
+    "featureAudio": "Extrae pistas de audio de video en AAC, MP3, FLAC, Opus y otros formatos",
+    "featureCut": "Corta videos con recorte preciso al cuadro en una línea de tiempo con miniaturas y forma de onda",
+    "featureProfiles": "Empieza con perfiles de conversión integrados o guarda los tuyos",
+    "featureBatch": "Ejecuta trabajos por lotes en paralelo con pausa, reordenamiento, importación y exportación, y una acción de energía al terminar",
+    "featureHardware": "Usa codificadores por GPU como NVENC, Quick Sync, AMF, VAAPI y VideoToolbox, detectados automáticamente",
+    "featureAutomation": "Describe un objetivo al asistente de IA Copilot, o automatiza EncodeX con scripts desde la CLI y el servidor MCP",
     "version": "Versión",
     "builtWith": "Hecho con",
     "authorTitle": "Autor y comentarios",

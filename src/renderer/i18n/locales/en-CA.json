@@ -57,7 +57,9 @@
       "convert": "Convert a video",
       "compress": "Compress a file",
       "extract": "Extract audio",
-      "trim": "Trim a clip"
+      "trim": "Trim a clip",
+      "remux": "Remux a file",
+      "copilot": "Ask Copilot"
     }
   },
   "closeConfirm": {
@@ -814,10 +816,20 @@
   },
   "about": {
     "title": "About EncodeX",
-    "subtitle": "A free and open-source multimedia toolkit built on FFmpeg. Convert, inspect, compress, extract, cut, and batch-process audio, video, and images — all in one place.",
-    "description": "EncodeX is a cross-platform multimedia toolkit that brings the power of FFmpeg to a modern, intuitive desktop interface. Convert audio, video, and images between formats with granular control over codecs, bitrate, resolution, pixel format, and quality; stream-copy tracks losslessly for instant remuxing; extract audio from video; and cut video with a frame-accurate preview player. Hardware-accelerated encoding is supported across NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, and Microsoft Media Foundation, with available encoder families auto-detected from the bundled FFmpeg binary at runtime. Batch jobs run through a persistent queue with real-time progress, and a headless CLI mode exposes the same capabilities for scripting and automation.",
+    "subtitle": "A free and open-source multimedia toolkit built on FFmpeg. Convert, compress, extract, cut and batch-process audio, video and images, or drive the same engine from the CLI, an MCP server or the AI Copilot.",
+    "description": "EncodeX is a cross-platform multimedia toolkit that brings the power of FFmpeg to a modern desktop interface. Convert audio, video and images with granular control over codecs, bitrate, resolution, pixel format and quality; stream-copy tracks losslessly; rotate and mirror media; apply video filters; and cut video with a frame-accurate preview player. Conversion profiles set common targets in one click, and you can save your own. Hardware-accelerated encoding covers NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox and Microsoft Media Foundation, with encoder families detected automatically from the bundled FFmpeg at runtime. The batch queue runs jobs in parallel with live progress, saved state, and import and export. Beyond the GUI, a headless CLI, a standalone and embedded MCP server and an AI Copilot let scripts and assistants drive the same media engine.",
     "logoAlt": "EncodeX logo",
     "featuresTitle": "What you can do",
+    "featureConvert": "Convert video, audio, and images with fine control over codecs, bitrate, resolution, and quality, plus rotation and filters",
+    "featureRemux": "Remux or demux streams losslessly, and add subtitles, extra audio tracks, cover art, and chapters",
+    "featureMediaInfo": "Inspect codecs, streams, color, and metadata for any media file",
+    "featureImage": "Compress images with quality and resolution control, plus EXIF data and histograms",
+    "featureAudio": "Extract audio tracks from video in AAC, MP3, FLAC, Opus, and other formats",
+    "featureCut": "Cut video with frame-accurate trimming on a timeline of thumbnails and waveform",
+    "featureProfiles": "Start from built-in conversion profiles, or save your own",
+    "featureBatch": "Run batch jobs in parallel with pause, reorder, import and export, and a when-done power action",
+    "featureHardware": "Use GPU encoders such as NVENC, Quick Sync, AMF, VAAPI, and VideoToolbox, detected automatically",
+    "featureAutomation": "Describe a goal to the AI Copilot, or script EncodeX from the CLI and MCP server",
     "version": "Version",
     "builtWith": "Built with",
     "authorTitle": "Author & feedback",

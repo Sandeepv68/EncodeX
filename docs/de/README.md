@@ -51,40 +51,45 @@ EncodeX ist die kostenlose, quelloffene FFmpeg-Oberfläche, die die Leistung von
 
 Willst du die Arbeit einem KI-Assistenten überlassen? EncodeX enthält außerdem einen integrierten **MCP-Server**, sodass Werkzeuge wie Claude Desktop, Cursor, VS Code und eigene Agenten deine Medien über das [Model Context Protocol](https://modelcontextprotocol.io) für dich konvertieren und verwalten können — weiterhin vollständig auf deinem eigenen Rechner.
 
+Die Konvertierung läuft **lokal auf deinem Computer** — keine Konten, keine Medien-Uploads, keine Wasserzeichen, keine Abonnements. Der Copilot-Assistent kontaktiert nur dann einen Cloud-KI-Anbieter, wenn du einen konfigurierst.
+
 ## Warum EncodeX?
 
 - ✅ **Für immer kostenlos** — Open Source (MIT), keine kostenpflichtige Stufe
-- ✅ **100 % privat** — Deine Dateien verlassen niemals deinen Computer
-- ✅ **Kein Konto, keine Registrierung, kein Tracking**
+- ✅ **Lokale Konvertierung** — Medien werden auf deinem Computer verarbeitet
+- ✅ **Kein Konto, keine Registrierung**
+- ✅ **Opt-out-Telemetrie** — Fehlerberichte und Nutzungsstatistiken sind standardmäßig aktiviert und lassen sich in den Einstellungen deaktivieren
 - ✅ **Keine Wasserzeichen, keine Dateigrößenbeschränkungen, keine Werbung**
 - ✅ **FFmpeg-powered** — 51 Video-Codecs, 27 Audio-Codecs, 56 Pixelformate
 - ✅ **Hardwarebeschleunigung** — NVIDIA, Intel, AMD, Apple Silicon für schnelle Encodes
 - ✅ **Stapelverarbeitung** — Ganze Ordner auf einmal konvertieren
 - ✅ **KI-bereiter MCP-Server** — EncodeX über Claude, Cursor, VS Code und eigene Agenten steuern
-- ✅ **Plattformübergreifend** — Windows 10+, macOS 11+, Linux
-- ✅ **35+ Sprachen** mit RTL-Unterstützung
+- ✅ **Plattformübergreifend** — Windows, macOS und Linux (x64 und arm64)
+- ✅ **56 Gebietsschemata** mit RTL-Unterstützung
 
 ## ✨ Funktionen
 
 - **🔄 Medienkonvertierung** — 51 Video-Codecs, 27 Audio-Codecs, 56 Pixelformate mit Codec-/Bitraten-/Skalierungs-/Qualitätsreglern
-- **🌀 Drehung & Spiegelung** — Videos und Bilder um 90°, 180° oder 270° im Uhrzeigersinn drehen und horizontal oder vertikal spiegeln; beim Stream-Copy für MP4/MOV/MKV wird die Drehung als verlustfreie Metadaten gespeichert
-- **🎛️ Konvertierungsprofile** — 140+ vorkonfigurierte Voreinstellungen in 8 Kategorien (YouTube, Instagram, TikTok, Apple, Android, ProRes, HLS u. a.) mit individueller Profilestellung und Letzte-Verwendet-Verfolgung
-- **⚡ Hardwarebeschleunigung** — NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, Media Foundation
+- **🌀 Drehung & Spiegelung** — Videos und Bilder um 90°, 180° oder 270° im Uhrzeigersinn drehen und horizontal oder vertikal spiegeln; im Stream-Copy-Modus speichern MP4/MOV/MKV-Ausgaben die Drehung als verlustfreie Metadaten
+- **🎛️ Konvertierungsprofile** — 115 vorkonfigurierte Voreinstellungen in 8 Kategorien (YouTube, Instagram, TikTok, Apple, Android, ProRes, HLS u. a.) mit individueller Profilestellung und Letzte-Verwendet-Verfolgung
+- **⚡ Hardwarebeschleunigung** — NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, Media Foundation, automatisch erkannt
 - **✂️ Videoschneiden** — Frame-genaues Trimmen mit integriertem Player (Rawvideo- + PCM-Pipes, Canvas + Web Audio) und zoombarer Timeline (Wellenform + Thumbnail-Montage)
-- **📋 Batch-Warteschlange** — Parallele Verarbeitung (bis zu 4 gleichzeitige Jobs) mit Live-Fortschritt, Fehlern pro Job, Pause/Fortsetzen, Drag-and-Drop-Neuanordnung, Bearbeitung von Job-Optionen, Statusfiltern, JSON-Export/-Import und Energiemaßnahmen nach Abschluss (Herunterfahren/Standby/Ruhezustand)
+- **🤖 Copilot** — KI-Assistentenseite (`/copilot`) mit 13 Operationen; KI-Anbieter ist standardmäßig `rules` (offline), außerdem OpenAI, Anthropic, Gemini oder ein lokales Modell
+- **🎞️ Remux & Demux** — Container wechseln mit Stream-Copy, Untertitel, Audio, Cover-Art oder Kapitel hinzufügen, oder einzelne Streams extrahieren
+- **🎛️ Videofilter** — 8 Filtervorlagen (Zuschneiden, Bildrate, Deinterlacing, Entrauschen, Schärfen, Farbe, Graustufen, Weichzeichnen) plus benutzerdefinierte Filterketten
+- **🧭 Erste Schritte** — Dashboard-Karte mit sechs Zielen: Copilot fragen, Konvertieren, Komprimieren, Audio extrahieren, Schneiden, Remuxen
+- **📜 Allgemeine Geschäftsbedingungen** — Ein Erststart-Dialog fordert die Zustimmung zu den Nutzungsbedingungen
+- **📋 Batch-Warteschlange** — Parallele Verarbeitung (bis zu 4 gleichzeitige Jobs, standardmäßig 1) mit Live-Fortschritt, Fehlern pro Job, Pause/Fortsetzen, Drag-and-Drop-Neuanordnung, Bearbeitung von Job-Optionen, Statusfiltern, JSON-Export/-Import und Energiemaßnahmen nach Abschluss (Herunterfahren/Standby/Ruhezustand)
 - **🖼️ Bildkomprimierung** — JPEG/PNG/WebP/BMP/GIF/TIFF mit Qualität/Skalierung, EXIF-Viewer, RGB-/Luma-Histogrammen
 - **🎵 Audioextraktion** — Jeder der 27 Audio-Codecs aus jeder Videodatei
 - **ℹ️ Medieninfo** — Vollständige Pro-Prüfung pro Stream: Codec, Profil, Auflösung, Farbmetadaten, Bildrate usw.
-- **⌨️ CLI-Modus** — Headless-Skripting mit Unterbefehlen (`convert`, `info`, `capabilities`, `compress`, `extract-audio`, `batch`)
-- **🤖 MCP-Server** — Integrierter [Model Context Protocol](https://modelcontextprotocol.io)-Server: 13 Kern-Tools, 3 Ressourcen und 4 Prompts über stdio (`encodex --mcp`), plus einen eingebetteten localhost-HTTP-Endpunkt, der 6 GUI-äquivalente Tools hinzufügt (Live-Warteschlange, Vorschau, Timeline, Systeminfos, Updates). Einmalige Konvertierungen ausführen oder asynchrone Jobs über Claude Desktop, Claude Code, Cursor, VS Code oder einen beliebigen MCP-Client verwalten
+- **⌨️ CLI-Modus** — Headless-Skripting mit Unterbefehlen (`convert`, `info`, `capabilities`, `compress`, `extract-audio`, `remux`, `demux`, `batch`)
+- **🤖 MCP-Server** — Integrierter [Model Context Protocol](https://modelcontextprotocol.io)-Server: 36 modellsichtbare Tools, 3 Ressourcen und 4 Prompts über stdio (`encodex --mcp`), plus ein optionaler eingebetteter localhost-HTTP-Endpunkt (standardmäßig deaktiviert), der 6 GUI-äquivalente Tools hinzufügt (Live-Warteschlange, Vorschau, Timeline, Systeminfos, Updates) — insgesamt 42 modellsichtbare Tools. Einmalige Konvertierungen ausführen oder asynchrone Jobs über Claude Desktop, Claude Code, Cursor, VS Code oder einen beliebigen MCP-Client verwalten
 - **⚙️ 3 Transcoder-Kerne** — FFmpeg-API (fluent-ffmpeg), FFmpeg-CLI (child_process), BMF-Framework
-- **🌍 56 Gebietsschemata** — 35 Sprachen mit RTL-Unterstützung (Arabisch, Hebräisch)
-- **⌨️ Tastaturkürzel** — 60+ Kürzel auf jeder Seite mit In-App-Hilfedialog (`Ctrl+/`)
-- **🔔 Aktivitätsanzeigen** — Live-Navigationsindikatoren mit Hover-Popovers, die den Fortschritt pro Job auf einen Blick zeigen
-- **🛡️ Schließbestätigung** — Warnt vor dem Schließen des Fensters, solange Jobs noch laufen
-- **🎉 Easter Eggs** — Feiertags-Themenlogos an besonderen Daten
-- **🔄 In-App-Updates** — Prüft GitHub Releases, lädt den Plattform-Installer herunter, Fortschritt in Echtzeit
-- **🛡️ Fehlerbehandlung** — 16 typisierte Fehlercodes, globale Snackbar, Inline-Banner, React-Error-Boundaries
+- **🌍 56 Gebietsschemata** mit RTL-Unterstützung (Arabisch, Hebräisch)
+- **⌨️ Tastaturkürzel** — 82 Kürzel in 11 Hilfebereichen mit In-App-Hilfedialog (`Ctrl+/`)
+- **🔄 In-App-Updates** — Prüft GitHub Releases, lädt den Plattform-Installer auf Nachfrage herunter (wird niemals automatisch installiert), Fortschritt in Echtzeit
+- **🛡️ Fehlerbehandlung** — 28 typisierte Fehlercodes, globale Snackbar, Inline-Banner, React-Error-Boundaries
 - **🌗 Dunkles/Helles Design** — Systembezogen mit manuellem Umschalter und dauerhaften Einstellungen
 
 Eine vollständige Aufschlüsselung der Funktionen, unterstützten Formate und Codec-Listen findest du in [Funktionen](./features-reference.md).
@@ -207,8 +212,8 @@ npm run dist
 | `npm run start`          | Kompilierte App aus `dist/` über `electron .` starten              |
 | `npm run electron:dev`   | Vite- + Electron-Dev-Umgebung                                      |
 | `npm run dev:start`      | Erst bauen, dann starten                                           |
-| `npm run format`         | `prettier --write` für alle `src` TypeScript/JSON                  |
-| `npm run format:check`   | `prettier --check` für alle `src` TypeScript/JSON                  |
+| `npm run format`         | `prettier --write` für TypeScript/JS in `src`, `e2e`, `perf`, `scripts`, `bin` und dem Projektstamm |
+| `npm run format:check`   | `prettier --check` für dieselben Muster                            |
 | `npm run pack`           | Build + electron-builder `--dir`                                   |
 | `npm run dist`           | Build + electron-builder (NSIS/DMG/AppImage)                       |
 
@@ -232,7 +237,7 @@ Eine vollständige Übersicht aller Unterbefehle, Optionen und Beispiele findest
 ## 🧪 Tests
 
 ```bash
-npm test           # Führt alle 123 Testdateien / 1603 Tests aus
+npm test           # Führt Unit-Tests aus (314 Test-/Spezifikationsdateien unter src/)
 npm run test:watch
 npm run test:coverage
 npm run test:unit
@@ -248,7 +253,7 @@ Eine vollständige Aufschlüsselung der Testsammlung, Testeinrichtung und E2E-Sp
 | -------- | ----------------------------------------------------------------------------------- |
 | [Funktionen](./features-reference.md) | Funktionen, unterstützte Medienformate, Codec-Tabellen, Validierungshilfen |
 | [CLI-Nutzung](./cli.md) | CLI-Nutzung, Unterbefehle, alle Optionstabellen, Exit-Codes                |
-| [MCP-Server](./MCP.md) | MCP-Server-Toolkatalog, Client-Konfigurationen, eingebetteter HTTP-Server, Sicherheit |
+| [MCP-Server](../MCP.md) | MCP-Server-Toolkatalog, Client-Konfigurationen, eingebetteter HTTP-Server, Sicherheit |
 | [Tests](./testing.md) | Testsammlung, Testeinrichtung, E2E-Spezifikationen                          |
 | [IPC-Kanäle](./ipc.md) | IPC-Kanäle, electronAPI-Brücke, alle Methoden und Ereignisse               |
 | [Projektstruktur](./project-structure.md) | Vollständiger Verzeichnisbaum mit Anmerkungen                         |

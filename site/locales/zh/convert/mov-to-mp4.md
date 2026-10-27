@@ -1,6 +1,6 @@
 ---
 title: "MOV 转 MP4 转换器——免费转换 MOV 视频 | EncodeX"
-description: "使用 EncodeX 免费将 MOV 转换为 MP4。一款适用于 Windows、Mac 和 Linux 的快速离线 MOV 转 MP4 转换器。无水印、无上传、无画质损失。"
+description: "使用 EncodeX 免费将 MOV 转换为 MP4。一款适用于 Windows、Mac 和 Linux 的快速离线 MOV 转 MP4 转换器。无水印、无上传。"
 ogImage: "https://encodex.in/images/convert.webp"
 ---
 
@@ -19,7 +19,7 @@ MOV 文件（来自 iPhone、Mac 和许多相机）通常在 Android 手机、Wi
 - 你想在**偏好 MP4 的软件中编辑素材**
 - **同事或朋友**打不开你发送的 MOV
 
-## 无损地将 MOV 转为 MP4
+## 高画质将 MOV 转为 MP4
 
 EncodeX 快速将你的 **MOV 转为 MP4**，同时保留**视频画质**：
 

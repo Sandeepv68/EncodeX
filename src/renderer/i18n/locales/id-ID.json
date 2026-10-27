@@ -57,7 +57,9 @@
       "convert": "Konversi video",
       "compress": "Kompres file",
       "extract": "Ekstrak audio",
-      "trim": "Potong klip"
+      "trim": "Potong klip",
+      "remux": "Remux file",
+      "copilot": "Tanya Copilot"
     }
   },
   "closeConfirm": {
@@ -814,10 +816,20 @@
   },
   "about": {
     "title": "Tentang EncodeX",
-    "subtitle": "Toolkit multimedia gratis dan sumber terbuka yang dibangun di atas FFmpeg. Konversi, periksa, kompres, ekstrak, potong, dan proses batch audio, video, dan gambar — semuanya di satu tempat.",
-    "description": "EncodeX adalah toolkit multimedia lintas platform yang menghadirkan kekuatan FFmpeg ke dalam antarmuka desktop yang modern dan intuitif. Konversi audio, video, dan gambar antar format dengan kontrol terperinci atas codec, bitrate, resolusi, format piksel, dan kualitas; salin trek tanpa kehilangan kualitas untuk remuxing instan; ekstrak audio dari video; dan potong video dengan pemutar pratinjau akurat per frame. Enkode yang dipercepat perangkat keras didukung di NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, dan Microsoft Media Foundation, dengan keluarga encoder yang tersedia terdeteksi otomatis dari biner FFmpeg yang disertakan saat runtime. Pekerjaan batch berjalan melalui antrean persisten dengan progres real-time, dan mode CLI headless mengekspos kemampuan yang sama untuk scripting dan otomatisasi.",
+    "subtitle": "Toolkit multimedia gratis dan open source yang dibangun di atas FFmpeg. Konversi, kompres, ekstrak, potong, dan proses audio, video, serta gambar secara batch, atau jalankan mesin yang sama dari CLI, server MCP, atau asisten AI Copilot.",
+    "description": "EncodeX adalah toolkit multimedia lintas platform yang menghadirkan kekuatan FFmpeg ke antarmuka desktop yang modern dan mudah digunakan. Konversi audio, video, dan gambar dengan kontrol rinci atas codec, bitrate, resolusi, format piksel, dan kualitas; salin trek tanpa kehilangan kualitas; putar dan cerminkan media; terapkan filter video; dan potong video dengan pemutar pratinjau yang akurat per frame. Profil konversi mengatur target umum hanya dengan satu klik, dan Anda dapat menyimpan profil sendiri. Encoding dengan akselerasi perangkat keras mendukung NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, dan Microsoft Media Foundation, dengan keluarga encoder yang dideteksi otomatis dari FFmpeg bawaan saat aplikasi berjalan. Antrean batch menjalankan tugas secara paralel dengan progres langsung, penyimpanan status, serta impor dan ekspor. Selain GUI, CLI tanpa antarmuka, server MCP mandiri maupun tertanam, dan asisten AI Copilot memungkinkan skrip dan asisten mengendalikan mesin media yang sama.",
     "logoAlt": "Logo EncodeX",
     "featuresTitle": "Apa yang dapat Anda lakukan",
+    "featureConvert": "Konversi video, audio, dan gambar dengan kontrol rinci atas codec, bitrate, resolusi, dan kualitas, ditambah rotasi dan filter",
+    "featureRemux": "Remux atau demux stream tanpa kehilangan kualitas, serta tambahkan subtitle, trek audio tambahan, sampul, dan bab",
+    "featureMediaInfo": "Periksa codec, stream, warna, dan metadata untuk file media apa pun",
+    "featureImage": "Kompres gambar dengan kontrol kualitas dan resolusi, dilengkapi data EXIF dan histogram",
+    "featureAudio": "Ekstrak trek audio dari video dalam format AAC, MP3, FLAC, Opus, dan lainnya",
+    "featureCut": "Potong video dengan presisi per frame pada linimasa thumbnail dan bentuk gelombang",
+    "featureProfiles": "Mulai dari profil konversi bawaan, atau simpan profil Anda sendiri",
+    "featureBatch": "Jalankan tugas batch secara paralel dengan jeda, pengurutan ulang, impor dan ekspor, serta aksi daya saat selesai",
+    "featureHardware": "Gunakan encoder GPU seperti NVENC, Quick Sync, AMF, VAAPI, dan VideoToolbox yang terdeteksi otomatis",
+    "featureAutomation": "Jelaskan tujuan kepada asisten AI Copilot, atau buat skrip EncodeX melalui CLI dan server MCP",
     "version": "Versi",
     "builtWith": "Dibangun dengan",
     "authorTitle": "Penulis & umpan balik",

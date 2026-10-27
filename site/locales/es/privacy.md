@@ -16,12 +16,12 @@ EncodeX es una aplicación de escritorio que procesa todo el contenido multimedi
 - **100% sin conexión** — toda conversión, compresión y extracción ocurre en tu dispositivo
 - **Sin cuenta** — nada que registrar, sin perfil que mantener
 - **Sin subidas** — tu contenido multimedia nunca se transmite a nosotros ni a nadie más
-- **Solo telemetría con consentimiento** — el único dato que sale son eventos opcionales, anónimos y solo por categorías que puedes desactivar en Ajustes
+- **Telemetría que puedes desactivar** — los informes de errores y los datos de uso anónimos y por categorías están activados de forma predeterminada, y un solo interruptor en Ajustes desactiva ambos. Las comprobaciones de actualización y los proveedores de IA configurados también hacen solicitudes de red (ver abajo)
 - **Código abierto** — cualquiera puede inspeccionar exactamente qué hace la aplicación
 
 ## Lo que no recopilamos
 
-EncodeX no recopila, transmite ni almacena ningún archivo multimedia, nombre de carpeta o comportamiento de uso. Dado que la aplicación se ejecuta completamente en tu computadora, no hay nada que nosotros recopilemos.
+EncodeX no recopila, transmite ni almacena ninguno de tus archivos multimedia, nombres de carpetas ni nada más que pueda identificarte. La conversión ocurre en tu computadora. La aplicación sí envía informes de errores y eventos de uso anónimos de forma predeterminada, y también puede hacer las solicitudes salientes que se indican abajo. Puedes desactivar los informes de errores y los datos de uso en Ajustes.
 
 ## Lo que hacemos
 
@@ -49,19 +49,24 @@ Para ser completamente transparentes, aquí está cada dato que EncodeX recopila
 
 ### La aplicación de escritorio
 
-- **Informes de errores y diagnósticos con consentimiento.** La aplicación puede enviar diagnósticos de fallos e información de errores anónima a Sentry — y está **activada por defecto, con un interruptor visible en Ajustes** para desactivarla cuando quieras. Todo está gobernado por un único interruptor de consentimiento (guardados localmente en tu dispositivo como `monitoring-consent.json` y `analytics-consent.json`).
-- **Eventos de uso solo por categorías.** Cuando está activada, la aplicación registra eventos anónimos y solo por categorías — cosas como «conversión iniciada» o «perfil aplicado» — mediante un canal de análisis de uso propio y dedicado. Por diseño de taxonomía, estos datos **no contienen contenido multimedia, ni nombres de archivo, ni rutas de carpetas, ni tamaños de archivo.** Si desactivas la telemetría, nada sale de tu equipo.
-- **Sin subidas, sin procesamiento en la nube.** Incluso con la telemetría activada, tus archivos multimedia reales nunca se transmiten. Codificar, convertir, comprimir o extraer ocurre enteramente dentro de tu dispositivo.
+- **Informes de errores.** La aplicación puede enviar diagnósticos de fallos y errores a Sentry. Está **activada de forma predeterminada, con un interruptor en Ajustes** para desactivarla cuando quieras. Un solo interruptor, _Datos de uso e informes de errores_, en Ajustes, controla tanto los informes de errores como los datos de uso. La elección se guarda localmente en `monitoring-consent.json` y `analytics-consent.json`.
+- **Datos de uso solo por categorías.** Cuando está activada, la aplicación registra eventos anónimos y por categorías agrupados por área de función (por ejemplo, navegación, conversión, cola y actualizaciones) mediante un canal de análisis de uso. Por diseño, estos datos **no contienen contenido multimedia, ni nombres de archivo, ni rutas de carpetas.** Si desactivas el interruptor, estos eventos no se envían.
+- **Sin subidas, sin procesamiento en la nube.** Incluso con la telemetría activada, tus archivos multimedia nunca se transmiten. La conversión, la compresión y la extracción ocurren en tu dispositivo.
+
+### Otras solicitudes de red
+
+- **Comprobaciones de actualización** — cuando buscas actualizaciones, la aplicación consulta las versiones de GitHub.
+- **Proveedores de IA** — Copilot y las funciones de IA usan el enrutador de reglas integrado de forma predeterminada, que funciona sin conexión. Las solicitudes solo van a OpenAI, Anthropic o Gemini si configuras uno de esos proveedores. El proveedor local se ejecuta en tu máquina.
 
 ### En términos simples
 
 - No hay **cuenta** — nada que crear, ningún perfil que mantener
 - Tus archivos **nunca salen de tu equipo** — sin subidas, sin procesamiento en la nube
-- La aplicación funciona **completamente sin conexión** — la telemetría es lo único que puede conectarse, requiere consentimiento, es solo por categorías y se puede desactivar
+- La conversión funciona **completamente sin conexión**. Los informes de errores, los datos de uso, las comprobaciones de actualización y los proveedores de IA configurados son las únicas actividades de red, y tú controlas la primera y la última.
 
 ## Cómo funciona
 
-No hay nube a la que enviar tus archivos. EncodeX incluye el motor FFmpeg directamente en la aplicación y ejecuta cada conversión **en el proceso de tu dispositivo** — de la misma manera que tu navegador web renderiza una página sin que se envíe a un servidor. Si quieres verificarlo, toda la aplicación (incluida su canal de procesamiento multimedia) es de código abierto y está documentada en la [arquitectura técnica](/es/docs/architecture).
+No hay nube a la que enviar tus archivos. EncodeX incluye el motor FFmpeg con la aplicación y ejecuta cada conversión como un **proceso hijo local en tu dispositivo**, así que los medios se leen y escriben en tu computadora. Si quieres verificarlo, toda la aplicación (incluida su canal de procesamiento multimedia) es de código abierto y está documentada en la [arquitectura técnica](/es/docs/architecture).
 
 ## Actualizaciones
 

@@ -57,7 +57,9 @@
       "convert": "Tukar video",
       "compress": "Mampatkan fail",
       "extract": "Ekstrak audio",
-      "trim": "Potong klip"
+      "trim": "Potong klip",
+      "remux": "Remux fail",
+      "copilot": "Tanya Copilot"
     }
   },
   "closeConfirm": {
@@ -814,10 +816,20 @@
   },
   "about": {
     "title": "Tentang EncodeX",
-    "subtitle": "Kit alat multimedia percuma dan sumber terbuka yang dibina di atas FFmpeg. Tukar, periksa, mampat, ekstrak, potong dan proses audio, video dan imej secara kelompok — semuanya di satu tempat.",
-    "description": "EncodeX ialah kit alat multimedia merentas platform yang membawa kuasa FFmpeg ke antara muka desktop yang moden dan intuitif. Tukar audio, video dan imej antara format dengan kawalan terperinci ke atas codec, bitrate, resolusi, format piksel dan kualiti; salin trek tanpa kehilangan kualiti untuk remux serta-merta; ekstrak audio daripada video; dan potong video dengan pemain pratonton tepat-frama. Pengekodan dipercepat perkakasan disokong merentas NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox dan Microsoft Media Foundation, dengan keluarga pengekod yang tersedia dikesan secara automatik daripada binari FFmpeg yang disertakan pada masa jalan. Kerja kelompok berjalan melalui baris gilir berterusan dengan kemajuan masa nyata, dan mod CLI tanpa kepala mendedahkan keupayaan yang sama untuk skrip dan automasi.",
+    "subtitle": "Kit alat multimedia percuma dan sumber terbuka yang dibina di atas FFmpeg. Tukar, mampatkan, ekstrak, potong dan proses audio, video serta imej secara berkelompok, atau kendalikan enjin yang sama dari CLI, pelayan MCP atau pembantu AI Copilot.",
+    "description": "EncodeX ialah kit alat multimedia rentas platform yang membawa kuasa FFmpeg ke antara muka desktop yang moden dan mudah digunakan. Tukar audio, video dan imej dengan kawalan terperinci ke atas codec, kadar bit, resolusi, format piksel dan kualiti; salin trek tanpa kehilangan kualiti; putar dan cerminkan media; gunakan penapis video; dan potong video dengan pemain pratonton yang tepat sehingga ke bingkai. Profil penukaran menetapkan sasaran lazim dengan satu klik, dan anda boleh menyimpan profil sendiri. Pengekodan pecutan perkakasan menyokong NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox dan Microsoft Media Foundation, dengan keluarga pengekod dikesan secara automatik daripada FFmpeg yang disertakan semasa aplikasi berjalan. Barisan kelompok menjalankan kerja secara selari dengan kemajuan langsung, penyimpanan keadaan, serta import dan eksport. Selain GUI, CLI tanpa antara muka, pelayan MCP berdiri sendiri dan terbenam, serta pembantu AI Copilot membolehkan skrip dan pembantu mengawal enjin media yang sama.",
     "logoAlt": "Logo EncodeX",
     "featuresTitle": "Apa yang anda boleh lakukan",
+    "featureConvert": "Tukar video, audio dan imej dengan kawalan terperinci ke atas codec, kadar bit, resolusi dan kualiti, serta putaran dan penapis",
+    "featureRemux": "Remux atau demux strim tanpa kehilangan kualiti, dan tambah sari kata, trek audio tambahan, seni muka depan dan bab",
+    "featureMediaInfo": "Periksa codec, strim, warna dan metadata bagi mana-mana fail media",
+    "featureImage": "Mampatkan imej dengan kawalan kualiti dan resolusi, serta data EXIF dan histogram",
+    "featureAudio": "Ekstrak trek audio daripada video dalam format AAC, MP3, FLAC, Opus dan lain-lain",
+    "featureCut": "Potong video dengan ketepatan bingkai pada garis masa imej kecil dan bentuk gelombang",
+    "featureProfiles": "Mulakan dengan profil penukaran terbina dalam, atau simpan profil anda sendiri",
+    "featureBatch": "Jalankan kerja berkelompok secara selari dengan jeda, susunan semula, import dan eksport, serta tindakan kuasa apabila selesai",
+    "featureHardware": "Gunakan pengekod GPU seperti NVENC, Quick Sync, AMF, VAAPI dan VideoToolbox yang dikesan secara automatik",
+    "featureAutomation": "Terangkan matlamat kepada pembantu AI Copilot, atau tulis skrip untuk EncodeX melalui CLI dan pelayan MCP",
     "version": "Versi",
     "builtWith": "Dibina dengan",
     "authorTitle": "Penulis & maklum balas",

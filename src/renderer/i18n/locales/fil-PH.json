@@ -57,7 +57,9 @@
       "convert": "I-convert ang isang video",
       "compress": "I-compress ang isang file",
       "extract": "Kuhanin ang audio",
-      "trim": "I-trim ang isang clip"
+      "trim": "I-trim ang isang clip",
+      "remux": "I-remux ang file",
+      "copilot": "Magtanong sa Copilot"
     }
   },
   "closeConfirm": {
@@ -814,10 +816,20 @@
   },
   "about": {
     "title": "Tungkol sa EncodeX",
-    "subtitle": "Isang libre at open-source na toolkit para sa multimedia na binuo sa FFmpeg. I-convert, siyasatin, i-compress, kunin, gupitin, at i-batch ang pagproseso ng audio, video, at mga larawan — lahat sa isang lugar.",
-    "description": "Ang EncodeX ay isang cross-platform na multimedia toolkit na nagdadala ng kapangyarihan ng FFmpeg sa isang moderno at intuitive na desktop interface. I-convert ang audio, video, at mga larawan sa pagitan ng mga format na may malawakang kontrol sa mga codec, bitrate, resolution, pixel format, at kalidad; kopyahin ang mga track nang walang anumang kalidad na nawawala para sa agarang remuxing; kunin ang audio mula sa video; at gupitin ang video gamit ang isang frame-accurate na preview player. Ang hardware-accelerated encoding ay sinusuportahan sa NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, at Microsoft Media Foundation, na may mga available na encoder family na awtomatikong nakikita mula sa bundled na FFmpeg binary sa runtime. Ang mga batch job ay dumadaloy sa isang persistent na queue na may real-time na progress, at ang headless CLI mode ay nagbibigay ng parehong mga kakayahan para sa scripting at automation.",
+    "subtitle": "Isang libre at open-source na multimedia toolkit na binuo sa FFmpeg. I-convert, i-compress, i-extract, i-cut, at i-batch-process ang audio, video, at mga larawan, o pamahalaan ang parehong engine mula sa CLI, MCP server, o sa AI Copilot.",
+    "description": "Ang EncodeX ay isang cross-platform na multimedia toolkit na nagdadala ng lakas ng FFmpeg sa isang moderno at madaling gamiting desktop interface. I-convert ang audio, video, at mga larawan nang may detalyadong kontrol sa mga codec, bitrate, resolution, pixel format, at kalidad; i-stream-copy ang mga track nang walang pagkawala ng kalidad; i-rotate at i-mirror ang media; maglapat ng mga video filter; at i-cut ang video gamit ang preview player na tumpak sa bawat frame. Ang mga conversion profile ay nagtatakda ng karaniwang target sa isang click, at maaari mong i-save ang sarili mong mga profile. Sinusuportahan ng hardware-accelerated encoding ang NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, at Microsoft Media Foundation, at awtomatikong natutukoy ang mga encoder family mula sa kasamang FFmpeg habang tumatakbo ang app. Pinapatakbo ng batch queue ang mga job nang sabay-sabay na may live na progreso, naka-save na estado, at import at export. Bukod sa GUI, ang headless CLI, standalone at naka-embed na MCP server, at ang AI Copilot ay nagbibigay-daan sa mga script at assistant na kontrolin ang parehong media engine.",
     "logoAlt": "Logo ng EncodeX",
     "featuresTitle": "Kung ano ang magagawa mo",
+    "featureConvert": "I-convert ang video, audio, at mga larawan nang may detalyadong kontrol sa mga codec, bitrate, resolution, at kalidad, kasama ang rotation at mga filter",
+    "featureRemux": "I-remux o i-demux ang mga stream nang walang pagkawala, at magdagdag ng subtitles, dagdag na audio track, cover art, at chapters",
+    "featureMediaInfo": "Suriin ang mga codec, stream, kulay, at metadata ng anumang media file",
+    "featureImage": "I-compress ang mga larawan na may kontrol sa kalidad at resolution, kasama ang EXIF data at histogram",
+    "featureAudio": "I-extract ang mga audio track mula sa video sa AAC, MP3, FLAC, Opus, at iba pang format",
+    "featureCut": "I-cut ang video na tumpak sa bawat frame sa timeline na may thumbnail at waveform",
+    "featureProfiles": "Magsimula sa mga built-in na conversion profile, o i-save ang sarili mo",
+    "featureBatch": "Magpatakbo ng batch job nang sabay-sabay na may pause, reorder, import at export, at power action pagkatapos matapos",
+    "featureHardware": "Gumamit ng GPU encoder tulad ng NVENC, Quick Sync, AMF, VAAPI, at VideoToolbox na awtomatikong natutukoy",
+    "featureAutomation": "Ilarawan ang layunin sa AI Copilot, o i-script ang EncodeX mula sa CLI at MCP server",
     "version": "Bersyon",
     "builtWith": "Binuo gamit ang",
     "authorTitle": "May-akda at feedback",

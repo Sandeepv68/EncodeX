@@ -1,6 +1,6 @@
 ---
 title: "Comprime vídeos MP4 gratis – Reduce el tamaño de los MP4 | EncodeX"
-description: "Comprime vídeos MP4 gratis con EncodeX en Windows, Mac y Linux. Reduce el tamaño de tus archivos MP4 sin perder calidad visible. Sin subidas, sin marcas de agua, sin registro."
+description: "Comprime vídeos MP4 gratis con EncodeX en Windows, Mac y Linux. Reduce el tamaño de tus archivos MP4 manteniendo la calidad alta. Sin subidas, sin marcas de agua, sin registro."
 ogImage: "https://encodex.in/images/convert.webp"
 ---
 
@@ -18,9 +18,9 @@ MP4 está por todas partes — que es justo por lo que la gente necesita reducir
 - **Almacenamiento** — los clips del móvil ocupan espacio del disco rápidamente
 - **Compartir más rápido** — los archivos más pequeños se transfieren en segundos
 
-## Comprime MP4 sin perder calidad
+## Comprime MP4 manteniendo la calidad alta
 
-EncodeX re-codifica tu MP4 con opciones más inteligentes — un códec moderno como **H.265/HEVC o AV1** y una tasa de bits ajustada — para que obtengas un **archivo mucho más pequeño que sigue viéndose genial**:
+EncodeX re-codifica tu MP4 con opciones más inteligentes — un códec moderno como **H.265/HEVC o AV1** y una tasa de bits ajustada — para que obtengas un **archivo más pequeño que sigue viéndose bien**:
 
 1. [Descarga EncodeX gratis](/es/download)
 2. Arrastra tu archivo **.mp4** a la ventana
@@ -38,7 +38,7 @@ EncodeX re-codifica tu MP4 con opciones más inteligentes — un códec moderno 
 
 ## Preguntas frecuentes
 
-**¿Qué tan pequeños pueden llegar a ser los MP4 comprimidos?** Depende de la fuente y la configuración, pero EncodeX suele reducir los archivos a una fracción de su tamaño manteniendo una calidad visualmente similar.
+**¿Qué tan pequeños pueden llegar a ser los MP4 comprimidos?** Depende de la fuente y la configuración. EncodeX busca mantener una calidad visual cercana a la original mientras reduce el tamaño del archivo.
 
 **¿Comprimir reducirá la calidad de mi vídeo?** EncodeX equilibra tamaño y calidad automáticamente. Tú eliges qué tan agresivo ser y puedes previsualizar el resultado antes de guardar.
 

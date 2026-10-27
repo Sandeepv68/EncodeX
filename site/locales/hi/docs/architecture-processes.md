@@ -14,6 +14,7 @@ Node.js वातावरण। एप्लिकेशन लाइफ़स�
 - बिल्ट-इन प्लेयर के लिए वीडियो फ़्रेम और ऑडियो PCM डिकोड करता है (`player/frame-decoder.ts`)।
 - वेवफ़ॉर्म और थंबनेल मोंटाज निकालता है (`timeline/timeline-media.ts`)।
 - EXIF डेटा, हिस्टोग्राम, इमेज आयाम और पूर्वावलोकन पढ़ता है (`image-*.ts`, `video-preview.ts`)।
+- Copilot planning pipeline और AI provider connectors (`ai/`), usage analytics (`analytics/`), error monitoring (`monitoring/`), security policy (`security/`) और embedded MCP server (`mcp/`) को होस्ट करता है।
 - renderer के `console` आउटपुट को लॉग सिस्टम में ब्रिज करता है (`index.ts` में `patchConsole`)।
 
 ### Preload स्क्रिप्ट (`src/preload/index.ts`)
@@ -26,7 +27,7 @@ Node.js वातावरण। एप्लिकेशन लाइफ़स�
 
 ### साझा लेयर (`src/shared/`)
 
-शुद्ध TypeScript, जिसे तीनों प्रोसेस आयात करती हैं। इसमें IPC चैनल रजिस्ट्री, डोमेन प्रकार, एरर सिस्टम, logger, कॉन्स्टेंट्स, कोडेक सूचियाँ, वैलिडेशन helpers और लॉग संदेश कॉन्स्टेंट शामिल हैं। चूँकि `package.json` अलग पैकेज सीमाओं का उपयोग नहीं करता, यह निर्देशिका प्रत्येक प्रोसेस रूट से सापेक्ष imports के माध्यम से संदर्भित होती है।
+शुद्ध TypeScript, जिसे तीनों प्रोसेस आयात करती हैं। इसमें IPC चैनल रजिस्ट्री, डोमेन प्रकार, एरर सिस्टम, logger, कॉन्स्टेंट्स, कोडेक सूचियाँ, वैलिडेशन helpers, लॉग संदेश कॉन्स्टेंट, Copilot/AI contracts (`ai/`, `copilot.ts`), video-filter catalog (`video-filters.ts`), remux utilities (`remux-utils.ts`), audit-log contract (`audit.ts`) और MCP settings/UI contracts शामिल हैं। चूँकि `package.json` अलग पैकेज सीमाओं का उपयोग नहीं करता, यह निर्देशिका प्रत्येक प्रोसेस रूट से सापेक्ष imports के माध्यम से संदर्भित होती है।
 
 ## बिल्ड सिस्टम
 
@@ -53,20 +54,21 @@ Electron-builder ऐप को Windows (NSIS), macOS (DMG), और Linux (AppIma
 ## स्टार्टअप अनुक्रम
 
 1. `main/index.ts` चलता है। यह `isCliMode()` में `process.argv` की जाँच करता है।
-2. **CLI मोड** (स्पष्ट `--cli`/`--help`, या >=2 पोज़िशनल args): कोई विंडो रजिस्टर नहीं करता। `app.whenReady()` पर `runCli()` कॉल करता है और `SUCCESS` या `ERROR` कोड के साथ बाहर निकलता है।
-3. **GUI मोड**: `autoplay-policy` स्विच सक्षम करता है, एक नॉन-इंटरैक्टिव splash विंडो बनाता है (तुरंत दिखाई देती है), फिर फ़्रेमलेस मुख्य विंडो (`show: false`)।
-4. `registerIpcHandlers(mainWindow)` सभी IPC मॉड्यूल को वायर करता है; `patchConsole` `console.*` को बदल देता है ताकि मुख्य प्रोसेस लॉग `log-message` चैनल पर renderer को फ़ॉरवर्ड हों।
-5. `ready-to-show` पर मुख्य विंडो दिखाई जाती है, उस समय splash बंद हो जाती है।
-6. प्रोडक्शन में renderer `dist/renderer/index.html` से लोड होता है; डेवलपमेंट में DevTools खोलकर `http://localhost:5173` से।
+2. **CLI मोड** (स्पष्ट `--cli`, `-h`/`--help`, कोई भी subcommand या alias नाम, या 2+ non-flag पोज़िशनल args): कोई विंडो रजिस्टर नहीं करता। `app.whenReady()` पर `runCli()` कॉल करता है और `SUCCESS` या `ERROR` कोड के साथ बाहर निकलता है।
+3. **MCP मोड** (`--mcp`): न विंडो शुरू करता है न CLI; stdin बंद होने तक stdio MCP server चलाता है।
+4. **GUI मोड**: `autoplay-policy` स्विच सक्षम करता है, एक नॉन-इंटरैक्टिव splash विंडो बनाता है (तुरंत दिखाई देती है), फिर फ़्रेमलेस मुख्य विंडो (`show: false`)।
+5. `registerIpcHandlers(mainWindow)` सभी IPC मॉड्यूल को वायर करता है; `patchConsole` `console.*` को बदल देता है ताकि मुख्य प्रोसेस लॉग `log-message` चैनल पर renderer को फ़ॉरवर्ड हों।
+6. `ready-to-show` पर मुख्य विंडो दिखाई जाती है, उस समय splash बंद हो जाती है।
+7. प्रोडक्शन में renderer `dist/renderer/index.html` से लोड होता है; डेवलपमेंट में DevTools खोलकर `http://localhost:5173` से।
 
 ## CLI मोड
 
 `src/main/cli/cli.ts` सबकमांड्स के साथ **commander** का उपयोग करता है। जब `runCli()` निष्पादित होता है:
 
-1. एक legacy shim फ़्लैट उपयोग (`encodex in.mp4 out.mp4` -> `convert`, `encodex --info in.mp4` -> `info`) को संगत सबकमांड पर मैप करता है।
+1. CLI मोड सक्रिय होने के बाद एक legacy shim फ़्लैट उपयोग (`encodex in.mp4 out.mp4` -> `convert`, `encodex --info in.mp4` -> `info`) को संगत सबकमांड पर मैप करता है। (`encodex --info in.mp4` में केवल एक पोज़िशनल argument है, इसलिए `--cli` पास न करने पर यह GUI खोलता है।)
 2. प्रत्येक सबकमांड अपने विकल्प plus साझा globals (`--transcoder`, `--theme`, `--verbose`, `--quiet`, `--no-color`, `--json`, `--timeout`) parse करता है।
 3. `info`/`capabilities` डिफ़ॉल्ट रूप से मानव-पठनीय तालिकाएँ और `--json` के साथ JSON प्रिंट करते हैं।
-4. `convert`/`compress`/`extract-audio`/`batch` एक `ConversionOptions` ऑब्जेक्ट बनाते हैं और `transcoder.convert(...)` कॉल करते हैं (batch एक in-memory `JobQueue` को `MultiBar` के साथ चलाता है)।
+4. `convert`/`compress`/`extract-audio`/`remux`/`demux`/`batch` `ConversionOptions` ऑब्जेक्ट बनाते हैं और `transcoder.convert(...)` कॉल करते हैं; remux और demux पहले validated stream plans बनाते हैं, और batch एक in-memory `JobQueue` को `MultiBar` के साथ चलाता है।
 5. प्रगति `stdout` पर जाती है (watchdog timeout के साथ), status/success लाइनें `--json`/`--quiet`/`--verbose` रूटिंग का सम्मान करती हैं, और प्रोसेस `mapCliErrorToExitCode` के माध्यम से समाप्त होती है (usage=2, cancelled=3, not-found=4, timeout=5, success=0)।
 
 CLI GUI के समान transcoder pipeline का पुन: उपयोग करता है — बनाए रखने के लिए कोई अलग एनकोडिंग पथ नहीं है।
@@ -75,11 +77,11 @@ CLI GUI के समान transcoder pipeline का पुन: उपयो�
 
 सबसे महत्वपूर्ण आर्किटेक्चरल निर्णय यह है कि सभी क्रॉस-प्रोसेस अनुबंध `src/shared/` में रहते हैं:
 
-- **`types.ts`** — `ConversionOptions`, `MediaInfo`, `MediaStreamInfo`, `QueueJob`, `ConversionProgress`, `PlayerFrame`, `PlayerAudioChunk`, `WaveformData`, `ThumbnailStrip`, `EncoderCapabilities`, `LogEntry`, `FileItem`, `ConversionOperation`, `UpdateInfo`, `UpdateAsset`, `UpdateProgress`।
+- **`types.ts`** — `ConversionOptions`, `MediaInfo`, `MediaStreamInfo`, `QueueJob`, `ConversionProgress`, `PlayerFrame`, `PlayerAudioChunk`, `WaveformData`, `ThumbnailStrip`, `EncoderCapabilities`, `LogEntry`, `FileItem`, `ConversionOperation`, `UpdateInfo`, `UpdateAsset`, `UpdateProgress`, `PendingInstall`, `AuditEntry`।
 - **`ipc-channels.ts`** — `IPC` कॉन्स्टेंट ऑब्जेक्ट, प्रत्येक चैनल स्ट्रिंग का अद्वितीय सत्य स्रोत। main, preload और renderer सभी इससे import करते हैं, इसलिए चैनल नाम कभी भी प्रोसेस के बीच नहीं बदल सकता।
 - **`errors.ts`** — टाइप किया हुआ एरर सिस्टम ([एरर हैंडलिंग](/hi/docs/architecture-renderer#error-handling) देखें)।
 - **`constants.ts` / `app-constants.ts`** — संख्यात्मक सीमाएँ और UI लेआउट मान (विंडो आकार, waveform buckets, थंबनेल आयाम, error-history कैप आदि)।
 - **`transcoder-constants.ts` / `hwaccel-settings.ts`** — FFmpeg flags, डिफ़ॉल्ट, progress पैटर्न और हार्डवेयर एक्सेलेरेशन सेटिंग्स।
 - **`media-options.ts` / `codec-containers.ts` / `codec-classification.ts`** — 51 वीडियो कोडेक, 27 ऑडियो कोडेक, 56 पिक्सेल फ़ॉर्मेट, container-compatibility नियमों और codec-family helpers की curated सूचियाँ।
 - **`validation.ts`** — time/scale/bitrate/range वैलिडेशन के लिए शुद्ध फ़ंक्शन, renderer फ़ॉर्म और CLI दोनों द्वारा उपयोग किए जाते हैं।
-- **`logger.ts` / `log-constants.ts`** — timestamped logger plus ~406 साझा लॉग संदेश templates ताकि लॉग प्रोसेस के बीच सुसंगत रहें।
+- **`logger.ts` / `log-constants.ts`** — timestamped logger plus 527 साझा लॉग संदेश templates ताकि लॉग प्रोसेस के बीच सुसंगत रहें।

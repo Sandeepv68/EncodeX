@@ -1,6 +1,6 @@
 ---
 title: "MKV 转 MP4 转换器——免费转换 MKV 视频 | EncodeX"
-description: "使用 EncodeX 免费将 MKV 转换为 MP4。一款适用于 Windows、Mac 和 Linux 的快速离线 MKV 转 MP4 转换器。无水印、无上传、无画质损失。"
+description: "使用 EncodeX 免费将 MKV 转换为 MP4。一款适用于 Windows、Mac 和 Linux 的快速离线 MKV 转 MP4 转换器。无水印、无上传。"
 ogImage: "https://encodex.in/images/convert.webp"
 ---
 
@@ -19,9 +19,9 @@ MKV（Matroska）是一个非常灵活的格式，视频爱好者喜欢它的字
 - 你想在无法打开 MKV 的**软件中编辑视频**
 - 文件需要在**群聊**或邮件附件中正常使用
 
-## 无损地将 MKV 转为 MP4
+## 高画质将 MKV 转为 MP4
 
-EncodeX 在转换容器时保留你的**视频画质**和**音频**。简单：
+EncodeX 会以保持高画质的设置重新编码你的**视频**和**音频**。简单：
 
 1. [免费下载 EncodeX](/zh/download)
 2. 将你的 **.mkv** 文件拖入窗口
@@ -40,7 +40,7 @@ MP4 是安全且默认的预设——如果不确定，就选它。编解码器�
 
 **为什么要把 MKV 转成 MP4？** MKV 是灵活的格式，但并非所有设备或播放器都支持它。MP4 几乎可以在所有设备上播放：手机、电视、游戏机、编辑软件和浏览器。
 
-**将 MKV 转成 MP4 会丢失质量吗？** 不会。EncodeX 在转换封装格式时会保持视频和音频质量不变。
+**将 MKV 转成 MP4 会丢失质量吗？** EncodeX 会以保持高画质的设置重新编码。只有在源编解码器适配 MP4 容器时，才可以进行无损的流复制。
 
 **我可以一次转换多个 MKV 文件吗？** 可以。EncodeX 支持将整个文件夹的 MKV 文件批量转换为 MP4。
 

@@ -13,7 +13,7 @@ ogImage: "https://encodex.in/images/home_dashboard.webp"
 Mac-Nutzer wählen EncodeX, weil es nach der Art des Mac-Arbeitsablaufs gestaltet ist:
 
 - **Apple Silicon bereit** — eine native Apple Silicon-Version mit Intel-Unterstützung
-- **VideoToolbox-Hardwarebeschleunigung** — schnelle Encodierungen auf M-Serie-Chips
+- **VideoToolbox-Hardwarebeschleunigung** — schnelle Encodierungen auf Apple Silicon und Intel-Macs
 - **Drag and Drop** — kein Terminal-Wissen erforderlich
 - **Batch-Ordner** — verarbeiten Sie Hunderte von Dateien auf einmal
 - **Offline & privat** — Ihre Videos verlassen nie Ihren Mac

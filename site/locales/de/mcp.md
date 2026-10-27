@@ -17,7 +17,7 @@ Probieren Sie zum Beispiel:
 - *„Verkleinere die Fotos in `~/Pics` und lege die Ergebnisse in `~/Output`."*
 - *„Konvertiere alle MKV-Dateien in `~/Downloads` in MP4."*
 
-EncodeX ist ein kostenloser, quelloffener **FFmpeg-MCP-Server** mit einer Desktop-App darum herum — ein lokaler MCP-Server für KI-Medienautomatisierung. Keine Cloud, keine Uploads, kein Konto.
+EncodeX ist ein kostenloser, quelloffener **FFmpeg-MCP-Server** mit einer Desktop-App darum herum — ein lokaler MCP-Server für KI-Medienautomatisierung. Kein EncodeX-Cloud-Dienst, keine Medien-Uploads, kein Konto.
 
 ```mermaid
 flowchart TD
@@ -35,12 +35,13 @@ Sie bleiben in Ihrer Lieblings-KI-App. EncodeX übernimmt die schwere Arbeit im 
 
 ## Was kann ein Assistent über MCP tun?
 
-Der MCP-Server stellt **19 Werkzeuge, 3 Ressourcen und 4 Prompts** bereit:
+Der eigenständige stdio-Server stellt **36 modellsichtbare Werkzeuge, 3 Ressourcen und 4 Prompts** bereit (37 Registrierungen, einschließlich eines reinen App-Werkzeugs). Der eingebettete Server fügt **6 GUI-Werkzeuge** für insgesamt **42 Werkzeuge** hinzu:
 
 - **Konvertieren** von Video und Audio zwischen Formaten
 - **Extrahieren** von Audio aus Videodateien
 - **Komprimieren** von Videos und Bildern auf kleinere Größen
 - **Schneiden** und Trimmen von Clips
+- **Remux und Demux** — Container wechseln oder Streams aufteilen
 - **Ausführen und Verfolgen von asynchronen Stapeljobs** — Arbeit einreihen, Status prüfen, Ergebnisse abrufen
 
 Den vollständigen Werkzeugkatalog finden Sie in der [Funktionsreferenz](/docs/features-reference#mcp-server).
@@ -59,13 +60,13 @@ stdout transportiert das MCP-Protokoll; alle Logs gehen nach stderr, sodass nich
 
 ### 2. Eingebetteter Server (Einstellungen → MCP-Server)
 
-EncodeX bereits geöffnet? Aktivieren Sie **Einstellungen → MCP-Server** und richten Sie Ihren Client auf:
+EncodeX bereits geöffnet? Der eingebettete Server ist standardmäßig deaktiviert. Aktivieren Sie **Einstellungen → MCP-Server** und richten Sie Ihren Client auf:
 
 ```
 http://127.0.0.1:8765/mcp
 ```
 
-Dieser Modus fügt Live-**Warteschlangen**-, **Vorschau**-, **Timeline**-, **System**- und **Update**-Werkzeuge auf Basis desselben Kerns hinzu.
+Dieser Modus fügt 6 GUI-Werkzeuge auf Basis desselben Kerns hinzu — Live-Warteschlangenstatus, Alles abbrechen, Timeline, Vorschau, Systeminfos und Update-Prüfungen.
 
 ## Mit einem Klick verbinden
 
@@ -75,10 +76,10 @@ Kopieren Sie die Konfiguration für Ihren Client und fügen Sie sie ein — Enco
 
 ## Privat von Grund auf
 
-- **Alle Verarbeitung ist lokal** — Dateien werden nie hochgeladen, nichts geht in die Cloud
+- **Medienverarbeitung ist lokal** — Dateien werden nicht in einen Cloud-Dienst hochgeladen
 - **Nur Loopback** — der eingebettete Server bindet an `127.0.0.1` und validiert den `Origin`-Header
 - **Optionaler Zugriffstoken** — schützen Sie den Endpunkt mit einem Bearer-Token (in konstanter Zeit verglichen)
-- **Kein Konto nötig** — MCP funktioniert vollständig offline
+- **Kein Konto nötig** — der MCP-Server selbst braucht kein Konto
 
 ## Erste Schritte
 
@@ -96,7 +97,7 @@ Ja. Der MCP-Server ist in die kostenlose Open-Source-App (MIT) eingebaut — kei
 
 ### Lädt die MCP-Nutzung meine Dateien hoch?
 
-Nein. EncodeX arbeitet vollständig offline. Der MCP-Server steuert dieselbe lokale FFmpeg-Engine, Ihre Medien verlassen also nie Ihren Computer.
+Nein. Der MCP-Server steuert dieselbe lokale FFmpeg-Engine, Ihre Medien verlassen also nie Ihren Computer.
 
 ### Welche KI-Assistenten können sich verbinden?
 

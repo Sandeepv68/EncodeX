@@ -1,6 +1,6 @@
 ---
 title: "Compresser des vidéos MP4 gratuitement – Réduire la taille des fichiers MP4 | EncodeX"
-description: "Compressez vos vidéos MP4 gratuitement avec EncodeX sur Windows, Mac et Linux. Réduisez la taille de vos fichiers MP4 sans perte de qualité visible. Sans envoi, sans filigrane, sans inscription."
+description: "Compressez vos vidéos MP4 gratuitement avec EncodeX sur Windows, Mac et Linux. Réduisez la taille de vos fichiers MP4 en gardant une qualité élevée. Sans envoi, sans filigrane, sans inscription."
 ogImage: "https://encodex.in/images/convert.webp"
 ---
 
@@ -18,7 +18,7 @@ Le MP4 est partout — et c'est justement pour cela qu'il faut le réduire :
 - **Stockage** — les clips de smartphone grignotent vite l'espace disque
 - **Partage plus rapide** — les fichiers plus petits se transfèrent en quelques secondes
 
-## Compresser du MP4 sans perte de qualité
+## Compresser du MP4 en gardant une qualité élevée
 
 EncodeX ré-encode votre MP4 avec des réglages plus intelligents — un codec moderne comme **H.265/HEVC ou AV1** et un débit binaire ajusté — pour obtenir un **fichier bien plus petit qui reste superbe** :
 
@@ -38,7 +38,7 @@ Vous voulez une taille cible précise — par exemple « moins de 10 Mo » ? Enc
 
 ## FAQ
 
-**Quelle est la taille minimale possible pour un MP4 compressé ?** Cela dépend de la source et des réglages, mais EncodeX réduit souvent les fichiers à une fraction de leur taille tout en conservant une qualité visuellement semblable.
+**Quelle est la taille minimale possible pour un MP4 compressé ?** Cela dépend de la source et des réglages. EncodeX vise à garder une qualité visuelle proche de l'original tout en réduisant la taille du fichier.
 
 **La compression va-t-elle réduire la qualité de ma vidéo ?** EncodeX équilibre taille et qualité automatiquement. Vous choisissez l'agressivité du réglage et pouvez prévisualiser le résultat avant d'enregistrer.
 

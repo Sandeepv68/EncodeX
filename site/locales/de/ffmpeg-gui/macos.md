@@ -12,7 +12,7 @@ Sie möchten die Leistung von **FFmpeg** auf Ihrem Mac, ohne die Kommandozeile a
 EncodeX bietet macOS-Nutzern eine vollständige **FFmpeg-Oberfläche** mit einer sauberen, nativ wirkenden Benutzeroberfläche:
 
 - **Video und Audio konvertieren** – MP4, MKV, MOV, AVI, WebM, MP3, FLAC, WAV und mehr
-- **Videos komprimieren**, um die Dateigröße bei minimalem Qualitätsverlust zu reduzieren
+- **Videos komprimieren**, um die Dateigröße mit Kontrolle über die Qualität zu reduzieren
 - **Clips mit einer visuellen Zeitleiste schneiden**
 - **Audio aus Video extrahieren** und als MP3 speichern
 - **Dateiordner automatisch stapelweise verarbeiten**

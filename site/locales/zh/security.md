@@ -1,17 +1,17 @@
 ---
-title: "EncodeX 安全 — 可验证、已签名、开源"
-description: "EncodeX 如何保护你：开源代码、每次下载都附带 SHA-256 校验和、Windows 与 macOS 代码签名，以及可验证的更新流程。同时介绍如何报告漏洞。"
+title: "EncodeX 安全 — 开源、校验和与漏洞报告"
+description: "EncodeX 如何保护你：开源代码、每个版本发布的 SHA-256 校验和、更新时基于 GitHub 摘要的检查，以及如何报告漏洞。发布版本未经代码签名。"
 ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # EncodeX 安全
 
-EncodeX 是开源的，所以安全不必建立在信任之上——每个版本都从公开代码构建，附带**可验证的 SHA-256 校验和**，并在可行情况下**代码签名**，让你的操作系统确认它确确实实来自我们。
+EncodeX 是开源的，所以安全不必建立在信任之上。每个版本都从公开代码构建，并发布 **SHA-256 校验和** 供你比对下载文件。发布版本**未进行代码签名**，因此操作系统可能会显示「未知开发者」或「无法验证开发者」警告。
 
 ## 我们发布的内容，你都可以验证
 
-- **开源。**整个应用——包括媒体处理管线与内置 FFmpeg 构建——都托管在[我们的仓库](https://github.com/Sandeepv68/EncodeX)中。任何人都可以审计应用究竟在做什么。
-- **SHA-256 校验和。**每个版本都会随二进制文件发布校验和。安装前，先比对下载文件与已发布的哈希：
+- **开源。**整个应用——包括媒体处理管线与发布脚本——都托管在[我们的仓库](https://github.com/Sandeepv68/EncodeX)中。任何人都可以审计应用究竟在做什么。
+- **SHA-256 校验和。**每个版本都会发布 `SHA256SUMS.txt` 文件，与二进制文件一同提供。
 
 ```bash
 # Windows（PowerShell）
@@ -21,16 +21,15 @@ Get-FileHash .\EncodeX-Setup-1.0.0.exe -Algorithm SHA256
 shasum -a 256 ./EncodeX-1.0.0.dmg
 ```
 
-- **代码签名。**Windows 和 macOS 版本均已签名，因此你的系统会显示「已验证的发布者」/「Apple」，而不是「未知开发者」警告。
-- **可验证的更新。**应用只通过 HTTPS 下载由我们签名的更新。任何替换之前，更新签名都会在本地校验。
+- **可验证的更新。**更新程序检查 GitHub Releases。当 GitHub 为更新文件提供 SHA-256 或 SHA-512 摘要时，应用会据此校验下载内容。更新程序不验证加密签名。更新绝不会自动安装，由你决定何时安装。
 
 ## 关于 macOS Gatekeeper
 
-由于 EncodeX 免费且开源（不在 Mac App Store 销售），macOS 首次运行时可能提示「无法打开」——这是默认未签名应用要面对的 **Gatekeeper** 检查。构建是真实的；要打开它，请在「应用程序」中按住 Control 键点按该应用，选择**打开**，一次即可。之后它会正常打开。
+由于 EncodeX 免费且开源，不通过 Mac App Store 销售，并且其 macOS 构建未经代码签名或公证，macOS 首次运行时可能提示「无法打开」。构建即发布页面上提供的版本。要打开它，请在「应用程序」中按住 Control 键点按该应用，选择**打开**，一次即可。在较新的 macOS 版本上，你可能需要使用「系统设置 → 隐私与安全性 → 仍要打开」。
 
 ## 内置的 FFmpeg
 
-EncodeX 内置自己的 FFmpeg 构建，而不是调用系统二进制。确切的构建（版本、来源和配置）记录在我们的[技术架构](/zh/docs/architecture)文档中，并在 CI 中从源码复现——因此转换在各处行为一致，你运行的二进制即是我们构建的二进制。
+EncodeX 附带预构建的 FFmpeg 和 FFprobe 二进制文件（来自 `ffmpeg-static` 和 `ffprobe-static` 包），而不是调用系统二进制。转换以本地子进程方式在您的设备上运行。引擎如何接入，请参阅我们的[技术架构](/zh/docs/architecture)。
 
 ## 报告漏洞
 

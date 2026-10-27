@@ -20,6 +20,7 @@ Node.js environment. Owns the application lifecycle and all privileged capabilit
 - Extracts waveforms and thumbnail montages (`timeline/timeline-media.ts`).
 - Reads EXIF data, histograms, image dimensions, and previews (`image-*.ts`, `video-preview.ts`).
 - Bridges renderer `console` output into the log system (`patchConsole` in `index.ts`).
+- Runs the Copilot planning pipeline and AI provider connectors (`ai/`), usage analytics (`analytics/`), error monitoring (`monitoring/`), security policy (`security/`), and the embedded MCP server (`mcp/`).
 
 ### Preload Script (`src/preload/index.ts`)
 
@@ -31,7 +32,7 @@ Browser environment served by Vite in development and loaded from `dist/renderer
 
 ### Shared Layer (`src/shared/`)
 
-Pure TypeScript, imported by all three processes. Contains the IPC channel registry, domain types, error system, logger, constants, codec lists, validation helpers, and log message constants. Because `package.json` does not use separate package boundaries, this directory is referenced via relative imports from each process root.
+Pure TypeScript, imported by all three processes. Contains the IPC channel registry, domain types, error system, logger, constants, codec lists, validation helpers, log message constants, the Copilot/AI contracts (`ai/`, `copilot.ts`), the video-filter catalog (`video-filters.ts`), remux utilities, and the audit-log contract (`audit.ts`). Because `package.json` does not use separate package boundaries, this directory is referenced via relative imports from each process root.
 
 ## Build System
 
@@ -58,7 +59,7 @@ All FFmpeg/FFprobe binary resolution is centralized in `src/main/media-binaries.
 ## Startup Sequence
 
 1. `main/index.ts` runs. It inspects `process.argv` in `isCliMode()`.
-2. **CLI mode** (explicit `--cli`/`--help`, or >=2 positional args): registers no windows. On `app.whenReady()`, it calls `runCli()` and exits with `SUCCESS` or `ERROR` codes.
+2. **CLI mode** (explicit `--cli`/`-h`/`--help`, any subcommand or alias name, or >=2 positional args): registers no windows. On `app.whenReady()`, it calls `runCli()` and exits with `SUCCESS` or `ERROR` codes.
 3. **GUI mode**: enables the `autoplay-policy` switch, creates a non-interactive splash window (shown immediately), then the frameless main window (`show: false`).
 4. `registerIpcHandlers(mainWindow)` wires up all IPC modules; `patchConsole` replaces `console.*` so main-process logs are forwarded to the renderer over the `log-message` channel.
 5. The main window is shown on `ready-to-show`, at which point the splash is closed.
@@ -68,10 +69,10 @@ All FFmpeg/FFprobe binary resolution is centralized in `src/main/media-binaries.
 
 `src/main/cli/cli.ts` uses **commander** with subcommands. When `runCli()` executes:
 
-1. A legacy shim maps flat usage (`encodex in.mp4 out.mp4` -> `convert`, `encodex --info in.mp4` -> `info`) onto the matching subcommand.
+1. Once CLI mode is active, a legacy shim maps flat usage (`encodex in.mp4 out.mp4` -> `convert`, `encodex --info in.mp4` -> `info`) onto the matching subcommand. (`encodex --info in.mp4` alone has only one positional argument, so it opens the GUI unless `--cli` is also passed.)
 2. Each subcommand parses its own options plus shared globals (`--transcoder`, `--theme`, `--verbose`, `--quiet`, `--no-color`, `--json`, `--timeout`).
 3. `info`/`capabilities` print human tables by default and JSON with `--json`.
-4. `convert`/`compress`/`extract-audio`/`batch` build a `ConversionOptions` object and call `transcoder.convert(...)` (batch drives an in-memory `JobQueue` with a `MultiBar`).
+4. `convert`/`compress`/`extract-audio`/`remux`/`demux`/`batch` build `ConversionOptions` objects and call `transcoder.convert(...)`; remux and demux build validated stream plans first, and batch drives an in-memory `JobQueue` with a `MultiBar`.
 5. Progress goes to `stdout` (with a watchdog timeout), status/success lines honor `--json`/`--quiet`/`--verbose` routing, and the process exits via `mapCliErrorToExitCode` (usage=2, cancelled=3, not-found=4, timeout=5, success=0).
 
 The CLI reuses the exact same transcoder pipeline as the GUI — there is no separate encoding path to maintain.
@@ -87,4 +88,4 @@ The single most important architectural decision is that all cross-process contr
 - **`transcoder-constants.ts` / `hwaccel-settings.ts`** — FFmpeg flags, defaults, progress patterns, and hardware-acceleration settings.
 - **`media-options.ts` / `codec-containers.ts` / `codec-classification.ts`** — the curated lists of 51 video codecs, 27 audio codecs, 56 pixel formats, container-compatibility rules, and codec-family helpers.
 - **`validation.ts`** — pure functions for time/scale/bitrate/range validation, used by both the renderer forms and the CLI.
-- **`logger.ts` / `log-constants.ts`** — a timestamped logger plus ~406 shared log message templates so logs are consistent across processes.
+- **`logger.ts` / `log-constants.ts`** — a timestamped logger plus 527 shared log message templates so logs are consistent across processes.

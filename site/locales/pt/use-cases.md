@@ -13,7 +13,7 @@ Escolha um caso de uso abaixo para aprender como.
 
   <div class="card">
     <h3>📹 Comprimir vídeo para upload</h3>
-    <p>Reduza arquivos de vídeo grandes antes de compartilhar nas redes sociais, por e-mail ou no chat — sem sacrificar a qualidade visível.</p>
+    <p>Reduza arquivos de vídeo grandes antes de compartilhar nas redes sociais, por e-mail ou no chat — com controle sobre a qualidade que você preserva.</p>
     <a href="/pt/video-compressor">Saiba mais →</a>
   </div>
 
@@ -25,13 +25,13 @@ Escolha um caso de uso abaixo para aprender como.
 
   <div class="card">
     <h3>🔄 Converter entre formatos</h3>
-    <p>MOV para MP4, WebM para AVI, MKV para MP4 — troque o contêiner mantendo a qualidade original.</p>
+    <p>MOV para MP4, WebM para AVI, MKV para MP4 — recodifique para um novo formato ou faça remux quando você só precisa de outro contêiner.</p>
     <a href="/pt/video-converter">Saiba mais →</a>
   </div>
 
   <div class="card">
     <h3>✂️ Aparar e cortar clipes</h3>
-    <p>Remova partes em branco, corte introduções e faça cortes de destaques sem reencodificar o arquivo inteiro.</p>
+    <p>Remova partes em branco, corte introduções e faça cortes de destaques em uma linha do tempo visual.</p>
     <a href="/pt/features#cortar-videos">Saiba mais →</a>
   </div>
 
@@ -61,7 +61,7 @@ Escolha um caso de uso abaixo para aprender como.
 
   <div class="card">
     <h3>🤖 Automatize com um assistente de IA</h3>
-    <p>O EncodeX inclui um servidor MCP integrado — conecte Claude, Cursor, VS Code ou qualquer cliente MCP e peça, em linguagem simples, para converter, extrair, comprimir ou acompanhar um trabalho em lote, tudo local.</p>
+    <p>O EncodeX inclui um servidor MCP integrado e o Copilot — conecte Claude, Cursor, VS Code ou qualquer cliente MCP, ou use as 13 operações do Copilot para converter, fazer remux, demux, extrair, comprimir, cortar ou analisar mídias em linguagem simples. O Copilot usa um motor de regras offline por padrão, com provedores opcionais OpenAI, Anthropic, Gemini ou local.</p>
     <a href="/pt/mcp">Saiba mais →</a>
   </div>
 
@@ -82,7 +82,7 @@ Escolha um caso de uso abaixo para aprender como.
 ## Páginas relacionadas
 
 - [Conversor de vídeo](/pt/video-converter) — converta entre MP4, MKV, WebM, AVI e muito mais.
-- [Compressor de vídeo](/pt/video-compressor) — reduza o tamanho do arquivo mantendo a qualidade.
+- [Compressor de vídeo](/pt/video-compressor) — reduza o tamanho do arquivo com controle sobre a qualidade.
 - [Extrator de áudio](/pt/extract-audio-from-video) — extraia trilhas de áudio de qualquer vídeo.
 - [Interface FFmpeg](/pt/ffmpeg-gui) — o que é o EncodeX, como funciona e por que foi feito assim.
 - [Download](/pt/download) — download gratuito para Windows, macOS e Linux.

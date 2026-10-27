@@ -1,20 +1,20 @@
 ---
 title: "Compresseur vidéo – Réduisez la taille des vidéos gratuitement | EncodeX"
-description: "Compressez la vidéo et réduisez la taille des fichiers avec un compresseur vidéo gratuit et open source pour Windows, Mac et Linux. Réduisez MP4, MKV et les grosses vidéos sans perdre en qualité."
+description: "Compressez la vidéo et réduisez la taille des fichiers avec un compresseur vidéo gratuit et open source pour Windows, Mac et Linux. Réduisez MP4, MKV et les grosses vidéos en gardant la main sur la qualité."
 ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # Compresseur vidéo et réducteur de taille de fichier
 
-Les fichiers vidéo grossissent vite — quelques minutes de séquences peuvent peser un gigaoctet. **EncodeX** est un **compresseur vidéo** gratuit qui vous permet de **réduire la taille des vidéos** pour que les fichiers tiennent dans les e-mails, se téléversent plus vite et prennent moins de place, avec une qualité dont vous remarquerez à peine la différence.
+Les fichiers vidéo grossissent vite — quelques minutes de séquences peuvent peser un gigaoctet. **EncodeX** est un **compresseur vidéo** gratuit qui vous permet de **réduire la taille des vidéos** pour que les fichiers tiennent dans les e-mails, se téléversent plus vite et prennent moins de place, avec une qualité que vous contrôlez.
 
-## Compressez la vidéo sans perdre en qualité
+## Compressez la vidéo sans la détruire
 
-Vous n'avez pas à détruire une vidéo pour la réduire. EncodeX utilise un encodage intelligent — comme H.264, H.265/HEVC et AV1 — pour supprimer la redondance cachée et **compresser la vidéo** tout en la gardant belle.
+Vous n'avez pas à détruire une vidéo pour la réduire. EncodeX utilise un encodage intelligent — comme H.264, H.265/HEVC et AV1 — pour supprimer la redondance cachée et **compresser la vidéo** tout en gardant un résultat visuellement proche quand vous choisissez un niveau de qualité raisonnable.
 
 ### Ce que vous pouvez faire
 
-- **Réduisez MP4, MKV et les grosses vidéos** — divisez la taille jusqu'à 80 % ou plus
+- **Réduisez MP4, MKV et les grosses vidéos** — les économies dépendent de la source et des réglages
 - **Choisissez un objectif** — « fichier le plus petit » ou « petit mais excellente qualité »
 - **Choisissez un codec** — H.264 pour la compatibilité, HEVC ou AV1 pour des fichiers plus petits
 - **Contrôle en direct** — ajustez la qualité et regardez la taille estimée changer
@@ -22,7 +22,7 @@ Vous n'avez pas à détruire une vidéo pour la réduire. EncodeX utilise un enc
 
 ### Fonctionne avec votre matériel
 
-EncodeX est un **logiciel de compression vidéo** qui utilise votre carte graphique pour rendre la compression beaucoup plus rapide — NVIDIA NVENC, Intel QSV, AMD AMF et Apple VideoToolbox, automatiquement.
+EncodeX est un **logiciel de compression vidéo** qui peut utiliser votre carte graphique pour accélérer la compression — NVIDIA NVENC, Intel QSV, AMD AMF, Apple VideoToolbox et VAAPI sous Linux — lorsqu'un encodeur matériel compatible est disponible.
 
 ## Le meilleur réducteur de taille vidéo gratuit
 
@@ -45,7 +45,7 @@ EncodeX gère les détails techniques pour que vous n'ayez pas à vous en occupe
 
 **De combien les vidéos compressées seront-elles plus petites ?** Cela dépend de la source et des réglages, mais EncodeX peut souvent réduire un fichier à une fraction de sa taille tout en gardant une qualité visuelle semblable en choisissant des codecs et des débits intelligents.
 
-**La compression va-t-elle réduire la qualité de ma vidéo ?** EncodeX équilibre taille et qualité automatiquement. Vous choisissez à quel point être agressif, et l\u2019accélération matérielle garde les aperçus et la sortie rapides.
+**La compression va-t-elle réduire la qualité de ma vidéo ?** La compression est avec perte, donc une partie de la qualité est échangée contre la taille. EncodeX vous laisse choisir le niveau d'agressivité, et l'accélération matérielle peut accélérer l'encodage quand un encodeur compatible est disponible.
 
 **EncodeX compresse-t-il les vidéos hors ligne ?** Oui. La compression se fait entièrement sur votre ordinateur, sans envoi, donc c\u2019est privé et cela fonctionne même sans internet.
 

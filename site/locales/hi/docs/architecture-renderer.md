@@ -4,7 +4,7 @@
 
 ### रेंडर ट्री
 
-सभी दस पेज `React.lazy` से code-split हैं और प्रति-पेज `ErrorBoundary` के अंतर्गत load होते हैं:
+सभी तेरह पेज `React.lazy` से code-split हैं और प्रति-पेज `ErrorBoundary` के अंतर्गत load होते हैं:
 
 | पेज             | Route          | उद्देश्य                                                       |
 | --------------- | -------------- | -------------------------------------------------------------- |
@@ -14,9 +14,12 @@
 | ImageCompress   | `/image-compress` | इमेज कंप्रेशन + EXIF + histograms                           |
 | AudioExtract    | `/audio-extract` | ऑडियो tracks 27 codecs में से किसी एक के रूप में निकालें      |
 | VideoCut        | `/video-cut`   | प्लेयर + zoomable timeline + trim                              |
+| Remux           | `/remux`       | stream copy के साथ container बदलना + जोड़े गए streams/chapters     |
+| Demux           | `/demux`       | प्रति-stream निष्कर्षण, वैकल्पिक प्रति-प्रकार रूपांतरण के साथ        |
 | BatchQueue      | `/batch`       | क्यू प्रबंधन (add/remove/cancel-all)                            |
+| Copilot         | `/copilot`     | वैकल्पिक AI providers के साथ प्राकृतिक-भाषा योजना                  |
 | Logs            | `/logs`        | level filter + download के साथ live log viewer                 |
-| Settings        | `/settings`    | theme, hwaccel, always-on-top                                  |
+| Settings        | `/settings`    | theme, telemetry, MCP server, AI provider, hwaccel             |
 | About           | `/about`       | ऐप info, credits, "अपडेट के लिए जाँचें" button                  |
 
 ### Hooks
@@ -40,9 +43,20 @@ Zustand stores `src/renderer/stores/` में:
 | `settingsStore`   | सेटिंग्स + `localStorage` persistence (`encodex-theme`, आदि)         |
 | `logStore`        | aggregated log entries (cap 2000), filter state, download           |
 | `toastStore`      | Toast queue                                                         |
-| `updateStore`     | Update lifecycle state (check, available, downloading, downloaded, error) |
+| `updateStore`     | Update lifecycle state (check, available, downloading, downloaded, restart-scheduled, error) |
+| `remuxStore`      | Remux plan (target container, added streams, chapters, cover, sync) |
+| `demuxStore`      | Demux stream selection और प्रति-प्रकार रूपांतरण विकल्प                |
+| `copilotChats`    | सहेजी गई Copilot बातचीत और plan इतिहास                              |
+| `aiSettingsStore` / `aiConnectionStore` | AI provider सेटिंग्स और connectivity probe state |
+| `profileStore`    | Built-in/custom profile चयन और हाल ही में उपयोग किए गए profiles        |
+| `termsStore`      | Terms & Conditions स्वीकृति state                                   |
+| `auditStore`      | main से stream होने वाली mutating-operation audit entries             |
 
 Stores UI state बदलने का अद्वितीय स्थान हैं; components `useXStore(selector)` से subscribe करते हैं।
+
+## Copilot और AI
+
+Copilot पेज (`pages/Copilot.tsx`) फ़ाइलों और फ़ोल्डरों पर एक प्राकृतिक-भाषा लक्ष्य को समीक्षा योग्य plan में बदलता है। Plans 13 operations सपोर्ट करते हैं: छह queue-backed (`convert`, `remux`, `demux`, `extract_audio`, `compress_image`, `cut`) और सात केवल-पठन media-intelligence operations (`analyze`, `transcribe`, `summarize`, `chapters`, `search_transcript`, `translate`, `find_similar`)। Planning डिफ़ॉल्ट रूप से निर्धारक, offline `rules` engine से होती है, या `openai`, `anthropic`, `gemini`, `local` providers में से किसी एक से। Plan commit करने पर Batch Queue का उपयोग होता है; केवल-पठन परिणाम पैनल में रहते हैं। API keys main process को भेजी जाती हैं, संग्रहण से पहले encrypt होती हैं, और कभी renderer को वापस नहीं भेजी जातीं — सेटिंग्स केवल `hasKey` और masked hint दिखाती हैं।
 
 ## बैच क्यू
 
@@ -93,7 +107,7 @@ Image *compression स्वयं* बस एक conversion है: Image Compr
 
 ## एरर हैंडलिंग
 
-Error system (`src/shared/errors.ts`) 16 typed codes define करता है — `FILE_NOT_FOUND`, `FFMPEG_NOT_FOUND`, `FFPROBE_NOT_FOUND`, `CONVERSION_FAILED`, `INVALID_FORMAT`, `PROBE_FAILED`, `QUEUE_ERROR`, `PLAYER_ERROR`, `CANCELLED`, `BMF_NOT_AVAILABLE`, `OUTPUT_NOT_SPECIFIED`, `INPUT_NOT_SPECIFIED`, `OUTPUT_EXISTS`, `INVALID_QUEUE_FILE`, `PERMISSION_DENIED`, `UNKNOWN` — प्रत्येक default user-facing message के साथ।
+Error system (`src/shared/errors.ts`) 28 typed codes define करता है — `FILE_NOT_FOUND`, `FFMPEG_NOT_FOUND`, `FFPROBE_NOT_FOUND`, `CONVERSION_FAILED`, `INVALID_FORMAT`, `PROBE_FAILED`, `QUEUE_ERROR`, `PLAYER_ERROR`, `CANCELLED`, `BMF_NOT_AVAILABLE`, `OUTPUT_NOT_SPECIFIED`, `INPUT_NOT_SPECIFIED`, `OUTPUT_EXISTS`, `INVALID_QUEUE_FILE`, `FILTERS_REQUIRE_RE_ENCODE`, `INVALID_VIDEO_FILTERS`, `STREAM_NOT_FOUND`, `INCOMPATIBLE_CONTAINER`, `AUXILIARY_INPUT_NOT_FOUND`, `PERMISSION_DENIED`, `OPERATION_TIMED_OUT`, `UNSAFE_ARGUMENTS`, `TRANSCRIPTION_UNAVAILABLE`, `TRANSLATION_UNAVAILABLE`, `AI_NOT_CONFIGURED`, `AI_CONNECTOR_FAILED`, `AI_RESPONSE_INVALID`, `UNKNOWN` — प्रत्येक default user-facing message के साथ।
 
 फ़्लो हमेशा same रहता है:
 
@@ -119,7 +133,7 @@ Logs page (`pages/Logs.tsx`) दोनों sources aggregate करता ह�
 
 ## Internationalization & RTL
 
-- i18next `renderer/i18n/config.ts` में 35 भाषाओं में 56 locales के साथ initialize होता है।
+- i18next `renderer/i18n/config.ts` में 56 locales के साथ initialize होता है।
 - `DirectionProvider` (`stylis-plugin-rtl` के साथ Emotion cache) Arabic और Hebrew locales (`ar-SA`, `ar-AE`, `ar-JO`, `he-IL`) के लिए layout RTL में flip करता है।
 - `useLanguageDirection` current locale की direction detect करता है; app की direction इससे derive होती है और language switch पर automatically toggle होती है।
 - `localeMeta.ts` `LanguageMenu` के लिए locale metadata और flags hold करता है।
@@ -164,5 +178,5 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    A["About page"] --> B["updateStore.checkForUpdates"] --> C["electronAPI.checkForUpdates"] --> D7["updater.ts fetches GitHub Releases API"] --> E7["compares semver versions"] --> F7["send(update-available / update-not-available)"] --> G7["updateStore"] --> H7["UpdateDialog"] --> I7["downloadUpdate -> installer to temp dir"] --> J7["send(update-progress) -> progress bar"] --> K7["send(update-downloaded) -> Install + Restart button"] --> L7["installUpdate -> shell.openPath(installer) + app.quit()"]
+    A["About page"] --> B["updateStore.checkForUpdates"] --> C["electronAPI.checkForUpdates"] --> D7["updater.ts fetches GitHub Releases API"] --> E7["compares semver precedence incl. pre-release identifiers"] --> F7["send(update-available / update-not-available)"] --> G7["updateStore"] --> H7["UpdateDialog"] --> I7["downloadUpdate -> installer to temp dir, verify GitHub digest when present"] --> J7["send(update-progress) -> percent / transferred / total"] --> K7["send(update-downloaded) -> Install & Restart or Install on Restart"] --> L7["installUpdate -> shell.openPath(installer) + app.quit()"]
 ```

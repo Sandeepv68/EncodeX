@@ -17,7 +17,7 @@ MKV is a favorite container for high-quality video — which is also why it gets
 - **Sharing** — MKV files are too large for many chat and email apps
 - **Streaming** — media servers perform better with reasonable bitrates
 
-## Compress MKV Without Losing Quality
+## Compress MKV While Keeping Quality High
 
 EncodeX re-encodes your MKV with a modern codec (like **H.265/HEVC or AV1**) at a tuned bitrate, while keeping the MKV container with your subtitles and audio tracks:
 

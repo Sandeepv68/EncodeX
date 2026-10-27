@@ -35,7 +35,7 @@ npm run typecheck           # renderer + main + preload
 npm run validate:locales    # keys/values consistent across all 56 locales
 
 # Tests
-npm test                    # unit suite (168 test files in src/)
+npm test                    # unit suite (314 test files in src/)
 npm run test:integration    # integration tests
 npm run test:e2e:ci         # e2e suite (needs npm run build first)
 

@@ -18,9 +18,9 @@ Raisons courantes de convertir **WebM vers MKV** :
 - Vous préférez le **conteneur ouvert Matroska** au WebM de Google
 - Vous avez **téléchargé des vidéos VP9 / AV1** et voulez un format plus riche autour d'elles
 
-## Convertissez WebM vers MKV sans perdre en qualité
+## Convertissez WebM vers MKV en gardant une qualité élevée
 
-EncodeX remuxe votre **WebM en MKV** sans ré-encodage, de sorte que la qualité et la vitesse restent parfaites :
+Lorsque les codecs sont compatibles avec MKV, EncodeX peut copier les flux de votre **WebM en MKV** sans réencodage ; sinon il réencode avec des réglages qui gardent une qualité élevée :
 
 1. [Télécharger EncodeX gratuitement](/fr/download)
 2. Glisser votre fichier **.webm** sur la fenêtre
@@ -31,7 +31,7 @@ Comme WebM et MKV partagent des codecs similaires comme **VP9** et **AV1**, la c
 ### Un convertisseur WebM vers MKV rapide et privé
 
 - **Hors ligne** — votre vidéo ne quitte jamais votre ordinateur
-- **Remuxage sans perte** — pas de ré-encodage, pas de perte de qualité
+- **Copie de flux sans perte si les codecs le permettent** — pas de réencodage dans ce mode
 - **Sans filigrane** et gratuit pour toujours
 - Fonctionne sur **Windows, Mac et Linux**
 
@@ -39,7 +39,7 @@ Comme WebM et MKV partagent des codecs similaires comme **VP9** et **AV1**, la c
 
 **Pourquoi convertir WebM en MKV ?** MKV prend en charge les sous-titres, les chapitres et plusieurs pistes audio, c'est donc une meilleure maison pour bâtir une bibliothèque personnelle de films ou de musique.
 
-**Vais-je perdre de la qualité en convertissant WebM en MKV ?** Non. EncodeX remuxe les flux au lieu de les ré-encoder, donc la vidéo et l'audio restent exactement comme avant.
+**Vais-je perdre de la qualité en convertissant WebM en MKV ?** Le mode copie de flux garde vidéo et audio identiques lorsque les codecs sont compatibles avec MKV. Sinon, EncodeX réencode avec des réglages qui gardent une qualité élevée.
 
 **Puis-je convertir plusieurs fichiers WebM à la fois ?** Oui. EncodeX prend en charge la conversion par lots de tout un dossier de fichiers WebM vers MKV.
 

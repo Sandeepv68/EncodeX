@@ -1,26 +1,26 @@
 ---
 title: "MP4 zu MKV Konverter – MP4 zu MKV Remux kostenlos | EncodeX"
-description: "Konvertiere MP4 zu MKV kostenlos mit EncodeX. Schneller, offline MP4 zu MKV Remux für Windows, Mac und Linux. Native Qualität, ohne Neukodierung, ohne Uploads."
+description: "Konvertiere MP4 zu MKV kostenlos mit EncodeX. Schneller, offline MP4 zu MKV Remux für Windows, Mac und Linux. Stream-Copy hält Streams verlustfrei, wenn die Codecs zu MKV passen. Ohne Uploads."
 ogImage: "https://encodex.in/images/convert.webp"
 ---
 
 # MP4 zu MKV konvertieren
 
-**MP4** ist das kompatibelste Format überhaupt, aber **MKV (Matroska)** bietet viel mehr Flexibilität — Untertitel, mehrere Audiospuren, Kapitelmarken und verlustfreie Qualität. Konvertiere dein **MP4 zu MKV** mit nur wenigen Klicks mit **EncodeX**, einem kostenlosen **MP4 zu MKV Konverter**, der vollständig auf deinem Computer läuft.
+**MP4** ist das kompatibelste Format überhaupt, aber **MKV (Matroska)** bietet viel mehr Flexibilität — Untertitel, mehrere Audiospuren und Kapitelmarken. Konvertiere dein **MP4 zu MKV** mit nur wenigen Klicks mit **EncodeX**, einem kostenlosen **MP4 zu MKV Konverter**, der vollständig auf deinem Computer läuft.
 
 ## Warum MP4 zu MKV konvertieren?
 
 Häufige Gründe für den Wechsel von **MP4 zu MKV**:
 
-- Du möchtest **Untertitel hinzufügen** oder mehrere Audiospuren ohne Neukodierung
+- Du möchtest **Untertitel hinzufügen** oder mehrere Audiospuren
 - Du **muxest Inhalte** für einen Mediaserver (Plex, Jellyfin, Kodi), der MKV liebt
-- Du möchtest **verlustfreie Qualität bewahren**, während du den Container änderst
+- Du möchtest die **Original-Streams behalten**, während du den Container änderst
 - Du brauchst **Kapitelmarken** für lange Videos
 - Du möchtest eine **einzelne Datei** für alle Audiosprachen behalten
 
-## MP4 zu MKV ohne Qualitätsverlust
+## MP4 zu MKV: Stream-Copy oder Re-Encoding in hoher Qualität
 
-Da MKV nur der Container ist, muss die Konvertierung von **MP4 zu MKV** die Video- oder Audio-Streams überhaupt nicht berühren. EncodeX führt einen **schnellen Remux** durch — Bild und Ton bleiben Bit für Bit identisch, nur die Verpackung ändert sich.
+Da MKV nur der Container ist, kann **MP4 zu MKV** die Video- und Audio-Streams ohne Re-Encoding kopieren, wenn ihre Codecs zu MKV passen. In diesem Stream-Copy-Modus bleiben Bild und Ton Bit für Bit identisch, und nur die Verpackung ändert sich. Andernfalls re-encodiert EncodeX mit Einstellungen, die die Qualität hoch halten.
 
 1. [Lade EncodeX kostenlos herunter](/de/download)
 2. Ziehe deine **.mp4**-Datei in das Fenster
@@ -30,15 +30,15 @@ Du kannst sogar einen **ganzen Ordner** mit MP4-Dateien auf einmal zu MKV konver
 
 ### Ein schneller, privater MP4 zu MKV Konverter
 
-- **Remux ohne Neukodierung** — sofortig und verlustfrei
+- **Stream-Copy, wenn die Codecs passen** — schnell und in diesem Modus verlustfrei
 - **Offline** — dein Video verlässt nie deinen Computer
-- **Hardware-beschleunigt** — wenn Neukodierung nötig ist, springt deine GPU ein
+- **Hardwarebeschleunigt** — Hardware-Encoder können das Re-Encoding beschleunigen, wenn sie ausgewählt werden
 - **Keine Wasserzeichen** und kostenlos für immer
 - Funktioniert auf **Windows, Mac und Linux**
 
 ## Häufig gestellte Fragen
 
-**Geht bei der Konvertierung von MP4 zu MKV Qualität verloren?** Nein. Standardmäßig remuxed EncodeX die bestehenden Video- und Audio-Streams, sodass die Qualität genau gleich bleibt und die Konvertierung sehr schnell ist.
+**Geht bei der Konvertierung von MP4 zu MKV Qualität verloren?** Das hängt vom Modus ab. Stream-Copy hält Video und Audio identisch, wenn die Codecs zu MKV passen. Ein standardmäßiges Re-Encoding hält die Qualität hoch, ist aber nicht identisch mit der Quelle.
 
 **Warum sollte ich MKV statt MP4 verwenden?** MKV unterstützt weiche Untertitel, unbegrenzte Audiospuren, Kapitel und Anhänge — was es zu einem Favoriten für Archivierung und Mediaserver macht.
 

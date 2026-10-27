@@ -7,7 +7,7 @@ ogImage: "https://encodex.in/images/home_dashboard.webp"
 hero:
   name: EncodeX<br>Gratis y de código abierto · Windows · macOS · Linux
   text: El poder de FFmpeg. Sin la línea de comandos.
-  tagline: "Un convertidor multimedia inteligente gratuito y de código abierto para Windows, macOS y Linux. Convierte vídeo, extrae audio, recorta clips y reduce archivos: todo funciona en tu computadora y nada sale de ella. Ahora, con MCP, asistentes de IA como Claude, Cursor o VS Code pueden manejar el mismo motor usando lenguaje natural."
+  tagline: "Un convertidor multimedia inteligente gratuito y de código abierto para Windows, macOS y Linux. Convierte vídeo, extrae audio, recorta clips y reduce archivos: la conversión se ejecuta en tu computadora y tus archivos nunca salen de ella. Con el servidor MCP integrado, asistentes de IA como Claude, Cursor o VS Code pueden manejar el mismo motor usando lenguaje natural."
   image:
     src: /images/home_dashboard.webp
     alt: Pantalla de inicio de EncodeX con un vídeo cargado y el perfil YouTube 1080p seleccionado
@@ -44,7 +44,7 @@ Los asistentes de IA ya pueden manejar tu kit de medios local. Pide a Claude, Cu
   <div class="card">
     <span class="card-emoji">🔒</span>
     <p class="card-head">Sigue siendo 100 % local</p>
-    <p>El servidor MCP solo escucha en localhost y jamás sube tus archivos multimedia. Tus archivos se quedan en tu computadora, igual que con la interfaz gráfica.</p>
+    <p>El servidor MCP se ejecuta localmente. El servidor integrado solo escucha en localhost y tus archivos multimedia nunca se suben. Tus archivos se quedan en tu computadora, igual que con la interfaz gráfica.</p>
   </div>
   <div class="card">
     <span class="card-emoji">🧩</span>
@@ -54,7 +54,7 @@ Los asistentes de IA ya pueden manejar tu kit de medios local. Pide a Claude, Cu
   <div class="card">
     <span class="card-emoji">⚙️</span>
     <p class="card-head">Automatización real</p>
-    <p>19 herramientas cubren conversiones, extracción de audio, compresión de imágenes, información multimedia, trabajos por lotes, vistas previas y actualizaciones — así los agentes pueden encadenar trabajo real.</p>
+    <p>36 herramientas en el servidor independiente (42 en el integrado) cubren conversiones, extracción de audio, compresión de imágenes, información multimedia, trabajos por lotes y más — así los agentes pueden encadenar trabajo real.</p>
   </div>
 </div>
 
@@ -74,7 +74,7 @@ Dile a EncodeX qué quieres lograr y él se encarga de lo técnico.
   <div class="card">
     <span class="card-emoji">📦</span>
     <p class="card-head">Reduce archivos enormes</p>
-    <p>MP4 y MKV más pequeños que quepan en correos, chats y límites de subida — casi sin diferencia visible.</p>
+    <p>Vuelve a codificar MP4 y MKV a un tamaño menor para correos, chats y límites de subida. Tú eliges el equilibrio entre tamaño y calidad.</p>
     <p><a href="/es/video-compressor">Compresor de vídeo →</a></p>
   </div>
   <div class="card">
@@ -98,7 +98,7 @@ Dile a EncodeX qué quieres lograr y él se encarga de lo técnico.
   <div class="card">
     <span class="card-emoji">🖼️</span>
     <p class="card-head">Corrige y aligera imágenes</p>
-    <p>Reduce fotos para compartir y rota tomas laterales — sin pérdida si se conserva el formato.</p>
+    <p>Reduce fotos para compartir y rota tomas laterales. La rotación sin pérdida solo se aplica a MP4, MOV o MKV en modo de copia de flujos.</p>
     <p><a href="/es/features">Todas las funciones →</a></p>
   </div>
 </div>
@@ -116,7 +116,7 @@ Nada que aprender. Cuatro pasos, de principio a fin:
   <div class="wf-step">
     <span class="wf-num">2</span>
     <p class="card-head">Elegir</p>
-    <p>Elige 📱 Teléfono — EncodeX selecciona MP4 1080p.</p>
+    <p>Elige un perfil como MP4 o YouTube 1080p — EncodeX completa los ajustes.</p>
   </div>
   <div class="wf-step">
     <span class="wf-num">3</span>
@@ -132,7 +132,7 @@ Nada que aprender. Cuatro pasos, de principio a fin:
 
 <div class="privacy-band">
   <h2>Tus vídeos nunca salen de tu computadora.</h2>
-  <p>EncodeX procesa tus medios localmente con el motor FFmpeg integrado. Nada se sube, nada se rastrea y nada se guarda en un servidor.</p>
+  <p>EncodeX convierte tus medios localmente con el motor FFmpeg integrado. Tus archivos nunca se suben. Los informes de errores y los datos de uso están activados de forma predeterminada y puedes desactivarlos en Ajustes.</p>
   <ul class="checklist">
     <li>✅ Sin subidas a la nube</li>
     <li>✅ Sin necesidad de cuenta</li>
@@ -141,18 +141,18 @@ Nada que aprender. Cuatro pasos, de principio a fin:
     <li>✅ Sin límites de tamaño</li>
     <li>✅ Funciona sin conexión</li>
   </ul>
-  <p><a href="/es/privacy">Obtén más información sobre cómo EncodeX protege tu privacidad →</a> · <a href="/es/security">Descubre cómo se firman y verifican las versiones →</a></p>
+  <p><a href="/es/privacy">Obtén más información sobre cómo EncodeX protege tu privacidad →</a> · <a href="/es/security">Descubre cómo se publican y verifican las versiones →</a></p>
 </div>
 
 ## Elige una meta, no un códec
 
-Más de 140 perfiles integrados hacen la configuración por ti. Solo di lo que quieres.
+115 perfiles integrados hacen la configuración por ti. Solo di lo que quieres.
 
 <div class="card-grid three-col">
   <div class="card">
-    <p class="card-head">📱 Teléfono</p>
-    <p>MP4 pequeño que se reproduce en todas partes.</p>
-    <p><a href="/es/video-converter">MP4 →</a></p>
+    <p class="card-head">📱 iPhone y iPad</p>
+    <p>Perfiles ajustados para dispositivos Apple.</p>
+    <p><a href="/es/features">Perfiles para dispositivos →</a></p>
   </div>
   <div class="card">
     <p class="card-head">▶️ YouTube</p>
@@ -171,7 +171,7 @@ Más de 140 perfiles integrados hacen la configuración por ti. Solo di lo que q
   </div>
   <div class="card">
     <p class="card-head">📧 Correo</p>
-    <p>MP4 pequeño que cabe en el límite de tamaño.</p>
+    <p>MP4 más pequeño para enviar por correo.</p>
     <p><a href="/es/compress/mp4">Comprimir MP4 →</a></p>
   </div>
   <div class="card">
@@ -191,12 +191,12 @@ No estás solo. Estos son los problemas cotidianos que EncodeX resuelve:
   <div class="card">
     <span class="card-emoji">📱</span>
     <p class="card-head">"¡Este vídeo no se reproduce en mi teléfono!"</p>
-    <p>Tu cámara, un amigo o un sitio web te envió un archivo que tu dispositivo no entiende. EncodeX lo traduce a uno que se reproduce en todas partes.</p>
+    <p>Tu cámara, un amigo o un sitio web te envió un archivo que tu dispositivo no entiende. EncodeX lo traduce a uno que se reproduce en más dispositivos.</p>
   </div>
   <div class="card">
     <span class="card-emoji">📧</span>
     <p class="card-head">"El archivo es muy grande para enviarlo."</p>
-    <p>El correo y las apps de mensajería tienen límites de tamaño. EncodeX reduce los archivos para que quepan, casi sin diferencias visibles.</p>
+    <p>El correo y las apps de mensajería tienen límites de tamaño. EncodeX vuelve a codificar los archivos a un tamaño menor que tú eliges.</p>
   </div>
   <div class="card">
     <span class="card-emoji">🎵</span>
@@ -230,7 +230,7 @@ EncodeX es **completamente gratis, para siempre** — sin cuentas, sin suscripci
   <div class="card">
     <span class="card-emoji">🔒</span>
     <p class="card-head">Privado</p>
-    <p>Todo ocurre en tu propia computadora. Nada se sube a ningún sitio, jamás.</p>
+    <p>La conversión ocurre en tu propia computadora. Tus archivos nunca se suben.</p>
   </div>
   <div class="card">
     <span class="card-emoji">🆓</span>
@@ -240,11 +240,11 @@ EncodeX es **completamente gratis, para siempre** — sin cuentas, sin suscripci
   <div class="card">
     <span class="card-emoji">⚡</span>
     <p class="card-head">Acelerado por hardware</p>
-    <p>Usa automáticamente tu chip gráfico para terminar las conversiones mucho más rápido.</p>
+    <p>Usa un codificador de GPU compatible para vídeo cuando tu hardware lo tiene, para conversiones más rápidas.</p>
   </div>
   <div class="card">
     <span class="card-emoji">🌎</span>
-    <p class="card-head">Más de 35 idiomas</p>
+    <p class="card-head">56 localizaciones</p>
     <p>Incluye escrituras de derecha a izquierda, como el árabe y el hebreo — cada pantalla traducida.</p>
   </div>
   <div class="card">
@@ -261,7 +261,7 @@ EncodeX es **completamente gratis, para siempre** — sin cuentas, sin suscripci
 
 ## Para todos: sencillo. Para desarrolladores: potente.
 
-EncodeX tiene tres caras. Usa la **interfaz de arrastrar y soltar** para las tareas de cada día, entra en el **modo sin interfaz** para scripting, o conecta un **asistente de IA** mediante el servidor MCP integrado.
+EncodeX tiene varias facetas. Usa la **interfaz de arrastrar y soltar** para las tareas de cada día, entra en el **modo sin interfaz** para scripting, conecta un **asistente de IA** mediante el servidor MCP integrado o describe un trabajo al **Copilot** integrado.
 
 <div class="card-grid three-col">
   <div class="card">
@@ -289,13 +289,18 @@ EncodeX tiene tres caras. Usa la **interfaz de arrastrar y soltar** para las tar
   </div>
   <div class="card">
     <span class="card-emoji">🎛️</span>
-    <p class="card-head">Más de 140 perfiles listos</p>
+    <p class="card-head">115 perfiles listos</p>
     <p>YouTube, Instagram, TikTok, dispositivos Apple, ProRes, HLS y más. Elige uno y los ajustes se llenan.</p>
   </div>
   <div class="card">
     <span class="card-emoji">🌀</span>
     <p class="card-head">Rota y corrige clips laterales</p>
-    <p>90°, 180° o 270°, además de espejo — sin pérdida si mantienes MP4/MOV/MKV.</p>
+    <p>90°, 180° o 270°, además de espejo. La rotación de metadatos sin pérdida solo se aplica a MP4, MOV o MKV en modo de copia de flujos.</p>
+  </div>
+  <div class="card">
+    <span class="card-emoji">💬</span>
+    <p class="card-head">Copilot</p>
+    <p>Describe lo que quieres en la página Copilot. Dirige el trabajo a la herramienta adecuada, funciona sin conexión de forma predeterminada y puede usar un proveedor de IA que configures.</p>
   </div>
 </div>
 
@@ -353,7 +358,7 @@ Entra en una tarea concreta — cada página explica cómo hacerla con EncodeX:
   </div>
   <div class="card">
     <p class="card-head"><a href="/es/video-compressor">Compresor de vídeo</a></p>
-    <p>Reduce el tamaño manteniendo la calidad — MP4, MKV y más.</p>
+    <p>Reduce el tamaño de vídeos MP4, MKV y más.</p>
   </div>
   <div class="card">
     <p class="card-head"><a href="/es/audio-converter">Convertidor de audio</a></p>
@@ -373,7 +378,7 @@ Entra en una tarea concreta — cada página explica cómo hacerla con EncodeX:
   </div>
   <div class="card">
     <p class="card-head"><a href="/es/codecs/h265">H.265 / HEVC</a></p>
-    <p>Aproximadamente la mitad del tamaño de H.264 con calidad similar.</p>
+    <p>Normalmente archivos más pequeños que H.264 con calidad similar, pero codificación más lenta.</p>
   </div>
   <div class="card">
     <p class="card-head"><a href="/es/learn/what-is-ffmpeg">¿Qué es FFmpeg?</a></p>
@@ -385,7 +390,7 @@ Entra en una tarea concreta — cada página explica cómo hacerla con EncodeX:
   </div>
   <div class="card">
     <p class="card-head"><a href="/es/convert/mp4-to-mkv">MP4 a MKV</a></p>
-    <p>Remux MP4 a MKV — sin pérdida, al instante, conservando subtítulos.</p>
+    <p>Remuxea MP4 a MKV sin recodificar, cuando los flujos son compatibles con MKV.</p>
   </div>
   <div class="card">
     <p class="card-head"><a href="/es/convert/mp4-to-webm">MP4 a WebM</a></p>
@@ -401,7 +406,7 @@ Entra en una tarea concreta — cada página explica cómo hacerla con EncodeX:
   </div>
   <div class="card">
     <p class="card-head"><a href="/es/compress/mp4">Comprimir MP4</a></p>
-    <p>Reduce vídeos MP4 para correos, chats y límites de subida.</p>
+    <p>Vuelve a codificar vídeos MP4 a un tamaño menor para correos, chats y límites de subida.</p>
   </div>
   <div class="card">
     <p class="card-head"><a href="/es/compress/mkv">Comprimir MKV</a></p>
@@ -413,7 +418,7 @@ Entra en una tarea concreta — cada página explica cómo hacerla con EncodeX:
   </div>
   <div class="card">
     <p class="card-head"><a href="/es/convert/mov-to-mp4">MOV a MP4</a></p>
-    <p>Convierte archivos MOV de Apple para que se reproduzcan en todo.</p>
+    <p>Convierte archivos MOV de Apple para que se reproduzcan en más dispositivos y apps.</p>
   </div>
   <div class="card">
     <p class="card-head"><a href="/es/convert/mkv-to-webm">MKV a WebM</a></p>
@@ -437,7 +442,7 @@ Entra en una tarea concreta — cada página explica cómo hacerla con EncodeX:
   </div>
   <div class="card">
     <p class="card-head"><a href="/es/convert/flv-to-mp4">FLV a MP4</a></p>
-    <p>Convierte vídeos FLV de Flash a MP4, compatible con todo.</p>
+    <p>Convierte vídeos FLV de Flash a MP4, ampliamente compatible.</p>
   </div>
   <div class="card">
     <p class="card-head"><a href="/es/convert/flv-to-mkv">FLV a MKV</a></p>
@@ -445,7 +450,7 @@ Entra en una tarea concreta — cada página explica cómo hacerla con EncodeX:
   </div>
   <div class="card">
     <p class="card-head"><a href="/es/convert/m4v-to-mp4">M4V a MP4</a></p>
-    <p>Haz que los archivos de iTunes y Apple se reproduzcan en cualquier dispositivo.</p>
+    <p>Haz que los archivos de iTunes y Apple se reproduzcan en más dispositivos.</p>
   </div>
   <div class="card">
     <p class="card-head"><a href="/es/convert/wmv-to-mp4">WMV a MP4</a></p>
@@ -477,6 +482,6 @@ Entra en una tarea concreta — cada página explica cómo hacerla con EncodeX:
 
 <div class="cta-card">
   <h2>¿Listo para probarlo?</h2>
-  <p>La instalación toma unos dos minutos, y es gratis para siempre.</p>
+  <p>Instálalo y úsalo gratis.</p>
   <p><strong><a href="/es/download">⬇️ Descargar EncodeX ahora</a></strong> · <a href="/es/features">Ver el recorrido completo</a></p>
 </div>

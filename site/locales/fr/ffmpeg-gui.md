@@ -28,7 +28,9 @@ Si cela vous semble être une langue étrangère, vous n'êtes pas seul. Une **i
 - **Compresser des vidéos** pour réduire la taille du fichier sans gâcher la qualité
 - **Couper des clips** visuellement — glissez deux poignées sur une timeline, c'est fait
 - **Extraire l'audio** d'une vidéo et l'enregistrer en MP3
-- **Pivotez et retournez les vidéos** – corrigez les clips de travers, sans perte pour MP4/MOV/MKV
+- **Pivotez et retournez les vidéos** – corrigez les clips de travers, sans perte pour MP4/MOV/MKV en mode copie de flux, ou avec un ré-encodage rapide
+- **Remux et démux** – changez de conteneur sans ré-encoder, ou séparez chaque flux dans un fichier distinct
+- **Planifiez avec Copilot** – décrivez la tâche en langage courant ; 13 opérations, avec un moteur de règles hors ligne par défaut et des fournisseurs OpenAI, Anthropic, Gemini ou locaux en option
 - **Traiter par lots** des dossiers entiers de fichiers en une fois
 
 ## Ultra-rapide : accélération matérielle intégrée
@@ -37,13 +39,13 @@ EncodeX **utilise automatiquement votre GPU** pour rendre les conversions nettem
 
 - Les utilisateurs **NVIDIA** profitent de NVENC ; **Intel** de Quick Sync (QSV) ; **AMD** de AMF
 - Les utilisateurs **Apple Silicon/Mac** profitent de VideoToolbox
-- Les utilisateurs **Linux** profitent de VAAPI — quelle que soit la marque de la GPU
+- Les utilisateurs **Linux** profitent de VAAPI sur les GPU AMD et Intel ; les GPU NVIDIA utilisent NVENC
 
 Votre matériel possède très probablement déjà un encodeur rapide. EncodeX le détecte et l'active pour vous — une longue conversion se termine ainsi en une fraction du temps.
 
 ## C'est open source et privé
 
-Comme EncodeX est construit sur FFmpeg et entièrement [open source](https://github.com/Sandeepv68/EncodeX), tout s'exécute **sur votre propre ordinateur**. Rien n'est téléversé, aucun compte n'est requis, et **aucun filigrane** sur vos fichiers.
+Comme EncodeX est construit sur FFmpeg et entièrement [open source](https://github.com/Sandeepv68/EncodeX), le traitement des médias s'exécute **sur votre propre ordinateur** : les fichiers ne sont pas téléversés, aucun compte n'est requis, et **aucun filigrane** n'est ajouté. La remontée d'erreurs et les statistiques d'usage sont activées par défaut et peuvent être désactivées dans les Réglages.
 
 ## Disponible sur tous les systèmes de bureau
 

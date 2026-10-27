@@ -57,7 +57,9 @@
       "convert": "Konverter en video",
       "compress": "Komprimer en fil",
       "extract": "Udtræk lyd",
-      "trim": "Klip et klip"
+      "trim": "Klip et klip",
+      "remux": "Remux en fil",
+      "copilot": "Spørg Copilot"
     }
   },
   "closeConfirm": {
@@ -814,10 +816,20 @@
   },
   "about": {
     "title": "Om EncodeX",
-    "subtitle": "Et gratis og open source-multimedieværktøj bygget på FFmpeg. Konvertér, inspicér, komprimér, udtræk, klip, og batchbehandl lyd, video og billeder — alt sammen ét sted.",
-    "description": "EncodeX er et tværplatforms-multimedieværktøj, der bringer FFmpegs kraft til en moderne, intuitiv desktopgrænseflade. Konvertér lyd, video og billeder mellem formater med præcis kontrol over codecs, bitrate, opløsning, pixelformat og kvalitet; kopiér spor tabsfrit for øjeblikkelig remuxing; udtræk lyd fra video; og klip video med en frame-nøjagtig preview-afspiller. Hardwareaccelereret kodning understøttes på tværs af NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox og Microsoft Media Foundation, og de tilgængelige encoder-familier registreres automatisk fra den medfølgende FFmpeg-binærfil ved kørsel. Batchjobs kører gennem en vedvarende kø med realtidsfremskridt, og en headless CLI-tilstand udstiller de samme funktioner til scripting og automatisering.",
+    "subtitle": "Et gratis og open source multimedieværktøj bygget på FFmpeg. Konverter, komprimer, udtræk, klip og batchbehandl lyd, video og billeder, eller styr den samme motor fra CLI'en, en MCP-server eller AI-assistenten Copilot.",
+    "description": "EncodeX er et tværplatforms multimedieværktøj, der bringer kraften i FFmpeg til en moderne desktopgrænseflade. Konverter lyd, video og billeder med præcis kontrol over codecs, bitrate, opløsning, pixelformat og kvalitet; kopiér spor uden tab; roter og spejlvend medier; anvend videofiltre; og klip video med en billedpræcis forhåndsvisningsafspiller. Konverteringsprofiler konfigurerer almindelige mål med ét klik, og du kan gemme dine egne. Hardwareaccelereret kodning understøtter NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox og Microsoft Media Foundation, hvor encoder-familier registreres automatisk fra den medfølgende FFmpeg under kørsel. Batchkøen kører jobs parallelt med live fremskridt, vedvarende lagring og import/eksport. Ud over GUI'en giver en hovedløs CLI, en selvstændig og indlejret MCP-server og en AI-assistent Copilot scripts og assistenter mulighed for at styre den samme mediemotor.",
     "logoAlt": "EncodeX-logo",
     "featuresTitle": "Hvad du kan gøre",
+    "featureConvert": "Konverter video, lyd og billeder med præcis kontrol over codecs, bitrate, opløsning og kvalitet, samt rotation og filtre",
+    "featureRemux": "Remux eller demux spor uden tab, og tilføj undertekster, ekstra lydspor, coverbilleder og kapitler",
+    "featureMediaInfo": "Undersøg codecs, spor, farver og metadata for enhver mediefil",
+    "featureImage": "Komprimer billeder med kontrol over kvalitet og opløsning, plus EXIF-data og histogrammer",
+    "featureAudio": "Udtræk lydspor fra video i AAC, MP3, FLAC, Opus og andre formater",
+    "featureCut": "Klip video med billedpræcis trimning på en tidslinje med miniaturer og bølgeform",
+    "featureProfiles": "Start fra indbyggede konverteringsprofiler, eller gem dine egne",
+    "featureBatch": "Kør batchjobs parallelt med pause, omarrangering, import og eksport samt en strømhandling, når de er færdige",
+    "featureHardware": "Brug GPU-encodere som NVENC, Quick Sync, AMF, VAAPI og VideoToolbox, der registreres automatisk",
+    "featureAutomation": "Beskriv et mål for AI-assistenten Copilot, eller styr EncodeX med scripts via CLI'en og MCP-serveren",
     "version": "Version",
     "builtWith": "Bygget med",
     "authorTitle": "Forfatter & feedback",

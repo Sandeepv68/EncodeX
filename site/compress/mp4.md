@@ -1,6 +1,6 @@
 ---
 title: "Compress MP4 Videos Free – Reduce MP4 File Size | EncodeX"
-description: "Compress MP4 videos for free with EncodeX on Windows, Mac, and Linux. Shrink MP4 file size without losing visible quality. No uploads, no watermarks, no signup."
+description: "Compress MP4 videos for free with EncodeX on Windows, Mac, and Linux. Shrink MP4 file size while keeping quality high. No uploads, no watermarks, no signup."
 ogImage: "https://encodex.in/images/convert.webp"
 ---
 
@@ -18,9 +18,9 @@ MP4 is everywhere — which is exactly why people need to shrink it:
 - **Storage** — smartphone clips eat up drive space fast
 - **Faster sharing** — smaller files transfer in seconds
 
-## Compress MP4 Without Losing Quality
+## Compress MP4 While Keeping Quality High
 
-EncodeX re-encodes your MP4 with smarter settings — a modern codec like **H.265/HEVC or AV1** and a tuned bitrate — so you get a **much smaller file that still looks great**:
+EncodeX re-encodes your MP4 with smarter settings — a modern codec like **H.265/HEVC or AV1** and a tuned bitrate — so you get a **smaller file that still looks good**:
 
 1. [Download EncodeX for free](/download)
 2. Drag your **.mp4** file onto the window
@@ -38,7 +38,7 @@ Want a specific target size — like "under 10 MB"? EncodeX has presets for that
 
 ## FAQ
 
-**How small can compressed MP4 files get?** It depends on the source and settings, but EncodeX often shrinks files to a fraction of their size while keeping visually similar quality.
+**How small can compressed MP4 files get?** It depends on the source and settings. EncodeX aims to keep visual quality close to the original while reducing file size.
 
 **Will compressing reduce my video quality?** EncodeX balances size and quality automatically. You choose how aggressive to be, and you can preview the result before saving.
 

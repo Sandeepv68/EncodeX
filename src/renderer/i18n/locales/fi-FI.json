@@ -57,7 +57,9 @@
       "convert": "Muunna video",
       "compress": "Pakkaa tiedosto",
       "extract": "Pura ääniraita",
-      "trim": "Leikkaa katkelma"
+      "trim": "Leikkaa katkelma",
+      "remux": "Pakkaa tiedosto uudelleen",
+      "copilot": "Kysy Copilotilta"
     }
   },
   "closeConfirm": {
@@ -814,10 +816,20 @@
   },
   "about": {
     "title": "Tietoja EncodeX:stä",
-    "subtitle": "Ilmainen ja avoimen lähdekoodin multimediatyökalupakki, joka on rakennettu FFmpegin varaan. Muunna, tarkastele, pakkaa, poimi, leikkaa ja käsittele eräajona ääntä, videota ja kuvia – kaikki yhdessä paikassa.",
-    "description": "EncodeX on alustariippumaton multimediatyökalupakki, joka tuo FFmpegin tehon moderniin ja intuitiiviseen työpöytäkäyttöliittymään. Muunna ääntä, videota ja kuvia formaatista toiseen tarkalla säädöllä koodekkien, bittinopeuden, resoluution, pikseliformaatin ja laadun suhteen; kopioi raidat häviöttömästi välitöntä remuxausta varten; poimi ääni videosta; ja leikkaa videota ruuduntarkalla esikatselusoittimella. Laitteistokiihdytettyä koodausta tuetaan NVIDIA NVENC:n, Intel QSV:n, AMD AMF:n, VAAPI:n, Apple VideoToolboxin ja Microsoft Media Foundationin kautta, ja käytettävissä olevat kooderiperheet tunnistetaan automaattisesti mukana tulevasta FFmpeg-ajotiedostosta suorituksen aikana. Erätyöt kulkevat pysyvän jonon läpi reaaliaikaisella etenemisellä, ja headless-CLI-tila tarjoaa samat ominaisuudet komentosarjoihin ja automaatioon.",
+    "subtitle": "Ilmainen ja avoimen lähdekoodin multimediatyökalupakki, joka perustuu FFmpegiin. Muunna, pakkaa, poimi, leikkaa ja käsittele erissä ääntä, videota ja kuvia, tai ohjaa samaa moottoria komentorivin, MCP-palvelimen tai tekoälyavustaja Copilotin kautta.",
+    "description": "EncodeX on alustojen välinen multimediatyökalupakki, joka tuo FFmpegin tehon moderniin työpöytäkäyttöliittymään. Muunna ääntä, videota ja kuvia tarkasti hallittavilla koodekeilla, bittinopeudella, resoluutiolla, pikselimuodolla ja laadulla; kopioi raidat häviöttömästi; kierrä ja peilaa mediaa; sovella videosuodattimia; ja leikkaa video kehystarkalla esikatselutoistimella. Muunnosprofiilit asettavat yleiset kohteet yhdellä napsautuksella, ja voit tallentaa omat profiilisi. Laitteistokiihdytetty koodaus tukee NVIDIA NVENC-, Intel QSV-, AMD AMF-, VAAPI-, Apple VideoToolbox- ja Microsoft Media Foundation -tekniikoita, ja koodainperheet tunnistetaan automaattisesti mukana toimitetusta FFmpegistä ajonaikaisesti. Eräjono käsittelee töitä rinnakkain reaaliaikaisella edistymisellä, tallennuksella sekä tuonnilla ja viennillä. Graafisen käyttöliittymän lisäksi käyttöliittymätön CLI, itsenäinen ja upotettu MCP-palvelin sekä tekoälyavustaja Copilot antavat skripteille ja avustajille mahdollisuuden ohjata samaa mediamoottoria.",
     "logoAlt": "EncodeX-logo",
     "featuresTitle": "Mitä voit tehdä",
+    "featureConvert": "Muunna video, ääni ja kuvat tarkasti hallittavilla koodekeilla, bittinopeudella, resoluutiolla ja laadulla sekä kierrä ja suodata",
+    "featureRemux": "Remuxaa tai demuxaa virrat häviöttömästi ja lisää tekstitykset, ylimääräiset ääniraidat, kansikuvat ja luvut",
+    "featureMediaInfo": "Tarkastele minkä tahansa mediatiedoston koodekkeja, virtoja, väriä ja metatietoja",
+    "featureImage": "Pakkaa kuvia laatu- ja resoluutio-asetuksin sekä EXIF-tiedoin ja histogrammein",
+    "featureAudio": "Poimi ääniraidat videosta AAC-, MP3-, FLAC-, Opus- ja muissa muodoissa",
+    "featureCut": "Leikkaa video kehystarkasti pikkukuvien ja aaltomuodon aikajanalla",
+    "featureProfiles": "Aloita sisäänrakennetuista muunnosprofiileista tai tallenna omasi",
+    "featureBatch": "Suorita eräajot rinnakkain keskeytyksineen, uudelleenjärjestelyineen, tuonteineen ja vientineen sekä valmistumisen jälkeisellä virransäästötoiminnolla",
+    "featureHardware": "Käytä GPU-enkoodereita, kuten NVENC, Quick Sync, AMF, VAAPI ja VideoToolbox, jotka tunnistetaan automaattisesti",
+    "featureAutomation": "Kuvaile tavoite tekoälyavustaja Copilotille tai ohjaa EncodeXiä skripteillä CLI:n ja MCP-palvelimen kautta",
     "version": "Versio",
     "builtWith": "Rakennettu",
     "authorTitle": "Tekijä & palaute",

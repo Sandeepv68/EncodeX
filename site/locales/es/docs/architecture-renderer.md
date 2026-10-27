@@ -4,7 +4,7 @@
 
 ### Árbol de renderizado
 
-Las diez páginas se dividen con `React.lazy` y se cargan bajo un `ErrorBoundary` por página:
+Las trece páginas se dividen con `React.lazy` y se cargan bajo un `ErrorBoundary` por página:
 
 | Página          | Ruta            | Propósito                                                        |
 | --------------- | -------------- | -------------------------------------------------------------- |
@@ -14,9 +14,12 @@ Las diez páginas se dividen con `React.lazy` y se cargan bajo un `ErrorBoundary
 | ImageCompress   | `/image-compress` | Compresión de imágenes + EXIF + histogramas                       |
 | AudioExtract    | `/audio-extract` | Extracción de pistas de audio con cualquiera de 27 códecs                     |
 | VideoCut        | `/video-cut`   | Reproductor + línea de tiempo ampliable + recorte                              |
+| Remux           | `/remux`       | Cambio de contenedor con copia de flujo + flujos/capítulos añadidos     |
+| Demux           | `/demux`       | Extracción por flujo con conversión opcional por tipo                    |
 | BatchQueue      | `/batch`       | Gestión de la cola (añadir/quitar/cancelar todo)                       |
+| Copilot         | `/copilot`     | Planificación en lenguaje natural con proveedores de IA opcionales      |
 | Logs            | `/logs`        | Visor de logs en vivo con filtro por nivel + descarga                   |
-| Settings        | `/settings`    | Tema, hwaccel, siempre visible                                  |
+| Settings        | `/settings`    | Tema, telemetría, servidor MCP, proveedor de IA, hwaccel                  |
 | About           | `/about`       | Información de la app, créditos, botón "Buscar actualizaciones"                  |
 
 ### Hooks
@@ -40,9 +43,20 @@ Stores de Zustand en `src/renderer/stores/`:
 | `settingsStore`   | Ajustes + persistencia en `localStorage` (`encodex-theme`, etc.)       |
 | `logStore`        | Entradas de log agregadas (tope 2000), estado del filtro, descarga           |
 | `toastStore`      | Cola de toasts                                                         |
-| `updateStore`     | Estado del ciclo de vida de actualizaciones (check, available, downloading, downloaded, error) |
+| `updateStore`     | Estado del ciclo de vida de actualizaciones (check, available, downloading, downloaded, restart-scheduled, error) |
+| `remuxStore`      | Plan de remux (contenedor destino, flujos añadidos, capítulos, carátula, sincronización) |
+| `demuxStore`      | Selección de flujos de demux y opciones de conversión por tipo          |
+| `copilotChats`    | Conversaciones guardadas de Copilot e historial de planes                    |
+| `aiSettingsStore` / `aiConnectionStore` | Ajustes del proveedor de IA y estado de la prueba de conectividad |
+| `profileStore`    | Selección de perfiles integrados/personalizados y perfiles usados recientemente    |
+| `termsStore`      | Estado de aceptación de Términos y condiciones                             |
+| `auditStore`      | Entradas de auditoría de operaciones mutadoras emitidas desde main        |
 
 Los stores son el único lugar donde cambia el estado de la UI; los componentes se suscriben con `useXStore(selector)`.
+
+## Copilot e IA
+
+La página Copilot (`pages/Copilot.tsx`) convierte un objetivo en lenguaje natural sobre archivos y carpetas en un plan revisable. Los planes admiten 13 operaciones: seis respaldadas por la cola (`convert`, `remux`, `demux`, `extract_audio`, `compress_image`, `cut`) y siete operaciones de inteligencia multimedia de solo lectura (`analyze`, `transcribe`, `summarize`, `chapters`, `search_transcript`, `translate`, `find_similar`). La planificación usa por defecto el motor determinista `rules` sin conexión, o uno de los proveedores `openai`, `anthropic`, `gemini` o `local`. Al confirmar un plan se reutiliza la cola por lotes; los resultados de solo lectura se quedan en el panel. Las claves de API se envían al proceso principal, se cifran antes de almacenarse y nunca se devuelven al renderer: los ajustes solo exponen si existe una clave y una pista enmascarada.
 
 ## Cola por lotes
 
@@ -93,7 +107,7 @@ La *compresión de imágenes en sí* es solo una conversión: la página Image C
 
 ## Manejo de errores
 
-El sistema de errores (`src/shared/errors.ts`) define 16 códigos tipados — `FILE_NOT_FOUND`, `FFMPEG_NOT_FOUND`, `FFPROBE_NOT_FOUND`, `CONVERSION_FAILED`, `INVALID_FORMAT`, `PROBE_FAILED`, `QUEUE_ERROR`, `PLAYER_ERROR`, `CANCELLED`, `BMF_NOT_AVAILABLE`, `OUTPUT_NOT_SPECIFIED`, `INPUT_NOT_SPECIFIED`, `OUTPUT_EXISTS`, `INVALID_QUEUE_FILE`, `PERMISSION_DENIED`, `UNKNOWN` — cada uno con un mensaje predeterminado orientado al usuario.
+El sistema de errores (`src/shared/errors.ts`) define 28 códigos tipados — `FILE_NOT_FOUND`, `FFMPEG_NOT_FOUND`, `FFPROBE_NOT_FOUND`, `CONVERSION_FAILED`, `INVALID_FORMAT`, `PROBE_FAILED`, `QUEUE_ERROR`, `PLAYER_ERROR`, `CANCELLED`, `BMF_NOT_AVAILABLE`, `OUTPUT_NOT_SPECIFIED`, `INPUT_NOT_SPECIFIED`, `OUTPUT_EXISTS`, `INVALID_QUEUE_FILE`, `FILTERS_REQUIRE_RE_ENCODE`, `INVALID_VIDEO_FILTERS`, `STREAM_NOT_FOUND`, `INCOMPATIBLE_CONTAINER`, `AUXILIARY_INPUT_NOT_FOUND`, `PERMISSION_DENIED`, `OPERATION_TIMED_OUT`, `UNSAFE_ARGUMENTS`, `TRANSCRIPTION_UNAVAILABLE`, `TRANSLATION_UNAVAILABLE`, `AI_NOT_CONFIGURED`, `AI_CONNECTOR_FAILED`, `AI_RESPONSE_INVALID`, `UNKNOWN` — cada uno con un mensaje predeterminado orientado al usuario.
 
 El flujo es siempre el mismo:
 
@@ -119,7 +133,7 @@ La página Logs (`pages/Logs.tsx`) agrega ambas fuentes con filtrado por nivel (
 
 ## Internacionalización y RTL
 
-- i18next se inicializa en `renderer/i18n/config.ts` con 56 locales en 35 idiomas.
+- i18next se inicializa en `renderer/i18n/config.ts` con 56 locales.
 - `DirectionProvider` (caché Emotion con `stylis-plugin-rtl`) voltea el layout a RTL para los locales árabes y hebreos (`ar-SA`, `ar-AE`, `ar-JO`, `he-IL`).
 - `useLanguageDirection` detecta la dirección del locale actual; la dirección de la app se deriva de ella y cambia automáticamente al alternar idiomas.
 - `localeMeta.ts` guarda metadatos de locales y banderas para el `LanguageMenu`.
@@ -164,5 +178,5 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    A["About page"] --> B["updateStore.checkForUpdates"] --> C["electronAPI.checkForUpdates"] --> D7["updater.ts fetches GitHub Releases API"] --> E7["compares semver versions"] --> F7["send(update-available / update-not-available)"] --> G7["updateStore"] --> H7["UpdateDialog"] --> I7["downloadUpdate -> installer to temp dir"] --> J7["send(update-progress) -> progress bar"] --> K7["send(update-downloaded) -> Install + Restart button"] --> L7["installUpdate -> shell.openPath(installer) + app.quit()"]
+    A["About page"] --> B["updateStore.checkForUpdates"] --> C["electronAPI.checkForUpdates"] --> D7["updater.ts fetches GitHub Releases API"] --> E7["compares semver precedence incl. pre-release identifiers"] --> F7["send(update-available / update-not-available)"] --> G7["updateStore"] --> H7["UpdateDialog"] --> I7["downloadUpdate -> installer to temp dir, verify GitHub digest when present"] --> J7["send(update-progress) -> percent / transferred / total"] --> K7["send(update-downloaded) -> Install & Restart or Install on Restart"] --> L7["installUpdate -> shell.openPath(installer) + app.quit()"]
 ```

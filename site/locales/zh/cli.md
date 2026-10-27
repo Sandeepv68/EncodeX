@@ -35,7 +35,7 @@ encodex batch 'videos/**/*.mov' --concurrency 2 --output-dir converted
   <div class="wf-step">
     <span class="wf-num">2</span>
     <p class="card-head">选目标</p>
-    <p>📱 手机</p>
+    <p>📱 iPhone</p>
   </div>
   <div class="wf-step">
     <span class="wf-num">3</span>
@@ -49,20 +49,19 @@ encodex batch 'videos/**/*.mov' --concurrency 2 --output-dir converted
   </div>
 </div>
 
-在终端里，同样的「手机」配置只需一条命令：
+在终端里，同样的目标只需一条命令：
 
 ```bash
-encodex convert vacation.mkv vacation.mp4 --profile phone
+encodex convert vacation.mkv vacation.mp4 --video-codec libx264 --audio-codec aac -s 1920x1080
 ```
 
 ## 为什么使用 EncodeX CLI？
 
-- **编写脚本** — 在 cron 任务、CI 流水线和服务器中自动化转换
-- **一致性** — 与图形界面相同的引擎和配置文件
+- **编写脚本** — 在脚本和 CI 流水线中自动化转换
+- **一致性** — 与图形界面相同的 FFmpeg 引擎
 - **批量友好** — 使用 glob 模式和 `--concurrency` 进行并行处理
 - **易读** — 您无需手册就能输入的命令
 - **跨平台** — 在 Windows、macOS 和 Linux 上运行
-- **无界面** — 无需桌面环境，非常适合服务器
 
 ## CLI 命令
 
@@ -70,10 +69,12 @@ encodex convert vacation.mkv vacation.mp4 --profile phone
 | ------------------ | ----------------------------------------------------- |
 | `encodex convert`  | 在两种格式之间转换单个文件                             |
 | `encodex batch`    | 使用 glob 模式并行转换多个文件                          |
-| `encodex compress`  | 压缩视频或图像文件                                     |
+| `encodex compress`  | 压缩图像文件                                         |
 | `encodex extract-audio` | 从视频中提取音轨                                  |
+| `encodex remux`    | 在不重新编码的情况下将流复制到另一个容器               |
+| `encodex demux`    | 将每个流提取为单独的文件                               |
 | `encodex info`     | 探测文件并打印其技术详情                               |
-| `encodex capabilities` | 列出支持的格式和编码器                             |
+| `encodex capabilities` | 列出可用的编码器和硬件加速方式                    |
 
 ## 获取 CLI
 
@@ -83,9 +84,9 @@ CLI 随 **每个 EncodeX 安装包** 一起提供 — 下载应用即可从终�
 
 ## 常见问题
 
-**我需要图形界面来使用 CLI 吗？** 不需要，CLI 可以独立运行。它包含在每个 EncodeX 安装中。
+**我需要图形界面来使用 CLI 吗？** 不需要 — CLI 在终端中运行，不需要图形界面窗口。它包含在每个 EncodeX 安装中。
 
-**我可以在服务器上使用 EncodeX CLI 吗？** 可以 — 它是无界面的，非常适合在脚本、CI 和服务器环境中使用。
+**我可以在脚本中使用 EncodeX CLI 吗？** 可以 — 它支持 `--json` 输出和标准退出码，便于自动化。
 
 **EncodeX CLI 真的免费吗？** 是的 — EncodeX 永久免费，开源 (MIT)。
 

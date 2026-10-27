@@ -1,6 +1,6 @@
 ---
 title: "WebM 转 MP4 转换器——免费转换 WebM 视频 | EncodeX"
-description: "使用 EncodeX 免费将 WebM 转换为 MP4。一款适用于 Windows、Mac 和 Linux 的快速离线 WebM 转 MP4 转换器。让浏览器导出和下载随处可播。无水印、无画质损失。"
+description: "使用 EncodeX 免费将 WebM 转换为 MP4。一款适用于 Windows、Mac 和 Linux 的快速离线 WebM 转 MP4 转换器。让浏览器导出和下载随处可播。无水印。"
 ogImage: "https://encodex.in/images/convert.webp"
 ---
 
@@ -19,9 +19,9 @@ WebM 文件来自浏览器、Chrome 扩展和录制工具，但剪辑应用、�
 - 你从网站**下载了 WebM**，需要兼容性
 - 你想要一个**更小、更易分享的 MP4**
 
-## 无损地将 WebM 转为 MP4
+## 高画质将 WebM 转为 MP4
 
-EncodeX 将你的 **WebM 转为 MP4**，同时保留**视频画质**：
+EncodeX 将你的 **WebM 转为 MP4**，同时保持**视频画质**高：
 
 1. [免费下载 EncodeX](/zh/download)
 2. 将你的 **.webm** 文件拖入窗口

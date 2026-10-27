@@ -16,7 +16,7 @@ Drehen Sie Videos und Bilder um 90°, 180° oder 270° im Uhrzeigersinn und spie
 
 Wenden Sie vorkonfigurierte Encoding-Voreinstellungen an, um Konvertierungseinstellungen sofort auszufüllen. Profile kapseln eine vollständige Encoding-Konfiguration — Containerformat, Video-Codec, Audio-Codec, Bitrate, CRF/Qualität, Skalierung, Pixelformat und erweiterte FFmpeg-Argumente — sodass Sie nicht jede Einstellung manuell konfigurieren müssen.
 
-- **Über 140 eingebaute Profile** in 8 Kategorien: Web & Social (YouTube, Instagram, TikTok, Facebook, X), Geräte (Apple, Android, Spielkonsolen), Video-Codecs, Professionell (ProRes, DNxHD/HR, FFV1), Streaming (HLS, DASH), Audio, Bilder und Erweitert
+- **115 eingebaute Profile** in 8 Kategorien: Web & Social (YouTube, Instagram, TikTok, Facebook, X), Geräte (Apple, Android, Spielkonsolen), Video-Codecs, Professionell (ProRes, DNxHD/HR, FFV1), Streaming (HLS, DASH), Audio, Bilder und Erweitert
 - **Benutzerdefinierte Profile** — erstellen, bearbeiten und löschen Sie eigene Profile; im lokalen Speicher gespeichert
 - **Zuletzt verwendet** — Schnellzugriff auf die letzten 5 angewendeten Profile
 - **Kategoriefilter** — Profile nach Kategorie mit Icon-Badges durchsuchen
@@ -27,6 +27,15 @@ Profile sind auf der Konvertieren-Seite und in der Batch-Warteschlange verfügba
 ### Verlustfreies Kopieren
 
 Stream-Kopie von Video- oder Audiospuren ohne Re-Encoding (`-c copy`). Nützlich für schnelle Containerwechsel, Remuxing oder wenn Qualitätserhaltung entscheidend ist.
+
+### Remux & Demux
+
+- **Remux** — ändern Sie den Container, während die Streams per Stream-Kopie übernommen werden (kein Re-Encoding), mit optionalem Stream-Mapping, hinzugefügten Untertiteln/Audio, Cover-Art, Kapitel-Import oder -Entfernung, Auswahl des Untertitel-Codecs und Audio-Sync-Offsets.
+- **Demux** — extrahieren Sie jeden Video-, Audio- und Untertitelstream in eine eigene Datei, mit optionaler Konvertierung pro Stream-Art (Video-Container, Audio-Codec, Untertitelformat) und Videofiltern für neu kodierte Videos.
+
+### Copilot (KI-Assistent)
+
+Die Copilot-Seite plant anhand eines natürlichsprachlichen Ziels die Arbeit an Dateien und Ordnern. Sie unterstützt 13 Operationen: sechs über die Warteschlange (`convert`, `remux`, `demux`, `extract_audio`, `compress_image`, `cut`) und sieben schreibgeschützte Medienanalyse-Operationen (`analyze`, `transcribe`, `summarize`, `chapters`, `search_transcript`, `translate`, `find_similar`). Pläne können von der deterministischen Offline-Engine `rules` (Standard) oder von OpenAI, Anthropic, Gemini oder einer lokalen Laufzeit erzeugt werden. Das Übernehmen eines Plans nutzt die Batch-Warteschlange; API-Schlüssel werden an den Hauptprozess gesendet, vor der Speicherung verschlüsselt und niemals an den Renderer zurückgegeben; die Einstellungen zeigen nur an, ob ein Schlüssel vorhanden ist, sowie einen maskierten Hinweis.
 
 ### Hardwarebeschleunigung
 
@@ -79,7 +88,7 @@ EncodeX kann als [Model Context Protocol](https://modelcontextprotocol.io)-Serve
 - **Eigenständiger stdio-Server** — wird mit `encodex --mcp` (oder `node dist/mcp/index.js`) gestartet, spricht JSON-RPC über stdio, wobei stdout für Protokollnachrichten reserviert ist. Dies ist der Modus, den MCP-Hosts verwenden, die einen Serverprozess starten.
 - **Eingebetteter HTTP-Server** — ein optionaler Streamable-HTTP-Endpunkt unter `http://127.0.0.1:8765/mcp`, der unter **Einstellungen → MCP-Server** aktiviert wird, während die GUI läuft. Er teilt sich denselben Tool-Kern und die Job-Warteschlange der laufenden App.
 
-Die stdio-Oberfläche stellt 13 Kern-Tools bereit (`ping`, `convert_media`, `get_job`, `list_jobs`, `cancel_job`, `get_media_info`, `list_capabilities`, `list_profiles`, `get_profile`, `compress_image`, `extract_audio`, `cut_video`, `batch_convert`); die eingebettete HTTP-Oberfläche fügt 6 GUI-äquivalente Tools hinzu (`get_queue_state`, `cancel_all_jobs`, `get_timeline`, `extract_preview`, `get_system_info`, `check_for_updates`), insgesamt 19. Beide Oberflächen stellen 3 Ressourcen (`encodex://profiles`, `encodex://capabilities`, `encodex://codecs`) und 4 Prompt-Vorlagen (`convert-video`, `extract-audio`, `compress-image`, `batch-convert`) bereit. Konvertierungen sind asynchron: einen Job starten und dann per `get_job` oder `list_jobs` Fortschritt und Ergebnisse abfragen.
+Die stdio-Oberfläche stellt 36 modellseitig sichtbare Tools bereit (37 Registrierungen, einschließlich des nur app-internen `commit_operation`); die eingebettete HTTP-Oberfläche fügt 6 GUI-äquivalente Tools hinzu (`get_queue_state`, `cancel_all_jobs`, `get_timeline`, `extract_preview`, `get_system_info`, `check_for_updates`), insgesamt 42 modellseitig sichtbare Tools (43 Registrierungen). Beide Oberflächen stellen 3 Ressourcen (`encodex://profiles`, `encodex://capabilities`, `encodex://codecs`) und 4 Prompt-Vorlagen (`convert-video`, `extract-audio`, `compress-image`, `batch-convert`) bereit. Konvertierungen sind asynchron: einen Job starten und dann per `get_job` oder `list_jobs` Fortschritt und Ergebnisse abfragen.
 
 Der eingebettete Server bindet nur an Loopback, validiert den `Origin`-Header, unterstützt ein optionales Bearer-Token (in konstanter Zeit verglichen) und akzeptiert unter `/mcp` nur `GET`, `POST` und `DELETE`. Alle Sitzungen werden zwangsweise geschlossen, wenn der Server stoppt oder die App beendet wird. Die MCP-Einstellungen (aktiviert, Port, Token) persistieren in `mcp-settings.json` im User-Data-Verzeichnis.
 
@@ -134,7 +143,7 @@ Rechts-nach-links-Layout für arabische und hebräische Locales (`ar-SA`, `ar-AE
 
 ### Internationalisierung
 
-56 Locales in 35 Sprachen:
+56 Locales (36 Sprach-Basissubtags):
 
 | Sprache     | Locales                                    |
 | ----------- | ------------------------------------------ |

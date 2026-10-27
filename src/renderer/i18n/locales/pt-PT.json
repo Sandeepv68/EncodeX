@@ -57,7 +57,9 @@
       "convert": "Converter um vídeo",
       "compress": "Comprimir um ficheiro",
       "extract": "Extrair áudio",
-      "trim": "Cortar um clipe"
+      "trim": "Cortar um clipe",
+      "remux": "Remux de um ficheiro",
+      "copilot": "Pergunte ao Copilot"
     }
   },
   "closeConfirm": {
@@ -814,10 +816,20 @@
   },
   "about": {
     "title": "Sobre o EncodeX",
-    "subtitle": "Um conjunto de ferramentas multimídia gratuito e de código aberto construído sobre o FFmpeg. Converta, inspecione, comprima, extraia, corte e processe em lote áudio, vídeo e imagens — tudo em um só lugar.",
-    "description": "O EncodeX é um conjunto de ferramentas multimídia multiplataforma que leva o poder do FFmpeg a uma interface de desktop moderna e intuitiva. Converta áudio, vídeo e imagens entre formatos com controle detalhado de codecs, bitrate, resolução, formato de pixel e qualidade; copie faixas sem perda para remuxagem instantânea; extraia áudio de vídeo; e corte vídeo com um player de pré-visualização preciso por quadro. A codificação acelerada por hardware é suportada em NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox e Microsoft Media Foundation, com as famílias de codificadores disponíveis detectadas automaticamente a partir do binário FFmpeg incluído em tempo de execução. Os trabalhos em lote passam por uma fila persistente com progresso em tempo real, e um modo CLI headless expõe as mesmas capacidades para scripts e automação.",
+    "subtitle": "Um kit de ferramentas multimédia gratuito e de código aberto criado sobre o FFmpeg. Converta, comprima, extraia, corte e processe em lote áudio, vídeo e imagens, ou controle o mesmo motor a partir da CLI, de um servidor MCP ou do assistente de IA Copilot.",
+    "description": "O EncodeX é um kit de ferramentas multimédia multiplataforma que traz o poder do FFmpeg para uma interface de secretária moderna e intuitiva. Converta áudio, vídeo e imagens com controlo detalhado sobre codecs, débito binário, resolução, formato de píxel e qualidade; copie faixas sem perdas; rode e espelhe conteúdos multimédia; aplique filtros de vídeo; e corte vídeos com um leitor de pré-visualização preciso até à imagem. Os perfis de conversão configuram os destinos comuns com um clique, e pode guardar os seus próprios. A codificação com aceleração por hardware suporta NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox e Microsoft Media Foundation, sendo as famílias de codificadores detetadas automaticamente a partir do FFmpeg incluído durante a execução. A fila de processamento em lote executa tarefas em paralelo, com progresso em direto, estado guardado e importação e exportação. Para além da interface gráfica, uma CLI sem interface, um servidor MCP autónomo ou incorporado e o assistente de IA Copilot permitem que scripts e assistentes controlem o mesmo motor multimédia.",
     "logoAlt": "Logotipo do EncodeX",
     "featuresTitle": "O que você pode fazer",
+    "featureConvert": "Converta vídeo, áudio e imagens com controlo detalhado sobre codecs, débito binário, resolução e qualidade, além de rotação e filtros",
+    "featureRemux": "Faça remux ou demux de streams sem perdas e adicione legendas, faixas de áudio extra, capas e capítulos",
+    "featureMediaInfo": "Inspecione codecs, streams, cores e metadados de qualquer ficheiro multimédia",
+    "featureImage": "Comprima imagens com controlo de qualidade e resolução, além de dados EXIF e histogramas",
+    "featureAudio": "Extraia faixas de áudio de vídeos nos formatos AAC, MP3, FLAC, Opus e outros",
+    "featureCut": "Corte vídeos com precisão de imagem numa linha temporal com miniaturas e forma de onda",
+    "featureProfiles": "Comece com perfis de conversão incorporados ou guarde os seus",
+    "featureBatch": "Execute tarefas em lote em paralelo com pausa, reordenação, importação e exportação e uma ação de energia ao concluir",
+    "featureHardware": "Use codificadores por GPU como NVENC, Quick Sync, AMF, VAAPI e VideoToolbox, detetados automaticamente",
+    "featureAutomation": "Descreva um objetivo ao assistente de IA Copilot ou escreva scripts para o EncodeX através da CLI e do servidor MCP",
     "version": "Versão",
     "builtWith": "Construído com",
     "authorTitle": "Autor e feedback",

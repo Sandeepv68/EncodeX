@@ -13,7 +13,7 @@ ogImage: "https://encodex.in/images/home_dashboard.webp"
 Mac users pick EncodeX because it's designed around the Mac way of working:
 
 - **Apple Silicon ready** — a native Apple Silicon build plus Intel support
-- **VideoToolbox hardware acceleration** — fast encodes on M-series chips
+- **VideoToolbox hardware acceleration** — fast encodes on Apple Silicon and Intel Macs
 - **Drag and drop** — no terminal knowledge needed
 - **Batch folders** — process hundreds of files at once
 - **Offline & private** — your videos never leave your Mac

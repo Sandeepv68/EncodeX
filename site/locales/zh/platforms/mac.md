@@ -13,7 +13,7 @@ ogImage: "https://encodex.in/images/home_dashboard.webp"
 Mac 用户选择 EncodeX，因为它是按照 Mac 的工作方式设计的：
 
 - **Apple Silicon 就绪** —— 原生 Apple Silicon 构建版本，同时支持 Intel
-- **VideoToolbox 硬件加速** —— 在 M 系列芯片上快速编码
+- **VideoToolbox 硬件加速** —— 在 Apple Silicon 和 Intel Mac 上快速编码
 - **拖放操作** —— 无需终端知识
 - **批量文件夹处理** —— 一次处理数百个文件
 - **离线且私密** —— 你的视频永远不会离开你的 Mac

@@ -57,7 +57,9 @@
       "convert": "轉換影片",
       "compress": "壓縮檔案",
       "extract": "擷取音訊",
-      "trim": "裁剪片段"
+      "trim": "裁剪片段",
+      "remux": "重新封裝檔案",
+      "copilot": "詢問 Copilot"
     }
   },
   "closeConfirm": {
@@ -814,10 +816,20 @@
   },
   "about": {
     "title": "關於 EncodeX",
-    "subtitle": "一個基於 FFmpeg 建置的免費開放原始碼多媒體工具包。轉換、檢查、壓縮、擷取、剪輯以及批次處理音訊、視訊和圖片——全部集中在一個地方。",
-    "description": "EncodeX 是一個跨平台的多媒體工具包，將 FFmpeg 的強大功能帶到現代、直覺的桌面介面中。在編解碼器、位元率、解析度、像素格式和品質方面進行精細控制，在格式之間轉換音訊、視訊和圖片；無損複製音軌以即時重新封裝；從視訊中擷取音訊；並使用幀精確的預覽播放器剪輯視訊。支援 NVIDIA NVENC、Intel QSV、AMD AMF、VAAPI、Apple VideoToolbox 和 Microsoft Media Foundation 的硬體加速編碼，並在執行階段從隨附的 FFmpeg 二進位檔案中自動偵測可用的編碼器系列。批次任務透過持久佇列執行並即時顯示進度，無頭 CLI 模式則為指令碼撰寫和自動化提供相同的功能。",
+    "subtitle": "基於 FFmpeg 打造的免費開源多媒體工具組。可批次轉換、壓縮、擷取、剪輯及處理音訊、影片與圖片，也能透過命令列、MCP 伺服器或 AI 助理 Copilot 操控同一個引擎。",
+    "description": "EncodeX 是一款跨平台多媒體工具組，將 FFmpeg 的強大功能帶入現代化且易於使用的桌面介面。您可以精細控制編碼器、位元率、解析度、像素格式與品質來轉換音訊、影片與圖片；無損串流複製音軌與影像軌；旋轉與鏡像媒體；套用影片濾鏡；並透過逐影格精準的預覽播放器剪輯影片。轉換設定檔可一鍵套用常用目標，您也能儲存自訂設定檔。硬體加速編碼支援 NVIDIA NVENC、Intel QSV、AMD AMF、VAAPI、Apple VideoToolbox 與 Microsoft Media Foundation，執行時會自動從隨附的 FFmpeg 偵測編碼器類型。批次佇列可平行處理工作，並提供即時進度、狀態儲存以及匯入匯出功能。除圖形介面外，無介面命令列、獨立或嵌入式 MCP 伺服器以及 AI 助理 Copilot 也能讓腳本與助理操控同一個媒體引擎。",
     "logoAlt": "EncodeX 標誌",
     "featuresTitle": "你可以做什麼",
+    "featureConvert": "支援精細控制編碼器、位元率、解析度和品質來轉換影片、音訊和圖片，並可旋轉與套用濾鏡",
+    "featureRemux": "無損重新封裝或分離串流，並可新增字幕、額外音軌、封面圖和章節",
+    "featureMediaInfo": "檢查任何媒體檔案的編碼器、串流資訊、色彩和中繼資料",
+    "featureImage": "透過品質和解析度控制壓縮圖片，並可檢視 EXIF 資料和直方圖",
+    "featureAudio": "從影片擷取 AAC、MP3、FLAC、Opus 等格式的音軌",
+    "featureCut": "在含縮圖與波形的時間軸上進行逐影格精準剪輯",
+    "featureProfiles": "從內建轉換設定檔開始，或儲存您自己的設定檔",
+    "featureBatch": "平行執行批次工作，支援暫停、重新排序、匯入匯出，以及完成後的電源動作",
+    "featureHardware": "自動偵測並使用 NVENC、Quick Sync、AMF、VAAPI、VideoToolbox 等 GPU 編碼器",
+    "featureAutomation": "向 AI 助理 Copilot 描述目標，或透過命令列和 MCP 伺服器撰寫腳本控制 EncodeX",
     "version": "版本",
     "builtWith": "基於",
     "authorTitle": "作者與意見回饋",

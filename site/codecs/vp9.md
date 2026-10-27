@@ -12,7 +12,7 @@ ogImage: "https://encodex.in/images/home_dashboard.webp"
 
 VP9 packs a lot of punch for a codec that's free to use:
 
-- **Excellent compression** — roughly half the size of H.264 at similar quality
+- **Excellent compression** — typically smaller files than H.264 at similar quality
 - **Royalty-free** and open standard
 - **Web-ready** — supported by modern browsers, YouTube, and Android
 - **Great for streaming** — efficient on high-res and high-refresh content

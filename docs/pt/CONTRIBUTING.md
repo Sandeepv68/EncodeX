@@ -4,7 +4,7 @@ O EncodeX é gratuito e construído por voluntários — e você não precisa se
 
 - **Avise quando algo quebrar.** Se o app fechar sozinho ou um arquivo não converter, [abra uma issue](https://github.com/Sandeepv68/EncodeX/issues) e descreva o que aconteceu. Relatos de usuários comuns valem ouro.
 - **Sugira ideias.** Gostaria que o EncodeX fizesse algo que ainda não faz? Conte pra gente — muitas funções nasceram de sugestões de usuários.
-- **Traduza.** O EncodeX fala mais de 35 idiomas, e tradutores são sempre bem-vindos. Se faltar o seu ou ele soar estranho, você pode ajudar a resolver.
+- **Traduza.** O EncodeX fala mais de 56 idiomas, e tradutores são sempre bem-vindos. Se faltar o seu ou ele soar estranho, você pode ajudar a resolver.
 - **Espalhe a palavra.** Compartilhe o EncodeX com amigos, escreva uma avaliação ou faça um tutorial.
 
 ## Fale com a gente

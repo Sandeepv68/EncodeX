@@ -93,7 +93,7 @@ A *compressão de imagens em si* é apenas uma conversão: a página Image Compr
 
 ## Tratamento de erros
 
-O sistema de erros (`src/shared/errors.ts`) define 16 códigos tipados — `FILE_NOT_FOUND`, `FFMPEG_NOT_FOUND`, `FFPROBE_NOT_FOUND`, `CONVERSION_FAILED`, `INVALID_FORMAT`, `PROBE_FAILED`, `QUEUE_ERROR`, `PLAYER_ERROR`, `CANCELLED`, `BMF_NOT_AVAILABLE`, `OUTPUT_NOT_SPECIFIED`, `INPUT_NOT_SPECIFIED`, `OUTPUT_EXISTS`, `INVALID_QUEUE_FILE`, `PERMISSION_DENIED`, `UNKNOWN` — cada um com uma mensagem padrão voltada ao usuário.
+O sistema de erros (`src/shared/errors.ts`) define 28 códigos tipados — `FILE_NOT_FOUND`, `FFMPEG_NOT_FOUND`, `FFPROBE_NOT_FOUND`, `CONVERSION_FAILED`, `INVALID_FORMAT`, `PROBE_FAILED`, `QUEUE_ERROR`, `PLAYER_ERROR`, `CANCELLED`, `BMF_NOT_AVAILABLE`, `OUTPUT_NOT_SPECIFIED`, `INPUT_NOT_SPECIFIED`, `OUTPUT_EXISTS`, `INVALID_QUEUE_FILE`, `PERMISSION_DENIED`, `UNKNOWN` — cada um com uma mensagem padrão voltada ao usuário.
 
 O fluxo é sempre o mesmo:
 
@@ -119,7 +119,7 @@ A página Logs (`pages/Logs.tsx`) agrega ambas as fontes com filtragem por níve
 
 ## Internacionalização & RTL
 
-- i18next é inicializado em `renderer/i18n/config.ts` com 56 locales em 35 idiomas.
+- i18next é inicializado em `renderer/i18n/config.ts` com 56 locales em 56 idiomas.
 - `DirectionProvider` (cache Emotion com `stylis-plugin-rtl`) alterna o layout para RTL nas locales árabe e hebraica (`ar-SA`, `ar-AE`, `ar-JO`, `he-IL`).
 - `useLanguageDirection` detecta a direção da locale atual; a direção do app deriva dela e troca automaticamente na mudança de idioma.
 - `localeMeta.ts` guarda metadados de locales e bandeiras para o `LanguageMenu`.

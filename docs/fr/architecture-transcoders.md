@@ -2,7 +2,7 @@
 
 ## Abstraction transcoder
 
-Tous les backends média se conforment à `ITranscoder` (`src/main/transcoders/interface.ts`) :
+Tous les backends média se conforment à `ITranscoder` (`src/main/transcoders/types.ts`) :
 
 ```ts
 export interface ITranscoder {

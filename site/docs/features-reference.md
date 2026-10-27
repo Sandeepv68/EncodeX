@@ -11,7 +11,7 @@ EncodeX is a cross-platform multimedia conversion tool that brings the power of 
 
 ### Media Conversion
 
-Convert between video/audio formats with granular controls over codec selection (51 video codecs across software and hardware encoder families, 27 audio codecs), bitrate, output resolution (with optional aspect-ratio preservation), pixel format (56 formats grouped by bit depth), quality scale (qscale), audio track inclusion, and transcoder core selection. Multiple files can be queued through the Batch Queue (see below).
+Convert between video/audio formats with granular controls over codec selection (51 video codecs across software and hardware encoder families, 27 audio codecs), bitrate, output resolution (with optional aspect-ratio preservation), pixel format (56 formats grouped by bit depth), quality scale (qscale), audio track inclusion, transcoder core selection, and video filters (8 curated presets: crop, framerate, deinterlace, denoise, sharpen, color, grayscale, blur). Multiple files can be queued through the Batch Queue (see below).
 
 ### Media Rotation & Mirroring
 
@@ -21,7 +21,7 @@ Rotate videos and images by 90°, 180°, or 270° clockwise and mirror them (hor
 
 Apply pre-configured encoding presets to instantly fill in conversion settings. Profiles encapsulate a complete encoding configuration — container format, video codec, audio codec, bitrate, CRF/quality, scale, pixel format, and advanced FFmpeg arguments — so you don't have to configure every setting manually.
 
-- **140+ built-in profiles** across 8 categories: Web & Social (YouTube, Instagram, TikTok, Facebook, X), Devices (Apple, Android, gaming consoles), Video codecs, Professional (ProRes, DNxHD/HR, FFV1), Streaming (HLS, DASH), Audio, Images, and Advanced
+- **115 built-in profiles** across 8 categories: Web & Social (YouTube, Instagram, TikTok, Facebook, X), Devices (Apple, Android, gaming consoles), Video, Professional (ProRes, DNxHD/HR, FFV1), Streaming (HLS, DASH), Audio, Images, and Advanced
 - **Custom profiles** — create, edit, and delete your own profiles; persisted to local storage
 - **Recently used** — quick access to the last 5 applied profiles
 - **Category filtering** — browse profiles by category with icon badges
@@ -32,6 +32,15 @@ Profiles are available in the Convert page and Batch Queue. Selecting a profile 
 ### Lossless Copy
 
 Stream-copy video or audio tracks without re-encoding (`-c copy`). Useful for fast container format changes, remuxing, or when quality preservation is critical.
+
+### Remux & Demux
+
+- **Remux** — change the container while stream-copying (no re-encode), with optional stream mapping, added subtitles/audio, cover art, chapter import or removal, subtitle codec selection, and audio-sync offsets.
+- **Demux** — extract each video/audio/subtitle stream into its own file, with optional per-kind conversion (video container, audio codec, subtitle format) and video filters for re-encoded video.
+
+### Copilot (AI Assistant)
+
+The Copilot page plans work from a natural-language goal against files and folders. It supports 13 operations: six queue-backed (`convert`, `remux`, `demux`, `extract_audio`, `compress_image`, `cut`) and seven read-only media-intelligence operations (`analyze`, `transcribe`, `summarize`, `chapters`, `search_transcript`, `translate`, `find_similar`). Plans can be produced by the deterministic offline `rules` engine (default) or by OpenAI, Anthropic, Gemini, or a local runtime. Committing a plan reuses the Batch Queue. API keys are sent to the main process, encrypted before storage, and never returned to the renderer; settings expose only whether a key exists and a masked hint.
 
 ### Hardware Acceleration
 
@@ -55,9 +64,9 @@ Preview and cut video segments with frame-accurate start/end time or duration se
 
 ### Batch Queue
 
-Process multiple files with configurable operations (transcode, extract audio, compress image). Jobs are added through a review dialog where output names and options can be adjusted before they enter the queue.
+Process multiple files with configurable operations (transcode, extract audio, compress image, remux, demux). Jobs are added through a review dialog where output names and options can be adjusted before they enter the queue.
 
-- **Parallel processing** — run up to 4 jobs concurrently (`MAX_QUEUE_CONCURRENCY = 4`); the concurrency cap is configurable at runtime and persisted.
+- **Parallel processing** — run up to 4 jobs concurrently (`MAX_QUEUE_CONCURRENCY = 4`); the cap defaults to 1, is configurable at runtime, and is persisted.
 - **Queue lifecycle** — start, pause, and resume the whole queue; cancel all; clear completed/failed jobs; remove individual jobs.
 - **Reordering** — drag-and-drop reordering of queued jobs (with a drop area), backed by a `QUEUE_MOVE_TO` channel that reports the job's new position.
 - **Job editing** — replace the options (and optionally the output path) of any queued job before it starts (`QUEUE_UPDATE_OPTIONS`).
@@ -75,7 +84,7 @@ Process multiple files with configurable operations (transcode, extract audio, c
 
 ### Settings
 
-Dedicated settings page for theme, hardware acceleration (enable/disable, mode, encoder type), window always-on-top, launch-at-login, batch queue concurrency, the when-done power action, and the MCP server (enable/disable, port, access token). Preferences persist to `localStorage` and take effect on startup.
+Dedicated settings page for theme, hardware acceleration (enable/disable, mode, encoder type), window always-on-top, launch-at-login, batch queue concurrency, the when-done power action, the MCP server (enable/disable, port, access token), the AI provider/model/key editor, and the telemetry opt-out (error reporting + usage analytics, on by default). Standard preferences persist to `localStorage` and are synchronized to the main process; MCP settings persist to `mcp-settings.json`, and AI keys are encrypted by the main process.
 
 ### MCP Server {#mcp-server}
 
@@ -84,16 +93,16 @@ EncodeX can act as a [Model Context Protocol](https://modelcontextprotocol.io) s
 - **Standalone stdio server** — launched with `encodex --mcp` (or `node dist/mcp/index.js`), speaking JSON-RPC over stdio with stdout reserved for protocol messages. This is the mode used by MCP hosts that spawn a server process.
 - **Embedded HTTP server** — an opt-in Streamable HTTP endpoint at `http://127.0.0.1:8765/mcp`, enabled from **Settings → MCP Server** while the GUI is running. It shares the same tool core and the running app's job queue.
 
-The stdio surface exposes 13 core tools (`ping`, `convert_media`, `get_job`, `list_jobs`, `cancel_job`, `get_media_info`, `list_capabilities`, `list_profiles`, `get_profile`, `compress_image`, `extract_audio`, `cut_video`, `batch_convert`); the embedded HTTP surface adds 6 GUI-parity tools (`get_queue_state`, `cancel_all_jobs`, `get_timeline`, `extract_preview`, `get_system_info`, `check_for_updates`) for a total of 19. Both surfaces expose 3 resources (`encodex://profiles`, `encodex://capabilities`, `encodex://codecs`) and 4 prompt templates (`convert-video`, `extract-audio`, `compress-image`, `batch-convert`). Conversions are asynchronous: start a job, then poll `get_job` or `list_jobs` for progress and results.
+The stdio surface exposes 36 model-visible tools (37 registrations, including the app-only `commit_operation`); the embedded HTTP surface adds 6 GUI-parity tools (`get_queue_state`, `cancel_all_jobs`, `get_timeline`, `extract_preview`, `get_system_info`, `check_for_updates`) for 42 model-visible tools in total (43 registrations). Both surfaces expose 3 resources (`encodex://profiles`, `encodex://capabilities`, `encodex://codecs`) and 4 prompt templates (`convert-video`, `extract-audio`, `compress-image`, `batch-convert`). Conversions are asynchronous: start a job, then poll `get_job` or `list_jobs` for progress and results.
 
 The embedded server binds to loopback only, validates the `Origin` header, supports an optional bearer token (compared in constant time), and accepts only `GET`, `POST`, and `DELETE` on `/mcp`. All sessions are force-closed when the server stops or the app quits. MCP settings (enabled, port, token) persist to `mcp-settings.json` in the user-data directory.
 
 ### Keyboard Shortcuts
 
-A central shortcut registry (`src/renderer/constants/shortcuts.ts`) defines 60+ shortcuts across nine sections (global, convert, media info, image compress, audio extract, video cut, batch queue, logs, dashboard). Highlights:
+A central shortcut registry (`src/renderer/constants/shortcuts.ts`) defines 82 shortcuts across 11 sections (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). Highlights:
 
 - `Ctrl+/` — open the shortcuts help dialog
-- `Alt+1`…`Alt+9` — jump directly to a page
+- `Alt+0`…`Alt+9` — jump directly to a page
 - `Ctrl+O` / `Ctrl+Shift+S` / `Ctrl+Enter` — pick input / pick output / start the job (consistent across pages)
 - `Ctrl+Shift+P` / `Ctrl+Shift+C` — pause / cancel the active job
 - Batch queue: `Ctrl+E` export, `Ctrl+I` import, `1`–`5` status filters, `F` focus search
@@ -111,7 +120,7 @@ Closing the window while jobs are active routes through a confirmation flow: the
 
 ### Dashboard
 
-A landing page with quick-action tiles for every tool (number keys `1`–`6` jump straight to them) and seasonal easter-egg branding (see below).
+A landing page with quick-action tiles for every tool (number keys `1`–`8` jump straight to them) and seasonal easter-egg branding (see below).
 
 ### Easter Eggs
 
@@ -139,7 +148,7 @@ Right-to-left layout support for Arabic and Hebrew locales (`ar-SA`, `ar-AE`, `a
 
 ### Internationalization
 
-56 locales across 35 languages:
+56 locales:
 
 | Language    | Locales                                    |
 | ----------- | ------------------------------------------ |
@@ -181,11 +190,11 @@ Right-to-left layout support for Arabic and Hebrew locales (`ar-SA`, `ar-AE`, `a
 
 ### In-App Updates
 
-Custom update manager that checks GitHub Releases for new versions, notifies the user of availability, downloads the platform-specific installer (`.exe` / `.dmg` / `.AppImage`) in-app with real-time progress reporting, and launches the installer on completion. Version comparison uses semver with pre-release suffix stripping. The update flow is fully integrated into the About page with a "Check for Updates" button and a global dialog.
+Custom update manager that checks GitHub Releases for new versions, notifies the user of availability, downloads the platform-specific installer (`.exe` / `.dmg` / `.AppImage`) in-app with real-time progress reporting, and launches the installer when the user chooses to install (or schedules install-on-restart). Version comparison uses semver precedence, including pre-release identifiers; build metadata is ignored. When GitHub publishes a `sha256` or `sha512` asset digest, the download is verified against it. Updates are not installed automatically. The update flow is fully integrated into the About page with a "Check for Updates" button and a global dialog.
 
 ### Error Handling
 
-Structured error system with typed error codes (`ErrorCode`), user-facing localized messages, a global error snackbar, inline error banners, toast notifications, nested React error boundaries, and an in-app error history (cap 50). All errors are normalized through `formatError()` and propagated across IPC.
+Structured error system with 28 typed error codes (`ErrorCode`), user-facing localized messages, a global error snackbar, inline error banners, toast notifications, nested React error boundaries, and an in-app error history (cap 50). All errors are normalized through `formatError()` and propagated across IPC.
 
 ## Supported Media Formats
 

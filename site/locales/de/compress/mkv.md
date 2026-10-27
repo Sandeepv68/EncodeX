@@ -17,7 +17,7 @@ MKV ist ein beliebter Container für qualitativ hochwertige Videos – genau des
 - **Teilen** – MKV-Dateien sind für viele Chat- und E-Mail-Apps zu groß
 - **Streaming** – Medienserver arbeiten mit angemessenen Bitraten besser
 
-## MKV ohne Qualitätsverlust komprimieren
+## MKV komprimieren und Qualität hoch halten
 
 EncodeX re-encodiert dein MKV mit einem modernen Codec (wie **H.265/HEVC oder AV1**) mit angepasster Bitrate und behält dabei den MKV-Container mit deinen Untertiteln und Audiospuren bei:
 

@@ -2,7 +2,7 @@
 
 ## Abstracción de transcoders
 
-Todos los backends de medios se ajustan a `ITranscoder` (`src/main/transcoders/interface.ts`):
+Todos los backends de medios se ajustan a `ITranscoder` (`src/main/transcoders/types.ts`):
 
 ```ts
 export interface ITranscoder {

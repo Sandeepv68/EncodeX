@@ -37,7 +37,7 @@ EncodeX est disponible sur tous les grands systèmes de bureau :
 
 - **Tout reste sur votre ordinateur** — sans téléversement, sans compte
 - **Sans filigrane** et **sans paywall caché** — gratuit pour toujours et open source
-- **Accéléré par matériel** quand c'est possible, pour des conversions rapides
+- **Conversions rapides** — choisissez un codec et un débit adaptés à vos besoins
 
 ## FAQ
 

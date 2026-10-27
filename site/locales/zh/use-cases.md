@@ -13,7 +13,7 @@ EncodeX 是一款免费、开源的 FFmpeg 图形界面工具，专为真实的�
 
   <div class="card">
     <h3>📹 压缩视频以便上传</h3>
-    <p>在通过社交媒体、电子邮件或聊天软件分享前压缩大型视频文件——同时保持看得见的画质。</p>
+    <p>在通过社交媒体、电子邮件或聊天软件分享前压缩大型视频文件——并控制你保留的画质。</p>
     <a href="/zh/video-compressor">了解更多 →</a>
   </div>
 
@@ -25,13 +25,13 @@ EncodeX 是一款免费、开源的 FFmpeg 图形界面工具，专为真实的�
 
   <div class="card">
     <h3>🔄 转换格式</h3>
-    <p>MOV 转 MP4、WebM 转 AVI、MKV 转 MP4——在保持原始画质的同时更换封装容器。</p>
+    <p>MOV 转 MP4、WebM 转 AVI、MKV 转 MP4——重新编码为新格式，或在只需更换容器时进行重新封装。</p>
     <a href="/zh/video-converter">了解更多 →</a>
   </div>
 
   <div class="card">
     <h3>✂️ 裁剪片段</h3>
-    <p>去掉无用的空白片段、修剪开头并截取精彩瞬间——无需重新编码整个文件。</p>
+    <p>去掉无用的空白片段、修剪开头并截取精彩瞬间——在可视化时间轴上完成。</p>
     <a href="/zh/features#裁剪视频">了解更多 →</a>
   </div>
 
@@ -61,7 +61,7 @@ EncodeX 是一款免费、开源的 FFmpeg 图形界面工具，专为真实的�
 
   <div class="card">
     <h3>🤖 用 AI 助手自动处理</h3>
-    <p>EncodeX 内置 MCP 服务器——连接 Claude、Cursor、VS Code 或任何 MCP 客户端，用自然语言让它转换、提取、压缩或跟踪批量任务，一切都在本地完成。</p>
+    <p>EncodeX 内置 MCP 服务器和 Copilot——连接 Claude、Cursor、VS Code 或任何 MCP 客户端，或使用 Copilot 的 13 项操作，用自然语言进行转换、重新封装、分离、提取、压缩、剪切或分析媒体。Copilot 默认使用离线规则引擎，并可选择 OpenAI、Anthropic、Gemini 或本地提供商。</p>
     <a href="/zh/mcp">了解更多 →</a>
   </div>
 
@@ -82,7 +82,7 @@ EncodeX 是一款免费、开源的 FFmpeg 图形界面工具，专为真实的�
 ## 相关页面
 
 - [视频转换器](/zh/video-converter)——在 MP4、MKV、WebM、AVI 等格式之间转换。
-- [视频压缩器](/zh/video-compressor)——在保持画质的同时缩小文件体积。
+- [视频压缩器](/zh/video-compressor)——在控制画质的同时缩小文件体积。
 - [音频提取工具](/zh/extract-audio-from-video)——从任意视频中提取音轨。
 - [FFmpeg 图形界面](/zh/ffmpeg-gui)——了解 EncodeX 是什么、如何工作以及为何这样设计。
 - [下载](/zh/download)——Windows、macOS 和 Linux 免费下载。

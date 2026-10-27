@@ -35,7 +35,7 @@ Alle Kanalnamen sind in `src/shared/ipc-channels.ts` zentralisiert.
 | `queue-resume`        | —                                        | `void`                        |
 | `queue-export`        | —                                        | `number` (count exported)     |
 | `queue-import`        | —                                        | `number` (count imported)     |
-| `reveal-file`         | `filePath`                               | `void`                        |
+| `queue-reveal`         | `filePath`                               | `void`                        |
 | `set-launch-at-login` | `enabled`                                | `void`                        |
 | `player-open`         | `filePath`                               | `number` (generation token)   |
 | `player-seek`         | `time`                                   | `number` (generation token)   |

@@ -1,6 +1,6 @@
 # 🖼️ Interactive MCP Apps
 
-EncodeX's MCP server is [MCP Apps](https://modelcontextprotocol.io) (SEP-1865) compliant. In hosts that support the extension — Claude, VS Code, ChatGPT, Goose, Postman, MCPJam — EncodeX's job tools render as interactive views: a live queue dashboard, a per-job progress card, a media-info table, and a conversion setup form. In hosts that don't, every tool still returns its normal JSON text payload, so nothing breaks.
+EncodeX's MCP server is [MCP Apps](https://modelcontextprotocol.io) (SEP-1865) compliant. In hosts that support the extension — Claude, VS Code, ChatGPT, Goose, Postman, MCPJam — EncodeX's job and media-intelligence tools render as interactive views: a live queue dashboard, a per-job progress card, a media-info table, a conversion setup form, an inspector, a plan/estimate card, a size-target lab, an error card, a batch dashboard, and a workflow report. In hosts that don't, every tool still returns its normal JSON text payload, so nothing breaks.
 
 Related docs: [`MCP.md`](MCP.md) (server, tools, security), [`CLI.md`](CLI.md), [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
@@ -36,11 +36,17 @@ EncodeX advertises the `io.modelcontextprotocol/ui` extension in its `initialize
 | `ui://encodex/job` | `get_job` | Single-job card: input/output paths, progress, error text, confirm-gated **Cancel** |
 | `ui://encodex/media-info` | `get_media_info` | Container facts (format, duration, size, bitrate) plus a per-stream table (codec, resolution, sample rate, channels) |
 | `ui://encodex/convert` | `convert_media` | Conversion form, pre-filled from a model proposal, that starts the job only when the user clicks **Start** and then tracks it |
-| `ui://encodex/confirm` | all other mutating tools | Confirmation card for a proposed operation (details + warnings); runs it only when the user clicks **Run** |
+| `ui://encodex/confirm` | `compress_image`, `extract_audio`, `cut_video`, `remux_media`, `demux_media` | Confirmation card for a proposed operation (details + warnings); runs it only when the user clicks **Run** |
+| `ui://encodex/inspector` | `analyze_media` | Plain-language media diagnosis: key facts, findings by severity, suggested next steps |
+| `ui://encodex/plan` | `recommend_settings`, `estimate_conversion` | Recommended settings with rationale and confidence, plus the estimated output size/duration |
+| `ui://encodex/lab` | `compress_to_target` | Candidate ladder, every measured attempt, and the winning size-target fit |
+| `ui://encodex/error` | `explain_error` | Error explanation with likely causes and suggested fixes |
+| `ui://encodex/batch` | `batch_convert` | Batch confirmation (file count, destination, warnings), then a per-file dashboard over the shared job queue with live status/progress |
+| `ui://encodex/workflow` | `plan_workflow`, `execute_workflow` | Ordered workflow dry-run with dependencies, then the per-step execution report |
 
 Each view is a small, self-contained HTML document: inline CSS plus an inline bridge script, **no external scripts or stylesheets**, so it renders under a host's restrictive default CSP. The views are intentionally kept well under a ~100 KB budget.
 
-Two extra view URIs are reserved for later work and are not yet served: `ui://encodex/profiles` and `ui://encodex/capabilities`.
+Two extra view URIs are defined but not served: `ui://encodex/profiles` and `ui://encodex/capabilities`.
 
 ### Tool → view wiring
 
@@ -50,7 +56,15 @@ Two extra view URIs are reserved for later work and are not yet served: `ui://en
 | `get_job` | `ui://encodex/job` | `{ job: Job }` |
 | `get_media_info` | `ui://encodex/media-info` | `{ media: MediaInfo }` |
 | `convert_media` | `ui://encodex/convert` | `{ confirmation }` while awaiting the user, else `{ job, transcoder }` |
-| `compress_image`, `extract_audio`, `cut_video`, `batch_convert`, `remux_media`, `demux_media` | `ui://encodex/confirm` | `{ confirmation }` while awaiting the user, else `{ job }` / `{ total, jobs }` |
+| `compress_image`, `extract_audio`, `cut_video`, `remux_media`, `demux_media` | `ui://encodex/confirm` | `{ confirmation }` while awaiting the user, else `{ job }` |
+| `batch_convert` | `ui://encodex/batch` | `{ confirmation }` while awaiting the user, else `{ total, jobs }` |
+| `analyze_media` | `ui://encodex/inspector` | `{ analysis }` |
+| `recommend_settings` | `ui://encodex/plan` | `{ plan }` |
+| `estimate_conversion` | `ui://encodex/plan` | `{ estimate }` |
+| `compress_to_target` | `ui://encodex/lab` | `{ lab }` |
+| `explain_error` | `ui://encodex/error` | `{ error }` |
+| `plan_workflow` | `ui://encodex/workflow` | `{ plan }` |
+| `execute_workflow` | `ui://encodex/workflow` | `{ result }` |
 | `commit_operation` (app-only) | — | whatever the confirmed operation returns |
 
 Non-UI hosts receive the same JSON as the tool's `text` content and ignore `structuredContent`.

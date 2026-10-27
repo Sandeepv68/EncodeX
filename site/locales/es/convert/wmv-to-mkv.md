@@ -19,7 +19,7 @@ Razones comunes para pasar de **WMV a MKV**:
 - Estás **creando una biblioteca** para Plex, Jellyfin o Kodi
 - Quieres un **archivo más pequeño** con un códec moderno y flexible
 
-## Convierte WMV a MKV sin perder calidad
+## Convierte WMV a MKV con alta calidad
 
 EncodeX convierte tu **WMV a MKV** de forma limpia manteniendo alta la **calidad de tu vídeo**:
 

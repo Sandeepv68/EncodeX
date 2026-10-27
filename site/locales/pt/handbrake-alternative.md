@@ -20,13 +20,13 @@ HandBrake é um popular transcodificador de vídeo gratuito — especialmente am
 | -------------- | -------------------------------- | ---------------------------- |
 | **Preço**      | Gratuito para sempre, código aberto (MIT) | Gratuito, código aberto (GPL) |
 | **Baseado em FFmpeg** | Sim                          | Sim                          |
-| **Predefinições** | 140+ em 8 categorias            | Bom conjunto, maiormente baseado em arquivos |
+| **Predefinições** | 115 em 8 categorias            | Bom conjunto, maiormente baseado em arquivos |
 | **Codificação por hardware** | NVENC, QSV, AMF, VAAPI, VideoToolbox | Parcial              |
 | **Fila em lote** | Fila paralela completa (4 tarefas) | Fila, sequencial          |
 | **Extração de áudio** | Um clique, 27 codecs            | Limitada                     |
 | **Compressão de imagens** | JPEG/PNG/WebP…                 | Não realmente                |
 | **Corte em lote** | Preciso por quadros com linha do tempo | Corte apenas de vídeo    |
-| **Modo CLI**    | Sim — comandos legíveis           | Linode/CLI limitada          |
+| **Modo CLI**    | Sim — comandos legíveis           | HandBrakeCLI/CLI limitada    |
 | **Plataformas** | Windows, macOS, Linux            | Windows, macOS, Linux        |
 | **Uploads**     | Nenhum — 100% offline            | Nenhum — 100% offline        |
 

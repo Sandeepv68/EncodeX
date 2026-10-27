@@ -15,12 +15,12 @@ Mixing your MOV files into an MKV archive brings real advantages:
 - **Multiple audio tracks** — keep several languages in one file
 - **Embedded subtitles** — burn-in or soft subs that just work
 - **Open format** — MKV plays nicely with open-source players
-- **Lossless remuxing** — same quality, better container
+- **Lossless stream copy when codecs fit** — same streams, better container
 - **Archiving** — keep all extras together with the video
 
-## Convert MOV to MKV Without Losing Quality
+## Convert MOV to MKV at High Quality
 
-EncodeX converts your **MOV to MKV** quickly while keeping your **video quality** intact:
+EncodeX converts your **MOV to MKV** quickly while keeping your **video quality** high:
 
 1. [Download EncodeX for free](/download)
 2. Drag your **.mov** file onto the window
@@ -39,7 +39,7 @@ You can convert a single clip or **batch-convert** whole folders of MOV files at
 
 **Why should I convert MOV to MKV?** MKV holds multiple audio tracks, embedded subtitles, and chapters — ideal for building a personal library on Plex, Kodi, or other open software.
 
-**Will I lose quality converting MOV to MKV?** No. MKV is a container format, so EncodeX can keep your video and audio exactly as they are while remuxing.
+**Will I lose quality converting MOV to MKV?** EncodeX re-encodes with settings that keep quality high. A lossless stream copy, which keeps the video and audio exactly as they are, is possible only when the source codecs fit the MKV container.
 
 **Can I convert many MOV files at once?** Yes. EncodeX supports batch converting an entire folder of MOV files to MKV.
 

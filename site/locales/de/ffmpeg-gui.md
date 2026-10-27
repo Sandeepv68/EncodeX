@@ -28,7 +28,9 @@ Wenn das für Sie wie eine Fremdsprache aussieht, sind Sie nicht allein. Eine **
 - **Videos komprimieren**, um die Dateigröße zu reduzieren, ohne die Qualität zu ruinieren
 - **Clips visuell schneiden** – zwei Griffe auf einer Zeitleiste ziehen, fertig
 - **Audio aus einem Video extrahieren** und als MP3 speichern
-- **Videos drehen und spiegeln** – seitlich liegende Clips korrigieren, verlustfrei für MP4/MOV/MKV
+- **Videos drehen und spiegeln** – seitlich liegende Clips verlustfrei für MP4/MOV/MKV im Stream-Copy-Modus oder mit schneller Neukodierung korrigieren
+- **Remux und Demux** — Container ohne Neukodierung wechseln oder jeden Stream in eine eigene Datei aufteilen
+- **Mit Copilot planen** — beschreiben Sie die Aufgabe in einfacher Sprache; 13 Operationen mit einer Offline-Regel-Engine als Standard und optional OpenAI, Anthropic, Gemini oder lokalen Anbietern
 - **Ganze Ordner stapelweise verarbeiten** in einem Durchgang
 
 ## Blitzschnell: Hardwarebeschleunigung bereits eingebaut
@@ -37,13 +39,13 @@ EncodeX **nutzt Ihre GPU automatisch**, um Konvertierungen deutlich schneller zu
 
 - **NVIDIA**-Benutzer erhalten NVENC; **Intel** erhält Quick Sync (QSV); **AMD** erhält AMF
 - **Apple Silicon/Mac**-Benutzer erhalten VideoToolbox
-- **Linux**-Benutzer erhalten VAAPI — egal welcher GPU-Hersteller
+- **Linux**-Benutzer erhalten VAAPI auf AMD- und Intel-GPUs; NVIDIA-GPUs nutzen NVENC
 
 Es ist sehr wahrscheinlich, dass Ihr Gerät bereits einen schnellen Encoder an Bord hat. EncodeX findet ihn und schaltet ihn für Sie ein — eine lange Konvertierung ist so in Bruchteilen der Zeit erledigt.
 
 ## Es ist Open Source und privat
 
-Da EncodeX auf FFmpeg aufbaut und vollständig [Open Source](https://github.com/Sandeepv68/EncodeX) ist, läuft alles **auf Ihrem eigenen Computer**. Nichts wird hochgeladen, keine Konten erforderlich und **keine Wasserzeichen** auf Ihren Dateien.
+Da EncodeX auf FFmpeg aufbaut und vollständig [Open Source](https://github.com/Sandeepv68/EncodeX) ist, läuft die Medienverarbeitung **auf Ihrem eigenen Computer** — Dateien werden nicht hochgeladen, keine Konten sind erforderlich und **keine Wasserzeichen** prangen auf Ihren Dateien. Fehlerberichte und Nutzungsanalysen sind standardmäßig aktiv und lassen sich in den Einstellungen abschalten.
 
 ## Auf jedem Desktop-Betriebssystem verfügbar
 

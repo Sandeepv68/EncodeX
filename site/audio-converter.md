@@ -37,7 +37,7 @@ EncodeX is available on every major desktop OS:
 
 - **Everything stays on your computer** — no uploads, no accounts
 - **No watermarks** and **no hidden paywalls** — it's free forever and open source
-- **Hardware accelerated** where possible, for fast conversions
+- **Fast conversions** — choose a codec and bitrate that fit your needs
 
 ## FAQ
 

@@ -19,11 +19,11 @@ Instala la aplicación, arrastra un video o una imagen a la ventana, elige un pe
 
 **Para instalar:** abre el archivo descargado y sigue los pasos en pantalla.
 
-¿No sabes cuál elegir? Ve con el recomendado — si no coincide, Windows te lo dirá.
+¿No sabes cuál elegir? Ve con el recomendado — si no coincide, Windows te lo dirá. En **Otras descargas** también encontrarás una compilación **Windows ARM64** (portátiles Snapdragon).
 
 ### Otras plataformas
 
-[macOS](#mac) · [Linux](#linux) · [Windows ARM64](#windows) · [Windows 32-bit](#windows)
+[macOS](#mac) · [Linux](#linux) · [Windows ARM64](#windows)
 
 ## <OsIcon name="apple" /> Mac
 
@@ -34,11 +34,13 @@ Instala la aplicación, arrastra un video o una imagen a la ventana, elige un pe
 **¿No sabes qué Mac tienes?** Pulsa el logo de Apple (<OsIcon name="apple" label="Logo de Apple" />) en la esquina superior izquierda, elige "Acerca de este Mac" y mira la línea "Chip". Si dice "Apple M1" (o M2/M3/M4), elige Apple Silicon. Si dice "Intel", elige Intel.
 
 ::: warning Primer inicio en Mac — un paso extra
-Como EncodeX es gratuito y de código abierto (y no se vende en la Mac App Store), macOS puede mostrar un mensaje diciendo que la app "no se puede abrir" la primera vez. Es normal y seguro de superar:
+EncodeX es gratuito y de código abierto, no se vende en la Mac App Store, y sus compilaciones para macOS no están firmadas ni notarizadas por Apple. macOS puede mostrar un mensaje diciendo que la app "no se puede abrir" la primera vez. Para abrirla:
 
 1. Busca EncodeX en tu carpeta de Aplicaciones
 2. Mantén pulsada la tecla **Control**, haz clic en la app y elige **Abrir**
 3. En el cuadro que aparece, pulsa **Abrir** otra vez
+
+En versiones recientes de macOS puede que no se ofrezca este paso de Control-clic. En ese caso, abre **Ajustes del Sistema → Privacidad y seguridad** y elige **Abrir de todos modos** para EncodeX.
 
 Solo tienes que hacerlo una vez — después se abre con normalidad.
 :::
@@ -61,15 +63,14 @@ chmod +x EncodeX-*.AppImage
 Nada especial — si tu computadora es de los últimos años, estás bien:
 
 - **Sistema operativo:** Windows 10+, macOS 11+ o un Linux moderno
-- **Espacio en disco:** unos 400 MB (la app incluye todo lo que necesita — sin descargas extra)
+- **Espacio en disco:** suficiente para la app y tus archivos convertidos
 - **Memoria:** cualquier cantidad normal funciona
 
-> **¿Por qué EncodeX ocupa unos 400 MB?**
-> EncodeX incluye el motor FFmpeg y todos los componentes necesarios, así que nunca instalas FFmpeg, códecs ni nada por separado — y tampoco descargas extras más tarde. Nada se sube a internet ni se procesa en la nube: cada conversión ocurre [localmente en tu ordenador](/es/features).
+EncodeX incluye el motor FFmpeg, así que no instalas FFmpeg ni códecs por separado. Cada conversión ocurre [localmente en tu ordenador](/es/features).
 
 ## Mantenerlo actualizado
 
-Cuando sale una versión nueva, EncodeX te avisa dentro de la app y puede descargar e iniciar la actualización por ti — no hace falta volver a esta página.
+Cuando sale una versión nueva, EncodeX consulta las versiones de GitHub y te avisa dentro de la app. Tú eliges si descargarla e instalarla, o instalarla en el próximo reinicio. Las actualizaciones no se instalan automáticamente, así que no hace falta volver a esta página.
 
 ## Versiones anteriores
 
@@ -83,11 +84,11 @@ Si algo no funciona o tienes una pregunta, envía un correo a **[developer@encod
 
 ## Privacidad
 
-Entendemos que la confianza importa. Cada conversión ocurre en tu computadora — tus archivos nunca se suben, rastrean ni almacenan en un servidor. Lee la [política de privacidad completa](/es/privacy).
+Entendemos que la confianza importa. Cada conversión ocurre en tu computadora y tus archivos nunca se suben ni se almacenan en un servidor. Los informes de errores y los datos de uso están activados de forma predeterminada, y puedes desactivarlos en Ajustes. Lee la [política de privacidad completa](/es/privacy).
 
 ## Seguridad
 
-Cada versión incluye [sumas de verificación SHA-256 verificables y compilaciones firmadas](/es/security) — y si encuentras un problema, puedes reportarlo de forma privada. Consulta la [página de seguridad](/es/security) para más detalles.
+Cada versión publica [sumas de verificación SHA-256](/es/security) junto a los instaladores, y si encuentras un problema, puedes reportarlo de forma privada. Las compilaciones de versión no están firmadas. Consulta la [página de seguridad](/es/security) para más detalles.
 
 ## Para desarrolladores: compílelo tú mismo
 

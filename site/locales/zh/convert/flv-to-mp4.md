@@ -1,6 +1,6 @@
 ---
 title: "FLV 转 MP4 转换器——免费转换 FLV 视频 | EncodeX"
-description: "使用 EncodeX 免费将 FLV 转换为 MP4。一款适用于 Windows、Mac 和 Linux 的快速离线 FLV 转 MP4 转换器。适用于下载和录制的 FLV 文件，无水印、无画质损失。"
+description: "使用 EncodeX 免费将 FLV 转换为 MP4。一款适用于 Windows、Mac 和 Linux 的快速离线 FLV 转 MP4 转换器。适用于下载和录制的 FLV 文件，无水印。"
 ogImage: "https://encodex.in/images/convert.webp"
 ---
 
@@ -19,7 +19,7 @@ FLV 文件越来越难播放：Flash Player 插件已消失，大多数现代设
 - 你想用**现代软件编辑**该视频
 - 你想要一个**更小、更兼容**的文件来分享
 
-## 无损地将 FLV 转为 MP4
+## 高画质将 FLV 转为 MP4
 
 EncodeX 将你的 **FLV 干净地转为 MP4**，在现代化格式的同时保留**视频画质**：
 

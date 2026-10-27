@@ -12,7 +12,7 @@ description: "Descarga una GUI de FFmpeg gratuita para Mac. Convierte vídeo y a
 EncodeX ofrece a los usuarios de macOS un **frontend de FFmpeg** completo con una interfaz limpia y de aspecto nativo:
 
 - **Convierte** vídeo y audio — MP4, MKV, MOV, AVI, WebM, MP3, FLAC, WAV y más
-- **Comprime** vídeos para reducir el tamaño con pérdida mínima de calidad
+- **Comprime** vídeos para reducir el tamaño con control sobre la calidad
 - **Recorta** clips con una línea de tiempo visual
 - **Extrae** audio de vídeo y lo guarda como MP3
 - **Procesa por lotes** carpetas de archivos automáticamente

@@ -1,6 +1,6 @@
 # 🔄 Update Manager
 
-Custom in-app update manager that checks GitHub Releases for new versions, downloads the platform-specific installer, and launches it on completion.
+Custom in-app update manager that checks GitHub Releases for new versions, downloads the platform-specific installer, and installs it when the user chooses (or defers it to the next restart).
 
 ## 🏗️ Architecture
 
@@ -12,6 +12,7 @@ About page → updateStore.checkForUpdates → electronAPI.checkForUpdates
 → send(update-progress) → updateStore → progress bar
 → send(update-downloaded) → updateStore → "Install & Restart" button
 → electronAPI.installUpdate → shell.openPath(installer) + app.quit()
+   (or scheduleInstallOnRestart → pending-install.json → install on next launch)
 ```
 
 ## 📁 Key Files
@@ -24,7 +25,7 @@ About page → updateStore.checkForUpdates → electronAPI.checkForUpdates
 | `src/renderer/components/UpdateDialog.tsx` | UI dialog for check/download/install flow |
 | `src/renderer/pages/About.tsx` | "Check for Updates" button |
 | `src/shared/types.ts` | `UpdateInfo`, `UpdateAsset`, `UpdateProgress` types |
-| `src/shared/ipc-channels.ts` | 10 update channel constants |
+| `src/shared/ipc-channels.ts` | 13 update channel constants |
 
 ## 🔌 IPC Channels
 
@@ -35,15 +36,24 @@ About page → updateStore.checkForUpdates → electronAPI.checkForUpdates
 | `install-update` | renderer -> main | Launch installer + quit app |
 | `cancel-download` | renderer -> main | Cancel in-progress download |
 | `open-release-notes` | renderer -> main | Open release notes URL in browser |
+| `schedule-install-on-restart` | renderer -> main | Persist a pending install for the next launch |
+| `cancel-install-on-restart` | renderer -> main | Remove the pending install marker |
+| `get-pending-install` | renderer -> main | Read any pending install marker |
 | `update-available` | main -> renderer | New version available |
 | `update-not-available` | main -> renderer | Already up to date |
-| `update-progress` | main -> renderer | Download progress (bytes, percent) |
+| `update-progress` | main -> renderer | Download progress (`percent`, `transferred`, `total`) |
 | `update-downloaded` | main -> renderer | Download complete, ready to install |
 | `update-error` | main -> renderer | Error during check or download |
 
 ## 🔢 Version Comparison
 
-Uses semver with pre-release suffix stripping. The updater fetches `https://api.github.com/repos/Sandeepv68/EncodeX/releases/latest`, parses the tag as semver, and compares against `app.getVersion()`.
+The updater fetches `https://api.github.com/repos/Sandeepv68/EncodeX/releases/latest`, parses the tag as semver, and compares against `app.getVersion()`. Comparison follows semver precedence: the numeric core first, then pre-release identifiers dot-by-dot (numeric identifiers compare numerically and rank lower than alphanumeric ones; the longer identifier set wins when all preceding identifiers match). A leading `v` and any `+build` metadata are stripped, and build metadata is ignored entirely, so `1.0.0+build.7` equals `1.0.0`.
+
+## ⏱️ Network & Integrity
+
+- **Check timeout:** `API_TIMEOUT_MS = 15_000` aborts a GitHub API request that never finishes.
+- **Download idle timeout:** `DOWNLOAD_IDLE_TIMEOUT_MS = 60_000` aborts the download after 60 seconds without data. It is deliberately an idle timeout, not a total-duration cap, so large installers can finish.
+- **Digest verification:** when GitHub publishes an asset `digest`, the download is hashed and compared before the installer is offered. Only `sha256` and `sha512` payloads are accepted.
 
 ## 🎯 Asset Selection
 

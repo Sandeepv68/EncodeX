@@ -51,40 +51,48 @@ EncodeX es la interfaz gráfica gratuita y de código abierto de FFmpeg que llev
 
 ¿Quieres que un asistente de IA haga el trabajo? EncodeX también incluye un **servidor MCP** integrado, para que herramientas como Claude Desktop, Cursor, VS Code y agentes personalizados puedan convertir y gestionar tus archivos multimedia por ti mediante el [Model Context Protocol](https://modelcontextprotocol.io) — sin salir de tu propia máquina.
 
+La conversión se ejecuta **en tu propio equipo** — sin cuentas, sin subidas de medios, sin marcas de agua, sin suscripciones. El asistente Copilot solo contacta con un proveedor de IA en la nube si tú lo configuras.
+
 ## ¿Por qué EncodeX?
 
 - ✅ **Gratis para siempre** — código abierto (MIT), sin nivel de pago
-- ✅ **100 % privado** — tus archivos nunca salen de tu máquina
-- ✅ **Sin cuenta, sin registro, sin rastreo**
+- ✅ **Conversión local** — los medios se procesan en tu equipo
+- ✅ **Sin cuenta, sin registro**
+- ✅ **Telemetría de exclusión voluntaria** — activada por defecto; se puede desactivar en Ajustes con la opción «Datos de uso e informes de errores»
 - ✅ **Sin marcas de agua, sin límites de tamaño de archivo, sin anuncios**
 - ✅ **Potenciado por FFmpeg** — 51 códecs de vídeo, 27 códecs de audio, 56 formatos de píxel
 - ✅ **Aceleración por hardware** — NVIDIA, Intel, AMD, Apple Silicon para codificaciones rápidas
 - ✅ **Procesamiento por lotes** — convierte carpetas completas a la vez
 - ✅ **Servidor MCP listo para IA** — usa EncodeX desde Claude, Cursor, VS Code y agentes personalizados
-- ✅ **Multiplataforma** — Windows 10+, macOS 11+, Linux
-- ✅ **35+ idiomas** con soporte RTL
+- ✅ **Multiplataforma** — Windows, macOS y Linux (x64 y arm64)
+- ✅ **56 configuraciones regionales** con soporte RTL
 
 ## ✨ Características
 
 - **🔄 Conversión multimedia** — 51 códecs de vídeo, 27 códecs de audio, 56 formatos de píxel con controles de códec/bitrate/escala/calidad
-- **🌀 Rotación y espejo** — Rota vídeos e imágenes 90°, 180° o 270° en el sentido de las agujas del reloj y reflejalos horizontal o verticalmente; en el modo de copia de flujo para MP4/MOV/MKV, la rotación se guarda como metadatos sin pérdida de calidad
-- **🎛️ Perfiles de conversión** — más de 140 preconfiguraciones en 8 categorías (YouTube, Instagram, TikTok, Apple, Android, ProRes, HLS y más) con creación de perfiles personalizados y seguimiento de uso reciente
+- **🌀 Rotación y espejo** — Rota vídeos e imágenes 90°, 180° o 270° en el sentido de las agujas del reloj y reflejalos horizontal o verticalmente; en el modo de copia de flujo, las salidas MP4/MOV/MKV guardan la rotación como metadatos sin pérdida de calidad
+- **🎛️ Perfiles de conversión** — 115 preconfiguraciones en 8 categorías (YouTube, Instagram, TikTok, Apple, Android, ProRes, HLS y más) con creación de perfiles personalizados y seguimiento de uso reciente
 - **⚡ Aceleración por hardware** — NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, Media Foundation
 - **✂️ Corte de vídeo** — Recorte con precisión de fotograma gracias a un reproductor integrado (conductos rawvideo + PCM, Canvas + Web Audio) y una línea de tiempo ampliable (onda de forma + montaje de miniaturas)
-- **📋 Cola por lotes** — Procesamiento en paralelo (hasta 4 tareas simultáneas) con progreso en tiempo real, errores por tarea, pausa/reanudación, reordenamiento por arrastrar y soltar, edición de opciones de tarea, filtros por estado, exportación/importación JSON y acciones de energía al terminar (apagado/suspensión/hibernación)
+- **🤖 Copilot** — página de asistente IA (`/copilot`) con 13 operaciones; el proveedor de IA es `rules` (sin conexión, por defecto), OpenAI, Anthropic, Gemini o un modelo local
+- **🎞️ Remux y Demux** — cambia de contenedor con copia de flujo, añade subtítulos, audio, carátula o capítulos, o extrae flujos individuales
+- **🎛️ Filtros de vídeo** — 8 preajustes de filtro (recorte, tasa de fotogramas, desentrelazado, reducción de ruido, nitidez, color, escala de grises, desenfoque) más cadenas de filtros personalizadas
+- **🧭 Primeros pasos** — tarjeta del panel con seis objetivos: Preguntar a Copilot, Convertir, Comprimir, Extraer audio, Recortar y Remux
+- **📜 Términos y condiciones** — un diálogo de términos en el primer inicio bloquea la aplicación
+- **📋 Cola por lotes** — Procesamiento en paralelo (hasta 4 tareas simultáneas, 1 por defecto) con progreso en tiempo real, errores por tarea, pausa/reanudación, reordenamiento por arrastrar y soltar, edición de opciones de tarea, filtros por estado, exportación/importación JSON y acciones de energía al terminar (apagado/suspensión/hibernación)
 - **🖼️ Compresión de imágenes** — JPEG/PNG/WebP/BMP/GIF/TIFF con calidad/escala, visor EXIF, histogramas RGB/luma
 - **🎵 Extracción de audio** — Cualquiera de los 27 códecs de audio a partir de cualquier archivo de vídeo
 - **ℹ️ Información multimedia** — Sondeo completo por flujo: códec, perfil, resolución, metadatos de color, frecuencia de fotogramas, etc.
-- **⌨️ Modo CLI** — Scripting sin interfaz gráfica con subcomandos (`convert`, `info`, `capabilities`, `compress`, `extract-audio`, `batch`)
-- **🤖 Servidor MCP** — servidor [Model Context Protocol](https://modelcontextprotocol.io) integrado: 13 herramientas principales, 3 recursos y 4 prompts mediante stdio (`encodex --mcp`), además de un endpoint HTTP local integrado que añade 6 herramientas de paridad con la GUI (cola en vivo, vista previa, línea de tiempo, información del sistema, actualizaciones). Ejecuta conversiones puntuales o gestiona trabajos asíncronos desde Claude Desktop, Claude Code, Cursor, VS Code o cualquier cliente MCP
+- **⌨️ Modo CLI** — Scripting sin interfaz gráfica con subcomandos (`convert`, `info`, `capabilities`, `compress`, `extract-audio`, `remux`, `demux`, `batch`)
+- **🤖 Servidor MCP** — servidor [Model Context Protocol](https://modelcontextprotocol.io) integrado: 36 herramientas visibles para el modelo, 3 recursos y 4 prompts mediante stdio (`encodex --mcp`), además de un endpoint HTTP local opcional (desactivado por defecto) que añade 6 herramientas de paridad con la GUI (cola en vivo, vista previa, línea de tiempo, información del sistema, actualizaciones) para un total de 42 herramientas visibles para el modelo. Ejecuta conversiones puntuales o gestiona trabajos asíncronos desde Claude Desktop, Claude Code, Cursor, VS Code o cualquier cliente MCP
 - **⚙️ 3 núcleos de transcodificación** — API de FFmpeg (fluent-ffmpeg), CLI de FFmpeg (child_process), plataforma BMF
-- **🌍 56 configuraciones regionales** — 35 idiomas con soporte RTL (árabe, hebreo)
-- **⌨️ Atajos de teclado** — Más de 60 atajos en todas las páginas con un diálogo de ayuda integrado (`Ctrl+/`)
+- **🌍 56 configuraciones regionales** — con soporte RTL (árabe, hebreo)
+- **⌨️ Atajos de teclado** — 82 atajos en 11 secciones de ayuda, con un diálogo de ayuda integrado (`Ctrl+/`)
 - **🔔 Blips de actividad** — Indicadores de navegación en vivo con ventanas emergentes al pasar el cursor que muestran el progreso de cada tarea de un vistazo
 - **🛡️ Confirmación de cierre** — Advierte antes de cerrar la ventana mientras haya tareas en ejecución
 - **🎉 Huevos de pascua** — Logotipos temáticos de la aplicación en fechas especiales
-- **🔄 Actualizaciones integradas** — Comprueba las versiones de GitHub Releases, descarga el instalador de la plataforma, progreso en tiempo real
-- **🛡️ Manejo de errores** — 16 códigos de error tipados, snackbar global, banners integrados, limites de error de React
+- **🔄 Actualizaciones integradas** — Comprueba las versiones de GitHub Releases, descarga el instalador de la plataforma cuando lo solicites (nunca se instala automáticamente), progreso en tiempo real
+- **🛡️ Manejo de errores** — 28 códigos de error tipados, snackbar global, banners integrados, limites de error de React
 - **🌗 Tema oscuro/claro** — Consciente del sistema con conmutador manual y preferencias persistentes
 
 Consulta [Referencia de características](./features-reference.md) para conocer el desglose completo de las características, los formatos compatibles y las listas de códecs.
@@ -132,7 +140,7 @@ Consulta [Referencia de características](./features-reference.md) para conocer 
 ## 📌 Requisitos previos
 
 - [Node.js](https://nodejs.org/) 22+
-- [FFmpeg](https://ffmpeg.org/) — incluido a través de `ffmpeg-static`; recurre al `ffmpeg` del sistema si el binario incluido no está disponible
+- [FFmpeg](https://ffmpeg.org/) — incluido a través de `ffmpeg-static` y `ffprobe-static` (binarios precompilados); recurre al `ffmpeg` del sistema si el binario incluido no está disponible
 
 ## 📥 Descargas
 
@@ -207,8 +215,8 @@ npm run dist
 | `npm run start`          | Ejecuta la aplicación compilada desde `dist/` mediante `electron .` |
 | `npm run electron:dev`   | Entorno de desarrollo de Vite + Electron                     |
 | `npm run dev:start`      | Compila y luego ejecuta                                      |
-| `npm run format`         | `prettier --write` sobre todo el TypeScript/JSON de `src`    |
-| `npm run format:check`   | `prettier --check` sobre todo el TypeScript/JSON de `src`    |
+| `npm run format`         | `prettier --write` sobre TypeScript/JS en `src`, `e2e`, `perf`, `scripts`, `bin` y la raíz |
+| `npm run format:check`   | `prettier --check` sobre los mismos patrones                 |
 | `npm run pack`           | Compila + electron-builder `--dir`                           |
 | `npm run dist`           | Compila + electron-builder (NSIS/DMG/AppImage)               |
 
@@ -232,7 +240,7 @@ Consulta [Uso de la CLI](./cli.md) para conocer todos los subcomandos, opciones 
 ## 🧪 Pruebas
 
 ```bash
-npm test           # Ejecuta los 123 archivos de prueba / 1603 pruebas
+npm test           # Ejecuta las pruebas unitarias (314 archivos de prueba/spec en src/)
 npm run test:watch
 npm run test:coverage
 npm run test:unit
@@ -248,7 +256,7 @@ Consulta [Pruebas](./testing.md) para conocer el desglose completo de la suite d
 | --------- | ----------- |
 | [Referencia de características](./features-reference.md) | Características, formatos multimedia compatibles, tablas de códecs, utilidades de validación |
 | [Uso de la CLI](./cli.md) | Uso de la CLI, subcomandos, tablas de todas las opciones, códigos de salida |
-| [Servidor MCP](./mcp.md) | Catálogo de herramientas del servidor MCP, configuraciones de cliente, servidor HTTP integrado, seguridad |
+| [Servidor MCP](../MCP.md) | Catálogo de herramientas del servidor MCP, configuraciones de cliente, servidor HTTP integrado, seguridad |
 | [Pruebas](./testing.md) | Suite de pruebas, configuración de las pruebas, especificaciones E2E |
 | [Canales IPC](./ipc.md) | Canales IPC, puente electronAPI, todos los métodos y eventos |
 | [Estructura del proyecto](./project-structure.md) | Árbol de directorios completo con anotaciones |

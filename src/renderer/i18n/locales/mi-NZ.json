@@ -57,7 +57,9 @@
       "convert": "Hurihia tētahi ataata",
       "compress": "Kōmitimiti tētahi kōnae",
       "extract": "Tangohia te oro",
-      "trim": "Whakatote tētahi topenga"
+      "trim": "Whakatote tētahi topenga",
+      "remux": "Remux te kōnae",
+      "copilot": "Pātai ki a Copilot"
     }
   },
   "closeConfirm": {
@@ -814,10 +816,20 @@
   },
   "about": {
     "title": "Mō EncodeX",
-    "subtitle": "He kete taputapu maha-kārienatia utu kore, puna tuwhera hoki i hangaia ki runga i te FFmpeg. Hurihia, tirohia, whakakōmitimiti, tangohia, tapahia, ā, tukatukahia ōpaki ngā ororongo, kiriata me ngā whakaahua — katoa i te wāhi kotahi.",
-    "description": "He kete taputapu maha-kārienatia a EncodeX e kawe ana i te mana o FFmpeg ki tētahi atanga papamahi hou, māmā hoki. Hurihia ngā ororongo, kiriata me ngā whakaahua i waenga i ngā hōputu me te mana tino pai ki runga i ngā codec, reiti-bit, taumira, hōputu pika me te kounga; kapehia ngā hukihuki kāore e ngaro te kounga mō te remux hohoro; tangohia ngā ororongo i te kiriata; ā, tapahia te kiriata me tētahi pūrere tirohi-houkura tika-tonu ki te āputa. Ka tautokona te whakawaehere whakatere-pūtoro i runga i te NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox me Microsoft Media Foundation, me ngā whānau whakawaehere e wātea ana e kitea āunoa ana i te FFmpeg binary i tāpiritia i te wā mahi. Ka rere ngā mahi ōpaki i tētahi tūtira pūmau me te ahunga whakamua wā-tūturu, ā, ka whakaatu te aratau CLI matakore i ngā pūkenga ōrite mō te tuhituhi hōtuhi me te aunoatanga.",
+    "subtitle": "He kete taputapu mātāmuri kore utu, tuwhera-puna, i hangaia ki runga i te FFmpeg. Whakarerekētia, whakahāngaitia, tangohia, tapahia, me te tukatuka i te oro, te ataata me ngā whakaahua i te rōpū kotahi, ā, whakahaerea te pūkaha ōrite mai i te CLI, te kaiwhakarato MCP, te kaiāwhina AI Copilot rānei.",
+    "description": "Ko EncodeX he kete taputapu mātāmuri hono-rorohiko-maha e kawe ana i te kaha o te FFmpeg ki tētahi atanga papatohu hou, māmā hoki te whakamahi. Whakarerekētia te oro, te ataata me ngā whakaahua me te whakahaere taipitopito mō ngā kōdeke, te reiti moka, te rahinga, te whakatakotoranga pika, me te kounga; tuhia ngā ara kāore he ngaronga; huri me te whakaata i ngā mātāmuri; whakamahia ngā tātari ataata; me te tapahi ataata me tētahi kaitākaro arokite e tika ana ki te anga. Ka whakatakoto ngā kōnae whakarerekē i ngā whāainga noa i te pāwhiri kotahi, ā, ka taea e koe te tiaki i ō anō. Ko te whakawaehere whakatere-taputapu e tautoko ana i te NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox me Microsoft Media Foundation, ā, ka kitea aunoa ngā whānau whakawaehere mai i te FFmpeg kua whakauruhia i te wā e oma ana. Ka oma te rārangi rōpū i ngā mahi ā-rōpū me te ahunga ora, te tiaki āhuatanga, me te kawemai me te kawe atu. I tua atu i te GUI, ka taea e te CLI kore-atanga, te kaiwhakarato MCP motuhake me te whakauru, me te kaiāwhina AI Copilot te whakahaere i tērā pūkaha mātāmuri anō.",
     "logoAlt": "Pīni EncodeX",
     "featuresTitle": "He aha āu mahi",
+    "featureConvert": "Whakarerekētia te ataata, te oro me ngā whakaahua me te whakahaere taipitopito mō ngā kōdeke, te reiti moka, te rahinga me te kounga, me te huri me ngā tātari",
+    "featureRemux": "Remux, demux rānei i ngā awa kāore he ngaronga, ā, tāpirihia he kuputaka, ngā ara oro atu, ngā uhi me ngā upoko",
+    "featureMediaInfo": "Tirohia ngā kōdeke, awa, tae me ngā raraunga whakaahua mō tētahi kōnae mātāmuri",
+    "featureImage": "Whakahāngaitia ngā whakaahua me te whakahaere i te kounga me te rahinga, me ngā raraunga EXIF me ngā hitokarāma",
+    "featureAudio": "Tangohia ngā ara oro mai i te ataata ki AAC, MP3, FLAC, Opus me ētahi atu hōputu",
+    "featureCut": "Tapahia te ataata ki te anga tika i runga i te wā me ngā whakaahua iti me te hanga ngaru",
+    "featureProfiles": "Timata mai i ngā kōnae whakarerekē kua whakauruhia, tiakina rānei ō anō",
+    "featureBatch": "Whakahaerea ngā mahi rōpū ā-taha me te aukati, te whakarārangi anō, te kawemai me te kawe atu, me te mahi pūngao ina oti",
+    "featureHardware": "Whakamahia ngā kaiwhakawaehere GPU pēnei i te NVENC, Quick Sync, AMF, VAAPI me VideoToolbox, ka kitea aunoa",
+    "featureAutomation": "Whakaahuatia he whāinga ki te kaiāwhina AI Copilot, ā, tuhia he tuhinga mō EncodeX mā te CLI me te kaiwhakarato MCP",
     "version": "Putanga",
     "builtWith": "Hangaia ki te",
     "authorTitle": "Kaituhi me ngā urupare",

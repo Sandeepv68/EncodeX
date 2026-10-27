@@ -37,7 +37,7 @@ EncodeX ist auf jedem wichtigen Desktop-Betriebssystem verfügbar:
 
 - **Alles bleibt auf Ihrem Computer** – keine Uploads, keine Konten
 - **Keine Wasserzeichen** und **keine versteckten Paywalls** – für immer kostenlos und Open Source
-- **Hardwarebeschleunigt**, wo möglich, für schnelle Konvertierungen
+- **Schnelle Konvertierungen** — wählen Sie einen Codec und eine Bitrate, die zu Ihren Anforderungen passen
 
 ## Häufig gestellte Fragen
 

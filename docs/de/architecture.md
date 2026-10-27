@@ -31,7 +31,7 @@ Die vollständige Architektur ist in fokussierte Dokumente aufgeteilt:
 | [Funktionsreferenz](/de/docs/features-reference) | Funktionen, unterstützte Medienformate, Codec-Tabellen, Validierungs-Utilities |
 | [CLI-Nutzung](/de/docs/cli) | CLI-Nutzung, Subcommands, alle Optionstabellen |
 | [IPC-Kanäle](/de/docs/ipc) | IPC-Kanäle (Request/Send-only/Events), electronAPI-Brücke |
-| [Tests](/de/docs/testing) | Testsuite (123 Dateien, 1603 Tests), Test-Setup, E2E-Specs |
+| [Tests](/de/docs/testing) | Testsuite (314 Test-/Spezifikationsdateien unter `src/`, 39 E2E-Test-/Spezifikationsdateien, 11 Perf-Suites), Test-Setup, E2E-Specs |
 | [Projektstruktur](/de/docs/project-structure) | Vollständiger Verzeichnisbaum mit Annotationen |
 | [Update-Manager](/de/docs/update-manager) | Implementierung des integrierten Update-Managers |
 

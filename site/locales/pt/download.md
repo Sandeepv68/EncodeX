@@ -23,7 +23,7 @@ Não sabe qual escolher? Vá no recomendado — se não for compatível, o Windo
 
 ### Outras plataformas
 
-[macOS](#mac) · [Linux](#linux) · [Windows ARM64](#windows) · [Windows 32 bits](#windows)
+[macOS](#mac) · [Linux](#linux) · [Windows ARM64](#windows) · [Windows 64 bits](#windows)
 
 ## <OsIcon name="apple" /> Mac
 

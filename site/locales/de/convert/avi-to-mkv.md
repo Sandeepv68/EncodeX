@@ -19,9 +19,9 @@ Häufige Gründe für **AVI zu MKV**:
 - Ihre AVI-Dateien sind zu groß – MKV kann moderne, viel kleinere Codecs speichern
 - Sie möchten Video in einem **flexiblen, zukunftssicheren Format archivieren**
 
-## AVI zu MKV ohne Qualitätsverlust konvertieren
+## AVI zu MKV in hoher Qualität konvertieren
 
-EncodeX kümmert sich um Codecs, Auflösung und Bitrate und komprimiert Ihr **AVI in ein modernes MKV** bei hoher Qualität:
+EncodeX kümmert sich um Codecs, Auflösung und Bitrate und konvertiert Ihr **AVI in ein modernes MKV** bei hoher Qualität:
 
 1. [EncodeX kostenlos herunterladen](/de/download)
 2. Ihre **.avi**-Datei auf das Fenster ziehen
@@ -38,7 +38,7 @@ MP4 ist ebenfalls ein großartiges Ziel, wenn Sie maximale Kompatibilität brauc
 
 ## Häufig gestellte Fragen
 
-**Geht bei der Konvertierung von AVI zu MKV Qualität verloren?** Nein. EncodeX hält Ihre Videoqualität hoch, während die Datei in einen modernen MKV-Container komprimiert wird.
+**Geht bei der Konvertierung von AVI zu MKV Qualität verloren?** EncodeX re-encodiert das Video mit Einstellungen, die die Qualität hoch halten. Ein verlustfreier Stream-Copy ist nur möglich, wenn die Quell-Codecs in den MKV-Container passen.
 
 **Warum AVI zu MKV statt zu MP4 konvertieren?** MKV ist ein flexiblerer Container, der Untertitel, unbegrenzte Audiospuren und Kapitel unterstützt – ideal für Archivierung und Medienserver. MP4 ist für maximale Gerätekompatibilität besser geeignet.
 

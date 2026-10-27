@@ -14,8 +14,8 @@ Os usuários do Linux recebem exatamente o que esperam de uma ferramenta gratuit
 
 - **Versão AppImage** — roda na maioria das distribuições sem instaladores
 - **Código aberto (MIT)** — inspecione o código ou compile você mesmo
-- **Aceleração por hardware VAAPI** — codificações rápidas com GPUs da AMD, Intel e NVIDIA
-- **CLI sem interface gráfica** — programe conversões para servidores e automação
+- **Aceleração por hardware VAAPI** — codificações rápidas nas GPUs da AMD e Intel; GPUs NVIDIA usam NVENC
+- **CLI** — programe conversões e automação
 - **Offline e privado** — seus vídeos nunca saem da sua máquina
 
 ### O que você pode fazer com EncodeX no Linux?
@@ -37,9 +37,9 @@ chmod +x EncodeX.AppImage
 
 ## Perguntas frequentes
 
-**EncodeX suporta Wayland?** Sim, o aplicativo roda tanto em sessões X11 quanto Wayland.
+**Qual build do Linux está disponível?** Um AppImage que roda na maioria das distribuições Linux modernas.
 
-**Posso usar EncodeX em um servidor Linux sem interface gráfica?** Sim — EncodeX inclui um [modo CLI](/pt/cli) para programar conversões sem desktop.
+**Posso programar conversões no Linux?** Sim — EncodeX inclui um [modo CLI](/pt/cli) para automação.
 
 **EncodeX para Linux é realmente gratuito?** Sim — 100 % gratuito, código aberto (MIT), sem anúncios, sem contas.
 

@@ -130,7 +130,7 @@ node dist/mcp/index.js
 npx electron . --mcp
 ```
 
-stdout ist für MCP-JSON-RPC-Nachrichten reserviert; alle Status- und Logging-Ausgaben werden nach stderr umgeleitet, und der Prozess bleibt aktiv, bis stdin geschlossen wird. Der Server stellt 19 Werkzeuge, 3 Ressourcen und 4 Prompts bereit — den vollständigen Katalog finden Sie in der [Funktionsreferenz](/de/docs/features-reference#mcp-server).
+stdout ist für MCP-JSON-RPC-Nachrichten reserviert; alle Status- und Logging-Ausgaben werden nach stderr umgeleitet, und der Prozess bleibt aktiv, bis stdin geschlossen wird. Der stdio-Server stellt 36 modellsichtbare Tools (37 Registrierungen, einschließlich des app-exklusiven `commit_operation`) mit 3 Ressourcen und 4 Prompts bereit; die eingebettete HTTP-Oberfläche fügt 6 GUI-äquivalente Tools für insgesamt 42 modellsichtbare Tools (43 Registrierungen) hinzu — den vollständigen Katalog finden Sie in der [Funktionsreferenz](/de/docs/features-reference#mcp-server).
 
 | Option  | Beschreibung                                            |
 | ------- | ------------------------------------------------------- |

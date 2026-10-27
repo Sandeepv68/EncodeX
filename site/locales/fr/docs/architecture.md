@@ -31,7 +31,7 @@ L'architecture complète est divisée en documents ciblés :
 | [Référence des fonctionnalités](/fr/docs/features-reference) | Fonctionnalités, formats média pris en charge, tables de codecs, utilitaires de validation |
 | [Utilisation CLI](/fr/docs/cli) | Utilisation CLI, sous-commandes, toutes les tables d'options |
 | [Canaux IPC](/fr/docs/ipc) | Canaux IPC (requête/envoi seul/événements), pont electronAPI |
-| [Tests](/fr/docs/testing) | Suite de tests (123 fichiers, 1603 tests), configuration des tests, specs E2E |
+| [Tests](/fr/docs/testing) | Suite de tests (314 fichiers de test/spec sous `src/`, 39 sous `e2e/`, 11 suites de performance), configuration des tests, specs E2E |
 | [Structure du projet](/fr/docs/project-structure) | Arborescence complète annotée |
 | [Gestionnaire de mises à jour](/fr/docs/update-manager) | Implémentation du gestionnaire de mises à jour intégré |
 

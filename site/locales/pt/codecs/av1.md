@@ -1,4 +1,4 @@
----
+﻿---
 title: "Codificador AV1 e conversor de vídeo — melhor qualidade, arquivos menores | EncodeX"
 description: "Converta vídeo para AV1 com o EncodeX, um conversor de vídeo AV1 gratuito para Windows, Mac e Linux. O codec mais eficiente para os menores arquivos com ótima qualidade."
 ogImage: "https://encodex.in/images/home_dashboard.webp"
@@ -12,7 +12,7 @@ ogImage: "https://encodex.in/images/home_dashboard.webp"
 
 O AV1 é o codec do futuro, já usado por YouTube, Netflix e navegadores:
 
-- **Melhor compactação** — até ~30% menor que H.265 em qualidade igual
+- **Melhor compactação** — projetado para arquivos menores que o H.265 com qualidade semelhante, dependendo do conteúdo
 - **Livre de royalties** e padrão aberto
 - **À prova de futuro** — suportado por navegadores modernos e dispositivos recentes
 - **Ideal para arquivamento e vídeo web** onde o tamanho mais importa

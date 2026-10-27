@@ -12,7 +12,7 @@ Les utilisateurs Linux méritent aussi une excellente **interface FFmpeg**. **En
 EncodeX offre aux utilisateurs Linux une **interface FFmpeg** complète avec la même expérience propre sur toutes les plateformes :
 
 - **Convertissez** la vidéo et l'audio — MP4, MKV, AVI, MOV, WebM, MP3, FLAC, WAV et plus
-- **Compressez** des vidéos pour réduire la taille tout en gardant la qualité
+- **Compressez** des vidéos pour réduire la taille, avec le contrôle de la qualité
 - **Coupez** des clips avec une timeline visuelle
 - **Extrayez** l'audio d'une vidéo et enregistrez-le en MP3
 - **Traitez par lots** des dossiers automatiquement

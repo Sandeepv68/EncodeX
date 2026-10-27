@@ -20,19 +20,19 @@ C'est un excellent logiciel. Mais il n'est pas pour tout le monde — c'est pour
 | -------------- | -------------------------------- | ---------------------------- |
 | **Prix**       | Gratuit pour toujours, open source (MIT) | Gratuit, open source (GPL)   |
 | **Basé sur FFmpeg** | Oui                           | Oui                          |
-| **Préréglages** | 140+ dans 8 catégories          | Bon ensemble, principalement basé sur les fichiers |
+| **Préréglages** | 115 dans 8 catégories          | Bon ensemble, principalement basé sur les fichiers |
 | **Encodage matériel** | NVENC, QSV, AMF, VAAPI, VideoToolbox | Partiel                |
-| **File d'attente par lots** | File parallèle complète (4 tâches) | File, séquentielle      |
+| **File d'attente par lots** | File parallèle (jusqu'à 4 tâches) | File, séquentielle      |
 | **Extraction audio** | Un clic, 27 codecs             | Limitée                      |
 | **Compression d'images** | JPEG/PNG/WebP…               | Pas vraiment                 |
 | **Découpe par lots** | Précision par images avec frise chronologique | Découpe vidéo uniquement |
-| **Mode CLI**    | Oui — commandes lisibles         | Linode/CLI limitée           |
+| **Mode CLI**    | Oui — commandes lisibles         | HandBrakeCLI limitée         |
 | **Plateformes** | Windows, macOS, Linux            | Windows, macOS, Linux        |
 | **Téléchargements** | Aucun — 100% hors ligne        | Aucun — 100% hors ligne      |
 
 ## Comment cette comparaison a été faite
 
-Nous avons comparé les capacités que chaque outil propose réellement aujourd'hui — disposition de l'interface, profondeur des préréglages, prise en charge de l'encodage matériel, comportement du lot et outils supplémentaires — à l'aide de la documentation actuelle et des notes de version de chaque produit. Nous n'affirmons que ce que nous pouvons vérifier : tout ce qui est marqué « partiel » ou « limité » signifie que la fonction existe mais avec des réserves (par exemple, l'encodage matériel de HandBrake varie selon la plateforme et la version, et son CLI est documenté séparément de l'application graphique). Si une ligne se répète dans plusieurs outils plus bas, la même vérification s'applique.
+Cette comparaison repose sur la documentation publiée et les notes de version de chaque produit au moment de la rédaction ; les fonctions peuvent varier selon la version et la plateforme. Tout ce qui est marqué « partiel » ou « limité » signifie que la fonction existe mais avec des réserves (par exemple, l'encodage matériel de HandBrake varie selon la plateforme et la version, et son CLI est documenté séparément de l'application graphique).
 
 ## EncodeX vs HandBrake vs FFmpeg CLI vs Shutter Encoder
 
@@ -41,9 +41,9 @@ Nous avons comparé les capacités que chaque outil propose réellement aujourd'
 | **Interface**          | GUI + CLI    | GUI (+ CLI)  | CLI uniquement | GUI           |
 | **Basé sur FFmpeg**    | Oui          | Oui          | Est FFmpeg    | Oui             |
 | **Gratuit et open source** | Oui (MIT) | Oui (GPL)    | Oui (GPL)    | Oui (licence propriétaire) |
-| **Préréglages par tâche** | Plus de 140 | Ensembles par fichier | Scripts uniquement | Basée sur bibliothèques |
+| **Préréglages par tâche** | 115 profils | Ensembles par fichier | Scripts uniquement | Basée sur bibliothèques |
 | **Encodage matériel**  | NVENC, QSV, AMF, VAAPI, VideoToolbox | Partiel (varie selon la plateforme) | Via flags (configuration manuelle) | NVENC et autres |
-| **Lot en parallèle**   | Oui (4 travaux) | Séquentiel  | Via scripts   | Oui             |
+| **Lot en parallèle**   | Oui (jusqu'à 4) | Séquentiel  | Via scripts   | Oui             |
 | **Compression d'images** | Oui (JPEG/PNG/WebP) | Non   | Via flags      | Oui             |
 | **Extraction audio**   | Un clic (27 codecs) | Limitée | Via flags | Oui             |
 | **100% hors ligne**    | Oui          | Oui          | Oui           | Oui             |
@@ -53,8 +53,9 @@ En bref : **HandBrake** est le meilleur outil open source de rip de disques, **F
 ## Pourquoi passer à EncodeX ?
 
 - **Une courbe d'apprentissage plus douce** — l'interface est basée sur les tâches ("Convertir", "Compresser", "Couper"), pas sur les codecs
-- **Plus de formats et de codecs** — 51 vidéo, 27 audio, 56 formats de pixels
+- **Large prise en charge des formats et codecs** — 51 vidéo, 27 audio, 56 formats de pixels
 - **Meilleur support des lots** — jusqu'à 4 tâches en parallèle avec pause/reprise et tri par glisser-déposer
+- **Copilot intégré** — 13 opérations couvrant conversion, remux, démux, extraction, compression, découpe et analyse média, avec un moteur de règles hors ligne par défaut et des fournisseurs OpenAI, Anthropic, Gemini ou locaux en option
 - **Conçu pour macOS** — build natif Apple Silicon avec VideoToolbox
 - **Communauté active et conviviale** — nous sommes open source et en constante amélioration
 

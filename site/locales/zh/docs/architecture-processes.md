@@ -15,6 +15,7 @@ Node.js 环境。拥有应用生命周期和所有特权能力：
 - 提取波形和缩略图拼图（`timeline/timeline-media.ts`）。
 - 读取 EXIF 数据、直方图、图像尺寸和预览（`image-*.ts`、`video-preview.ts`）。
 - 将 renderer 的 `console` 输出桥接到日志系统（`index.ts` 中的 `patchConsole`）。
+- 运行 Copilot 规划流水线和 AI provider 连接器（`ai/`）、使用分析（`analytics/`）、错误监控（`monitoring/`）、安全策略（`security/`）以及内嵌 MCP 服务器（`mcp/`）。
 
 ### Preload 脚本（`src/preload/index.ts`）
 
@@ -26,7 +27,7 @@ Node.js 环境。拥有应用生命周期和所有特权能力：
 
 ### 共享层（`src/shared/`）
 
-纯 TypeScript，被三个进程共同导入。包含 IPC 通道注册表、领域类型、错误系统、logger、常量、编解码器列表、验证辅助函数和日志消息常量。由于 `package.json` 未使用独立的包边界，该目录通过各进程根目录的相对导入来引用。
+纯 TypeScript，被三个进程共同导入。包含 IPC 通道注册表、领域类型、错误系统、logger、常量、编解码器列表、验证辅助函数、日志消息常量、Copilot/AI 契约（`ai/`、`copilot.ts`）、视频滤镜目录（`video-filters.ts`）、remux 工具和审计日志契约（`audit.ts`）。由于 `package.json` 未使用独立的包边界，该目录通过各进程根目录的相对导入来引用。
 
 ## 构建系统
 
@@ -53,7 +54,7 @@ Electron-builder 为 Windows（NSIS）、macOS（DMG）和 Linux（AppImage）�
 ## 启动序列
 
 1. `main/index.ts` 运行。它在 `isCliMode()` 中检查 `process.argv`。
-2. **CLI 模式**（显式 `--cli`/`--help`，或 >=2 个位置参数）：不注册任何窗口。在 `app.whenReady()` 时调用 `runCli()` 并以 `SUCCESS` 或 `ERROR` 码退出。
+2. **CLI 模式**（显式 `--cli`/`-h`/`--help`、任一子命令或别名，或 >=2 个位置参数）：不注册任何窗口。在 `app.whenReady()` 时调用 `runCli()` 并以 `SUCCESS` 或 `ERROR` 码退出。
 3. **GUI 模式**：启用 `autoplay-policy` 开关，创建非交互式 splash 窗口（立即显示），然后是无边框主窗口（`show: false`）。
 4. `registerIpcHandlers(mainWindow)` 接线所有 IPC 模块；`patchConsole` 替换 `console.*`，使主进程日志通过 `log-message` 通道转发到 renderer。
 5. 主窗口在 `ready-to-show` 时显示，此时 splash 被关闭。
@@ -63,10 +64,10 @@ Electron-builder 为 Windows（NSIS）、macOS（DMG）和 Linux（AppImage）�
 
 `src/main/cli/cli.ts` 使用带子命令的 **commander**。当 `runCli()` 执行时：
 
-1. 遗留 shim 将扁平用法（`encodex in.mp4 out.mp4` -> `convert`，`encodex --info in.mp4` -> `info`）映射到匹配的子命令。
+1. CLI 模式激活后，遗留 shim 将扁平用法（`encodex in.mp4 out.mp4` -> `convert`，`encodex --info in.mp4` -> `info`）映射到匹配的子命令。（仅一个位置参数的 `encodex --info in.mp4` 会打开 GUI，除非同时传入 `--cli`。）
 2. 每个子命令解析自己的选项加上共享全局选项（`--transcoder`、`--theme`、`--verbose`、`--quiet`、`--no-color`、`--json`、`--timeout`）。
 3. `info`/`capabilities` 默认打印人类可读表格，加 `--json` 则输出 JSON。
-4. `convert`/`compress`/`extract-audio`/`batch` 构建 `ConversionOptions` 对象并调用 `transcoder.convert(...)`（batch 用内存中的 `JobQueue` 配合 `MultiBar` 驱动）。
+4. `convert`/`compress`/`extract-audio`/`remux`/`demux`/`batch` 构建 `ConversionOptions` 对象并调用 `transcoder.convert(...)`；remux 和 demux 会先构建经过验证的流计划，batch 用内存中的 `JobQueue` 配合 `MultiBar` 驱动。
 5. 进度输出到 `stdout`（带看门狗超时），状态/成功行遵循 `--json`/`--quiet`/`--verbose` 路由，进程通过 `mapCliErrorToExitCode` 退出（usage=2，取消=3，未找到=4，超时=5，成功=0）。
 
 CLI 复用与 GUI 完全相同的 transcoder 管道 — 无需维护单独的编码路径。
@@ -82,4 +83,4 @@ CLI 复用与 GUI 完全相同的 transcoder 管道 — 无需维护单独的编
 - **`transcoder-constants.ts` / `hwaccel-settings.ts`** — FFmpeg flag、默认值、进度模式和硬件加速设置。
 - **`media-options.ts` / `codec-containers.ts` / `codec-classification.ts`** — 经过整理的 51 种视频编解码器、27 种音频编解码器、56 种像素格式列表、容器兼容性规则和编解码器族辅助函数。
 - **`validation.ts`** — 用于时间/比例/比特率/范围验证的纯函数，renderer 表单和 CLI 都会用到。
-- **`logger.ts` / `log-constants.ts`** — 带时间戳的 logger 加上约 406 个共享日志消息模板，确保日志在各进程间保持一致。
+- **`logger.ts` / `log-constants.ts`** — 带时间戳的 logger 加上527 个共享日志消息模板，确保日志在各进程间保持一致。

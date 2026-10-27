@@ -44,25 +44,25 @@ Coverage reports are generated in `coverage/`:
 
 ## ✅ Test Suite
 
-The suite is run by Vitest 4 across **168 test/spec files** in `src/`. Coverage uses the v8 provider.
+The suite is run by Vitest 4 across **314 test/spec files** in `src/`. Coverage uses the v8 provider.
 
 | Area | What's Covered |
 | ---- | -------------- |
-| **Shared (14 files)** | Error normalization, constants, codec/container mapping, validation, types, logger, IPC channel registry, estimation, progress, math |
-| **Main (53 files)** | CLI entry, window lifecycle, encoder probing, queue semantics, process utilities, media binary resolution, power actions, preview cache, image/video preview generation, cli-logo |
-| **Main CLI** | CLI subcommand parsing, option handling, conversion/compress subcommands, utility functions, integration tests |
-| **Main IPC (13 files)** | Per-channel IPC handlers, event broadcasting, error wrapping, system handlers, dev screenshot |
+| **Shared (53 files)** | Error normalization, constants, codec/container mapping, validation, types, logger, IPC channel registry, estimation, progress, math, AI/copilot contracts, video filters, remux utilities, audit |
+| **Main (88 files)** | CLI entry, window lifecycle, encoder probing, queue semantics, process utilities, media binary resolution, power actions, preview cache, image/video preview generation, cli-logo, AI providers, analytics |
+| **Main CLI** | CLI subcommand parsing, option handling, conversion/compress/remux/demux subcommands, utility functions, integration tests |
+| **Main IPC (16 files)** | Per-channel IPC handlers, event broadcasting, error wrapping, system handlers, Copilot/AI/analytics/update, dev screenshot |
 | **Main transcoders** | All three cores, hardware-acceleration flag building, ffprobe mapping, factory dispatch, transcoder interface contract |
 | **Main player / queue / timeline** | Rawvideo frame decoding, audio pipe, buffering, queue transfer, waveform extraction, thumbnail montage generation |
 | **Main MCP (3 files)** | HTTP server (integration), GUI-parity tools, settings persistence |
 | **Monitoring (9 files)** | MonitoringService facade, noop provider, logger bridge, Sentry providers (main + renderer), provider factories, consent + IPC bridge |
-| **Standalone MCP (5 files)** | Server wiring, all 13 operations, conversion-options mapping, job manager, stdio integration test |
-| **Preload** | Full `electronAPI` bridge surface, every IPC method |
-| **Renderer components (39 files)** | Rendering, interactions, error states, accessibility for all shared UI components |
-| **Renderer hooks (6 files)** | Conversion orchestration, error handling, form validation, media task lifecycle, RTL direction, keyboard shortcuts |
-| **Renderer pages (10 files)** | Full page flows: form state, validation, IPC invocation, settings persistence, about/update |
-| **Renderer stores (15 files)** | Zustand store state transitions and persistence, terms gate, batch config, profiles, dismissed alerts |
-| **Renderer constants / utils (15 files)** | Formatting helpers, preview cache, easter egg dates, queue reorder logic, string/security/storage utils, shortcuts registry |
+| **Standalone MCP (27 files)** | Server wiring, the full tool catalogue (37 registrations), conversion-options mapping, job manager, safety/validation, STT/translation, stdio integration |
+| **Preload (3 files)** | Full `electronAPI` bridge surface, every IPC method |
+| **Renderer components (44 files)** | Rendering, interactions, error states, accessibility for all shared UI components |
+| **Renderer hooks (9 files)** | Conversion orchestration, error handling, form validation, media task lifecycle, RTL direction, keyboard shortcuts, AI connection |
+| **Renderer pages (14 files)** | Full page flows: form state, validation, IPC invocation, settings persistence, Copilot, Remux/Demux, about/update |
+| **Renderer stores (22 files)** | Zustand store state transitions and persistence, terms gate, batch config, profiles, dismissed alerts, AI/audit/remux/demux |
+| **Renderer constants / utils (20 files)** | Formatting helpers, preview cache, easter egg dates, queue reorder logic, string/security/storage utils, shortcuts registry |
 | **Renderer monitoring** | Renderer Sentry provider + factory selection |
 | **Renderer app / misc** | App shell routing, color palette, session cleanup, terms debug spec |
 | **Integration** | Full pipeline: Error → `formatError` → store → display → clear; terms gate bootstrap; MCP stdio round-trip |
@@ -72,7 +72,7 @@ The suite is run by Vitest 4 across **168 test/spec files** in `src/`. Coverage 
 The test environment (`src/test-setup.ts`) provides:
 
 - Mocked `useTranslation` from `react-i18next` with English key mapping and interpolation
-- Mocked `electronAPI` on `globalThis` covering all IPC methods (including monitoring, MCP settings, and terms)
+- Mocked `electronAPI` on `globalThis` covering all IPC methods (including monitoring, analytics, MCP settings, AI settings, updates, and terms)
 - Registers `@testing-library/jest-dom/vitest` matchers
 
 ## 🌐 E2E Tests
@@ -94,10 +94,36 @@ Playwright-based end-to-end tests live in `e2e/` (node environment, 60s timeouts
 | `e2e/specs/profiles.spec.ts` | Conversion profiles: built-in catalogue, category navigation, profile application, custom profile create/edit/persist |
 | `e2e/specs/terms-gate.spec.ts` | Terms & Conditions gate: first-run dialog, accept persists, reject quits |
 | `e2e/specs/real-convert.spec.ts` | Tier B (real): actual FFmpeg conversion without mocks (gated behind `E2E_REAL=1`) |
+| `e2e/specs/about.spec.ts` | About page: version, update check, links |
+| `e2e/specs/a11y.spec.ts` | Accessibility checks across pages |
+| `e2e/specs/boot-budget.spec.ts` | Startup performance budget |
+| `e2e/specs/cli-hostile.spec.ts` | CLI handling of hostile/oversized input |
+| `e2e/specs/copilot.spec.ts` | Copilot: chat, plan review, provider gating |
+| `e2e/specs/copilot-saved-chats.spec.ts` | Saved Copilot chat persistence |
+| `e2e/specs/dashboard.spec.ts` | Dashboard tiles and getting-started card |
+| `e2e/specs/error-states.spec.ts` | Error snackbar, banner, and boundary states |
+| `e2e/specs/focus-order.spec.ts` | Keyboard focus order across the shell |
+| `e2e/specs/harness-recovery.spec.ts` | Test harness recovery from crashes |
+| `e2e/specs/hostile-bridge.spec.ts` | Hostile preload/IPC bridge inputs |
+| `e2e/specs/ipc-abuse.spec.ts` | IPC input validation and abuse cases |
+| `e2e/specs/ipc-events.spec.ts` | Event payload guards and coalescing |
+| `e2e/specs/keyboard-shortcuts.spec.ts` | Shortcut registry and help dialog |
+| `e2e/specs/language.spec.ts` | Locale switching and RTL layout |
+| `e2e/specs/navigation-drawer.spec.ts` | Drawer navigation and active-route state |
+| `e2e/specs/remux-demux-filters.spec.ts` | Remux/Demux pages and video filter presets |
+| `e2e/specs/settings-ai.spec.ts` | AI provider settings and connection test |
+| `e2e/specs/settings-mcp.spec.ts` | Embedded MCP server settings |
+| `e2e/fixtures/__tests__/boot-budget.test.ts` | Unit tests for boot-budget helper math |
+| `e2e/mcp/stdio.spec.ts` | stdio handshake and tool catalogue |
+| `e2e/mcp/http-standalone.spec.ts` | Standalone HTTP transport and auth |
+| `e2e/mcp/embedded-gui.spec.ts` | Embedded HTTP server with GUI-parity tools |
+| `e2e/mcp/mcp-apps.spec.ts` | MCP Apps UI bridge and approval flow |
+| `e2e/mcp/vscode-client.spec.ts` | VS Code MCP client configuration |
+| `e2e/mcp/vscode-ui.spec.ts` | VS Code UI integration |
 
 ## 🚀 Performance Benchmarks
 
-`perf/` holds nine benchmark suites run with their own Vitest config (`npm run perf`, split into three phases):
+`perf/` holds the benchmark suites run with their own Vitest config (`npm run perf`, split into three phases):
 
 | Suite | What's Measured |
 | ----- | --------------- |
@@ -110,12 +136,15 @@ Playwright-based end-to-end tests live in `e2e/` (node environment, 60s timeouts
 | `ipc-overhead` | IPC round-trip latency |
 | `cli-batch` | CLI batch command throughput |
 | `extraction` | Waveform/thumbnail extraction cost |
+| `phase8-io` | I/O pipeline benchmarks |
+| `phase8-queue` | Queue pipeline benchmarks |
+| `job-card-render` | Job card render cost |
 
 Fixtures are generated with `npm run perf:generate-media` (`perf/fixtures/generate-media.cjs`).
 
 ## 🧪 MCP Smoke Tests
 
-The MCP server has two headless smoke scripts that verify the stdio handshake, the 13-tool catalogue, and a live `ping`:
+The MCP server has two headless smoke scripts that verify the stdio handshake, the 37-registration catalogue (36 model-visible plus the app-only `commit_operation`), and a live `ping`:
 
 ```bash
 npm run build:main

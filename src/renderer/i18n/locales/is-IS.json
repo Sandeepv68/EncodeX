@@ -57,7 +57,9 @@
       "convert": "Umbreyta myndbandi",
       "compress": "Þjappa skrá",
       "extract": "Sækja hljóð",
-      "trim": "Klippa bút"
+      "trim": "Klippa bút",
+      "remux": "Endurpakka skrá",
+      "copilot": "Spyrja Copilot"
     }
   },
   "closeConfirm": {
@@ -814,10 +816,20 @@
   },
   "about": {
     "title": "Um EncodeX",
-    "subtitle": "Frítt og opið margmiðlunarverkfærasett byggt á FFmpeg. Breyttu, skoðaðu, þjappaðu, dregðu út, klipptu og keyrðu hljóð, myndbönd og myndir í hópum — allt á einum stað.",
-    "description": "EncodeX er þverpalla margmiðlunarverkfærasett sem færir kraft FFmpeg í nútímalegt og leiðandi skjáborðsviðmót. Breyttu hljóði, myndbandi og myndum á milli sniða með nákvæmri stjórn á codec-tækni, bithraða, upplausn, pixlasniði og gæðum; afritaðu lög tapslaust fyrir samstundis remuxun; dregðu hljóð út úr myndbandi; og klipptu myndband með rammanákvæmum forskoðunarspilara. Vélbúnaðarhraðaðri kóðun er stutt í NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox og Microsoft Media Foundation, með sjálfvirkri greiningu á tiltækum kóðunarfjölskyldum úr meðfylgjandi FFmpeg-skrá við keyrslu. Hópverk keyra í gegnum varanlegan biðraða með rauntímaframvindu og headless-CLI-hamur opnar sömu möguleika fyrir skriftur og sjálfvirkni.",
+    "subtitle": "Ókeypis og opið fjölmiðlaverkfærasett byggt á FFmpeg. Umbreyttu, þjappaðu, dragðu út, klipptu og vinndu úr hljóði, myndböndum og myndum í hópum, eða stýrðu sömu vél frá CLI, MCP-þjóni eða gervigreindaraðstoðarmanninum Copilot.",
+    "description": "EncodeX er fjölpalla fjölmiðlaverkfærasett sem færir kraft FFmpeg í nútímalegt skjáborðsviðmót. Umbreyttu hljóði, myndböndum og myndum með nákvæmri stjórn á kóðekum, bitahraða, upplausn, pixlasniði og gæðum; afritaðu rásir án taps; snúðu og speglaðu miðla; beittu myndsíum; og klipptu myndbönd með forskoðunarspilara sem er nákvæmur niður á ramma. Umbreytingarsnið stilla algeng markmið með einum smelli og þú getur vistað þín eigin snið. Vélbúnaðarhraðaður kóðun styður NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox og Microsoft Media Foundation, og kóðunarfjölskyldur greinast sjálfkrafa úr meðfylgjandi FFmpeg við keyrslu. Hópröðin keyrir verkefni samhliða með rauntímaframvindu, vistaðri stöðu og innflutningi og útflutningi. Auk GUI gera skjálaus CLI, sjálfstæður og innbyggður MCP-þjónn og gervigreindaraðstoðarmaðurinn Copilot skriftum og aðstoðarmönnum kleift að stýra sömu fjölmiðlavél.",
     "logoAlt": "EncodeX-lógó",
     "featuresTitle": "Hvað þú getur gert",
+    "featureConvert": "Umbreyttu myndböndum, hljóði og myndum með nákvæmri stjórn á kóðekum, bitahraða, upplausn og gæðum, ásamt snúningi og síum",
+    "featureRemux": "Endurpakkaðu eða afpakkaðu straumum án taps og bættu við texta, aukarásum fyrir hljóð, kápumyndum og köflum",
+    "featureMediaInfo": "Skoðaðu kóðeka, strauma, lit og lýsigögn fyrir hvaða margmiðlunarskrá sem er",
+    "featureImage": "Þjappaðu myndum með stjórn á gæðum og upplausn, ásamt EXIF-gögnum og súluritum",
+    "featureAudio": "Dragðu hljóðrásir úr myndbandi á AAC, MP3, FLAC, Opus og öðrum sniðum",
+    "featureCut": "Klipptu myndbönd nákvæmlega á ramma á tímalínu með smámyndum og bylgjulögun",
+    "featureProfiles": "Byrjaðu á innbyggðum umbreytingarsniðum eða vistaðu þín eigin",
+    "featureBatch": "Keyrðu hópverkefni samhliða með hléi, endurröðun, innflutningi og útflutningi og rafmagnsaðgerð þegar þau klárast",
+    "featureHardware": "Notaðu GPU-kóðara eins og NVENC, Quick Sync, AMF, VAAPI og VideoToolbox sem finnast sjálfkrafa",
+    "featureAutomation": "Lýstu markmiði fyrir gervigreindaraðstoðarmanninn Copilot, eða skrifaðu skriftur fyrir EncodeX í gegnum CLI og MCP-þjón",
     "version": "Útgáfa",
     "builtWith": "Búið til með",
     "authorTitle": "Höfundur og endurgjöf",

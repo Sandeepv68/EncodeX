@@ -17,11 +17,11 @@ Rotate videos and images by 90°, 180°, or 270° clockwise and mirror them (hor
 Choose from 115 built-in conversion presets organized into 8 categories to instantly configure codec, bitrate, quality, resolution, and container settings — no manual tweaking required. Categories include:
 
 - **Web & Social** — optimized presets for YouTube, Instagram, TikTok, Facebook, and X (Twitter)
-- **Devices** — Apple (iPhone, iPad, Mac, Apple TV), Android, gaming consoles (PlayStation, Xbox, Nintendo Switch)
+- **Devices** — Apple (iPhone, iPad, Apple TV), Android, gaming consoles (PlayStation, Xbox, Nintendo Switch)
 - **Video Codecs** — codec-specific presets (H.264, H.265/HEVC, VP8, VP9, AV1, ProRes, DNxHD/HR, FFV1, and more)
-- **Professional** — broadcast and post-production formats (ProRes 422/4444, DNxHD/HR, XDCAM, XAVC)
+- **Professional** — broadcast and post-production formats (ProRes 422/4444, DNxHD/HR)
 - **Streaming** — HLS and DASH adaptive streaming presets
-- **Audio** — audio-only presets (MP3, AAC, FLAC, Opus, WAV) with configurable bitrate and sample rate
+- **Audio** — audio-only presets (MP3, AAC, FLAC, Opus, WAV) with configurable bitrate
 - **Images** — image conversion presets for JPEG, PNG, WebP, and AVIF with quality controls
 - **Advanced** — raw FFmpeg argument presets and custom FFmpeg passthrough for power users
 
@@ -45,6 +45,15 @@ Advanced and professional profiles can include raw FFmpeg `extraArgs` and `input
 
 Stream-copy video or audio tracks without re-encoding (`-c copy`). Useful for fast container format changes, remuxing, or when quality preservation is critical.
 
+### Remux & Demux
+
+- **Remux** — change the container while stream-copying the selected tracks. You can add external subtitle and audio tracks, embed cover art, import or drop chapters, and apply sync offsets without re-encoding. The one exception is a video filter chain, which forces a re-encode of the video stream.
+- **Demux** — split a file into per-stream outputs (video, audio, subtitles), with optional per-kind conversion: re-encode video into another container, re-encode audio with a chosen encoder, or convert text subtitles to another format. Stream-copied video targets ignore video filters and report a warning.
+
+### Video Filters
+
+Apply up to 8 curated filter presets or a custom FFmpeg filter chain (200 characters per entry) during conversion. The presets are crop, framerate, deinterlace, denoise, sharpen, color, grayscale, and blur; custom `videoFilters` expressions run after scale and rotation. Filters require re-encoding and cannot be combined with stream copy.
+
 ### Hardware Acceleration
 
 Hardware-accelerated encoding with auto-detection of available encoder families. Supports NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, and Microsoft Media Foundation encoders. Acceleration can be toggled, with a mode selector — `auto` adds the matching FFmpeg `-hwaccel` flags for the selected hardware encoder family, `encode` relies on the encoder's own acceleration — and an encoder-type filter (`auto` / `hardware` / `software`) that narrows the video codec picker to all, GPU-only, or CPU-only encoders. Available encoders are probed from the bundled FFmpeg binary at runtime and the codec pickers are filtered to what the binary actually provides.
@@ -67,9 +76,9 @@ Preview and cut video segments with frame-accurate start/end time or duration se
 
 ### Batch Queue
 
-Process multiple files with configurable operations (transcode, extract audio, compress image). Jobs are added through a review dialog where output names and options can be adjusted before they enter the queue.
+Process multiple files with five configurable operations (transcode, extract audio, compress image, remux, demux). Jobs are added through a review dialog where output names and options can be adjusted before they enter the queue.
 
-- **Parallel processing** — run up to 4 jobs concurrently (`MAX_QUEUE_CONCURRENCY = 4`); the concurrency cap is configurable at runtime and persisted.
+- **Parallel processing** — run up to 4 jobs concurrently (`MAX_QUEUE_CONCURRENCY = 4`); the GUI default is 1, and the concurrency cap is configurable at runtime (1-4) and persisted.
 - **Queue lifecycle** — start, pause, and resume the whole queue; cancel all; clear completed/failed jobs; remove individual jobs.
 - **Reordering** — drag-and-drop reordering of queued jobs (with a drop area), backed by a `QUEUE_MOVE_TO` channel that reports the job's new position.
 - **Job editing** — replace the options (and optionally the output path) of any queued job before it starts (`QUEUE_UPDATE_OPTIONS`).
@@ -86,32 +95,38 @@ Process multiple files with configurable operations (transcode, extract audio, c
 - **FFmpeg CLI** — direct CLI invocation via child process, no native bindings needed
 - **BMF Framework** — BMF CLI tools for advanced pipeline scenarios (requires separate installation)
 
+### Copilot (AI Assistant)
+
+The Copilot page turns a goal into a reviewable plan and can run it against the same media engine. It supports 13 operations: six queue-backed actions (convert, remux, demux, extract audio, compress image, cut) and seven read-only intelligence actions (analyze, transcribe, summarize, chapters, search transcript, translate, find similar).
+
+AI providers are rules (the deterministic offline router and default), OpenAI, Anthropic, Gemini, and a local model runtime. OpenAI, Anthropic, and Gemini require an API key; the local provider runs on-device. Every plan is a proposal — nothing is queued until you confirm it.
+
 ### MCP Server
 
-EncodeX ships a full [Model Context Protocol](https://modelcontextprotocol.io) server so AI assistants and custom agents can drive the same media engine. Two launch modes share one catalogue:
+EncodeX ships a full [Model Context Protocol](https://modelcontextprotocol.io) server so AI assistants and custom agents can drive the same media engine. Two launch modes share one tool catalogue:
 
-- **Standalone (stdio)** — `encodex --mcp` or `node dist/mcp/index.js`: 13 core tools (convert, extract, compress, cut, batch, info, capabilities, profiles, jobs).
-- **Embedded (Streamable HTTP)** — toggle in **Settings → MCP Server**: the 13 core tools + 6 GUI-parity tools (live queue state, preview, timeline, system info, updates) = **19** total, bound to `127.0.0.1:8765/mcp` by default with optional bearertoken auth.
+- **Standalone (stdio)** — `encodex --mcp` or `node dist/mcp/index.js`: 36 model-visible tools (37 registrations including the app-only `commit_operation`).
+- **Embedded (Streamable HTTP)** — toggle in **Settings → MCP Server**: the 37 registrations + 6 GUI-parity tools (live queue state, preview, timeline, system info, updates) = **43** total (42 model-visible), bound to `127.0.0.1:8765/mcp` by default with optional bearer-token auth.
 
 See the [[MCP]] page for the full tool catalogue, client configuration, and security model.
 
 ### Settings
 
-Dedicated settings page for theme, hardware acceleration (enable/disable, mode, encoder type), window always-on-top, launch-at-login, batch queue concurrency, the when-done power action, the embedded MCP server (enable, port, token), and error-reporting consent. Preferences persist and take effect on startup.
+Dedicated settings page for theme, hardware acceleration (enable/disable, mode, encoder type), window always-on-top, launch-at-login, batch queue concurrency, the when-done power action, the embedded MCP server (enable, port, token), the AI provider, and the usage data & error reporting toggle. Preferences persist and take effect on startup.
 
 ### Keyboard Shortcuts
 
-A central shortcut registry (`src/renderer/constants/shortcuts.ts`) defines 60+ shortcuts across nine sections (global, convert, media info, image compress, audio extract, video cut, batch queue, logs, dashboard). Highlights:
+A central shortcut registry (`src/renderer/constants/shortcuts.ts`) defines 82 shortcuts across 11 sections (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). Highlights:
 
 - `Ctrl+/` — open the shortcuts help dialog
-- `Alt+1`…`Alt+9` — jump directly to a page
+- `Alt+0`…`Alt+9` — jump directly to a page (Remux is `Alt+0`)
 - `Ctrl+O` / `Ctrl+Shift+S` / `Ctrl+Enter` — pick input / pick output / start the job (consistent across pages)
 - `Ctrl+Shift+P` / `Ctrl+Shift+C` — pause / cancel the active job
 - `Ctrl+Alt+T` — toggle the theme
 - Batch queue: `Ctrl+E` export, `Ctrl+I` import, `1`–`5` status filters, `F` focus search
 - Logs: `Ctrl+L` clear, `Ctrl+Shift+D` download
 - Video cut player: `Space` play/pause, `M` mute, arrow keys to seek, `U` duration toggle, `A` include audio
-- Dashboard: number keys `1`–`6` jump straight to the tools
+- Dashboard: number keys `1`–`8` jump straight to the tools
 
 Chords are matched by `event.code`, so they work independently of keyboard layout. Tooltips derive their hint text from the same registry.
 
@@ -129,7 +144,7 @@ On first launch (and whenever the terms version changes), a Terms & Conditions d
 
 ### Dashboard
 
-A landing page with quick-action tiles for every tool (number keys `1`–`6` jump straight to them) and seasonal easter-egg branding (see below).
+A landing page with quick-action tiles for every tool (number keys `1`–`8` jump straight to them) and seasonal easter-egg branding (see below).
 
 ### Easter Eggs
 
@@ -165,7 +180,7 @@ Provider-agnostic, categorical-only usage analytics (first adapter: Aptabase) dr
 
 ### Internationalization
 
-56 locales across 35 languages:
+56 locales (36 distinct base language subtags):
 
 | Language    | Locales                                    |
 | ----------- | ------------------------------------------ |
@@ -207,7 +222,7 @@ Provider-agnostic, categorical-only usage analytics (first adapter: Aptabase) dr
 
 ### In-App Updates
 
-Custom update manager that checks GitHub Releases for new versions, notifies the user of availability, downloads the platform-specific installer (`.exe` / `.dmg` / `.AppImage`) in-app with real-time progress reporting, and launches the installer on completion. Version comparison uses semver with pre-release suffix stripping. The update flow is fully integrated into the About page with a "Check for Updates" button and a global dialog.
+Custom update manager that checks GitHub Releases for new versions, notifies the user of availability, downloads the platform-specific installer (`.exe` / `.dmg` / `.AppImage`) in-app with real-time progress reporting, and installs it when the user chooses (or schedules it for the next restart). When GitHub publishes an asset digest, the download is verified against its SHA-256 or SHA-512 value; there is no signature verification. Version comparison follows semver precedence: the numeric core, then pre-release identifiers (numeric lower than alphanumeric, longer set wins), with build metadata ignored. The update flow is fully integrated into the About page with a "Check for Updates" button and a global dialog.
 
 ### Error Handling
 

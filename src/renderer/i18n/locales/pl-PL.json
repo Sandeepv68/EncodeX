@@ -57,7 +57,9 @@
       "convert": "Konwertuj wideo",
       "compress": "Skompresuj plik",
       "extract": "Wyciągnij audio",
-      "trim": "Przytnij klip"
+      "trim": "Przytnij klip",
+      "remux": "Remuxuj plik",
+      "copilot": "Zapytaj Copilot"
     }
   },
   "closeConfirm": {
@@ -814,10 +816,20 @@
   },
   "about": {
     "title": "O EncodeX",
-    "subtitle": "Darmowy zestaw narzędzi multimedialnych o otwartym kodzie źródłowym, zbudowany na FFmpeg. Konwertuj, sprawdzaj, kompresuj, wyodrębniaj, tnij i przetwarzaj partiami audio, wideo i obrazy — wszystko w jednym miejscu.",
-    "description": "EncodeX to wieloplatformowy zestaw narzędzi multimedialnych, który przenosi moc FFmpeg do nowoczesnego, intuicyjnego interfejsu graficznego. Konwertuj audio, wideo i obrazy między formatami z precyzyjną kontrolą kodeków, przepływności, rozdzielczości, formatu pikseli i jakości; kopiuj ścieżki bezstratnie, aby natychmiast przeprowadzić remuxing; wyodrębniaj audio z wideo; oraz tnij wideo z odtwarzaczem podglądu precyzyjnym co do klatki. Enkodowanie przyspieszane sprzętowo jest obsługiwane na NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox i Microsoft Media Foundation, a dostępne rodziny enkoderów są automatycznie wykrywane z dołączonego pliku FFmpeg w czasie działania. Zadania wsadowe działają przez trwałą kolejkę z postępem w czasie rzeczywistym, a tryb CLI bez interfejsu udostępnia te same możliwości do skryptów i automatyzacji.",
+    "subtitle": "Darmowy zestaw narzędzi multimedialnych o otwartym kodzie, oparty na FFmpeg. Konwertuj, kompresuj, wyodrębniaj, przycinaj i przetwarzaj wsadowo dźwięk, wideo i obrazy albo steruj tym samym silnikiem z wiersza poleceń, serwera MCP lub asystenta AI Copilot.",
+    "description": "EncodeX to wieloplatformowy zestaw narzędzi multimedialnych, który udostępnia możliwości FFmpeg w nowoczesnym, intuicyjnym interfejsie desktopowym. Konwertuj dźwięk, wideo i obrazy z precyzyjną kontrolą kodeków, bitrate'u, rozdzielczości, formatu pikseli i jakości; kopiuj ścieżki bez strat; obracaj i odbijaj media; stosuj filtry wideo; oraz przycinaj nagrania za pomocą odtwarzacza podglądu dokładnego co do klatki. Profile konwersji ustawiają typowe cele jednym kliknięciem, a własne profile można zapisać. Kodowanie z akceleracją sprzętową obsługuje NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox i Microsoft Media Foundation, a rodziny koderów są wykrywane automatycznie w dołączonym FFmpeg podczas działania. Kolejka wsadowa wykonuje zadania równolegle z podglądem postępu na żywo, zapisywaniem stanu oraz importem i eksportem. Oprócz interfejsu graficznego bezgłowy interfejs CLI, samodzielny i wbudowany serwer MCP oraz asystent AI Copilot pozwalają skryptom i asystentom sterować tym samym silnikiem multimediów.",
     "logoAlt": "Logo EncodeX",
     "featuresTitle": "Co możesz zrobić",
+    "featureConvert": "Konwertuj wideo, audio i obrazy z precyzyjną kontrolą kodeków, bitrate'u, rozdzielczości i jakości, a także obracaj i stosuj filtry",
+    "featureRemux": "Remuxuj lub demuksuj strumienie bez strat i dodawaj napisy, dodatkowe ścieżki audio, okładki i rozdziały",
+    "featureMediaInfo": "Sprawdzaj kodeki, strumienie, kolory i metadane dowolnego pliku multimedialnego",
+    "featureImage": "Kompresuj obrazy z kontrolą jakości i rozdzielczości, a także przeglądaj dane EXIF i histogramy",
+    "featureAudio": "Wyodrębniaj ścieżki audio z wideo w formatach AAC, MP3, FLAC, Opus i innych",
+    "featureCut": "Przycinaj wideo z dokładnością co do klatki na osi czasu z miniaturami i przebiegiem fali",
+    "featureProfiles": "Zacznij od wbudowanych profili konwersji lub zapisz własne",
+    "featureBatch": "Uruchamiaj zadania wsadowe równolegle z pauzą, zmianą kolejności, importem i eksportem oraz akcją zasilania po zakończeniu",
+    "featureHardware": "Korzystaj z koderów GPU, takich jak NVENC, Quick Sync, AMF, VAAPI i VideoToolbox, wykrywanych automatycznie",
+    "featureAutomation": "Opisz cel asystentowi AI Copilot lub pisz skrypty dla EncodeX przez CLI i serwer MCP",
     "version": "Wersja",
     "builtWith": "Zbudowane z",
     "authorTitle": "Autor i opinie",

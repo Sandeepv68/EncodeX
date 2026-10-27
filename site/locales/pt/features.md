@@ -12,7 +12,7 @@ O EncodeX é um aplicativo gratuito para o seu computador que resolve problemas 
 - **Cortar um vídeo** deixando só a parte que interessa
 - **Diminuir o tamanho das fotos** para enviar e subir com facilidade
 
-Funciona no Windows, Mac e Linux, é totalmente grátis e fala mais de 35 idiomas.
+Funciona no Windows, Mac e Linux, é totalmente grátis e fala mais de 56 idiomas.
 
 ---
 
@@ -86,7 +86,7 @@ Há duas formas de conectar:
 - **Servidor stdio autônomo** — execute `encodex --mcp` (ou `node dist/mcp/index.js`). Ideal para apps de IA de desktop que iniciam um servidor sob demanda.
 - **Servidor localhost integrado** — ative-o em **Configurações → MCP Server** com a GUI em execução e aponte os clientes para `http://127.0.0.1:8765/mcp`. Esse modo adiciona ferramentas de fila ao vivo, prévia, linha do tempo, sistema e atualizações sobre o mesmo núcleo.
 
-Em ambos os modos, o servidor expõe **19 ferramentas**, **3 recursos** (perfis, capacidades, codecs) e **4 modelos de prompt** (converter vídeo, extrair áudio, comprimir imagem, converter em lote). As conversões rodam de forma assíncrona, então um assistente pode iniciar uma tarefa longa e voltar depois para ver o resultado.
+Em ambos os modos, o servidor expõe **36 ferramentas**, **3 recursos** (perfis, capacidades, codecs) e **4 modelos de prompt** (converter vídeo, extrair áudio, comprimir imagem, converter em lote). As conversões rodam de forma assíncrona, então um assistente pode iniciar uma tarefa longa e voltar depois para ver o resultado.
 
 ### Privado e seguro por design
 
@@ -110,7 +110,7 @@ Na maioria dos computadores modernos, o EncodeX usa automaticamente o chip gráf
 ## Do jeito que você gosta
 
 - **Modo claro ou escuro** — segue o sistema ou muda manualmente
-- **Mais de 35 idiomas** — português, espanhol, hindi, chinês, japonês, árabe e hebraico (com interface da direita para a esquerda)
+- **Mais de 56 idiomas** — português, espanhol, hindi, chinês, japonês, árabe e hebraico (com interface da direita para a esquerda)
 - **Atalhos de teclado** — para quem prefere não usar o mouse
 - **Sempre atualizado** — o EncodeX avisa sobre versões novas e instala por você
 

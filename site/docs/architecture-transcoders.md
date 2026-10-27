@@ -7,7 +7,7 @@ description: "EncodeX transcoder interface: FfmpegCore, FFToolCore, BmfCore, har
 
 ## Transcoder Abstraction
 
-All media backends conform to `ITranscoder` (`src/main/transcoders/interface.ts`):
+All media backends conform to `ITranscoder` (`src/main/transcoders/types.ts`):
 
 ```ts
 export interface ITranscoder {

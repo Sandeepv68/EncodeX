@@ -4,7 +4,7 @@
 
 ### 渲染树
 
-全部十个页面都通过 `React.lazy` 进行代码分割，并在每页的 `ErrorBoundary` 下加载：
+全部十三个页面都通过 `React.lazy` 进行代码分割，并在每页的 `ErrorBoundary` 下加载：
 
 | 页面            | 路由           | 用途                                                           |
 | --------------- | -------------- | -------------------------------------------------------------- |
@@ -14,9 +14,12 @@
 | ImageCompress   | `/image-compress` | 图像压缩 + EXIF + 直方图                                     |
 | AudioExtract    | `/audio-extract` | 将音轨提取为 27 种编解码器中的任意一种                        |
 | VideoCut        | `/video-cut`   | 播放器 + 可缩放时间线 + 修剪                                    |
+| Remux           | `/remux`       | 流复制方式更改容器 + 添加流/章节                                 |
+| Demux           | `/demux`       | 按流提取，可选按类型转换                                         |
 | BatchQueue      | `/batch`       | 队列管理（添加/移除/全部取消）                                   |
+| Copilot         | `/copilot`     | 自然语言规划，可选 AI 提供方                                     |
 | Logs            | `/logs`        | 实时日志查看器，带级别过滤 + 下载                                |
-| Settings        | `/settings`    | 主题、hwaccel、窗口置顶                                         |
+| Settings        | `/settings`    | 主题、遥测、MCP 服务器、AI 提供方、hwaccel                       |
 | About           | `/about`       | 应用信息、致谢、"检查更新"按钮                                   |
 
 ### Hooks
@@ -40,9 +43,20 @@ Zustand store 位于 `src/renderer/stores/`：
 | `settingsStore`   | 设置 + `localStorage` 持久化（`encodex-theme` 等）                   |
 | `logStore`        | 聚合日志条目（上限 2000）、过滤状态、下载                            |
 | `toastStore`      | Toast 队列                                                          |
-| `updateStore`     | 更新生命周期状态（check, available, downloading, downloaded, error） |
+| `updateStore`     | 更新生命周期状态（check, available, downloading, downloaded, restart-scheduled, error） |
+| `remuxStore`      | Remux 计划（目标容器、添加的流、章节、封面、同步）               |
+| `demuxStore`      | Demux 流选择和按类型的转换选项                                   |
+| `copilotChats`    | 已保存的 Copilot 对话和计划历史                                  |
+| `aiSettingsStore` / `aiConnectionStore` | AI 提供方设置和连通性探测状态              |
+| `profileStore`    | 内置/自定义配置文件选择和最近使用的配置文件                       |
+| `termsStore`      | 条款与条件接受状态                                               |
+| `auditStore`      | 从主进程流式传入的变更操作审计条目                               |
 
 Store 是 UI 状态变更的唯一位置；组件通过 `useXStore(selector)` 订阅。
+
+## Copilot 与 AI
+
+Copilot 页面（`pages/Copilot.tsx`）会将针对文件和文件夹的自然语言目标转换为可供审阅的计划。计划支持 13 种操作：六种由队列支持（`convert`、`remux`、`demux`、`extract_audio`、`compress_image`、`cut`），以及七种只读的媒体智能操作（`analyze`、`transcribe`、`summarize`、`chapters`、`search_transcript`、`translate`、`find_similar`）。规划默认使用确定性的离线 `rules` 引擎，也可以选择 `openai`、`anthropic`、`gemini` 或 `local` 提供方。提交计划会复用批处理队列；只读结果保留在面板中。API 密钥会发送到主进程，加密后存储，且永远不会返回给 renderer——设置中只显示是否存在密钥以及脱敏提示。
 
 ## 批处理队列
 
@@ -93,7 +107,7 @@ renderer（`components/VideoTimeline.tsx`）将波形 + 拼图渲染为可缩放
 
 ## 错误处理
 
-错误系统（`src/shared/errors.ts`) 定义了 16 个类型化代码 — `FILE_NOT_FOUND`、`FFMPEG_NOT_FOUND`、`FFPROBE_NOT_FOUND`、`CONVERSION_FAILED`、`INVALID_FORMAT`、`PROBE_FAILED`、`QUEUE_ERROR`、`PLAYER_ERROR`、`CANCELLED`、`BMF_NOT_AVAILABLE`、`OUTPUT_NOT_SPECIFIED`、`INPUT_NOT_SPECIFIED`、`OUTPUT_EXISTS`、`INVALID_QUEUE_FILE`、`PERMISSION_DENIED`、`UNKNOWN` — 每个都有默认的用户可见消息。
+错误系统（`src/shared/errors.ts`）定义了 28 个类型化代码 — `FILE_NOT_FOUND`、`FFMPEG_NOT_FOUND`、`FFPROBE_NOT_FOUND`、`CONVERSION_FAILED`、`INVALID_FORMAT`、`PROBE_FAILED`、`QUEUE_ERROR`、`PLAYER_ERROR`、`CANCELLED`、`BMF_NOT_AVAILABLE`、`OUTPUT_NOT_SPECIFIED`、`INPUT_NOT_SPECIFIED`、`OUTPUT_EXISTS`、`INVALID_QUEUE_FILE`、`FILTERS_REQUIRE_RE_ENCODE`、`INVALID_VIDEO_FILTERS`、`STREAM_NOT_FOUND`、`INCOMPATIBLE_CONTAINER`、`AUXILIARY_INPUT_NOT_FOUND`、`PERMISSION_DENIED`、`OPERATION_TIMED_OUT`、`UNSAFE_ARGUMENTS`、`TRANSCRIPTION_UNAVAILABLE`、`TRANSLATION_UNAVAILABLE`、`AI_NOT_CONFIGURED`、`AI_CONNECTOR_FAILED`、`AI_RESPONSE_INVALID`、`UNKNOWN` — 每个都有默认的用户可见消息。
 
 流程始终相同：
 
@@ -119,7 +133,7 @@ Logs 页面（`pages/Logs.tsx`）聚合这两个来源，支持级别过滤（DE
 
 ## 国际化与 RTL
 
-- i18next 在 `renderer/i18n/config.ts` 中初始化，覆盖 35 种语言的 56 个 locale。
+- i18next 在 `renderer/i18n/config.ts` 中初始化，共 56 个 locale。
 - `DirectionProvider`（带 `stylis-plugin-rtl` 的 Emotion 缓存）为阿拉伯语和希伯来语 locale（`ar-SA`、`ar-AE`、`ar-JO`、`he-IL`）将布局切换为 RTL。
 - `useLanguageDirection` 检测当前 locale 的方向；应用方向由此推导，并在语言切换时自动切换。
 - `localeMeta.ts` 为 `LanguageMenu` 保存 locale 元数据和旗帜。
@@ -164,5 +178,5 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    A["About page"] --> B["updateStore.checkForUpdates"] --> C["electronAPI.checkForUpdates"] --> D7["updater.ts fetches GitHub Releases API"] --> E7["compares semver versions"] --> F7["send(update-available / update-not-available)"] --> G7["updateStore"] --> H7["UpdateDialog"] --> I7["downloadUpdate -> installer to temp dir"] --> J7["send(update-progress) -> progress bar"] --> K7["send(update-downloaded) -> Install + Restart button"] --> L7["installUpdate -> shell.openPath(installer) + app.quit()"]
+    A["About page"] --> B["updateStore.checkForUpdates"] --> C["electronAPI.checkForUpdates"] --> D7["updater.ts fetches GitHub Releases API"] --> E7["compares semver precedence incl. pre-release identifiers"] --> F7["send(update-available / update-not-available)"] --> G7["updateStore"] --> H7["UpdateDialog"] --> I7["downloadUpdate -> installer to temp dir, verify GitHub digest when present"] --> J7["send(update-progress) -> percent / transferred / total"] --> K7["send(update-downloaded) -> Install & Restart or Install on Restart"] --> L7["installUpdate -> shell.openPath(installer) + app.quit()"]
 ```

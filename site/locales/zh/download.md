@@ -23,7 +23,7 @@ EncodeX **免费且开源**，支持 Windows、Mac 和 Linux。一款开源 FFmp
 
 ### 其他平台
 
-[macOS](#mac) · [Linux](#linux) · [Windows ARM64](#windows) · [Windows 32 位](#windows)
+[macOS](#mac) · [Linux](#linux) · [Windows ARM64](#windows) · [Windows 64 位](#windows)
 
 ## <OsIcon name="apple" /> Mac
 

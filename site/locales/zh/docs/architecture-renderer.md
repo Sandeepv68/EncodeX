@@ -93,7 +93,7 @@ renderer（`components/VideoTimeline.tsx`）将波形 + 拼图渲染为可缩放
 
 ## 错误处理
 
-错误系统（`src/shared/errors.ts`) 定义了 16 个类型化代码 — `FILE_NOT_FOUND`、`FFMPEG_NOT_FOUND`、`FFPROBE_NOT_FOUND`、`CONVERSION_FAILED`、`INVALID_FORMAT`、`PROBE_FAILED`、`QUEUE_ERROR`、`PLAYER_ERROR`、`CANCELLED`、`BMF_NOT_AVAILABLE`、`OUTPUT_NOT_SPECIFIED`、`INPUT_NOT_SPECIFIED`、`OUTPUT_EXISTS`、`INVALID_QUEUE_FILE`、`PERMISSION_DENIED`、`UNKNOWN` — 每个都有默认的用户可见消息。
+错误系统（`src/shared/errors.ts`) 定义了 28 个类型化代码 — `FILE_NOT_FOUND`、`FFMPEG_NOT_FOUND`、`FFPROBE_NOT_FOUND`、`CONVERSION_FAILED`、`INVALID_FORMAT`、`PROBE_FAILED`、`QUEUE_ERROR`、`PLAYER_ERROR`、`CANCELLED`、`BMF_NOT_AVAILABLE`、`OUTPUT_NOT_SPECIFIED`、`INPUT_NOT_SPECIFIED`、`OUTPUT_EXISTS`、`INVALID_QUEUE_FILE`、`PERMISSION_DENIED`、`UNKNOWN` — 每个都有默认的用户可见消息。
 
 流程始终相同：
 
@@ -119,7 +119,7 @@ Logs 页面（`pages/Logs.tsx`）聚合这两个来源，支持级别过滤（DE
 
 ## 国际化与 RTL
 
-- i18next 在 `renderer/i18n/config.ts` 中初始化，覆盖 35 种语言的 56 个 locale。
+- i18next 在 `renderer/i18n/config.ts` 中初始化，覆盖 56 种语言的 56 个 locale。
 - `DirectionProvider`（带 `stylis-plugin-rtl` 的 Emotion 缓存）为阿拉伯语和希伯来语 locale（`ar-SA`、`ar-AE`、`ar-JO`、`he-IL`）将布局切换为 RTL。
 - `useLanguageDirection` 检测当前 locale 的方向；应用方向由此推导，并在语言切换时自动切换。
 - `localeMeta.ts` 为 `LanguageMenu` 保存 locale 元数据和旗帜。

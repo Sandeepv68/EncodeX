@@ -1,6 +1,6 @@
 ---
 title: "Conversor de WMV para MP4 – converta vídeos WMV gratuitamente | EncodeX"
-description: "Converta WMV em MP4 gratuitamente com o EncodeX. Um conversor rápido e offline de WMV para MP4 para Windows, Mac e Linux. Sem marca d'água, sem uploads, sem perda de qualidade."
+description: "Converta WMV em MP4 gratuitamente com o EncodeX. Um conversor rápido e offline de WMV para MP4 para Windows, Mac e Linux. Sem marca d'água, sem uploads."
 ogImage: "https://encodex.in/images/convert.webp"
 ---
 
@@ -19,7 +19,7 @@ Motivos comuns para converter **WMV para MP4**:
 - Você quer **editar** o vídeo em software que não lê WMV
 - Você quer um **arquivo menor** para compartilhar ou enviar por e-mail
 
-## Converta WMV para MP4 sem perder qualidade
+## Converta WMV para MP4 com alta qualidade
 
 O EncodeX converte seu **WMV para MP4** com limpeza, mantendo sua **qualidade de vídeo**:
 

@@ -4,7 +4,7 @@ EncodeX es gratuito y lo construyen voluntarios — y no necesitas saber program
 
 - **Cuéntanos cuando algo falle.** Si la app se cierra o un archivo no se convierte, [abre un issue](https://github.com/Sandeepv68/EncodeX/issues) y describe qué pasó. Los reportes de usuarios comunes son oro.
 - **Sugiere ideas.** ¿Quieres que EncodeX haga algo que aún no hace? Dínoslo — muchas funciones nacen de sugerencias de usuarios.
-- **Traduce.** EncodeX habla más de 35 idiomas, y los traductores siempre son bienvenidos. Si falta tu idioma o suena raro, puedes ayudar a arreglarlo.
+- **Traduce.** EncodeX incluye 56 configuraciones regionales, y los traductores siempre son bienvenidos. Si falta tu idioma o suena raro, puedes ayudar a arreglarlo.
 - **Corre la voz.** Comparte EncodeX con amigos, escribe una reseña o crea un tutorial.
 
 ## Ponte en contacto

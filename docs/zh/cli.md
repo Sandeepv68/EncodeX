@@ -1,6 +1,6 @@
 # CLI 用法
 
-先构建项目，然后通过 `encodex` 命令调用编译后的 CLI（`bin/encodex.js` 启动器包装了 Electron 二进制）。当提供两个位置参数（输入 + 输出）时 CLI 模式自动激活，也可用 `--cli` 显式启用：
+先构建项目，然后通过 `encodex` 命令调用编译后的 CLI（`bin/encodex.js` 启动器包装了 Electron 二进制）。CLI 模式可通过 `--cli`、`-h`/`--help` 或任意子命令/别名显式激活；提供至少两个非标志位置参数（输入 + 输出）时也会自动激活：
 
 ```bash
 # Convert a file (subcommand form)
@@ -38,7 +38,7 @@ encodex batch 'videos/**/*.mov' --concurrency 2 --output-dir converted
 encodex convert input.mp4 output.mp4 --transcoder FFTOOL
 ```
 
-遗留的扁平用法（`encodex in.mp4 out.mp4`、`encodex --info in.mp4`）会自动 shim 到匹配的子命令。
+CLI 模式激活后，遗留的扁平用法（`encodex in.mp4 out.mp4`、`encodex --info in.mp4`）会自动 shim 到匹配的子命令。`encodex --info in.mp4` 单独使用时只有一个位置参数，因此除非同时传入 `--cli`，否则会打开 GUI。`remux` 和 `demux` 只能作为显式子命令使用（或其别名 `rmx`/`split`）——仅有两个位置参数的调用始终是 `convert`。
 
 要让 `encodex` 全局可用，请在项目根目录运行 `npm link`（或 `npm install -g .`）。原始形式 `npx electron . --cli ...` 仍可作为替代方案使用。
 
@@ -52,6 +52,8 @@ encodex convert input.mp4 output.mp4 --transcoder FFTOOL
 | `compress`         | 压缩图像                                                          |
 | `extract-audio`    | 提取音频流（默认编解码器 `libmp3lame`）。别名：`audio`              |
 | `batch`            | 使用队列转换多个输入（文件、glob 或目录）                           |
+| `remux`            | 以流复制方式将文件转换为另一个容器，无需重新编码。别名：`rmx`          |
+| `demux`            | 将文件的每个流提取为单独的文件。别名：`split`                        |
 
 ## 全局选项
 
@@ -71,6 +73,7 @@ encodex convert input.mp4 output.mp4 --transcoder FFTOOL
 
 | Option                      | Description                                                    |
 | --------------------------- | -------------------------------------------------------------- |
+| `-o, --output <file>`       | 输出文件（覆盖位置输出参数）                                    |
 | `-v, --video-codec <codec>` | 视频编解码器（如 `libx264`、`libx265`、`copy`）                  |
 | `-a, --audio-codec <codec>` | 音频编解码器（如 `aac`、`libmp3lame`、`copy`）                   |
 | `-q, --qscale <qscale>`     | 质量等级（1–31）                                                |
@@ -84,9 +87,11 @@ encodex convert input.mp4 output.mp4 --transcoder FFTOOL
 | `--copy`                    | 无损流复制                                                      |
 | `--no-audio`                | 从输出中排除音频流                                              |
 | `--no-video`                | 从输出中排除视频流（仅音频）                                     |
-| `--hwaccel / --no-hwaccel`  | 切换硬件加速                                                    |
+| `--hwaccel`                 | 启用硬件加速                                                    |
 | `--hwaccel-mode <auto\\|encode>` | 硬件加速模式（默认：`auto`）                                |
-| `--info`                    | 打印输入的媒体信息并退出                                        |
+| `--filters <chain>`         | 视频滤镜链（逗号分隔）                                          |
+| `--preset <preset_id>`      | 精选视频滤镜预设（可重复指定）                                   |
+| `--info`                    | 打印输入的媒体信息并退出（需要 CLI 模式，例如 `--cli`）           |
 
 ## Compress 选项
 
@@ -105,6 +110,38 @@ encodex convert input.mp4 output.mp4 --transcoder FFTOOL
 | `-a, --audio-codec <codec>` | 音频编解码器（默认：`libmp3lame`）                               |
 | `--bitrate-audio <bitrate>` | 音频比特率（如 `192k`）                                         |
 
+## Remux 选项
+
+| Option                          | Description                                                    |
+| ------------------------------- | -------------------------------------------------------------- |
+| `-o, --output <file>`           | 输出文件（默认为输入路径加目标扩展名）                             |
+| `-f, --format <container>`      | 目标容器（如 `mkv`、`mp4`、`mov`）                                |
+| `--map <spec>`                  | 以 `0:<type>:<ordinal>` 形式复制的流（可重复；默认：所有流）          |
+| `--add-subtitle <file[::codec]>`| 嵌入外部字幕文件（可重复）；可选的每文件编解码器                       |
+| `--add-audio <file>`            | 嵌入外部音频文件（可重复）                                          |
+| `--thumbnail <image>`           | 嵌入封面图（MKV/WebM 作为附件，MP4/MOV 作为 disposition）             |
+| `--chapters <file>`             | 从 FFMETADATA 文件导入章节                                         |
+| `--no-chapters`                 | 丢弃源章节，而不是复制它们                                          |
+| `--subtitle-codec <codec>`      | 已添加字幕的编解码器（默认：容器的首选编解码器）                        |
+| `--no-subtitles`                | 丢弃源字幕流                                                      |
+| `--audio-sync <seconds>`        | 偏移主文件的音频（正值 = 延后）                                      |
+| `--set-sync <seconds>`          | 偏移前面已添加的字幕/音频输入（可重复）                                |
+| `--filters <chain>`             | 视频滤镜链（可重复）；滤镜会强制重新编码                                |
+
+## Demux 选项
+
+| Option                          | Description                                                    |
+| ------------------------------- | -------------------------------------------------------------- |
+| `--output-dir <dir>`            | 提取流的输出目录（不存在时会创建）                                    |
+| `--video`                       | 仅提取视频流                                                      |
+| `--audio`                       | 仅提取音频流                                                      |
+| `--subtitles`                   | 仅提取字幕流                                                      |
+| `--all`                         | 提取所有类型的流（默认）                                             |
+| `--video-container <ext>`       | 将视频重新编码到此容器（如 `mp4`、`mkv`）                             |
+| `--audio-codec <codec>`         | 使用此编码器重新编码音频（如 `mp3`、`flac`、`aac`）                    |
+| `--subtitle-format <format>`    | 将文本字幕转换为此格式（`srt`、`ass`、`copy`）                          |
+| `--video-filters <chain>`       | 用于重新编码视频流的滤镜链（可重复）                                     |
+
 ## Batch 选项
 
 | Option                      | Description                                                    |
@@ -113,7 +150,7 @@ encodex convert input.mp4 output.mp4 --transcoder FFTOOL
 | `--output-dir <dir>`        | 转换后文件的输出目录                                            |
 | `--suffix <s>`              | 附加到派生输出名称的后缀（默认：`_encodex_converted`）           |
 
-batch 还接受所有 convert 编码选项（`-v/--video-codec`、`-a/--audio-codec`、`--bitrate-video`、`--bitrate-audio`、`-q/--qscale`、`--pix-fmt`、`-s/--scale`、`--copy`、`--no-audio`、`--no-video`），并将它们应用到每个任务。
+batch 还接受所有 convert 编码选项（`-v/--video-codec`、`-a/--audio-codec`、`--bitrate-video`、`--bitrate-audio`、`-q/--qscale`、`--pix-fmt`、`-s/--scale`、`--copy`、`--no-audio`、`--no-video`、`--filters`、`--preset`），并将它们应用到每个任务。
 
 ## 退出码
 

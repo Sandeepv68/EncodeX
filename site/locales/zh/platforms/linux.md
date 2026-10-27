@@ -14,8 +14,8 @@ Linux 用户从这款免费工具中获得了他们期望的一切：
 
 - **AppImage 构建** —— 无需安装程序即可在大多数发行版上运行
 - **开源（MIT）** —— 查看代码或自行编译
-- **VAAPI 硬件加速** —— 使用 AMD、Intel 和 NVIDIA GPU 实现快速编码
-- **无界面 CLI** —— 为服务器和自动化编写转换脚本
+- **VAAPI 硬件加速** —— 在 AMD 和 Intel GPU 上实现快速编码；NVIDIA GPU 使用 NVENC
+- **CLI** —— 编写转换脚本，实现自动化
 - **离线且私密** —— 你的视频永远不会离开你的机器
 
 ### 你可以在 Linux 上用 EncodeX 做什么？
@@ -37,9 +37,9 @@ chmod +x EncodeX.AppImage
 
 ## 常见问题
 
-**EncodeX 支持 Wayland 吗？** 是的，该应用同时支持 X11 和 Wayland 会话。
+**Linux 提供哪种构建？** 一个 AppImage，可在大多数现代 Linux 发行版上运行。
 
-**我可以在无界面的 Linux 服务器上使用 EncodeX 吗？** 是的 —— EncodeX 包含 [CLI 模式](/zh/cli)，可在没有桌面的环境下编写转换脚本。
+**我可以在 Linux 上编写转换脚本吗？** 可以 —— EncodeX 包含 [CLI 模式](/zh/cli)，用于自动化。
 
 **EncodeX Linux 版真的是免费的吗？** 是的 —— 100% 免费，开源（MIT），无广告，无需注册账户。
 

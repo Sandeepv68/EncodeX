@@ -12,7 +12,7 @@ Auch Linux-Nutzer verdienen eine großartige **FFmpeg-GUI**. **EncodeX** ist ein
 EncodeX bietet Linux-Nutzern eine vollständige **FFmpeg-GUI** mit demselben sauberen Erlebnis auf allen Plattformen:
 
 - **Video und Audio konvertieren** – MP4, MKV, AVI, MOV, WebM, MP3, FLAC, WAV und mehr
-- **Videos komprimieren**, um die Dateigröße bei gleichbleibender Qualität zu reduzieren
+- **Videos komprimieren**, um die Dateigröße mit Kontrolle über die Qualität zu reduzieren
 - **Clips mit einer visuellen Zeitleiste schneiden**
 - **Audio aus Video extrahieren** und als MP3 speichern
 - **Ordner automatisch stapelweise verarbeiten**

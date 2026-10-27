@@ -14,7 +14,7 @@ Windows users love EncodeX because it just works:
 
 - **One-click install** — a standard `.exe` installer, no admin gymnastics
 - **Full FFmpeg power** — convert, compress, cut, and extract without typing a single command
-- **NVIDIA & Intel hardware acceleration** — NVENC and Quick Sync for fast encodes
+- **NVIDIA, Intel & AMD hardware acceleration** — NVENC, Quick Sync, and AMF for fast encodes
 - **Batch folders** — process hundreds of files at once
 - **Offline & private** — your videos never leave your PC
 

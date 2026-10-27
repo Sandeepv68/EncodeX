@@ -76,15 +76,15 @@ Quer que um assistente de IA faça o trabalho? O EncodeX também vem com um **se
 - **🎵 Extração de áudio** — Qualquer um dos 27 codecs de áudio a partir de qualquer arquivo de vídeo
 - **ℹ️ Informações de mídia** — Análise completa por stream: codec, perfil, resolução, metadados de cor, taxa de quadros etc.
 - **⌨️ Modo CLI** — Scripts sem interface (headless) com subcomandos (`convert`, `info`, `capabilities`, `compress`, `extract-audio`, `batch`)
-- **🤖 Servidor MCP** — Servidor [Model Context Protocol](https://modelcontextprotocol.io) integrado: 13 ferramentas principais, 3 recursos e 4 prompts via stdio (`encodex --mcp`), além de um endpoint HTTP localhost integrado que adiciona 6 ferramentas com paridade com a GUI (fila ao vivo, prévia, linha do tempo, informações do sistema, atualizações). Execute conversões únicas ou gerencie tarefas assíncronas a partir do Claude Desktop, Claude Code, Cursor, VS Code ou de qualquer cliente MCP
+- **🤖 Servidor MCP** — Servidor [Model Context Protocol](https://modelcontextprotocol.io) integrado: 36 ferramentas visíveis ao modelo, 3 recursos e 4 prompts via stdio (`encodex --mcp`), além de um endpoint HTTP localhost integrado que adiciona 6 ferramentas com paridade com a GUI (fila ao vivo, prévia, linha do tempo, informações do sistema, atualizações). Execute conversões únicas ou gerencie tarefas assíncronas a partir do Claude Desktop, Claude Code, Cursor, VS Code ou de qualquer cliente MCP
 - **⚙️ 3 núcleos de transcodificação** — API do FFmpeg (fluent-ffmpeg), CLI do FFmpeg (child_process), Framework BMF
-- **🌍 56 localidades** — 35 idiomas com suporte a RTL (árabe, hebraico)
+- **🌍 56 localidades** — 56 idiomas com suporte a RTL (árabe, hebraico)
 - **⌨️ Atalhos de teclado** — Mais de 60 atalhos em todas as páginas com diálogo de ajuda integrado (`Ctrl+/`)
 - **🔔 Indicadores de atividade** — Indicadores de navegação ao vivo com popovers ao passar o mouse mostrando o progresso de cada tarefa de relance
 - **🛡️ Confirmação de fechamento** — Avisa antes de fechar a janela enquanto há tarefas em execução
 - **🎉 Easter eggs** — Logotipos do app com temas de feriados em datas especiais
 - **🔄 Atualizações integradas** — Verifica os lançamentos no GitHub, baixa o instalador da plataforma, progresso em tempo real
-- **🛡️ Tratamento de erros** — 16 códigos de erro tipados, snackbar global, banners inline, error boundaries do React
+- **🛡️ Tratamento de erros** — 28 códigos de erro tipados, snackbar global, banners inline, error boundaries do React
 - **🌗 Tema claro/escuro** — Acompanha o sistema com alternância manual e preferências persistentes
 
 Consulte a [Referência de recursos](./features-reference.md) para ver o detalhamento completo dos recursos, os formatos suportados e as listas de codecs.
@@ -232,7 +232,7 @@ Consulte o [Uso da CLI](./cli.md) para ver todos os subcomandos, opções e exem
 ## 🧪 Testes
 
 ```bash
-npm test           # Run all 123 test files / 1603 tests
+npm test           # Run 314 src test files, 39 e2e, 11 perf suites
 npm run test:watch
 npm run test:coverage
 npm run test:unit

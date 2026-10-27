@@ -17,7 +17,7 @@ Try saying:
 - *"Shrink the photos in `~/Pics` and put the results in `~/Output`."*
 - *"Convert all MKV files in `~/Downloads` to MP4."*
 
-EncodeX is a free, open-source **FFmpeg MCP server** with a desktop app around it — a local MCP server for AI media automation. No cloud, no uploads, no account.
+EncodeX is a free, open-source **FFmpeg MCP server** with a desktop app around it — a local MCP server for AI media automation. No EncodeX cloud service, no media uploads, no account.
 
 ```mermaid
 flowchart TD
@@ -35,12 +35,13 @@ You stay in your favorite AI app. EncodeX does the heavy lifting in the backgrou
 
 ## What Can an Assistant Do Through MCP?
 
-The MCP server exposes **19 tools, 3 resources, and 4 prompts**:
+The standalone stdio server exposes **36 model-visible tools, 3 resources, and 4 prompts** (37 registrations, including an app-only tool). The embedded server adds **6 GUI tools** for **42 tools** in total:
 
 - **Convert** videos and audio between formats
 - **Extract** audio from video files
 - **Compress** videos and images to smaller sizes
 - **Trim** and cut clips
+- **Remux and demux** — change containers or split streams
 - **Run and track async batch jobs** — queue work, check status, get results
 
 In hosts that support [MCP Apps](https://modelcontextprotocol.io) (Claude, VS Code, ChatGPT, Goose), the job tools also render as **interactive views** right in the conversation — a **live queue dashboard**, a **per-job progress card**, a **media-info table**, and a **conversion form** you can fill in, with confirm-gated cancel. Clients without the extension keep the normal JSON tool results, so nothing breaks.
@@ -61,13 +62,13 @@ Stdout carries the MCP protocol; all logs go to stderr, so nothing corrupts the 
 
 ### 2. Embedded server (Settings → MCP Server)
 
-Already have EncodeX open? Turn on **Settings → MCP Server** and point your client at:
+Already have EncodeX open? The embedded server is off by default. Turn on **Settings → MCP Server** and point your client at:
 
 ```
 http://127.0.0.1:8765/mcp
 ```
 
-This mode adds live **queue**, **preview**, **timeline**, **system**, and **update** tools on top of the same core.
+This mode adds 6 GUI tools on top of the same core — live queue state, cancel-all, timeline, preview, system info, and update checks.
 
 ## Connect in One Paste
 
@@ -77,10 +78,10 @@ Copy the configuration for your client and paste it in — EncodeX does the rest
 
 ## Private by Design
 
-- **All processing is local** — files are never uploaded, and nothing is sent to the cloud
+- **Media processing is local** — files are not uploaded to a cloud service
 - **Loopback only** — the embedded server binds to `127.0.0.1` and validates the `Origin` header
 - **Optional access token** — protect the endpoint with a bearer token (compared in constant time)
-- **No account required** — MCP works fully offline
+- **No account required** — the MCP server itself needs no account
 
 ## Get Started
 
@@ -98,7 +99,7 @@ Yes. The MCP server is built into the free, open-source (MIT) EncodeX app — no
 
 ### Does using MCP upload my files?
 
-No. EncodeX runs entirely offline. The MCP server drives the same local FFmpeg engine, so your media never leaves your computer.
+No. The MCP server drives the same local FFmpeg engine, so your media never leaves your computer.
 
 ### Which AI assistants can connect?
 

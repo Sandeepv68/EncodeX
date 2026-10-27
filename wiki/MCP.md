@@ -1,13 +1,13 @@
 # 🔌 MCP Integration
 
-EncodeX ships a full [Model Context Protocol](https://modelcontextprotocol.io) server so MCP hosts — Claude Desktop, Claude Code, VS Code, Cursor, and custom/headless agents — can probe media, convert, compress, extract audio, cut, batch-process, and (opt-in) read live GUI state. It runs over the same media engine as the CLI, so behavior is identical across surfaces.
+EncodeX ships a full [Model Context Protocol](https://modelcontextprotocol.io) server so MCP hosts — Claude Desktop, Claude Code, VS Code, Cursor, and custom/headless agents — can probe and analyze media, convert, compress, extract audio, cut, remux, demux, batch-process, and (opt-in) read live GUI state. It runs over the same media engine as the CLI, so behavior is identical across surfaces.
 
 There are two launch modes that share one tool/resource/prompt catalogue:
 
 | Mode | Transport | Launched by | Surface |
 | ---- | --------- | ----------- | ------- |
-| **Standalone** | stdio | `encodex --mcp` or `node dist/mcp/index.js` | 13 core tools |
-| **Embedded** | Streamable HTTP | Toggle in **Settings → MCP Server** | 13 core + 6 GUI-parity tools = **19** |
+| **Standalone** | stdio | `encodex --mcp` or `node dist/mcp/index.js` | 36 model-visible tools (37 registrations) |
+| **Embedded** | Streamable HTTP | Toggle in **Settings → MCP Server** | 37 registrations + 6 GUI-parity tools = **43** (42 model-visible) |
 
 Related pages: [[CLI-Usage]], [[IPC-Channels]], [[Architecture]].
 
@@ -129,7 +129,7 @@ All tools return a single JSON text payload. Failures set `isError` and return `
 | Tool | Key inputs | Returns |
 | ---- | ---------- | ------- |
 | `ping` | — | `{ pong: true }` |
-| `convert_media` | `input`, `output?`, `videoCodec?`, `audioCodec?`, `videoBitrate?`, `audioBitrate?`, `qscale?`, `scale?`, `keepAspectRatio?`, `rotate?`, `flipH?`, `flipV?`, `pixelFormat?`, `startTime?`, `endTime?`, `duration?`, `copy?`, `audio?`, `video?`, `hardwareAcceleration?`, `hwaccelMode?`, `extraArgs?`, `transcoder?`, `concurrency?` | `{ jobId, input, output, status, transcoder }` |
+| `convert_media` | `input`, `output?`, `videoCodec?`, `audioCodec?`, `videoBitrate?`, `audioBitrate?`, `qscale?`, `scale?`, `keepAspectRatio?`, `rotate?`, `flipH?`, `flipV?`, `pixelFormat?`, `startTime?`, `endTime?`, `duration?`, `copy?`, `audio?`, `video?`, `hardwareAcceleration?`, `hwaccelMode?`, `extraArgs?`, `filters?`, `videoFilters?`, `presets?`, `transcoder?`, `concurrency?` | `{ jobId, input, output, status, transcoder }` |
 | `get_job` | `jobId` | Job record (status, percent, time, speed, fps, eta, bitrate, error?) |
 | `list_jobs` | — | All jobs with status/progress |
 | `cancel_job` | `jobId` | `{ jobId, cancelled: true }` |
@@ -141,6 +141,39 @@ All tools return a single JSON text payload. Failures set `isError` and return `
 | `extract_audio` | `input`, `output?`, `audioCodec?`, `bitrate?`, `transcoder?` | `{ jobId, …, audioCodec, extension }` |
 | `cut_video` | `input`, `output?`, `startTime?`, `endTime?`, `duration?`, `copy?`, `audio?`, `extraArgs?`, `transcoder?` | `{ jobId, … }` |
 | `batch_convert` | `inputs[]`, `outputDir?`, `suffix?`, `concurrency?` + convert options | `{ total, jobs: [{ file, output, jobId, status }] }` |
+| `remux_media` | `input`, `container?`, `output?`, `map?`, `subtitles?`, `addSubtitle?`, `addAudio?`, `thumbnail?`, `chapters?`, `subtitleCodec?`, `audioSyncSeconds?`, `videoFilters?`, `transcoder?` | `{ jobIds, jobs }` |
+| `demux_media` | `input`, `outputDir?`, `video?`, `audio?`, `subtitles?`, `all?`, `videoContainer?`, `audioCodec?`, `subtitleCodec?`, `videoFilters?`, `transcoder?` | One job per extracted stream |
+
+### Analysis & intelligence tools (both modes)
+
+| Tool | Key inputs | Returns |
+| ---- | ---------- | ------- |
+| `analyze_media` | `input`, `focus?` (`compat`, `quality`, `size`) | Plain-language diagnosis with severity, evidence, and next steps |
+| `recommend_settings` | `input`, `intent`, `constraints?` | Reviewable plan: convert args, profile, rationale, confidence, warnings |
+| `estimate_conversion` | `input`, `args?` | Estimated output size/duration (always labelled as an estimate) |
+| `validate_output` | `output`, `expect?` | Pass/fail checks for size, resolution, codec, container, audio/video presence, duration |
+| `compress_to_target` | `input`, `maxBytes`, `intent?`, `videoCodec?`, `audioCodec?`, `audioBitrate?`, `maxCandidates?`, `output?`, `transcoder?` | Measured attempt ladder + winning candidate |
+| `analyze_folder` | `path`, `intent?`, `recursive?`, `maxFiles?`, `transcoder?` | Per-file breakdown + folder total savings (estimates) |
+| `explain_error` | `code?`, `message?`, `detail?`, `jobId?`, `input?`, `tool?`, `args?` | Explanation, likely causes, and fixes |
+| `advise_encoding` | `input` | Recommended encoder, hardware path, and trade-offs |
+| `quality_report` | `source`, `output`, `expect?` | Pass/fail checks plus findings comparing output to source |
+| `find_similar_media` | `inputs[]`, `method?` (`hash`, `metadata`), `threshold?`, `recursive?`, `maxCandidates?` | Duplicate / near-duplicate clusters |
+| `transcribe_media` | `input`, `language?`, `format?`, `modelPath?`, `timeoutMs?` | Timed segments and optional SRT/VTT/ASS |
+| `translate_subtitles` | `input?` or `segments?`, `durationSeconds?`, `targetLanguage`, `sourceLanguage?`, `format?`, `provider?`, `language?`, `modelPath?` | Translated timed segments |
+| `generate_chapters` | `input?` or `segments?`, `durationSeconds?`, `minChapterSeconds?`, `maxChapterSeconds?`, `maxChapters?`, `language?`, `modelPath?` | Chapters, YouTube timestamps, and optional FFMETADATA |
+| `search_transcript` | `input?` or `segments?`, `durationSeconds?`, `query`, `maxMatches?`, `context?`, `language?`, `modelPath?` | Ranked matches, best span, and clip args |
+| `summarize_media` | `input?` or `segments?`, `durationSeconds?`, `maxSentences?`, `maxTopics?`, `language?`, `modelPath?` | Extractive summary and topics |
+| `find_highlights` | `input`, `durationSeconds?`, `samples?`, `sceneThreshold?`, `maxHighlights?`, `maxThumbnails?` | Scene boundaries, highlight spans, thumbnail candidates |
+
+### Planning & workflow tools (both modes)
+
+| Tool | Key inputs | Returns |
+| ---- | ---------- | ------- |
+| `plan_social_pack` | `input`, `platforms?`, `maxDurationSeconds?`, `outputDir?` | Per-platform clips plus a runnable workflow |
+| `plan_edit` | `input?` or `segments?`, `intent`, `scenes?`, `durationSeconds?` | Exact cut span plus `cut_video` args |
+| `plan_agent` | `inputs[]`, `intent`, `constraints?`, `recursive?`, `maxFiles?`, `minSavings?`, `outputDir?` | Library-wide conversion plan plus workflow |
+| `plan_workflow` | `steps[]` | Dry-run order, dependencies, and validation issues |
+| `execute_workflow` | `steps[]` | Per-step report with job ids and outputs |
 
 ### GUI-parity tools (embedded mode only)
 
@@ -178,7 +211,7 @@ All tools return a single JSON text payload. Failures set `isError` and return `
 
 ## ⏳ Async job model
 
-Conversions run for seconds to minutes, so `convert_media`, `compress_image`, `extract_audio`, `cut_video`, and `batch_convert` return a `jobId` immediately rather than blocking the call. Poll with `get_job` / `list_jobs` (or `get_queue_state` in embedded mode) until the status is `done`, `error`, or `cancelled`; cancel with `cancel_job`.
+Conversions run for seconds to minutes, so `convert_media`, `compress_image`, `extract_audio`, `cut_video`, `batch_convert`, `remux_media`, and `demux_media` return job ids immediately rather than blocking the call. Poll with `get_job` / `list_jobs` (or `get_queue_state` in embedded mode) until the status is `done`, `error`, or `cancelled`; cancel with `cancel_job`.
 
 Jobs are held in memory. In embedded mode the MCP job manager is **shared with the GUI queue**, so tools and the UI observe the same jobs and `cancel_all_jobs` affects the visible queue.
 
@@ -186,9 +219,11 @@ Jobs are held in memory. In embedded mode the MCP job manager is **shared with t
 
 ## 🌐 Embedded HTTP server (GUI mode)
 
-Enable it in **Settings → MCP Server**, optionally set a port and bearer token, then run a conversion from the UI. The server binds `127.0.0.1` only and adds the GUI-parity tools on top of the core surface.
+Enable it in **Settings → MCP Server**, optionally set a port and bearer token, then run a conversion from the UI. The server binds `127.0.0.1` only and adds the GUI-parity tools on top of the full tool surface.
 
-- **Endpoint:** `http://127.0.0.1:8765/mcp` (default)
+The standalone HTTP transport is also available via `npm run mcp:http` (`node dist/mcp/http-server.js`). It defaults to the same loopback host and `/mcp` path, but listens on an ephemeral port (`0`) unless `--port` is passed; `--host` and `--base-path` can override the host and path.
+
+- **Endpoint (embedded):** `http://127.0.0.1:8765/mcp`
 - **Port range:** 1024–65535 (default `8765`)
 - **State:** off by default; persisted in `mcp-settings.json` under the Electron `userData` directory:
   - Windows: `%APPDATA%\EncodeX\mcp-settings.json`
@@ -232,4 +267,4 @@ npm run mcp:smoke            # node dist/mcp/index.js
 npm run mcp:smoke:electron   # electron . --mcp (requires a display / xvfb on Linux)
 ```
 
-Both assert the handshake, the 13-tool stdio catalogue, and a live `ping`. (The 6 GUI-parity tools are only reachable through the embedded HTTP server.)
+Both assert the handshake, the 37-registration stdio catalogue (36 model-visible plus the app-only `commit_operation`), and a live `ping`. (The 6 GUI-parity tools are only reachable through the embedded HTTP server.)

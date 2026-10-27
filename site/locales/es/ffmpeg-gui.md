@@ -28,7 +28,9 @@ Si eso te parece un idioma extranjero, no estás solo. Una **GUI de FFmpeg** con
 - **Comprimir vídeos** para reducir el tamaño sin arruinar la calidad
 - **Recortar clips** visualmente — arrastra dos controles en una línea de tiempo, listo
 - **Extraer audio** de un vídeo y guardarlo como MP3
-- **Girar y reflejar vídeos** – corrige clips de lado, sin pérdida para MP4/MOV/MKV
+- **Girar y reflejar vídeos** – corrige clips de lado sin pérdida para MP4/MOV/MKV en modo copia de flujo, o con una recodificación rápida
+- **Remux y demux** — cambia de contenedor sin recodificar, o separa cada flujo en su propio archivo
+- **Planifica con Copilot** — describe el trabajo en lenguaje sencillo; 13 operaciones con un motor de reglas sin conexión por defecto y proveedores opcionales de OpenAI, Anthropic, Gemini o locales
 - **Procesar por lotes** carpetas enteras de archivos de una sola vez
 
 ## Aceleración por hardware ultrarrápida integrada
@@ -37,13 +39,13 @@ EncodeX **usa tu GPU automáticamente** para hacer las conversiones mucho más r
 
 - Los usuarios de **NVIDIA** obtienen NVENC; **Intel** obtiene Quick Sync (QSV); **AMD** obtiene AMF
 - Los usuarios de **Apple Silicon/Mac** obtienen VideoToolbox
-- Los usuarios de **Linux** obtienen VAAPI — sin importar la marca de la GPU
+- Los usuarios de **Linux** obtienen VAAPI en GPUs AMD e Intel; las GPUs NVIDIA usan NVENC
 
 Lo más probable es que tu hardware ya tenga un codificador rápido dentro. EncodeX lo encuentra y lo activa por ti — así que una conversión larga termina en una fracción del tiempo.
 
 ## Es de código abierto y privado
 
-Como EncodeX está construido sobre FFmpeg y es totalmente [de código abierto](https://github.com/Sandeepv68/EncodeX), todo se ejecuta **en tu propia computadora**. Nada se sube, no se requieren cuentas y **no hay marcas de agua** en tus archivos.
+Como EncodeX está construido sobre FFmpeg y es totalmente [de código abierto](https://github.com/Sandeepv68/EncodeX), el procesamiento multimedia se ejecuta **en tu propia computadora** — los archivos no se suben, no se requieren cuentas y **no hay marcas de agua** en tus archivos. La telemetría (datos de uso e informes de errores) está activada por defecto y se puede desactivar en Configuración.
 
 ## Disponible en todos los sistemas de escritorio
 

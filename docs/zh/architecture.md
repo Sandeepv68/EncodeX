@@ -31,7 +31,7 @@ renderer 从不启动进程，也从不直接访问文件系统。所有特权�
 | [功能参考](/zh/docs/features-reference) | 功能、支持的媒体格式、编解码器表、验证工具 |
 | [CLI 用法](/zh/docs/cli) | CLI 用法、子命令、全部选项表 |
 | [IPC 通道](/zh/docs/ipc) | IPC 通道（请求/仅发送/事件）、electronAPI 桥接 |
-| [测试](/zh/docs/testing) | 测试套件（123 个文件、1603 个测试）、测试配置、E2E 规格 |
+| [测试](/zh/docs/testing) | 测试套件（`src/` 下 314 个 test/spec 文件、`e2e/` 下 39 个、11 个性能套件）、测试配置、E2E 规格 |
 | [项目结构](/zh/docs/project-structure) | 完整目录树及注释 |
 | [更新管理器](/zh/docs/update-manager) | 应用内更新管理器的实现 |
 

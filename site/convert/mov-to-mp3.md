@@ -32,7 +32,7 @@ You can pick the **bitrate (128–320 kbps)** for the right balance of size and 
 ### A Fast, Private MOV to MP3 Converter
 
 - **Offline** — your files never leave your computer
-- **Hardware accelerated** — uses your GPU for speed
+- **Audio-only processing** — no video re-encoding needed
 - **No watermarks** and free forever
 - Works on **Windows, Mac, and Linux**
 
@@ -40,7 +40,7 @@ You can pick the **bitrate (128–320 kbps)** for the right balance of size and 
 
 **Can I extract MP3 from a MOV file?** Yes. EncodeX reads the audio track inside any MOV file and saves it as MP3 — no video re-encoding needed.
 
-**Does converting MOV to MP3 keep the audio quality?** EncodeX uses the original audio track from your MOV. Pick 320 kbps for near-lossless sound.
+**Does converting MOV to MP3 keep the audio quality?** EncodeX uses the original audio track from your MOV. MP3 is lossy, so the output will not be identical to the source; 320 kbps gives the highest MP3 quality.
 
 **Can I batch-convert many MOV files to MP3?** Yes. EncodeX converts an entire folder of MOV files to MP3 in one go.
 

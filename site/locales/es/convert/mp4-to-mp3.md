@@ -32,7 +32,7 @@ Puedes elegir la **tasa de bits (128–320 kbps)** para el equilibrio perfecto e
 ### Un convertidor de MP4 a MP3 rápido y privado
 
 - **Sin conexión** — tus archivos nunca salen de tu computadora
-- **Acelerado por hardware** — usa tu GPU para más velocidad
+- **Procesamiento solo de audio** — sin recodificar el vídeo
 - **Sin marcas de agua** y gratis para siempre
 - Funciona en **Windows, Mac y Linux**
 
@@ -40,7 +40,7 @@ Puedes elegir la **tasa de bits (128–320 kbps)** para el equilibrio perfecto e
 
 **¿Qué es la conversión de MP4 a MP3?** La conversión de MP4 a MP3 toma la pista de audio de un archivo de vídeo MP4 y la guarda como archivo de audio MP3, para que conserves el sonido sin el vídeo.
 
-**¿La conversión de MP4 a MP3 pierde calidad de audio?** No. EncodeX usa la pista de audio original de tu MP4. Usa 320 kbps para un sonido casi sin pérdida, o una tasa de bits menor para archivos más pequeños.
+**¿La conversión de MP4 a MP3 pierde calidad de audio?** Se pierde algo de calidad, porque MP3 es un formato con pérdida y la salida no será idéntica a la fuente. EncodeX usa la pista de audio original de tu MP4; 320 kbps ofrece la máxima calidad de MP3, y las tasas de bits más bajas dan archivos más pequeños.
 
 **¿Puedo convertir muchos archivos MP4 a MP3 por lotes?** Sí. EncodeX convierte una carpeta entera de archivos MP4 a MP3 de una sola vez.
 

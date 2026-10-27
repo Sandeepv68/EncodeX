@@ -12,7 +12,7 @@ EncodeX est une application gratuite pour votre ordinateur qui résout les probl
 - **Couper une vidéo** pour ne garder que l'essentiel
 - **Alléger vos photos** pour les envoyer et les téléverser facilement
 
-Il fonctionne sur Windows, Mac et Linux, est entièrement gratuit et parle plus de 35 langues.
+Il fonctionne sur Windows, Mac et Linux, est entièrement gratuit, et son interface est disponible en 56 locales.
 
 ---
 
@@ -28,9 +28,9 @@ Vous pouvez convertir entre pratiquement tous les formats vidéo et audio exista
 
 ## Choisissez un profil et c'est parti
 
-Pas envie de bricoler les paramètres ? EncodeX propose plus de 140 profils de conversion prêts à l'emploi, chacun soigneusement réglé pour un usage précis. Exporter une vidéo pour YouTube en 1080p ? Il y a un profil pour ça. Un Reel Instagram au bon format ? À un clic. Du ProRes pour un montage vidéo ? C'est fait.
+Pas envie de bricoler les paramètres ? EncodeX propose 115 profils de conversion prêts à l'emploi, chacun un préréglage pour un usage précis. Exporter une vidéo pour YouTube en 1080p ? Il y a un profil pour ça. Un Reel Instagram au bon format ? À un clic. Du ProRes pour un montage vidéo ? C'est fait.
 
-Les profils sont organisés en 8 catégories : Web et Réseaux sociaux (YouTube, Instagram, TikTok, Facebook, X), Appareils (Apple, Android, consoles de jeux), Codecs vidéo, Professionnel (ProRes, DNxHD/HR), Streaming (HLS, DASH), Audio, Images et Avancé. Sélectionnez-en un et tous les bons paramètres se remplissent automatiquement — codec, débit, qualité, résolution et plus. Après application, vous pouvez toujours modifier ce que vous souhaitez.
+Les profils sont organisés en 8 catégories : Web et Réseaux sociaux (YouTube, Instagram, TikTok, Facebook, X), Appareils (iPhone, iPad, Apple TV, Android, consoles de jeux), Vidéo, Professionnel (ProRes, DNxHR, CineForm et plus), Streaming (HLS, DASH), Audio, Images et Avancé. Sélectionnez-en un et tous les bons paramètres se remplissent automatiquement — codec, débit, qualité, résolution et plus. Après application, vous pouvez toujours modifier ce que vous souhaitez.
 
 Si vous utilisez les mêmes paramètres en boucle, enregistrez-les comme profil personnalisé. Vous pouvez créer, modifier et supprimer des profils, et EncodeX se souvient des 5 derniers utilisés pour un accès rapide.
 
@@ -64,7 +64,11 @@ Formats courants pris en charge : JPG, PNG, WebP, GIF, BMP, TIFF et plus. Vous p
 
 Vous avez filmé une vidéo avec le téléphone tenu de travers ? EncodeX fait pivoter n'importe quelle vidéo ou photo de 90°, 180° ou 270° dans le sens horaire et la retourne horizontalement ou verticalement — clips de travers, selfies inversés ou vidéo verticale à passer en paysage se règlent en un clic.
 
-Gardez le format MP4, MOV ou MKV et la rotation est enregistrée comme métadonnées sans perte — pas de ré-encodage, pas de perte de qualité. Pour tout autre format (ou un retournement), la vidéo est ré-encodée, et tout fonctionne aussi dans la file d'attente.
+En mode copie de flux, pour les fichiers MP4, MOV ou MKV, la rotation est enregistrée comme métadonnées sans perte — pas de ré-encodage, pas de perte de qualité. Dans tous les autres cas (autre format, miroir ou conversion normale), les images sont ré-encodées. La rotation fonctionne aussi dans la file d'attente.
+
+## Filtres vidéo
+
+Au-delà de la rotation, EncodeX propose 8 préréglages de filtres : recadrage, fréquence d'images, désentrelacement, réduction du bruit, netteté, couleur, niveaux de gris et flou. Vous pouvez aussi écrire une chaîne de filtres personnalisée pour un contrôle plus fin.
 
 ## Convertir plusieurs fichiers à la fois
 
@@ -75,7 +79,15 @@ Cinquante vidéos ? Ne les convertissez pas une par une. Glissez-les toutes dans
 - Ajoutez des fichiers pendant qu'il travaille
 - Mettez en pause, reprenez ou annulez quand vous voulez
 - Réorganisez la liste en glissant
-- Il prévient quand c'est fini — ou éteint l'ordinateur automatiquement
+- Il prévient quand c'est fini — ou éteint, met en veille ou met en hibernation l'ordinateur à la fin de la file
+
+## Remux et démux
+
+Besoin d'un autre conteneur, sans changer l'encodage ? **Remux** copie les flux existants dans un nouveau conteneur (par exemple MP4 vers MKV) et peut ajouter des sous-titres, des pistes audio supplémentaires, une jaquette ou des chapitres. **Démux** fait l'inverse : il extrait les flux vidéo, audio ou de sous-titres d'un fichier, avec une conversion facultative pour chacun.
+
+## Demander à Copilot
+
+La page **Copilot** intégrée transforme une demande en langage courant en tâches EncodeX. Elle peut lancer des conversions, remuxer, démuxer, extraire l'audio, compresser des images et couper des vidéos, et elle peut analyser, résumer ou traduire des médias. Elle fonctionne hors ligne par défaut grâce à un moteur de règles intégré. Vous pouvez aussi connecter OpenAI, Anthropic, Gemini ou un modèle local.
 
 ## Laissez un assistant IA piloter
 
@@ -86,7 +98,7 @@ Il existe deux façons de se connecter :
 - **Serveur stdio autonome** — lancez `encodex --mcp` (ou `node dist/mcp/index.js`). Idéal pour les applications IA de bureau qui démarrent un serveur à la demande.
 - **Serveur localhost intégré** — activez-le dans **Réglages → Serveur MCP** pendant que l'interface graphique tourne, puis pointez vos clients vers `http://127.0.0.1:8765/mcp`. Ce mode ajoute des outils de file d'attente en direct, d'aperçu, de timeline, de système et de mises à jour, en plus du même cœur.
 
-Sur les deux modes, le serveur expose **19 outils**, **3 ressources** (profils, capacités, codecs) et **4 modèles de prompts** (convertir une vidéo, extraire un son, compresser une image, convertir par lots). Les conversions s'exécutent de façon asynchrone, de sorte qu'un assistant peut lancer une tâche longue et en revérifier l'avancement plus tard.
+Le serveur autonome expose **36 outils**, le serveur intégré **42** (les mêmes 36 plus 6 outils de l'interface graphique). Les deux proposent aussi **3 ressources** (profils, capacités, codecs) et **4 modèles de prompts** (convertir une vidéo, extraire un son, compresser une image, convertir par lots). Les conversions s'exécutent de façon asynchrone, de sorte qu'un assistant peut lancer une tâche longue et en revérifier l'avancement plus tard.
 
 ### Privé et sûr par conception
 
@@ -105,18 +117,18 @@ Curieux de savoir ce que contient un fichier ? EncodeX vous le dit en termes cla
 
 ## De la vitesse sans effort
 
-Sur la plupart des ordinateurs récents, EncodeX utilise automatiquement la puce graphique (celle des jeux vidéo) pour convertir bien plus vite. Aucun réglage : il détecte ce que votre machine possède et en profite.
+Sur les ordinateurs dotés d'un GPU compatible, EncodeX détecte les encodeurs matériels disponibles (NVIDIA NVENC, Intel Quick Sync, AMD AMF, VAAPI sous Linux ou Apple VideoToolbox) et les utilise pour la vidéo. Aucun réglage nécessaire. L'accélération matérielle ne concerne que la vidéo ; les conversions audio seules se font par logiciel.
 
 ## À votre image
 
 - **Mode clair ou sombre** — il suit votre système ou se change manuellement
-- **Plus de 35 langues** — français, espagnol, hindi, chinois, japonais, arabe et hébreu (avec interface de droite à gauche)
+- **56 locales** — français, espagnol, hindi, chinois, japonais, arabe et hébreu (avec interface de droite à gauche)
 - **Raccourcis clavier** — pour ceux qui préfèrent éviter la souris
-- **Toujours à jour** — EncodeX signale les nouvelles versions et les installe pour vous
+- **Restez à jour** — EncodeX consulte GitHub Releases et vous signale les nouvelles versions. Vous choisissez de les télécharger et de les installer, ou de les installer au prochain redémarrage. Les mises à jour ne sont jamais installées automatiquement.
 
 ## Privé dès la conception
 
-Tout se passe sur votre propre ordinateur : vos fichiers n'en sortent jamais. Pas de compte, pas de téléversement, pas de traçage.
+Tout se passe sur votre propre ordinateur, et vos fichiers n'en sortent jamais. Pas de compte, pas de téléversement. La remontée d'erreurs et les statistiques d'usage anonymes, de type catégoriel, sont activées par défaut et peuvent être désactivées dans les Réglages.
 
 ---
 

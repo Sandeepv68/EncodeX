@@ -1,6 +1,6 @@
 ---
 title: "AVI 转 MP4 转换器——免费转换 AVI 视频 | EncodeX"
-description: "使用 EncodeX 免费将 AVI 转换为 MP4。一款适用于 Windows、Mac 和 Linux 的快速离线 AVI 转 MP4 转换器。无水印、无上传、无画质损失。"
+description: "使用 EncodeX 免费将 AVI 转换为 MP4。一款适用于 Windows、Mac 和 Linux 的快速离线 AVI 转 MP4 转换器。无水印、无上传。"
 ogImage: "https://encodex.in/images/convert.webp"
 ---
 
@@ -19,7 +19,7 @@ AVI（音频视频交错）自上世纪 90 年代就存在。虽然它在 Window
 - **网站**不接受 AVI 上传
 - 你想通过**邮件或聊天轻松分享**文件
 
-## 无损地将 AVI 转为 MP4
+## 高画质将 AVI 转为 MP4
 
 EncodeX 将你的 **AVI 转为 MP4**，占用更少空间、兼容性更好，同时保持高质量：
 

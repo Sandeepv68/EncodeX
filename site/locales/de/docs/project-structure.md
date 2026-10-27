@@ -33,7 +33,7 @@ src/
 │   │   ├── capabilities.ts            # get-capabilities
 │   │   ├── window.ts                  # minimize / maximize / close / always-on-top
 │   │   ├── updater.ts                 # check / download / install updates
-│   │   ├── system.ts                  # reveal-file / set-launch-at-login
+│   │   ├── system.ts                  # queue-reveal / set-launch-at-login
 │   │   ├── send.ts                    # Event broadcast helpers
 │   │   └── types.ts                   # Type-safe main->renderer sender signature
 │   ├── player/

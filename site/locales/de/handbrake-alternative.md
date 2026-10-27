@@ -20,19 +20,19 @@ Es ist großartige Software. Aber sie ist nicht für jeden — deshalb kann eine
 | -------------- | -------------------------------- | ---------------------------- |
 | **Preis**      | Kostenlos für immer, Open Source (MIT) | Kostenlos, Open Source (GPL) |
 | **FFmpeg-basiert** | Ja                             | Ja                           |
-| **Voreinstellungen** | 140+ in 8 Kategorien          | Gute Auswahl, meist dateibasiert |
+| **Voreinstellungen** | 115 in 8 Kategorien          | Gute Auswahl, meist dateibasiert |
 | **Hardware-Kodierung** | NVENC, QSV, AMF, VAAPI, VideoToolbox | Teilweise               |
-| **Stapelwarteschlange** | Volle parallele Warteschlange (4 Aufgaben) | Warteschlange, sequentiell |
+| **Stapelwarteschlange** | Parallele Warteschlange (bis zu 4 Aufgaben) | Warteschlange, sequentiell |
 | **Audio-Extraktion** | Ein Klick, 27 Codecs            | Begrenzt                     |
 | **Bildkomprimierung** | JPEG/PNG/WebP…                  | Nicht wirklich               |
 | **Massenzuschnitt** | Frame-genau mit Zeitleiste      | Schneiden nur für Video      |
-| **CLI-Modus**   | Ja — lesbare Befehle             | Linode/CLI begrenzt          |
+| **CLI-Modus**   | Ja — lesbare Befehle             | HandBrakeCLI begrenzt        |
 | **Plattformen** | Windows, macOS, Linux            | Windows, macOS, Linux        |
 | **Uploads**     | Keine — 100% offline             | Keine — 100% offline         |
 
 ## Wie dieser Vergleich entstanden ist
 
-Wir haben die Funktionen verglichen, die jedes Werkzeug heute tatsächlich bietet — Oberflächendesign, Tiefe der Voreinstellungen, Hardware-Encoding-Unterstützung, Batch-Verhalten und Zusatzwerkzeuge — anhand der aktuellen Dokumentation und Release-Notizen jedes Produkts. Wir behaupten nur, was wir belegen können: Alles, was als „teilweise" oder „begrenzt" markiert ist, bedeutet, dass die Funktion existiert, aber mit Einschränkungen (z. B. variiert HandBrakes Hardware-Encoding je nach Plattform und Build, und seine CLI wird getrennt von der GUI-App dokumentiert). Wenn eine Zeile bei mehreren Werkzeugen weiter unten erscheint, gilt dieselbe Überprüfung.
+Dieser Vergleich basiert auf der veröffentlichten Dokumentation und den Release-Notizen jedes Produkts zum Zeitpunkt des Schreibens; Funktionen können je nach Version und Plattform variieren. Alles, was als „teilweise" oder „begrenzt" markiert ist, bedeutet, dass die Funktion existiert, aber mit Einschränkungen (zum Beispiel variiert HandBrakes Hardware-Encoding je nach Plattform und Build, und seine CLI wird getrennt von der GUI-App dokumentiert).
 
 ## EncodeX vs HandBrake vs FFmpeg CLI vs Shutter Encoder
 
@@ -41,9 +41,9 @@ Wir haben die Funktionen verglichen, die jedes Werkzeug heute tatsächlich biete
 | **Oberfläche**         | GUI + CLI    | GUI (+ CLI)  | Nur CLI      | GUI             |
 | **Basiert auf FFmpeg** | Ja           | Ja           | Ist FFmpeg   | Ja              |
 | **Kostenlos & Open Source** | Ja (MIT) | Ja (GPL)     | Ja (GPL)     | Ja (proprietäre Lizenz) |
-| **Aufgabenvoreinstellungen** | Über 140 | Dateibasierte Sets | Nur Skripte | Bibliotheksbasiert |
+| **Aufgabenvoreinstellungen** | 115 Profile | Dateibasierte Sets | Nur Skripte | Bibliotheksbasiert |
 | **Hardware-Encoding**  | NVENC, QSV, AMF, VAAPI, VideoToolbox | Teilweise (variiert je Plattform) | Via Flags (manuelle Einrichtung) | NVENC und andere |
-| **Paralleler Batch**   | Ja (4 Aufträge) | Sequenziell | Via Skripte | Ja             |
+| **Paralleler Batch**   | Ja (bis zu 4) | Sequenziell | Via Skripte | Ja             |
 | **Bildkomprimierung**  | Ja (JPEG/PNG/WebP) | Nein | Via Flags | Ja             |
 | **Audio-Extraktion**   | Ein Klick (27 Codecs) | Begrenzt | Via Flags | Ja             |
 | **100% offline**       | Ja           | Ja           | Ja           | Ja             |
@@ -53,8 +53,9 @@ Kurz gesagt: **HandBrake** ist der beste Open-Source-Ripper für Discs, **FFmpeg
 ## Warum zu EncodeX wechseln?
 
 - **Eine sanftere Lernkurve** — die GUI ist aufgabenbasiert ("Konvertieren", "Komprimieren", "Schneiden"), nicht codec-basiert
-- **Mehr Formate und Codecs** — 51 Video-, 27 Audio-, 56 Pixel-Formate
+- **Breite Format- und Codec-Unterstützung** — 51 Video-, 27 Audio-, 56 Pixel-Formate
 - **Bessere Stapelunterstützung** — bis zu 4 parallele Aufgaben mit Pause/Wiederaufnahme und Drag-and-Drop-Sortierung
+- **Integrierter Copilot** — 13 Operationen für Konvertieren, Remux, Demux, Extrahieren, Komprimieren, Schneiden und Medienanalyse, standardmäßig mit einer Offline-Regel-Engine und optional OpenAI, Anthropic, Gemini oder lokalen Anbietern
 - **Für macOS entwickelt** — native Apple Silicon-Build mit VideoToolbox
 - **Aktive, freundliche Community** — wir sind Open Source und ständig am Verbessern
 

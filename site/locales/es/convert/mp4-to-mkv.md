@@ -1,6 +1,6 @@
 ---
 title: "Convertidor de MP4 a MKV – Remux MP4 a MKV gratis | EncodeX"
-description: "Convierte MP4 a MKV gratis con EncodeX. Remux rápido y sin conexión de MP4 a MKV para Windows, Mac y Linux. Calidad nativa, sin recodificación, sin subidas."
+description: "Convierte MP4 a MKV gratis con EncodeX. Remux rápido y sin conexión de MP4 a MKV para Windows, Mac y Linux. La copia de flujos mantiene los flujos sin pérdida cuando los códecs son compatibles con MKV; sin subidas."
 ogImage: "https://encodex.in/images/convert.webp"
 ---
 

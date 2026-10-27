@@ -6,7 +6,7 @@ O EncodeX é uma ferramenta multimídia de conversão multiplataforma que traz o
 
 ### Conversão de mídia
 
-Converta entre formatos de vídeo/áudio com controle granular sobre a seleção de codecs (51 codecs de vídeo entre famílias de encoders por software e hardware, 27 codecs de áudio), bitrate, resolução de saída (com preservação opcional do aspect ratio), formato de pixel (56 formatos agrupados por profundidade de bits), escala de qualidade (qscale), inclusão da faixa de áudio e seleção do núcleo transcoder. Vários arquivos podem ser enfileirados pela Fila de lotes (veja abaixo).
+Converta entre formatos de vídeo/áudio com controle granular sobre a seleção de codecs (51 codecs de vídeo entre famílias de encoders por software e hardware, 27 codecs de áudio), bitrate, resolução de saída (com preservação opcional do aspect ratio), formato de pixel (56 formatos agrupados por profundidade de bits), escala de qualidade (qscale), inclusão da faixa de áudio, seleção do núcleo transcoder e filtros de vídeo (8 presets curados: crop, framerate, deinterlace, denoise, sharpen, color, grayscale, blur). Vários arquivos podem ser enfileirados pela Fila de lotes (veja abaixo).
 
 ### Rotação e espelhamento de mídia
 
@@ -16,7 +16,7 @@ Gire vídeos e imagens em 90°, 180° ou 270° no sentido horário e espelhe hor
 
 Aplique predefinições de codificação para preencher instantaneamente as configurações de conversão. Os perfis encapsulam uma configuração de codificação completa — formato de contêiner, codec de vídeo, codec de áudio, bitrate, CRF/qualidade, escala, formato de pixel e argumentos FFmpeg avançados — para que você não precise configurar cada ajuste manualmente.
 
-- **Mais de 140 perfis integrados** em 8 categorias: Web e Redes Sociais (YouTube, Instagram, TikTok, Facebook, X), Dispositivos (Apple, Android, consoles de games), Codecs de vídeo, Profissional (ProRes, DNxHD/HR, FFV1), Streaming (HLS, DASH), Áudio, Imagens e Avançado
+- **115 perfis integrados** em 8 categorias: Web e Redes Sociais (YouTube, Instagram, TikTok, Facebook, X), Dispositivos (Apple, Android, consoles de games), Vídeo, Profissional (ProRes, DNxHD/HR, FFV1), Streaming (HLS, DASH), Áudio, Imagens e Avançado
 - **Perfis personalizados** — crie, edite e exclua seus próprios perfis; salvos no armazenamento local
 - **Uso recente** — acesso rápido aos últimos 5 perfis aplicados
 - **Filtro por categoria** — navegue por categoria com selos de ícones
@@ -27,6 +27,15 @@ Os perfis estão disponíveis na página de Conversão e na Fila de lotes. Selec
 ### Cópia sem perdas
 
 Cópia de stream de vídeo ou áudio sem re-encoding (`-c copy`). Útil para mudanças rápidas de contêiner, remuxing ou quando a preservação da qualidade é crítica.
+
+### Remux e demux
+
+- **Remux** — altera o contêiner copiando streams (sem re-encode), com mapeamento opcional de streams, legendas e áudio adicionados, capa, importação ou remoção de capítulos, seleção de codec de legenda e deslocamentos de sincronia de áudio.
+- **Demux** — extrai cada stream de vídeo, áudio e legenda para seu próprio arquivo, com conversão opcional por tipo (contêiner de vídeo, codec de áudio, formato de legenda) e filtros de vídeo para o vídeo re-encodado.
+
+### Copilot (Assistente de IA)
+
+O Copilot planeja trabalho a partir de um objetivo em linguagem natural sobre arquivos e pastas. Suporta 13 operações: seis baseadas na fila (`convert`, `remux`, `demux`, `extract_audio`, `compress_image`, `cut`) e sete operações somente leitura de inteligência de mídia (`analyze`, `transcribe`, `summarize`, `chapters`, `search_transcript`, `translate`, `find_similar`). Os planos podem ser gerados pelo motor determinístico `rules` offline (padrão) ou pelos provedores OpenAI, Anthropic, Gemini ou um runtime local. Confirmar um plano reutiliza a Fila de lotes. As chaves de API são enviadas ao processo principal, criptografadas antes do armazenamento e nunca retornadas ao renderer; as configurações expõem apenas se uma chave existe e uma dica mascarada.
 
 ### Aceleração por hardware
 
@@ -50,9 +59,9 @@ Visualize e corte segmentos de vídeo com seleção de início/fim precisa a qua
 
 ### Fila de lotes
 
-Processe vários arquivos com operações configuráveis (transcodificação, extração de áudio, compressão de imagem). Os jobs são adicionados por um diálogo de revisão onde nomes de saída e opções podem ser ajustados antes de entrarem na fila.
+Processe vários arquivos com operações configuráveis (transcodificação, extração de áudio, compressão de imagem, remux, demux). Os jobs são adicionados por um diálogo de revisão onde nomes de saída e opções podem ser ajustados antes de entrarem na fila.
 
-- **Processamento paralelo** — até 4 jobs simultâneos (`MAX_QUEUE_CONCURRENCY = 4`); o limite de concorrência é configurável em runtime e persistido.
+- **Processamento paralelo** — até 4 jobs simultâneos (`MAX_QUEUE_CONCURRENCY = 4`); o limite padrão é 1, é configurável em runtime e é persistido.
 - **Ciclo de vida da fila** — iniciar, pausar e retomar toda a fila; cancelar tudo; limpar jobs concluídos/falhos; remover jobs individuais.
 - **Reordenação** — reordenação por arrastar e soltar dos jobs na fila (com área de soltar), apoiada pelo canal `QUEUE_MOVE_TO` que reporta a nova posição do job.
 - **Edição de jobs** — substituir as opções (e opcionalmente o caminho de saída) de qualquer job na fila antes de iniciar (`QUEUE_UPDATE_OPTIONS`).
@@ -70,14 +79,25 @@ Processe vários arquivos com operações configuráveis (transcodificação, ex
 
 ### Configurações
 
-Página dedicada de configurações para tema, aceleração por hardware (ativar/desativar, modo, tipo de encoder), janela sempre no topo, iniciar com o sistema, concorrência da fila de lotes e ação de energia ao terminar. As preferências persistem no `localStorage` e entram em vigor na inicialização.
+Página dedicada de configurações para tema, aceleração por hardware (ativar/desativar, modo, tipo de encoder), janela sempre no topo, iniciar com o sistema, concorrência da fila de lotes, ação de energia ao terminar, o servidor MCP (ativar/desativar, porta, token de acesso), o editor de provedor/modelo/chave de IA e a opção de desativar a telemetria (relatório de erros + analytics de uso, ativados por padrão). As preferências padrão persistem no `localStorage` e são sincronizadas com o processo principal; as configurações do MCP persistem em `mcp-settings.json`, e as chaves de IA são criptografadas pelo processo principal.
+
+### Servidor MCP {#mcp-server}
+
+O EncodeX pode atuar como um servidor [Model Context Protocol](https://modelcontextprotocol.io) para que assistentes de IA e clientes de automação o operem diretamente. Duas superfícies estão disponíveis:
+
+- **Servidor stdio autônomo** — iniciado com `encodex --mcp` (ou `node dist/mcp/index.js`), falando JSON-RPC via stdio com o stdout reservado para mensagens do protocolo. Esse é o modo usado por hosts MCP que abrem um processo de servidor.
+- **Servidor HTTP integrado** — um endpoint Streamable HTTP opcional em `http://127.0.0.1:8765/mcp`, ativado em **Configurações → MCP Server** enquanto a GUI está em execução. Ele compartilha o mesmo núcleo de ferramentas e a fila de jobs do app em execução.
+
+A superfície stdio expõe 36 ferramentas visíveis ao modelo (37 registros, incluindo a `commit_operation`, somente para o app); a superfície HTTP integrada adiciona 6 ferramentas com paridade com a GUI (`get_queue_state`, `cancel_all_jobs`, `get_timeline`, `extract_preview`, `get_system_info`, `check_for_updates`), totalizando 42 ferramentas visíveis ao modelo (43 registros). Ambas as superfícies expõem 3 recursos (`encodex://profiles`, `encodex://capabilities`, `encodex://codecs`) e 4 modelos de prompt (`convert-video`, `extract-audio`, `compress-image`, `batch-convert`). As conversões são assíncronas: inicie um job e consulte `get_job` ou `list_jobs` para acompanhar o progresso e os resultados.
+
+O servidor integrado conecta-se apenas a loopback, valida o cabeçalho `Origin`, suporta um bearer token opcional (comparado em tempo constante) e aceita somente `GET`, `POST` e `DELETE` em `/mcp`. Todas as sessões são encerradas à força quando o servidor para ou o app é fechado. As configurações do MCP (ativado, porta, token) persistem em `mcp-settings.json` no diretório user-data.
 
 ### Atalhos de teclado
 
-Um registro central de atalhos (`src/renderer/constants/shortcuts.ts`) define mais de 60 atalhos em nove seções (global, convert, media info, image compress, audio extract, video cut, batch queue, logs, dashboard). Destaques:
+Um registro central de atalhos (`src/renderer/constants/shortcuts.ts`) define 82 atalhos em 11 seções (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). Destaques:
 
 - `Ctrl+/` — abrir o diálogo de ajuda de atalhos
-- `Alt+1`…`Alt+9` — pular diretamente para uma página
+- `Alt+0`…`Alt+9` — pular diretamente para uma página
 - `Ctrl+O` / `Ctrl+Shift+S` / `Ctrl+Enter` — escolher entrada / escolher saída / iniciar o job (consistente entre páginas)
 - `Ctrl+Shift+P` / `Ctrl+Shift+C` — pausar / cancelar o job ativo
 - Fila de lotes: `Ctrl+E` exportar, `Ctrl+I` importar, `1`–`5` filtros de status, `F` focar busca
@@ -95,7 +115,7 @@ Fechar a janela com jobs ativos passa por um fluxo de confirmação: o processo 
 
 ### Dashboard
 
-Uma página inicial com tiles de ações rápidas para cada ferramenta (teclas numéricas `1`–`6` pulam direto para elas) e branding sazonal de easter egg (veja abaixo).
+Uma página inicial com tiles de ações rápidas para cada ferramenta (teclas numéricas `1`–`8` pulam direto para elas) e branding sazonal de easter egg (veja abaixo).
 
 ### Easter Eggs
 
@@ -123,7 +143,7 @@ Layout da direita para a esquerda para locales árabe e hebraica (`ar-SA`, `ar-A
 
 ### Internacionalização
 
-56 locales em 35 idiomas:
+56 locales:
 
 | Idioma      | Locales                                    |
 | ----------- | ------------------------------------------ |
@@ -165,11 +185,11 @@ Layout da direita para a esquerda para locales árabe e hebraica (`ar-SA`, `ar-A
 
 ### Atualizações integradas
 
-Gerenciador de atualizações personalizado que verifica o GitHub Releases por novas versões, notifica o usuário sobre a disponibilidade, baixa o instalador específico da plataforma (`.exe` / `.dmg` / `.AppImage`) dentro do app com relatório de progresso em tempo real e lança o instalador ao concluir. A comparação de versões usa semver com remoção de sufixos pre-release. O fluxo de atualização é totalmente integrado à página About com um botão "Verificar atualizações" e um diálogo global.
+Gerenciador de atualizações personalizado que verifica o GitHub Releases por novas versões, notifica o usuário sobre a disponibilidade, baixa o instalador específico da plataforma (`.exe` / `.dmg` / `.AppImage`) dentro do app com relatório de progresso em tempo real e lança o instalador quando o usuário escolhe instalar (ou agenda a instalação para o próximo reinício). A comparação de versões segue a precedência do semver, incluindo identificadores de pré-lançamento; metadados de build são ignorados. Quando o GitHub publica um digest `sha256` ou `sha512` do asset, o download é verificado contra ele. As atualizações não são instaladas automaticamente. O fluxo de atualização é totalmente integrado à página Sobre com um botão "Verificar atualizações" e um diálogo global.
 
 ### Tratamento de erros
 
-Sistema de erros estruturado com códigos tipados (`ErrorCode`), mensagens localizadas voltadas ao usuário, snackbar global de erros, banners de erro inline, notificações toast, React error boundaries aninhadas e histórico de erros integrado (limite 50). Todos os erros são normalizados por `formatError()` e propagados via IPC.
+Sistema de erros estruturado com 28 códigos de erro tipados (`ErrorCode`), mensagens localizadas voltadas ao usuário, snackbar global de erros, banners de erro inline, notificações toast, React error boundaries aninhadas e histórico de erros integrado (limite 50). Todos os erros são normalizados por `formatError()` e propagados via IPC.
 
 ## Formatos de mídia suportados
 

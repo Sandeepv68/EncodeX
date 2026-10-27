@@ -17,7 +17,7 @@ Le MKV est un conteneur favori pour la vidéo haute qualité — c'est aussi pou
 - **Partage** — les fichiers MKV sont trop lourds pour de nombreuses applications de chat et de messagerie
 - **Streaming** — les serveurs médias fonctionnent mieux avec des débits raisonnables
 
-## Compresser du MKV sans perte de qualité
+## Compresser du MKV en gardant une qualité élevée
 
 EncodeX ré-encode votre MKV avec un codec moderne (comme **H.265/HEVC ou AV1**) à un débit binaire ajusté, tout en conservant le conteneur MKV avec vos sous-titres et pistes audio :
 

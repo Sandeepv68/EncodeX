@@ -32,7 +32,7 @@ Du kannst die **Bitrate (128–320 kbps)** wählen — das richtige Gleichgewich
 ### Ein schneller, privater MKV zu MP3 Konverter
 
 - **Offline** — deine Dateien verlassen nie deinen Computer
-- **Hardware-beschleunigt** — nutzt deine GPU für Geschwindigkeit
+- **Nur Audio-Verarbeitung** — kein Video-Re-Encoding nötig
 - **Keine Wasserzeichen** und für immer kostenlos
 - Funktioniert auf **Windows, Mac und Linux**
 
@@ -40,7 +40,7 @@ Du kannst die **Bitrate (128–320 kbps)** wählen — das richtige Gleichgewich
 
 **Kann ich MP3 aus einer MKV-Datei extrahieren?** Ja. EncodeX liest die Audiospur in jeder MKV-Datei und speichert sie als MP3 — eine Re-Encodierung des Videos ist nicht nötig.
 
-**Wird das MP3 der Qualität der MKV-Audiospur entsprechen?** EncodeX verwendet die Original-Audiospur. Wähle 320 kbps für fast verlustfreien Klang.
+**Wird das MP3 der Qualität der MKV-Audiospur entsprechen?** EncodeX verwendet die Original-Audiospur, aber MP3 ist ein verlustbehaftetes Format, daher ist die Ausgabe nicht identisch mit der Quelle. Höhere Bitraten (bis zu 320 kbps) verringern den Unterschied.
 
 **Kann ich viele MKV-Dateien auf einmal in MP3 konvertieren?** Ja. EncodeX konvertiert einen ganzen Ordner voller MKV-Dateien in einem Durchgang in MP3.
 
