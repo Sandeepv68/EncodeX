@@ -17,7 +17,7 @@
  * launch paths identical.
  */
 
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { StdioServerTransport } from '@modelcontextprotocol/server/stdio';
 import { Readable, Writable } from 'stream';
 import * as fs from 'fs';
 import { Logger } from '../shared/logger';

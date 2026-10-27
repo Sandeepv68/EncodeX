@@ -1,6 +1,13 @@
 # D5 — ext-apps / SDK 2.x migration plan (scoped)
 
-> **Status:** SCOPE ONLY — investigation complete, line-item migration plan below. **No code changed.**
+> **Status:** **EXECUTED (2026-10-27)** — Option A chosen (drop the Tasks receipt layer), as
+> described in `plans/MCP_APPS_REACT_IN_APP_PLAN.md` Phase 1. The 2.x split packages are in
+> `package.json`, the tasks layer (`src/mcp/jobs/task-store.ts` and its test) is deleted,
+> `convert_media` / `batch_convert` are plain `registerAppTool` registrations, and the
+> transports are `NodeStreamableHTTPServerTransport` / `@modelcontextprotocol/server/stdio`.
+> Verification: `npm run typecheck`, `npm test` (306 files / 4604 tests), `npm run lint`,
+> `npm run mcp:smoke` (37 tools + 11 views), `npm run mcp:full-test` (73 checks) — all green.
+> The legacy-host (1.x client) negotiation check in §10 still needs a manual run.
 > **Source:** `plans/AI_ASSISTANT_MCP_ENHANCEMENT_PLAN.md` decision **D5** (line 563): *"requires
 > `@modelcontextprotocol/{server,client,core}@2`; revisit after R3."*
 > **Upstream truth verified against** npm registry (latest published) and tarballs extracted to

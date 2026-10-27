@@ -44,7 +44,7 @@ import { registerMcpSettingsIpc } from './mcp/settings-ipc';
 import { getVideoPreview } from './video-preview';
 import { checkForUpdate, autoInstallPendingUpdate } from './updater';
 import { createTranscoder } from './transcoders/factory';
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import type { McpServer } from '@modelcontextprotocol/server';
 import { Logger } from '../shared/logger';
 import {
   WINDOW_SIZE,

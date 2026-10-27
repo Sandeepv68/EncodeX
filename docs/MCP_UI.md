@@ -103,7 +103,10 @@ Views auto-refresh by polling their tool (for example, the queue view calls `lis
 
 **Pipeline:** views are currently hand-written, self-contained HTML string modules (zero network, CSP-clean, no extra bundler). The production target is to author them as React components and bundle each to a single HTML file with `vite-plugin-singlefile`, replacing the hand-written bridge with the `ext-apps` `App` API.
 
-**Dependency note:** EncodeX pins the legacy monolith `@modelcontextprotocol/sdk@1.x` and therefore uses `@modelcontextprotocol/ext-apps@^1.7.5`. The ext-apps `2.x` line requires the newer split packages and is a deliberate future migration, not part of this integration.
+**Dependency note:** EncodeX uses the MCP 2.x split packages — `@modelcontextprotocol/server`,
+`@modelcontextprotocol/node` and `@modelcontextprotocol/ext-apps@^2` — instead of the legacy
+`@modelcontextprotocol/sdk@1.x` monolith. The ext-apps 2.x line ships the browser-side `App` API
+and React hooks (`useApp`, `useHostStyleVariables`, `useDocumentTheme`) that the React views use.
 
 ---
 

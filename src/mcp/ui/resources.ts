@@ -12,7 +12,7 @@
  * in every mode.
  */
 
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import type { McpServer } from '@modelcontextprotocol/server';
 import { registerAppResource } from '@modelcontextprotocol/ext-apps/server';
 import { MCP_UI_RESOURCE_MIME_TYPE } from '../../shared/mcp-ui';
 import { MCP_UI_VIEWS } from './registry';

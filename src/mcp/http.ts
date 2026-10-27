@@ -33,7 +33,7 @@
 
 import { randomUUID, timingSafeEqual } from 'crypto';
 import * as http from 'http';
-import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
+import { NodeStreamableHTTPServerTransport } from '@modelcontextprotocol/node';
 import { Logger } from '../shared/logger';
 import { APP_NAME } from '../shared/app-constants';
 import { createMcpServer } from './server';
@@ -41,7 +41,7 @@ import { MCPJobManager } from './jobs/manager';
 import { createTranscoder } from '../main/transcoders/factory';
 import type { ITranscoder } from '../main/transcoders/types';
 import type { TranscoderType } from '../shared/types';
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import type { McpServer } from '@modelcontextprotocol/server';
 
 const log = new Logger('mcp/http');
 
@@ -99,7 +99,7 @@ export interface McpHttpServerOptions {
 
 /** One open MCP session: its transport plus the McpServer bound to it. */
 interface SessionRecord {
-  transport: StreamableHTTPServerTransport;
+  transport: NodeStreamableHTTPServerTransport;
   server: McpServer;
 }
 
@@ -330,7 +330,7 @@ export function createMcpHttpHandler(options: McpHttpServerOptions = {}): http.R
       }
       reserving += 1;
       try {
-        const transport = new StreamableHTTPServerTransport({
+        const transport = new NodeStreamableHTTPServerTransport({
           sessionIdGenerator: () => randomUUID(),
           enableJsonResponse: true,
         });

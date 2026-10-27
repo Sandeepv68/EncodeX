@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **MCP AI tools** — `analyze_media`, `recommend_settings`, `estimate_conversion`, `validate_output`, `compress_to_target`, `analyze_folder`, `explain_error`, `advise_encoding` and `quality_report`, each returning `structuredContent` alongside the text fallback.
 - **MCP Apps views** — inspector, plan, compression-lab and error views, plus a batch dashboard over `batch_convert` / `get_queue_state`.
 - **MCP Tasks extension** — `convert_media` / `batch_convert` are registered as optional tasks, advertising `tasks/get`, `tasks/result`, `tasks/cancel` and `tasks/list`.
+- **MCP SDK 2.x** — the MCP server now runs on the 2.x split packages (`@modelcontextprotocol/server`, `@modelcontextprotocol/node`, `@modelcontextprotocol/ext-apps@2`), which brings the browser-side MCP Apps `App` API and React hooks used by the view pipeline.
 - **Copilot AI extras** — transcribe, summarize, chapters, transcript search, translate and find-similar operations, wired through the operation router.
 - **Copilot redesign** — ChatGPT-style conversation UI with a Lexical composer, suggestion placeholder, advanced popover and a provider logo-grid connect flow in Settings.
 - **AI provider settings** — model list sourced from the provider API with offline handling, retry with backoff on transient `429/5xx` responses, Connected/stale status states, key removal, and a session-only settings cache.
@@ -32,6 +33,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI/CD expanded with a nightly workflow, an OpenSSF Scorecard workflow, Codecov bundle analysis, coverage flags/components and coverage test analytics; release workflow updated with monitoring and observability.
 - Website homepage redesigned with a hero section, a "latest downloads" card and an open-source card.
 - Documentation synced with `1.0.0-beta.5` across all shipped locales.
+
+### Removed
+
+- **MCP Tasks extension** — the MCP 2.x protocol line removes the `tasks/*` side-channel, so `convert_media` and `batch_convert` are now plain tools that return the same immediate `jobId` receipt. `get_job` / `list_jobs` polling is unchanged; only hosts that explicitly drove `tasks/get` / `tasks/result` / `tasks/cancel` / `tasks/list` are affected.
 
 ### Fixed
 

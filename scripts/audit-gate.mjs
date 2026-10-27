@@ -5,7 +5,7 @@
  * present that is not on the committed exception list
  * (`scripts/audit-allowlist.json`). The repo keeps production deps clean and
  * treats the dev-toolchain set in the allowlist (vite/vue/source-map-js,
- * @modelcontextprotocol/sdk, shell-quote/concurrently) as known, tracked,
+ * shell-quote/concurrently) as known, tracked,
  * unresolvable-now items; a NEW advisory at high or critical severity turns
  * the build red even while those known ones remain.
  *

@@ -1,15 +1,15 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { expectAppLog } from '../../../test-utils/crash-tripwire';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+import { Client } from '@modelcontextprotocol/client';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
 import { createMcpServer } from '../../../mcp/server';
 import { registerGuiTools } from '../gui-tools';
 import { startMcpHttpServer } from '../http-server';
 import type { McpHttpHandle } from '../http-server';
 import { MCPJobManager } from '../../../mcp/jobs/manager';
 import { FakeTranscoder } from '../../../mcp/__tests__/test-helpers';
-import type { Client as ClientType } from '@modelcontextprotocol/sdk/client/index.js';
-import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
+import type { Client as ClientType } from '@modelcontextprotocol/client';
+import type { Transport } from '@modelcontextprotocol/client';
 
 const TOKEN = 'test-bearer-token';
 

@@ -17,9 +17,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import type { CreateTaskRequestHandlerExtra, CreateTaskResult, ToolTaskHandler } from '@modelcontextprotocol/sdk/experimental/tasks';
+import { McpServer } from '@modelcontextprotocol/server';
 import * as z from 'zod';
 import { APP_NAME } from '../shared/app-constants';
 import { createTranscoder } from '../main/transcoders/factory';
@@ -105,7 +103,6 @@ import {
 } from './ui/approval';
 import { MCPJobManager } from './jobs/manager';
 import type { MCPJob } from './jobs/manager';
-import { MCPTaskStore } from './jobs/task-store';
 import {
   buildCompressPlan,
   buildExtractAudioPlan,
@@ -872,25 +869,6 @@ function assertMcpAuxiliaryInputsExist(files: string[]): void {
 }
 
 /**
- * Default lifetime (ms) for tasks created by R0.5 task-supporting tools.
- * Long enough for a client to drain `tasks/result` after a long encode while
- * short enough that stale records do not accumulate.
- */
-const MCP_TASK_TTL_MS = 3_600_000;
-
-/**
- * Mirrors `@modelcontextprotocol/ext-apps` `registerAppTool` so that a tool
- * registered through `server.experimental.tasks.registerToolTask` still exposes
- * the confirmation view URI under both the nested (`ui.resourceUri`) and legacy
- * (`ui/resourceUri`) keys, preserving MCP Apps rendering and the smoke tests.
- * @param {{ ui: { resourceUri: string } }} meta - The `_meta` object passed by the caller.
- * @returns {Record<string, unknown>} The normalized `_meta` object.
- */
-function normalizeAppToolMeta(meta: { ui: { resourceUri: string } }): Record<string, unknown> {
-  return { ...meta, 'ui/resourceUri': meta.ui.resourceUri };
-}
-
-/**
  * Creates an McpServer instance for EncodeX with all core tools, resources,
  * and prompts registered.
  *
@@ -905,8 +883,6 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
   const transcoderFactory = options.transcoderFactory ?? createTranscoder;
   const jobManager = options.jobManager ?? new MCPJobManager({ transcoderFactory });
 
-  const taskStore = new MCPTaskStore({ ttlMs: MCP_TASK_TTL_MS });
-
   const server = new McpServer(
     {
       name: options.name ?? APP_NAME,
@@ -917,13 +893,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         extensions: {
           [MCP_UI_EXTENSION_ID]: { mimeTypes: [MCP_UI_RESOURCE_MIME_TYPE] },
         },
-        tasks: {
-          list: {},
-          cancel: {},
-          requests: { tools: { call: {} } },
-        },
       },
-      taskStore,
     },
   );
   const onAudit = options.onAudit;
@@ -1954,46 +1924,6 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
     return hostSupportsMcpApps(server);
   }
 
-  /**
-   * Wraps a tool result as an immediately-terminal task. The task's stored
-   * result is the very payload the tool would have returned synchronously (the
-   * confirmation proposal on MCP Apps hosts, a validation error, or the queued
-   * `jobId`/`status` receipt), so auto-polling clients get an identical result
-   * with no extra latency and task clients can read it back via `tasks/result`.
-   * @param {CallToolResult} result - The result to deliver via `tasks/result`.
-   * @param {CreateTaskRequestHandlerExtra} extra - Task creation context.
-   * @returns {Promise<CreateTaskResult>} The completed task.
-   */
-  async function taskFromResult(result: CallToolResult, extra: CreateTaskRequestHandlerExtra): Promise<CreateTaskResult> {
-    const status = result.isError ? 'failed' : 'completed';
-    const task = await extra.taskStore.createTask({ ttl: MCP_TASK_TTL_MS });
-    await extra.taskStore.storeTaskResult(task.taskId, status, result);
-    return { task: { ...task, status } };
-  }
-
-  /**
-   * Creates the `convert_media` task. The conversion is enqueued (or, on MCP
-   * Apps hosts, proposed for confirmation) and its immediate result — including
-   * the `jobId` and `transcoder` — becomes the task's terminal payload.
-   * @param {unknown} raw - Untrusted tool arguments.
-   * @param {CreateTaskRequestHandlerExtra} extra - Task creation context.
-   * @returns {Promise<CreateTaskResult>} The created task.
-   */
-  async function convertCreateTask(raw: unknown, extra: CreateTaskRequestHandlerExtra): Promise<CreateTaskResult> {
-    return taskFromResult((await runConvert(raw, shouldConfirm())) as CallToolResult, extra);
-  }
-
-  /**
-   * Creates the `batch_convert` task. Mirrors {@link convertCreateTask}: every
-   * matched file is enqueued and the batch receipt is the task's payload.
-   * @param {unknown} raw - Untrusted tool arguments.
-   * @param {CreateTaskRequestHandlerExtra} extra - Task creation context.
-   * @returns {Promise<CreateTaskResult>} The created task.
-   */
-  async function batchCreateTask(raw: unknown, extra: CreateTaskRequestHandlerExtra): Promise<CreateTaskResult> {
-    return taskFromResult((await runBatch(raw, shouldConfirm())) as CallToolResult, extra);
-  }
-
   server.registerTool(
     'ping',
     {
@@ -2004,7 +1934,8 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
     async () => ok(JSON.stringify({ pong: true }), { pong: true }),
   );
 
-  server.experimental.tasks.registerToolTask(
+  registerAppTool(
+    server,
     'convert_media',
     {
       title: 'Convert Media',
@@ -2014,16 +1945,11 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         '(curated ids); they require re-encoding and cannot be combined with copy. ' +
         'When the client renders MCP Apps the conversion is proposed in the app and only starts once the user ' +
         'confirms it; in other clients it starts immediately. ' +
-        'Returns a job id; poll with get_job / list_jobs and cancel with cancel_job. ' +
-        'Clients that call it as a task request receive a CreateTaskResult and read the same receipt back ' +
-        'through tasks/get and tasks/result.',
+        'Returns a job id; poll with get_job / list_jobs and cancel with cancel_job.',
       inputSchema: conversionSchema,
-      execution: { taskSupport: 'optional' },
-      _meta: normalizeAppToolMeta({ ui: { resourceUri: confirmationViewUri('convert_media') } }),
+      _meta: { ui: { resourceUri: confirmationViewUri('convert_media') } },
     },
-    {
-      createTask: convertCreateTask,
-    } as ToolTaskHandler<typeof conversionSchema>,
+    async (args: unknown) => runConvert(args, shouldConfirm()),
   );
 
   registerAppTool(
@@ -2736,7 +2662,8 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
     async (args: z.infer<typeof cutSchema>) => runCut(args, shouldConfirm()),
   );
 
-  server.experimental.tasks.registerToolTask(
+  registerAppTool(
+    server,
     'batch_convert',
     {
       title: 'Batch Convert',
@@ -2744,16 +2671,11 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
         'Queue conversions for multiple files (paths, directories, or glob patterns) sharing the same options. ' +
         'When the client renders MCP Apps the batch is proposed in the app and only starts once the user confirms it; ' +
         'in other clients it starts immediately. ' +
-        'Returns a job id per input; poll with get_job / list_jobs and cancel with cancel_job. ' +
-        'Clients that call it as a task request receive a CreateTaskResult and read the same receipt back ' +
-        'through tasks/get and tasks/result.',
+        'Returns a job id per input; poll with get_job / list_jobs and cancel with cancel_job.',
       inputSchema: batchSchema,
-      execution: { taskSupport: 'optional' },
-      _meta: normalizeAppToolMeta({ ui: { resourceUri: confirmationViewUri('batch_convert') } }),
+      _meta: { ui: { resourceUri: confirmationViewUri('batch_convert') } },
     },
-    {
-      createTask: batchCreateTask,
-    } as ToolTaskHandler<typeof batchSchema>,
+    async (args: unknown) => runBatch(args, shouldConfirm()),
   );
 
   registerAppTool(

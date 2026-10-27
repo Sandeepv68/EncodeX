@@ -4,7 +4,7 @@
   "description": "Multimedia converter built on FFmpeg, React, TypeScript, and Electron",
   "main": "dist/main/index.js",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.12"
   },
   "bin": {
     "encodex": "bin/encodex.js"
@@ -114,8 +114,9 @@
     "@lexical/react": "^0.28.0",
     "@lexical/rich-text": "^0.28.0",
     "@lexical/utils": "^0.28.0",
-    "@modelcontextprotocol/ext-apps": "^1.7.5",
-    "@modelcontextprotocol/sdk": "^1.30.0",
+    "@modelcontextprotocol/ext-apps": "^2.0.4",
+    "@modelcontextprotocol/node": "^2.1.2",
+    "@modelcontextprotocol/server": "^2.4.0",
     "@mui/material": "^9.5.0",
     "@sentry/electron": "^7.17.0",
     "@tanstack/react-virtual": "^3.14.22",
@@ -144,6 +145,8 @@
   },
   "devDependencies": {
     "@codecov/vite-plugin": "^2.0.1",
+    "@modelcontextprotocol/client": "^2.4.0",
+    "@modelcontextprotocol/core": "^2.4.0",
     "@sentry/vite-plugin": "^5.4.0",
     "@stryker-mutator/core": "^10.0.0",
     "@stryker-mutator/vitest-runner": "^10.0.0",

@@ -2,9 +2,8 @@ import { describe, it, expect } from 'vitest';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { CallToolResultSchema } from '@modelcontextprotocol/sdk/types.js';
+import { Client } from '@modelcontextprotocol/client';
+import { InMemoryTransport } from '@modelcontextprotocol/client';
 import { createMcpServer } from '../server';
 import { FakeTranscoder } from './test-helpers';
 import type { FakeTranscoderOptions } from './test-helpers';
@@ -601,64 +600,15 @@ describe('createMcpServer tools', () => {
   });
 });
 
-describe('createMcpServer tasks extension', () => {
-  /**
-   * Creates a task-capable client session (the tasks extension must be
-   * advertised by the client to drive `tasks/get`, `tasks/result` and
-   * task-augmented tool calls).
-   * @returns {Promise<TestSession>} The connected session.
-   */
-  async function setupTaskSession(): Promise<TestSession> {
-    const transcoders: FakeTranscoder[] = [];
+describe('createMcpServer task surface', () => {
+  it('does not advertise the tasks capability', async () => {
     const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-    const server = createMcpServer({
-      transcoderFactory: () => {
-        const t = new FakeTranscoder();
-        transcoders.push(t);
-        return t;
-      },
-    });
+    const server = createMcpServer();
     await server.connect(serverTransport);
-    const client = new Client(
-      { name: 'mcp-task-test-client', version: '1.0.0' },
-      { capabilities: { tasks: { list: {}, requests: { tools: { call: {} } } } } },
-    );
+    const client = new Client({ name: 'mcp-task-test-client', version: '1.0.0' });
     await client.connect(clientTransport);
-    return { client, transcoders, close: () => client.close() };
-  }
-
-  it('advertises the tasks capability during the handshake', async () => {
-    const session = await setupTaskSession();
-    const capabilities = session.client.getServerCapabilities();
-    await session.close();
-    expect(capabilities?.tasks?.list).toBeDefined();
-    expect(capabilities?.tasks?.requests?.tools?.call).toBeDefined();
-  });
-
-  it('runs convert_media as a task and exposes the receipt through tasks/result', async () => {
-    const input = fakeMediaFile('mcp-task-');
-    const session = await setupTaskSession();
-    await session.client.listTools();
-    const stream = session.client.experimental.tasks.callToolStream({ name: 'convert_media', arguments: { input } });
-    let taskId: string | undefined;
-    let finalResult: unknown;
-    for await (const message of stream) {
-      if (message.type === 'taskCreated') taskId = message.task.taskId;
-      if (message.type === 'result') finalResult = message.result;
-    }
-    expect(typeof taskId).toBe('string');
-
-    const task = await session.client.experimental.tasks.getTask(taskId as string);
-    expect(task.taskId).toBe(taskId);
-    expect(task.status).toBe('completed');
-
-    const result = await session.client.experimental.tasks.getTaskResult(taskId as string, CallToolResultSchema);
-    const parsed = JSON.parse(textOf(result));
-    expect(parsed.jobId).toBeTruthy();
-    expect(finalResult).toBeDefined();
-
-    const listed = await session.client.experimental.tasks.listTasks();
-    expect(listed.tasks.some((t) => t.taskId === taskId)).toBe(true);
-    await session.close();
+    const capabilities = client.getServerCapabilities();
+    await client.close();
+    expect(capabilities?.tasks).toBeUndefined();
   });
 });

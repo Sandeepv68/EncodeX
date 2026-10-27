@@ -15,8 +15,8 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+import { Client } from '@modelcontextprotocol/client';
+import { StdioClientTransport } from '@modelcontextprotocol/client/stdio';
 import { getFfmpegPath } from '../../main/transcoders/ffmpeg-utils';
 
 const DIST_MCP = fileURLToPath(new URL('../../../dist/mcp/index.js', import.meta.url));

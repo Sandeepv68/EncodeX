@@ -12,7 +12,7 @@
  */
 
 import * as os from 'os';
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { McpServer } from '@modelcontextprotocol/server';
 import * as z from 'zod';
 import { createError, ErrorCode } from '../../shared/errors';
 import type { UpdateInfo } from '../../shared/types';

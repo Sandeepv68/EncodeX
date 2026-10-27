@@ -9,7 +9,7 @@
  * The previous contents of this file asserted `JSON.parse` threw on a literal
  * string it built itself, and never imported `src/mcp/**`; that tested nothing
  * about the server. The three `vi.mock` calls it carried were also inert:
- * `server.ts` imports `@modelcontextprotocol/sdk/server/mcp.js`, never the
+ * `server.ts` imports `@modelcontextprotocol/server`, never the
  * `stdio`/`http`/`server/index.js` modules they replaced.
  *
  * Two behaviours that are hostile-but-not-refused are deliberately NOT pinned
@@ -24,9 +24,9 @@ import { describe, it, expect } from 'vitest';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { McpError } from '@modelcontextprotocol/sdk/types.js';
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
+import { Client } from '@modelcontextprotocol/client';
+import { ProtocolError } from '@modelcontextprotocol/server';
+import { InMemoryTransport } from '@modelcontextprotocol/client';
 import { createMcpServer } from '../server';
 import { MCPJobManager } from '../jobs/manager';
 import { FakeTranscoder } from './test-helpers';
@@ -197,9 +197,9 @@ describe('MCP hostile input', () => {
     it('rejects an unknown tool name', async () => {
       const session = await setup();
       try {
-        const result = await callTool(session, 'no_such_tool', {});
-        expect(result.isError).toBe(true);
-        expect(textOf(result)).toContain('no_such_tool');
+        // SDK 2.x surfaces an unknown tool as a JSON-RPC protocol error rather
+        // than an in-band tool error result.
+        await expect(callTool(session, 'no_such_tool', {})).rejects.toThrow(/no_such_tool/);
       } finally {
         await session.close();
       }
@@ -212,7 +212,7 @@ describe('MCP hostile input', () => {
           await expect(
             session.client.callTool({ name: 'convert_media', arguments: args as unknown as Record<string, unknown> }),
             `arguments ${JSON.stringify(args)} must be refused`,
-          ).rejects.toThrow(McpError);
+          ).rejects.toThrow(ProtocolError);
         }
       } finally {
         await session.close();
