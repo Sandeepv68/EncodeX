@@ -1,5 +1,7 @@
 # 测试
 
+<!-- drift: test-files=314 renderer-component-tests=44 -->
+
 ## 命令
 
 ```bash

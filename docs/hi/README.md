@@ -1,4 +1,6 @@
 <div align="center">
+
+<!-- drift: shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 -->
   <img src="../../assets/banner.png" alt="EncodeX लोगो" width="900" />
   <h3>FFmpeg की ताकत। कमांड लाइन के बिना।</h3>
   <p><strong>EncodeX</strong> — Windows, macOS और Linux के लिए मुफ़्त, ओपन-सोर्स <strong>FFmpeg GUI</strong>।</p>
@@ -87,7 +89,7 @@ AI असिस्टेंट से काम करवाना चाहत�
 - **🤖 MCP सर्वर** — बिल्ट-इन [Model Context Protocol](https://modelcontextprotocol.io) सर्वर: stdio पर 36 model-visible tools, 3 resources और 4 prompts (`encodex --mcp`), साथ ही एक वैकल्पिक embedded localhost HTTP endpoint (डिफ़ॉल्ट रूप से बंद) जो 6 GUI-parity tools (live queue, preview, timeline, system info, updates) जोड़ता है, कुल 42 model-visible tools के लिए। Claude Desktop, Claude Code, Cursor, VS Code या किसी भी MCP client से one-off conversions चलाएँ या async jobs manage करें
 - **⚙️ 3 ट्रांसकोडर कोर** — FFmpeg API (fluent-ffmpeg), FFmpeg CLI (child_process), BMF Framework
 - **🌍 56 लोकेल** — RTL समर्थन (Arabic, Hebrew) के साथ
-- **⌨️ कीबोर्ड शॉर्टकट** — 11 सेक्शनों में 82 शॉर्टकट, एक in-app help dialog (`Ctrl+/`) के साथ
+- **⌨️ कीबोर्ड शॉर्टकट** — 11 सेक्शनों में 71 शॉर्टकट, एक in-app help dialog (`Ctrl+/`) के साथ
 - **🔔 गतिविधि संकेत** — hover popovers के साथ live nav indicators जो एक नज़र में प्रति-job प्रगति दिखाते हैं
 - **🛡️ बंद करने की पुष्टि** — jobs चलते समय window बंद करने से पहले चेतावनी देता है
 - **🎉 ईस्टर एग्स** — विशेष तिथियों पर holiday-themed app logos

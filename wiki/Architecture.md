@@ -33,7 +33,7 @@ Node.js environment. Owns the application lifecycle and all privileged capabilit
 
 ### Shared MCP Server (`src/mcp/`)
 
-A dedicated Node entry (`index.ts`) used by both the standalone launcher (`node dist/mcp/index.js`) and the Electron `--mcp` branch. Talks stdio over raw file descriptors (fd 0/1), registers 37 tool registrations (36 model-visible plus the app-only `commit_operation`) plus resources and prompts, and manages async conversion jobs in memory (`jobs/manager.ts`). When launched inside the GUI, the same operations connect to the live queue so tools and UI observe the same jobs.
+A dedicated Node entry (`index.ts`) used by both the standalone launcher (`node dist/mcp/index.js`) and the Electron `--mcp` branch. Talks stdio over raw file descriptors (fd 0/1), registers 37 tool registrations (36 model-visible plus the app-only `commit_operation`) plus resources and prompts, and manages async conversion jobs in memory (`jobs/manager.ts`). <!-- drift:mcp-registrations=37 --> <!-- drift:mcp-tools=36 --> When launched inside the GUI, the same operations connect to the live queue so tools and UI observe the same jobs.
 
 ### Preload Script (`src/preload/index.ts`)
 
@@ -97,7 +97,7 @@ useConversion / page state -> ProgressBar UI
 
 ## 🛡️ Error Handling
 
-28 typed error codes (`FILE_NOT_FOUND`, `FFMPEG_NOT_FOUND`, `CONVERSION_FAILED`, `CANCELLED`, etc.) with user-facing localized messages. All errors flow through `formatError()` which normalizes to `AppError { code, message, detail, timestamp }` and are displayed via `ErrorSnackbar`, `ErrorBanner`, and `ErrorBoundary`.
+28 typed error codes (`FILE_NOT_FOUND`, `FFMPEG_NOT_FOUND`, `CONVERSION_FAILED`, `CANCELLED`, etc.) with user-facing localized messages. <!-- drift:error-codes=28 --> All errors flow through `formatError()` which normalizes to `AppError { code, message, detail, timestamp }` and are displayed via `ErrorSnackbar`, `ErrorBanner`, and `ErrorBoundary`.
 
 ## 🌍 Additional Topics
 

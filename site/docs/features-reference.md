@@ -1,4 +1,6 @@
 ---
+
+<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 builtin-profiles=115 profile-categories=8 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 error-codes=28 copilot-operations=13 video-filter-presets=8 mcp-tools=36 mcp-registrations=37 mcp-gui-tools=6 -->
 title: "Feature Reference — Supported Formats, Codecs & Capabilities"
 description: "Complete feature reference for EncodeX: supported media formats, codec tables, validation utilities, hardware acceleration, and conversion options."
 ---
@@ -97,9 +99,27 @@ The stdio surface exposes 36 model-visible tools (37 registrations, including th
 
 The embedded server binds to loopback only, validates the `Origin` header, supports an optional bearer token (compared in constant time), and accepts only `GET`, `POST`, and `DELETE` on `/mcp`. All sessions are force-closed when the server stops or the app quits. MCP settings (enabled, port, token) persist to `mcp-settings.json` in the user-data directory.
 
+### Local Model Runtime
+
+Some intelligence tools can run on-device instead of calling a hosted provider:
+
+- **Local provider** - routed through `src/mcp/local-model-client.ts`; point it at a local runtime with `ENCODEX_LOCAL_MODEL_URL` and select the model with `ENCODEX_LOCAL_MODEL_MODEL`.
+- **Speech-to-text** - the whisper adapter in `src/mcp/stt-engine.ts`, configured with `ENCODEX_WHISPER_BIN` and `ENCODEX_WHISPER_MODEL`.
+- **Translation** - `src/mcp/translate-engine.ts`.
+
+When no engine is configured, the STT and translation adapters raise typed errors (`TRANSCRIPTION_UNAVAILABLE`, `TRANSLATION_UNAVAILABLE`) instead of returning empty results.
+
+### Output Size Estimation
+
+`src/shared/estimate.ts` provides an output-size estimate before a conversion runs. The figure is an **experimental rough upper bound**, not a guarantee, and is always labelled as an estimate wherever it appears (Copilot plans, the MCP `estimate_conversion` tool).
+
+### Audit Trail
+
+Mutating operations (conversions, queue edits, plan commits) emit structured audit entries via `src/shared/audit.ts`. Entries stream to the renderer over the `audit-entry` IPC channel and are stored by the `auditStore`, so a run can be reviewed after the fact. The audit contract is independent of the error-monitoring layer.
+
 ### Keyboard Shortcuts
 
-A central shortcut registry (`src/renderer/constants/shortcuts.ts`) defines 82 shortcuts across 11 sections (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). Highlights:
+A central shortcut registry (`src/renderer/constants/shortcuts.ts`) defines 71 shortcuts across 11 sections (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). Highlights:
 
 - `Ctrl+/` — open the shortcuts help dialog
 - `Alt+0`…`Alt+9` — jump directly to a page

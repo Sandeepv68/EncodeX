@@ -1,4 +1,6 @@
 <div align="center">
+
+<!-- drift: shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 -->
   <img src="../../assets/banner.png" alt="Logotipo de EncodeX" width="900" />
   <h3>El poder de FFmpeg. Sin la línea de comandos.</h3>
   <p><strong>EncodeX</strong> — la interfaz gráfica de <strong>FFmpeg</strong> gratuita y de código abierto para Windows, macOS y Linux.</p>
@@ -87,7 +89,7 @@ La conversión se ejecuta **en tu propio equipo** — sin cuentas, sin subidas d
 - **🤖 Servidor MCP** — servidor [Model Context Protocol](https://modelcontextprotocol.io) integrado: 36 herramientas visibles para el modelo, 3 recursos y 4 prompts mediante stdio (`encodex --mcp`), además de un endpoint HTTP local opcional (desactivado por defecto) que añade 6 herramientas de paridad con la GUI (cola en vivo, vista previa, línea de tiempo, información del sistema, actualizaciones) para un total de 42 herramientas visibles para el modelo. Ejecuta conversiones puntuales o gestiona trabajos asíncronos desde Claude Desktop, Claude Code, Cursor, VS Code o cualquier cliente MCP
 - **⚙️ 3 núcleos de transcodificación** — API de FFmpeg (fluent-ffmpeg), CLI de FFmpeg (child_process), plataforma BMF
 - **🌍 56 configuraciones regionales** — con soporte RTL (árabe, hebreo)
-- **⌨️ Atajos de teclado** — 82 atajos en 11 secciones de ayuda, con un diálogo de ayuda integrado (`Ctrl+/`)
+- **⌨️ Atajos de teclado** — 71 atajos en 11 secciones de ayuda, con un diálogo de ayuda integrado (`Ctrl+/`)
 - **🔔 Blips de actividad** — Indicadores de navegación en vivo con ventanas emergentes al pasar el cursor que muestran el progreso de cada tarea de un vistazo
 - **🛡️ Confirmación de cierre** — Advierte antes de cerrar la ventana mientras haya tareas en ejecución
 - **🎉 Huevos de pascua** — Logotipos temáticos de la aplicación en fechas especiales

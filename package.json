@@ -3,6 +3,9 @@
   "version": "1.0.0-beta.5",
   "description": "Multimedia converter built on FFmpeg, React, TypeScript, and Electron",
   "main": "dist/main/index.js",
+  "engines": {
+    "node": ">=22"
+  },
   "bin": {
     "encodex": "bin/encodex.js"
   },
@@ -39,6 +42,9 @@
     "lint:unused:test": "node --test eslint-rules/no-unused.test.mjs",
     "validate:locales": "node scripts/validate-locales.mjs",
     "sync:locales": "node scripts/sync-locale-keys.mjs",
+    "doc:drift": "node scripts/check-doc-drift.mjs",
+    "doc:drift:strict": "node scripts/check-doc-drift.mjs --strict",
+    "doc:drift:test": "node --test scripts/check-doc-drift.test.mjs",
     "typecheck:renderer": "tsc -p tsconfig.renderer.json --noEmit",
     "typecheck:main": "tsc -p tsconfig.main.json --noEmit",
     "typecheck:preload": "tsc -p tsconfig.preload.json --noEmit",

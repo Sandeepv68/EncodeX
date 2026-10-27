@@ -1,5 +1,7 @@
 # 进程、构建系统与启动
 
+<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 log-constants=527 -->
+
 ## 进程模型
 
 ### 主进程（`src/main/`）

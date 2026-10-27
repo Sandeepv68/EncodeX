@@ -1,5 +1,7 @@
 # 💻 CLI Usage
 
+<!-- drift: cli-subcommands=8 -->
+
 Build first, then invoke the compiled CLI via the `encodex` command (the `bin/encodex.js` launcher wraps the Electron binary). CLI mode activates explicitly with `--cli`, `-h`/`--help`, or any subcommand/alias name, or automatically when at least two non-flag positional arguments (input + output) are given:
 
 ```bash

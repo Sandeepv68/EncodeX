@@ -1,5 +1,7 @@
 # Renderer, estado y subsistemas
 
+<!-- drift: audio-codecs=27 copilot-operations=13 locales=56 -->
+
 ## Arquitectura del renderer
 
 ### Árbol de renderizado

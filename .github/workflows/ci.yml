@@ -184,6 +184,22 @@ jobs:
       - run: npm ci
       - run: npm run validate:locales
 
+  doc-drift:
+    name: Check - Documentation drift
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Verifies that every `<!-- drift:key=value -->` marker in wiki/, docs/ and
+    # site/ still matches the value recomputed from the source tree.
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run doc:drift
+      - run: npm run doc:drift:test
+
   audit:
     name: Check - Dependency audit (blocking, exception-listed)
     runs-on: ubuntu-latest

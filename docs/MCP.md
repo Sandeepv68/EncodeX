@@ -1,5 +1,7 @@
 # 🔌 MCP Integration
 
+<!-- drift: mcp-tools=36 mcp-registrations=37 mcp-gui-tools=6 -->
+
 EncodeX ships a full [Model Context Protocol](https://modelcontextprotocol.io) server so MCP hosts — Claude Desktop, Claude Code, VS Code, Cursor, and custom/headless agents — can probe media, convert, compress, extract audio, cut, remux, demux, batch-process, and (opt-in) read live GUI state. It runs over the same media engine as the CLI, so behavior is identical across surfaces.
 
 The server is also [MCP Apps](https://modelcontextprotocol.io) (SEP-1865) compliant: in hosts that support the extension, the job and media-intelligence tools render as interactive views (queue dashboard, job progress card, media-info table, conversion form, inspector, plan, size-target lab, error card, batch dashboard, and workflow report). See [`MCP_UI.md`](MCP_UI.md) for the view catalogue; hosts without the extension fall back to the JSON text payloads documented here.

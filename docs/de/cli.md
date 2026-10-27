@@ -1,5 +1,7 @@
 # CLI-Nutzung
 
+<!-- drift: cli-subcommands=8 -->
+
 Zuerst bauen, dann die kompilierte CLI über den Befehl `encodex` aufrufen (der Launcher `bin/encodex.js` umhüllt die Electron-Binary). Der CLI-Modus wird explizit mit `--cli`, `-h`/`--help` oder jedem Unterbefehl/Alias aktiviert, oder automatisch, wenn mindestens zwei Nicht-Flag-Positionsargumente (Eingabe + Ausgabe) übergeben werden:
 
 ```bash

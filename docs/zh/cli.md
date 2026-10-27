@@ -1,5 +1,7 @@
 # CLI 用法
 
+<!-- drift: cli-subcommands=8 -->
+
 先构建项目，然后通过 `encodex` 命令调用编译后的 CLI（`bin/encodex.js` 启动器包装了 Electron 二进制）。CLI 模式可通过 `--cli`、`-h`/`--help` 或任意子命令/别名显式激活；提供至少两个非标志位置参数（输入 + 输出）时也会自动激活：
 
 ```bash

@@ -1,5 +1,7 @@
 # Funcionalidades
 
+<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 builtin-profiles=115 profile-categories=8 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 error-codes=28 copilot-operations=13 video-filter-presets=8 mcp-tools=36 mcp-registrations=37 mcp-gui-tools=6 -->
+
 O EncodeX é uma ferramenta multimídia de conversão multiplataforma que traz o poder do FFmpeg para uma interface desktop moderna e intuitiva. Construído com Electron, React e TypeScript, permite converter mídia entre formatos, extrair áudio, cortar vídeos e comprimir imagens — tudo por meio de uma UI limpa e responsiva com fila de lotes, aceleração por hardware, modo CLI e internacionalização completa.
 
 ## Visão geral das funcionalidades
@@ -94,7 +96,7 @@ O servidor integrado conecta-se apenas a loopback, valida o cabeçalho `Origin`,
 
 ### Atalhos de teclado
 
-Um registro central de atalhos (`src/renderer/constants/shortcuts.ts`) define 82 atalhos em 11 seções (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). Destaques:
+Um registro central de atalhos (`src/renderer/constants/shortcuts.ts`) define 71 atalhos em 11 seções (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). Destaques:
 
 - `Ctrl+/` — abrir o diálogo de ajuda de atalhos
 - `Alt+0`…`Alt+9` — pular diretamente para uma página
@@ -190,6 +192,14 @@ Gerenciador de atualizações personalizado que verifica o GitHub Releases por n
 ### Tratamento de erros
 
 Sistema de erros estruturado com 28 códigos de erro tipados (`ErrorCode`), mensagens localizadas voltadas ao usuário, snackbar global de erros, banners de erro inline, notificações toast, React error boundaries aninhadas e histórico de erros integrado (limite 50). Todos os erros são normalizados por `formatError()` e propagados via IPC.
+
+### MCP Apps e modelos locais
+
+- **Visualizações interativas (MCP Apps)**: 11 visualizações `ui://` autossuficientes (fila, trabalho, informações de mídia, conversão, confirmação, inspetor, plano, laboratório, erro, lote, fluxo). As ferramentas que alteram o estado retornam primeiro uma proposta; o trabalho só é executado após aprovação do usuário.
+- **Execução de modelos locais**: o provedor local (`src/mcp/local-model-client.ts`, `ENCODEX_LOCAL_MODEL_URL`, `ENCODEX_LOCAL_MODEL_MODEL`), a transcrição de voz (`src/mcp/stt-engine.ts`, `ENCODEX_WHISPER_BIN`, `ENCODEX_WHISPER_MODEL`) e a tradução (`src/mcp/translate-engine.ts`) rodam no próprio dispositivo; sem motor configurado, geram erros tipados (`TRANSCRIPTION_UNAVAILABLE`, `TRANSLATION_UNAVAILABLE`).
+- **Estimativa de tamanho de saída**: `src/shared/estimate.ts` estima o tamanho da saída antes da conversão - um limite superior experimental, sempre identificado como estimativa.
+- **Trilha de auditoria**: cada operação que altera o estado (conversões, edições da fila, confirmações de plano) registra entradas estruturadas por `src/shared/audit.ts` e pelo canal IPC `audit-entry`.
+
 
 ## Formatos de mídia suportados
 

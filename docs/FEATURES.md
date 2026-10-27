@@ -1,5 +1,7 @@
 # ✨ Features
 
+<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 builtin-profiles=115 profile-categories=8 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 error-codes=28 copilot-operations=13 video-filter-presets=8 mcp-tools=36 mcp-registrations=37 mcp-gui-tools=6 -->
+
 EncodeX is a cross-platform multimedia conversion tool that brings the power of FFmpeg to a modern, intuitive desktop interface. Built with Electron, React, and TypeScript, it lets you convert media between formats, remux streams losslessly, demux them into separate files, extract audio, cut videos, and compress images — all through a clean, responsive UI with a batch queue, hardware acceleration, CLI mode, and full internationalization.
 
 ## 🔄 Feature Overview
@@ -132,7 +134,7 @@ Dedicated settings page for theme, hardware acceleration (enable/disable, mode, 
 
 ### Keyboard Shortcuts
 
-A central shortcut registry (`src/renderer/constants/shortcuts.ts`) defines 82 shortcuts across eleven sections (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). Highlights:
+A central shortcut registry (`src/renderer/constants/shortcuts.ts`) defines 71 shortcuts across eleven sections (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). Highlights:
 
 - `Ctrl+/` — open the shortcuts help dialog
 - `Alt+0`…`Alt+9` — jump directly to a page (including Remux on `Alt+0`)
@@ -297,6 +299,24 @@ EncodeX ships a built-in [Model Context Protocol](https://modelcontextprotocol.i
 The server is MCP Apps compliant: it advertises the `io.modelcontextprotocol/ui` extension and serves eleven self-contained `ui://` views that compatible hosts render in a sandboxed iframe — a **live queue** dashboard, a **per-job** progress card, a **media-info** table, a **conversion form**, a generic **confirmation card**, a media **inspector**, a conversion **plan**, a **size-target lab**, an **error explanation** card, a **batch** dashboard, and a **workflow** dry-run/report. Mutating operations never run straight from a model call in these hosts: the tool returns a proposal, the view shows it, and the work runs only when the user approves (via the app-only `commit_operation`). Views pass data via `structuredContent` (never HTML interpolation) and can call tools back, including confirm-gated `cancel_job`. Hosts without the extension fall back to the JSON text payload and run immediately. See [`MCP_UI.md`](MCP_UI.md).
 
 Full reference: [`MCP.md`](MCP.md) and [`MCP_UI.md`](MCP_UI.md).
+
+### Local model runtime
+
+Some intelligence tools can run on-device instead of calling a hosted provider:
+
+- **Local provider** - routed through `src/mcp/local-model-client.ts`; point it at a local runtime with `ENCODEX_LOCAL_MODEL_URL` and select the model with `ENCODEX_LOCAL_MODEL_MODEL`.
+- **Speech-to-text** - the whisper adapter in `src/mcp/stt-engine.ts`, configured with `ENCODEX_WHISPER_BIN` and `ENCODEX_WHISPER_MODEL`.
+- **Translation** - `src/mcp/translate-engine.ts`.
+
+When no engine is configured, the STT and translation adapters raise typed errors (`TRANSCRIPTION_UNAVAILABLE`, `TRANSLATION_UNAVAILABLE`) instead of returning empty results.
+
+### Output size estimation
+
+`src/shared/estimate.ts` provides an output-size estimate before a conversion runs. The figure is an **experimental rough upper bound**, not a guarantee, and is always labelled as an estimate wherever it appears (Copilot plans, the MCP `estimate_conversion` tool).
+
+### Audit trail
+
+Mutating operations (conversions, queue edits, plan commits) emit structured audit entries via `src/shared/audit.ts`. Entries stream to the renderer over the `audit-entry` IPC channel and are stored by the `auditStore`, so a run can be reviewed after the fact. The audit contract is independent of the error-monitoring layer.
 
 ## ✔️ Validation Utilities
 

@@ -1,4 +1,6 @@
 <div align="center">
+
+<!-- drift: shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 -->
   <img src="../../assets/banner.png" alt="EncodeX Logo" width="900" />
   <h3>FFmpeg 的强大能力。无需命令行。</h3>
   <p><strong>EncodeX</strong> —— 适用于 Windows、macOS 和 Linux 的免费开源 <strong>FFmpeg 图形界面</strong>。</p>
@@ -87,7 +89,7 @@ EncodeX 是一款免费、开源的 FFmpeg 图形界面，将 FFmpeg 的全部�
 - **🤖 MCP 服务器** — 内置 [Model Context Protocol](https://modelcontextprotocol.io) 服务器：通过 stdio（`encodex --mcp`）提供 36 个模型可见工具、3 个资源和 4 个提示模板，此外还有一个可选的嵌入式 localhost HTTP 端点（默认关闭），新增 6 个与 GUI 对等的工具（实时队列、预览、时间轴、系统信息、更新），共 42 个模型可见工具。兼容 Claude Desktop、Claude Code、Cursor、VS Code 以及任何 MCP 客户端
 - **⚙️ 3 个转码核心** — FFmpeg API（fluent-ffmpeg）、FFmpeg CLI（child_process）、BMF Framework
 - **🌍 56 个 locale** — 支持 RTL（阿拉伯语、希伯来语）
-- **⌨️ 键盘快捷键** — 82 个快捷键，分为 11 个帮助分区，并提供应用内帮助对话框（`Ctrl+/`）
+- **⌨️ 键盘快捷键** — 71 个快捷键，分为 11 个帮助分区，并提供应用内帮助对话框（`Ctrl+/`）
 - **🔔 活动提示点** — 实时导航指示器，悬停弹出窗口可让您一眼看到每个任务的进度
 - **🛡️ 关闭确认** — 在任务仍在运行时关闭窗口前进行提醒
 - **🎉 彩蛋** — 在特殊日期显示节日主题的应用图标

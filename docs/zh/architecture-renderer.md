@@ -1,5 +1,7 @@
 # Renderer、状态与子系统
 
+<!-- drift: audio-codecs=27 copilot-operations=13 locales=56 -->
+
 ## Renderer 架构
 
 ### 渲染树

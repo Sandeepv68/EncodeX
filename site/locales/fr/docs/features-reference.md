@@ -1,5 +1,7 @@
 # Fonctionnalités
 
+<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 builtin-profiles=115 profile-categories=8 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 error-codes=28 copilot-operations=13 video-filter-presets=8 mcp-tools=36 mcp-registrations=37 mcp-gui-tools=6 -->
+
 EncodeX est un outil multimédia de conversion multiplateforme qui met la puissance de FFmpeg dans une interface bureau moderne et intuitive. Construit avec Electron, React et TypeScript, il permet de convertir des médias entre formats, d'extraire l'audio, de découper des vidéos et de compresser des images — le tout via une UI propre et réactive avec une file par lots, l'accélération matérielle, un mode CLI et une internationalisation complète.
 
 ## Aperçu des fonctionnalités
@@ -94,7 +96,7 @@ Le serveur intégré écoute uniquement en loopback, valide l'en-tête `Origin`,
 
 ### Raccourcis clavier
 
-Un registre central de raccourcis (`src/renderer/constants/shortcuts.ts`) définit 82 raccourcis répartis en onze sections (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). Points saillants :
+Un registre central de raccourcis (`src/renderer/constants/shortcuts.ts`) définit 71 raccourcis répartis en onze sections (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). Points saillants :
 
 - `Ctrl+/` — ouvrir le dialogue d'aide des raccourcis
 - `Alt+0`…`Alt+9` — sauter directement à une page (y compris Remux sur `Alt+0`)
@@ -190,6 +192,14 @@ Gestionnaire de mises à jour personnalisé qui consulte GitHub Releases pour de
 ### Gestion des erreurs
 
 Système d'erreurs structuré avec 28 codes typés (`ErrorCode`), messages localisés destinés à l'utilisateur, snackbar d'erreurs globale, bannières d'erreurs inline, notifications toast, React error boundaries imbriquées et historique d'erreurs intégré (plafond 50). Toutes les erreurs sont normalisées via `formatError()` et propagées à travers IPC.
+
+### MCP Apps et modèles locaux
+
+- **Vues interactives (MCP Apps)** : 11 vues `ui://` autonomes (file, tâche, informations média, conversion, confirmation, inspecteur, plan, laboratoire, erreur, lot, flux). Les outils qui modifient l'état renvoient d'abord une proposition ; le travail ne s'exécute qu'après approbation de l'utilisateur.
+- **Exécution de modèles locaux** : le fournisseur local (`src/mcp/local-model-client.ts`, `ENCODEX_LOCAL_MODEL_URL`, `ENCODEX_LOCAL_MODEL_MODEL`), la transcription vocale (`src/mcp/stt-engine.ts`, `ENCODEX_WHISPER_BIN`, `ENCODEX_WHISPER_MODEL`) et la traduction (`src/mcp/translate-engine.ts`) s'exécutent sur l'appareil ; sans moteur configuré, ils lèvent des erreurs typées (`TRANSCRIPTION_UNAVAILABLE`, `TRANSLATION_UNAVAILABLE`).
+- **Estimation de la taille de sortie** : `src/shared/estimate.ts` estime la taille de sortie avant la conversion - une borne supérieure expérimentale, toujours présentée comme une estimation.
+- **Journal d'audit** : chaque opération modifiante (conversions, modifications de file, validation de plan) écrit des entrées structurées via `src/shared/audit.ts` et le canal IPC `audit-entry`.
+
 
 ## Formats média pris en charge
 

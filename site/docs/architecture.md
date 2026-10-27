@@ -1,4 +1,6 @@
 ---
+
+<!-- drift: error-codes=28 mcp-tools=36 mcp-registrations=37 -->
 title: "Architecture Overview — How EncodeX Is Built"
 description: "Technical architecture of EncodeX: Electron, React, TypeScript, FFmpeg integration, three-process model, IPC channels, and design principles."
 ---

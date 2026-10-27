@@ -1,5 +1,7 @@
 # 💻 CLI उपयोग
 
+<!-- drift: cli-subcommands=8 -->
+
 पहले build करें, फिर `encodex` command के माध्यम से compiled CLI invoke करें (`bin/encodex.js` launcher Electron binary को wrap करता है)। CLI मोड स्पष्ट रूप से `--cli`, `-h`/`--help`, या किसी भी subcommand/alias नाम से सक्रिय होता है, या स्वचालित रूप से तब जब कम से कम दो non-flag पोज़िशनल arguments (input + output) दिए जाते हैं:
 
 ```bash

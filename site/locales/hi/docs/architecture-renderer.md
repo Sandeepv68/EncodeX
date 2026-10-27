@@ -1,5 +1,7 @@
 # Renderer, state और सबसिस्टम
 
+<!-- drift: audio-codecs=27 copilot-operations=13 locales=56 -->
+
 ## Renderer आर्किटेक्चर
 
 ### रेंडर ट्री

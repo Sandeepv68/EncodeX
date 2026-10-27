@@ -1,4 +1,6 @@
 <div align="center">
+
+<!-- drift: shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 -->
   <img src="../../assets/banner.png" alt="EncodeX Logo" width="900" />
   <h3>FFmpeg-Kraft. Ohne Befehlszeile.</h3>
   <p><strong>EncodeX</strong> — die kostenlose, quelloffene <strong>FFmpeg-Oberfläche</strong> für Windows, macOS und Linux.</p>
@@ -87,7 +89,7 @@ Die Konvertierung läuft **lokal auf deinem Computer** — keine Konten, keine M
 - **🤖 MCP-Server** — Integrierter [Model Context Protocol](https://modelcontextprotocol.io)-Server: 36 modellsichtbare Tools, 3 Ressourcen und 4 Prompts über stdio (`encodex --mcp`), plus ein optionaler eingebetteter localhost-HTTP-Endpunkt (standardmäßig deaktiviert), der 6 GUI-äquivalente Tools hinzufügt (Live-Warteschlange, Vorschau, Timeline, Systeminfos, Updates) — insgesamt 42 modellsichtbare Tools. Einmalige Konvertierungen ausführen oder asynchrone Jobs über Claude Desktop, Claude Code, Cursor, VS Code oder einen beliebigen MCP-Client verwalten
 - **⚙️ 3 Transcoder-Kerne** — FFmpeg-API (fluent-ffmpeg), FFmpeg-CLI (child_process), BMF-Framework
 - **🌍 56 Gebietsschemata** mit RTL-Unterstützung (Arabisch, Hebräisch)
-- **⌨️ Tastaturkürzel** — 82 Kürzel in 11 Hilfebereichen mit In-App-Hilfedialog (`Ctrl+/`)
+- **⌨️ Tastaturkürzel** — 71 Kürzel in 11 Hilfebereichen mit In-App-Hilfedialog (`Ctrl+/`)
 - **🔄 In-App-Updates** — Prüft GitHub Releases, lädt den Plattform-Installer auf Nachfrage herunter (wird niemals automatisch installiert), Fortschritt in Echtzeit
 - **🛡️ Fehlerbehandlung** — 28 typisierte Fehlercodes, globale Snackbar, Inline-Banner, React-Error-Boundaries
 - **🌗 Dunkles/Helles Design** — Systembezogen mit manuellem Umschalter und dauerhaften Einstellungen

@@ -1,5 +1,7 @@
 # 🧪 Testing
 
+<!-- drift: test-files=314 renderer-component-tests=44 -->
+
 ## 📋 Commands
 
 ```bash

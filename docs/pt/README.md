@@ -1,4 +1,6 @@
 <div align="center">
+
+<!-- drift: shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 -->
   <img src="../../assets/banner.png" alt="Logotipo do EncodeX" width="900" />
   <h3>O poder do FFmpeg. Sem a linha de comando.</h3>
   <p><strong>EncodeX</strong> — a interface gráfica <strong>FFmpeg</strong> gratuita e de código aberto para Windows, macOS e Linux.</p>
