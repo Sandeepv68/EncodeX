@@ -260,7 +260,7 @@ e2e/                                  # Playwright-based end-to-end tests
 │   ├── vscode-client.spec.ts          # VS Code MCP client configuration
 │   └── vscode-ui.spec.ts              # VS Code UI integration
 ├── quarantine/                        # Quarantined spec bodies (see quarantine.json)
-└── specs/                             # 31 E2E spec files (39 e2e files total) <!-- drift:e2e-specs=31 -->
+└── specs/                             # 31 E2E spec files (39 e2e files total) <!-- drift:e2e-specs=32 -->
     ├── shell.spec.ts
     ├── convert.spec.ts
     ├── batch.spec.ts
