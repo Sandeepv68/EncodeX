@@ -24,7 +24,7 @@
 import { createTheme } from '@mui/material/styles';
 import { COLORS, getTheme, SHADOWS } from './colors';
 import type { ThemeId } from './types';
-import SelectArrowIcon from './components/SelectArrowIcon';
+import SelectArrowIcon from './SelectArrowIcon';
 
 /**
  * Font stack used for every MUI typography variant.

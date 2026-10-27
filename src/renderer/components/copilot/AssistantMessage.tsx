@@ -10,7 +10,7 @@ import type { AgentSkip } from '../../../shared/ai/agent';
 import type { AIProviderId } from '../../../shared/ai/types';
 import { useTranslation } from 'react-i18next';
 import { AssistantBody } from '../../styles/copilot/AssistantMessage.styles';
-import { SHADOWS } from '../../colors';
+import { SHADOWS } from '../../../shared/theme/colors';
 import ProviderIcon from './ProviderIcon';
 
 export interface AssistantMessageProps {

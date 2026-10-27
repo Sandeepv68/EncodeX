@@ -27,7 +27,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleExclamation, faTriangleExclamation, faCircleInfo, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { ErrorCode } from '../../shared/errors';
 import type { ErrorBannerProps } from './types';
-import { COLORS } from '../colors';
+import { COLORS } from '../../shared/theme/colors';
 import {
   BannerRoot,
   BannerIconBox,

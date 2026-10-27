@@ -22,7 +22,7 @@ import { useLogStore } from '../stores/logStore';
 import { useAuditStore } from '../stores/auditStore';
 import { useToastStore } from '../stores/toastStore';
 import { useHotkeys } from '../hooks/useHotkeys';
-import { COLORS } from '../colors';
+import { COLORS } from '../../shared/theme/colors';
 import {
   LogsRoot,
   LogsHeader,

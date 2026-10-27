@@ -1,7 +1,7 @@
 import { styled } from '@mui/material/styles';
 import { Box, Paper, Typography } from '@mui/material';
 import type { ElementType } from 'react';
-import { SHADOWS } from '../colors';
+import { SHADOWS } from '../../shared/theme/colors';
 
 /** Flex-growing wrapper for a single labeled form field. @const FieldBox */
 export const FieldBox = styled(Box)({ flex: 1 });

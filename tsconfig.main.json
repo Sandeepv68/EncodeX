@@ -15,5 +15,5 @@
     "types": ["node"]
   },
   "include": ["src/main/**/*", "src/shared/**/*", "src/mcp/**/*"],
-  "exclude": ["**/__tests__/**", "**/*.test.ts", "**/*.spec.ts"]
+  "exclude": ["**/__tests__/**", "**/*.test.ts", "**/*.spec.ts", "src/shared/theme/**/*"]
 }

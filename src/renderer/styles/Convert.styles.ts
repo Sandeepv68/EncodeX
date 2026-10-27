@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { Box, Stack, Typography, Alert, Paper, Divider, Button } from '@mui/material';
-import { SHADOWS } from '../colors';
+import { SHADOWS } from '../../shared/theme/colors';
 
 /** Unboxed form section: heading + fields stacked with the card gap. @const PageSection */
 export const PageSection = styled(Box)(({ theme }) => ({

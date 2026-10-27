@@ -2,7 +2,7 @@
  * @fileoverview Minimal ESLint flat config that enables ONLY the local
  * `encodex/no-hardcoded-colors` rule, used by `npm run lint:colors`. Keeps the
  * CI "no hardcoded colors" stage focused on that single validation. The
- * constants file `src/renderer/colors.ts` is exempt because it is the source
+ * constants file `src/shared/theme/colors.ts` is exempt because it is the source
  * of truth for color values.
  */
 
@@ -43,7 +43,7 @@ export default [
     },
   },
   {
-    files: ['src/renderer/colors.ts'],
+    files: ['src/shared/theme/colors.ts'],
     rules: {
       'encodex/no-hardcoded-colors': 'off',
     },

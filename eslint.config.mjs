@@ -12,7 +12,7 @@
  * enforced as an error on renderer sources: hardcoded `px` units must use
  * `theme.typography.pxToRem()` instead. A `no-hardcoded-colors` rule (see
  * eslint-rules/no-hardcoded-colors.mjs) likewise forbids inline color codes,
- * which must reference the constants in `src/renderer/colors.ts`. Test files
+ * which must reference the constants in `src/shared/theme/colors.ts`. Test files
  * are exempt because they legitimately assert computed pixel values.
  */
 
@@ -44,7 +44,7 @@ export default [
     ignores: ['**/dist/**', '**/node_modules/**'],
   },
   {
-    files: ['src/renderer/**/*.{ts,tsx}'],
+    files: ['src/renderer/**/*.{ts,tsx}', 'src/shared/theme/**/*.{ts,tsx}'],
     plugins: {
       'jsx-a11y': jsxA11y,
       encodex: {
@@ -82,13 +82,13 @@ export default [
     },
   },
   {
-    files: ['src/renderer/colors.ts'],
+    files: ['src/shared/theme/colors.ts'],
     rules: {
       'encodex/no-hardcoded-colors': 'off',
     },
   },
   {
-    files: ['src/renderer/**/*.{test,spec}.{ts,tsx}', 'src/renderer/**/__tests__/**/*.{ts,tsx}'],
+    files: ['src/renderer/**/*.{test,spec}.{ts,tsx}', 'src/renderer/**/__tests__/**/*.{ts,tsx}', 'src/shared/theme/**/*.{test,spec}.{ts,tsx}'],
     rules: {
       'encodex/no-hardcoded-px': 'off',
       'encodex/no-hardcoded-rem': 'off',

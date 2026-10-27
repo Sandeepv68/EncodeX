@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import VideoTimeline from '../VideoTimeline';
 import { TIMELINE_LAYOUT } from '../../styles/VideoTimeline.styles';
-import { TIMELINE_COLORS } from '../../colors';
+import { TIMELINE_COLORS } from '../../../shared/theme/colors';
 
 function mockRect(el: HTMLElement, left: number, width: number) {
   Object.defineProperty(el, 'getBoundingClientRect', {

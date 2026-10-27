@@ -1,7 +1,7 @@
 import { styled } from '@mui/material/styles';
 import { Box, Typography, Select, Paper, TextField } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { COLORS, SHADOWS } from '../colors';
+import { COLORS, SHADOWS } from '../../shared/theme/colors';
 
 export const LogsRoot = styled(Box)({ display: 'flex', flexDirection: 'column', height: '100%' });
 

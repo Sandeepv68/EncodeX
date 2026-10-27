@@ -8,8 +8,8 @@
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useColorMode } from '../../ColorModeContext';
-import { THEMES } from '../../colors';
-import type { ThemeDefinition } from '../../colors';
+import { THEMES } from '../../../shared/theme/colors';
+import type { ThemeDefinition } from '../../../shared/theme/colors';
 import { SettingsLabel } from '../../styles/Settings.styles';
 import {
   ThemeSettingsSection as ThemeSettingsSectionRoot,

@@ -1,7 +1,7 @@
 import { styled, keyframes, alpha } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
 import { Box, LinearProgress } from '@mui/material';
-import { OVERLAY_COLORS, SHADOWS } from '../colors';
+import { OVERLAY_COLORS, SHADOWS } from '../../shared/theme/colors';
 
 const gradientSlide = (theme: Theme) => keyframes`
   from { transform: translateX(0); }

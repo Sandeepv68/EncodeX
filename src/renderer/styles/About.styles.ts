@@ -1,6 +1,6 @@
 import { alpha, keyframes, styled } from '@mui/material/styles';
 import { Box, Button, Typography } from '@mui/material';
-import { THEMES, OVERLAY_COLORS } from '../colors';
+import { THEMES, OVERLAY_COLORS } from '../../shared/theme/colors';
 
 /** Centered application logo rendered at the top of the About page. @const AboutLogo */
 export const AboutLogo = styled('img')(({ theme }) => ({

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { THEMES } from '../colors';
+import { THEMES } from '../../shared/theme/colors';
 
 function channel(value: string): number {
   return parseInt(value, 16);

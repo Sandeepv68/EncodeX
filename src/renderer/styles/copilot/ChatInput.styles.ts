@@ -1,6 +1,6 @@
 import { alpha, styled } from '@mui/material/styles';
 import { Box } from '@mui/material';
-import { SHADOWS } from '../../colors';
+import { SHADOWS } from '../../../shared/theme/colors';
 
 /**
  * Rounded composer surface that holds the Lexical editor and the inline send

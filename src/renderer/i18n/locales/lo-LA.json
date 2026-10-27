@@ -1153,5 +1153,168 @@
     "message": "ການສົນທະນານີ້ຍັງເຄື່ອນໄຫວຢູ່. ການອອກຈາກໜ້າຈະຍົກເລີກການສົນທະນາ.",
     "confirmLabel": "ອອກເລີຍ",
     "cancelLabel": "ຢູ່ຕໍ່"
+  },
+  "mcpViews": {
+    "common": {
+      "cancel": "Cancel",
+      "confirmCancel": "Confirm cancel",
+      "run": "Run",
+      "retry": "Retry",
+      "applyFix": "Apply fix",
+      "waiting": "Waiting for the host to provide data…",
+      "input": "Input",
+      "output": "Output",
+      "status": "Status",
+      "duration": "Duration",
+      "size": "Size",
+      "bitrate": "Bitrate",
+      "video": "Video",
+      "audio": "Audio",
+      "details": "Details",
+      "warnings": "Warnings",
+      "findings": "Findings",
+      "nextSteps": "Recommended next steps",
+      "attempts": "Attempts",
+      "rationale": "Rationale",
+      "notes": "Notes",
+      "assumptions": "Assumptions",
+      "causes": "Likely causes",
+      "fixes": "Suggested fixes",
+      "summary": "Summary",
+      "settings": "Settings",
+      "error": "Error",
+      "unknown": "-",
+      "confidence": "{{value}}% confidence",
+      "jobCount": "{{count}} jobs",
+      "jobCountOne": "{{count}} job",
+      "fileCount": "{{count}} files",
+      "fileCountOne": "{{count}} file",
+      "progressWithStatus": "{{status}} · {{percent}}%",
+      "sentForConfirmation": "Sent for confirmation: {{label}}",
+      "requested": "Requested: {{label}}",
+      "fixFailed": "Could not apply the fix: {{message}}"
+    },
+    "queue": {
+      "title": "EncodeX queue",
+      "empty": "No jobs in the queue.",
+      "waiting": "Waiting for the host to provide queue data…"
+    },
+    "job": {
+      "waiting": "Waiting for the host to provide job data…",
+      "cancelled": "cancelled"
+    },
+    "mediaInfo": {
+      "title": "Media",
+      "waiting": "Waiting for the host to provide media metadata…",
+      "columnIndex": "#",
+      "columnType": "Type",
+      "columnCodec": "Codec",
+      "columnDetails": "Details"
+    },
+    "convert": {
+      "title": "New conversion",
+      "inputLabel": "Input",
+      "outputLabel": "Output",
+      "videoCodecLabel": "Video codec",
+      "audioCodecLabel": "Audio codec",
+      "videoBitrateLabel": "Video bitrate",
+      "audioBitrateLabel": "Audio bitrate",
+      "qualityLabel": "Quality (1-31)",
+      "scaleLabel": "Scale",
+      "lossless": "Lossless stream copy",
+      "submit": "Start conversion",
+      "proposal": "{{summary}} — review the settings, then start the conversion.",
+      "inputRequired": "An input path is required.",
+      "noJob": "The conversion did not return a job.",
+      "failed": "Conversion failed: {{message}}"
+    },
+    "confirm": {
+      "title": "Confirm operation",
+      "run": "Run",
+      "waiting": "Waiting for the host to provide a confirmation…",
+      "queuedJobs": "Queued jobs",
+      "noJob": "The operation did not return a job.",
+      "failed": "The operation failed: {{message}}"
+    },
+    "inspector": {
+      "title": "Media",
+      "waiting": "Waiting for the host to provide an analysis…",
+      "severityInfo": "Info",
+      "severityWarning": "Warning",
+      "severityError": "Error"
+    },
+    "plan": {
+      "planTitle": "Conversion plan",
+      "estimateTitle": "Size estimate",
+      "estimated": "estimated",
+      "waiting": "Waiting for the host to provide a plan…",
+      "hardware": "Hardware",
+      "hardwareAvailable": "available",
+      "hardwareSoftware": "software",
+      "copy": "copy"
+    },
+    "lab": {
+      "title": "Compression lab",
+      "fits": "fits",
+      "noFit": "no fit",
+      "chosenTitle": "Best measured fit",
+      "measured": "measured",
+      "ladder": "Candidate ladder",
+      "waiting": "Waiting for the host to provide a compression result…",
+      "baseline": "Size-derived baseline: {{video}} kbps video at {{audio}} kbps audio.",
+      "candidate": "{{video}} kbps ({{percent}}%) — {{rationale}}",
+      "columnIndex": "#",
+      "columnVideo": "Video",
+      "columnOutput": "Output",
+      "columnFits": "Fits",
+      "yes": "yes",
+      "no": "no"
+    },
+    "error": {
+      "title": "Error",
+      "waiting": "Waiting for the host to provide an error…",
+      "code": "Error code"
+    },
+    "batch": {
+      "title": "Confirm batch",
+      "run": "Run batch",
+      "dashboard": "Batch",
+      "waiting": "Waiting for the host to provide a batch confirmation…",
+      "needsReapproval": "This batch changed and needs re-approval."
+    },
+    "workflow": {
+      "planTitle": "Workflow plan",
+      "resultTitle": "Workflow run",
+      "valid": "valid",
+      "invalid": "invalid",
+      "completed": "completed",
+      "failed": "failed",
+      "waiting": "Waiting for the host to provide a workflow…",
+      "needs": "needs {{dependencies}}"
+    },
+    "profiles": {
+      "title": "Conversion profiles",
+      "waiting": "Waiting for the host to provide profiles…",
+      "filterLabel": "Filter profiles",
+      "filterPlaceholder": "Search by name, id, category or codec",
+      "empty": "No profiles match the filter.",
+      "columnName": "Name",
+      "columnId": "Id",
+      "columnCategory": "Category",
+      "columnContainer": "Container",
+      "columnVideo": "Video codec",
+      "columnAudio": "Audio codec",
+      "count": "{{count}} profiles"
+    },
+    "capabilities": {
+      "title": "Capabilities",
+      "waiting": "Waiting for the host to provide capabilities…",
+      "encoders": "Available encoders",
+      "hardware": "Hardware acceleration",
+      "hardwareNone": "Software only",
+      "encoderVideo": "Video",
+      "encoderAudio": "Audio",
+      "encoderOther": "Other"
+    }
   }
 }

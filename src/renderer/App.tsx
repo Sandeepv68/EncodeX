@@ -53,7 +53,7 @@ import TermsDialog from './components/TermsDialog';
 import { useHotkeys } from './hooks/useHotkeys';
 import { useDevScreenshot } from './dev/useDevScreenshot';
 import { SHORTCUTS } from './constants/shortcuts';
-import { THEMES } from './colors';
+import { THEMES } from '../shared/theme/colors';
 import { useErrorStore } from './stores/errorStore';
 import { useLogStore } from './stores/logStore';
 import { useAuditStore } from './stores/auditStore';

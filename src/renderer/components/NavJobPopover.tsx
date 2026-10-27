@@ -36,7 +36,7 @@ import ProgressBar from './ProgressBar';
 import { getPreviewThumbnail, getResolvedPreviewThumbnail } from '../utils/preview-cache';
 import { basenameOrEmpty as basename } from '../utils/path-utils';
 import type { NavJobPopoverProps } from './types';
-import { SHADOWS } from '../colors';
+import { SHADOWS } from '../../shared/theme/colors';
 import { PopoverArrow, PopoverParallelBadge, PopoverPileThumb, PopoverThumb } from '../styles/NavJobPopover.styles';
 
 /**

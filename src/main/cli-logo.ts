@@ -22,7 +22,7 @@ const ANSI = {
 
 /**
  * The theme ids the CLI logo supports, mirroring `THEMES` in
- * src/renderer/colors.ts.
+ * src/shared/theme/colors.ts.
  * @const {readonly string[]} CLI_THEME_IDS
  */
 export const CLI_THEME_IDS = ['light', 'ocean', 'sunset', 'forest', 'lavender', 'rose', 'slate', 'dark'] as const;
@@ -48,7 +48,7 @@ type Rgb = readonly [number, number, number];
 
 /**
  * A theme palette's accent colors as RGB triples, mirroring the `primary` and
- * `secondary` hex values of each theme in src/renderer/colors.ts.
+ * `secondary` hex values of each theme in src/shared/theme/colors.ts.
  * @interface CliThemePalette
  * @property {Rgb} primary - The theme's primary accent color (darker).
  * @property {Rgb} secondary - The theme's secondary accent color (brighter).

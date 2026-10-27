@@ -1,6 +1,6 @@
 import { alpha, styled } from '@mui/material/styles';
 import { Box, IconButton } from '@mui/material';
-import { SHADOWS } from '../colors';
+import { SHADOWS } from '../../shared/theme/colors';
 
 /**
  * Preview frame dimensions in px, keyed by aspect variant. Kept here so the

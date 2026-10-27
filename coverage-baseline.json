@@ -764,11 +764,6 @@
       "branches": 100,
       "statements": 100
     },
-    "src/renderer/colors.ts": {
-      "lines": 100,
-      "branches": 75,
-      "statements": 100
-    },
     "src/renderer/components/AiConnectionStatus.tsx": {
       "lines": 100,
       "branches": 90,
@@ -938,11 +933,6 @@
       "lines": 91.67,
       "branches": 80.46,
       "statements": 91.67
-    },
-    "src/renderer/components/SelectArrowIcon.tsx": {
-      "lines": 100,
-      "branches": 100,
-      "statements": 100
     },
     "src/renderer/components/settings/AiProviderSettingsSection.tsx": {
       "lines": 98.53,
@@ -1172,11 +1162,6 @@
     "src/renderer/stores/types.ts": {
       "lines": 100,
       "branches": 100,
-      "statements": 100
-    },
-    "src/renderer/theme.ts": {
-      "lines": 100,
-      "branches": 75,
       "statements": 100
     },
     "src/renderer/types.ts": {
@@ -1608,6 +1593,21 @@
       "lines": 95.88,
       "branches": 93.24,
       "statements": 95.88
+    },
+    "src/shared/theme/colors.ts": {
+      "lines": 100,
+      "branches": 75,
+      "statements": 100
+    },
+    "src/shared/theme/SelectArrowIcon.tsx": {
+      "lines": 100,
+      "branches": 100,
+      "statements": 100
+    },
+    "src/shared/theme/theme.ts": {
+      "lines": 100,
+      "branches": 75,
+      "statements": 100
     }
   },
   "platforms": {
@@ -2376,11 +2376,6 @@
           "branches": 100,
           "statements": 100
         },
-        "src/renderer/colors.ts": {
-          "lines": 100,
-          "branches": 75,
-          "statements": 100
-        },
         "src/renderer/components/AiConnectionStatus.tsx": {
           "lines": 100,
           "branches": 90,
@@ -2550,11 +2545,6 @@
           "lines": 91.67,
           "branches": 80.46,
           "statements": 91.67
-        },
-        "src/renderer/components/SelectArrowIcon.tsx": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
         },
         "src/renderer/components/settings/AiProviderSettingsSection.tsx": {
           "lines": 98.53,
@@ -2784,11 +2774,6 @@
         "src/renderer/stores/types.ts": {
           "lines": 100,
           "branches": 100,
-          "statements": 100
-        },
-        "src/renderer/theme.ts": {
-          "lines": 100,
-          "branches": 75,
           "statements": 100
         },
         "src/renderer/types.ts": {
@@ -3220,6 +3205,21 @@
           "lines": 95.88,
           "branches": 93.24,
           "statements": 95.88
+        },
+        "src/shared/theme/colors.ts": {
+          "lines": 100,
+          "branches": 75,
+          "statements": 100
+        },
+        "src/shared/theme/SelectArrowIcon.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/theme/theme.ts": {
+          "lines": 100,
+          "branches": 75,
+          "statements": 100
         }
       }
     },
@@ -3988,11 +3988,6 @@
           "branches": 100,
           "statements": 100
         },
-        "src/renderer/colors.ts": {
-          "lines": 100,
-          "branches": 75,
-          "statements": 100
-        },
         "src/renderer/components/AiConnectionStatus.tsx": {
           "lines": 100,
           "branches": 90,
@@ -4162,11 +4157,6 @@
           "lines": 91.67,
           "branches": 80.46,
           "statements": 91.67
-        },
-        "src/renderer/components/SelectArrowIcon.tsx": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
         },
         "src/renderer/components/settings/AiProviderSettingsSection.tsx": {
           "lines": 98.53,
@@ -4396,11 +4386,6 @@
         "src/renderer/stores/types.ts": {
           "lines": 100,
           "branches": 100,
-          "statements": 100
-        },
-        "src/renderer/theme.ts": {
-          "lines": 100,
-          "branches": 75,
           "statements": 100
         },
         "src/renderer/types.ts": {
@@ -4832,6 +4817,21 @@
           "lines": 95.88,
           "branches": 93.24,
           "statements": 95.88
+        },
+        "src/shared/theme/colors.ts": {
+          "lines": 100,
+          "branches": 75,
+          "statements": 100
+        },
+        "src/shared/theme/SelectArrowIcon.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/theme/theme.ts": {
+          "lines": 100,
+          "branches": 75,
+          "statements": 100
         }
       }
     }

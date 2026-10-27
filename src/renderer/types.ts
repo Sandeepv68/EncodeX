@@ -6,21 +6,14 @@
  * system (colors.ts, theme.ts, ColorModeContext.tsx). `ColorModeContextValue`
  * is the shape exposed to consumers of the color mode context hook
  * `useColorMode`.
+ *
+ * The two design-system discriminants live in `src/shared/theme/types.ts` so the
+ * MCP App views can share them; they are re-exported here for convenience.
  */
 
-/**
- * Supported UI color modes. Drives the MUI palette mode and the overall
- * light/dark appearance of the application.
- * @typedef {'light' | 'dark'} ColorMode
- */
-export type ColorMode = 'light' | 'dark';
+import type { ColorMode, ThemeId } from '../shared/theme/types';
 
-/**
- * Supported theme palettes. Each theme carries its own accent colors and
- * a light or dark color mode. The 'light' palette is the default fallback.
- * @typedef {'light' | 'ocean' | 'sunset' | 'forest' | 'lavender' | 'rose' | 'slate' | 'dark'} ThemeId
- */
-export type ThemeId = 'light' | 'ocean' | 'sunset' | 'forest' | 'lavender' | 'rose' | 'slate' | 'dark';
+export type { ColorMode, ThemeId };
 
 /**
  * Value exposed by the color mode context (see ColorModeContext.tsx).

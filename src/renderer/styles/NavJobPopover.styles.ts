@@ -5,7 +5,7 @@
 import { styled, keyframes } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
 import { alpha, Box } from '@mui/material';
-import { SHADOWS } from '../colors';
+import { SHADOWS } from '../../shared/theme/colors';
 
 /**
  * Small non-animated badge shown in the popover when the batch queue is
