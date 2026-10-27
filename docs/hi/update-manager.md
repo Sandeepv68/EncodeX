@@ -2,7 +2,7 @@
 
 ## Overview
 
-EncodeX एक कस्टम इन-ऐप अपडेट मैनेजर का उपयोग करता है। यह GitHub Releases API से नवीनतम रिलीज़ पूछता है, उसके semantic version की तुलना चल रहे ऐप से करता है, वर्तमान प्लेटफ़ॉर्म और आर्किटेक्चर के लिए installer चुनता है, और उसे in-app real-time progress reporting के साथ download करता है। Download पूरा होने पर उपयोगकर्ता तुरंत install और restart कर सकता है, या अगले ऐप restart पर installer चलाने का शेड्यूल कर सकता है।
+EncodeX एक कस्टम इन-ऐप अपडेट मैनेजर का उपयोग करता है। यह GitHub Releases API से published releases पूछता है, उन्हें चल रहे version के update channel के अनुसार filter करता है, उनके semantic versions की तुलना चल रहे ऐप से करता है, वर्तमान प्लेटफ़ॉर्म और आर्किटेक्चर के लिए installer चुनता है, और उसे in-app real-time progress reporting के साथ download करता है। Download पूरा होने पर उपयोगकर्ता तुरंत install और restart कर सकता है, या अगले ऐप restart पर installer चलाने का शेड्यूल कर सकता है।
 
 अपडेट कभी चुपचाप या अपने-आप install नहीं होते। हर install किसी उपयोगकर्ता क्रिया से शुरू होता है — या तो update dialog से, या उस pending-install marker से जिसे उपयोगकर्ता ने स्पष्ट रूप से सेट किया हो।
 
@@ -10,7 +10,7 @@ EncodeX एक कस्टम इन-ऐप अपडेट मैनेजर 
 
 ```mermaid
 flowchart TD
-    GH["GitHub Releases API"] --> U["main/updater.ts<br/>fetches /releases/latest,<br/>compares semver, downloads"]
+    GH["GitHub Releases API"] --> U["main/updater.ts<br/>fetches /releases,<br/>filters by channel, compares semver, downloads"]
     U --> I["main/ipc/updater.ts<br/>registers IPC handlers +<br/>pushes events to renderer"]
     I --> P["preload/index.ts<br/>exposes update methods +<br/>event subscriptions"]
     P --> S["renderer/stores/updateStore.ts<br/>Zustand state for update flow"]
@@ -64,6 +64,23 @@ flowchart TD
 - Pre-release identifiers dot-by-dot तुलना होते हैं: अंकीय identifiers संख्यात्मक रूप से, अक्षरांकीय identifiers lexically, और अंकीय identifiers अक्षरांकीय से नीचे रैंक होते हैं।
 - अपडेट केवल तभी offer होता है जब remote version चल रहे version से strictly बड़ा हो।
 
+## Update channels
+
+Channel चल रहे version से derive होता है और यह तय करता है कि कौन-सी releases eligible हैं:
+
+| Channel | चल रहा version | Eligible releases |
+|---|---|---|
+| `stable` | कोई pre-release identifier नहीं, जैसे `1.0.0` | केवल stable releases |
+| `beta` | एक pre-release identifier, जैसे `1.0.0-beta.5` | pre-releases *और* stable releases |
+
+जानने योग्य परिणाम:
+
+- Beta build को betas मिलते रहते हैं, और stable `1.0.0` आने पर उसे वह भी मिल जाता है।
+- Stable build को कभी कोई pre-release offer नहीं होता।
+- **Draft** release किसी को भी offer नहीं होता। GitHub published release list से drafts को बाहर रखता है, इसलिए draft में छोड़ा गया release updater के लिए publish होने तक अदृश्य रहता है।
+- GitHub का अपना "latest release" endpoint जानबूझकर *नहीं* इस्तेमाल किया जाता: यह सबसे नया non-draft, non-prerelease release पर resolve होता है, जिसे कोई beta build कभी पार नहीं कर सकता, और बिना pre-release flag के publish किया गया beta stable users को stable release की तरह मिल जाएगा। Updater release की **list** पढ़ता है और channel filter खुद लागू करता है।
+- Release workflow एक pre-release tag (`v1.0.0-beta.6`) को GitHub pre-release के रूप में चिह्नित करता है, ताकि flag और tag आपस में मेल खाएँ।
+
 ## Asset selection logic
 
 1. केवल सादे फ़ाइल नाम जिनमें प्लेटफ़ॉर्म का installer extension हो, स्वीकार करें:
@@ -77,7 +94,7 @@ flowchart TD
 
 ## Download and install flow
 
-1. Renderer `check-for-updates` call करता है। Main process `/releases/latest` को 15-सेकंड timeout, 4 MB response cap और अधिकतम 5 redirects के साथ fetch करता है।
+1. Renderer `check-for-updates` call करता है। Main process `/releases?per_page=100` को 15-सेकंड timeout, 4 MB response cap और अधिकतम 5 redirects के साथ fetch करता है और फिर list को update channel के अनुसार filter करता है।
 2. मेल खाने वाला asset `update-available` के माध्यम से लौटाया जाता है।
 3. `download-update` installer को `app.getPath('temp')/EncodeX-updater/` में stream करता है। 60 सेकंड तक कोई chunk न आने पर download abort होता है; release payload में 4 GB से बड़े asset sizes को unknown माना जाता है।
 4. Progress `update-progress` के माध्यम से लगभग हर 300 ms में `percent`, `transferred` और `total` के रूप में भेजी जाती है।
@@ -87,6 +104,8 @@ flowchart TD
 8. `schedule-install-on-restart` `userData/pending-install.json` लिखता है। अगले startup पर `autoInstallPendingUpdate()` marker हटाता है, path और version फिर से validate करता है, installer launch करता है, और कोई window खुलने से पहले quit करता है।
 
 EncodeX releases code-signed या notarized नहीं हैं। Digest check तब integrity सत्यापित करता है जब GitHub digest प्रकाशित करता है; यह publisher की authenticity स्थापित नहीं करता।
+
+Windows पर डाउनलोड किया गया इंस्टॉलर चलाने पर SmartScreen "Windows protected your PC" चेतावनी के साथ "Unknown publisher" संदेश दिखा सकता है। unsigned build के लिए यह अपेक्षित है और इसका मतलब नहीं कि डाउनलोड खराब है; उपयोगकर्ता **More info** और फिर **Run anyway** पर क्लिक करता है। बिल्ड में code signature न होने के कारण SmartScreen भी publisher की authenticity स्थापित नहीं कर सकता। macOS पर पहली बार चलाने पर यही अवरोध Gatekeeper देता है: ऐप पर right-click करके **Open** चुनें (या `xattr -cr /Applications/EncodeX.app` से quarantine हटाएँ)।
 
 ## UI states
 
@@ -103,7 +122,7 @@ EncodeX releases code-signed या notarized नहीं हैं। Digest c
 
 ## Testing strategy
 
-- Unit tests: semver comparison, asset selection, download validation, checksum handling, और pending-install marker।
+- Unit tests: semver comparison, update-channel selection, asset selection, download validation, checksum handling, और pending-install marker।
 - Hostile-input tests: `src/main/__tests__/updater-hostile.test.ts` path traversal, redirect, truncated download और digest-mismatch व्यवहार को pin करता है।
 - IPC tests: `src/main/ipc/__tests__/updater.test.ts` में handler registration और event forwarding।
-- Manual testing: `1.0.0-beta.5` से नया test tag publish करें और हर target platform पर check -> download -> install flow के साथ install-on-restart path भी verify करें।
+- Manual testing: `1.0.0-beta.5` से नया test tag **pre-release** के रूप में publish करें, draft को publish करके draft state से बाहर निकालें, और check -> download -> install flow के साथ install-on-restart path भी verify करें। फिर stable build से verify करें कि वही pre-release *नहीं* offer होता।

@@ -9,6 +9,22 @@
  * All network and filesystem operations run in the main process; the renderer
  * drives the flow via IPC and receives progress/status events.
  *
+ * ## Update channels
+ *
+ * The app tracks two channels, derived from the running version:
+ *
+ * - **stable** (the running version has no pre-release identifier) is offered
+ *   stable releases only.
+ * - **beta** (the running version is a pre-release, e.g. `1.0.0-beta.5`) is
+ *   offered both pre-releases and stable releases, so a beta user keeps
+ *   receiving betas and still receives the eventual `1.0.0`.
+ *
+ * This is why the release list is fetched instead of `/releases/latest`:
+ * GitHub's "latest" endpoint resolves to the newest non-draft,
+ * non-prerelease release, which a beta client could never see past, and a
+ * beta published without the prerelease flag would be handed to stable users
+ * as though it were the stable release. See {@link selectBestRelease}.
+ *
  * ## Trust model
  *
  * Everything the release API returns is attacker-reachable: a tag can be
@@ -71,10 +87,28 @@ const GITHUB_OWNER = 'Sandeepv68';
 const GITHUB_REPO = 'EncodeX';
 
 /**
+ * How many releases the list endpoint is asked for.
+ *
+ * GitHub caps a page at 100. Asking for the maximum keeps the payload inside
+ * {@link MAX_RELEASE_JSON_BYTES} for any realistic repository while making it
+ * very unlikely that a newer release is off the end of the first page.
+ * @const {number} RELEASES_PAGE_SIZE
+ */
+const RELEASES_PAGE_SIZE = 100;
+
+/**
  * Base URL for the GitHub Releases API.
+ *
+ * The **list** endpoint, not `/releases/latest`. `/releases/latest` resolves to
+ * the newest non-draft, non-prerelease release, so a pre-release build could
+ * never see a newer beta - and a beta published without the prerelease flag
+ * would be handed to stable users as if it were the stable release. The list
+ * endpoint returns drafts, pre-releases and stable releases together, which is
+ * what a channel-aware updater needs; the channel filter is applied in
+ * {@link selectBestRelease}.
  * @const {string} RELEASES_API_URL
  */
-const RELEASES_API_URL = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest`;
+const RELEASES_API_URL = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases?per_page=${RELEASES_PAGE_SIZE}`;
 
 /**
  * Directory name under the system temp path where update assets are stored.
@@ -95,7 +129,7 @@ const API_TIMEOUT_MS = 15_000;
 /**
  * Hard ceiling on the release-metadata response body.
  *
- * A real `releases/latest` payload with a few dozen assets is well under
+ * A real releases-list payload with a few dozen assets is well under
  * 200 KB; 4 MB leaves room for a release with thousands of assets while still
  * refusing to buffer whatever a hostile endpoint chooses to send.
  * @const {number} MAX_RELEASE_JSON_BYTES
@@ -381,7 +415,7 @@ export function selectAsset(assets: UpdateAsset[]): UpdateAsset | null {
 }
 
 /**
- * The shape this module needs out of a `releases/latest` payload.
+ * The shape this module needs out of a single release payload.
  * @interface RawReleaseAsset
  * @property {string} name - Asset file name.
  * @property {string} browser_download_url - Direct download URL.
@@ -395,12 +429,16 @@ interface RawReleaseAsset {
   digest?: string;
 }
 
-/** @interface RawRelease - the validated fields of a `releases/latest` payload. */
-interface RawRelease {
+/** @interface RawRelease - the validated fields of a single release payload. */
+export interface RawRelease {
   tag_name: string;
   body: string;
   html_url: string;
   assets: RawReleaseAsset[];
+  /** True when the release is marked as a pre-release on GitHub. */
+  prerelease: boolean;
+  /** True when the release is still a draft. Drafts are never offered. */
+  draft: boolean;
 }
 
 /**
@@ -458,7 +496,47 @@ function parseRelease(value: unknown): RawRelease {
     body: typeof record.body === 'string' ? record.body : '',
     html_url: record.html_url,
     assets,
+    // Only a real boolean counts. Anything else (a string, a number, a missing
+    // key) is read as "not a pre-release" and "not a draft", so a hostile
+    // payload cannot talk the updater into offering a draft.
+    prerelease: record.prerelease === true,
+    draft: record.draft === true,
   };
+}
+
+/**
+ * Narrows a parsed releases-list payload to the releases that are usable.
+ *
+ * The list endpoint returns every release the repository has, so one unusable
+ * entry must not blind the updater to the rest. Entries that fail
+ * {@link parseRelease} are dropped and the first failure is remembered: if
+ * *nothing* in the list parses, that failure is raised rather than being
+ * reported as "up to date", because a payload the updater cannot read is not
+ * the same as a payload that says there is nothing new.
+ *
+ * @param {unknown} value - The parsed JSON body.
+ * @returns {{releases: RawRelease[], firstError: Error | null}} The usable
+ *   releases plus the first parse failure, if any.
+ * @throws {Error} When the payload is not a JSON array.
+ */
+function parseReleaseList(value: unknown): { releases: RawRelease[]; firstError: Error | null } {
+  if (!Array.isArray(value)) {
+    throw new Error('Release payload was not a JSON array');
+  }
+
+  const releases: RawRelease[] = [];
+  let firstError: Error | null = null;
+
+  for (const entry of value) {
+    try {
+      releases.push(parseRelease(entry));
+    } catch (err) {
+      if (firstError === null) firstError = err instanceof Error ? err : new Error(String(err));
+    }
+  }
+
+  if (releases.length === 0 && firstError !== null) throw firstError;
+  return { releases, firstError };
 }
 
 /**
@@ -478,12 +556,12 @@ const NO_RELEASE = Symbol('no-release');
  * {@link API_TIMEOUT_MS}, because an endpoint that never finishes and an
  * endpoint that never stops sending are the same failure from the app's side.
  *
- * @returns {Promise<unknown | symbol>} The latest release payload, or
+ * @returns {Promise<unknown | symbol>} The releases-list payload, or
  *   {@link NO_RELEASE} on 404.
  * @throws {Error} When the request fails, times out, exceeds the size cap, or
  *   returns a non-200 status.
  */
-function fetchLatestRelease(): Promise<unknown | typeof NO_RELEASE> {
+function fetchReleases(): Promise<unknown | typeof NO_RELEASE> {
   return new Promise((resolve, reject) => {
     const req = https.get(
       RELEASES_API_URL,
@@ -532,6 +610,73 @@ function fetchLatestRelease(): Promise<unknown | typeof NO_RELEASE> {
 }
 
 /**
+ * The update channel a running version belongs to.
+ *
+ * - `stable`: the running version has no pre-release identifier. Only stable
+ *   releases are offered.
+ * - `beta`: the running version is a pre-release. Both pre-releases and stable
+ *   releases are offered, so a beta user keeps getting betas and still
+ *   receives the eventual 1.0.0.
+ * @typedef {'stable' | 'beta'} UpdateChannel
+ */
+export type UpdateChannel = 'stable' | 'beta';
+
+/**
+ * Resolves the update channel a version belongs to.
+ *
+ * A version that cannot be parsed is treated as `stable`: offering a
+ * pre-release to a client that cannot order versions would be worse than
+ * offering nothing.
+ *
+ * @param {string} version - The version to classify.
+ * @returns {UpdateChannel} The channel the version belongs to.
+ */
+export function channelForVersion(version: string): UpdateChannel {
+  const parsed = parseVersion(version);
+  return parsed !== null && parsed.pre !== null ? 'beta' : 'stable';
+}
+
+/**
+ * Chooses the release to offer on a channel.
+ *
+ * Rules, in order:
+ *
+ *  1. A draft is never offered - it is not published yet.
+ *  2. A `stable` client is never offered a pre-release.
+ *  3. A release the client already has, or an older one, is never offered.
+ *  4. A release whose tag is not a usable version is skipped rather than
+ *     failing the whole check.
+ *  5. Among the survivors the highest version wins, so a beta client that has
+ *     both `1.0.0-beta.6` and `1.0.0` available is offered `1.0.0`.
+ *
+ * @param {RawRelease[]} releases - Every release the API returned.
+ * @param {UpdateChannel} channel - The channel of the running client.
+ * @param {string} currentVersion - The running version.
+ * @returns {RawRelease | null} The release to offer, or null when there is none.
+ */
+export function selectBestRelease(releases: RawRelease[], channel: UpdateChannel, currentVersion: string): RawRelease | null {
+  let best: RawRelease | null = null;
+  let bestVersion = '';
+
+  for (const release of releases) {
+    if (release.draft) continue;
+    if (channel === 'stable' && release.prerelease) continue;
+
+    const version = release.tag_name.trim().replace(/^v/i, '');
+    if (!isUsableVersion(version)) continue;
+    if (!isUsableVersion(currentVersion)) continue;
+    if (compareVersions(version, currentVersion) <= 0) continue;
+
+    if (best === null || compareVersions(version, bestVersion) > 0) {
+      best = release;
+      bestVersion = version;
+    }
+  }
+
+  return best;
+}
+
+/**
  * Runs one release check. Prefer {@link checkForUpdate}, which shares one
  * in-flight request across concurrent callers.
  *
@@ -542,13 +687,20 @@ async function runCheck(): Promise<UpdateInfo | null> {
   const currentVersion = app.getVersion();
   log.info(LOG_UPDATER_CHECKING, 'current:', currentVersion);
 
-  const payload = await fetchLatestRelease();
+  const payload = await fetchReleases();
   if (payload === NO_RELEASE) {
     log.info(LOG_UPDATER_NOT_AVAILABLE);
     return null;
   }
 
-  const release = parseRelease(payload);
+  const { releases } = parseReleaseList(payload);
+  const channel = channelForVersion(currentVersion);
+  const release = selectBestRelease(releases, channel, currentVersion);
+  if (release === null) {
+    log.info(LOG_UPDATER_NOT_AVAILABLE);
+    return null;
+  }
+
   const remoteVersion = release.tag_name.trim().replace(/^v/i, '');
 
   if (!isUsableVersion(remoteVersion) || !isUsableVersion(currentVersion)) {

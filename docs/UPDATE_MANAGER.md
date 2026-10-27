@@ -2,7 +2,7 @@
 
 ## 📖 Overview
 
-EncodeX uses a custom in-app update manager. It queries the GitHub Releases API for the latest release, compares its semantic version against the running app, selects the installer for the current platform and architecture, and downloads it in-app with progress reporting. When the download completes, the user can install and restart immediately or schedule the installer to run on the next app restart.
+EncodeX uses a custom in-app update manager. It queries the GitHub Releases API for the published releases, filters them by the update channel the running version belongs to, compares their semantic versions against the running app, selects the installer for the current platform and architecture, and downloads it in-app with progress reporting. When the download completes, the user can install and restart immediately or schedule the installer to run on the next app restart.
 
 Updates are never installed silently or automatically. Every install is initiated by a user action, either from the update dialog or from the pending-install marker the user explicitly armed.
 
@@ -10,7 +10,7 @@ Updates are never installed silently or automatically. Every install is initiate
 
 ```mermaid
 flowchart TD
-    GH["GitHub Releases API"] --> U["main/updater.ts<br/>fetches /releases/latest,<br/>compares semver, downloads"]
+    GH["GitHub Releases API"] --> U["main/updater.ts<br/>fetches /releases,<br/>filters by channel, compares semver, downloads"]
     U --> I["main/ipc/updater.ts<br/>registers IPC handlers +<br/>pushes events to renderer"]
     I --> P["preload/index.ts<br/>exposes update methods +<br/>event subscriptions"]
     P --> S["renderer/stores/updateStore.ts<br/>Zustand state for update flow"]
@@ -65,6 +65,23 @@ flowchart TD
 - Pre-release identifiers compare dot-by-dot: numeric identifiers numerically, alphanumeric identifiers lexically, and numeric identifiers rank below alphanumeric ones.
 - An update is offered only when the remote version is strictly greater than the running version.
 
+## 📡 Update Channels
+
+The channel is derived from the running version, and decides which releases are eligible:
+
+| Channel | Running version | Eligible releases |
+|---|---|---|
+| `stable` | no pre-release identifier, e.g. `1.0.0` | stable releases only |
+| `beta` | a pre-release identifier, e.g. `1.0.0-beta.5` | pre-releases *and* stable releases |
+
+Consequences worth knowing:
+
+- A beta build keeps receiving betas, and also receives the eventual stable `1.0.0` when it ships.
+- A stable build is never offered a pre-release.
+- A **draft** release is never offered to anyone. GitHub excludes drafts from the published release list, so a release left as a draft is invisible to the updater until it is published.
+- GitHub's own "latest release" endpoint is deliberately *not* used: it resolves to the newest non-draft, non-prerelease release, which a beta build could never see past, and a beta published without the pre-release flag would be handed to stable users as if it were the stable release. The updater reads the release **list** and applies the channel filter itself.
+- The release workflow marks a pre-release tag (`v1.0.0-beta.6`) as a GitHub pre-release, so the flag and the tag agree.
+
 ## 🎯 Asset Selection Logic
 
 1. Accept only plain file names with the platform installer extension:
@@ -78,7 +95,7 @@ flowchart TD
 
 ## 📥 Download and Install Flow
 
-1. The renderer calls `check-for-updates`. The main process fetches `/releases/latest` with a 15-second timeout, a 4 MB response cap, and at most 5 redirects.
+1. The renderer calls `check-for-updates`. The main process fetches `/releases?per_page=100` with a 15-second timeout, a 4 MB response cap, and at most 5 redirects, then filters the list by the update channel.
 2. The matched asset is returned through `update-available`.
 3. `download-update` streams the installer to `app.getPath('temp')/EncodeX-updater/`. Downloads abort after 60 seconds without a chunk; asset sizes above 4 GB in the release payload are treated as unknown.
 4. Progress is pushed via `update-progress` at most about every 300 ms as `percent`, `transferred`, and `total`.
@@ -88,6 +105,8 @@ flowchart TD
 8. `schedule-install-on-restart` writes `userData/pending-install.json`. At the next startup, `autoInstallPendingUpdate()` clears the marker, re-validates the path and version, launches the installer, and quits before any window opens.
 
 EncodeX releases are not code-signed or notarized. The digest check verifies integrity when GitHub publishes a digest; it does not establish publisher authenticity.
+
+On Windows, launching the downloaded installer can trigger the SmartScreen warning "Windows protected your PC" with an "Unknown publisher" message. This is expected for an unsigned build and does not mean the download is corrupt; the user clicks **More info** and then **Run anyway**. SmartScreen cannot establish publisher authenticity either, because there is no code signature on the build. On macOS, the equivalent first-launch block comes from Gatekeeper, and the user right-clicks the app and chooses **Open** (or removes the quarantine flag with `xattr -cr /Applications/EncodeX.app`).
 
 ## 🖼️ UI States
 
@@ -104,7 +123,7 @@ EncodeX releases are not code-signed or notarized. The digest check verifies int
 
 ## 🧪 Testing Strategy
 
-- Unit: semver comparison, asset selection, download validation, checksum handling, and the pending-install marker.
+- Unit: semver comparison, update-channel selection, asset selection, download validation, checksum handling, and the pending-install marker.
 - Hostile-input tests: `src/main/__tests__/updater-hostile.test.ts` pins path traversal, redirect, truncated download, and digest-mismatch behavior.
 - IPC tests: handler registration and event forwarding in `src/main/ipc/__tests__/updater.test.ts`.
-- Manual: publish a test tag newer than `1.0.0-beta.5` and verify check -> download -> install, plus the install-on-restart path.
+- Manual: publish a test tag newer than `1.0.0-beta.5` as a **pre-release**, publish the draft so it leaves draft state, and verify check -> download -> install, plus the install-on-restart path. Then verify from a stable build that the same pre-release is *not* offered.
