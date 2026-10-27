@@ -208,6 +208,8 @@ Object.defineProperty(globalThis, 'electronAPI', {
     analyticsSetEnabled: vi.fn().mockResolvedValue({ enabled: true, backend: 'noop' }),
     mcpGetSettings: vi.fn().mockResolvedValue({ enabled: false, port: 8765, token: '' }),
     mcpSetSettings: vi.fn().mockImplementation((settings) => Promise.resolve(settings)),
+    mcpUiCallTool: vi.fn().mockResolvedValue({ content: [], structuredContent: {} }),
+    mcpUiListViews: vi.fn().mockResolvedValue([]),
     aiGetSettings: vi.fn().mockResolvedValue({
       providerId: 'rules',
       model: '',

@@ -65,6 +65,25 @@ export const MCP_UI_VIEW_URIS = {
 export type McpUiViewId = keyof typeof MCP_UI_VIEW_URIS;
 
 /**
+ * One MCP App view attached to a Copilot message.
+ *
+ * The Copilot renders the same React components an external MCP Apps host
+ * renders; the attachment carries the payload the view shows and the tool the
+ * payload came from.
+ * @interface McpViewAttachment
+ * @property {McpUiViewId} viewId - The view to render.
+ * @property {string} uri - The `ui://` resource URI of the view.
+ * @property {string} toolName - The MCP tool that produced the payload.
+ * @property {unknown} structuredContent - The payload the view renders.
+ */
+export interface McpViewAttachment {
+  viewId: McpUiViewId;
+  uri: string;
+  toolName: string;
+  structuredContent: unknown;
+}
+
+/**
  * One entry of the job status returned to the queue/job views. Mirrors the
  * job manager's serialized shape without importing it, keeping this contract
  * usable from any process.

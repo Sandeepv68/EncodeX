@@ -45,7 +45,8 @@ interface ConversationProps {
 const FALLBACK_VIEWPORT_HEIGHT = 640;
 const THINKING_ROW_ESTIMATE = 72;
 const USER_ROW_ESTIMATE = 88;
-const ASSISTANT_ROW_ESTIMATE = 280;
+/** Rows are measured, so the estimate only has to be close enough. */
+const ASSISTANT_ROW_ESTIMATE = 420;
 
 /**
  * Renders the scrolling conversation transcript.

@@ -38,6 +38,9 @@ import { MCPJobManager } from '../mcp/jobs/manager';
 import { registerGuiTools } from './mcp/gui-tools';
 import { startMcpHttpServer } from './mcp/http-server';
 import type { McpHttpHandle } from './mcp/http-server';
+import { createLocalMcpClient } from './mcp/local-client';
+import type { LocalMcpClient } from './mcp/local-client';
+import { registerMcpUiIpc, setLocalMcpClientProvider } from './mcp/ui-ipc';
 import { readMcpSettings } from './mcp/settings';
 import type { McpSettings } from './mcp/settings';
 import { registerMcpSettingsIpc } from './mcp/settings-ipc';
@@ -78,6 +81,7 @@ import {
   LOG_MONITORING_CHILD_PROCESS_GONE,
   LOG_MCP_EMBEDDED_STARTING,
   LOG_MCP_EMBEDDED_START_FAILED,
+  LOG_MCP_LOCAL_CLIENT_FAILED,
   LOG_MCP_EMBEDDED_DISABLED,
 } from '../shared/log-constants';
 import { captureException, closeMonitoring, initMonitoring } from '../shared/monitoring/MonitoringService';
@@ -372,6 +376,9 @@ if (process.argv.includes('--mcp')) {
   /** Shared job manager backing both the core and GUI-parity MCP tools. @type {MCPJobManager | null} */
   let mcpJobManager: MCPJobManager | null = null;
 
+  /** In-process MCP client backing the in-app MCP App views. @type {Promise<LocalMcpClient | null> | null} */
+  let localMcpClientPromise: Promise<LocalMcpClient | null> | null = null;
+
   /**
    * Builds a fresh embedded MCP server for one HTTP session: the core surface
    * from {@link createMcpServer} plus the GUI-parity tools. Every session
@@ -400,6 +407,27 @@ if (process.argv.includes('--mcp')) {
       checkForUpdate: () => checkForUpdate(),
     });
     return server;
+  }
+
+  /**
+   * Starts the in-process MCP client the in-app MCP App views call tools
+   * through. It talks to the same session server (and therefore the same job
+   * manager) the embedded HTTP server exposes, so a view that cancels a job
+   * cancels the job the app's queue shows.
+   *
+   * The client is created on first use: an app that never renders a view never
+   * pays for the session. A failure is logged and swallowed - the views
+   * degrade to a read-only surface instead of breaking the Copilot.
+   * @returns {Promise<LocalMcpClient | null>} The client, or null when it could not start.
+   */
+  async function getLocalMcpClient(): Promise<LocalMcpClient | null> {
+    if (!localMcpClientPromise) {
+      localMcpClientPromise = createLocalMcpClient(() => createSessionMcpServer()).catch((err: unknown) => {
+        log.warn(LOG_MCP_LOCAL_CLIENT_FAILED, 'starting failed:', err);
+        return null;
+      });
+    }
+    return localMcpClientPromise;
   }
 
   /**
@@ -535,6 +563,7 @@ if (process.argv.includes('--mcp')) {
     });
 
     registerIpcHandlers(mainWindow);
+    setLocalMcpClientProvider(() => getLocalMcpClient());
     registerMonitoringIpcBridge({ userDataDir: app.getPath('userData'), consentEnabled: monitoringConsentAtBoot });
     registerAnalyticsIpcBridge({ userDataDir: app.getPath('userData'), consentEnabled: analyticsConsentAtBoot });
     patchConsole(mainWindow);

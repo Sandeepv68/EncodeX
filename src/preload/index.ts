@@ -160,6 +160,7 @@ import {
   LOG_IPC_ANALYTICS_SET_ENABLED,
   LOG_IPC_MCP_GET_SETTINGS,
   LOG_IPC_MCP_SET_SETTINGS,
+  LOG_IPC_MCP_UI_CALL_TOOL,
   LOG_IPC_AI_GET_SETTINGS,
   LOG_IPC_AI_SET_SETTINGS,
   LOG_IPC_AI_CONNECT_TEST,
@@ -986,6 +987,30 @@ const api = {
   mcpSetSettings: (settings: McpSettings) => {
     log.debug(LOG_IPC_MCP_SET_SETTINGS, settings);
     return ipcRenderer.invoke(IPC.MCP_SETTINGS_SET, settings) as Promise<McpSettings>;
+  },
+
+  /**
+   * Calls an MCP tool on behalf of an in-app MCP App view (the Copilot renders
+   * the same views an external MCP Apps host renders, and those views call
+   * tools back). Invokes `IPC.MCP_UI_CALL_TOOL` ('mcp-ui-call-tool').
+   *
+   * @param {string} name - The MCP tool to call.
+   * @param {Record<string, unknown>} [args] - The tool arguments.
+   * @returns {Promise<unknown>} The tool result (text plus `structuredContent`).
+   */
+  mcpUiCallTool: (name: string, args?: Record<string, unknown>) => {
+    log.debug(LOG_IPC_MCP_UI_CALL_TOOL, name);
+    return ipcRenderer.invoke(IPC.MCP_UI_CALL_TOOL, { name, args }) as Promise<unknown>;
+  },
+
+  /**
+   * Lists the MCP App views the in-app host can render. Invokes
+   * `IPC.MCP_UI_LIST_VIEWS` ('mcp-ui-list-views').
+   *
+   * @returns {Promise<Array<{viewId: string; uri: string; title: string}>>} The available views.
+   */
+  mcpUiListViews: () => {
+    return ipcRenderer.invoke(IPC.MCP_UI_LIST_VIEWS) as Promise<Array<{ viewId: string; uri: string; title: string }>>;
   },
 
   /**

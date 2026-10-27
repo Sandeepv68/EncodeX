@@ -1051,12 +1051,16 @@ export const LOG_MCP_GUI_TOOL_ERROR = 'MCP GUI tool error:';
 export const LOG_MCP_EMBEDDED_STARTING = 'Starting embedded MCP server:';
 /** @const {string} Prefix when the embedded MCP server(s) fail to start. */
 export const LOG_MCP_EMBEDDED_START_FAILED = 'Embedded MCP server failed:';
+/** @const {string} Prefix when the in-process MCP client fails to start. */
+export const LOG_MCP_LOCAL_CLIENT_FAILED = 'In-process MCP client failed:';
 /** @const {string} Logged when the embedded MCP server stays off per settings. */
 export const LOG_MCP_EMBEDDED_DISABLED = 'Embedded MCP server is disabled in settings';
 /** @const {string} Logged when the renderer requests the stored MCP settings. */
 export const LOG_IPC_MCP_GET_SETTINGS = 'mcpGetSettings called';
 /** @const {string} Prefix when the renderer updates the MCP settings. */
 export const LOG_IPC_MCP_SET_SETTINGS = 'mcpSetSettings:';
+/** @const {string} Prefix when an in-app MCP App view calls a tool. */
+export const LOG_IPC_MCP_UI_CALL_TOOL = 'mcpUiCallTool:';
 /** @const {string} Logged when the renderer requests the stored AI provider settings. */
 export const LOG_IPC_AI_GET_SETTINGS = 'aiGetSettings called';
 /** @const {string} Prefix when the renderer updates the AI provider settings. */

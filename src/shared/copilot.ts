@@ -15,6 +15,7 @@ import type { ConversionOptions } from './types';
 import type { AgentAction, AgentSkip } from './ai/agent';
 import type { WorkflowPlan } from './ai/workflow';
 import type { AIProviderId } from './ai/types';
+import type { McpViewAttachment } from './mcp-ui';
 
 /**
  * The operation a Copilot plan performs. `convert` and the queue-backed
@@ -145,6 +146,8 @@ export interface CopilotResult {
  * @property {WorkflowPlan} plan - The dry-run validation of the workflow.
  * @property {AIProviderId} providerId - The provider that chose the operation.
  * @property {true} isEstimated - The plan is a proposal, not a measurement.
+ * @property {McpViewAttachment[]} [views] - MCP App views the transcript renders
+ *   inline (the same components an external MCP Apps host renders).
  */
 export interface CopilotPlan {
   goal: string;
@@ -158,4 +161,5 @@ export interface CopilotPlan {
   plan: WorkflowPlan;
   providerId: AIProviderId;
   isEstimated: true;
+  views?: McpViewAttachment[];
 }
