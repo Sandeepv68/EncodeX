@@ -11,7 +11,7 @@
  * languages without leaving the current page.
  */
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { InputAdornment, Menu, MenuItem, TextField, Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
@@ -76,6 +76,20 @@ export default function LanguageMenu({ condensed = false }: { condensed?: boolea
   const { setDirection } = useColorMode();
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const [query, setQuery] = useState('');
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Focus the search field when the menu opens.
+  //
+  // The `autoFocus` prop would do this on mount instead, which the project's
+  // accessibility lint rule bans and which also fights the menu's own focus
+  // management (`disableAutoFocusItem` deliberately leaves focus to the search
+  // field rather than to the first locale). An effect keyed on the anchor does
+  // the same thing at the moment the menu actually opens.
+  useEffect(() => {
+    if (anchor) {
+      searchInputRef.current?.focus();
+    }
+  }, [anchor]);
 
   /**
    * Closes the menu and clears the search query.
@@ -154,7 +168,7 @@ export default function LanguageMenu({ condensed = false }: { condensed?: boolea
           <TextField
             fullWidth
             size="small"
-            autoFocus
+            inputRef={searchInputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {

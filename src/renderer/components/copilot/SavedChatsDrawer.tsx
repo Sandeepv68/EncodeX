@@ -149,8 +149,7 @@ export default function SavedChatsDrawer({ open, chats, onClose, onOpen, onDelet
                     transition: 'background-color 150ms ease, box-shadow 150ms ease',
                     '&:hover': {
                       bgcolor: 'action.selected',
-                      boxShadow:
-                        theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_HOVER_DARK : SHADOWS(theme).SOFT_HOVER_LIGHT,
+                      boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_HOVER_DARK : SHADOWS(theme).SOFT_HOVER_LIGHT,
                     },
                     '&:focus-within': { bgcolor: 'action.selected' },
                   })}
