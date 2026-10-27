@@ -68,6 +68,7 @@ const defaults = {
   pendingInstallResult: null,
   mcpSettings: { enabled: false, port: 8765, token: '' },
   mcpSetCalls: [],
+  mcpUiToolCalls: [],
   aiSettingsView: {
     providerId: 'rules',
     model: '',

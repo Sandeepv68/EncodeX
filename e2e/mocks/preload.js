@@ -349,6 +349,23 @@ const api = {
     return Promise.resolve({ ...next });
   },
 
+  // --- MCP App views (the in-app host) -----------------------------------------
+  // The Copilot renders the MCP App views; they call tools back through the
+  // main process. The mock answers the read-only tools the views poll for and
+  // records the rest, so an e2e spec can assert what a view asked for.
+  mcpUiCallTool: (name, args) => {
+    state.mcpUiToolCalls.push({ name, args: args || {} });
+    if (name === 'list_jobs') {
+      return Promise.resolve({ content: [], structuredContent: { jobs: [], count: 0, generatedAt: 0 } });
+    }
+    return Promise.resolve({ content: [], structuredContent: {} });
+  },
+  mcpUiListViews: () =>
+    Promise.resolve([
+      { viewId: 'queue', uri: 'ui://encodex/queue', title: 'Queue' },
+      { viewId: 'inspector', uri: 'ui://encodex/inspector', title: 'Inspector' },
+    ]),
+
   // --- AI provider settings ----------------------------------------------------
   // The stored key never crosses this boundary (mirroring src/main/ai/settings.ts,
   // which encrypts it at rest and sends only a masked `AiSettingsView`), so
@@ -385,8 +402,7 @@ const api = {
       typeof next.baseUrl === 'string' ||
       next.clearKey === true ||
       (typeof next.apiKey === 'string' && next.apiKey.length > 0);
-    const connectedProviderChanged =
-      configChanged && view.connectedAt !== undefined && view.connectedProvider === view.providerId;
+    const connectedProviderChanged = configChanged && view.connectedAt !== undefined && view.connectedProvider === view.providerId;
     if (connectedProviderChanged) {
       view.connected = false;
       delete view.connectedAt;
@@ -588,6 +604,7 @@ const api = {
         closeRequestedSubscribers,
         termsRejectCalls,
         mcpSetCalls,
+        mcpUiToolCalls,
         aiSetCalls,
         aiModelsResult,
       } = state;
@@ -600,6 +617,7 @@ const api = {
         closeRequestedSubscribers,
         termsRejectCalls,
         mcpSetCalls,
+        mcpUiToolCalls,
         aiSetCalls,
         aiModelsResult,
       };
