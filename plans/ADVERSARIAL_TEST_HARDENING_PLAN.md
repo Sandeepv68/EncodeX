@@ -526,6 +526,12 @@ fail on whichever platform it was not recorded on, so the baseline holds one ent
 the gate compares a run against its own platform's entry; a platform with no entry falls back to the
 most conservative number on record.
 
+The comparison allows 2 percentage points of slack. The v8 provider derives its statement boundaries
+from what actually ran, so the same commit measures fractionally differently from one run to the
+next - the drift reached 0.8 points across two CI runs of an unchanged tree. A tighter tolerance
+turns the gate into a coin flip, and a gate that is sometimes red for no reason gets ignored; two
+points still catches a real regression. `COVERAGE_TOLERANCE` overrides it.
+
 What was built: | Piece | Where  | Behaviour |
 | Shared coverage scope | `vitest.coverage-scope.ts`  | One include/exclude list imported by **both** vitest configs. A union of two reports is only meaningful if both tiers measured the same file set. |
 | Raw two-tier merge | `scripts/coverage-summary.mjs`  | Unions `coverage-final.json` from `coverage/` and `coverage-integration/` via `istanbul-lib-coverage`. |

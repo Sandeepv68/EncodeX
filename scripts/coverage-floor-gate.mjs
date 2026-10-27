@@ -41,8 +41,21 @@ import { mergeCoverage, assertMergeIsSane, misses, DEFAULT_LINE_FLOOR, DEFAULT_B
 const BASELINE_FILE = process.env.COVERAGE_BASELINE_FILE ?? 'coverage-baseline.json';
 const dirs = (process.env.COVERAGE_DIRS ?? 'coverage,coverage-integration').split(',').map((d) => d.trim());
 
-/** Percentage points of slack allowed when comparing against the baseline. */
-const TOLERANCE = 0.5;
+/**
+ * Percentage points of slack allowed when comparing against the baseline.
+ *
+ * Not zero, and not small. The v8 coverage provider derives its statement
+ * boundaries from what actually ran, so the *same* commit measures slightly
+ * differently from one run to the next - the denominator moves by a fraction of
+ * a percent even when the code and the tests are unchanged. Measured across
+ * two CI runs of an unchanged tree, the drift reached 0.8 percentage points.
+ *
+ * A tolerance below that turns the gate into a coin flip, and a gate that is
+ * sometimes red for no reason gets ignored. Two points still catches a real
+ * regression - losing a test, or a chunk of a module - while absorbing the
+ * noise. Override with `COVERAGE_TOLERANCE` if a run needs a stricter bar.
+ */
+const TOLERANCE = Number(process.env.COVERAGE_TOLERANCE ?? 2);
 
 const lineFloor = Number(process.env.COVERAGE_LINE_FLOOR ?? DEFAULT_LINE_FLOOR);
 const branchFloor = Number(process.env.COVERAGE_BRANCH_FLOOR ?? DEFAULT_BRANCH_FLOOR);
