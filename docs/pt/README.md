@@ -140,7 +140,7 @@ Instaladores pré-compilados estão disponíveis na página de [Releases](https:
 
 ### macOS
 
-> O EncodeX não possui assinatura de código (sem conta Apple Developer). O Gatekeeper do macOS bloqueará o app na primeira abertura.
+> O EncodeX não possui assinatura de código nem notarização (sem conta Apple Developer). O Gatekeeper do macOS bloqueará o app na primeira abertura.
 
 **Opção 1 — Clique com o botão direito para abrir:**
 
@@ -153,9 +153,22 @@ Instaladores pré-compilados estão disponíveis na página de [Releases](https:
 xattr -cr /Applications/EncodeX.app
 ```
 
-### Windows / Linux
+### Windows
 
-Baixe o instalador `.exe` (Windows) ou `.AppImage` (Linux) na página de [Releases](https://github.com/Sandeepv68/EncodeX/releases) e execute-o.
+Baixe o instalador `.exe` na página de [Releases](https://github.com/Sandeepv68/EncodeX/releases) e execute-o.
+
+> As releases do EncodeX não têm assinatura de código, então o Windows SmartScreen pode mostrar um aviso de "Windows protected your PC" com a mensagem "Editor desconhecido". Isso é esperado e não significa que o download está corrompido.
+
+**Para executar o instalador:**
+
+1. Clique em **Mais informações** no aviso
+2. Clique em **Executar mesmo assim**
+
+O SmartScreen não consegue confirmar quem publicou, porque o build não tem nenhuma assinatura de código.
+
+### Linux
+
+Baixe o instalador `.AppImage` na página de [Releases](https://github.com/Sandeepv68/EncodeX/releases) e execute-o.
 
 ## 🚀 Instalação (a partir do código-fonte)
 

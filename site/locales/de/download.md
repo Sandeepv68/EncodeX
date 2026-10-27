@@ -19,6 +19,15 @@ Installieren Sie die App, ziehen Sie ein Video oder ein Bild in das Fenster, wä
 
 **Installation:** Öffnen Sie die heruntergeladene Datei und folgen Sie den Schritten auf dem Bildschirm.
 
+::: warning Erster Start unter Windows — ein zusätzlicher Klick
+EncodeX-Releases sind nicht code-signiert, daher kann Windows SmartScreen eine Warnung „Windows protected your PC" mit der Meldung „Unbekannter Herausgeber" anzeigen. Das ist erwartet und bedeutet nicht, dass der Download beschädigt ist. So geht es weiter:
+
+1. Klicken Sie in der Warnung auf **Weitere Infos**
+2. Klicken Sie auf **Trotzdem ausführen**
+
+Das müssen Sie nur einmal tun — danach läuft die Installation normal.
+:::
+
 Unsicher, welche Sie nehmen sollen? Nehmen Sie die empfohlene — passt sie nicht, sagt es Windows schon. Unter **Andere Downloads** finden Sie außerdem einen **Windows-ARM64**-Build (Snapdragon-Laptops).
 
 ### Andere Plattformen
@@ -88,7 +97,7 @@ Vertrauen ist uns wichtig. Jede Konvertierung läuft auf Ihrem Computer, und Ihr
 
 ## Sicherheit
 
-Jede Version veröffentlicht [SHA-256-Checksummen](/de/security) zusammen mit den Installationsprogrammen, und wenn Sie ein Problem finden, können Sie es vertraulich melden. Release-Builds sind nicht code-signiert. Details auf der [Sicherheitsseite](/de/security).
+Jede Version veröffentlicht [SHA-256-Checksummen](/de/security) zusammen mit den Installationsprogrammen, und wenn Sie ein Problem finden, können Sie es vertraulich melden. Release-Builds sind nicht code-signiert und nicht notarisiert. Details auf der [Sicherheitsseite](/de/security).
 
 ## Für Entwickler: Selbst bauen
 

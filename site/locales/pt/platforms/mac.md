@@ -30,7 +30,7 @@ Os usuários do Mac escolhem EncodeX porque ele é projetado de acordo com a for
 
 [Baixe EncodeX gratuitamente](/pt/download) — obtenha a versão **macOS** na página de download (veja **Outras plataformas**). macOS 11 ou posterior é necessário.
 
-> **Nota:** EncodeX não possui assinatura de código. Na primeira inicialização, o macOS Gatekeeper pedirá que você confirme. Clique com o botão direito no aplicativo e escolha **Abrir**, depois clique em **Abrir** novamente na caixa de diálogo.
+> **Nota:** As releases do EncodeX não possuem assinatura de código nem notarização. Na primeira inicialização, o macOS Gatekeeper pedirá que você confirme. Clique com o botão direito no aplicativo e escolha **Abrir**, depois clique em **Abrir** novamente na caixa de diálogo. Se o app não abrir de jeito nenhum, remova a flag de quarentena pelo Terminal: `xattr -cr /Applications/EncodeX.app`.
 
 ## Perguntas frequentes
 

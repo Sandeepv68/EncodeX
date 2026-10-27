@@ -19,6 +19,15 @@ Instale o aplicativo, arraste um vídeo ou uma imagem para a janela, escolha um 
 
 **Para instalar:** abra o arquivo baixado e siga os passos na tela.
 
+::: warning Primeira execução no Windows — um clique a mais
+As releases do EncodeX não têm assinatura de código, então o Windows SmartScreen pode mostrar um aviso de "Windows protected your PC" com a mensagem "Editor desconhecido". Isso é esperado e não significa que o download está corrompido. Para continuar:
+
+1. Clique em **Mais informações** no aviso
+2. Clique em **Executar mesmo assim**
+
+Você só precisa fazer isso uma vez — depois a instalação acontece normalmente.
+:::
+
 Não sabe qual escolher? Vá no recomendado — se não for compatível, o Windows avisa.
 
 ### Outras plataformas
@@ -34,7 +43,7 @@ Não sabe qual escolher? Vá no recomendado — se não for compatível, o Windo
 **Não sabe qual é o seu Mac?** Clique no logo da Apple (<OsIcon name="apple" label="Logo da Apple" />) no canto superior esquerdo, escolha "Sobre este Mac" e veja a linha "Chip". Se aparecer "Apple M1" (ou M2/M3/M4), escolha Apple Silicon. Se aparecer "Intel", escolha Intel.
 
 ::: warning Primeira abertura no Mac — um passo extra
-Como o EncodeX é gratuito e de código aberto (e não é vendido na Mac App Store), o macOS pode mostrar uma mensagem dizendo que o app "não pode ser aberto" na primeira vez. É normal e seguro de resolver:
+Como o EncodeX é gratuito e de código aberto (e não é vendido na Mac App Store) e seus builds para macOS não são assinados por código nem notarizados, o macOS pode mostrar uma mensagem dizendo que o app "não pode ser aberto" na primeira vez. É normal e seguro de resolver:
 
 1. Encontre o EncodeX na pasta Aplicativos
 2. Segure a tecla **Control**, clique no app e escolha **Abrir**
@@ -87,7 +96,7 @@ Sabemos que a confiança importa. Cada conversão acontece no seu computador —
 
 ## Segurança
 
-Cada versão inclui [checksums SHA-256 verificáveis e builds assinados](/pt/security) — e se você encontrar um problema, pode reportá-lo de forma privada. Veja a [página de segurança](/pt/security) para detalhes.
+Cada versão inclui [checksums SHA-256 verificáveis](/pt/security) — as builds não são assinados por código nem notarizados, e se você encontrar um problema, pode reportá-lo de forma privada. Veja a [página de segurança](/pt/security) para detalhes.
 
 ## Para desenvolvedores: compile você mesmo
 

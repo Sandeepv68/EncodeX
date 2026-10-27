@@ -19,6 +19,15 @@ Instala la aplicación, arrastra un video o una imagen a la ventana, elige un pe
 
 **Para instalar:** abre el archivo descargado y sigue los pasos en pantalla.
 
+::: warning Primera ejecución en Windows — un clic extra
+Las versiones de EncodeX no están firmadas con código, por lo que Windows SmartScreen puede mostrar una advertencia de "Windows protected your PC" con el mensaje "Editor desconocido". Es algo previsto y no significa que la descarga esté dañada. Para continuar:
+
+1. Haz clic en **Más información** en la advertencia
+2. Haz clic en **Ejecutar de todas formas**
+
+Solo necesitas hacer esto una vez — después se instala con normalidad.
+:::
+
 ¿No sabes cuál elegir? Ve con el recomendado — si no coincide, Windows te lo dirá. En **Otras descargas** también encontrarás una compilación **Windows ARM64** (portátiles Snapdragon).
 
 ### Otras plataformas
@@ -88,7 +97,7 @@ Entendemos que la confianza importa. Cada conversión ocurre en tu computadora y
 
 ## Seguridad
 
-Cada versión publica [sumas de verificación SHA-256](/es/security) junto a los instaladores, y si encuentras un problema, puedes reportarlo de forma privada. Las compilaciones de versión no están firmadas. Consulta la [página de seguridad](/es/security) para más detalles.
+Cada versión publica [sumas de verificación SHA-256](/es/security) junto a los instaladores, y si encuentras un problema, puedes reportarlo de forma privada. Las compilaciones de versión no están firmadas ni notarizadas. Consulta la [página de seguridad](/es/security) para más detalles.
 
 ## Para desarrolladores: compílelo tú mismo
 

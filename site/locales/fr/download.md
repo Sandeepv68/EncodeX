@@ -19,6 +19,15 @@ Installez l'application, glissez une vidéo ou une image dans la fenêtre, chois
 
 **Pour installer :** ouvrez le fichier téléchargé et suivez les étapes à l'écran.
 
+::: warning Premier lancement sous Windows — un clic de plus
+Les releases EncodeX ne sont pas signées avec un certificat de code, donc Windows SmartScreen peut afficher un avertissement « Windows protected your PC » avec le message « éditeur inconnu ». C'est attendu et ne signifie pas que le téléchargement est corrompu. Pour continuer :
+
+1. Cliquez sur **Informations complémentaires** dans l'avertissement
+2. Cliquez sur **Exécuter quand même**
+
+Vous n'avez à le faire qu'une seule fois — ensuite l'installation se fait normalement.
+:::
+
 Vous hésitez ? Prenez la version recommandée — si ce n'est pas la bonne, Windows vous le dira.
 
 ### Autres plateformes
@@ -88,7 +97,7 @@ Nous comprenons que la confiance compte. Chaque conversion se fait sur votre ord
 
 ## Sécurité
 
-Chaque version publie des [sommes de contrôle SHA-256](/fr/security) à côté des installateurs, et si vous trouvez un problème, vous pouvez le signaler de manière privée. Les versions ne sont pas signées numériquement. Consultez la [page sécurité](/fr/security) pour plus de détails.
+Chaque version publie des [sommes de contrôle SHA-256](/fr/security) à côté des installateurs, et si vous trouvez un problème, vous pouvez le signaler de manière privée. Les versions ne sont pas signées numériquement ni notariées. Consultez la [page sécurité](/fr/security) pour plus de détails.
 
 ## Pour les développeurs : compilez-le vous-même
 

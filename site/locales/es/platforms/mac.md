@@ -30,7 +30,7 @@ Los usuarios de Mac eligen EncodeX porque está diseñado según la forma de tra
 
 [Descarga EncodeX gratis](/es/download) — obtén la compilación de **macOS** en la página de descargas (consulta **Otras plataformas**). Se requiere macOS 11 o posterior.
 
-> **Nota:** EncodeX no está firmado digitalmente. En el primer inicio, macOS Gatekeeper te pedirá que confirmes. Haz clic derecho en la aplicación y elige **Abrir**, luego haz clic en **Abrir** de nuevo en el diálogo.
+> **Nota:** Las versiones de EncodeX no están firmadas con código ni notarizadas. En el primer inicio, macOS Gatekeeper te pedirá que confirmes. Haz clic derecho en la aplicación y elige **Abrir**, luego haz clic en **Abrir** de nuevo en el diálogo. Si la aplicación no se abre de ninguna manera, elimina la bandera de cuarentena desde la Terminal: `xattr -cr /Applications/EncodeX.app`.
 
 ## Preguntas frecuentes
 

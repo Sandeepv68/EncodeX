@@ -148,7 +148,7 @@ Des programmes d'installation pré-construits sont disponibles sur la page [Vers
 
 ### macOS
 
-> EncodeX n'est pas signé avec un certificat de code (pas de compte développeur Apple). Gatekeeper de macOS bloquera l'application à la première ouverture.
+> Les releases EncodeX ne sont pas signées avec un certificat de code ni notariées (pas de compte développeur Apple). Gatekeeper de macOS bloquera l'application à la première ouverture.
 
 **Option 1 — Ouvrir par clic droit :**
 
@@ -161,9 +161,22 @@ Des programmes d'installation pré-construits sont disponibles sur la page [Vers
 xattr -cr /Applications/EncodeX.app
 ```
 
-### Windows / Linux
+### Windows
 
-Téléchargez le programme d'installation `.exe` (Windows) ou `.AppImage` (Linux) depuis la page [Versions](https://github.com/Sandeepv68/EncodeX/releases) et exécutez-le.
+Téléchargez le programme d'installation `.exe` depuis la page [Versions](https://github.com/Sandeepv68/EncodeX/releases) et exécutez-le.
+
+> Les releases EncodeX ne sont pas signées avec un certificat de code, donc Windows SmartScreen peut afficher un avertissement « Windows protected your PC » avec le message « éditeur inconnu ». C'est attendu et ne signifie pas que le téléchargement est corrompu.
+
+**Pour lancer l'installateur :**
+
+1. Cliquez sur **Informations complémentaires** dans l'avertissement
+2. Cliquez sur **Exécuter quand même**
+
+SmartScreen ne peut pas confirmer l'éditeur, car la compilation ne porte aucune signature de code.
+
+### Linux
+
+Téléchargez le programme d'installation `.AppImage` depuis la page [Versions](https://github.com/Sandeepv68/EncodeX/releases) et exécutez-le.
 
 ## 🚀 Installation (à partir des sources)
 

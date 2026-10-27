@@ -30,9 +30,13 @@ Windows-Nutzer lieben EncodeX, weil es einfach funktioniert:
 
 [Laden Sie EncodeX kostenlos herunter](/de/download) — das Windows-Installationsprogramm finden Sie oben auf der Seite. Windows 10 und Windows 11 werden unterstützt, sowohl 64-Bit als auch ARM64.
 
+> **Hinweis:** EncodeX-Releases sind nicht code-signiert und nicht notarisiert, daher kann Windows SmartScreen eine Warnung „Windows protected your PC" mit der Meldung „Unbekannter Herausgeber" anzeigen. Das ist erwartet und bedeutet nicht, dass der Download beschädigt ist. Klicken Sie auf **Weitere Infos** und dann auf **Trotzdem ausführen**.
+
 ## Häufig gestellte Fragen
 
 **Funktioniert EncodeX unter Windows 11?** Ja, EncodeX unterstützt Windows 11 und Windows 10 vollständig (64-Bit und ARM64).
+
+**Warum zeigt Windows eine Warnung „Windows protected your PC"?** EncodeX-Releases tragen keine Code-Signatur, daher kann SmartScreen den Herausgeber nicht bestätigen und zeigt „Unbekannter Herausgeber". Die Warnung ist bei einem unsignierten Build erwartet. Klicken Sie auf **Weitere Infos** und dann auf **Trotzdem ausführen**.
 
 **Ist EncodeX für Windows wirklich kostenlos?** Ja — 100 % kostenlos, Open Source (MIT), keine Werbung, keine Wasserzeichen, keine kostenpflichtigen Stufen.
 

@@ -1,12 +1,12 @@
 ---
 title: "EncodeX 安全 — 开源、校验和与漏洞报告"
-description: "EncodeX 如何保护你：开源代码、每个版本发布的 SHA-256 校验和、更新时基于 GitHub 摘要的检查，以及如何报告漏洞。发布版本未经代码签名。"
+description: "EncodeX 如何保护你：开源代码、每个版本发布的 SHA-256 校验和、更新时基于 GitHub 摘要的检查，以及如何报告漏洞。发布版本未经代码签名或公证。"
 ogImage: "https://encodex.in/images/home_dashboard.webp"
 ---
 
 # EncodeX 安全
 
-EncodeX 是开源的，所以安全不必建立在信任之上。每个版本都从公开代码构建，并发布 **SHA-256 校验和** 供你比对下载文件。发布版本**未进行代码签名**，因此操作系统可能会显示「未知开发者」或「无法验证开发者」警告。
+EncodeX 是开源的，所以安全不必建立在信任之上。每个版本都从公开代码构建，并发布 **SHA-256 校验和** 供你比对下载文件。发布版本**未进行代码签名或公证**，因此 macOS 上操作系统可能会显示「未知开发者」或「无法验证开发者」警告，而 Windows 上可能会显示「Windows protected your PC」警告和「未知发布者」信息。
 
 ## 我们发布的内容，你都可以验证
 
@@ -26,6 +26,12 @@ shasum -a 256 ./EncodeX-1.0.0.dmg
 ## 关于 macOS Gatekeeper
 
 由于 EncodeX 免费且开源，不通过 Mac App Store 销售，并且其 macOS 构建未经代码签名或公证，macOS 首次运行时可能提示「无法打开」。构建即发布页面上提供的版本。要打开它，请在「应用程序」中按住 Control 键点按该应用，选择**打开**，一次即可。在较新的 macOS 版本上，你可能需要使用「系统设置 → 隐私与安全性 → 仍要打开」。
+
+## 关于 Windows SmartScreen
+
+由于 EncodeX 免费且开源，并且其 Windows 构建未经代码签名，启动安装程序时 Windows SmartScreen 可能会显示「Windows protected your PC」警告和「未知发布者」信息。这是预期现象，并不表示下载已损坏。点击**更多信息**，然后点击**仍要运行**。
+
+由于构建没有代码签名，SmartScreen 同样无法确认发布者身份。你能够比对的是每个版本随附发布的 SHA-256 校验和。
 
 ## 内置的 FFmpeg
 
