@@ -51,9 +51,7 @@ async function probe(withExtension) {
 
   const send = (message) => child.stdin.write(`${JSON.stringify(message)}\n`);
 
-  const capabilities = withExtension
-    ? { extensions: { 'io.modelcontextprotocol/ui': { mimeTypes: ['text/html;profile=mcp-app'] } } }
-    : {};
+  const capabilities = withExtension ? { extensions: { 'io.modelcontextprotocol/ui': { mimeTypes: ['text/html;profile=mcp-app'] } } } : {};
 
   send({
     jsonrpc: '2.0',
