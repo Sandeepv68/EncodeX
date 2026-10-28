@@ -162,6 +162,9 @@ async function main() {
     process.stdout.write('[mcp-host-check] listing the resources...\n');
     const { resources } = await client.listResources();
     process.stdout.write(`[mcp-host-check] ${resources.length} resources listed\n`);
+    process.stdout.write(
+      `[mcp-host-check] negotiated protocol: ${client.getServerVersion()?.name ?? '?'} ${client.getServerCapabilities() ? JSON.stringify(client.getServerCapabilities()).slice(0, 200) : 'no capabilities'}\n`,
+    );
     const listed = new Map(resources.map((resource) => [resource.uri, resource]));
 
     for (const view of VIEWS) {
@@ -182,6 +185,10 @@ async function main() {
         process.stdout.write(`  OK   ${view.uri} (${(content.text ?? '').length} bytes)\n`);
       }
     }
+  } catch (err) {
+    process.stderr.write(`[mcp-host-check] error: ${err instanceof Error ? (err.stack ?? err.message) : String(err)}\n`);
+    if (stderr.trim()) process.stderr.write(`[mcp-host-check] server stderr:\n${stderr.trim().slice(-2000)}\n`);
+    throw err;
   } finally {
     await client.close();
   }
