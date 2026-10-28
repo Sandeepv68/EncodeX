@@ -37,6 +37,12 @@ flag_management:
         - src/main/cli/**
         - src/main/mcp/**
         - src/mcp/**
+      # The in-app MCP client and its IPC bridge belong to that Electron IPC
+      # layer: the integration tier never boots the main process, so it can
+      # only reach them through the unit suite, which does.
+      ignore:
+        - src/main/mcp/local-client.ts
+        - src/main/mcp/ui-ipc.ts
       carryforward: true
 
 # Components are virtual path filters defined entirely here (unlike flags, they

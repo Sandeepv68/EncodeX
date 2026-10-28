@@ -9,28 +9,12 @@
  */
 
 import { StdioServerTransport } from '@modelcontextprotocol/server/stdio';
-import { Readable, Writable } from 'stream';
-import * as fs from 'fs';
 import { Logger } from '../shared/logger';
 import { createMcpServer } from './server';
 import { createStdinInput } from './stdin';
+import { createStdout } from './stdout';
 
 const log = new Logger('mcp/run');
-
-/**
- * Builds the output stream the MCP transport writes JSON-RPC messages to.
- *
- * Plain Node uses `process.stdout` so any remaining console output shares one
- * write queue with the protocol. Opening a second handle on fd 1 lets
- * concurrent writers interleave inside a large frame, which stalls the
- * response. Electron keeps the raw descriptor for the same reason the input
- * does: its main process does not relay `process.stdout` reliably.
- * @returns {Writable} A writable stream over stdout.
- */
-function createOutput(): Writable {
-  if (!process.versions.electron) return process.stdout;
-  return fs.createWriteStream(null as unknown as fs.PathLike, { fd: 1, autoClose: false });
-}
 
 /**
  * Starts the EncodeX MCP server over stdio and resolves once the connection
@@ -42,7 +26,7 @@ function createOutput(): Writable {
 export async function runMcpServer(): Promise<void> {
   log.info('Starting EncodeX MCP server over stdio');
   const server = createMcpServer();
-  const transport = new StdioServerTransport(createStdinInput(Boolean(process.versions.electron)), createOutput());
+  const transport = new StdioServerTransport(createStdinInput(Boolean(process.versions.electron)), createStdout());
   await server.connect(transport);
   await new Promise<void>((resolve) => {
     transport.onclose = () => resolve();

@@ -2153,7 +2153,7 @@
         },
         "src/main/player/frame-decoder.ts": {
           "lines": 97.78,
-          "branches": 92.94,
+          "branches": 90.59,
           "statements": 97.78
         },
         "src/main/ai/connectors.ts": {
@@ -2353,7 +2353,7 @@
         },
         "src/main/transcoders/fftool-core.ts": {
           "lines": 100,
-          "branches": 80,
+          "branches": 76.66,
           "statements": 100
         },
         "src/main/transcoders/types.ts": {
@@ -3847,6 +3847,1366 @@
           "lines": 100,
           "branches": 100,
           "statements": 100
+        },
+        "src/mcp/index.ts": {
+          "lines": 0,
+          "branches": 100,
+          "statements": 0
+        },
+        "src/mcp/run.ts": {
+          "lines": 0,
+          "branches": 100,
+          "statements": 0
+        },
+        "src/renderer/components/QueueJobOptionsDialog.tsx": {
+          "lines": 43.94,
+          "branches": 62,
+          "statements": 43.94
+        },
+        "src/renderer/utils/desktop-utils.ts": {
+          "lines": 66.67,
+          "branches": 30,
+          "statements": 66.67
+        },
+        "src/shared/analytics/noopProvider.ts": {
+          "lines": 75,
+          "branches": 100,
+          "statements": 75
+        },
+        "src/renderer/pages/BatchQueue.tsx": {
+          "lines": 80.37,
+          "branches": 70.43,
+          "statements": 80.37
+        },
+        "src/main/ipc/dev.ts": {
+          "lines": 82.76,
+          "branches": 70,
+          "statements": 82.76
+        },
+        "src/main/monitoring/sentryMainProvider.ts": {
+          "lines": 81,
+          "branches": 69.15,
+          "statements": 81
+        },
+        "src/main/mcp/settings-ipc.ts": {
+          "lines": 76.19,
+          "branches": 75,
+          "statements": 76.19
+        },
+        "src/main/cli/cli-info.ts": {
+          "lines": 84.44,
+          "branches": 50,
+          "statements": 85.25
+        },
+        "src/main/ipc/timeline.ts": {
+          "lines": 84.62,
+          "branches": 100,
+          "statements": 84.62
+        },
+        "src/renderer/analytics/aptabaseRendererProvider.ts": {
+          "lines": 84.62,
+          "branches": 87.5,
+          "statements": 86.21
+        },
+        "src/renderer/components/ToastContainer.tsx": {
+          "lines": 83.33,
+          "branches": 81.25,
+          "statements": 83.33
+        },
+        "src/shared/analytics/AnalyticsService.ts": {
+          "lines": 85.11,
+          "branches": 83.33,
+          "statements": 86.14
+        },
+        "src/renderer/pages/Convert.tsx": {
+          "lines": 85.48,
+          "branches": 93.8,
+          "statements": 86.23
+        },
+        "src/renderer/components/ProfileSelector.tsx": {
+          "lines": 85.71,
+          "branches": 70.18,
+          "statements": 85.9
+        },
+        "src/renderer/components/TermsDialog.tsx": {
+          "lines": 85.71,
+          "branches": 100,
+          "statements": 85.71
+        },
+        "src/renderer/pages/VideoCut.tsx": {
+          "lines": 83.06,
+          "branches": 76.79,
+          "statements": 83.06
+        },
+        "src/renderer/components/FileDropZone.tsx": {
+          "lines": 86.36,
+          "branches": 83.33,
+          "statements": 86.36
+        },
+        "src/renderer/pages/About.tsx": {
+          "lines": 86.67,
+          "branches": 100,
+          "statements": 87.5
+        },
+        "src/renderer/pages/ImageCompress.tsx": {
+          "lines": 83.33,
+          "branches": 72.22,
+          "statements": 83.33
+        },
+        "src/renderer/pages/AudioExtract.tsx": {
+          "lines": 82.72,
+          "branches": 75,
+          "statements": 82.72
+        },
+        "src/renderer/components/MediaPlayer.tsx": {
+          "lines": 85.53,
+          "branches": 58.49,
+          "statements": 85.53
+        },
+        "src/main/media-files.ts": {
+          "lines": 86.49,
+          "branches": 72.22,
+          "statements": 86.49
+        },
+        "src/main/image-preview.ts": {
+          "lines": 88.89,
+          "branches": 90,
+          "statements": 89.47
+        },
+        "src/renderer/components/Footer.tsx": {
+          "lines": 89.29,
+          "branches": 90.91,
+          "statements": 92.11
+        },
+        "src/main/ipc/dialogs.ts": {
+          "lines": 86,
+          "branches": 77.78,
+          "statements": 86
+        },
+        "src/renderer/components/BatchEncodingPanel.tsx": {
+          "lines": 89.36,
+          "branches": 95.83,
+          "statements": 89.8
+        },
+        "src/renderer/components/EllipsisTooltip.tsx": {
+          "lines": 85.71,
+          "branches": 100,
+          "statements": 85.71
+        },
+        "src/renderer/components/VideoFiltersSection.tsx": {
+          "lines": 87.04,
+          "branches": 74.29,
+          "statements": 87.04
+        },
+        "src/renderer/stores/updateStore.ts": {
+          "lines": 90.2,
+          "branches": 66.67,
+          "statements": 90.32
+        },
+        "src/main/image-file-info.ts": {
+          "lines": 90.38,
+          "branches": 94.44,
+          "statements": 90.57
+        },
+        "src/main/analytics/aptabaseMainProvider.ts": {
+          "lines": 90.91,
+          "branches": 84.21,
+          "statements": 91.8
+        },
+        "src/main/cli/cli-convert.ts": {
+          "lines": 91.01,
+          "branches": 89.61,
+          "statements": 92.52
+        },
+        "src/shared/monitoring/MonitoringService.ts": {
+          "lines": 91.49,
+          "branches": 94.44,
+          "statements": 91.84
+        },
+        "src/renderer/pages/Demux.tsx": {
+          "lines": 91.18,
+          "branches": 91.78,
+          "statements": 91.18
+        },
+        "src/main/cli/cli.ts": {
+          "lines": 88.89,
+          "branches": 81.36,
+          "statements": 88.89
+        },
+        "src/renderer/stores/settingsStore.ts": {
+          "lines": 88.52,
+          "branches": 93.48,
+          "statements": 88.52
+        },
+        "src/renderer/pages/Remux.tsx": {
+          "lines": 86.86,
+          "branches": 84.03,
+          "statements": 86.86
+        },
+        "src/main/ipc/image.ts": {
+          "lines": 92.86,
+          "branches": 100,
+          "statements": 93.55
+        },
+        "src/main/timeline/timeline-media.ts": {
+          "lines": 93.17,
+          "branches": 82.35,
+          "statements": 94.02
+        },
+        "src/main/analytics/consent.ts": {
+          "lines": 93.75,
+          "branches": 100,
+          "statements": 94.12
+        },
+        "src/main/mcp/settings.ts": {
+          "lines": 93.75,
+          "branches": 100,
+          "statements": 94.12
+        },
+        "src/main/monitoring/consent.ts": {
+          "lines": 93.75,
+          "branches": 100,
+          "statements": 94.12
+        },
+        "src/renderer/hooks/useErrorHandler.ts": {
+          "lines": 94.12,
+          "branches": 66.67,
+          "statements": 94.12
+        },
+        "src/main/cli/cli-util.ts": {
+          "lines": 93.94,
+          "branches": 89.22,
+          "statements": 93.94
+        },
+        "src/main/ipc/conversion.ts": {
+          "lines": 94.83,
+          "branches": 70,
+          "statements": 95
+        },
+        "src/main/cli/cli-remux.ts": {
+          "lines": 94.9,
+          "branches": 86.05,
+          "statements": 95.45
+        },
+        "src/main/ipc/window.ts": {
+          "lines": 95,
+          "branches": 91.67,
+          "statements": 95.35
+        },
+        "src/main/preview-cache.ts": {
+          "lines": 95,
+          "branches": 95.45,
+          "statements": 95.12
+        },
+        "src/mcp/jobs/manager.ts": {
+          "lines": 95.45,
+          "branches": 93.75,
+          "statements": 96.3
+        },
+        "src/main/power-actions.ts": {
+          "lines": 96,
+          "branches": 100,
+          "statements": 96
+        },
+        "src/renderer/components/GettingStartedCard.tsx": {
+          "lines": 96,
+          "branches": 100,
+          "statements": 96.15
+        },
+        "src/main/image-info.ts": {
+          "lines": 96.25,
+          "branches": 94.29,
+          "statements": 96.63
+        },
+        "src/main/process-utils.ts": {
+          "lines": 96.3,
+          "branches": 100,
+          "statements": 96.55
+        },
+        "src/main/transcoders/ffmpeg-core.ts": {
+          "lines": 94.87,
+          "branches": 89.6,
+          "statements": 94.87
+        },
+        "src/renderer/components/AppDrawer.tsx": {
+          "lines": 96.15,
+          "branches": 83.16,
+          "statements": 96.15
+        },
+        "src/renderer/stores/audioExtractStore.ts": {
+          "lines": 96.67,
+          "branches": 83.33,
+          "statements": 96.77
+        },
+        "src/main/cli/cli-demux.ts": {
+          "lines": 96.77,
+          "branches": 94.12,
+          "statements": 97.3
+        },
+        "src/main/transcoders/hwaccel.ts": {
+          "lines": 96.77,
+          "branches": 96.77,
+          "statements": 97.5
+        },
+        "src/renderer/pages/MediaInfo.tsx": {
+          "lines": 94.87,
+          "branches": 79.17,
+          "statements": 94.87
+        },
+        "src/renderer/components/LanguageMenu.tsx": {
+          "lines": 97.14,
+          "branches": 77.78,
+          "statements": 97.44
+        },
+        "src/renderer/components/VideoTimeline.tsx": {
+          "lines": 95.27,
+          "branches": 91.11,
+          "statements": 95.27
+        },
+        "src/shared/logger.ts": {
+          "lines": 96.15,
+          "branches": 93.55,
+          "statements": 96.15
+        },
+        "src/main/updater.ts": {
+          "lines": 96.36,
+          "branches": 92.24,
+          "statements": 96.36
+        },
+        "src/renderer/stores/videoCutStore.ts": {
+          "lines": 96.08,
+          "branches": 91.67,
+          "statements": 96.08
+        },
+        "src/renderer/utils/formatters.ts": {
+          "lines": 97.26,
+          "branches": 83.82,
+          "statements": 97.26
+        },
+        "src/renderer/stores/profileStore.ts": {
+          "lines": 96.67,
+          "branches": 78.79,
+          "statements": 96.67
+        },
+        "src/main/queue/job-queue.ts": {
+          "lines": 98.39,
+          "branches": 93.14,
+          "statements": 98.39
+        },
+        "src/main/transcoders/ffmpeg-utils.ts": {
+          "lines": 95.86,
+          "branches": 93.43,
+          "statements": 95.86
+        },
+        "src/main/player/frame-decoder.ts": {
+          "lines": 97.22,
+          "branches": 90.59,
+          "statements": 97.22
+        },
+        "src/mcp/operations.ts": {
+          "lines": 99.17,
+          "branches": 97.3,
+          "statements": 99.31
+        },
+        "src/renderer/stores/remuxStore.ts": {
+          "lines": 98.53,
+          "branches": 90.38,
+          "statements": 98.53
+        },
+        "src/main/ai/connectors.ts": {
+          "lines": 99.04,
+          "branches": 84.81,
+          "statements": 99.04
+        },
+        "src/main/ai/intelligence.ts": {
+          "lines": 100,
+          "branches": 85.71,
+          "statements": 100
+        },
+        "src/main/ai/model-resolution.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/main/ai/models.ts": {
+          "lines": 88.16,
+          "branches": 71.21,
+          "statements": 88.16
+        },
+        "src/main/ai/operation-router.ts": {
+          "lines": 99.35,
+          "branches": 92.17,
+          "statements": 99.35
+        },
+        "src/main/ai/provider-registry.ts": {
+          "lines": 100,
+          "branches": 87.5,
+          "statements": 100
+        },
+        "src/main/ai/settings-ipc.ts": {
+          "lines": 100,
+          "branches": 95.83,
+          "statements": 100
+        },
+        "src/main/ai/settings.ts": {
+          "lines": 100,
+          "branches": 97.53,
+          "statements": 100
+        },
+        "src/main/analytics/ipcBridge.ts": {
+          "lines": 100,
+          "branches": 50,
+          "statements": 100
+        },
+        "src/main/analytics/providerFactory.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/main/capabilities.ts": {
+          "lines": 97.67,
+          "branches": 82.61,
+          "statements": 97.67
+        },
+        "src/main/cli/cli-batch.ts": {
+          "lines": 97.73,
+          "branches": 90,
+          "statements": 97.73
+        },
+        "src/main/cli/cli-compress.ts": {
+          "lines": 100,
+          "branches": 72.22,
+          "statements": 100
+        },
+        "src/main/cli/cli-options.ts": {
+          "lines": 100,
+          "branches": 93.75,
+          "statements": 100
+        },
+        "src/main/generated/aptabaseBuildConfig.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/main/generated/sentryBuildConfig.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/main/ipc/capabilities.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/main/ipc/player.ts": {
+          "lines": 98.41,
+          "branches": 94.44,
+          "statements": 98.41
+        },
+        "src/main/ipc/queue.ts": {
+          "lines": 100,
+          "branches": 96.15,
+          "statements": 100
+        },
+        "src/main/ipc/send.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/main/ipc/system.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/main/ipc/types.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/main/ipc/updater.ts": {
+          "lines": 100,
+          "branches": 72.22,
+          "statements": 100
+        },
+        "src/main/media-binaries.ts": {
+          "lines": 100,
+          "branches": 92,
+          "statements": 100
+        },
+        "src/main/monitoring/ipcBridge.ts": {
+          "lines": 100,
+          "branches": 50,
+          "statements": 100
+        },
+        "src/main/monitoring/providerFactory.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/main/monitoring/types.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/main/player/types.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/main/queue/persistence.ts": {
+          "lines": 94.87,
+          "branches": 93.33,
+          "statements": 94.87
+        },
+        "src/main/queue/queue-transfer.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/main/security/csp.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/main/spawn-timeout.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/main/transcoders/bmf-availability.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/main/transcoders/bmf-core.ts": {
+          "lines": 100,
+          "branches": 81.25,
+          "statements": 100
+        },
+        "src/main/transcoders/factory.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/main/transcoders/ffprobe-mapper.ts": {
+          "lines": 100,
+          "branches": 95.08,
+          "statements": 100
+        },
+        "src/main/transcoders/fftool-core.ts": {
+          "lines": 100,
+          "branches": 76.66,
+          "statements": 100
+        },
+        "src/main/transcoders/types.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/main/video-preview.ts": {
+          "lines": 100,
+          "branches": 94.44,
+          "statements": 100
+        },
+        "src/mcp/conversion-options.ts": {
+          "lines": 100,
+          "branches": 98.39,
+          "statements": 100
+        },
+        "src/mcp/frame-sampler.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/mcp/http-server.ts": {
+          "lines": 100,
+          "branches": 96.97,
+          "statements": 100
+        },
+        "src/mcp/local-model-client.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/mcp/safety.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/mcp/stt-engine.ts": {
+          "lines": 100,
+          "branches": 96.97,
+          "statements": 100
+        },
+        "src/mcp/translate-engine.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/preload/coalesce.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/preload/event-drop-log.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/analytics/providerFactory.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/AudioStreamInfo.tsx": {
+          "lines": 94.44,
+          "branches": 61.11,
+          "statements": 94.44
+        },
+        "src/renderer/components/BatchControls.tsx": {
+          "lines": 100,
+          "branches": 90.48,
+          "statements": 100
+        },
+        "src/renderer/components/CloseConfirmDialog.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/CodecSelect.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/ConfirmDialog.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/copilot/ChatInput.tsx": {
+          "lines": 98.41,
+          "branches": 93.33,
+          "statements": 98.41
+        },
+        "src/renderer/components/copilot/MessageBubble.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/copilot/ProviderIcon.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/copilot/Welcome.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/EncodexLogoIcon.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/ErrorBoundary.tsx": {
+          "lines": 100,
+          "branches": 75,
+          "statements": 100
+        },
+        "src/renderer/components/ErrorSnackbar.tsx": {
+          "lines": 100,
+          "branches": 83.33,
+          "statements": 100
+        },
+        "src/renderer/components/FilePathField.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/FileSummary.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/FormField.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/GroupedSelect.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/InfoTooltip.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/MediaPreview.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/PageContainer.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/PageSkeletons.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/ProfileBadge.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/ProfileEditorDialog.tsx": {
+          "lines": 100,
+          "branches": 95.83,
+          "statements": 100
+        },
+        "src/renderer/components/ProgressBar.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/QueueAddReviewDialog.tsx": {
+          "lines": 100,
+          "branches": 83.33,
+          "statements": 100
+        },
+        "src/renderer/components/QueueDropArea.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/QueueJobCard.tsx": {
+          "lines": 91.67,
+          "branches": 80.46,
+          "statements": 91.67
+        },
+        "src/renderer/components/settings/AiProviderSettingsSection.tsx": {
+          "lines": 98.53,
+          "branches": 91.43,
+          "statements": 98.53
+        },
+        "src/renderer/components/settings/McpSettingsSection.tsx": {
+          "lines": 100,
+          "branches": 93.55,
+          "statements": 100
+        },
+        "src/renderer/components/settings/SettingLabel.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/ShortcutsHelpDialog.tsx": {
+          "lines": 87.5,
+          "branches": 50,
+          "statements": 87.5
+        },
+        "src/renderer/components/StreamDetails.tsx": {
+          "lines": 95.31,
+          "branches": 94.94,
+          "statements": 95.31
+        },
+        "src/renderer/components/TimeField.tsx": {
+          "lines": 100,
+          "branches": 75,
+          "statements": 100
+        },
+        "src/renderer/components/TitleBar.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/TooltipIfEnabled.tsx": {
+          "lines": 88.89,
+          "branches": 81.82,
+          "statements": 88.89
+        },
+        "src/renderer/components/types.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/components/UpdateDialog.tsx": {
+          "lines": 100,
+          "branches": 97.62,
+          "statements": 100
+        },
+        "src/renderer/constants/shortcuts.ts": {
+          "lines": 100,
+          "branches": 91.18,
+          "statements": 100
+        },
+        "src/renderer/dev/useDevScreenshot.ts": {
+          "lines": 95.24,
+          "branches": 87.5,
+          "statements": 95.24
+        },
+        "src/renderer/hooks/types.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/hooks/useCapabilities.ts": {
+          "lines": 100,
+          "branches": 92.86,
+          "statements": 100
+        },
+        "src/renderer/hooks/useConversion.ts": {
+          "lines": 98.88,
+          "branches": 85.71,
+          "statements": 98.88
+        },
+        "src/renderer/hooks/useFieldId.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/hooks/useFormErrors.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/hooks/useHotkeys.ts": {
+          "lines": 97.73,
+          "branches": 96.3,
+          "statements": 97.73
+        },
+        "src/renderer/hooks/useMediaTask.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/hooks/useOnlineStatus.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/hooks/usePreviewThumbnail.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/monitoring/providerFactory.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/monitoring/sentryRendererProvider.ts": {
+          "lines": 96.81,
+          "branches": 90.24,
+          "statements": 96.81
+        },
+        "src/renderer/NavigationGuardContext.tsx": {
+          "lines": 100,
+          "branches": 83.33,
+          "statements": 100
+        },
+        "src/renderer/pageIcons.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/pages/Dashboard.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/pages/Settings.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/sessionCleanup.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/stores/aiConnectionStore.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/stores/aiSettingsStore.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/stores/auditStore.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/stores/batchConfig.ts": {
+          "lines": 95.45,
+          "branches": 100,
+          "statements": 95.45
+        },
+        "src/renderer/stores/conversionStore.ts": {
+          "lines": 100,
+          "branches": 80,
+          "statements": 100
+        },
+        "src/renderer/stores/copilotChats.ts": {
+          "lines": 95.74,
+          "branches": 92.11,
+          "statements": 95.74
+        },
+        "src/renderer/stores/demuxStore.ts": {
+          "lines": 97.83,
+          "branches": 87.5,
+          "statements": 97.83
+        },
+        "src/renderer/stores/dismissedAlertsStore.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/stores/errorStore.ts": {
+          "lines": 96.3,
+          "branches": 95.83,
+          "statements": 96.3
+        },
+        "src/renderer/stores/logStore.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/stores/queueStore.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/stores/taskStore.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/stores/termsStore.ts": {
+          "lines": 95.65,
+          "branches": 100,
+          "statements": 95.65
+        },
+        "src/renderer/stores/toastStore.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/stores/types.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/useLanguageDirection.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/utils/a11y.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/utils/ai-provider-icons.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/utils/batch-options.ts": {
+          "lines": 98.63,
+          "branches": 96.38,
+          "statements": 98.63
+        },
+        "src/renderer/utils/bridge-call.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/utils/colors.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/utils/easter-egg-assets.ts": {
+          "lines": 100,
+          "branches": 50,
+          "statements": 100
+        },
+        "src/renderer/utils/easter-egg-dates.ts": {
+          "lines": 100,
+          "branches": 87.5,
+          "statements": 100
+        },
+        "src/renderer/utils/encoding-option-utils.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/utils/fileDialog.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/utils/focusFirstError.ts": {
+          "lines": 84.62,
+          "branches": 70,
+          "statements": 84.62
+        },
+        "src/renderer/utils/lunar-calendar.ts": {
+          "lines": 98.81,
+          "branches": 84.21,
+          "statements": 98.81
+        },
+        "src/renderer/utils/path-utils.ts": {
+          "lines": 100,
+          "branches": 91.67,
+          "statements": 100
+        },
+        "src/renderer/utils/preview-cache.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/utils/queue-job-utils.ts": {
+          "lines": 100,
+          "branches": 97.3,
+          "statements": 100
+        },
+        "src/renderer/utils/queue-reorder.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/utils/security-utils.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/utils/storage.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/utils/string-utils.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/utils/timeline-utils.ts": {
+          "lines": 98.68,
+          "branches": 96.43,
+          "statements": 98.68
+        },
+        "src/shared/ai/advisor.ts": {
+          "lines": 100,
+          "branches": 87.1,
+          "statements": 100
+        },
+        "src/shared/ai/agent.ts": {
+          "lines": 100,
+          "branches": 89.74,
+          "statements": 100
+        },
+        "src/shared/ai/analyze.ts": {
+          "lines": 98.25,
+          "branches": 86.11,
+          "statements": 98.25
+        },
+        "src/shared/ai/chapters.ts": {
+          "lines": 100,
+          "branches": 88.24,
+          "statements": 100
+        },
+        "src/shared/ai/connect-error.ts": {
+          "lines": 99.15,
+          "branches": 96.65,
+          "statements": 99.15
+        },
+        "src/shared/ai/connector.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/ai/edit.ts": {
+          "lines": 98.57,
+          "branches": 96.72,
+          "statements": 98.57
+        },
+        "src/shared/ai/error-explain.ts": {
+          "lines": 100,
+          "branches": 93.88,
+          "statements": 100
+        },
+        "src/shared/ai/estimate.ts": {
+          "lines": 100,
+          "branches": 94.59,
+          "statements": 100
+        },
+        "src/shared/ai/folder.ts": {
+          "lines": 100,
+          "branches": 94.74,
+          "statements": 100
+        },
+        "src/shared/ai/highlight.ts": {
+          "lines": 98.92,
+          "branches": 96,
+          "statements": 98.92
+        },
+        "src/shared/ai/index.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/ai/llm.ts": {
+          "lines": 97.22,
+          "branches": 75.61,
+          "statements": 97.22
+        },
+        "src/shared/ai/media-facts.ts": {
+          "lines": 96.67,
+          "branches": 89.74,
+          "statements": 96.67
+        },
+        "src/shared/ai/provider.ts": {
+          "lines": 96.72,
+          "branches": 86.54,
+          "statements": 96.72
+        },
+        "src/shared/ai/quality.ts": {
+          "lines": 96,
+          "branches": 81.25,
+          "statements": 96
+        },
+        "src/shared/ai/recommend.ts": {
+          "lines": 97.09,
+          "branches": 89.76,
+          "statements": 97.09
+        },
+        "src/shared/ai/settings.ts": {
+          "lines": 96.63,
+          "branches": 95.76,
+          "statements": 96.63
+        },
+        "src/shared/ai/similarity.ts": {
+          "lines": 95.18,
+          "branches": 83.33,
+          "statements": 95.18
+        },
+        "src/shared/ai/social.ts": {
+          "lines": 97.56,
+          "branches": 91.3,
+          "statements": 97.56
+        },
+        "src/shared/ai/stt.ts": {
+          "lines": 90.7,
+          "branches": 79.66,
+          "statements": 90.7
+        },
+        "src/shared/ai/subtitles.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/ai/summarize.ts": {
+          "lines": 100,
+          "branches": 82.35,
+          "statements": 100
+        },
+        "src/shared/ai/target-size.ts": {
+          "lines": 100,
+          "branches": 96.77,
+          "statements": 100
+        },
+        "src/shared/ai/text.ts": {
+          "lines": 100,
+          "branches": 73.91,
+          "statements": 100
+        },
+        "src/shared/ai/transcript-search.ts": {
+          "lines": 93.33,
+          "branches": 85.71,
+          "statements": 93.33
+        },
+        "src/shared/ai/transcript.ts": {
+          "lines": 100,
+          "branches": 77.78,
+          "statements": 100
+        },
+        "src/shared/ai/translate.ts": {
+          "lines": 93.48,
+          "branches": 70.59,
+          "statements": 93.48
+        },
+        "src/shared/ai/types.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/ai/units.ts": {
+          "lines": 98.21,
+          "branches": 93.75,
+          "statements": 98.21
+        },
+        "src/shared/ai/validate.ts": {
+          "lines": 97.22,
+          "branches": 88.64,
+          "statements": 97.22
+        },
+        "src/shared/ai/workflow.ts": {
+          "lines": 98.4,
+          "branches": 92.86,
+          "statements": 98.4
+        },
+        "src/shared/analytics/analytics-summaries.ts": {
+          "lines": 95,
+          "branches": 92,
+          "statements": 95
+        },
+        "src/shared/analytics/events.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/analytics/types.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/app-constants.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/audit.ts": {
+          "lines": 96.15,
+          "branches": 87.5,
+          "statements": 96.15
+        },
+        "src/shared/codec-classification.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/codec-containers.ts": {
+          "lines": 99.37,
+          "branches": 95.7,
+          "statements": 99.37
+        },
+        "src/shared/constants.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/csp.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/errors.ts": {
+          "lines": 100,
+          "branches": 99.11,
+          "statements": 100
+        },
+        "src/shared/estimate.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/file-extensions.ts": {
+          "lines": 100,
+          "branches": 75,
+          "statements": 100
+        },
+        "src/shared/hwaccel-settings.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/ipc-guards.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/math.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/mcp-settings.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/media-options.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/monitoring/noopProvider.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/monitoring/types.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/profiles/builtin.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/profiles/categories.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/profiles/index.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/progress.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/remux-utils.ts": {
+          "lines": 100,
+          "branches": 97.67,
+          "statements": 100
+        },
+        "src/shared/terms.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/transcoder-constants.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/types.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/validation.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/shared/video-filters.ts": {
+          "lines": 95.88,
+          "branches": 93.24,
+          "statements": 95.88
         }
       }
     }
