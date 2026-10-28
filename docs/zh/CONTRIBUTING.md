@@ -1,6 +1,6 @@
 # 帮助 EncodeX 变得更好
 
-<!-- drift: locales=56 locale-subtags=36 test-files=323 -->
+<!-- drift: locales=56 locale-subtags=36 test-files=327 -->
 
 EncodeX 免费开放，由志愿者打造——你不需要会编程也能出一份力。任何人都可以这样参与：
 
