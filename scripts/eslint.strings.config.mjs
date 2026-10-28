@@ -21,7 +21,7 @@ export default [
     ignores: ['**/dist/**', '**/node_modules/**'],
   },
   {
-    files: ['src/renderer/**/*.{ts,tsx}'],
+    files: ['src/renderer/**/*.{ts,tsx}', 'src/shared/theme/**/*.{ts,tsx}'],
     plugins: {
       encodex: {
         rules: {
@@ -45,13 +45,17 @@ export default [
       'encodex/no-hardcoded-strings': [
         'error',
         {
-          ignoreFiles: ['src/renderer/i18n/localeMeta.ts'],
+          ignoreFiles: ['src/renderer/i18n/localeMeta.ts', 'src/renderer/mcp-views/standalone/generated-strings.ts'],
         },
       ],
     },
   },
   {
-    files: ['src/renderer/**/*.{test,spec}.{ts,tsx}', 'src/renderer/**/__tests__/**/*.{ts,tsx}'],
+    files: [
+      'src/renderer/**/*.{test,spec}.{ts,tsx}',
+      'src/renderer/**/__tests__/**/*.{ts,tsx}',
+      'src/shared/theme/**/*.{test,spec}.{ts,tsx}',
+    ],
     rules: {
       'encodex/no-hardcoded-strings': 'off',
     },
