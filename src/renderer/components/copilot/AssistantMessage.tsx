@@ -10,8 +10,9 @@ import type { AgentSkip } from '../../../shared/ai/agent';
 import type { AIProviderId } from '../../../shared/ai/types';
 import { useTranslation } from 'react-i18next';
 import { AssistantBody } from '../../styles/copilot/AssistantMessage.styles';
-import { SHADOWS } from '../../colors';
+import { SHADOWS } from '../../../shared/theme/colors';
 import ProviderIcon from './ProviderIcon';
+import McpAppView from './McpAppView';
 
 export interface AssistantMessageProps {
   plan: CopilotPlan | null;
@@ -165,6 +166,16 @@ export default function AssistantMessage({
               </ListItem>
             ))}
           </List>
+        </Box>
+      )}
+
+      {plan.views && plan.views.length > 0 && (
+        <Box sx={{ mt: 2 }} data-testid="copilot-mcp-views">
+          {plan.views.map((view, index) => (
+            <Box key={`${view.viewId}:${index}`} sx={{ mb: index === plan.views!.length - 1 ? 0 : 2 }}>
+              <McpAppView attachment={view} />
+            </Box>
+          ))}
         </Box>
       )}
 

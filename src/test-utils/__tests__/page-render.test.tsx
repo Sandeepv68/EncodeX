@@ -26,7 +26,7 @@ import { useMediaQuery, ThemeProvider } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { PAGE_ROUTES, pageSpec, renderPage, stubViewportWidth, stubScrollIntoView } from '../page-render';
 import { THEME_STORAGE_KEY } from '../../shared/app-constants';
-import { createAppTheme } from '../../renderer/theme';
+import { createAppTheme } from '../../shared/theme/theme';
 
 /**
  * Counts the drawer's condense toggle inside `container`.

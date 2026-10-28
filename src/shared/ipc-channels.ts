@@ -95,6 +95,8 @@
  * @property {string} ANALYTICS_SET_ENABLED - Update the usage-analytics consent (user toggle).
  * @property {string} MCP_SETTINGS_GET - Query the embedded MCP server settings from main.
  * @property {string} MCP_SETTINGS_SET - Update the embedded MCP server settings (user toggle).
+ * @property {string} MCP_UI_CALL_TOOL - Call an MCP tool on behalf of an in-app MCP App view.
+ * @property {string} MCP_UI_LIST_VIEWS - List the MCP App views the in-app host can render.
  * @property {string} AI_SETTINGS_GET - Query the Copilot AI provider settings (key redacted).
  * @property {string} AI_SETTINGS_SET - Update the AI provider settings (key encrypted in main).
  * @property {string} AI_CONNECT_TEST - Test connectivity to the configured AI provider.
@@ -188,6 +190,9 @@ export const IPC = {
 
   MCP_SETTINGS_GET: 'mcp-settings-get',
   MCP_SETTINGS_SET: 'mcp-settings-set',
+
+  MCP_UI_CALL_TOOL: 'mcp-ui-call-tool',
+  MCP_UI_LIST_VIEWS: 'mcp-ui-list-views',
 
   AI_SETTINGS_GET: 'ai-settings-get',
   AI_SETTINGS_SET: 'ai-settings-set',

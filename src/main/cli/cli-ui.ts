@@ -98,7 +98,7 @@ export interface ThemeChalk {
 
 /**
  * RGB primary/secondary hex pairs for every CLI theme, mirroring
- * src/renderer/colors.ts (used to build themed chalk functions).
+ * src/shared/theme/colors.ts (used to build themed chalk functions).
  * @const {Readonly<Record<string, [string, string]>>} THEME_HEX
  */
 const THEME_HEX: Readonly<Record<string, [string, string]>> = {

@@ -26,7 +26,9 @@ import { extractMediaFacts, planAgent, planWorkflow } from '../../shared/ai';
 import type { EncoderCapabilities, MediaInfo } from '../../shared/types';
 import { buildConversionOptions, resolveOutputPath } from '../../mcp/conversion-options';
 import type { MCPConversionFields } from '../../mcp/conversion-options';
-import type { CopilotAction, CopilotPlan, CopilotPlanRequest } from '../../shared/copilot';
+import type { CopilotAction, CopilotOperation, CopilotPlan, CopilotPlanRequest, CopilotResult } from '../../shared/copilot';
+import { COPILOT_QUEUE_OPERATIONS } from '../../shared/copilot';
+import { MCP_UI_VIEW_URIS, type McpViewAttachment } from '../../shared/mcp-ui';
 import { createError, formatError, ErrorCode } from '../../shared/errors';
 import { routeOperationDeterministic, buildOperationActions } from '../ai/operation-router';
 import type { ProbedEntry } from '../ai/operation-router';
@@ -36,6 +38,46 @@ import type { RoutedOperation } from '../../shared/ai/llm';
 import { LOG_COPILOT_PLAN_CALLED, LOG_COPILOT_PLAN_COMPLETED, LOG_COPILOT_PLAN_FAILED } from '../../shared/log-constants';
 
 const log = new Logger('main/ipc/copilot');
+
+/**
+ * How many analysis views one message may carry; the transcript stays
+ * readable when a goal covers dozens of files.
+ * @const {number} MAX_ANALYSIS_VIEWS
+ */
+const MAX_ANALYSIS_VIEWS = 3;
+
+/**
+ * Builds the MCP App views a plan renders inline in the transcript.
+ *
+ * The views are the same React components an external MCP Apps host renders:
+ * an analysis carries the inspector view with the diagnosis, and a
+ * queue-backed operation carries the live queue dashboard, which polls the
+ * shared job manager and therefore keeps updating while the user works.
+ * @param {CopilotOperation} operation - The routed operation.
+ * @param {CopilotResult[]} results - The read-only results of the operation.
+ * @returns {McpViewAttachment[]} The views to render.
+ */
+function buildPlanViews(operation: CopilotOperation, results: CopilotResult[]): McpViewAttachment[] {
+  if (operation === 'analyze') {
+    return results.slice(0, MAX_ANALYSIS_VIEWS).map((result) => ({
+      viewId: 'inspector',
+      uri: MCP_UI_VIEW_URIS.inspector,
+      toolName: 'analyze_media',
+      structuredContent: { analysis: result.content },
+    }));
+  }
+  if (COPILOT_QUEUE_OPERATIONS.includes(operation)) {
+    return [
+      {
+        viewId: 'queue',
+        uri: MCP_UI_VIEW_URIS.queue,
+        toolName: 'list_jobs',
+        structuredContent: { jobs: [], count: 0 },
+      },
+    ];
+  }
+  return [];
+}
 
 /**
  * Default and upper bound on planned actions, mirroring the MCP `plan_agent`
@@ -322,6 +364,7 @@ export function registerCopilotHandlers(): void {
           plan: convert.plan,
           providerId: routed.providerId,
           isEstimated: true,
+          views: buildPlanViews('convert', []),
         };
       }
 
@@ -356,6 +399,7 @@ export function registerCopilotHandlers(): void {
         plan: planWorkflow({ steps: [] }),
         providerId: routed.providerId,
         isEstimated: true,
+        views: buildPlanViews(routed.operation, built.results),
       };
     } catch (err) {
       log.error(LOG_COPILOT_PLAN_FAILED, err);

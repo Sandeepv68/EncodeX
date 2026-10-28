@@ -28,7 +28,7 @@ import { useNavigationGuard } from '../NavigationGuardContext';
 import PageContainer from '../components/PageContainer';
 import { bridgePromise, withBridgeTimeout } from '../utils/bridge-call';
 import { useToastStore } from '../stores/toastStore';
-import { SHADOWS } from '../colors';
+import { SHADOWS } from '../../shared/theme/colors';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import type { CopilotOperationChoice, CopilotPlan } from '../../shared/copilot';
 import { formatError } from '../../shared/errors';

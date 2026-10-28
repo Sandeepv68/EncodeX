@@ -1,7 +1,7 @@
 import { styled, alpha } from '@mui/material/styles';
 import { Box, Chip, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { QUEUE_STATUS } from '../../shared/media-options';
-import { SHADOWS, OVERLAY_COLORS } from '../colors';
+import { SHADOWS, OVERLAY_COLORS } from '../../shared/theme/colors';
 
 export const JobCard = styled(Paper, {
   shouldForwardProp: (prop) => prop !== '$status' && prop !== '$dragOverlay',

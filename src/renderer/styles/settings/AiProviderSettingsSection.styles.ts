@@ -7,7 +7,7 @@
 
 import { alpha, styled } from '@mui/material/styles';
 import { Alert, Box } from '@mui/material';
-import { SHADOWS } from '../../colors';
+import { SHADOWS } from '../../../shared/theme/colors';
 import { SettingsSection } from '../Settings.styles';
 
 export const AiSettingsSection = styled(SettingsSection)({

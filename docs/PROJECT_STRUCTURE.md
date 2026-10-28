@@ -1,6 +1,6 @@
 # 🗂️ Project Structure
 
-<!-- drift: renderer-components=60 renderer-components-top=48 renderer-styles=57 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 renderer-pages=13 renderer-stores=20 log-constants=527 builtin-profiles=115 profile-categories=8 e2e-specs=31 -->
+<!-- drift: renderer-components=60 renderer-components-top=47 renderer-styles=57 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 renderer-pages=13 renderer-stores=20 log-constants=528 builtin-profiles=115 profile-categories=8 e2e-specs=32 -->
 
 ```
 src/
@@ -84,8 +84,6 @@ src/
 │   ├── App.tsx                        # Root layout: TitleBar, Drawer, routes, snackbar, toasts
 │   ├── ColorModeContext.tsx           # Dark/light theme context
 │   ├── useLanguageDirection.ts        # RTL/LTR detection hook
-│   ├── theme.ts                       # MUI light/dark theme definitions
-│   ├── colors.ts                      # Shared color palette
 │   ├── electron-api.d.ts              # Global Window.electronAPI type declaration
 │   ├── mui.d.ts                       # MUI data-testid attribute augmentation
 │   ├── vite-env.d.ts                  # Vite client type reference
@@ -93,6 +91,12 @@ src/
 │   ├── global.css                     # Global styles
 │   ├── index.html                     # Vite entry HTML
 │   ├── pageIcons.tsx                  # Page -> icon mapping
+│   ├── mcp-views/                     # MCP App views (React), shared with external hosts
+│   │   ├── host.ts                    # The McpViewHost contract every view talks to
+│   │   ├── registry.tsx               # View id -> React component
+│   │   ├── views/                     # One component per view (queue, job, inspector, ...)
+│   │   ├── kit/                       # The primitives the views are built from
+│   │   └── standalone/                # The entry external hosts run in their iframe
 │   ├── components/
 │   │   ├── AppDrawer.tsx              # Responsive sidebar navigation
 │   │   ├── AudioStreamInfo.tsx        # Audio stream selector
@@ -123,7 +127,6 @@ src/
 │   │   ├── QueueDropArea.tsx          # Queue drag-and-drop area
 │   │   ├── QueueJobCard.tsx           # Per-job queue card
 │   │   ├── QueueJobOptionsDialog.tsx  # Queue job options editor
-│   │   ├── SelectArrowIcon.tsx        # Custom select arrow icon
 │   │   ├── ShortcutsHelpDialog.tsx    # Keyboard shortcuts help dialog
 │   │   ├── StreamDetails.tsx          # Per-stream detail table
 │   │   ├── TimeField.tsx              # Time input with validation
@@ -196,6 +199,11 @@ src/
     ├── constants.ts                   # Numeric/string constants (timeline, waveform, window, ...)
     ├── app-constants.ts               # app/window layout, nav items, storage keys
     ├── copilot.ts                     # Copilot plan request/result contracts
+    ├── mcp-ui.ts                      # MCP Apps contract: extension id, view URIs, payload types
+    ├── theme/                         # The design system, shared with the MCP App views
+    │   ├── colors.ts                  # The eight palettes and the semantic color constants
+    │   ├── theme.ts                   # createAppTheme(): the MUI theme factory
+    │   └── SelectArrowIcon.tsx        # Custom select arrow icon
     ├── ai/                            # Provider-agnostic AI layer (agent, workflow, connectors)
     ├── analytics/                     # Analytics events, summaries, renderer service
     ├── monitoring/                    # Monitoring provider contracts

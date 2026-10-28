@@ -116,5 +116,5 @@ For more detail on specific subsystems, see the source code in `src/` and the do
 | Power Actions | `src/main/power-actions.ts` |
 | Shortcuts | `src/renderer/constants/shortcuts.ts` |
 | i18n | `src/renderer/i18n/config.ts`, `src/renderer/i18n/localeMeta.ts` |
-| Theming | `src/renderer/ColorModeContext.tsx`, `src/renderer/theme.ts`, `src/renderer/colors.ts` |
+| Theming | `src/renderer/ColorModeContext.tsx`, `src/shared/theme/theme.ts`, `src/shared/theme/colors.ts` |
 | Updates | `src/main/updater.ts`, `src/renderer/stores/updateStore.ts`, `src/renderer/components/UpdateDialog.tsx` |

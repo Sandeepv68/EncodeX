@@ -14,7 +14,7 @@ import AiConnectionStatus from '../AiConnectionStatus';
 import type { CopilotOperationChoice } from '../../../shared/copilot';
 import { COPILOT_QUEUE_OPERATIONS, COPILOT_INTELLIGENCE_OPERATIONS } from '../../../shared/copilot';
 import type { AIProviderId } from '../../../shared/ai/types';
-import { SHADOWS } from '../../colors';
+import { SHADOWS } from '../../../shared/theme/colors';
 import { ActionsRow, AdvancedPanel, AttachmentRow, ComposerBar, LeftActions, RightActions } from '../../styles/copilot/ChatComposer.styles';
 
 /** The selectable operations, in menu order (auto first, then queue, then read-only). */

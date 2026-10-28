@@ -253,6 +253,21 @@ describe('registerCopilotHandlers', () => {
     expect(result.results[0]).toMatchObject({ operation: 'analyze', input: file });
   });
 
+  it('attaches the inspector MCP App view to an analyze plan', async () => {
+    const file = path.join(scanDir, 'one.mp4');
+    const result = await plan({ goal: 'inspect this file', inputs: [file], operation: 'analyze' });
+    expect(result.views).toHaveLength(1);
+    expect(result.views?.[0]).toMatchObject({ viewId: 'inspector', uri: 'ui://encodex/inspector', toolName: 'analyze_media' });
+    expect((result.views?.[0].structuredContent as { analysis?: unknown }).analysis).toBeTruthy();
+  });
+
+  it('attaches the live queue view to a queue-backed plan', async () => {
+    const file = path.join(scanDir, 'one.mp4');
+    const result = await plan({ goal: 'remux to mkv', inputs: [file], operation: 'remux' });
+    expect(result.views).toHaveLength(1);
+    expect(result.views?.[0]).toMatchObject({ viewId: 'queue', uri: 'ui://encodex/queue', toolName: 'list_jobs' });
+  });
+
   it('routes a forced non-convert operation into a queue-able action', async () => {
     const file = path.join(scanDir, 'one.mp4');
     const result = await plan({ goal: 'remux to mkv', inputs: [file], operation: 'remux' });

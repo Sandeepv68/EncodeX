@@ -9,7 +9,7 @@
  * immediately, so the tool surface stays backwards-compatible.
  */
 
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import type { McpServer } from '@modelcontextprotocol/server';
 import {
   MCP_UI_EXTENSION_ID,
   MCP_UI_VIEW_URIS,

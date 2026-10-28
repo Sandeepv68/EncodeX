@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { aiProviderLogo } from '../utils/ai-provider-icons';
 import type { AIProviderId } from '../../shared/ai/types';
 import { ConnectionDot, ConnectionStatus, RightActions } from '../styles/copilot/ChatComposer.styles';
-import { SHADOWS } from '../colors';
+import { SHADOWS } from '../../shared/theme/colors';
 
 /** Props for {@link AiConnectionStatus}. */
 interface AiConnectionStatusProps {

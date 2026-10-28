@@ -92,6 +92,8 @@ const API_TABLE = {
   analyticsSetEnabled: { kind: 'invoke', channel: IPC.ANALYTICS_SET_ENABLED, params: ['enabled'] },
   mcpGetSettings: { kind: 'invoke', channel: IPC.MCP_SETTINGS_GET, params: [] },
   mcpSetSettings: { kind: 'invoke', channel: IPC.MCP_SETTINGS_SET, params: ['settings'] },
+  mcpUiCallTool: { kind: 'invoke', channel: IPC.MCP_UI_CALL_TOOL, params: ['name', 'args'] },
+  mcpUiListViews: { kind: 'invoke', channel: IPC.MCP_UI_LIST_VIEWS, params: [] },
   aiGetSettings: { kind: 'invoke', channel: IPC.AI_SETTINGS_GET, params: [] },
   aiSetSettings: { kind: 'invoke', channel: IPC.AI_SETTINGS_SET, params: ['update'] },
   aiConnectTest: { kind: 'invoke', channel: IPC.AI_CONNECT_TEST, params: ['candidate'] },

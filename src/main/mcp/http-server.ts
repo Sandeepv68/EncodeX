@@ -27,9 +27,9 @@
 import * as http from 'http';
 import type { Server } from 'http';
 import { randomUUID } from 'crypto';
-import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { SUPPORTED_PROTOCOL_VERSIONS, LATEST_PROTOCOL_VERSION } from '@modelcontextprotocol/sdk/types.js';
+import { NodeStreamableHTTPServerTransport } from '@modelcontextprotocol/node';
+import type { McpServer } from '@modelcontextprotocol/server';
+import { SUPPORTED_PROTOCOL_VERSIONS, LATEST_PROTOCOL_VERSION } from '@modelcontextprotocol/server';
 import { Logger } from '../../shared/logger';
 import { LOG_MCP_HTTP_STARTED, LOG_MCP_HTTP_START_FAILED, LOG_MCP_HTTP_STOPPED, LOG_MCP_HTTP_REJECTED } from '../../shared/log-constants';
 import type { McpSettings } from './settings';
@@ -40,8 +40,8 @@ const log = new Logger('main/mcp/http-server');
 /** Single MCP route mounted at this path. @const {string} */
 export const MCP_HTTP_PATH = '/mcp';
 
-/** Map from live session id to its transport + session server. @type {Map<string, { transport: StreamableHTTPServerTransport; server: McpServer }>} */
-const sessions = new Map<string, { transport: StreamableHTTPServerTransport; server: McpServer }>();
+/** Map from live session id to its transport + session server. @type {Map<string, { transport: NodeStreamableHTTPServerTransport; server: McpServer }>} */
+const sessions = new Map<string, { transport: NodeStreamableHTTPServerTransport; server: McpServer }>();
 
 /**
  * Factory that builds a fresh {@link McpServer} per HTTP session. Each MCP
@@ -301,7 +301,7 @@ function createRequestHandler(
       // leaving it undefined makes the transport stateless, so it accepts
       // non-initialize requests without demanding a session id. `keepAliveMs`
       // keeps minimal server-initiated SSE streams alive without a prime event.
-      const created = new StreamableHTTPServerTransport({
+      const created = new NodeStreamableHTTPServerTransport({
         ...(stateful ? { sessionIdGenerator: () => randomUUID() } : {}),
         keepAliveMs: 1000,
         ...(stateful

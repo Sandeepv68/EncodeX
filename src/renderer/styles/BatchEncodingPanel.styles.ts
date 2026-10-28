@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { Paper, Typography } from '@mui/material';
-import { SHADOWS } from '../colors';
+import { SHADOWS } from '../../shared/theme/colors';
 import { AccelAlert, LockedAlert } from './BatchQueue.styles';
 
 export const EncodingPaper = styled(Paper)(({ theme }) => ({

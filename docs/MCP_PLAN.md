@@ -75,7 +75,7 @@ Both phases share a single `createMcpServer(options)` factory so behavior stays 
 
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
-| SDK | `@modelcontextprotocol/sdk` **v1** | Stable, battle-tested, ships stdio + Streamable HTTP transports, dual CJS/ESM (compatible with CommonJS main build) |
+| SDK | MCP **2.x** split packages (`@modelcontextprotocol/server` + `/node` + `ext-apps@2`) | Current protocol line; ships the browser `App` API the MCP App views use. Node ≥22.12 required (`require(esm)`) |
 | Schema lib | `zod` (SDK peer dep) | Required by SDK; `.describe()` flows into tool descriptions for the model |
 | Conversional model | **Async job + polling** (`convert_media → { jobId }`, then `get_job`) | Conversions run minutes; avoids long-blocking tool calls; mirrors `ITranscoder` EventEmitter lifecycle (`progress`/`end`/`error`) |
 | Concurrency | One `ITranscoder` per job | `ITranscoder` owns one conversion at a time (same pattern as `JobQueue.activeJobs`) |
@@ -488,6 +488,7 @@ src/main/mcp/
 
 The interactive-UI layer is implemented on top of this plan: the server advertises the `io.modelcontextprotocol/ui` extension and serves self-contained `ui://` views (`queue`, `job`, `media-info`, `convert`) for the job tools, with a conversion form and confirm-gated cancel actions. Full details live in [`MCP_UI.md`](MCP_UI.md); the implementation plan is `plans/MCP_APPS_SERVER_PLAN.md`.
 
-- **Dependency:** `@modelcontextprotocol/ext-apps@^1.7.5` (keeps the legacy `@modelcontextprotocol/sdk@1.x` monolith). The `ext-apps@2.x` split-package migration remains future work.
+- **Dependency:** the MCP 2.x split packages — `@modelcontextprotocol/server`, `@modelcontextprotocol/node` and `@modelcontextprotocol/ext-apps@^2` (the `sdk@1.x` monolith is gone).
 - **Backward compatible:** non-UI hosts still receive the JSON text payload; `structuredContent` is additive.
-- **View pipeline:** currently self-contained HTML string modules + an inline bridge; the target is Vite single-file React bundles using the `ext-apps` `App` API.
+- **View pipeline:** currently self-contained HTML string modules + an inline bridge; the target is Vite single-file React bundles using the `ext-apps` `App` API (planned in `plans/MCP_APPS_REACT_IN_APP_PLAN.md`).
+- **Tasks extension removed:** SDK 2.x drops the `tasks/*` side-channel, so `convert_media` / `batch_convert` are plain tools that return the same synchronous `jobId` receipt; `get_job` / `list_jobs` polling is unchanged.

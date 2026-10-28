@@ -11,10 +11,10 @@
 
 import { spawnSync } from 'child_process';
 import * as fs from 'fs';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
-import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
-import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
+import { Client } from '@modelcontextprotocol/client';
+import { StdioClientTransport } from '@modelcontextprotocol/client/stdio';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
+import type { CallToolResult } from '@modelcontextprotocol/server';
 import { sleep } from './harness';
 
 /** @interface McpHandle */
@@ -53,6 +53,8 @@ export const UI_VIEW_URIS = [
   'ui://encodex/error',
   'ui://encodex/batch',
   'ui://encodex/workflow',
+  'ui://encodex/profiles',
+  'ui://encodex/capabilities',
 ];
 
 /** Every resource URI served by every surface, sorted for exact comparison. @const {string[]} */
@@ -200,7 +202,7 @@ export async function call<Result = Record<string, unknown>>(
 /**
  * Polls `get_job` until the job reaches `done`, returning the final job object
  * for status/codec assertions.
- * @param {import('@modelcontextprotocol/sdk/client/index.js').Client} client - Connected client.
+ * @param {import('@modelcontextprotocol/client').Client} client - Connected client.
  * @param {string} jobId - Job to poll.
  * @param {{ timeout?: number; interval?: number }} [opts] - Bounds.
  */

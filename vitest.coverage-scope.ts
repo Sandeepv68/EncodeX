@@ -29,4 +29,8 @@ export const COVERAGE_EXCLUDE = [
   'src/renderer/index.html',
   'src/renderer/global.css',
   'src/renderer/main.tsx',
+  // The standalone MCP App entry point mounts the views in a host iframe; it
+  // has no callers in the app, and the generated strings it embeds are data.
+  'src/renderer/mcp-views/standalone/main.tsx',
+  'src/renderer/mcp-views/standalone/generated-strings.ts',
 ];

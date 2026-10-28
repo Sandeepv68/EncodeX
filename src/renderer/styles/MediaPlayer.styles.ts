@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { Box, IconButton, Slider, Typography } from '@mui/material';
-import { COLORS } from '../colors';
+import { COLORS } from '../../shared/theme/colors';
 
 export const PlayerRoot = styled(Box)(({ theme }) => ({
   backgroundColor: COLORS.player.background,

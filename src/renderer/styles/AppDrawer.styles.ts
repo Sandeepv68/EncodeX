@@ -1,7 +1,7 @@
 import { alpha, styled, keyframes } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
 import { Box, Divider, IconButton, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import { COLORS } from '../colors';
+import { COLORS } from '../../shared/theme/colors';
 import { DRAWER_WIDTH_CONDENSED, FOOTER_HEIGHT } from '../../shared/app-constants';
 
 /**

@@ -17,9 +17,9 @@ import { describe, it, expect } from 'vitest';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
+import { Client } from '@modelcontextprotocol/client';
+import { InMemoryTransport } from '@modelcontextprotocol/client';
+import type { CallToolResult } from '@modelcontextprotocol/server';
 import { createMcpServer } from '../server';
 import { FakeTranscoder } from './test-helpers';
 import { MCP_UI_VIEW_URIS } from '../../shared/mcp-ui';
@@ -58,6 +58,8 @@ const UI_TOOL_ARGS: Record<string, Record<string, unknown>> = {
   explain_error: { code: 'CONVERSION_FAILED' },
   plan_workflow: { steps: [{ id: 'cut', tool: 'cut_video', args: { input: '' } }] },
   execute_workflow: { steps: [{ id: 'cut', tool: 'cut_video', args: { input: '' } }] },
+  list_profiles: {},
+  list_capabilities: {},
 };
 
 /**

@@ -17,7 +17,7 @@ export default [
     ignores: ['**/dist/**', '**/node_modules/**'],
   },
   {
-    files: ['src/renderer/**/*.{ts,tsx}'],
+    files: ['src/renderer/**/*.{ts,tsx}', 'src/shared/theme/**/*.{ts,tsx}'],
     plugins: {
       encodex: {
         rules: {

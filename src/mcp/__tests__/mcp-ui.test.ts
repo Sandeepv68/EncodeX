@@ -6,18 +6,37 @@
  * `text/html;profile=mcp-app` MIME type, and `resources/read` returns a
  * self-contained HTML document (no external script/style dependencies, so it
  * renders under the host's restrictive default CSP).
+ *
+ * The views themselves are React components rendered from the shared bundle;
+ * their behaviour is covered by `src/renderer/mcp-views/__tests__`.
  */
 
 import { describe, it, expect } from 'vitest';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
+import { Client } from '@modelcontextprotocol/client';
+import { InMemoryTransport } from '@modelcontextprotocol/client';
 import { createMcpServer } from '../server';
 import { FakeTranscoder } from './test-helpers';
 import { MCP_UI_EXTENSION_ID, MCP_UI_RESOURCE_MIME_TYPE, MCP_UI_VIEW_URIS, supportsMcpUi } from '../../shared/mcp-ui';
 import { findUiView, MCP_UI_VIEWS } from '../ui/registry';
+import { buildViewDocument } from '../ui/bundle';
+
+/**
+ * A stand-in for the built view bundle.
+ *
+ * The real bundle is a build artefact (`npm run build:mcp-ui`), and the unit
+ * tier must not depend on a build. The server therefore takes the bundle as
+ * an option, and this fixture stands in for it here. The *real* document is
+ * verified by `npm run mcp:host-check`, which runs against a built server.
+ */
+const FIXTURE_BUNDLE = [
+  '<!doctype html>',
+  '<html lang="en"><head><meta charset="utf-8" />',
+  '<script>/* the real bundle performs the ui/initialize handshake here */</script>',
+  '</head><body><div id="root"></div></body></html>',
+].join('');
 
 /**
  * Connected in-memory MCP session for UI tests.
@@ -49,7 +68,7 @@ function tempMediaFile(): string {
  */
 async function connect(options: { uiCapable?: boolean } = {}): Promise<UiSession> {
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-  const server = createMcpServer({ transcoderFactory: () => new FakeTranscoder() });
+  const server = createMcpServer({ transcoderFactory: () => new FakeTranscoder(), viewBundle: FIXTURE_BUNDLE });
   await server.connect(serverTransport);
   const client = new Client(
     { name: 'mcp-ui-test-client', version: '1.0.0' },
@@ -76,23 +95,24 @@ describe('MCP Apps server surface', () => {
     const session = await connect();
     try {
       const { resources } = await session.client.listResources();
-      for (const uri of [
-        MCP_UI_VIEW_URIS.queue,
-        MCP_UI_VIEW_URIS.job,
-        MCP_UI_VIEW_URIS.mediaInfo,
-        MCP_UI_VIEW_URIS.convert,
-        MCP_UI_VIEW_URIS.confirm,
-        MCP_UI_VIEW_URIS.inspector,
-        MCP_UI_VIEW_URIS.plan,
-        MCP_UI_VIEW_URIS.lab,
-        MCP_UI_VIEW_URIS.error,
-        MCP_UI_VIEW_URIS.batch,
-        MCP_UI_VIEW_URIS.workflow,
-      ]) {
-        const view = resources.find((resource) => resource.uri === uri);
-        expect(view, `missing view ${uri}`).toBeDefined();
-        expect(view?.mimeType).toBe(MCP_UI_RESOURCE_MIME_TYPE);
+      for (const view of MCP_UI_VIEWS) {
+        const listed = resources.find((resource) => resource.uri === view.uri);
+        expect(listed, `missing view ${view.uri}`).toBeDefined();
+        expect(listed?.mimeType).toBe(MCP_UI_RESOURCE_MIME_TYPE);
       }
+    } finally {
+      await session.close();
+    }
+  });
+
+  it('serves every view the registry declares, including the profile and capability views', async () => {
+    const session = await connect();
+    try {
+      const { resources } = await session.client.listResources();
+      const uris = resources.map((resource) => resource.uri);
+      expect(uris).toContain(MCP_UI_VIEW_URIS.profiles);
+      expect(uris).toContain(MCP_UI_VIEW_URIS.capabilities);
+      expect(MCP_UI_VIEWS).toHaveLength(13);
     } finally {
       await session.close();
     }
@@ -133,7 +153,7 @@ describe('MCP Apps server surface', () => {
     }
   });
 
-  it('serves the queue view as self-contained HTML', async () => {
+  it('serves the queue view as self-contained HTML that mounts the queue view', async () => {
     const session = await connect();
     try {
       const result = await session.client.readResource({ uri: MCP_UI_VIEW_URIS.queue });
@@ -141,7 +161,7 @@ describe('MCP Apps server surface', () => {
       expect(first.mimeType).toBe(MCP_UI_RESOURCE_MIME_TYPE);
       const html = first.text ?? '';
       expect(html).toContain('<!doctype html>');
-      expect(html).toContain('EncodeX queue');
+      expect(html).toContain('window.__ENCODEX_VIEW__="queue"');
       expect(html).toContain('ui/initialize');
       expect(html).not.toMatch(/<script\b[^>]*\bsrc=/i);
       expect(html).not.toMatch(/<link\b[^>]*\bstylesheet/i);
@@ -150,26 +170,14 @@ describe('MCP Apps server surface', () => {
     }
   });
 
-  it('serves every view self-contained and within the size budget', async () => {
+  it('serves every view from the same bundle, mounting the view it is addressed to', async () => {
     const session = await connect();
     try {
-      for (const uri of [
-        MCP_UI_VIEW_URIS.queue,
-        MCP_UI_VIEW_URIS.job,
-        MCP_UI_VIEW_URIS.mediaInfo,
-        MCP_UI_VIEW_URIS.convert,
-        MCP_UI_VIEW_URIS.confirm,
-        MCP_UI_VIEW_URIS.inspector,
-        MCP_UI_VIEW_URIS.plan,
-        MCP_UI_VIEW_URIS.lab,
-        MCP_UI_VIEW_URIS.error,
-        MCP_UI_VIEW_URIS.batch,
-        MCP_UI_VIEW_URIS.workflow,
-      ]) {
-        const result = await session.client.readResource({ uri });
+      for (const view of MCP_UI_VIEWS) {
+        const result = await session.client.readResource({ uri: view.uri });
         const html = (result.contents[0] as { text?: string }).text ?? '';
-        expect(html.length, `${uri} size budget`).toBeLessThan(100_000);
-        expect(html).toContain('ui/initialize');
+        expect(html, `${view.uri} bootstrap`).toContain(`window.__ENCODEX_VIEW__="${view.viewId}"`);
+        expect(html, `${view.uri} handshake`).toContain('ui/initialize');
         expect(html).not.toMatch(/<script\b[^>]*\bsrc=/i);
         expect(html).not.toMatch(/<link\b[^>]*\bstylesheet/i);
       }
@@ -252,6 +260,8 @@ describe('MCP Apps server surface', () => {
         batch_convert: MCP_UI_VIEW_URIS.batch,
         plan_workflow: MCP_UI_VIEW_URIS.workflow,
         execute_workflow: MCP_UI_VIEW_URIS.workflow,
+        list_profiles: MCP_UI_VIEW_URIS.profiles,
+        list_capabilities: MCP_UI_VIEW_URIS.capabilities,
       };
       for (const [name, uri] of Object.entries(expected)) {
         const tool = tools.find((candidate) => candidate.name === name);
@@ -259,6 +269,22 @@ describe('MCP Apps server surface', () => {
         const meta = tool?._meta as { ui?: { resourceUri?: string } } | undefined;
         expect(meta?.ui?.resourceUri, `${name} ui.resourceUri`).toBe(uri);
       }
+    } finally {
+      await session.close();
+    }
+  });
+
+  it('serves the profile and capability payloads the views render', async () => {
+    const session = await connect();
+    try {
+      const profiles = await session.client.callTool({ name: 'list_profiles', arguments: {} });
+      const profilePayload = (profiles as { structuredContent?: { profiles?: unknown[] } }).structuredContent;
+      expect(Array.isArray(profilePayload?.profiles)).toBe(true);
+      expect(profilePayload?.profiles?.length).toBeGreaterThan(0);
+
+      const capabilities = await session.client.callTool({ name: 'list_capabilities', arguments: {} });
+      const capabilityPayload = (capabilities as { structuredContent?: { capabilities?: { videoEncoders?: string[] } } }).structuredContent;
+      expect(Array.isArray(capabilityPayload?.capabilities?.videoEncoders)).toBe(true);
     } finally {
       await session.close();
     }
@@ -285,7 +311,9 @@ describe('MCP Apps view registry', () => {
 
   it('serves a self-contained HTML document for every registered view', () => {
     for (const view of MCP_UI_VIEWS) {
-      expect(view.html(), `${view.uri} html`).toContain('<!doctype html>');
+      const html = buildViewDocument(view.viewId, FIXTURE_BUNDLE);
+      expect(html, `${view.uri} html`).toContain('<!doctype html>');
+      expect(html, `${view.uri} bootstrap`).toContain(`window.__ENCODEX_VIEW__="${view.viewId}"`);
     }
   });
 });

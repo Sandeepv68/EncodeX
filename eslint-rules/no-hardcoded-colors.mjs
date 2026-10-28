@@ -3,7 +3,7 @@
  * rgba, hsl, hsla, hwb) inside string literals and template literals.
  *
  * Colors must not be written inline; they should reference the shared color
- * constants in `src/renderer/colors.ts` (COLORS, OVERLAY_COLORS, TIMELINE_COLORS,
+ * constants in `src/shared/theme/colors.ts` (COLORS, OVERLAY_COLORS, TIMELINE_COLORS,
  * the theme palettes, etc.) so every surface stays themeable and consistent.
  *
  * The rule only inspects string values, so comments and the definitions inside
@@ -22,7 +22,7 @@ export default {
       description: 'Disallow hardcoded color codes; reference the color constants instead.',
     },
     messages: {
-      hardcodedColor: 'Hardcoded color "{{color}}" found. Reference it from the color constants (src/renderer/colors.ts) instead.',
+      hardcodedColor: 'Hardcoded color "{{color}}" found. Reference it from the color constants (src/shared/theme/colors.ts) instead.',
     },
     schema: [],
   },

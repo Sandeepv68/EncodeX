@@ -17,8 +17,8 @@
 import { createContext, useContext, useMemo, useState, ReactNode, useEffect } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import { THEME_STORAGE_KEY } from '../shared/app-constants';
-import { createAppTheme } from './theme';
-import { getTheme, isThemeId } from './colors';
+import { createAppTheme } from '../shared/theme/theme';
+import { getTheme, isThemeId } from '../shared/theme/colors';
 import { recordAnalyticsEvent } from '../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../shared/analytics/events';
 import type { ColorMode, ColorModeContextValue, ThemeId } from './types';

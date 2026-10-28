@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import type { SavedCopilotChat } from '../../stores/copilotChats';
 import { deriveCopilotChatProvider } from '../../stores/copilotChats';
 import ProviderIcon from './ProviderIcon';
-import { SHADOWS } from '../../colors';
+import { SHADOWS } from '../../../shared/theme/colors';
 
 /** Width of the panel when open, in pixels. */
 const PANEL_WIDTH_PX = 320;

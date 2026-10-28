@@ -23,7 +23,7 @@ import { FieldLabel, FieldValue } from '../styles/InfoField.styles';
 import EllipsisTooltip from './EllipsisTooltip';
 import { ExifTitle, HistogramBox, HistogramTitle, HistogramRow, HistogramLabel } from '../styles/ExifSection.styles';
 import { EXIF_HISTOGRAM_BINS, EXIF_HISTOGRAM_WIDTH, EXIF_HISTOGRAM_HEIGHT } from '../../shared/constants';
-import { HISTOGRAM_COLORS } from '../colors';
+import { HISTOGRAM_COLORS } from '../../shared/theme/colors';
 
 /**
  * Downsamples an arbitrary-length data series into `bins` buckets by summing

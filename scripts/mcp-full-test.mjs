@@ -6,9 +6,9 @@ import os from 'os';
 import path from 'path';
 import { spawn, spawnSync } from 'child_process';
 import { fileURLToPath } from 'url';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
-import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+import { Client } from '@modelcontextprotocol/client';
+import { StdioClientTransport } from '@modelcontextprotocol/client/stdio';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
 import ffmpegStatic from 'ffmpeg-static';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -76,6 +76,8 @@ const VIEW_URIS = [
   'ui://encodex/error',
   'ui://encodex/batch',
   'ui://encodex/workflow',
+  'ui://encodex/profiles',
+  'ui://encodex/capabilities',
 ];
 const ALL_RESOURCE_URIS = [...RESOURCE_URIS, ...VIEW_URIS];
 const PROMPT_NAMES = ['convert-video', 'extract-audio', 'compress-image', 'batch-convert'];

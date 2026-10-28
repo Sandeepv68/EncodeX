@@ -496,6 +496,20 @@ export interface ElectronAPI {
    */
   mcpSetSettings(settings: McpSettings): Promise<McpSettings>;
   /**
+   * Calls an MCP tool on behalf of an in-app MCP App view over
+   * `IPC.MCP_UI_CALL_TOOL` ('mcp-ui-call-tool').
+   * @param {string} name - The MCP tool to call.
+   * @param {Record<string, unknown>} [args] - The tool arguments.
+   * @returns {Promise<unknown>} The tool result (text plus `structuredContent`).
+   */
+  mcpUiCallTool(name: string, args?: Record<string, unknown>): Promise<unknown>;
+  /**
+   * Lists the MCP App views the in-app host can render over
+   * `IPC.MCP_UI_LIST_VIEWS` ('mcp-ui-list-views').
+   * @returns {Promise<Array<{viewId: string; uri: string; title: string}>>} The available views.
+   */
+  mcpUiListViews(): Promise<Array<{ viewId: string; uri: string; title: string }>>;
+  /**
    * Queries the Copilot's AI provider settings over `IPC.AI_SETTINGS_GET`
    * ('ai-settings-get'). The API key is never returned; the view reports
    * `hasKey` and a masked `keyHint`.

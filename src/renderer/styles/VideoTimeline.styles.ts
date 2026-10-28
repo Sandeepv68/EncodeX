@@ -1,6 +1,6 @@
 import { alpha, styled } from '@mui/material/styles';
 import { Box, Chip, IconButton, Skeleton, Typography } from '@mui/material';
-import { OVERLAY_COLORS, TIMELINE_COLORS } from '../colors';
+import { OVERLAY_COLORS, TIMELINE_COLORS } from '../../shared/theme/colors';
 
 export const TIMELINE_LAYOUT = {
   RULER_HEIGHT: 32,

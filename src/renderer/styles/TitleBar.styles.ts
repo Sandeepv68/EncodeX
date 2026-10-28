@@ -1,7 +1,7 @@
 import { styled } from '@mui/material/styles';
 import { Box, IconButton, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { TITLEBAR_COLORS, OVERLAY_COLORS, COLORS } from '../colors';
+import { TITLEBAR_COLORS, OVERLAY_COLORS, COLORS } from '../../shared/theme/colors';
 import { TITLE_BAR_HEIGHT } from '../../shared/constants';
 
 const dragRegion = { WebkitAppRegion: 'drag' } as React.CSSProperties;

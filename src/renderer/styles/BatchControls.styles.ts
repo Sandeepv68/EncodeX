@@ -1,7 +1,7 @@
 import { styled } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
 import { IconButton, Paper, TextField, Box, FormControlLabel } from '@mui/material';
-import { SHADOWS } from '../colors';
+import { SHADOWS } from '../../shared/theme/colors';
 import { FieldBox } from './form.styles';
 import { AccelAlert } from './BatchQueue.styles';
 

@@ -32,6 +32,7 @@ export interface TestSnapshot {
   closeRequestedSubscribers: number;
   termsRejectCalls: number;
   mcpSetCalls: McpSettings[];
+  mcpUiToolCalls: Array<{ name: string; args: Record<string, unknown> }>;
   aiSetCalls: AiSettingsUpdate[];
 }
 

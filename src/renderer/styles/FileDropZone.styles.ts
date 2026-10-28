@@ -1,6 +1,6 @@
 import { alpha, styled, keyframes } from '@mui/material/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { SHADOWS } from '../colors';
+import { SHADOWS } from '../../shared/theme/colors';
 
 const borderPulse = keyframes`
   0%, 100% {

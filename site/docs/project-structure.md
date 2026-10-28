@@ -161,7 +161,7 @@ src/
 │   │   └── providerFactory.ts          # Renderer provider selection
 │   ├── dev/
 │   │   └── useDevScreenshot.ts        # Dev-only window screenshot capture
-│   ├── components/                    # Shared UI components (60 modules: 48 top-level + copilot/ and settings/ subfolders) <!-- drift:renderer-components=60 --> <!-- drift:renderer-components-top=48 -->
+│   ├── components/                    # Shared UI components (60 modules: 48 top-level + copilot/ and settings/ subfolders) <!-- drift:renderer-components=60 --> <!-- drift:renderer-components-top=47 -->
 │   ├── constants/
 │   │   └── shortcuts.ts               # 71 keyboard shortcuts registry (11 sections) + tooltip hints <!-- drift:shortcuts=71 --> <!-- drift:shortcut-sections=11 -->
 │   ├── hooks/                         # useConversion, useErrorHandler, useFormErrors, useMediaTask, useCapabilities, useHotkeys, useFieldId
@@ -180,7 +180,7 @@ src/
     ├── types.ts                       # Domain interfaces (ConversionOptions, MediaInfo, ...)
     ├── terms.ts                       # Versioned Terms & Conditions (TERMS_VERSION)
     ├── logger.ts                      # Timestamped logger (main/renderer)
-    ├── log-constants.ts               # Shared log message constants (527 exported) <!-- drift:log-constants=527 -->
+    ├── log-constants.ts               # Shared log message constants (527 exported) <!-- drift:log-constants=528 -->
     ├── validation.ts                  # Time/scale/bitrate/range validation helpers
     ├── math.ts                        # Math helpers (clamp, round, percent)
     ├── progress.ts                    # Progress/ETA computation helpers
@@ -266,7 +266,7 @@ e2e/                                  # Playwright-based end-to-end tests
 │   ├── vscode-client.spec.ts          # VS Code MCP client configuration
 │   └── vscode-ui.spec.ts              # VS Code UI integration
 ├── quarantine/                        # Quarantined spec bodies (see quarantine.json)
-└── specs/                             # 31 E2E spec files (39 e2e files total) <!-- drift:e2e-specs=31 -->
+└── specs/                             # 31 E2E spec files (39 e2e files total) <!-- drift:e2e-specs=32 -->
     ├── shell.spec.ts
     ├── convert.spec.ts
     ├── batch.spec.ts

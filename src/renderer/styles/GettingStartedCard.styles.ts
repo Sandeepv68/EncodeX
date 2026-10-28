@@ -8,7 +8,7 @@ import type { ElementType } from 'react';
 import { Paper, Box, Typography, IconButton, Chip, styled } from '@mui/material';
 import { alpha, keyframes } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
-import { SHADOWS } from '../colors';
+import { SHADOWS } from '../../shared/theme/colors';
 
 const fadeSlideUp = (theme: Theme) => keyframes`
   from { opacity: 0; transform: translateY(${theme.typography.pxToRem(12)}); }

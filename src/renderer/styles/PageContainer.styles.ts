@@ -1,7 +1,7 @@
 import { styled } from '@mui/material/styles';
 import { Box, Typography, Paper } from '@mui/material';
 import type { ElementType } from 'react';
-import { SHADOWS } from '../colors';
+import { SHADOWS } from '../../shared/theme/colors';
 
 /**
  * Root layout for a page.

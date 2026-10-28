@@ -2,7 +2,7 @@ import { styled, keyframes } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
 import { Box, Card, CardActionArea, CardContent, Grid, Typography } from '@mui/material';
 import type { ElementType } from 'react';
-import { SHADOWS, OVERLAY_COLORS } from '../colors';
+import { SHADOWS, OVERLAY_COLORS } from '../../shared/theme/colors';
 
 const fadeSlideUp = (theme: Theme) => keyframes`
   from { opacity: 0; transform: translateY(${theme.typography.pxToRem(12)}); }

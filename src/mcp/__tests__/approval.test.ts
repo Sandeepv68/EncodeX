@@ -19,7 +19,7 @@ import {
   hostSupportsMcpApps,
 } from '../ui/approval';
 import { MCP_UI_EXTENSION_ID, MCP_UI_VIEW_URIS, MCP_UI_RESOURCE_MIME_TYPE } from '../../shared/mcp-ui';
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import type { McpServer } from '@modelcontextprotocol/server';
 import type { McpUiConfirmation } from '../../shared/mcp-ui';
 
 /** A minimal McpServer double exposing the client capabilities. */

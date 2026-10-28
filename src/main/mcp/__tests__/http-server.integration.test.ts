@@ -1,15 +1,15 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { expectAppLog } from '../../../test-utils/crash-tripwire';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+import { Client } from '@modelcontextprotocol/client';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
 import { createMcpServer } from '../../../mcp/server';
 import { registerGuiTools } from '../gui-tools';
 import { startMcpHttpServer } from '../http-server';
 import type { McpHttpHandle } from '../http-server';
 import { MCPJobManager } from '../../../mcp/jobs/manager';
 import { FakeTranscoder } from '../../../mcp/__tests__/test-helpers';
-import type { Client as ClientType } from '@modelcontextprotocol/sdk/client/index.js';
-import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
+import type { Client as ClientType } from '@modelcontextprotocol/client';
+import type { Transport } from '@modelcontextprotocol/client';
 
 const TOKEN = 'test-bearer-token';
 
@@ -181,4 +181,24 @@ describe('embedded MCP HTTP server', () => {
     await client.close();
     await transport.close();
   }, 20000);
+
+  it('rejects a body that is not JSON', async () => {
+    expectAppLog('warn', 'main/mcp/http-server');
+    const res = await fetch(baseUrl, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json' },
+      body: 'not json at all',
+    });
+    expect(res.status).toBe(400);
+  });
+
+  it('returns 413 for a body over the size cap', async () => {
+    expectAppLog('warn', 'main/mcp/http-server');
+    const res = await fetch(baseUrl, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 9, method: 'tools/list', params: {}, padding: 'x'.repeat(11 * 1024 * 1024) }),
+    });
+    expect(res.status).toBe(413);
+  }, 30000);
 });

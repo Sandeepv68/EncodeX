@@ -22,7 +22,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMobileScreen, faTabletScreenButton, faTv, faGamepad } from '@fortawesome/free-solid-svg-icons';
 import { useTheme } from '@mui/material/styles';
 import { Box } from '@mui/material';
-import { PROFILE_ICON_COLORS } from '../colors';
+import { PROFILE_ICON_COLORS } from '../../shared/theme/colors';
 import { isNearBlack } from '../utils/colors';
 import { OptionIcon, FormatBadge, BrandSvg } from '../styles/ProfileSelector.styles';
 

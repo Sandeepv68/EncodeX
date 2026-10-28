@@ -16,6 +16,8 @@
  * The module has no exports; its top-level code runs once when loaded.
  */
 
+import './mcp-stdio-bootstrap';
+
 /**
  * Load the repo-root `.env` before anything reads `process.env` (monitoring
  * bootstrap runs at module load). Real environment variables always win over
@@ -38,13 +40,15 @@ import { MCPJobManager } from '../mcp/jobs/manager';
 import { registerGuiTools } from './mcp/gui-tools';
 import { startMcpHttpServer } from './mcp/http-server';
 import type { McpHttpHandle } from './mcp/http-server';
+import { getLocalMcpClient } from './mcp/local-client';
+import { registerMcpUiIpc, setLocalMcpClientProvider } from './mcp/ui-ipc';
 import { readMcpSettings } from './mcp/settings';
 import type { McpSettings } from './mcp/settings';
 import { registerMcpSettingsIpc } from './mcp/settings-ipc';
 import { getVideoPreview } from './video-preview';
 import { checkForUpdate, autoInstallPendingUpdate } from './updater';
 import { createTranscoder } from './transcoders/factory';
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import type { McpServer } from '@modelcontextprotocol/server';
 import { Logger } from '../shared/logger';
 import {
   WINDOW_SIZE,
@@ -279,13 +283,8 @@ if (process.argv.includes('--mcp')) {
   // MCP mode is headless and spawns no windows: disable Chromium's GPU so
   // short-lived spawns (MCP clients, CI) never crash in the GPU process.
   app.disableHardwareAcceleration();
-  // Keep stdout reserved for MCP JSON-RPC messages: every internal log line
-  // (Logger.debug/info routes through console.log) is redirected to stderr so
-  // the protocol stream stays parseable. This mirrors the stream-routing
-  // contract used by the standalone Node entry (src/mcp/index.ts).
-  console.log = (...args: unknown[]) => {
-    process.stderr.write(`${formatArgs(...args)}\n`);
-  };
+  // stdout was reserved for JSON-RPC before any module loaded by
+  // ./mcp-stdio-bootstrap, imported first below.
   log.info('Starting in MCP server mode');
   app.whenReady().then(async () => {
     try {
@@ -535,6 +534,11 @@ if (process.argv.includes('--mcp')) {
     });
 
     registerIpcHandlers(mainWindow);
+    // The in-app MCP App views call tools through the in-process client, which
+    // talks to the same session server (and the same job manager) the embedded
+    // HTTP server exposes: a view that cancels a job cancels the job the app's
+    // queue shows.
+    setLocalMcpClientProvider(() => getLocalMcpClient(() => createSessionMcpServer()));
     registerMonitoringIpcBridge({ userDataDir: app.getPath('userData'), consentEnabled: monitoringConsentAtBoot });
     registerAnalyticsIpcBridge({ userDataDir: app.getPath('userData'), consentEnabled: analyticsConsentAtBoot });
     patchConsole(mainWindow);
