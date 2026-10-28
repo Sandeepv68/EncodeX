@@ -550,6 +550,8 @@ jobs:
       - run: npm ci
       - name: Smoke test standalone stdio server
         run: npm run mcp:smoke
+      - name: Probe the raw stdio protocol
+        run: node scripts/mcp-raw-probe.mjs
       - name: Verify the MCP App view documents
         # The unit tier checks the view *contract* against a fixture; this step
         # checks the real bundle the server serves: self-contained, mounting
