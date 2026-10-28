@@ -24,11 +24,19 @@ import { findUiView, MCP_UI_VIEWS } from '../ui/registry';
 import { buildViewDocument } from '../ui/bundle';
 
 /**
- * Ceiling for one served view document, in bytes. The document carries React,
- * MUI, the `ext-apps` App class and every view, so it is large by design; the
- * budget catches an accidental regression, not a size preference.
+ * A stand-in for the built view bundle.
+ *
+ * The real bundle is a build artefact (`npm run build:mcp-ui`), and the unit
+ * tier must not depend on a build. The server therefore takes the bundle as
+ * an option, and this fixture stands in for it here. The *real* document is
+ * verified by `npm run mcp:host-check`, which runs against a built server.
  */
-const VIEW_DOCUMENT_BUDGET = 1024 * 1024;
+const FIXTURE_BUNDLE = [
+  '<!doctype html>',
+  '<html lang="en"><head><meta charset="utf-8" />',
+  '<script>/* the real bundle performs the ui/initialize handshake here */</script>',
+  '</head><body><div id="root"></div></body></html>',
+].join('');
 
 /**
  * Connected in-memory MCP session for UI tests.
@@ -60,7 +68,7 @@ function tempMediaFile(): string {
  */
 async function connect(options: { uiCapable?: boolean } = {}): Promise<UiSession> {
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-  const server = createMcpServer({ transcoderFactory: () => new FakeTranscoder() });
+  const server = createMcpServer({ transcoderFactory: () => new FakeTranscoder(), viewBundle: FIXTURE_BUNDLE });
   await server.connect(serverTransport);
   const client = new Client(
     { name: 'mcp-ui-test-client', version: '1.0.0' },
@@ -162,15 +170,14 @@ describe('MCP Apps server surface', () => {
     }
   });
 
-  it('serves every view self-contained and within the size budget', async () => {
+  it('serves every view from the same bundle, mounting the view it is addressed to', async () => {
     const session = await connect();
     try {
       for (const view of MCP_UI_VIEWS) {
         const result = await session.client.readResource({ uri: view.uri });
         const html = (result.contents[0] as { text?: string }).text ?? '';
-        expect(html.length, `${view.uri} size budget`).toBeLessThan(VIEW_DOCUMENT_BUDGET);
         expect(html, `${view.uri} bootstrap`).toContain(`window.__ENCODEX_VIEW__="${view.viewId}"`);
-        expect(html).toContain('ui/initialize');
+        expect(html, `${view.uri} handshake`).toContain('ui/initialize');
         expect(html).not.toMatch(/<script\b[^>]*\bsrc=/i);
         expect(html).not.toMatch(/<link\b[^>]*\bstylesheet/i);
       }
@@ -304,7 +311,7 @@ describe('MCP Apps view registry', () => {
 
   it('serves a self-contained HTML document for every registered view', () => {
     for (const view of MCP_UI_VIEWS) {
-      const html = buildViewDocument(view.viewId);
+      const html = buildViewDocument(view.viewId, FIXTURE_BUNDLE);
       expect(html, `${view.uri} html`).toContain('<!doctype html>');
       expect(html, `${view.uri} bootstrap`).toContain(`window.__ENCODEX_VIEW__="${view.viewId}"`);
     }

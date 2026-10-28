@@ -6,10 +6,11 @@
  * waits for the user to approve it in the confirmation view.
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography } from '@mui/material';
 import { useMcpView, useMcpViewData } from '../McpViewProvider';
+import { resultErrorText } from '../host';
 import ViewBadge from '../kit/ViewBadge';
 import ViewButton from '../kit/ViewButton';
 import ViewCard from '../kit/ViewCard';
@@ -28,7 +29,14 @@ interface ErrorPayload {
 export default function ErrorView() {
   const { t } = useTranslation();
   const payload = useMcpViewData<ErrorPayload>();
-  const explanation = payload?.error ?? (payload && 'code' in payload ? (payload as unknown as McpUiErrorExplanation) : undefined);
+  // The explanation is latched: a fix the user triggers answers with its own
+  // payload, which must not wipe the card the user is reading.
+  const [explanation, setExplanation] = useState<McpUiErrorExplanation | undefined>(
+    payload?.error ?? (payload && 'code' in payload ? (payload as unknown as McpUiErrorExplanation) : undefined),
+  );
+  useEffect(() => {
+    if (payload?.error) setExplanation(payload.error);
+  }, [payload?.error]);
 
   if (!explanation?.code) {
     return (
@@ -100,6 +108,11 @@ function FixRow({ fix }: FixRowProps) {
     setBusy(true);
     try {
       const result = await callTool(fix.tool, fix.args);
+      const failure = resultErrorText(result);
+      if (failure) {
+        setAction(t('mcpViews.common.fixFailed', { message: failure }));
+        return;
+      }
       if (result.structuredContent?.confirmation) {
         setAction(t('mcpViews.common.sentForConfirmation', { label: fix.label ?? '' }));
       } else {

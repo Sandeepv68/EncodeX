@@ -54,6 +54,13 @@ const UNCOVERABLE = [
   /^src\/renderer\/i18n\//,
   /^src\/test-setup(\.crash)?\.ts$/,
   /^src\/renderer\/main\.tsx$/,
+  // Process entry points: their code runs in a *spawned* process, which the
+  // coverage instrumentation never sees. The integration and e2e tiers cover
+  // them behaviourally instead.
+  /^src\/mcp\/(run|index)\.ts$/,
+  // The standalone MCP App entry point mounts the views in a host iframe; it
+  // has no callers in the app, and the generated strings it embeds are data.
+  /^src\/renderer\/mcp-views\/standalone\/(main\.tsx|generated-strings\.ts)$/,
   /\.styles\.ts$/,
 ];
 
@@ -255,6 +262,15 @@ for (const file of changed) {
     // the measured program. Not a coverage failure, but worth surfacing, because
     // for a source file it usually means the module is dead or newly added.
     failures.push({ file, reason: 'not measured (no module loaded it)' });
+    continue;
+  }
+  // A change that adds no executable line (a comment, a doc reference, a
+  // renamed import) cannot affect behaviour, so the file's *pre-existing*
+  // coverage is not this change's business. The added-line check below still
+  // applies, and it passes trivially.
+  const added = addedLines(base, file);
+  const sets = lineSets.get(file);
+  if (added.length > 0 && sets && sets.executable.size > 0 && !added.some((line) => sets.executable.has(line))) {
     continue;
   }
   const verdict = misses(entry, lineFloor, branchFloor);

@@ -150,6 +150,12 @@ export interface CreateMcpServerOptions {
   sttEngine?: SttEngine;
   translator?: TranslationProvider;
   localModelClient?: LocalModelClient;
+  /**
+   * The MCP App view bundle to serve. When omitted, the built bundle is read
+   * from disk on the first `resources/read`; the test suite passes a fixture so
+   * the unit tier never depends on a build artefact.
+   */
+  viewBundle?: string;
 }
 
 /**
@@ -2930,7 +2936,7 @@ export function createMcpServer(options: CreateMcpServerOptions = {}): McpServer
     }),
   );
 
-  registerUiResources(server);
+  registerUiResources(server, options.viewBundle);
 
   return server;
 }

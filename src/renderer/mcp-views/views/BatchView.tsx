@@ -5,11 +5,12 @@
  * dashboard that follows polls `list_jobs` for every file of the batch.
  */
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography } from '@mui/material';
 import { basename, clampPercent } from '../format';
 import { useMcpView, useMcpViewData } from '../McpViewProvider';
+import { resultErrorText } from '../host';
 import { useMcpViewPolling } from '../useMcpViewPolling';
 import ViewBadge from '../kit/ViewBadge';
 import ViewButton from '../kit/ViewButton';
@@ -34,10 +35,17 @@ export default function BatchView() {
   const { t } = useTranslation();
   const { callTool, host } = useMcpView();
   const payload = useMcpViewData<BatchPayload>();
-  const confirmation = payload?.confirmation;
+  // The proposal is latched: the commit answers with the jobs it queued, and
+  // that payload must not wipe the card the user approved.
+  const [proposal, setProposal] = useState<McpUiConfirmation | undefined>(payload?.confirmation);
   const jobs = payload?.jobs ?? [];
+  const confirmation = jobs.length > 0 ? undefined : proposal;
   const [message, setMessage] = useState<string | undefined>(undefined);
   const [running, setRunning] = useState(false);
+
+  useEffect(() => {
+    if (payload?.confirmation) setProposal(payload.confirmation);
+  }, [payload?.confirmation]);
 
   useMcpViewPolling({
     tool: 'list_jobs',
@@ -55,6 +63,11 @@ export default function BatchView() {
     setMessage(undefined);
     try {
       const result = await callTool('commit_operation', { tool: confirmation.operation, args: confirmation.args });
+      const failure = resultErrorText(result);
+      if (failure) {
+        setMessage(failure);
+        return;
+      }
       if (result.structuredContent?.confirmation) {
         setMessage(t('mcpViews.batch.needsReapproval'));
       }
@@ -104,7 +117,13 @@ export default function BatchView() {
   return (
     <ViewCard
       title={t('mcpViews.batch.dashboard')}
-      actions={<ViewBadge tone="info">{t('mcpViews.common.fileCount', { count: jobs.length })}</ViewBadge>}
+      actions={
+        <ViewBadge tone="info">
+          {jobs.length === 1
+            ? t('mcpViews.common.fileCountOne', { count: jobs.length })
+            : t('mcpViews.common.fileCount', { count: jobs.length })}
+        </ViewBadge>
+      }
       testId="mcp-view-batch-dashboard"
     >
       {jobs.length === 0 ? (

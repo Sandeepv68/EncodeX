@@ -71,3 +71,30 @@ export async function createLocalMcpClient(createServer: () => McpServer): Promi
     },
   };
 }
+
+/** The memoized session of the in-process MCP client. @type {Promise<LocalMcpClient | null> | null} */
+let session: Promise<LocalMcpClient | null> | null = null;
+
+/**
+ * Returns the in-process MCP client, creating it on first use.
+ *
+ * The client is created lazily: an app that never renders a view never pays
+ * for the session. A failure is swallowed - the views degrade to a read-only
+ * surface instead of breaking the Copilot.
+ * @param {() => McpServer} createServer - Builds the server to connect to.
+ * @returns {Promise<LocalMcpClient | null>} The client, or null when it could not start.
+ */
+export function getLocalMcpClient(createServer: () => McpServer): Promise<LocalMcpClient | null> {
+  if (!session) {
+    session = createLocalMcpClient(createServer).catch(() => null);
+  }
+  return session;
+}
+
+/**
+ * Drops the memoized session; used by the tests and by a shutdown path.
+ * @returns {void}
+ */
+export function resetLocalMcpClient(): void {
+  session = null;
+}

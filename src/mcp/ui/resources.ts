@@ -46,17 +46,21 @@ export const MCP_UI_RESOURCE_META = {
  * The security metadata ({@link MCP_UI_RESOURCE_META}) is attached both at the
  * listing level (a static default a host can review at connection time) and on
  * each `resources/read` content item (which the spec says takes precedence).
+ *
  * @param {McpServer} server - The server being constructed.
+ * @param {string} [bundle] - The view bundle to serve. When omitted, the
+ *   built bundle is read from disk on the first read; the test suite passes a
+ *   fixture so the unit tier never depends on a build artefact.
  * @returns {void}
  */
-export function registerUiResources(server: McpServer): void {
+export function registerUiResources(server: McpServer, bundle?: string): void {
   for (const view of MCP_UI_VIEWS) {
     registerAppResource(server, view.id, view.uri, { description: view.description, _meta: MCP_UI_RESOURCE_META }, async () => ({
       contents: [
         {
           uri: view.uri,
           mimeType: MCP_UI_RESOURCE_MIME_TYPE,
-          text: buildViewDocument(view.viewId),
+          text: buildViewDocument(view.viewId, bundle),
           _meta: MCP_UI_RESOURCE_META,
         },
       ],

@@ -320,9 +320,9 @@
       "statements": 96.55
     },
     "src/main/index.ts": {
-      "lines": 96.35,
+      "lines": 95.63,
       "branches": 81.33,
-      "statements": 96.55
+      "statements": 95.63
     },
     "src/main/transcoders/ffmpeg-core.ts": {
       "lines": 94.87,
@@ -405,9 +405,9 @@
       "statements": 97.22
     },
     "src/mcp/server.ts": {
-      "lines": 97.71,
-      "branches": 77.12,
-      "statements": 97.71
+      "lines": 97.69,
+      "branches": 77.01,
+      "statements": 97.69
     },
     "src/mcp/operations.ts": {
       "lines": 99.17,
@@ -644,11 +644,6 @@
       "branches": 96.97,
       "statements": 100
     },
-    "src/mcp/jobs/task-store.ts": {
-      "lines": 98.61,
-      "branches": 91.49,
-      "statements": 98.61
-    },
     "src/mcp/local-model-client.ts": {
       "lines": 100,
       "branches": 100,
@@ -674,72 +669,12 @@
       "branches": 100,
       "statements": 100
     },
-    "src/mcp/ui/bridge.ts": {
-      "lines": 100,
-      "branches": 100,
-      "statements": 100
-    },
     "src/mcp/ui/registry.ts": {
       "lines": 100,
       "branches": 100,
       "statements": 100
     },
     "src/mcp/ui/resources.ts": {
-      "lines": 100,
-      "branches": 100,
-      "statements": 100
-    },
-    "src/mcp/ui/views/batch.ts": {
-      "lines": 100,
-      "branches": 100,
-      "statements": 100
-    },
-    "src/mcp/ui/views/confirm.ts": {
-      "lines": 100,
-      "branches": 100,
-      "statements": 100
-    },
-    "src/mcp/ui/views/convert.ts": {
-      "lines": 100,
-      "branches": 100,
-      "statements": 100
-    },
-    "src/mcp/ui/views/error.ts": {
-      "lines": 100,
-      "branches": 100,
-      "statements": 100
-    },
-    "src/mcp/ui/views/inspector.ts": {
-      "lines": 100,
-      "branches": 100,
-      "statements": 100
-    },
-    "src/mcp/ui/views/job.ts": {
-      "lines": 100,
-      "branches": 100,
-      "statements": 100
-    },
-    "src/mcp/ui/views/lab.ts": {
-      "lines": 100,
-      "branches": 100,
-      "statements": 100
-    },
-    "src/mcp/ui/views/media-info.ts": {
-      "lines": 100,
-      "branches": 100,
-      "statements": 100
-    },
-    "src/mcp/ui/views/plan.ts": {
-      "lines": 100,
-      "branches": 100,
-      "statements": 100
-    },
-    "src/mcp/ui/views/queue.ts": {
-      "lines": 100,
-      "branches": 100,
-      "statements": 100
-    },
-    "src/mcp/ui/views/workflow.ts": {
       "lines": 100,
       "branches": 100,
       "statements": 100
@@ -796,7 +731,7 @@
     },
     "src/renderer/components/copilot/AssistantMessage.tsx": {
       "lines": 100,
-      "branches": 82.86,
+      "branches": 82.5,
       "statements": 100
     },
     "src/renderer/components/copilot/ChatComposer.tsx": {
@@ -1608,6 +1543,196 @@
       "lines": 100,
       "branches": 75,
       "statements": 100
+    },
+    "src/main/mcp/local-client.ts": {
+      "lines": 100,
+      "branches": 100,
+      "statements": 100
+    },
+    "src/main/mcp/ui-ipc.ts": {
+      "lines": 100,
+      "branches": 90,
+      "statements": 100
+    },
+    "src/mcp/ui/bundle.ts": {
+      "lines": 96.88,
+      "branches": 93.33,
+      "statements": 96.88
+    },
+    "src/renderer/components/copilot/McpAppView.tsx": {
+      "lines": 100,
+      "branches": 100,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/AppIpcHost.ts": {
+      "lines": 100,
+      "branches": 100,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/McpViewProvider.tsx": {
+      "lines": 100,
+      "branches": 78.57,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/format.ts": {
+      "lines": 90.91,
+      "branches": 82.14,
+      "statements": 90.91
+    },
+    "src/renderer/mcp-views/host.ts": {
+      "lines": 100,
+      "branches": 91.67,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/kit/ViewBadge.tsx": {
+      "lines": 100,
+      "branches": 100,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/kit/ViewButton.tsx": {
+      "lines": 100,
+      "branches": 88.24,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/kit/ViewCard.tsx": {
+      "lines": 100,
+      "branches": 100,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/kit/ViewDefinitionList.tsx": {
+      "lines": 100,
+      "branches": 100,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/kit/ViewEmptyState.tsx": {
+      "lines": 100,
+      "branches": 100,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/kit/ViewFactsList.tsx": {
+      "lines": 100,
+      "branches": 100,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/kit/ViewField.tsx": {
+      "lines": 100,
+      "branches": 100,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/kit/ViewFinding.tsx": {
+      "lines": 100,
+      "branches": 100,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/kit/ViewProgress.tsx": {
+      "lines": 100,
+      "branches": 100,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/kit/ViewSteps.tsx": {
+      "lines": 100,
+      "branches": 100,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/kit/ViewTable.tsx": {
+      "lines": 100,
+      "branches": 100,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/kit/styles.ts": {
+      "lines": 100,
+      "branches": 100,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/kit/useArmedAction.ts": {
+      "lines": 100,
+      "branches": 88.89,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/registry.tsx": {
+      "lines": 100,
+      "branches": 100,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/standalone/AppExtAppsHost.ts": {
+      "lines": 100,
+      "branches": 100,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/useMcpViewPolling.ts": {
+      "lines": 100,
+      "branches": 78.57,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/views/BatchView.tsx": {
+      "lines": 97.37,
+      "branches": 76.74,
+      "statements": 97.37
+    },
+    "src/renderer/mcp-views/views/CapabilitiesView.tsx": {
+      "lines": 100,
+      "branches": 90,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/views/ConfirmView.tsx": {
+      "lines": 100,
+      "branches": 76.67,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/views/ConvertView.tsx": {
+      "lines": 98.55,
+      "branches": 82.28,
+      "statements": 98.55
+    },
+    "src/renderer/mcp-views/views/ErrorView.tsx": {
+      "lines": 97.14,
+      "branches": 80.39,
+      "statements": 97.14
+    },
+    "src/renderer/mcp-views/views/InspectorView.tsx": {
+      "lines": 96.67,
+      "branches": 77.27,
+      "statements": 96.67
+    },
+    "src/renderer/mcp-views/views/JobView.tsx": {
+      "lines": 100,
+      "branches": 100,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/views/LabView.tsx": {
+      "lines": 100,
+      "branches": 78.57,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/views/MediaInfoView.tsx": {
+      "lines": 100,
+      "branches": 88.57,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/views/PlanView.tsx": {
+      "lines": 100,
+      "branches": 88.68,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/views/ProfilesView.tsx": {
+      "lines": 100,
+      "branches": 90,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/views/QueueView.tsx": {
+      "lines": 100,
+      "branches": 71.43,
+      "statements": 100
+    },
+    "src/renderer/mcp-views/views/WorkflowView.tsx": {
+      "lines": 100,
+      "branches": 83.05,
+      "statements": 100
+    },
+    "src/shared/theme/types.ts": {
+      "lines": 100,
+      "branches": 100,
+      "statements": 100
     }
   },
   "platforms": {
@@ -1932,9 +2057,9 @@
           "statements": 96.55
         },
         "src/main/index.ts": {
-          "lines": 96.35,
-          "branches": 94.67,
-          "statements": 96.55
+          "lines": 95.63,
+          "branches": 81.33,
+          "statements": 95.63
         },
         "src/main/transcoders/ffmpeg-core.ts": {
           "lines": 95.3,
@@ -2012,9 +2137,9 @@
           "statements": 95.86
         },
         "src/mcp/server.ts": {
-          "lines": 97.71,
-          "branches": 77.12,
-          "statements": 97.71
+          "lines": 97.69,
+          "branches": 77.01,
+          "statements": 97.69
         },
         "src/mcp/operations.ts": {
           "lines": 99.17,
@@ -2256,11 +2381,6 @@
           "branches": 96.97,
           "statements": 100
         },
-        "src/mcp/jobs/task-store.ts": {
-          "lines": 98.61,
-          "branches": 91.49,
-          "statements": 98.61
-        },
         "src/mcp/local-model-client.ts": {
           "lines": 100,
           "branches": 100,
@@ -2286,72 +2406,12 @@
           "branches": 100,
           "statements": 100
         },
-        "src/mcp/ui/bridge.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
         "src/mcp/ui/registry.ts": {
           "lines": 100,
           "branches": 100,
           "statements": 100
         },
         "src/mcp/ui/resources.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/batch.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/confirm.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/convert.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/error.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/inspector.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/job.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/lab.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/media-info.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/plan.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/queue.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/workflow.ts": {
           "lines": 100,
           "branches": 100,
           "statements": 100
@@ -2408,7 +2468,7 @@
         },
         "src/renderer/components/copilot/AssistantMessage.tsx": {
           "lines": 100,
-          "branches": 82.86,
+          "branches": 82.5,
           "statements": 100
         },
         "src/renderer/components/copilot/ChatComposer.tsx": {
@@ -3219,6 +3279,196 @@
         "src/shared/theme/theme.ts": {
           "lines": 100,
           "branches": 75,
+          "statements": 100
+        },
+        "src/main/mcp/local-client.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/main/mcp/ui-ipc.ts": {
+          "lines": 100,
+          "branches": 90,
+          "statements": 100
+        },
+        "src/mcp/ui/bundle.ts": {
+          "lines": 96.88,
+          "branches": 93.33,
+          "statements": 96.88
+        },
+        "src/renderer/components/copilot/McpAppView.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/AppIpcHost.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/McpViewProvider.tsx": {
+          "lines": 100,
+          "branches": 78.57,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/format.ts": {
+          "lines": 90.91,
+          "branches": 82.14,
+          "statements": 90.91
+        },
+        "src/renderer/mcp-views/host.ts": {
+          "lines": 100,
+          "branches": 91.67,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewBadge.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewButton.tsx": {
+          "lines": 100,
+          "branches": 88.24,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewCard.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewDefinitionList.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewEmptyState.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewFactsList.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewField.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewFinding.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewProgress.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewSteps.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewTable.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/styles.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/useArmedAction.ts": {
+          "lines": 100,
+          "branches": 88.89,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/registry.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/standalone/AppExtAppsHost.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/useMcpViewPolling.ts": {
+          "lines": 100,
+          "branches": 78.57,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/views/BatchView.tsx": {
+          "lines": 97.37,
+          "branches": 76.74,
+          "statements": 97.37
+        },
+        "src/renderer/mcp-views/views/CapabilitiesView.tsx": {
+          "lines": 100,
+          "branches": 90,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/views/ConfirmView.tsx": {
+          "lines": 100,
+          "branches": 76.67,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/views/ConvertView.tsx": {
+          "lines": 98.55,
+          "branches": 82.28,
+          "statements": 98.55
+        },
+        "src/renderer/mcp-views/views/ErrorView.tsx": {
+          "lines": 97.14,
+          "branches": 80.39,
+          "statements": 97.14
+        },
+        "src/renderer/mcp-views/views/InspectorView.tsx": {
+          "lines": 96.67,
+          "branches": 77.27,
+          "statements": 96.67
+        },
+        "src/renderer/mcp-views/views/JobView.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/views/LabView.tsx": {
+          "lines": 100,
+          "branches": 78.57,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/views/MediaInfoView.tsx": {
+          "lines": 100,
+          "branches": 88.57,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/views/PlanView.tsx": {
+          "lines": 100,
+          "branches": 88.68,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/views/ProfilesView.tsx": {
+          "lines": 100,
+          "branches": 90,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/views/QueueView.tsx": {
+          "lines": 100,
+          "branches": 71.43,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/views/WorkflowView.tsx": {
+          "lines": 100,
+          "branches": 83.05,
+          "statements": 100
+        },
+        "src/shared/theme/types.ts": {
+          "lines": 100,
+          "branches": 100,
           "statements": 100
         }
       }
@@ -3544,9 +3794,9 @@
           "statements": 96.55
         },
         "src/main/index.ts": {
-          "lines": 96.35,
+          "lines": 95.63,
           "branches": 81.33,
-          "statements": 96.55
+          "statements": 95.63
         },
         "src/main/transcoders/ffmpeg-core.ts": {
           "lines": 94.87,
@@ -3629,9 +3879,9 @@
           "statements": 97.22
         },
         "src/mcp/server.ts": {
-          "lines": 97.71,
-          "branches": 77.12,
-          "statements": 97.71
+          "lines": 97.69,
+          "branches": 77.01,
+          "statements": 97.69
         },
         "src/mcp/operations.ts": {
           "lines": 99.17,
@@ -3868,11 +4118,6 @@
           "branches": 96.97,
           "statements": 100
         },
-        "src/mcp/jobs/task-store.ts": {
-          "lines": 98.61,
-          "branches": 91.49,
-          "statements": 98.61
-        },
         "src/mcp/local-model-client.ts": {
           "lines": 100,
           "branches": 100,
@@ -3898,72 +4143,12 @@
           "branches": 100,
           "statements": 100
         },
-        "src/mcp/ui/bridge.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
         "src/mcp/ui/registry.ts": {
           "lines": 100,
           "branches": 100,
           "statements": 100
         },
         "src/mcp/ui/resources.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/batch.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/confirm.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/convert.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/error.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/inspector.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/job.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/lab.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/media-info.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/plan.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/queue.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/mcp/ui/views/workflow.ts": {
           "lines": 100,
           "branches": 100,
           "statements": 100
@@ -4020,7 +4205,7 @@
         },
         "src/renderer/components/copilot/AssistantMessage.tsx": {
           "lines": 100,
-          "branches": 82.86,
+          "branches": 82.5,
           "statements": 100
         },
         "src/renderer/components/copilot/ChatComposer.tsx": {
@@ -4831,6 +5016,196 @@
         "src/shared/theme/theme.ts": {
           "lines": 100,
           "branches": 75,
+          "statements": 100
+        },
+        "src/main/mcp/local-client.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/main/mcp/ui-ipc.ts": {
+          "lines": 100,
+          "branches": 90,
+          "statements": 100
+        },
+        "src/mcp/ui/bundle.ts": {
+          "lines": 96.88,
+          "branches": 93.33,
+          "statements": 96.88
+        },
+        "src/renderer/components/copilot/McpAppView.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/AppIpcHost.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/McpViewProvider.tsx": {
+          "lines": 100,
+          "branches": 78.57,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/format.ts": {
+          "lines": 90.91,
+          "branches": 82.14,
+          "statements": 90.91
+        },
+        "src/renderer/mcp-views/host.ts": {
+          "lines": 100,
+          "branches": 91.67,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewBadge.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewButton.tsx": {
+          "lines": 100,
+          "branches": 88.24,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewCard.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewDefinitionList.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewEmptyState.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewFactsList.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewField.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewFinding.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewProgress.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewSteps.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/ViewTable.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/styles.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/kit/useArmedAction.ts": {
+          "lines": 100,
+          "branches": 88.89,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/registry.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/standalone/AppExtAppsHost.ts": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/useMcpViewPolling.ts": {
+          "lines": 100,
+          "branches": 78.57,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/views/BatchView.tsx": {
+          "lines": 97.37,
+          "branches": 76.74,
+          "statements": 97.37
+        },
+        "src/renderer/mcp-views/views/CapabilitiesView.tsx": {
+          "lines": 100,
+          "branches": 90,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/views/ConfirmView.tsx": {
+          "lines": 100,
+          "branches": 76.67,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/views/ConvertView.tsx": {
+          "lines": 98.55,
+          "branches": 82.28,
+          "statements": 98.55
+        },
+        "src/renderer/mcp-views/views/ErrorView.tsx": {
+          "lines": 97.14,
+          "branches": 80.39,
+          "statements": 97.14
+        },
+        "src/renderer/mcp-views/views/InspectorView.tsx": {
+          "lines": 96.67,
+          "branches": 77.27,
+          "statements": 96.67
+        },
+        "src/renderer/mcp-views/views/JobView.tsx": {
+          "lines": 100,
+          "branches": 100,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/views/LabView.tsx": {
+          "lines": 100,
+          "branches": 78.57,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/views/MediaInfoView.tsx": {
+          "lines": 100,
+          "branches": 88.57,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/views/PlanView.tsx": {
+          "lines": 100,
+          "branches": 88.68,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/views/ProfilesView.tsx": {
+          "lines": 100,
+          "branches": 90,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/views/QueueView.tsx": {
+          "lines": 100,
+          "branches": 71.43,
+          "statements": 100
+        },
+        "src/renderer/mcp-views/views/WorkflowView.tsx": {
+          "lines": 100,
+          "branches": 83.05,
+          "statements": 100
+        },
+        "src/shared/theme/types.ts": {
+          "lines": 100,
+          "branches": 100,
           "statements": 100
         }
       }

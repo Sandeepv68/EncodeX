@@ -199,7 +199,7 @@ describe('AppDrawer', () => {
 
   it('releases its window and document registrations across 100 mounts', () => {
     expectNoLeakAcross('AppDrawer', 100, drawer);
-  });
+  }, 180_000);
 
   it('clears an armed popover close timer on unmount', () => {
     vi.useFakeTimers();

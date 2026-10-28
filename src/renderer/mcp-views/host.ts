@@ -103,3 +103,16 @@ export function resultText(result: McpViewToolResult | undefined): string {
     .map((block) => block.text ?? '')
     .join('');
 }
+
+/**
+ * The message of a failed tool result.
+ *
+ * A tool that reports a failure answers with an error result rather than by
+ * throwing, so a view that triggered the call has to read the message itself.
+ * @param {McpViewToolResult | undefined} result - The tool result.
+ * @returns {string} The failure message, or an empty string when the call succeeded.
+ */
+export function resultErrorText(result: McpViewToolResult | undefined): string {
+  if (!result?.isError) return '';
+  return resultText(result);
+}

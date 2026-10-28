@@ -25,11 +25,18 @@ const BUNDLE_FILENAME = 'views.html';
  * @returns {string} The absolute path of the bundle.
  * @throws {Error} When the bundle was not built.
  */
-export function resolveBundlePath(): string {
+export function resolveBundlePath(searchRoot: string = __dirname): string {
   const override = process.env.ENCODEX_MCP_UI_BUNDLE;
+  if (override) {
+    // An explicit override is exclusive: falling back to another bundle would
+    // serve a document the caller did not ask for.
+    if (!fs.existsSync(override)) {
+      throw new Error(`The MCP App bundle was not found at ${override}. Run "npm run build:mcp-ui" to build it.`);
+    }
+    return override;
+  }
   const candidates: string[] = [];
-  if (override) candidates.push(override);
-  let dir = __dirname;
+  let dir = searchRoot;
   for (let depth = 0; depth < 6; depth += 1) {
     candidates.push(path.join(dir, 'dist', 'mcp-ui', BUNDLE_FILENAME));
     candidates.push(path.join(dir, 'mcp-ui', BUNDLE_FILENAME));
@@ -64,11 +71,13 @@ export function loadBundle(): string {
  * The bootstrap runs before the bundle script, so the bundle knows which view
  * to mount. It is deliberately tiny and contains no data from the server.
  * @param {string} viewId - The id of the view to render.
+ * @param {string} [source] - The bundle to build from; the built bundle is read
+ *   from disk when omitted.
  * @returns {string} The self-contained document.
  * @throws {Error} When the bundle was not built.
  */
-export function buildViewDocument(viewId: string): string {
-  const bundle = loadBundle();
+export function buildViewDocument(viewId: string, source?: string): string {
+  const bundle = source ?? loadBundle();
   const bootstrap = `<script>window.__ENCODEX_VIEW__=${JSON.stringify(viewId)};</script>`;
   const headIndex = bundle.indexOf('<head>');
   if (headIndex < 0) return bootstrap + bundle;

@@ -38,21 +38,25 @@ export function useMcpViewPolling({ tool, args, intervalMs = 2500, enabled = tru
   useEffect(() => {
     if (!tool || !enabled) return undefined;
     let stopped = false;
+    let timer: ReturnType<typeof setInterval> | undefined;
     const tick = async () => {
       try {
         const result = await callTool(tool, argsRef.current);
         const payload = structuredPayload(result);
         if (!stopped && payload !== undefined) setData(payload);
       } catch {
+        // The host is gone or the tool is refusing: stop polling instead of
+        // hammering a server that will not answer.
         stopped = true;
+        if (timer !== undefined) clearInterval(timer);
       }
     };
-    const timer = setInterval(() => {
+    timer = setInterval(() => {
       void tick();
     }, intervalMs);
     return () => {
       stopped = true;
-      clearInterval(timer);
+      if (timer !== undefined) clearInterval(timer);
     };
   }, [tool, intervalMs, enabled, callTool, setData]);
 }

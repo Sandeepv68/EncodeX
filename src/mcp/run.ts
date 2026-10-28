@@ -1,19 +1,10 @@
 /**
- * @fileoverview Pure MCP server runner for EncodeX.
- * Exposes {@link runMcpServer}, which connects the shared
- * {@link createMcpServer} factory to a stdio transport. This module has no
- * process-level side effects (no console patching, no entry-point guards) so it
- * is safe to import from the Electron main process without altering GUI-mode
- * logging.
+ * @fileoverview The MCP server's stdio session.
  *
- * Callers are responsible for keeping stdout reserved for MCP JSON-RPC
- * messages; the standalone entry (`index.ts`) and the Electron `--mcp` branch
- * both redirect `console.log` to stderr before invoking this.
- *
- * The transport is built on raw file-descriptor streams (fd 0 / fd 1) rather
- * than `process.stdin`/`process.stdout`. On Windows, Electron's main process
- * does not relay piped stdin through `process.stdin`, but raw fd 0 reads work;
- * using the raw descriptors is equivalent under plain Node and keeps both
+ * The transport reads raw file descriptors (fd 0 / fd 1) rather than
+ * `process.stdin` / `process.stdout`: on Windows, Electron's main process
+ * does not relay piped stdin through `process.stdin`, but raw fd 0 reads work.
+ * Using the raw descriptors is equivalent under plain Node and keeps both
  * launch paths identical.
  */
 
@@ -22,22 +13,13 @@ import { Readable, Writable } from 'stream';
 import * as fs from 'fs';
 import { Logger } from '../shared/logger';
 import { createMcpServer } from './server';
+import { createStdinInput } from './stdin';
 
 const log = new Logger('mcp/run');
 
 /**
- * Builds the input stream the MCP transport reads JSON-RPC messages from.
- * Uses raw fd 0 so piped stdin reaches the server under Electron on Windows,
- * where `process.stdin` does not deliver piped data.
- * @returns {Readable} A readable stream over stdin (fd 0).
- */
-function createInput(): Readable {
-  return fs.createReadStream(null as unknown as fs.PathLike, { fd: 0, autoClose: false });
-}
-
-/**
  * Builds the output stream the MCP transport writes JSON-RPC messages to.
- * Uses raw fd 1 for parity with {@link createInput} and to avoid any
+ * Uses raw fd 1 for parity with the input stream and to avoid any
  * Electron-specific `process.stdout` behavior.
  * @returns {Writable} A writable stream over stdout (fd 1).
  */
@@ -55,7 +37,7 @@ function createOutput(): Writable {
 export async function runMcpServer(): Promise<void> {
   log.info('Starting EncodeX MCP server over stdio');
   const server = createMcpServer();
-  const transport = new StdioServerTransport(createInput(), createOutput());
+  const transport = new StdioServerTransport(createStdinInput(Boolean(process.versions.electron)), createOutput());
   await server.connect(transport);
   await new Promise<void>((resolve) => {
     transport.onclose = () => resolve();

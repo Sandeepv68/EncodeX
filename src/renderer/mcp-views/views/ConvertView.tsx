@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { Checkbox, FormControlLabel, Typography } from '@mui/material';
 import { basename, clampPercent } from '../format';
 import { useMcpView, useMcpViewData } from '../McpViewProvider';
+import { resultErrorText } from '../host';
 import { useMcpViewPolling } from '../useMcpViewPolling';
 import { useArmedAction } from '../kit/useArmedAction';
 import ViewBadge from '../kit/ViewBadge';
@@ -61,15 +62,21 @@ export default function ConvertView() {
   const { t } = useTranslation();
   const { callTool, host } = useMcpView();
   const payload = useMcpViewData<ConvertPayload>();
-  const confirmation = payload?.confirmation;
+  // The proposal is latched: the commit answers with the job it started, and
+  // that payload must not wipe the form the user filled in.
+  const [proposal, setProposal] = useState<McpUiConfirmation | undefined>(payload?.confirmation);
   const job = payload?.job;
   const [form, setForm] = useState<ConvertForm>(EMPTY_FORM);
   const [trackedJobId, setTrackedJobId] = useState<string | undefined>(undefined);
   const [message, setMessage] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (!confirmation) return;
-    const args = (confirmation.args ?? {}) as Record<string, unknown>;
+    if (payload?.confirmation) setProposal(payload.confirmation);
+  }, [payload?.confirmation]);
+
+  useEffect(() => {
+    if (!proposal) return;
+    const args = (proposal.args ?? {}) as Record<string, unknown>;
     setForm({
       input: String(args.input ?? ''),
       output: String(args.output ?? ''),
@@ -81,7 +88,7 @@ export default function ConvertView() {
       scale: String(args.scale ?? ''),
       copy: args.copy === true,
     });
-  }, [confirmation]);
+  }, [proposal]);
 
   useEffect(() => {
     if (job?.id && job.id !== trackedJobId) setTrackedJobId(job.id);
@@ -118,6 +125,11 @@ export default function ConvertView() {
     if (form.copy) args.copy = true;
     try {
       const result = await callTool('commit_operation', { tool: 'convert_media', args });
+      const failure = resultErrorText(result);
+      if (failure) {
+        setMessage(t('mcpViews.convert.failed', { message: failure }));
+        return;
+      }
       if (!result.structuredContent?.job) {
         setMessage(t('mcpViews.convert.noJob'));
       }
@@ -166,7 +178,7 @@ export default function ConvertView() {
   return (
     <ViewCard title={t('mcpViews.convert.title')} testId="mcp-view-convert">
       <ViewStack>
-        {confirmation && <ViewParagraph>{t('mcpViews.convert.proposal', { summary: confirmation.summary })}</ViewParagraph>}
+        {proposal && <ViewParagraph>{t('mcpViews.convert.proposal', { summary: proposal.summary })}</ViewParagraph>}
         <ViewFieldGrid>
           <ViewField
             label={t('mcpViews.convert.inputLabel')}

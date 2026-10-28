@@ -36,9 +36,15 @@ export default function ConfirmView() {
   const { t } = useTranslation();
   const { host } = useMcpView();
   const payload = useMcpViewData<ConfirmPayload>();
-  const confirmation = payload?.confirmation;
+  // The proposal is kept in local state: a later tool result (the commit that
+  // returns no job) must not wipe the card the user is looking at.
+  const [proposal, setProposal] = useState<McpUiConfirmation | undefined>(payload?.confirmation);
   const [trackedJobId, setTrackedJobId] = useState<string | undefined>(undefined);
   const [message, setMessage] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (payload?.confirmation) setProposal(payload.confirmation);
+  }, [payload?.confirmation]);
 
   useEffect(() => {
     const jobId = payload?.job?.id;
@@ -52,7 +58,7 @@ export default function ConfirmView() {
     enabled: Boolean(trackedJobId) && host.context.supportsServerTools !== false,
   });
 
-  if (!confirmation && !payload?.job && !payload?.jobs) {
+  if (!proposal && !payload?.job && !payload?.jobs) {
     return (
       <ViewCard testId="mcp-view-confirm">
         <ViewEmptyState message={t('mcpViews.confirm.waiting')} testId="mcp-view-confirm-empty" />
@@ -60,17 +66,17 @@ export default function ConfirmView() {
     );
   }
 
-  if (confirmation) {
+  if (proposal) {
     return (
-      <ViewCard title={confirmation.title || t('mcpViews.confirm.title')} testId="mcp-view-confirm">
+      <ViewCard title={proposal.title || t('mcpViews.confirm.title')} testId="mcp-view-confirm">
         <ViewStack>
-          <ViewParagraph>{confirmation.summary}</ViewParagraph>
-          {confirmation.details && confirmation.details.length > 0 && (
-            <ViewDefinitionList rows={confirmation.details.map((detail) => ({ label: detail.label, value: detail.value }))} />
+          <ViewParagraph>{proposal.summary}</ViewParagraph>
+          {proposal.details && proposal.details.length > 0 && (
+            <ViewDefinitionList rows={proposal.details.map((detail) => ({ label: detail.label, value: detail.value }))} />
           )}
-          {confirmation.warnings && confirmation.warnings.length > 0 && (
+          {proposal.warnings && proposal.warnings.length > 0 && (
             <ViewBulletList as="ul">
-              {confirmation.warnings.map((warning) => (
+              {proposal.warnings.map((warning) => (
                 <li key={warning}>
                   <Typography variant="body2" color="error">
                     {warning}
@@ -79,7 +85,7 @@ export default function ConfirmView() {
               ))}
             </ViewBulletList>
           )}
-          <ConfirmRunButton operation={confirmation.operation} args={confirmation.args} onError={(text) => setMessage(text)} />
+          <ConfirmRunButton operation={proposal.operation} args={proposal.args} onError={(text) => setMessage(text)} />
           {message && (
             <Typography variant="body2" color="error">
               {message}
