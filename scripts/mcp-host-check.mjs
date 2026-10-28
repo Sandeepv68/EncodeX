@@ -133,14 +133,22 @@ async function main() {
   const { command, args } = await resolveTarget();
   process.stdout.write(`[mcp-host-check] spawning: ${command} ${args.join(' ')}\n`);
 
+  let stderr = '';
   const transport = new StdioClientTransport({ command, args, stderr: 'pipe', env: { ...process.env } });
+  transport.stderr?.on('data', (chunk) => {
+    stderr += chunk.toString();
+    if (stderr.length > 8192) stderr = stderr.slice(-8192);
+  });
   const client = new Client(
     { name: 'encodex-mcp-host-check', version: '1.0.0' },
     { capabilities: { extensions: { [UI_EXTENSION_ID]: { mimeTypes: [UI_RESOURCE_MIME] } } } },
   );
-  await client.connect(transport);
 
   try {
+    process.stdout.write('[mcp-host-check] connecting...\n');
+    await client.connect(transport);
+    process.stdout.write('[mcp-host-check] connected\n');
+
     const capabilities = client.getServerCapabilities();
     const uiCapability = capabilities?.extensions?.[UI_EXTENSION_ID];
     if (!uiCapability) {
@@ -151,7 +159,9 @@ async function main() {
       process.stdout.write('  OK   the MCP Apps extension is advertised\n');
     }
 
+    process.stdout.write('[mcp-host-check] listing the resources...\n');
     const { resources } = await client.listResources();
+    process.stdout.write(`[mcp-host-check] ${resources.length} resources listed\n`);
     const listed = new Map(resources.map((resource) => [resource.uri, resource]));
 
     for (const view of VIEWS) {
@@ -164,6 +174,7 @@ async function main() {
         fail(`${view.uri} is listed with mime ${resource.mimeType}`);
         continue;
       }
+      process.stdout.write(`[mcp-host-check] reading ${view.uri}...\n`);
       const result = await client.readResource({ uri: view.uri });
       const content = result.contents[0] ?? {};
       checkDocument(view.uri, view.viewId, content);
