@@ -8,7 +8,8 @@ import { InMemoryTransport } from '@modelcontextprotocol/client';
 import { createMcpServer } from '../server';
 import { FakeTranscoder } from './test-helpers';
 
-const FIXTURE_BUNDLE = '<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\" /></head><body><div id=\"root\"></div></body></html>';
+const FIXTURE_BUNDLE =
+  '<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\" /></head><body><div id=\"root\"></div></body></html>';
 
 describe('mcp/ui/resources (integration)', () => {
   it('registers UI resources', async () => {
