@@ -13,20 +13,14 @@
  *
  * The stdio transport reserves stdout for JSON-RPC protocol messages only;
  * every internal log line is redirected to stderr so the protocol stream stays
- * parseable. This patch applies solely to this standalone entry point: the
- * Electron main process performs its own equivalent routing when started with
- * `--mcp` (see src/main/index.ts).
+ * parseable. The bootstrap import must stay first: static imports evaluate in
+ * source order, and the server's module graph logs while it loads. The Electron
+ * main process installs the same routing when started with `--mcp` (see
+ * src/main/mcp-stdio-bootstrap.ts).
  */
 
-import { format as formatArgs } from 'util';
+import './stdio-bootstrap';
 import { runMcpServer } from './run';
-
-// Keep stdout reserved for MCP JSON-RPC messages: every logger line (which
-// routes through console.log) is redirected to stderr, mirroring the CLI-mode
-// stream-routing contract. Must run before any Logger emits.
-console.log = (...args: unknown[]) => {
-  process.stderr.write(`${formatArgs(...args)}\n`);
-};
 
 void runMcpServer().catch((err: unknown) => {
   console.error('EncodeX MCP server failed:', err);

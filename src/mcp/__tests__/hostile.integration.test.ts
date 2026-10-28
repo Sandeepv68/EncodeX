@@ -51,8 +51,8 @@ async function ensureBuild(): Promise<void> {
  * Spawns a fresh server child with fully piped stdio. Each test owns its child
  * so hostile frames can never poison a sibling test's transport.
  */
-function spawnServer(): StdioHarness {
-  const child = spawn(process.execPath, [DIST_MCP], { stdio: ['pipe', 'pipe', 'pipe'] });
+function spawnServer(env: NodeJS.ProcessEnv = process.env): StdioHarness {
+  const child = spawn(process.execPath, [DIST_MCP], { stdio: ['pipe', 'pipe', 'pipe'], env });
   const harness: StdioHarness = { child, messages: [], protocolViolations: [], buffer: '' };
   child.stdout.on('data', (chunk: Buffer) => {
     harness.buffer += chunk.toString('utf8');
@@ -165,6 +165,21 @@ describe('EncodeX MCP stdio server (hostile frames)', () => {
     lastSpawned = h;
     return h;
   }
+
+  it('keeps stdout JSON-RPC-only with DEBUG logging, including a large view read', async () => {
+    // The server's module graph logs while it loads (FFmpeg paths) and every
+    // logger line routes through console.log. The bootstrap import must
+    // redirect those lines to stderr before the graph evaluates, otherwise
+    // those lines land on stdout and can stall a large frame mid-write.
+    const h = spawnServer({ ...process.env, LOG_LEVEL: 'DEBUG' });
+    lastSpawned = h;
+    writeRequest(h, 2001, 'resources/read', { uri: 'ui://encodex/queue' });
+    const response = await waitForResponse(h, 2001, 15000);
+    const contents = (response.result as { contents?: Array<{ text?: string }> } | undefined)?.contents ?? [];
+    expect(contents[0]?.text ?? '').toContain('<!doctype html>');
+    expect(h.protocolViolations).toEqual([]);
+    await h.child.kill();
+  });
 
   it('drops a garbage JSON line and keeps serving; stdout stays JSON-RPC-only', async () => {
     const h = spawnFresh();

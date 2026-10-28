@@ -16,6 +16,8 @@
  * The module has no exports; its top-level code runs once when loaded.
  */
 
+import './mcp-stdio-bootstrap';
+
 /**
  * Load the repo-root `.env` before anything reads `process.env` (monitoring
  * bootstrap runs at module load). Real environment variables always win over
@@ -281,13 +283,8 @@ if (process.argv.includes('--mcp')) {
   // MCP mode is headless and spawns no windows: disable Chromium's GPU so
   // short-lived spawns (MCP clients, CI) never crash in the GPU process.
   app.disableHardwareAcceleration();
-  // Keep stdout reserved for MCP JSON-RPC messages: every internal log line
-  // (Logger.debug/info routes through console.log) is redirected to stderr so
-  // the protocol stream stays parseable. This mirrors the stream-routing
-  // contract used by the standalone Node entry (src/mcp/index.ts).
-  console.log = (...args: unknown[]) => {
-    process.stderr.write(`${formatArgs(...args)}\n`);
-  };
+  // stdout was reserved for JSON-RPC before any module loaded by
+  // ./mcp-stdio-bootstrap, imported first below.
   log.info('Starting in MCP server mode');
   app.whenReady().then(async () => {
     try {
