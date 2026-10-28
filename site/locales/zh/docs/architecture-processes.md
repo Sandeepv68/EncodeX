@@ -1,6 +1,6 @@
 # 进程、构建系统与启动
 
-<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 log-constants=529 -->
+<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 log-constants=528 -->
 
 ## 进程模型
 

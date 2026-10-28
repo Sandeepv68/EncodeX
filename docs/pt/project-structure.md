@@ -174,7 +174,7 @@ src/
     ├── types.ts                       # Domain interfaces (ConversionOptions, MediaInfo, ...)
     ├── terms.ts                       # Versioned Terms & Conditions (TERMS_VERSION)
     ├── logger.ts                      # Timestamped logger (main/renderer)
-    ├── log-constants.ts               # Shared log message constants (527 exported) <!-- drift:log-constants=529 -->
+    ├── log-constants.ts               # Shared log message constants (527 exported) <!-- drift:log-constants=528 -->
     ├── validation.ts                  # Time/scale/bitrate/range validation helpers
     ├── math.ts                        # Math helpers (clamp, round, percent)
     ├── progress.ts                    # Progress/ETA computation helpers
