@@ -14,87 +14,57 @@ import { SHADOWS } from '../../shared/theme/colors';
 
 /**
  * Slow drifting animation shared by the decorative glow orbs.
+ *
+ * Only `transform` is animated. Animating `filter` or `border-radius` would
+ * force the orb to be re-rasterised on every frame, and the orbs are large
+ * enough (up to ~40vw) that the repaint cost alone drops the Copilot page to
+ * single-digit frames per second on software rendering. The hue and the
+ * irregular silhouette are baked into the static styles below instead, so the
+ * drift still reads as a living glow at compositor cost.
+ *
  * @const {Keyframes} copilotPageTravel
  */
 const copilotPageTravel = keyframes`
   0% {
-    transform: translate(0vw, 0vh) scale(0.8) rotate(0deg);
-    border-radius: 50%;
-    filter: hue-rotate(0deg) saturate(1.15);
+    transform: translate(0vw, 0vh) scale(0.82) rotate(0deg);
   }
-  8% {
-    transform: translate(12vw, -8vh) scale(1.18) rotate(14deg);
-    border-radius: 42% 58% 38% 62%;
-    filter: hue-rotate(24deg) saturate(1.35);
+  25% {
+    transform: translate(9vw, -6vh) scale(1.16) rotate(12deg);
   }
-  16% {
-    transform: translate(-6vw, 14vh) scale(0.94) rotate(-18deg);
-    border-radius: 58% 42% 64% 36%;
-    filter: hue-rotate(-32deg) saturate(1.28);
+  50% {
+    transform: translate(-6vw, 7vh) scale(0.94) rotate(-16deg);
   }
-  24% {
-    transform: translate(18vw, 10vh) scale(1.28) rotate(26deg);
-    border-radius: 36% 64% 42% 58%;
-    filter: hue-rotate(42deg) saturate(1.42);
-  }
-  32% {
-    transform: translate(-14vw, -6vh) scale(1.08) rotate(-28deg);
-    border-radius: 62% 38% 56% 44%;
-    filter: hue-rotate(-18deg) saturate(1.32);
-  }
-  40% {
-    transform: translate(8vw, 18vh) scale(0.88) rotate(22deg);
-    border-radius: 44% 56% 38% 62%;
-    filter: hue-rotate(36deg) saturate(1.26);
-  }
-  48% {
-    transform: translate(-10vw, 8vh) scale(1.22) rotate(-34deg);
-    border-radius: 56% 44% 62% 38%;
-    filter: hue-rotate(-28deg) saturate(1.38);
-  }
-  56% {
-    transform: translate(16vw, -12vh) scale(0.96) rotate(30deg);
-    border-radius: 38% 62% 44% 56%;
-    filter: hue-rotate(48deg) saturate(1.32);
-  }
-  64% {
-    transform: translate(-4vw, -16vh) scale(1.14) rotate(-16deg);
-    border-radius: 64% 36% 58% 42%;
-    filter: hue-rotate(-22deg) saturate(1.28);
-  }
-  72% {
-    transform: translate(10vw, 6vh) scale(0.9) rotate(38deg);
-    border-radius: 42% 58% 36% 64%;
-    filter: hue-rotate(34deg) saturate(1.24);
-  }
-  80% {
-    transform: translate(-18vw, 12vh) scale(1.26) rotate(-26deg);
-    border-radius: 58% 42% 64% 36%;
-    filter: hue-rotate(-38deg) saturate(1.36);
-  }
-  88% {
-    transform: translate(6vw, -10vh) scale(1.02) rotate(20deg);
-    border-radius: 44% 56% 42% 58%;
-    filter: hue-rotate(28deg) saturate(1.3);
+  75% {
+    transform: translate(11vw, 4vh) scale(1.24) rotate(9deg);
   }
   100% {
-    transform: translate(-8vw, 4vh) scale(0.84) rotate(-12deg);
-    border-radius: 50%;
-    filter: hue-rotate(-14deg) saturate(1.18);
+    transform: translate(0vw, 0vh) scale(0.82) rotate(0deg);
   }
 `;
 
 /**
  * Radial-gradient presets for the decorative glow orbs, keyed by variant.
+ *
+ * The gradients fade to transparent on their own, so the orbs need no blur
+ * filter to look soft. A `filter: blur()` on the layer was the single
+ * most expensive part of the effect: it forced the whole (very large)
+ * blurred surface to be re-rasterised on every animated frame.
+ *
  * @const {Record<number, (theme: Theme) => string>} ORB_GRADIENTS
  */
 const ORB_GRADIENTS: Record<number, (theme: Theme) => string> = {
-  1: (theme) => `radial-gradient(circle, ${theme.palette.primary.main}dd 0%, ${theme.palette.secondary.main}bb 30%, transparent 70%)`,
-  2: (theme) => `radial-gradient(circle, ${theme.palette.error.main}dd 0%, ${theme.palette.warning.main}bb 35%, transparent 72%)`,
-  3: (theme) => `radial-gradient(circle, ${theme.palette.success.main}dd 0%, ${theme.palette.info.main}bb 38%, transparent 74%)`,
-  4: (theme) => `radial-gradient(circle, ${theme.palette.secondary.main}dd 0%, ${theme.palette.primary.light}bb 40%, transparent 76%)`,
-  5: (theme) => `radial-gradient(circle, ${theme.palette.info.main}dd 0%, ${theme.palette.warning.light}bb 44%, transparent 78%)`,
-  6: (theme) => `radial-gradient(circle, ${theme.palette.warning.main}dd 0%, ${theme.palette.error.light}bb 46%, transparent 80%)`,
+  1: (theme) =>
+    `radial-gradient(circle closest-side, ${theme.palette.primary.main}dd 0%, ${theme.palette.secondary.main}aa 22%, ${theme.palette.secondary.main}44 50%, ${theme.palette.secondary.main}11 75%, transparent 100%)`,
+  2: (theme) =>
+    `radial-gradient(circle closest-side, ${theme.palette.error.main}dd 0%, ${theme.palette.warning.main}aa 22%, ${theme.palette.warning.main}44 50%, ${theme.palette.warning.main}11 75%, transparent 100%)`,
+  3: (theme) =>
+    `radial-gradient(circle closest-side, ${theme.palette.success.main}dd 0%, ${theme.palette.info.main}aa 22%, ${theme.palette.info.main}44 50%, ${theme.palette.info.main}11 75%, transparent 100%)`,
+  4: (theme) =>
+    `radial-gradient(circle closest-side, ${theme.palette.secondary.main}dd 0%, ${theme.palette.primary.light}aa 22%, ${theme.palette.primary.light}44 50%, ${theme.palette.primary.light}11 75%, transparent 100%)`,
+  5: (theme) =>
+    `radial-gradient(circle closest-side, ${theme.palette.info.main}dd 0%, ${theme.palette.warning.light}aa 22%, ${theme.palette.warning.light}44 50%, ${theme.palette.warning.light}11 75%, transparent 100%)`,
+  6: (theme) =>
+    `radial-gradient(circle closest-side, ${theme.palette.warning.main}dd 0%, ${theme.palette.error.light}aa 22%, ${theme.palette.error.light}44 50%, ${theme.palette.error.light}11 75%, transparent 100%)`,
 };
 
 /**
@@ -119,14 +89,18 @@ export const CopilotPage = styled(Box)(({ theme }) => ({
 }));
 
 /**
- * Full-bleed layer holding the drifting glow orbs. It is blurred, never
- * interactive, and sits behind the conversation column.
+ * Full-bleed layer holding the drifting glow orbs. It is never interactive
+ * and sits behind the conversation column.
+ *
+ * No `filter` is applied here on purpose: blurring the layer would re-rasterise
+ * the entire surface on every animated frame. The orbs' own gradients fade out
+ * on their own, so they read as soft glows without it.
+ *
  * @const CopilotGlowLayer
  */
 export const CopilotGlowLayer = styled(Box)(({ theme }) => ({
   position: 'absolute',
   inset: 0,
-  filter: `blur(${theme.typography.pxToRem(140)})`,
   zIndex: 0,
   opacity: theme.palette.mode === 'dark' ? 0.65 : 0.42,
   pointerEvents: 'none',
@@ -138,6 +112,10 @@ export const CopilotGlowLayer = styled(Box)(({ theme }) => ({
  * One decorative glow orb: an absolutely positioned circle filled with a
  * radial gradient that drifts across the page. The gradient preset is picked
  * by `$variant`, the geometry by the transient sizing and placement props.
+ *
+ * Only `transform` is animated, so the orb is promoted to its own compositor
+ * layer and the drift costs no repaint.
+ *
  * @const CopilotGlowOrb
  */
 export const CopilotGlowOrb = styled(Box, {
@@ -168,8 +146,12 @@ export const CopilotGlowOrb = styled(Box, {
   top: $top,
   right: $right,
   bottom: $bottom,
+  willChange: 'transform',
   animation: `${copilotPageTravel} ${$duration}s infinite ease-in-out`,
   animationDelay: $delay,
+  '@media (prefers-reduced-motion: reduce)': {
+    animation: 'none',
+  },
 }));
 
 /**
