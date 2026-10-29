@@ -34,6 +34,97 @@ function sleepPastTooltipDelay() {
   return new Promise((resolve) => setTimeout(resolve, 300));
 }
 
+/**
+ * Matches a rule that targets the SVG inside a nav icon slot.
+ */
+const ICON_SVG_RULE = /MuiListItemIcon-root\s+svg$/;
+
+/**
+ * Matches a rule that only applies in a hover or keyboard-focus state.
+ */
+const PSEUDO_STATE = /:hover|:focus-visible/;
+
+/**
+ * All CSS text Emotion has injected into the document.
+ * @returns {string} The concatenated stylesheet.
+ */
+function stylesheetText(): string {
+  return Array.from(document.querySelectorAll('style'))
+    .map((tag) => tag.textContent ?? '')
+    .join('\n');
+}
+
+/**
+ * Every top-level rule in a stylesheet, as its selector and its declarations.
+ *
+ * At-rule blocks (`@media`, `@keyframes`) are skipped rather than descended
+ * into, so a rule that only applies inside a media query is not mistaken for
+ * an unconditional one. `mediaRules` reads those blocks.
+ * @param {string} css - The stylesheet to read.
+ * @returns {{ selector: string; body: string }[]} The rules.
+ */
+function cssRules(css: string): { selector: string; body: string }[] {
+  const rules: { selector: string; body: string }[] = [];
+  let from = 0;
+
+  for (;;) {
+    const open = css.indexOf('{', from);
+    if (open === -1) return rules;
+
+    const close = matchingBrace(css, open);
+    if (close === -1) return rules;
+
+    const selector = css.slice(from, open).trim();
+    if (!selector.startsWith('@')) rules.push({ selector, body: css.slice(open + 1, close) });
+
+    from = close + 1;
+  }
+}
+
+/**
+ * The index of the brace closing the one at `open`.
+ * @param {string} css - The stylesheet to read.
+ * @param {number} open - The index of the opening brace.
+ * @returns {number} The index of the matching close, or -1.
+ */
+function matchingBrace(css: string, open: number): number {
+  let depth = 0;
+  for (let i = open; i < css.length; i += 1) {
+    if (css[i] === '{') depth += 1;
+    else if (css[i] === '}') {
+      depth -= 1;
+      if (depth === 0) return i;
+    }
+  }
+  return -1;
+}
+
+/**
+ * The rules inside every `@media` block matching a media query.
+ * @param {string} css - The stylesheet to read.
+ * @param {string} media - The media query text, e.g. `prefers-reduced-motion: reduce`.
+ * @returns {{ selector: string; body: string }[]} The rules.
+ */
+function mediaRules(css: string, media: string): { selector: string; body: string }[] {
+  const rules: { selector: string; body: string }[] = [];
+  const marker = `@media (${media})`;
+  let from = 0;
+
+  for (;;) {
+    const start = css.indexOf(marker, from);
+    if (start === -1) return rules;
+
+    const open = css.indexOf('{', start);
+    if (open === -1) return rules;
+
+    const close = matchingBrace(css, open);
+    if (close === -1) return rules;
+
+    rules.push(...cssRules(css.slice(open + 1, close)));
+    from = close + 1;
+  }
+}
+
 describe('AppDrawer', () => {
   beforeEach(() => {
     localStorage.clear();
@@ -540,5 +631,44 @@ describe('AppDrawer', () => {
     expect(screen.getByTestId('nav-job-popover')).toBeInTheDocument();
     fireEvent.mouseLeave(screen.getByTestId('nav-item-convert'));
     await waitFor(() => expect(screen.queryByTestId('nav-job-popover')).not.toBeInTheDocument(), { timeout: 1000 });
+  });
+
+  it('grows the nav icon on hover of its row', () => {
+    renderDrawer();
+    const rules = cssRules(stylesheetText());
+
+    // The growth is a scale on the SVG inside the icon slot, so the row's
+    // layout never reflows - the icon swells about its own centre.
+    const growth = rules.filter((rule) => ICON_SVG_RULE.test(rule.selector) && PSEUDO_STATE.test(rule.selector));
+    expect(growth.length).toBeGreaterThan(0);
+    for (const rule of growth) {
+      expect(rule.body).toMatch(/transform:\s*scale\(/);
+    }
+
+    // The base icon rule carries the transition that animates the growth.
+    const base = rules.filter((rule) => ICON_SVG_RULE.test(rule.selector) && !PSEUDO_STATE.test(rule.selector));
+    expect(base.length).toBeGreaterThan(0);
+    for (const rule of base) {
+      expect(rule.body).toMatch(/transition:\s*transform/);
+    }
+  });
+
+  it('animates the nav icon growth and honours reduced motion', () => {
+    renderDrawer();
+    const css = stylesheetText();
+    const rules = cssRules(css);
+
+    // A springy easing curve gives the growth a lift rather than a flat zoom.
+    const base = rules.filter((rule) => ICON_SVG_RULE.test(rule.selector) && !PSEUDO_STATE.test(rule.selector));
+    expect(base.length).toBeGreaterThan(0);
+    for (const rule of base) {
+      expect(rule.body).toMatch(/transition:transform[^;]*cubic-bezier\(/);
+    }
+
+    // Reduced motion still removes the growth animation.
+    const reduced = mediaRules(css, 'prefers-reduced-motion: reduce');
+    expect(
+      reduced.some((rule) => ICON_SVG_RULE.test(rule.selector) && /transition:\s*none/.test(rule.body)),
+    ).toBe(true);
   });
 });

@@ -19,6 +19,19 @@ import { DRAWER_WIDTH_CONDENSED, FOOTER_HEIGHT } from '../../shared/app-constant
 const ICON_MIN_WIDTH = 36;
 const NAV_LIST_INLINE_PADDING = 8;
 
+/**
+ * How far a nav icon grows while its row is hovered. The scale is applied to
+ * the SVG inside the icon slot, so the row's layout does not reflow.
+ * @const {number} NAV_ICON_HOVER_SCALE
+ */
+const NAV_ICON_HOVER_SCALE = 1.18;
+
+/**
+ * Duration of the nav icon's hover growth.
+ * @const {string} NAV_ICON_HOVER_TRANSITION
+ */
+const NAV_ICON_HOVER_TRANSITION = '0.25s';
+
 export const DrawerDivider = styled(Divider)(({ theme }) => ({
   borderColor: theme.palette.divider,
 }));
@@ -74,6 +87,20 @@ export const NavItemButton = styled(ListItemButton, {
     minHeight: theme.typography.pxToRem(52),
     marginBottom: theme.spacing(1.5),
   }),
+  // Hovering a row grows its icon. The scale is applied to the SVG inside
+  // the icon slot rather than to the slot itself, so the row's layout never
+  // reflows - the icon simply swells about its own centre.
+  '&:hover': {
+    '& .MuiListItemIcon-root svg': {
+      transform: `scale(${NAV_ICON_HOVER_SCALE})`,
+    },
+  },
+  // Keyboard users get the same feedback as the mouse does.
+  '&:focus-visible': {
+    '& .MuiListItemIcon-root svg': {
+      transform: `scale(${NAV_ICON_HOVER_SCALE})`,
+    },
+  },
   '&.Mui-selected': {
     backgroundColor: alpha(theme.palette.primary.main, 0.15),
     '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.25) },
@@ -87,8 +114,18 @@ export const NavItemIcon = styled(ListItemIcon, {
   justifyContent: 'center',
   alignItems: 'center',
   transition: 'font-size 0.2s ease',
+  // The icon itself is what grows on hover (driven from `NavItemButton`), so
+  // the transition lives on the SVG. A slight overshoot gives the growth a
+  // springy feel rather than a flat zoom.
+  '& svg': {
+    transformOrigin: 'center center',
+    transition: `transform ${NAV_ICON_HOVER_TRANSITION} cubic-bezier(0.34, 1.4, 0.64, 1)`,
+  },
   '@media (prefers-reduced-motion: reduce)': {
     transition: 'none',
+    '& svg': {
+      transition: 'none',
+    },
   },
   color: $active ? theme.palette.primary.main : theme.palette.text.secondary,
   ...($condensed && {
