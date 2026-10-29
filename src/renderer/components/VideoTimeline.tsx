@@ -445,13 +445,13 @@ export default function VideoTimeline({
       viewportWidth: viewState.viewportWidth,
     });
 
-    const majorEls = ticks.major.map((value) => <RulerTick key={`major-${value}`} sx={{ left: value * zoom }} />);
+    const majorEls = ticks.major.map((value) => <RulerTick key={`major-${value}`} $left={value * zoom} />);
     const labelEls = ticks.labels.map((value) => (
-      <RulerLabel key={`label-${value}`} sx={{ left: value * zoom }}>
+      <RulerLabel key={`label-${value}`} $left={value * zoom}>
         {formatClockTime(value)}
       </RulerLabel>
     ));
-    const minorEls = ticks.minor.map((value) => <RulerMinorTick key={`minor-${value}`} sx={{ left: value * zoom }} />);
+    const minorEls = ticks.minor.map((value) => <RulerMinorTick key={`minor-${value}`} $left={value * zoom} />);
 
     return { minorEls, majorEls, labelEls };
   }, [duration, zoom, viewState.scrollLeft, viewState.viewportWidth]);
@@ -476,7 +476,10 @@ export default function VideoTimeline({
       <WaveformBar
         key={bar.left}
         data-testid="timeline-waveform-bar"
-        sx={{ left: bar.left, top: bar.top, width: bar.width, height: bar.height }}
+        $left={bar.left}
+        $top={bar.top}
+        $width={bar.width}
+        $height={bar.height}
       />
     ));
   }, [waveform, duration, zoom, viewState.scrollLeft, viewState.viewportWidth]);
@@ -509,12 +512,12 @@ export default function VideoTimeline({
           key={i}
           className={TIMELINE_THUMB_MONTAGE_CLASS}
           data-testid="timeline-thumb"
-          sx={{
-            left,
-            width,
-            backgroundSize: `${thumbnails.cols * thumbnails.thumbWidth * scaleX}px ${thumbnails.rows * thumbnails.thumbHeight * scaleY}px`,
-            backgroundPosition: `${-(col * thumbnails.thumbWidth * scaleX)}px ${-(row * thumbnails.thumbHeight * scaleY)}px`,
-          }}
+          $left={left}
+          $width={width}
+          $bgWidth={thumbnails.cols * thumbnails.thumbWidth * scaleX}
+          $bgHeight={thumbnails.rows * thumbnails.thumbHeight * scaleY}
+          $bgPosX={-(col * thumbnails.thumbWidth * scaleX)}
+          $bgPosY={-(row * thumbnails.thumbHeight * scaleY)}
         />,
       );
     }
@@ -616,10 +619,10 @@ export default function VideoTimeline({
               {rulerEls.minorEls}
               {rulerEls.majorEls}
               {rulerEls.labelEls}
-              <MarkerBubble data-testid="timeline-start-time" sx={{ left: startX }}>
+              <MarkerBubble data-testid="timeline-start-time" $left={startX}>
                 {formatClockTime(start)}
               </MarkerBubble>
-              <MarkerBubble data-testid="timeline-end-time" sx={{ left: endX }}>
+              <MarkerBubble data-testid="timeline-end-time" $left={endX}>
                 {formatClockTime(end)}
               </MarkerBubble>
             </Ruler>
@@ -641,27 +644,27 @@ export default function VideoTimeline({
                   waveformBars
                 )}
               </AudioTrack>
-              <DimmedRegion data-testid="timeline-dimmed-region" sx={{ left: 0, width: startX }} />
-              <KeptRegion data-kind="move" data-testid="timeline-kept-region" sx={{ left: startX, width: Math.max(0, endX - startX) }}>
+              <DimmedRegion data-testid="timeline-dimmed-region" $left={0} $width={startX} />
+              <KeptRegion data-kind="move" data-testid="timeline-kept-region" $left={startX} $width={Math.max(0, endX - startX)}>
                 <MoveIndicator className="timeline-move-indicator" data-testid="timeline-move-indicator">
                   <FontAwesomeIcon icon={faGripVertical} size="xs" />
                 </MoveIndicator>
               </KeptRegion>
-              <DimmedRegion data-testid="timeline-dimmed-region" sx={{ left: endX, width: Math.max(0, duration * zoom - endX) }} />
+              <DimmedRegion data-testid="timeline-dimmed-region" $left={endX} $width={Math.max(0, duration * zoom - endX)} />
               {videoStream && (
-                <TrackBubbleAnchor sx={{ top: 0, height: TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT }}>
+                <TrackBubbleAnchor $top={0} $height={TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT}>
                   <TrackInfoBubble data-testid="timeline-video-tooltip">{formatStreamSummary(videoStream)}</TrackInfoBubble>
                 </TrackBubbleAnchor>
               )}
               {audioStream && (
-                <TrackBubbleAnchor sx={{ top: TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT, height: TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT }}>
+                <TrackBubbleAnchor $top={TIMELINE_LAYOUT.VIDEO_TRACK_HEIGHT} $height={TIMELINE_LAYOUT.AUDIO_TRACK_HEIGHT}>
                   <TrackInfoBubble data-testid="timeline-audio-tooltip">{formatStreamSummary(audioStream)}</TrackInfoBubble>
                 </TrackBubbleAnchor>
               )}
-              <TrimHandle data-kind="start" data-testid="timeline-start-handle" sx={{ left: startX }} />
-              <TrimHandle data-kind="end" data-testid="timeline-end-handle" sx={{ left: endX }} />
+              <TrimHandle data-kind="start" data-testid="timeline-start-handle" $left={startX} />
+              <TrimHandle data-kind="end" data-testid="timeline-end-handle" $left={endX} />
             </Lane>
-            <PlayheadLine data-kind="playhead" data-testid="timeline-playhead" sx={{ left: playheadX }}>
+            <PlayheadLine data-kind="playhead" data-testid="timeline-playhead" $left={playheadX}>
               <PlayheadHead />
             </PlayheadLine>
             <ScrollShadowAnchor>

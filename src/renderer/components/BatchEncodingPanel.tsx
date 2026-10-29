@@ -22,7 +22,7 @@
  */
 
 import { useState } from 'react';
-import { Grid, MenuItem, TextField, InputAdornment, Box, Switch, Typography } from '@mui/material';
+import { Grid, MenuItem, TextField, InputAdornment, Switch, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { pixelFormatOptions, pixelGroupIcons } from '../utils/encoding-option-utils';
 import { BITRATE_OPTIONS, IMAGE_FORMATS, SCALE_OPTIONS, VIDEO_BITRATE_OPTIONS } from '../../shared/media-options';
@@ -38,7 +38,16 @@ import { useFieldId } from '../hooks/useFieldId';
 import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
 import type { BatchEncodingPanelProps } from './types';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
-import { EncodingPaper, EncodingTitle, OptionsLockedAlert, OptionsEditableAlert } from '../styles/BatchEncodingPanel.styles';
+import {
+  EncodingPaper,
+  EncodingTitle,
+  OptionsLockedAlert,
+  OptionsEditableAlert,
+  ProfileSection,
+  MirrorRow,
+  MirrorToggle,
+  DemuxKindRow,
+} from '../styles/BatchEncodingPanel.styles';
 
 /**
  * Container options for 'remux' batch jobs: the generic video-container set
@@ -137,14 +146,14 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
         {t('batchQueue.encodingOptions')}
       </EncodingTitle>
 
-      <Box sx={{ mb: 1 }}>
+      <ProfileSection>
         <FieldLabel>{t('profiles.label')}</FieldLabel>
         <ProfileSelector
           onCreateNew={() => setProfileEditorOpen(true)}
           onApplyProfile={props.onApplyProfile}
           testId="batch-profile-selector"
         />
-      </Box>
+      </ProfileSection>
 
       <ProfileEditorDialog open={profileEditorOpen} onClose={() => setProfileEditorOpen(false)} />
 
@@ -399,8 +408,8 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
           <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
             <FieldBox>
               <FieldLabel>{t('convert.mirror')}</FieldLabel>
-              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', minHeight: 40 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <MirrorRow>
+                <MirrorToggle>
                   <Switch
                     data-testid="batch-flip-h"
                     checked={props.flipH}
@@ -410,8 +419,8 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
                   <Typography variant="caption" color="text.secondary">
                     {t('convert.flipHorizontal')}
                   </Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                </MirrorToggle>
+                <MirrorToggle>
                   <Switch
                     data-testid="batch-flip-v"
                     checked={props.flipV}
@@ -421,8 +430,8 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
                   <Typography variant="caption" color="text.secondary">
                     {t('convert.flipVertical')}
                   </Typography>
-                </Box>
-              </Box>
+                </MirrorToggle>
+              </MirrorRow>
             </FieldBox>
           </Grid>
         )}
@@ -463,9 +472,9 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
                   {t('demux.extractStreams')}
                   <InfoTooltip title={t('demux.streamsHint')} />
                 </FieldLabel>
-                <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+                <DemuxKindRow>
                   {DEMUX_STREAM_KINDS.map((kind) => (
-                    <Box key={kind} sx={{ display: 'flex', alignItems: 'center' }}>
+                    <MirrorToggle key={kind}>
                       <Switch
                         size="small"
                         checked={props.demuxKinds.includes(kind)}
@@ -479,9 +488,9 @@ export default function BatchEncodingPanel(props: BatchEncodingPanelProps) {
                       <Typography variant="caption" color="text.secondary">
                         {t(`mediaInfo.${kind}`)}
                       </Typography>
-                    </Box>
+                    </MirrorToggle>
                   ))}
-                </Box>
+                </DemuxKindRow>
               </FieldBox>
             </Grid>
             <Grid size={{ xs: 12, sm: 6, lg: 4 }}>

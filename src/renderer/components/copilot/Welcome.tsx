@@ -2,9 +2,8 @@
  * @fileoverview Empty-state welcome for the Copilot conversation.
  */
 
-import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { WelcomeRoot } from '../../styles/copilot/Welcome.styles';
+import { WelcomeRoot, WelcomeSubtitle, WelcomeTitle } from '../../styles/copilot/Welcome.styles';
 
 /**
  * Renders the welcome hero shown before the first message.
@@ -15,12 +14,12 @@ export default function Welcome() {
 
   return (
     <WelcomeRoot>
-      <Typography variant="h5" component="h2" sx={{ marginBottom: 1 }}>
+      <WelcomeTitle variant="h5" component="h2">
         {t('copilot.welcome')}
-      </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 480 }}>
+      </WelcomeTitle>
+      <WelcomeSubtitle variant="body2" color="text.secondary">
         {t('copilot.goal')}
-      </Typography>
+      </WelcomeSubtitle>
     </WelcomeRoot>
   );
 }

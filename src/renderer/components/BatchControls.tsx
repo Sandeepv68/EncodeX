@@ -50,7 +50,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { Checkbox, Grid, Menu, MenuItem, Tooltip, Typography } from '@mui/material';
+import { Checkbox, Grid, Menu, MenuItem, Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlus,
@@ -90,6 +90,7 @@ import {
   AlignedCheckbox,
   ForceCheckbox,
   DropdownChevron,
+  BmfNotice,
 } from '../styles/BatchControls.styles';
 
 /**
@@ -372,14 +373,14 @@ export default function BatchControls({
               ))}
             </TranscoderSelect>
             {selectedTranscoder === 'BMF' && (
-              <Typography variant="caption" color="warning.main" component="p" sx={{ mt: 0.5 }} data-testid="batch-bmf-notice">
+              <BmfNotice variant="caption" color="warning.main" component="p" data-testid="batch-bmf-notice">
                 {t('batchQueue.bmfNotBundled')}
-              </Typography>
+              </BmfNotice>
             )}
             {bmfUnavailable && (
-              <Typography variant="caption" color="error" component="p" sx={{ mt: 0.5 }} data-testid="batch-bmf-missing">
+              <BmfNotice variant="caption" color="error" component="p" data-testid="batch-bmf-missing">
                 {t('batchQueue.bmfNotFound', { missing: bmfStatus?.missing.join(', ') })}
-              </Typography>
+              </BmfNotice>
             )}
           </FieldBox>
         </Grid>

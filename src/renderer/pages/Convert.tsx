@@ -92,6 +92,9 @@ import {
   PreviewHeader,
   PreviewSectionTitle,
   PageSection,
+  PreviewActionsStack,
+  ChevronIcon,
+  BmfNoticeText,
 } from '../styles/Convert.styles';
 import { FieldBox, FieldLabel, ToggleRow, SectionTitle } from '../styles/form.styles';
 import {
@@ -425,30 +428,23 @@ export default function Convert() {
                   <ErrorBoundary fallback={null}>
                     <FileSummary info={mediaInfo} compact />
                   </ErrorBoundary>
-                  <Stack direction="row" sx={{ justifyContent: 'center' }}>
+                  <PreviewActionsStack direction="row">
                     <Button
                       size="small"
                       variant="text"
                       color="primary"
                       data-testid="convert-toggle-streams"
                       endIcon={
-                        <Box
-                          component="span"
-                          sx={(theme) => ({
-                            display: 'inline-flex',
-                            transform: streamsExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                            transition: theme.transitions.create('transform', { duration: theme.transitions.duration.short }),
-                          })}
-                        >
+                        <ChevronIcon component="span" $expanded={streamsExpanded}>
                           <FontAwesomeIcon icon={faChevronDown} />
-                        </Box>
+                        </ChevronIcon>
                       }
                       onClick={() => setStreamsExpanded((v) => !v)}
                       aria-expanded={streamsExpanded}
                     >
                       {streamsExpanded ? t('convert.viewLess') : t('convert.viewMore')}
                     </Button>
-                  </Stack>
+                  </PreviewActionsStack>
                   <Collapse in={streamsExpanded} unmountOnExit>
                     <ErrorBoundary fallback={null}>
                       <StreamDetails streams={mediaInfo.streams} compact />
@@ -904,14 +900,14 @@ export default function Convert() {
             ))}
           </TextField>
           {transcoder === 'BMF' && (
-            <Typography variant="caption" color="warning.main" component="p" sx={{ mt: 0.5 }} data-testid="convert-bmf-notice">
+            <BmfNoticeText variant="caption" color="warning.main" component="p" data-testid="convert-bmf-notice">
               {t('convert.transcoderBmfNotBundled')}
-            </Typography>
+            </BmfNoticeText>
           )}
           {bmfUnavailable && (
-            <Typography variant="caption" color="error" component="p" sx={{ mt: 0.5 }} data-testid="convert-bmf-missing">
+            <BmfNoticeText variant="caption" color="error" component="p" data-testid="convert-bmf-missing">
               {t('convert.transcoderBmfNotFound', { missing: bmfStatus?.missing.join(', ') })}
-            </Typography>
+            </BmfNoticeText>
           )}
         </Box>
       </PageSection>

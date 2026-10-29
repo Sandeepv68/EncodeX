@@ -21,10 +21,10 @@ import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMobileScreen, faTabletScreenButton, faTv, faGamepad } from '@fortawesome/free-solid-svg-icons';
 import { useTheme } from '@mui/material/styles';
-import { Box } from '@mui/material';
 import { PROFILE_ICON_COLORS } from '../../shared/theme/colors';
 import { isNearBlack } from '../utils/colors';
 import { OptionIcon, FormatBadge, BrandSvg } from '../styles/ProfileSelector.styles';
+import { ColoredOptionIcon, ChipIconBox, ColoredChipIconBox } from '../styles/ProfileIcon.styles';
 
 /** A resolved profile icon, rendered by <ProfileIcon />. */
 type ResolvedIcon =
@@ -172,9 +172,9 @@ export default function ProfileIcon({ name }: { name: string }) {
 
   if (resolved.kind === 'fa') {
     return (
-      <OptionIcon sx={{ color: resolved.color }}>
+      <ColoredOptionIcon $color={resolved.color}>
         <FontAwesomeIcon icon={resolved.icon} />
-      </OptionIcon>
+      </ColoredOptionIcon>
     );
   }
 
@@ -197,36 +197,17 @@ export function ProfileChipIcon({ name }: { name: string }) {
 
   if (resolved.kind === 'brand') {
     return (
-      <Box
-        component="span"
-        sx={(theme) => ({
-          display: 'inline-flex',
-          alignItems: 'center',
-          alignSelf: 'stretch',
-          fontSize: theme.typography.pxToRem(30),
-          lineHeight: 1,
-        })}
-      >
+      <ChipIconBox component="span">
         <BrandGlyph icon={resolved.icon} />
-      </Box>
+      </ChipIconBox>
     );
   }
 
   if (resolved.kind === 'fa') {
     return (
-      <Box
-        component="span"
-        sx={(theme) => ({
-          display: 'inline-flex',
-          alignItems: 'center',
-          alignSelf: 'stretch',
-          fontSize: theme.typography.pxToRem(30),
-          lineHeight: 1,
-          color: resolved.color,
-        })}
-      >
+      <ColoredChipIconBox component="span" $color={resolved.color}>
         <FontAwesomeIcon icon={resolved.icon} />
-      </Box>
+      </ColoredChipIconBox>
     );
   }
 

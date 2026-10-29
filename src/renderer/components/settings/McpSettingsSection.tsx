@@ -4,7 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Switch, IconButton, Tooltip, InputAdornment, Link } from '@mui/material';
+import { Switch, IconButton, Tooltip, InputAdornment, Link } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy, faEye, faEyeSlash, faTrashCan, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 import { useSettingsStore } from '../../stores/settingsStore';
@@ -15,6 +15,7 @@ import { createAnalyticsEvent } from '../../../shared/analytics/events';
 import { generateMcpToken } from '../../utils/security-utils';
 import { SettingsSection, ModeSettingsSection, McpField, McpValueRow } from '../../styles/Settings.styles';
 import { ToggleRow } from '../../styles/form.styles';
+import { McpGenerateButtonBox, McpValueActions } from '../../styles/settings/McpSettingsSection.styles';
 import SettingLabel from './SettingLabel';
 
 /**
@@ -179,7 +180,7 @@ export default function McpSettingsSection() {
         <ModeSettingsSection>
           <SettingLabel text={t('settings.mcpToken')} hint={t('settings.mcpTokenHint')} />
           <McpValueRow>
-            <Box sx={hasToken ? undefined : { marginLeft: 'auto' }}>
+            <McpGenerateButtonBox $push={!hasToken}>
               <Tooltip title={t('settings.mcpTokenGenerate')}>
                 <IconButton
                   size="small"
@@ -190,7 +191,7 @@ export default function McpSettingsSection() {
                   <FontAwesomeIcon icon={faWandMagicSparkles} />
                 </IconButton>
               </Tooltip>
-            </Box>
+            </McpGenerateButtonBox>
             {hasToken && (
               <McpField
                 type={showToken ? 'text' : 'password'}
@@ -224,7 +225,7 @@ export default function McpSettingsSection() {
               />
             )}
             {hasToken && (
-              <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <McpValueActions>
                 <CopyButton
                   value={token}
                   label={t('settings.mcpCopy')}
@@ -241,7 +242,7 @@ export default function McpSettingsSection() {
                     <FontAwesomeIcon icon={faTrashCan} />
                   </IconButton>
                 </Tooltip>
-              </Box>
+              </McpValueActions>
             )}
           </McpValueRow>
         </ModeSettingsSection>

@@ -28,6 +28,16 @@ import {
   type VideoFilterParam,
 } from '../../shared/video-filters';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
+import {
+  CustomChainInput,
+  FilterEntriesBox,
+  FilterEntryRow,
+  FiltersTopRow,
+  ParamField,
+  ParamRow,
+  PendingPresetPanel,
+  PresetSelect,
+} from '../styles/VideoFiltersSection.styles';
 
 /** Shape of the transient parameter values for the pending preset. */
 type PendingValues = Record<string, string>;
@@ -161,8 +171,8 @@ export function VideoFiltersSection({
     <Box data-testid="video-filters-section">
       <FieldLabel>{t('convert.filtersHint')}</FieldLabel>
 
-      <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', alignItems: 'center' }}>
-        <TextField
+      <FiltersTopRow direction="row" spacing={1}>
+        <PresetSelect
           select
           size="small"
           data-testid="filters-preset-select"
@@ -176,7 +186,6 @@ export function VideoFiltersSection({
             setPresetId(e.target.value);
             setPendingValues({});
           }}
-          sx={{ minWidth: 220 }}
         >
           <MenuItem value="">{t('convert.addPreset')}</MenuItem>
           {FILTER_PRESETS.map((preset) => (
@@ -184,15 +193,14 @@ export function VideoFiltersSection({
               {t(preset.labelKey)}
             </MenuItem>
           ))}
-        </TextField>
-        <TextField
+        </PresetSelect>
+        <CustomChainInput
           size="small"
           data-testid="filters-custom-input"
           disabled={disabled}
           value={customText}
           onChange={(e) => setCustomText(e.target.value)}
           placeholder={t('convert.customChainPlaceholder')}
-          sx={{ minWidth: 320, flexGrow: 1 }}
         />
         <Button
           variant="contained"
@@ -203,32 +211,32 @@ export function VideoFiltersSection({
         >
           {t('convert.addCustom')}
         </Button>
-      </Stack>
+      </FiltersTopRow>
 
       <Typography variant="caption" color="error" data-testid="filters-custom-error">
         {customErrors.length > 0 ? t('convert.filtersInvalid', { error: customErrors[0] }) : ''}
       </Typography>
 
       {pendingDef && (
-        <Stack spacing={1} sx={{ mt: 1 }}>
+        <PendingPresetPanel spacing={1}>
           <Typography variant="subtitle2">{t(pendingDef.labelKey)}</Typography>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ flexWrap: 'wrap' }}>
+          <ParamRow direction={{ xs: 'column', sm: 'row' }} spacing={1}>
             {pendingDef.params.map((param) => (
-              <Box key={param.key} sx={{ minWidth: 140 }}>
+              <ParamField key={param.key}>
                 <FieldLabel>{t(param.labelKey)}</FieldLabel>
                 <ParamInput param={param} values={pendingValues} onValues={setPendingValues} disabled={disabled} />
-              </Box>
+              </ParamField>
             ))}
-          </Stack>
+          </ParamRow>
           <Box>
             <Button variant="outlined" size="small" data-testid="filters-add-preset" disabled={disabled} onClick={addPreset}>
               {t('convert.addFilter')}
             </Button>
           </Box>
-        </Stack>
+        </PendingPresetPanel>
       )}
 
-      <Box sx={{ mt: 1 }}>
+      <FilterEntriesBox>
         {filterEntries.length === 0 ? (
           <Typography variant="caption" color="text.secondary">
             {t('convert.noFilters')}
@@ -236,7 +244,7 @@ export function VideoFiltersSection({
         ) : (
           <Stack spacing={0.5}>
             {filterEntries.map((entry, index) => (
-              <Stack key={`${index}-${entry}`} direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+              <FilterEntryRow key={`${index}-${entry}`} direction="row" spacing={1}>
                 <Chip label={entry} size="small" data-testid={`filters-entry-${index}`} />
                 <IconButton
                   size="small"
@@ -264,7 +272,7 @@ export function VideoFiltersSection({
                 >
                   <FontAwesomeIcon icon={faTrashCan} />
                 </IconButton>
-              </Stack>
+              </FilterEntryRow>
             ))}
             <Box>
               <Button size="small" data-testid="filters-clear-all" onClick={() => onChange([])}>
@@ -273,7 +281,7 @@ export function VideoFiltersSection({
             </Box>
           </Stack>
         )}
-      </Box>
+      </FilterEntriesBox>
 
       {previewChain && (
         <FieldBox>

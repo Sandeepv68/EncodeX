@@ -1,6 +1,7 @@
 import { styled } from '@mui/material/styles';
 import { Box, Stack, Typography, Alert, Paper, Divider, Button } from '@mui/material';
 import { SHADOWS } from '../../shared/theme/colors';
+import type { ElementType } from 'react';
 
 /** Unboxed form section: heading + fields stacked with the card gap. @const PageSection */
 export const PageSection = styled(Box)(({ theme }) => ({
@@ -71,4 +72,27 @@ export const PreviewDivider = styled(Divider)(({ theme }) => ({
 export const PreviewSectionTitle = styled(Typography)(({ theme }) => ({
   fontWeight: theme.typography.fontWeightBold,
   marginBottom: theme.spacing(1),
+}));
+
+/** Row holding the "view more" / "view less" toggle under the file summary. @const PreviewActionsStack */
+export const PreviewActionsStack = styled(Stack)({
+  justifyContent: 'center',
+});
+
+/**
+ * Chevron glyph of the "view more" / "view less" toggle. Rotates 180 degrees
+ * while the stream list is expanded.
+ * @param {boolean} [$expanded] - True while the stream list is expanded.
+ */
+export const ChevronIcon = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$expanded',
+})<{ $expanded: boolean; component?: ElementType }>(({ theme, $expanded }) => ({
+  display: 'inline-flex',
+  transform: $expanded ? 'rotate(180deg)' : 'rotate(0deg)',
+  transition: theme.transitions.create('transform', { duration: theme.transitions.duration.short }),
+}));
+
+/** Inline notice shown under the transcoder selector (BMF availability). @const BmfNoticeText */
+export const BmfNoticeText = styled(Typography)<{ component?: ElementType }>(({ theme }) => ({
+  marginTop: theme.spacing(0.5),
 }));

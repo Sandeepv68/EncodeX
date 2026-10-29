@@ -6,8 +6,8 @@
  * iframe, so the container scrolls horizontally.
  */
 
-import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
-import { ViewTableScroll } from './styles';
+import { Table, TableBody, TableHead, TableRow } from '@mui/material';
+import { ViewTableScroll, ViewHeaderCell, ViewBodyCell } from './styles';
 
 export interface ViewTableProps {
   /** Column headers. */
@@ -30,9 +30,7 @@ export default function ViewTable({ columns, rows, testId }: ViewTableProps) {
         <TableHead>
           <TableRow>
             {columns.map((column) => (
-              <TableCell key={column} sx={{ fontWeight: 500, color: 'text.secondary' }}>
-                {column}
-              </TableCell>
+              <ViewHeaderCell key={column}>{column}</ViewHeaderCell>
             ))}
           </TableRow>
         </TableHead>
@@ -40,9 +38,7 @@ export default function ViewTable({ columns, rows, testId }: ViewTableProps) {
           {rows.map((row, rowIndex) => (
             <TableRow key={`${rowIndex}:${row.join('|')}`}>
               {row.map((cell, cellIndex) => (
-                <TableCell key={`${rowIndex}:${cellIndex}`} sx={{ whiteSpace: 'nowrap' }}>
-                  {cell}
-                </TableCell>
+                <ViewBodyCell key={`${rowIndex}:${cellIndex}`}>{cell}</ViewBodyCell>
               ))}
             </TableRow>
           ))}

@@ -10,7 +10,7 @@
  * palette, spacing scale and dark mode without any hardcoded literals.
  */
 
-import { Box, LinearProgress, Typography } from '@mui/material';
+import { Box, LinearProgress, TableCell, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { alpha } from '@mui/material/styles';
 
@@ -173,6 +173,17 @@ export const ViewStepsIndex = styled(Box)(({ theme }) => ({
 /** Horizontal scroll container for wide tables. */
 export const ViewTableScroll = styled(Box)({
   overflowX: 'auto',
+});
+
+/** Header cell of a data table. */
+export const ViewHeaderCell = styled(TableCell)(({ theme }) => ({
+  fontWeight: 500,
+  color: theme.palette.text.secondary,
+}));
+
+/** Body cell of a data table. */
+export const ViewBodyCell = styled(TableCell)({
+  whiteSpace: 'nowrap',
 });
 
 /** Vertical stack of blocks with a consistent gap. */

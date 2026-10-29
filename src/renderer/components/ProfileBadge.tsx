@@ -5,11 +5,12 @@
  * inside a larger, neutral chip.
  */
 
-import { Chip, Tooltip, Stack, Typography } from '@mui/material';
+import { Tooltip, Stack } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import type { ConversionProfile } from '../../shared/types';
 import { ProfileChipIcon } from './ProfileIcon';
+import { BadgeName, BadgeDescription, ProfileChip } from '../styles/ProfileBadge.styles';
 
 interface ProfileBadgeProps {
   profile: ConversionProfile;
@@ -20,57 +21,18 @@ interface ProfileBadgeProps {
 export default function ProfileBadge({ profile, onClear, testId }: ProfileBadgeProps) {
   return (
     <Tooltip title={`${profile.container.toUpperCase()} / ${profile.videoCodec} / ${profile.audioCodec}`} arrow>
-      <Chip
+      <ProfileChip
         data-testid={testId ?? 'profile-badge'}
         icon={<ProfileChipIcon name={profile.name} />}
         label={
           <Stack>
-            <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.3 }}>
-              {profile.name}
-            </Typography>
-            {profile.description && (
-              <Typography variant="caption" sx={{ lineHeight: 1.3, color: 'text.secondary' }}>
-                {profile.description}
-              </Typography>
-            )}
+            <BadgeName variant="body2">{profile.name}</BadgeName>
+            {profile.description && <BadgeDescription variant="caption">{profile.description}</BadgeDescription>}
           </Stack>
         }
         variant="outlined"
         onDelete={onClear}
         deleteIcon={<FontAwesomeIcon icon={faXmark} size="xs" />}
-        sx={(theme) => ({
-          height: 'auto',
-          position: 'relative',
-          py: 1,
-          pl: 0.75,
-          pr: 2.25,
-          '& .MuiChip-icon': {
-            display: 'flex',
-            alignItems: 'center',
-            alignSelf: 'stretch',
-            margin: 0,
-          },
-          '& .MuiChip-label': {
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 0.25,
-            paddingTop: 0.5,
-            paddingBottom: 0.5,
-          },
-          '& .MuiChip-deleteIcon': {
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            color: 'error.main',
-            fontSize: theme.typography.pxToRem(13),
-            margin: 0,
-            padding: theme.spacing(0.75),
-            '&:hover': { color: 'error.main' },
-            '& svg': {
-              display: 'block',
-            },
-          },
-        })}
       />
     </Tooltip>
   );

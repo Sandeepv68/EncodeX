@@ -70,7 +70,8 @@ import { SHORTCUT_BY_ID, shortcutHint } from '../constants/shortcuts';
 import { focusFirstError } from '../utils/focusFirstError';
 import { openFileDialog } from '../utils/fileDialog';
 import { fileName } from '../utils/path-utils';
-import { visuallyHidden } from '../utils/a11y';
+import { VisuallyHidden } from '../styles/a11y.styles';
+
 import { SUBTITLE_EXTENSIONS } from '../../shared/file-extensions';
 import { VIDEO_DROPZONE_ACCEPT, OUTPUT_VIDEO_EXTENSIONS, AUDIO_EXTENSIONS } from '../../shared/file-extensions';
 import { ATTACHED_PIC_DISPOSITION, SUBTITLE_CODEC_CONTAINERS, TRANSCODER_TYPES } from '../../shared/transcoder-constants';
@@ -89,6 +90,17 @@ import { CompatAlert } from '../styles/Convert.styles';
 import { DispositionChip, DispositionRow } from '../styles/StreamDetails.styles';
 import { StreamTable } from '../styles/StreamTable.styles';
 import { SelectedFileName, ActionRow } from '../styles/AudioExtract.styles';
+import {
+  StreamsHeaderBox,
+  StreamsSelectStack,
+  AddedTrackList,
+  AddedTrackRow,
+  FlexibleText,
+  SubtitleCodecField,
+  SyncOffsetField,
+  ChaptersColumn,
+  WarningRow,
+} from '../styles/Remux.styles';
 import { LOG_ARROW, LOG_START_CONVERSION, LOG_VALIDATION_FAILED, LOG_FAILED_TO_GET_MEDIA_INFO } from '../../shared/log-constants';
 
 /**
@@ -457,8 +469,8 @@ export default function RemuxPage() {
           {t('remux.streams')}
           <InfoTooltip title={t('remux.streamsHint')} />
         </FieldLabel>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Stack direction="row" spacing={1} useFlexGap sx={{ mb: 1 }}>
+        <StreamsHeaderBox>
+          <StreamsSelectStack direction="row" spacing={1} useFlexGap>
             <Button
               size="small"
               variant="outlined"
@@ -477,15 +489,15 @@ export default function RemuxPage() {
             >
               {t('remux.selectNone')}
             </Button>
-          </Stack>
-        </Box>
+          </StreamsSelectStack>
+        </StreamsHeaderBox>
         <ErrorBoundary fallback={null}>
           <TableContainer tabIndex={0}>
             <StreamTable size="small" aria-label={t('remux.streams')}>
               <TableHead>
                 <TableRow>
                   <TableCell padding="checkbox">
-                    <span style={visuallyHidden}>{t('remux.selectAll')}</span>
+                    <VisuallyHidden>{t('remux.selectAll')}</VisuallyHidden>
                   </TableCell>
                   <TableCell>{t('remux.streamIndex')}</TableCell>
                   <TableCell>{t('remux.kind')}</TableCell>
@@ -560,19 +572,18 @@ export default function RemuxPage() {
           {t('remux.addSubtitle')}
         </Button>
         {store.addedSubtitles.length > 0 && (
-          <Stack spacing={1} sx={{ mt: 1 }} data-testid="remux-subtitles">
+          <AddedTrackList spacing={1} data-testid="remux-subtitles">
             {store.addedSubtitles.map((entry, index) => (
-              <Box key={entry.path} sx={{ display: 'flex', alignItems: 'center', gap: 1 }} data-testid="remux-added-subtitle">
-                <Typography variant="body2" noWrap sx={{ flex: 1 }}>
+              <AddedTrackRow key={entry.path} data-testid="remux-added-subtitle">
+                <FlexibleText variant="body2" noWrap>
                   {fileName(entry.path)}
-                </Typography>
-                <TextField
+                </FlexibleText>
+                <SubtitleCodecField
                   select
                   size="small"
                   value={entry.codec ?? 'copy'}
                   onChange={(e) => store.setAddedStreamCodec(index, e.target.value)}
                   disabled={store.isConverting}
-                  sx={{ minWidth: 140 }}
                   slotProps={{
                     htmlInput: { 'data-testid': `remux-subtitle-codec-${index}`, 'aria-label': t('remux.subtitleCodec') },
                   }}
@@ -582,7 +593,7 @@ export default function RemuxPage() {
                       {codec}
                     </MenuItem>
                   ))}
-                </TextField>
+                </SubtitleCodecField>
                 <Tooltip title={t('remux.subtitleCodecHint')} arrow>
                   <span>
                     <FontAwesomeIcon icon={faCircleInfo} size="sm" />
@@ -599,9 +610,9 @@ export default function RemuxPage() {
                     <FontAwesomeIcon icon={faTrashCan} />
                   </IconButton>
                 </Tooltip>
-              </Box>
+              </AddedTrackRow>
             ))}
-          </Stack>
+          </AddedTrackList>
         )}
       </FieldBox>
 
@@ -621,20 +632,19 @@ export default function RemuxPage() {
           {t('remux.addAudioTrack')}
         </Button>
         {store.addedAudio.length > 0 && (
-          <Stack spacing={1} sx={{ mt: 1 }} data-testid="remux-audio-tracks">
+          <AddedTrackList spacing={1} data-testid="remux-audio-tracks">
             {store.addedAudio.map((entry, index) => {
               const info = store.addedAudioInfo[index];
               const combinedIndex = store.addedSubtitles.length + index;
               return (
-                <Box key={entry.path} sx={{ display: 'flex', alignItems: 'center', gap: 1 }} data-testid="remux-added-audio">
-                  <Typography
+                <AddedTrackRow key={entry.path} data-testid="remux-added-audio">
+                  <FlexibleText
                     variant="body2"
                     noWrap
-                    sx={{ flex: 1 }}
                     title={`${fileName(entry.path)}${info ? ` • ${info.codec} ${info.channels != null ? `${info.channels}ch` : ''}` : ''}`}
                   >
                     {fileName(entry.path)}
-                  </Typography>
+                  </FlexibleText>
                   {info && (
                     <Typography variant="caption" color="text.secondary" noWrap>
                       {info.codec}
@@ -642,7 +652,7 @@ export default function RemuxPage() {
                       {info.language ? ` • ${info.language}` : ''}
                     </Typography>
                   )}
-                  <TextField
+                  <SyncOffsetField
                     type="number"
                     size="small"
                     value={entry.syncOffsetSeconds ?? ''}
@@ -651,7 +661,6 @@ export default function RemuxPage() {
                       const raw = e.target.value;
                       store.setAddedStreamSync(combinedIndex, raw === '' ? 0 : Number(raw));
                     }}
-                    sx={{ minWidth: 130, maxWidth: 170 }}
                     slotProps={{
                       htmlInput: {
                         'aria-label': t('remux.addedTrackDelay'),
@@ -674,10 +683,10 @@ export default function RemuxPage() {
                       <FontAwesomeIcon icon={faTrashCan} />
                     </IconButton>
                   </Tooltip>
-                </Box>
+                </AddedTrackRow>
               );
             })}
-          </Stack>
+          </AddedTrackList>
         )}
       </FieldBox>
 
@@ -728,7 +737,7 @@ export default function RemuxPage() {
           {t('remux.chapters')}
           <InfoTooltip title={t('remux.chaptersHint')} />
         </FieldLabel>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <ChaptersColumn>
           <Tooltip title={t('remux.copyChaptersHint')} arrow>
             <span>
               <Button
@@ -758,10 +767,10 @@ export default function RemuxPage() {
             </Typography>
           )}
           {store.chaptersFile && (
-            <Box key={store.chaptersFile} sx={{ display: 'flex', alignItems: 'center', gap: 1 }} data-testid="remux-chapters-file">
-              <Typography variant="body2" noWrap sx={{ flex: 1 }}>
+            <AddedTrackRow key={store.chaptersFile} data-testid="remux-chapters-file">
+              <FlexibleText variant="body2" noWrap>
                 {fileName(store.chaptersFile)}
-              </Typography>
+              </FlexibleText>
               <Tooltip title={t('remux.removeChapters')} arrow>
                 <IconButton
                   size="small"
@@ -773,9 +782,9 @@ export default function RemuxPage() {
                   <FontAwesomeIcon icon={faTrashCan} />
                 </IconButton>
               </Tooltip>
-            </Box>
+            </AddedTrackRow>
           )}
-        </Box>
+        </ChaptersColumn>
       </FieldBox>
 
       {hasSelectedAudio && (
@@ -833,7 +842,7 @@ export default function RemuxPage() {
           </FieldLabel>
           <Stack spacing={1} data-testid="remux-warnings">
             {store.warnings.map((warning: RemuxWarning, i) => (
-              <Box key={i} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }} data-testid="remux-warning">
+              <WarningRow key={i} data-testid="remux-warning">
                 <FontAwesomeIcon
                   icon={warning.icon === 'error' ? faCircleExclamation : warning.icon === 'warning' ? faTriangleExclamation : faCircleInfo}
                   color={warning.icon === 'error' ? 'error' : warning.icon === 'warning' ? 'warning' : undefined}
@@ -841,7 +850,7 @@ export default function RemuxPage() {
                 <Typography variant="body2" color="text.secondary">
                   {warning.message}
                 </Typography>
-              </Box>
+              </WarningRow>
             ))}
           </Stack>
         </FieldBox>

@@ -3,11 +3,12 @@
  * otherwise a generic robot glyph.
  */
 
-import { Box, useTheme } from '@mui/material';
+import { useTheme } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRobot } from '@fortawesome/free-solid-svg-icons';
 import { aiProviderLogo } from '../../utils/ai-provider-icons';
 import type { AIProviderId } from '../../../shared/ai/types';
+import { ProviderGlyph, ProviderLogo } from '../../styles/copilot/ProviderIcon.styles';
 
 interface ProviderIconProps {
   providerId?: AIProviderId | null;
@@ -23,15 +24,14 @@ interface ProviderIconProps {
 export default function ProviderIcon({ providerId, size = 16 }: ProviderIconProps) {
   const theme = useTheme();
   const logo = providerId ? aiProviderLogo(providerId, theme.palette.mode) : null;
-  const edge = theme.typography.pxToRem(size);
 
   if (logo) {
-    return <Box component="img" src={logo} alt="" sx={{ width: edge, height: edge, flexShrink: 0 }} />;
+    return <ProviderLogo src={logo} alt="" $size={size} />;
   }
 
   return (
-    <Box component="span" sx={{ display: 'inline-flex', fontSize: edge, flexShrink: 0 }}>
+    <ProviderGlyph $size={size}>
       <FontAwesomeIcon icon={faRobot} />
-    </Box>
+    </ProviderGlyph>
   );
 }

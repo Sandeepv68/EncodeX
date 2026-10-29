@@ -16,7 +16,7 @@
 
 import { useRef, useEffect, useLayoutEffect, useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, IconButton, InputAdornment, Tooltip, Typography, MenuItem } from '@mui/material';
+import { IconButton, InputAdornment, Tooltip, Typography, MenuItem } from '@mui/material';
 import { faEraser, faDownload, faMagnifyingGlass, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useLogStore } from '../stores/logStore';
 import { useAuditStore } from '../stores/auditStore';
@@ -43,6 +43,8 @@ import {
   AuditTool,
   AuditStatus,
   AuditMuted,
+  AuditHeader,
+  AuditTitle,
 } from '../styles/Logs.styles';
 import { PageTitle } from '../styles/BatchQueue.styles';
 import { LOG_EXPORT_FILENAME_PREFIX } from '../../shared/constants';
@@ -383,10 +385,10 @@ export default function Logs() {
       </LogsHeader>
       {auditEntries.length > 0 && (
         <AuditPanel data-testid="audit-panel">
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="subtitle2" component="h2" sx={{ flex: 1 }}>
+          <AuditHeader>
+            <AuditTitle variant="subtitle2" component="h2">
               {t('logs.auditTitle')}
-            </Typography>
+            </AuditTitle>
             <Typography variant="caption" color="text.secondary">
               {t('logs.auditCount', { count: auditEntries.length })}
             </Typography>
@@ -395,7 +397,7 @@ export default function Logs() {
                 <LogActionIcon icon={faEraser} />
               </IconButton>
             </Tooltip>
-          </Box>
+          </AuditHeader>
           {recentAudit.map((entry) => (
             <AuditRow key={entry.id} data-testid="audit-row">
               <TimestampSpan>{entry.timestamp.slice(11, 19)}</TimestampSpan>

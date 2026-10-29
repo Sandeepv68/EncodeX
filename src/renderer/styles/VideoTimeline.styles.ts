@@ -158,27 +158,39 @@ export const Ruler = styled(Box)(({ theme }) => ({
   borderBottom: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
 }));
 
-export const RulerTick = styled(Box)(({ theme }) => ({
+/** Major ruler tick placed at the given horizontal offset. @const RulerTick */
+export const RulerTick = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$left',
+})<{ $left: number }>(({ theme, $left }) => ({
   position: 'absolute',
   top: 0,
+  left: $left,
   width: theme.typography.pxToRem(1),
   height: theme.typography.pxToRem(10),
   backgroundColor: theme.palette.text.secondary,
   pointerEvents: 'none',
 }));
 
-export const RulerMinorTick = styled(Box)(({ theme }) => ({
+/** Minor ruler tick placed at the given horizontal offset. @const RulerMinorTick */
+export const RulerMinorTick = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$left',
+})<{ $left: number }>(({ theme, $left }) => ({
   position: 'absolute',
   top: 0,
+  left: $left,
   width: theme.typography.pxToRem(1),
   height: theme.typography.pxToRem(5),
   backgroundColor: alpha(theme.palette.text.secondary, 0.5),
   pointerEvents: 'none',
 }));
 
-export const RulerLabel = styled(Typography)(({ theme }) => ({
+/** Ruler time label placed at the given horizontal offset. @const RulerLabel */
+export const RulerLabel = styled(Typography, {
+  shouldForwardProp: (prop) => prop !== '$left',
+})<{ $left: number }>(({ theme, $left }) => ({
   position: 'absolute',
   top: theme.typography.pxToRem(12),
+  left: $left,
   transform: `translateX(${theme.typography.pxToRem(3)})`,
   fontSize: theme.typography.pxToRem(10),
   lineHeight: 1.2,
@@ -187,10 +199,14 @@ export const RulerLabel = styled(Typography)(({ theme }) => ({
   whiteSpace: 'nowrap',
 }));
 
-export const MarkerBubble = styled(Box)(({ theme }) => {
+/** Start/end time bubble placed at the given horizontal offset. @const MarkerBubble */
+export const MarkerBubble = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$left',
+})<{ $left: number }>(({ theme, $left }) => {
   const bg = theme.palette.mode === 'light' ? OVERLAY_COLORS.black66 : TIMELINE_COLORS.markerBubbleBackgroundDark;
   return {
     position: 'absolute',
+    left: $left,
     bottom: theme.typography.pxToRem(-3),
     transform: 'translateX(-50%)',
     backgroundColor: bg,
@@ -250,24 +266,46 @@ export const AudioTrack = styled(Box, {
   pointerEvents: 'none',
 }));
 
-export const ThumbCell = styled(Box)(({ theme }) => ({
-  position: 'absolute',
-  top: theme.typography.pxToRem(TIMELINE_LAYOUT.TRACK_CONTENT_TOP),
-  bottom: theme.typography.pxToRem(TIMELINE_LAYOUT.TRACK_CONTENT_TOP),
-  backgroundRepeat: 'no-repeat',
-}));
+/** Thumbnail cell showing one frame of the montage strip. @const ThumbCell */
+export const ThumbCell = styled(Box, {
+  shouldForwardProp: (prop) =>
+    prop !== '$left' && prop !== '$width' && prop !== '$bgWidth' && prop !== '$bgHeight' && prop !== '$bgPosX' && prop !== '$bgPosY',
+})<{ $left: number; $width: number; $bgWidth: number; $bgHeight: number; $bgPosX: number; $bgPosY: number }>(
+  ({ theme, $left, $width, $bgWidth, $bgHeight, $bgPosX, $bgPosY }) => ({
+    position: 'absolute',
+    top: theme.typography.pxToRem(TIMELINE_LAYOUT.TRACK_CONTENT_TOP),
+    bottom: theme.typography.pxToRem(TIMELINE_LAYOUT.TRACK_CONTENT_TOP),
+    left: $left,
+    width: $width,
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: `${$bgWidth}px ${$bgHeight}px`,
+    backgroundPosition: `${$bgPosX}px ${$bgPosY}px`,
+  }),
+);
 
-export const WaveformBar = styled(Box)(({ theme }) => ({
+/** Single waveform bar of the audio track. @const WaveformBar */
+export const WaveformBar = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$left' && prop !== '$top' && prop !== '$width' && prop !== '$height',
+})<{ $left: number; $top: number; $width: number; $height: number }>(({ theme, $left, $top, $width, $height }) => ({
   position: 'absolute',
+  left: $left,
+  top: $top,
+  width: $width,
+  height: $height,
   backgroundColor: theme.palette.primary.main,
   borderRadius: theme.typography.pxToRem(999),
   opacity: 0.75,
 }));
 
-export const KeptRegion = styled(Box)(({ theme }) => ({
+/** Region kept by the current trim selection. @const KeptRegion */
+export const KeptRegion = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$left' && prop !== '$width',
+})<{ $left: number; $width: number }>(({ theme, $left, $width }) => ({
   position: 'absolute',
   top: theme.typography.pxToRem(TIMELINE_LAYOUT.TRACK_CONTENT_TOP),
   bottom: theme.typography.pxToRem(TIMELINE_LAYOUT.TRACK_CONTENT_TOP),
+  left: $left,
+  width: $width,
   backgroundColor: theme.palette.primary.main,
   borderLeft: `${theme.typography.pxToRem(2)} solid ${theme.palette.success.main}`,
   borderRight: `${theme.typography.pxToRem(2)} solid ${theme.palette.error.main}`,
@@ -281,18 +319,27 @@ export const KeptRegion = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const DimmedRegion = styled(Box)(({ theme }) => ({
+/** Region trimmed away by the current trim selection. @const DimmedRegion */
+export const DimmedRegion = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$left' && prop !== '$width',
+})<{ $left: number; $width: number }>(({ theme, $left, $width }) => ({
   position: 'absolute',
   top: theme.typography.pxToRem(TIMELINE_LAYOUT.TRACK_CONTENT_TOP),
   bottom: theme.typography.pxToRem(TIMELINE_LAYOUT.TRACK_CONTENT_TOP),
+  left: $left,
+  width: $width,
   zIndex: 1,
   pointerEvents: 'none',
 }));
 
-export const TrimHandle = styled(Box)(({ theme }) => ({
+/** Drag handle trimming one edge of the selection. @const TrimHandle */
+export const TrimHandle = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$left',
+})<{ $left: number }>(({ theme, $left }) => ({
   position: 'absolute',
   top: theme.typography.pxToRem(6),
   bottom: theme.typography.pxToRem(6),
+  left: $left,
   width: theme.typography.pxToRem(10),
   transform: 'translateX(-50%)',
   cursor: 'ew-resize',
@@ -313,8 +360,13 @@ export const TrimHandle = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const TrackBubbleAnchor = styled(Box)(({ theme }) => ({
+/** Anchor positioning a track info bubble over its track. @const TrackBubbleAnchor */
+export const TrackBubbleAnchor = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$top' && prop !== '$height',
+})<{ $top: number; $height: number }>(({ theme, $top, $height }) => ({
   position: 'absolute',
+  top: $top,
+  height: $height,
   left: 0,
   right: 0,
   paddingTop: theme.typography.pxToRem(2),
@@ -371,10 +423,14 @@ export const TrackInfoBubble = styled(Box)(({ theme }) => {
   };
 });
 
-export const PlayheadLine = styled(Box)(({ theme }) => ({
+/** Playhead line placed at the given horizontal offset. @const PlayheadLine */
+export const PlayheadLine = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$left',
+})<{ $left: number }>(({ theme, $left }) => ({
   position: 'absolute',
   top: 0,
   bottom: 0,
+  left: $left,
   width: theme.typography.pxToRem(2),
   transform: 'translateX(-50%)',
   backgroundColor: theme.palette.error.main,

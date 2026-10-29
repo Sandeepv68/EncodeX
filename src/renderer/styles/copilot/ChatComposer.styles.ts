@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles';
-import { Box } from '@mui/material';
+import { Box, Chip, LinearProgress } from '@mui/material';
+import { SHADOWS } from '../../../shared/theme/colors';
 
 /**
  * Bottom-pinned composer bar. Sits below the conversation scroller and owns the
@@ -12,7 +13,6 @@ export const ComposerBar = styled(Box)(({ theme }) => ({
   gap: theme.spacing(1),
   paddingInline: theme.spacing(1),
   paddingBottom: theme.spacing(2),
-  backgroundColor: theme.palette.background.default,
   [theme.breakpoints.up('sm')]: { paddingInline: theme.spacing(2) },
   [theme.breakpoints.up('md')]: { paddingInline: theme.spacing(3) },
   // The primary accent sits below the WCAG AA 4.5:1 minimum on the default background
@@ -49,7 +49,9 @@ export const LeftActions = styled(Box)(({ theme }) => ({
 }));
 
 /** Right-hand cluster of the action row: the AI connection status. */
-export const RightActions = styled(Box)(({ theme }) => ({
+export const RightActions = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$plain',
+})<{ $plain?: boolean }>(({ theme, $plain }) => ({
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing(0.75),
@@ -57,8 +59,8 @@ export const RightActions = styled(Box)(({ theme }) => ({
   paddingInline: theme.spacing(0.75),
   paddingBlock: theme.spacing(0.5),
   borderRadius: theme.typography.pxToRem(999),
-  backgroundColor: theme.palette.action.hover,
-  border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
+  backgroundColor: $plain ? 'transparent' : theme.palette.action.hover,
+  border: $plain ? 0 : `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
   transition: theme.transitions.create(['padding-inline']),
   '&:hover .copilot-ai-status-text': {
     maxWidth: theme.typography.pxToRem(420),
@@ -66,7 +68,7 @@ export const RightActions = styled(Box)(({ theme }) => ({
     marginInlineStart: theme.spacing(0.75),
   },
   '&:hover': {
-    paddingInline: theme.spacing(1),
+    paddingInline: $plain ? 0 : theme.spacing(1),
   },
 }));
 
@@ -101,3 +103,26 @@ export const AdvancedPanel = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
   minWidth: theme.typography.pxToRem(280),
 }));
+
+/** Attachment chip for one selected file, lifted with a soft shadow. */
+export const AttachmentChip = styled(Chip)(({ theme }) => ({
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
+}));
+
+/** Attachment chip shown while the file picker is still resolving. */
+export const LoadingAttachmentChip = styled(Chip)(({ theme }) => ({
+  maxWidth: '100%',
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
+}));
+
+/** Delete-icon slot of the loading chip: hosts the progress bar. */
+export const ChipDeleteIconWrap = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  width: theme.typography.pxToRem(40),
+}));
+
+/** Indeterminate progress bar shown inside the loading chip. */
+export const ChipProgress = styled(LinearProgress)({
+  width: '100%',
+});

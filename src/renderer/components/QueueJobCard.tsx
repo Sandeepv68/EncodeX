@@ -435,14 +435,10 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry, onEditO
       ref={setNodeRef}
       data-testid={`queue-job-card-${job.id}`}
       $status={job.status}
+      $transform={CSS.Transform.toString(transform)}
+      $dragActive={isDragActive}
+      $dragging={isDragging}
       variant="outlined"
-      // eslint-disable-next-line encodex/no-inline-styles -- dnd-kit provides runtime transform values
-      style={{
-        transform: CSS.Transform.toString(transform),
-        transition: isDragActive && !isDragging ? 'transform 250ms cubic-bezier(0.25, 1, 0.5, 1)' : undefined,
-        opacity: isDragging ? 0 : undefined,
-        willChange: isDragActive ? 'transform' : undefined,
-      }}
     >
       <QueueJobCardContent
         job={job}

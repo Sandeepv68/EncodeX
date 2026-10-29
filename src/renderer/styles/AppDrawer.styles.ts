@@ -1,5 +1,6 @@
 import { alpha, styled, keyframes } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
+import type { ElementType } from 'react';
 import { Box, Divider, IconButton, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import { COLORS } from '../../shared/theme/colors';
 import { DRAWER_WIDTH_CONDENSED, FOOTER_HEIGHT } from '../../shared/app-constants';
@@ -43,19 +44,29 @@ export const NavList = styled('div')(({ theme }) => ({
   paddingInline: theme.spacing(1),
 }));
 
+/** Root navigation element of the drawer. */
+export const DrawerNav = styled(Box)<{ component?: ElementType }>({
+  display: 'flex',
+  flexDirection: 'column',
+  flex: 1,
+  minHeight: 0,
+});
+
 const navItemIn = (theme: Theme) => keyframes`
   from { opacity: 0; transform: translateX(${theme.typography.pxToRem(-8)}); }
   to { opacity: 1; transform: translateX(0); }
 `;
 
 export const NavItemButton = styled(ListItemButton, {
-  shouldForwardProp: (prop) => prop !== '$condensed',
-})<{ $condensed: boolean }>(({ theme, $condensed }) => ({
+  shouldForwardProp: (prop) => prop !== '$condensed' && prop !== '$index',
+})<{ $condensed: boolean; $index: number }>(({ theme, $condensed, $index }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
   marginBottom: theme.spacing(0.5),
   paddingInline: theme.typography.pxToRem(DRAWER_WIDTH_CONDENSED / 2 - NAV_LIST_INLINE_PADDING - ICON_MIN_WIDTH / 2),
   animation: `${navItemIn(theme)} 0.3s ease-out backwards`,
+  // Staggered entrance: every row starts 50ms after the previous one.
+  animationDelay: `${$index * 0.05}s`,
   '@media (prefers-reduced-motion: reduce)': {
     animation: 'none',
   },

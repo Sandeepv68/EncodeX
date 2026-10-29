@@ -1,5 +1,5 @@
 import { alpha, styled } from '@mui/material/styles';
-import { Box } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
 import { SHADOWS } from '../../../shared/theme/colors';
 
 /**
@@ -30,7 +30,9 @@ export const ComposerShell = styled(Box)(({ theme }) => ({
 }));
 
 /**
- * The single-line editor area. The Lexical contenteditable is styled through a
+ * The single-line editor row. It holds the optional reset button and the
+ * Lexical editable field side by side, so it is a horizontal flex row. The
+ * Lexical contenteditable is styled through a
  * descendant selector (rather than a `styled(ContentEditable)`) so Lexical keeps
  * full control of the element's own attributes. The area is tall enough to be a
  * comfortable click target while the editable line stays vertically centred; the
@@ -42,6 +44,10 @@ export const EditorArea = styled(Box)(({ theme }) => ({
   flex: 1,
   minWidth: 0,
   height: theme.typography.pxToRem(32),
+  display: 'flex',
+  alignItems: 'center',
+  flexWrap: 'nowrap',
+  gap: theme.spacing(0.5),
   '& [contenteditable="true"]': {
     outline: 'none',
     border: 'none',
@@ -73,4 +79,49 @@ export const EditorPlaceholder = styled(Box)(({ theme }) => ({
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
+}));
+
+/**
+ * Wrapper around the "reset conversation" icon button. Rendered as an inline
+ * span so it can sit inside the tooltip trigger without breaking the row.
+ * @const ResetButtonWrap
+ */
+export const ResetButtonWrap = styled('span')({
+  display: 'inline-flex',
+  alignItems: 'center',
+  flexShrink: 0,
+  lineHeight: 0,
+});
+
+/**
+ * "Reset conversation" icon button, muted until hovered.
+ * @const ResetIconButton
+ */
+export const ResetIconButton = styled(IconButton)(({ theme }) => ({
+  color: theme.palette.text.secondary,
+  flexShrink: 0,
+  padding: theme.spacing(0.25),
+  '&:hover': {
+    color: theme.palette.primary.main,
+  },
+}));
+
+/**
+ * Glyph inside the reset icon button, sized to match the composer's icons.
+ * @const ResetIconGlyph
+ */
+export const ResetIconGlyph = styled('span')(({ theme }) => ({
+  display: 'block',
+  fontSize: theme.typography.pxToRem(14),
+}));
+
+/**
+ * Box that holds the Lexical plugin tree (editable field + placeholder).
+ * @const EditorField
+ */
+export const EditorField = styled(Box)(({ theme }) => ({
+  flex: 1,
+  minWidth: 0,
+  position: 'relative',
+  height: theme.typography.pxToRem(28),
 }));

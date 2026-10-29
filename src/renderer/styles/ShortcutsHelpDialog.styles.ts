@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Box, Dialog, Typography } from '@mui/material';
+import { Box, Dialog, IconButton, Typography } from '@mui/material';
 
 export const ShortcutsDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialog-paper': {
@@ -46,4 +46,11 @@ export const ShortcutKey = styled(Box)(({ theme }) => ({
   padding: `${theme.spacing(0.25)} ${theme.spacing(1)}`,
   boxShadow: `inset 0 -${theme.typography.pxToRem(1)} 0 ${theme.palette.divider}`,
   whiteSpace: 'nowrap',
+}));
+
+/** Close button pinned to the top-right corner of the dialog. */
+export const ShortcutsCloseButton = styled(IconButton)(({ theme }) => ({
+  position: 'absolute',
+  right: theme.typography.pxToRem(8),
+  top: theme.typography.pxToRem(8),
 }));

@@ -57,7 +57,7 @@ import { usePreviewThumbnail } from '../hooks/usePreviewThumbnail';
 import { SHORTCUT_BY_ID, shortcutHint } from '../constants/shortcuts';
 import { openFileDialog } from '../utils/fileDialog';
 import { fileName } from '../utils/path-utils';
-import { visuallyHidden } from '../utils/a11y';
+import { VisuallyHidden } from '../styles/a11y.styles';
 import { VIDEO_DROPZONE_ACCEPT } from '../../shared/file-extensions';
 import { suggestedExtensionForStream, type RemuxWarning } from '../../shared/codec-containers';
 import { useDemuxStore } from '../stores/demuxStore';
@@ -65,6 +65,7 @@ import type { MediaStreamInfo } from '../../shared/types';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
 import { StreamTable } from '../styles/StreamTable.styles';
 import { SelectedFileName, ActionRow } from '../styles/AudioExtract.styles';
+import { WarningRow, TargetRow, FlexibleText } from '../styles/Demux.styles';
 import { LOG_ARROW, LOG_START_CONVERSION } from '../../shared/log-constants';
 
 /**
@@ -312,7 +313,7 @@ export default function DemuxPage() {
                       <TableHead>
                         <TableRow>
                           <TableCell padding="checkbox">
-                            <span style={visuallyHidden}>{t('demux.extractStreams')}</span>
+                            <VisuallyHidden>{t('demux.extractStreams')}</VisuallyHidden>
                           </TableCell>
                           <TableCell>{t('remux.streamIndex')}</TableCell>
                           <TableCell>{t('mediaInfo.codec')}</TableCell>
@@ -446,7 +447,7 @@ export default function DemuxPage() {
               </FieldLabel>
               <Stack spacing={1} data-testid="demux-warnings">
                 {store.warnings.map((warning: RemuxWarning, i) => (
-                  <Box key={i} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }} data-testid="demux-warning">
+                  <WarningRow key={i} data-testid="demux-warning">
                     <FontAwesomeIcon icon={faTriangleExclamation} color="warning" />
                     <Typography variant="body2" color="text.secondary">
                       {warning.code === 'bitmapSubtitleWarning'
@@ -455,7 +456,7 @@ export default function DemuxPage() {
                           ? t('demux.filtersIgnoredCopy')
                           : warning.message}
                     </Typography>
-                  </Box>
+                  </WarningRow>
                 ))}
               </Stack>
             </FieldBox>
@@ -482,14 +483,14 @@ export default function DemuxPage() {
             </FieldLabel>
             <Stack spacing={1} data-testid="demux-summary">
               {store.targets.map((target) => (
-                <Box key={target.index} sx={{ display: 'flex', alignItems: 'center', gap: 1 }} data-testid="demux-target">
-                  <Typography variant="body2" noWrap sx={{ flex: 1 }}>
+                <TargetRow key={target.index} data-testid="demux-target">
+                  <FlexibleText variant="body2" noWrap>
                     {fileName(target.output)}
-                  </Typography>
+                  </FlexibleText>
                   <Typography variant="caption" color="text.secondary">
                     {target.copy ? t('demux.copyLabel') : t('demux.convertLabel', { target: target.codec ?? target.container ?? '' })}
                   </Typography>
-                </Box>
+                </TargetRow>
               ))}
             </Stack>
           </FieldBox>

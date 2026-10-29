@@ -5,7 +5,7 @@
  */
 
 import { useState } from 'react';
-import { Box, Button, Chip, LinearProgress, MenuItem, Popover, TextField, Tooltip, Typography, useTheme } from '@mui/material';
+import { Box, Button, MenuItem, Popover, TextField, Tooltip, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClockRotateLeft, faFileImport, faFloppyDisk, faFolderOpen, faGear, faSliders } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
@@ -14,8 +14,18 @@ import AiConnectionStatus from '../AiConnectionStatus';
 import type { CopilotOperationChoice } from '../../../shared/copilot';
 import { COPILOT_QUEUE_OPERATIONS, COPILOT_INTELLIGENCE_OPERATIONS } from '../../../shared/copilot';
 import type { AIProviderId } from '../../../shared/ai/types';
-import { SHADOWS } from '../../../shared/theme/colors';
-import { ActionsRow, AdvancedPanel, AttachmentRow, ComposerBar, LeftActions, RightActions } from '../../styles/copilot/ChatComposer.styles';
+import {
+  ActionsRow,
+  AdvancedPanel,
+  AttachmentChip,
+  AttachmentRow,
+  ChipDeleteIconWrap,
+  ChipProgress,
+  ComposerBar,
+  LeftActions,
+  LoadingAttachmentChip,
+  RightActions,
+} from '../../styles/copilot/ChatComposer.styles';
 
 /** The selectable operations, in menu order (auto first, then queue, then read-only). */
 const OPERATION_CHOICES: CopilotOperationChoice[] = ['auto', ...COPILOT_QUEUE_OPERATIONS, ...COPILOT_INTELLIGENCE_OPERATIONS];
@@ -89,33 +99,29 @@ export default function ChatComposer({
   inputsLoading = false,
 }: ChatComposerProps) {
   const { t } = useTranslation();
-  const theme = useTheme();
   const [advancedAnchor, setAdvancedAnchor] = useState<HTMLElement | null>(null);
-  const chipShadow = theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT;
 
   return (
     <ComposerBar>
       {(inputs.length > 0 || inputsLoading) && (
         <AttachmentRow>
           {inputsLoading && inputs.length === 0 && (
-            <Chip
+            <LoadingAttachmentChip
               label={t('copilot.loadingFiles')}
               size="small"
-              sx={{ maxWidth: '100%', boxShadow: chipShadow }}
               deleteIcon={
-                <Box sx={{ display: 'flex', alignItems: 'center', width: theme.typography.pxToRem(40) }}>
-                  <LinearProgress sx={{ width: '100%' }} />
-                </Box>
+                <ChipDeleteIconWrap>
+                  <ChipProgress />
+                </ChipDeleteIconWrap>
               }
               onDelete={() => {}}
             />
           )}
           {inputs.map((path) => (
-            <Chip
+            <AttachmentChip
               key={path}
               label={path.split(/[/\\]/).pop() || path}
               size="small"
-              sx={{ boxShadow: chipShadow }}
               onDelete={onRemoveInput ? () => onRemoveInput(path) : undefined}
             />
           ))}
@@ -186,9 +192,7 @@ export default function ChatComposer({
             </Button>
           )}
         </LeftActions>
-        <RightActions
-          sx={{ backgroundColor: 'transparent', border: 0, paddingInline: 0, paddingBlock: 0, '&:hover': { paddingInline: 0 } }}
-        >
+        <RightActions $plain>
           {connection && (
             <AiConnectionStatus
               connected={connection.connected}

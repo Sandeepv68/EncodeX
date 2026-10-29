@@ -12,12 +12,11 @@
  */
 
 import { useState, useEffect, useRef } from 'react';
-import { Snackbar, Button } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 import { useToastStore } from '../stores/toastStore';
 import type { Toast } from '../stores/types';
-import { ToastAlert, ToastMessage, ToastDetail } from '../styles/ToastContainer.styles';
-import { TOAST_DEFAULT_DURATION_MS, TITLE_BAR_HEIGHT } from '../../shared/constants';
+import { ToastAlert, ToastMessage, ToastDetail, ToastActionButton } from '../styles/ToastContainer.styles';
+import { TitleBarOffsetSnackbar } from '../styles/Snackbar.styles';
+import { TOAST_DEFAULT_DURATION_MS } from '../../shared/constants';
 
 /**
  * Renders the active toast from the toast queue.
@@ -30,7 +29,6 @@ import { TOAST_DEFAULT_DURATION_MS, TITLE_BAR_HEIGHT } from '../../shared/consta
  * @returns {JSX.Element | null} The Snackbar with the active toast, or null.
  */
 export default function ToastContainer() {
-  const theme = useTheme();
   const toasts = useToastStore((s) => s.toasts);
   const removeToast = useToastStore((s) => s.removeToast);
   const [active, setActive] = useState<Toast | null>(null);
@@ -90,13 +88,12 @@ export default function ToastContainer() {
   if (!active) return null;
 
   return (
-    <Snackbar
+    <TitleBarOffsetSnackbar
       key={active.id}
       open
       autoHideDuration={active.duration ?? TOAST_DEFAULT_DURATION_MS}
       onClose={handleClose}
       slotProps={{
-        root: { style: { top: `calc(${theme.typography.pxToRem(TITLE_BAR_HEIGHT)} + ${theme.spacing(1)})` } },
         transition: { onExited: handleExited },
       }}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -107,23 +104,22 @@ export default function ToastContainer() {
         variant="filled"
         action={
           active.action && (
-            <Button
+            <ToastActionButton
               color="inherit"
               size="small"
               onClick={() => {
                 active.action!.onClick();
                 handleClose();
               }}
-              sx={{ fontWeight: 600 }}
             >
               {active.action.label}
-            </Button>
+            </ToastActionButton>
           )
         }
       >
         <ToastMessage>{active.message}</ToastMessage>
         {active.detail && <ToastDetail>{active.detail}</ToastDetail>}
       </ToastAlert>
-    </Snackbar>
+    </TitleBarOffsetSnackbar>
   );
 }

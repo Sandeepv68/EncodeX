@@ -22,7 +22,13 @@ import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TERMS_VERSION, TERMS_SECTIONS } from '../../shared/terms';
 import { useTermsStore } from '../stores/termsStore';
-import { TermsContent, TermsDialog as StyledTermsDialog, TermsSectionBody, TermsSectionTitle } from '../styles/TermsDialog.styles';
+import {
+  TermsContent,
+  TermsDialog as StyledTermsDialog,
+  TermsSectionBody,
+  TermsSectionTitle,
+  TermsLastUpdated,
+} from '../styles/TermsDialog.styles';
 
 /**
  * Event handler: block dialog dismissal (Accept/Reject mode).
@@ -64,9 +70,7 @@ export default function TermsDialog() {
               ))}
             </div>
           ))}
-          <TermsSectionBody variant="body2" sx={{ mt: 1.5 }}>
-            {t('terms.lastUpdated', { date: TERMS_VERSION })}
-          </TermsSectionBody>
+          <TermsLastUpdated variant="body2">{t('terms.lastUpdated', { date: TERMS_VERSION })}</TermsLastUpdated>
         </TermsContent>
       </DialogContent>
       <DialogActions>

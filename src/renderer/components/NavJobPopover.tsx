@@ -31,13 +31,30 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Popover, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import ProgressBar from './ProgressBar';
 import { getPreviewThumbnail, getResolvedPreviewThumbnail } from '../utils/preview-cache';
 import { basenameOrEmpty as basename } from '../utils/path-utils';
 import type { NavJobPopoverProps } from './types';
-import { SHADOWS } from '../../shared/theme/colors';
-import { PopoverArrow, PopoverParallelBadge, PopoverPileThumb, PopoverThumb } from '../styles/NavJobPopover.styles';
+import {
+  NavJobPopoverRoot,
+  POPOVER_PAPER_PADDING,
+  POPOVER_PAPER_WIDTH,
+  PopoverArrow,
+  PopoverBadges,
+  PopoverBody,
+  PopoverFileName,
+  PopoverParallelBadge,
+  PopoverPausedText,
+  PopoverPile,
+  PopoverPileCount,
+  PopoverPileThumb,
+  PopoverProgress,
+  PopoverStatusRow,
+  PopoverTextColumn,
+  PopoverThumb,
+  PopoverTitle,
+} from '../styles/NavJobPopover.styles';
 
 /**
  * Lazily resolves a preview data URL for an input path through the shared
@@ -81,21 +98,6 @@ function Thumbnail({ input }: { input?: string }) {
   if (!src) return null;
   return <PopoverThumb src={src} alt="" data-testid="nav-job-popover-thumbnail" />;
 }
-
-/**
- * Fixed width of the popover card in theme px units; must match the paper `sx`
- * width below. The pending-job pile is sized against the resulting content width
- * so it fills the available space on the card.
- * @const {number} POPOVER_PAPER_WIDTH
- */
-const POPOVER_PAPER_WIDTH = 260;
-
-/**
- * Horizontal padding of the popover card in theme spacing units; must match the
- * paper `sx` `p` value below.
- * @const {number} POPOVER_PAPER_PADDING
- */
-const POPOVER_PAPER_PADDING = 2;
 
 /**
  * Width of one pile slot in px and the overlap to the previous slot; must match
@@ -168,7 +170,7 @@ export default function NavJobPopover({ active, anchorEl, onClose, content, onMo
   const open = active !== null && Boolean(anchorEl) && Boolean(content);
 
   return (
-    <Popover
+    <NavJobPopoverRoot
       open={open}
       anchorEl={anchorEl}
       onClose={onClose}
@@ -177,39 +179,27 @@ export default function NavJobPopover({ active, anchorEl, onClose, content, onMo
       anchorOrigin={{ vertical: 'center', horizontal: 'right' }}
       transformOrigin={{ vertical: 'center', horizontal: 'left' }}
       slotProps={{
-        root: { style: { pointerEvents: 'none' } },
-        backdrop: { style: { pointerEvents: 'none' } },
         paper: {
           onMouseEnter,
           onMouseLeave,
           'data-testid': 'nav-job-popover',
-          sx: (theme) => ({
-            width: POPOVER_PAPER_WIDTH,
-            maxWidth: `calc(100vw - ${theme.typography.pxToRem(32)})`,
-            p: POPOVER_PAPER_PADDING,
-            ml: 1,
-            borderRadius: 2,
-            pointerEvents: 'auto',
-            overflow: 'visible',
-            boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
-          }),
         },
       }}
     >
       {content && (
         <>
           <PopoverArrow data-testid="nav-job-popover-arrow" />
-          <Typography variant="subtitle2" component="div" sx={{ mb: 1 }}>
+          <PopoverTitle variant="subtitle2" component="div">
             {content.title}
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}>
+          </PopoverTitle>
+          <PopoverBody>
             <Thumbnail key={content.input} input={content.input} />
-            <Box sx={{ minWidth: 0, flex: 1 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
+            <PopoverTextColumn>
+              <PopoverStatusRow>
                 <Typography variant="caption" color="text.secondary" noWrap>
                   {content.status}
                 </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexShrink: 0 }}>
+                <PopoverBadges>
                   {content.parallel && content.parallel > 1 && (
                     <PopoverParallelBadge title={t('nav.blip.parallel', { count: content.parallel })}>
                       {'\u00d7'}
@@ -217,20 +207,20 @@ export default function NavJobPopover({ active, anchorEl, onClose, content, onMo
                     </PopoverParallelBadge>
                   )}
                   {content.paused && (
-                    <Typography variant="caption" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                    <PopoverPausedText variant="caption" color="text.secondary">
                       {t('nav.blip.paused')}
-                    </Typography>
+                    </PopoverPausedText>
                   )}
-                </Box>
-              </Box>
+                </PopoverBadges>
+              </PopoverStatusRow>
               {content.fileName && (
-                <Typography variant="caption" color="text.secondary" title={content.fileName} noWrap sx={{ display: 'block', mt: 0.25 }}>
+                <PopoverFileName variant="caption" color="text.secondary" title={content.fileName} noWrap>
                   {content.fileName}
-                </Typography>
+                </PopoverFileName>
               )}
-            </Box>
-          </Box>
-          <Box sx={{ mt: 1 }}>
+            </PopoverTextColumn>
+          </PopoverBody>
+          <PopoverProgress>
             {content.progress ? (
               <ProgressBar
                 key={content.jobId ?? content.input}
@@ -247,21 +237,21 @@ export default function NavJobPopover({ active, anchorEl, onClose, content, onMo
                 {t('nav.blip.starting')}
               </Typography>
             )}
-          </Box>
+          </PopoverProgress>
           {content.pendingThumbnails && content.pendingThumbnails.length > 0 && (
-            <Box data-testid="nav-job-popover-pile" sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+            <PopoverPile data-testid="nav-job-popover-pile">
               {content.pendingThumbnails.slice(0, PILE_CAPACITY).map((input, index) => (
                 <PileThumb key={input} input={input} index={index} />
               ))}
               {content.pendingThumbnails.length > PILE_CAPACITY && (
-                <Typography variant="caption" color="text.secondary" data-testid="nav-job-popover-pile-count" sx={{ ml: 1 }}>
+                <PopoverPileCount variant="caption" color="text.secondary" data-testid="nav-job-popover-pile-count">
                   +{content.pendingThumbnails.length - PILE_CAPACITY}
-                </Typography>
+                </PopoverPileCount>
               )}
-            </Box>
+            </PopoverPile>
           )}
         </>
       )}
-    </Popover>
+    </NavJobPopoverRoot>
   );
 }

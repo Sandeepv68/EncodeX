@@ -2,15 +2,27 @@
  * @fileoverview Assistant message rendering plan details in conversation.
  */
 
-import { Alert, Box, Button, Chip, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
+import { Button, List, ListItemText, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListCheck, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 import type { CopilotAction, CopilotPlan, CopilotResult } from '../../../shared/copilot';
 import type { AgentSkip } from '../../../shared/ai/agent';
 import type { AIProviderId } from '../../../shared/ai/types';
 import { useTranslation } from 'react-i18next';
-import { AssistantBody } from '../../styles/copilot/AssistantMessage.styles';
-import { SHADOWS } from '../../../shared/theme/colors';
+import {
+  ActionListItemIcon,
+  ApplyNoteText,
+  AssistantAlert,
+  AssistantBody,
+  AssistantWarningAlert,
+  McpViewBlock,
+  PlanListItem,
+  RationaleListItemIcon,
+  RoutedChip,
+  SavingsText,
+  SectionBlock,
+  SectionHeading,
+} from '../../styles/copilot/AssistantMessage.styles';
 import ProviderIcon from './ProviderIcon';
 import McpAppView from './McpAppView';
 
@@ -36,31 +48,17 @@ export default function AssistantMessage({
 
   if (error) {
     return (
-      <Alert
-        severity="error"
-        variant="outlined"
-        sx={{
-          boxShadow: (theme) => (theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT),
-          '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
-        }}
-      >
+      <AssistantAlert severity="error" variant="outlined">
         😅 {error}
-      </Alert>
+      </AssistantAlert>
     );
   }
 
   if (notice) {
     return (
-      <Alert
-        severity="info"
-        variant="outlined"
-        sx={{
-          boxShadow: (theme) => (theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT),
-          '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
-        }}
-      >
+      <AssistantAlert severity="info" variant="outlined">
         ✨ {notice}
-      </Alert>
+      </AssistantAlert>
     );
   }
 
@@ -69,29 +67,20 @@ export default function AssistantMessage({
   return (
     <AssistantBody data-testid="copilot-plan-summary">
       {plan.operation && (
-        <Chip
+        <RoutedChip
           size="small"
           label={`✨ ${t('copilot.routedAs', { operation: t(`copilot.op.${plan.operation}`) })}`}
-          sx={{ mb: 1 }}
           data-testid="copilot-routed-as"
         />
       )}
       {plan.routingWarning && (
-        <Alert
-          severity="warning"
-          sx={{
-            mb: 2,
-            boxShadow: (theme) => (theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT),
-            '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
-          }}
-          data-testid="copilot-routing-warning"
-        >
+        <AssistantWarningAlert severity="warning" data-testid="copilot-routing-warning">
           {plan.routingWarning}
-        </Alert>
+        </AssistantWarningAlert>
       )}
-      <Typography variant="subtitle1" component="h2" sx={{ mb: 1 }}>
+      <SectionHeading variant="subtitle1" component="h2">
         {t('copilot.actionsTitle')}
-      </Typography>
+      </SectionHeading>
       {plan.actions.length === 0 ? (
         <Typography variant="body2" color="text.secondary">
           😌 {t('copilot.noActions')}
@@ -99,10 +88,10 @@ export default function AssistantMessage({
       ) : (
         <List dense disablePadding>
           {plan.actions.map((action: CopilotAction) => (
-            <ListItem key={action.id} divider sx={{ px: 0 }} data-testid={`copilot-action-${action.id}`}>
-              <ListItemIcon sx={{ minWidth: 44 }}>
+            <PlanListItem key={action.id} divider data-testid={`copilot-action-${action.id}`}>
+              <ActionListItemIcon>
                 <ProviderIcon providerId={providerId} size={32} />
-              </ListItemIcon>
+              </ActionListItemIcon>
               <ListItemText
                 primary={action.input}
                 secondary={
@@ -110,77 +99,77 @@ export default function AssistantMessage({
                     <Typography component="span" variant="body2" color="text.secondary">
                       {t('copilot.savings', { pct: Math.round(action.estimatedSavings * 100) })}
                     </Typography>
-                    <Typography component="span" variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+                    <SavingsText component="span" variant="body2" color="text.secondary">
                       {t('copilot.output', { output: action.output ?? '' })}
-                    </Typography>
+                    </SavingsText>
                   </>
                 }
               />
-            </ListItem>
+            </PlanListItem>
           ))}
         </List>
       )}
 
       {plan.results.length > 0 && (
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="subtitle1" component="h2" sx={{ mb: 1 }}>
+        <SectionBlock>
+          <SectionHeading variant="subtitle1" component="h2">
             🎯 {t('copilot.resultsTitle')}
-          </Typography>
+          </SectionHeading>
           <List dense disablePadding>
             {plan.results.map((result: CopilotResult, index: number) => (
-              <ListItem key={`${result.input}-${index}`} sx={{ px: 0 }} data-testid="copilot-result">
+              <PlanListItem key={`${result.input}-${index}`} data-testid="copilot-result">
                 <ListItemText primary={result.input} secondary={result.summary ?? result.title ?? ''} />
-              </ListItem>
+              </PlanListItem>
             ))}
           </List>
-        </Box>
+        </SectionBlock>
       )}
 
       {plan.skips.length > 0 && (
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="subtitle1" component="h2" sx={{ mb: 1 }}>
+        <SectionBlock>
+          <SectionHeading variant="subtitle1" component="h2">
             ⏭️ {t('copilot.skipsTitle')}
-          </Typography>
+          </SectionHeading>
           <List dense disablePadding>
             {plan.skips.map((skip: AgentSkip) => (
-              <ListItem key={skip.input} sx={{ px: 0 }} data-testid="copilot-skip">
+              <PlanListItem key={skip.input} data-testid="copilot-skip">
                 <ListItemText primary={skip.input} secondary={skip.reason} />
-              </ListItem>
+              </PlanListItem>
             ))}
           </List>
-        </Box>
+        </SectionBlock>
       )}
 
       {plan.rationale.length > 0 && (
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="subtitle1" component="h2" sx={{ mb: 1 }}>
+        <SectionBlock>
+          <SectionHeading variant="subtitle1" component="h2">
             💡 {t('copilot.rationaleTitle')}
-          </Typography>
+          </SectionHeading>
           <List dense disablePadding>
             {plan.rationale.map((line: string) => (
-              <ListItem key={line} disableGutters sx={{ px: 0 }}>
-                <ListItemIcon sx={{ minWidth: 32 }}>
+              <PlanListItem key={line} disableGutters>
+                <RationaleListItemIcon>
                   <FontAwesomeIcon icon={faWandMagicSparkles} />
-                </ListItemIcon>
+                </RationaleListItemIcon>
                 <ListItemText primary={line} />
-              </ListItem>
+              </PlanListItem>
             ))}
           </List>
-        </Box>
+        </SectionBlock>
       )}
 
       {plan.views && plan.views.length > 0 && (
-        <Box sx={{ mt: 2 }} data-testid="copilot-mcp-views">
+        <SectionBlock data-testid="copilot-mcp-views">
           {plan.views.map((view, index) => (
-            <Box key={`${view.viewId}:${index}`} sx={{ mb: index === plan.views!.length - 1 ? 0 : 2 }}>
+            <McpViewBlock key={`${view.viewId}:${index}`} $last={index === plan.views!.length - 1}>
               <McpAppView attachment={view} />
-            </Box>
+            </McpViewBlock>
           ))}
-        </Box>
+        </SectionBlock>
       )}
 
       {plan.actions.length > 0 && (
-        <Box sx={{ mt: 2 }}>
+        <SectionBlock>
           <Button
             variant="contained"
             size="small"
@@ -191,10 +180,10 @@ export default function AssistantMessage({
           >
             🚀 {t('copilot.addToQueue', { count: plan.actions.length })}
           </Button>
-          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
+          <ApplyNoteText variant="caption" color="text.secondary">
             {t('copilot.applyNote')}
-          </Typography>
-        </Box>
+          </ApplyNoteText>
+        </SectionBlock>
       )}
     </AssistantBody>
   );

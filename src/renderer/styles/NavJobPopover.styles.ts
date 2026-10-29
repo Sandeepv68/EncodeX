@@ -4,8 +4,50 @@
 
 import { styled, keyframes } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
-import { alpha, Box } from '@mui/material';
+import { alpha, Box, Popover, Typography } from '@mui/material';
 import { SHADOWS } from '../../shared/theme/colors';
+
+/**
+ * Fixed width of the popover card in theme px units; must match the paper
+ * width below. The pending-job pile is sized against the resulting content
+ * width so it fills the available space on the card.
+ * @const {number} POPOVER_PAPER_WIDTH
+ */
+export const POPOVER_PAPER_WIDTH = 260;
+
+/**
+ * Horizontal padding of the popover card in theme spacing units; must match
+ * the paper padding below.
+ * @const {number} POPOVER_PAPER_PADDING
+ */
+export const POPOVER_PAPER_PADDING = 2;
+
+/**
+ * Popover shell for the nav activity blip.
+ *
+ * The full-screen Modal overlay MUI mounts around the popover would sit above
+ * the nav rows and steal their hover and click events (flickering the popover
+ * and blocking navigation), so the overlay root and its backdrop stay
+ * click-through. The paper re-enables pointer events for itself.
+ * @const NavJobPopoverRoot
+ */
+export const NavJobPopoverRoot = styled(Popover)(({ theme }) => ({
+  pointerEvents: 'none',
+  '& .MuiBackdrop-root': {
+    pointerEvents: 'none',
+  },
+  '& .MuiPopover-paper': {
+    width: theme.typography.pxToRem(POPOVER_PAPER_WIDTH),
+    maxWidth: `calc(100vw - ${theme.typography.pxToRem(32)})`,
+    padding: theme.spacing(POPOVER_PAPER_PADDING),
+    marginLeft: theme.spacing(1),
+    // 2 x theme.shape.borderRadius (8px), matching the previous `borderRadius: 2`.
+    borderRadius: theme.typography.pxToRem(16),
+    pointerEvents: 'auto',
+    overflow: 'visible',
+    boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
+  },
+}));
 
 /**
  * Small non-animated badge shown in the popover when the batch queue is
@@ -120,4 +162,66 @@ export const PopoverPileThumb = styled(Box, {
     animation: 'none',
   },
   '&:first-of-type': { marginLeft: 0 },
+}));
+
+/** Job title at the top of the popover card. @const PopoverTitle */
+export const PopoverTitle = styled(Typography)<{ component?: React.ElementType }>(({ theme }) => ({
+  marginBottom: theme.spacing(1),
+}));
+
+/** Row holding the thumbnail and the text column of the popover card. @const PopoverBody */
+export const PopoverBody = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  gap: theme.spacing(1.5),
+  alignItems: 'flex-start',
+}));
+
+/** Text column of the popover card (status, badges and file name). @const PopoverTextColumn */
+export const PopoverTextColumn = styled(Box)(() => ({
+  minWidth: 0,
+  flex: 1,
+}));
+
+/** Row holding the status caption and the trailing badges. @const PopoverStatusRow */
+export const PopoverStatusRow = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: theme.spacing(1),
+}));
+
+/** Cluster of trailing badges (parallel count, paused tag). @const PopoverBadges */
+export const PopoverBadges = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(0.5),
+  flexShrink: 0,
+}));
+
+/** Italic "paused" tag shown next to the status caption. @const PopoverPausedText */
+export const PopoverPausedText = styled(Typography)(() => ({
+  fontStyle: 'italic',
+}));
+
+/** File name shown under the status caption. @const PopoverFileName */
+export const PopoverFileName = styled(Typography)(({ theme }) => ({
+  display: 'block',
+  marginTop: theme.spacing(0.25),
+}));
+
+/** Wrapper around the progress bar (or the "starting" caption). @const PopoverProgress */
+export const PopoverProgress = styled(Box)(({ theme }) => ({
+  marginTop: theme.spacing(1),
+}));
+
+/** Row holding the overlapping pile of pending-job thumbnails. @const PopoverPile */
+export const PopoverPile = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  marginTop: theme.spacing(1),
+}));
+
+/** "+N" caption shown when more pending jobs than fit on the pile row. @const PopoverPileCount */
+export const PopoverPileCount = styled(Typography)(({ theme }) => ({
+  marginLeft: theme.spacing(1),
 }));

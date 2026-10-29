@@ -3,19 +3,34 @@ import { Box, Chip, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { QUEUE_STATUS } from '../../shared/media-options';
 import { SHADOWS, OVERLAY_COLORS } from '../../shared/theme/colors';
 
+/**
+ * Job card surface.
+ *
+ * The drag-and-drop styles (transform, transition, opacity, will-change) live
+ * here rather than in an inline `style` prop: the sortable logic only supplies
+ * the runtime values, while the CSS rules themselves belong to the stylesheet.
+ * @const JobCard
+ */
 export const JobCard = styled(Paper, {
-  shouldForwardProp: (prop) => prop !== '$status' && prop !== '$dragOverlay',
-})<{ $status: string; $dragOverlay?: boolean }>(({ theme, $status, $dragOverlay }) => ({
-  padding: 0,
-  overflow: 'hidden',
-  borderColor:
-    $status === QUEUE_STATUS.ERROR
-      ? theme.palette.error.main
-      : $status === QUEUE_STATUS.DONE
-        ? theme.palette.success.main
-        : theme.palette.divider,
-  boxShadow: $dragOverlay ? theme.shadows[8] : theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
-}));
+  shouldForwardProp: (prop) =>
+    prop !== '$status' && prop !== '$dragOverlay' && prop !== '$transform' && prop !== '$dragActive' && prop !== '$dragging',
+})<{ $status: string; $dragOverlay?: boolean; $transform?: string; $dragActive?: boolean; $dragging?: boolean }>(
+  ({ theme, $status, $dragOverlay, $transform, $dragActive, $dragging }) => ({
+    padding: 0,
+    overflow: 'hidden',
+    borderColor:
+      $status === QUEUE_STATUS.ERROR
+        ? theme.palette.error.main
+        : $status === QUEUE_STATUS.DONE
+          ? theme.palette.success.main
+          : theme.palette.divider,
+    boxShadow: $dragOverlay ? theme.shadows[8] : theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
+    transform: $transform,
+    transition: $dragActive && !$dragging ? 'transform 250ms cubic-bezier(0.25, 1, 0.5, 1)' : undefined,
+    opacity: $dragging ? 0 : undefined,
+    willChange: $dragActive ? 'transform' : undefined,
+  }),
+);
 
 export const CardBody = styled(Stack)({
   flexDirection: 'row',
