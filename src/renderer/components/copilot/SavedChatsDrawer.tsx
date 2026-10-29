@@ -73,20 +73,15 @@ export default function SavedChatsDrawer({ open, chats, onClose, onOpen, onDelet
 
   return (
     <Box
-      sx={{
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        left: 0,
-        zIndex: 1,
-        width: PANEL_WIDTH_PX,
-        maxWidth: '100%',
-        display: 'flex',
-        transform: open ? 'translateX(0)' : 'translateX(-100%)',
-        visibility: open ? 'visible' : 'hidden',
-        transition: 'transform 225ms ease, visibility 225ms',
-        '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
-      }}
+        sx={{
+          width: open ? PANEL_WIDTH_PX : 0,
+          flexShrink: 0,
+          height: '100%',
+          overflow: 'hidden',
+          transition: 'width 225ms ease',
+          isolation: 'isolate',
+          '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
+        }}
     >
       <Box
         component="aside"
@@ -94,15 +89,14 @@ export default function SavedChatsDrawer({ open, chats, onClose, onOpen, onDelet
         data-testid="saved-chats-drawer"
         sx={{
           width: PANEL_WIDTH_PX,
-          maxWidth: '100%',
           height: '100%',
-          flex: 1,
           display: 'flex',
           flexDirection: 'column',
           minHeight: 0,
           borderRight: 1,
           borderColor: 'divider',
-          bgcolor: 'background.paper',
+          bgcolor: 'background.default',
+          backgroundImage: 'none',
           boxShadow: open ? 6 : 0,
           transition: 'box-shadow 225ms ease',
           '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
@@ -144,7 +138,8 @@ export default function SavedChatsDrawer({ open, chats, onClose, onOpen, onDelet
                     borderRadius: 1,
                     border: 1,
                     borderColor: 'divider',
-                    bgcolor: 'background.paper',
+                    bgcolor: 'background.default',
+                    backgroundImage: 'none',
                     boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
                     transition: 'background-color 150ms ease, box-shadow 150ms ease',
                     '&:hover': {
