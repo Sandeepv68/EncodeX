@@ -14,6 +14,12 @@ import { SHADOWS } from '../../shared/theme/colors';
 
 /**
  * Slow drifting animation shared by the decorative glow orbs.
+ *
+ * The travel per segment is deliberately small - the widest step moves an orb
+ * 12vw - and the cycle is tens of seconds long, so the motion reads as a
+ * drift rather than a sweep. The timeline is `linear` because the effect is
+ * thirteen keyframes: an ease between each pair would make every segment
+ * accelerate and settle, and the orb would pulse instead of drifting.
  * @const {Keyframes} copilotPageTravel
  */
 const copilotPageTravel = keyframes`
@@ -23,62 +29,62 @@ const copilotPageTravel = keyframes`
     filter: hue-rotate(0deg) saturate(1.15);
   }
   8% {
-    transform: translate(12vw, -8vh) scale(1.18) rotate(14deg);
+    transform: translate(8vw, -5vh) scale(1.1) rotate(10deg);
     border-radius: 42% 58% 38% 62%;
     filter: hue-rotate(24deg) saturate(1.35);
   }
   16% {
-    transform: translate(-6vw, 14vh) scale(0.94) rotate(-18deg);
+    transform: translate(-4vw, 10vh) scale(0.94) rotate(-13deg);
     border-radius: 58% 42% 64% 36%;
     filter: hue-rotate(-32deg) saturate(1.28);
   }
   24% {
-    transform: translate(18vw, 10vh) scale(1.28) rotate(26deg);
+    transform: translate(12vw, 7vh) scale(1.16) rotate(18deg);
     border-radius: 36% 64% 42% 58%;
     filter: hue-rotate(42deg) saturate(1.42);
   }
   32% {
-    transform: translate(-14vw, -6vh) scale(1.08) rotate(-28deg);
+    transform: translate(-10vw, -4vh) scale(1.05) rotate(-20deg);
     border-radius: 62% 38% 56% 44%;
     filter: hue-rotate(-18deg) saturate(1.32);
   }
   40% {
-    transform: translate(8vw, 18vh) scale(0.88) rotate(22deg);
+    transform: translate(5vw, 12vh) scale(0.9) rotate(16deg);
     border-radius: 44% 56% 38% 62%;
     filter: hue-rotate(36deg) saturate(1.26);
   }
   48% {
-    transform: translate(-10vw, 8vh) scale(1.22) rotate(-34deg);
+    transform: translate(-7vw, 5vh) scale(1.1) rotate(-24deg);
     border-radius: 56% 44% 62% 38%;
     filter: hue-rotate(-28deg) saturate(1.38);
   }
   56% {
-    transform: translate(16vw, -12vh) scale(0.96) rotate(30deg);
+    transform: translate(11vw, -8vh) scale(0.96) rotate(21deg);
     border-radius: 38% 62% 44% 56%;
     filter: hue-rotate(48deg) saturate(1.32);
   }
   64% {
-    transform: translate(-4vw, -16vh) scale(1.14) rotate(-16deg);
+    transform: translate(-3vw, -11vh) scale(1.08) rotate(-12deg);
     border-radius: 64% 36% 58% 42%;
     filter: hue-rotate(-22deg) saturate(1.28);
   }
   72% {
-    transform: translate(10vw, 6vh) scale(0.9) rotate(38deg);
+    transform: translate(7vw, 4vh) scale(0.92) rotate(27deg);
     border-radius: 42% 58% 36% 64%;
     filter: hue-rotate(34deg) saturate(1.24);
   }
   80% {
-    transform: translate(-18vw, 12vh) scale(1.26) rotate(-26deg);
+    transform: translate(-12vw, 8vh) scale(1.14) rotate(-18deg);
     border-radius: 58% 42% 64% 36%;
     filter: hue-rotate(-38deg) saturate(1.36);
   }
   88% {
-    transform: translate(6vw, -10vh) scale(1.02) rotate(20deg);
+    transform: translate(4vw, -7vh) scale(1.02) rotate(14deg);
     border-radius: 44% 56% 42% 58%;
     filter: hue-rotate(28deg) saturate(1.3);
   }
   100% {
-    transform: translate(-8vw, 4vh) scale(0.84) rotate(-12deg);
+    transform: translate(-5vw, 3vh) scale(0.84) rotate(-9deg);
     border-radius: 50%;
     filter: hue-rotate(-14deg) saturate(1.18);
   }
@@ -168,7 +174,7 @@ export const CopilotGlowOrb = styled(Box, {
   top: $top,
   right: $right,
   bottom: $bottom,
-  animation: `${copilotPageTravel} ${$duration}s infinite ease-in-out`,
+  animation: `${copilotPageTravel} ${$duration}s infinite linear`,
   animationDelay: $delay,
   // The drift is decorative, so it is dropped entirely for users who have
   // asked the OS for reduced motion. This also removes the animated filter

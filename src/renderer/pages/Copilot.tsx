@@ -385,12 +385,12 @@ export default function Copilot() {
       */}
       <CopilotPage>
         <CopilotGlowLayer className="copilot-page-glow">
-          <CopilotGlowOrb $variant={1} $duration={18} $delay="0s" $size="40vw" $max={680} $min={420} $left="10%" $top="15%" />
-          <CopilotGlowOrb $variant={2} $duration={22} $delay="-5s" $size="38vw" $max={640} $min={380} $left="50%" $top="5%" />
-          <CopilotGlowOrb $variant={3} $duration={26} $delay="-9s" $size="36vw" $max={600} $min={360} $left="20%" $bottom="10%" />
-          <CopilotGlowOrb $variant={4} $duration={24} $delay="-13s" $size="32vw" $max={560} $min={340} $right="15%" $bottom="25%" />
-          <CopilotGlowOrb $variant={5} $duration={30} $delay="-17s" $size="28vw" $max={500} $min={300} $left="65%" $top="45%" />
-          <CopilotGlowOrb $variant={6} $duration={28} $delay="-21s" $size="26vw" $max={460} $min={280} $left="35%" $top="60%" />
+          <CopilotGlowOrb $variant={1} $duration={44} $delay="0s" $size="40vw" $max={680} $min={420} $left="10%" $top="15%" />
+          <CopilotGlowOrb $variant={2} $duration={52} $delay="-9s" $size="38vw" $max={640} $min={380} $left="50%" $top="5%" />
+          <CopilotGlowOrb $variant={3} $duration={62} $delay="-17s" $size="36vw" $max={600} $min={360} $left="20%" $bottom="10%" />
+          <CopilotGlowOrb $variant={4} $duration={56} $delay="-25s" $size="32vw" $max={560} $min={340} $right="15%" $bottom="25%" />
+          <CopilotGlowOrb $variant={5} $duration={70} $delay="-33s" $size="28vw" $max={500} $min={300} $left="65%" $top="45%" />
+          <CopilotGlowOrb $variant={6} $duration={64} $delay="-41s" $size="26vw" $max={460} $min={280} $left="35%" $top="60%" />
         </CopilotGlowLayer>
         <SavedChatsDrawer
           open={savedChatsOpen}

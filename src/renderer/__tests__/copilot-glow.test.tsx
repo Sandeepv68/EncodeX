@@ -217,6 +217,44 @@ describe('Copilot glow layer', () => {
     }
   });
 
+  it('drifts slowly and linearly', () => {
+    const { container } = renderPage('Copilot');
+    const orbs = Array.from(container.querySelectorAll('.copilot-page-glow > *'));
+
+    expect(orbs.length).toBeGreaterThan(0);
+    for (const orb of orbs) {
+      const declarations = ruleFor(injectedCss(), emotionClass(orb));
+
+      // A full cycle takes tens of seconds. Below roughly 30s the drift reads
+      // as a sweep across the page rather than a slow ambient glow.
+      const duration = Number(/(?:^|;)\s*animation:\s*[\w-]+\s+([\d.]+)s/.exec(declarations)?.[1]);
+      expect(duration).toBeGreaterThanOrEqual(30);
+
+      // The timeline is linear on purpose. Thirteen keyframes with an eased
+      // timing function make every segment accelerate and settle, so the orbs
+      // pulse instead of drifting.
+      expect(declarations).toMatch(/animation:\s*[\w-]+\s+[\d.]+s\s+infinite\s+linear/);
+    }
+  });
+
+  it('keeps the travel per keyframe small', () => {
+    const { container } = renderPage('Copilot');
+    const orb = container.querySelector('.copilot-page-glow > *');
+    const name = animationName(ruleFor(injectedCss(), emotionClass(orb)));
+    const body = keyframesBody(name);
+
+    expect(body).not.toBe('');
+
+    // The widest single step is 12vw of horizontal travel. Anything beyond
+    // that, on a timeline this long, is a visible jerk between keyframes.
+    const travels = [...body.matchAll(/translate\(\s*(-?\d+(?:\.\d+)?)vw/g)].map((match) =>
+      Math.abs(Number(match[1])),
+    );
+
+    expect(travels.length).toBeGreaterThan(0);
+    expect(Math.max(...travels)).toBeLessThanOrEqual(12);
+  });
+
   it('stops the drift when the user asked for reduced motion', () => {
     const { container } = renderPage('Copilot');
     const orb = container.querySelector('.copilot-page-glow > *');
