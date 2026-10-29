@@ -17,16 +17,21 @@ src/
 │   │   ├── cli-compress.ts              # compress + extract-audio subcommands
 │   │   ├── cli-remux.ts                 # remux subcommand
 │   │   ├── cli-demux.ts                 # demux subcommand
-│   │   └── cli-batch.ts                 # batch subcommand (JobQueue + MultiBar)
+│   │   ├── cli-batch.ts                 # batch subcommand (JobQueue + MultiBar)
+│   │   └── types.ts                     # CLI flag and parameter shapes
 │   ├── capabilities.ts                # Encoder probing (ffmpeg -encoders / -hwaccels)
 │   ├── process-utils.ts               # Child-process helpers (spawn, suspend, resume, kill)
 │   ├── media-binaries.ts              # FFmpeg/FFprobe binary resolution
 │   ├── power-actions.ts               # Shutdown / sleep / hibernate when the queue drains
 │   ├── ai/                            # Copilot planning, provider connectors, AI settings
+│   │   └── types.ts                   # AI provider, model and operation contracts
 │   ├── analytics/                     # Aptabase usage-analytics provider + consent
+│   │   └── types.ts                   # Analytics consent file shape
 │   ├── monitoring/                    # Sentry error-monitoring provider + consent
+│   │   └── types.ts                   # Monitoring consent and provider SDK shapes
 │   ├── security/                      # Content-Security-Policy and security policy
 │   ├── mcp/                           # Embedded HTTP server, GUI tools, MCP settings
+│   │   └── types.ts                   # GUI-tool deps, HTTP server and local-client contracts
 │   ├── image-info.ts                  # EXIF extraction + RGB/luma histogram via ffmpeg
 │   ├── image-preview.ts               # Downscaled base64 image previews
 │   ├── image-file-info.ts             # Image dimensions/size probing
@@ -58,10 +63,11 @@ src/
 │   ├── queue/
 │   │   ├── job-queue.ts               # Concurrency-capped batch queue (1-4 parallel jobs) with EventEmitter
 │   │   ├── persistence.ts             # Queue snapshot + settings persistence
-│   │   └── queue-transfer.ts          # Queue import/export format
+│   │   ├── queue-transfer.ts          # Queue import/export format
+│   │   └── types.ts                   # Queue snapshot, persistence and export shapes
 │   ├── timeline/
 │   │   └── timeline-media.ts          # Waveform + thumbnail-montage extraction
-│   └── transcoders/
+│   ├── transcoders/
 │       ├── types.ts                   # ITranscoder contract + raw ffprobe JSON shapes
 │       ├── factory.ts                 # Transcoder factory (FFMPEG | FFTOOL | BMF)
 │       ├── ffmpeg-core.ts             # fluent-ffmpeg API core
@@ -70,15 +76,20 @@ src/
 │       ├── ffmpeg-utils.ts            # Shared command/flag builders
 │       ├── ffprobe-mapper.ts          # ffprobe JSON -> MediaInfo normalization
 │       └── hwaccel.ts                 # Hardware-acceleration filter/flag resolution
+│   └── types.ts                       # Shared main-process types (CLI flags, updater, preview cache)
 ├── mcp/                               # Standalone stdio MCP server + shared server core
 │   ├── index.ts / run.ts              # stdio entry points (--mcp)
 │   ├── server.ts                      # Tool/resource/prompt registrations
 │   ├── http.ts / http-server.ts       # Optional Streamable HTTP transport
 │   ├── operations.ts                  # Shared MCP tool implementations
 │   ├── jobs/                          # Async job manager for long-running tools
-│   └── ui/                            # MCP Apps bridge, approval, registry, resources, views
+│   │   └── types.ts                   # Async job manager contracts
+│   ├── ui/                            # MCP Apps bridge, approval, registry, resources, views
+│   │   └── types.ts                   # MCP Apps view registry contracts
+│   └── types.ts                       # MCP tool request/response contracts
 ├── preload/
-│   └── index.ts                       # contextBridge exposes electronAPI to renderer
+│   ├── index.ts                       # contextBridge exposes electronAPI to renderer
+│   └── types.ts                       # Preload drop-log payload types
 ├── renderer/                          # React UI (served by Vite, root: src/renderer)
 │   ├── main.tsx                       # React entry: HashRouter + DirectionProvider + I18nextProvider
 │   ├── App.tsx                        # Root layout: TitleBar, Drawer, routes, snackbar, toasts
@@ -95,8 +106,11 @@ src/
 │   │   ├── host.ts                    # The McpViewHost contract every view talks to
 │   │   ├── registry.tsx               # View id -> React component
 │   │   ├── views/                     # One component per view (queue, job, inspector, ...)
+│   │   │   └── types.ts               # Per-view payload and card prop shapes
 │   │   ├── kit/                       # The primitives the views are built from
-│   │   └── standalone/                # The entry external hosts run in their iframe
+│   │   │   └── types.ts               # View primitive prop shapes
+│   │   ├── standalone/                # The entry external hosts run in their iframe
+│   │   └── types.ts                   # MCP view host and polling contracts
 │   ├── components/
 │   │   ├── AppDrawer.tsx              # Responsive sidebar navigation
 │   │   ├── AudioStreamInfo.tsx        # Audio stream selector
@@ -136,6 +150,7 @@ src/
 │   │   ├── VideoFiltersSection.tsx    # Curated video-filter presets editor
 │   │   ├── VideoTimeline.tsx          # Zoomable waveform + thumbnail timeline
 │   │   ├── copilot/                   # Copilot chat, plan, and saved-chat components
+│   │   │   └── types.ts               # Copilot component prop shapes
 │   │   ├── settings/                  # Theme, MCP, and AI-provider settings sections
 │   │   └── types.ts                   # Shared component prop shapes
 │   ├── hooks/
@@ -164,7 +179,8 @@ src/
 │   │   ├── Copilot.tsx                # Natural-language planning + AI providers
 │   │   ├── Logs.tsx                   # Log viewer (filter / clear / download)
 │   │   ├── Settings.tsx               # Theme, telemetry, MCP, AI, hwaccel settings
-│   │   └── About.tsx                  # App info, credits, update checker
+│   │   ├── About.tsx                  # App info, credits, update checker
+│   │   └── types.ts                   # Page-level prop and view-model types
 │   ├── stores/
 │   │   ├── conversionStore.ts         # Conversion form state (Zustand)
 │   │   ├── audioExtractStore.ts       # Audio extraction form state (Zustand)
@@ -190,7 +206,8 @@ src/
 │   ├── styles/                        # Extracted MUI style constants per component (71 modules)
 │   │   └── UpdateDialog.styles.ts     # Styled components for the update dialog
 │   └── utils/
-│       └── formatters.ts              # Duration/bitrate/stream formatting helpers
+│       ├── formatters.ts              # Duration/bitrate/stream formatting helpers
+│       └── types.ts                   # Shared renderer utility types
 └── shared/                            # Code shared between processes
     ├── errors.ts                      # ErrorCode enum, AppError interface, formatError()
     ├── ipc-channels.ts                # All IPC channel name constants
@@ -203,11 +220,16 @@ src/
     ├── theme/                         # The design system, shared with the MCP App views
     │   ├── colors.ts                  # The eight palettes and the semantic color constants
     │   ├── theme.ts                   # createAppTheme(): the MUI theme factory
-    │   └── SelectArrowIcon.tsx        # Custom select arrow icon
+    │   ├── SelectArrowIcon.tsx        # Custom select arrow icon
+    │   └── types.ts                   # Theme id and palette contracts
     ├── ai/                            # Provider-agnostic AI layer (agent, workflow, connectors)
+    │   └── types.ts                   # Provider-agnostic AI layer contracts
     ├── analytics/                     # Analytics events, summaries, renderer service
+    │   └── types.ts                   # Analytics event and summary contracts
     ├── monitoring/                    # Monitoring provider contracts
+    │   └── types.ts                   # Monitoring provider contracts
     ├── profiles/                      # Built-in profiles and category metadata
+    │   └── types.ts                   # Profile category metadata types
     ├── transcoder-constants.ts        # FFmpeg flags, defaults, progress patterns
     ├── hwaccel-settings.ts            # Hardware-acceleration modes and encoder types
     ├── codec-containers.ts            # Codec -> container compatibility mapping

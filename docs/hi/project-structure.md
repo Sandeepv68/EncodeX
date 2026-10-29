@@ -163,7 +163,7 @@ src/
 │   ├── i18n/                          # i18next config, RTL provider, 56 locales (36 base language subtags) <!-- drift:locales=56 --> <!-- drift:locale-subtags=36 -->
 │   ├── pages/                         # 13 code-split page components (Convert, Remux, Demux, Copilot, BatchQueue, Dashboard, MediaInfo, ImageCompress, AudioExtract, VideoCut, Settings, Logs, About) <!-- drift:renderer-pages=13 -->
 │   ├── stores/                        # 20 Zustand stores (queue, conversion, settings, profile, terms, batchConfig, audioExtract, videoCut, logs, errors, toasts, update, task, dismissedAlerts, aiSettings, aiConnection, audit, copilotChats, remux, demux) <!-- drift:renderer-stores=20 -->
-│   ├── styles/                        # Extracted MUI style constants per component (57 modules + Copilot/Settings subfolders) <!-- drift:renderer-styles=71 -->
+│   ├── styles/                        # Extracted MUI style constants per component (71 modules + Copilot/Settings subfolders) <!-- drift:renderer-styles=71 -->
 │   └── utils/                         # formatters, preview cache helpers, easter egg dates, batch options
 └── shared/                            # Code shared between processes
     ├── app-constants.ts               # App-wide constants
