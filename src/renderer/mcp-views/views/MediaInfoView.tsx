@@ -10,11 +10,8 @@ import ViewEmptyState from '../kit/ViewEmptyState';
 import ViewFactsList from '../kit/ViewFactsList';
 import ViewTable from '../kit/ViewTable';
 import { ViewStack } from '../kit/styles';
-import type { McpUiMediaInfo, McpUiStream } from '../../../shared/mcp-ui';
-
-interface MediaInfoPayload {
-  media?: McpUiMediaInfo;
-}
+import type { McpUiStream } from '../../../shared/mcp-ui';
+import type { MediaInfoPayload } from './types';
 
 /**
  * Builds the detail column of a stream row.

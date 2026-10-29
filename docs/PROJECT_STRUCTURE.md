@@ -187,7 +187,7 @@ src/
 │   │   ├── batchConfig.ts             # Batch encoding config persistence
 │   │   ├── dismissedAlertsStore.ts    # Dismissed alert banners (Zustand)
 │   │   └── types.ts                   # Zustand store state shapes + actions
-│   ├── styles/                        # Extracted MUI style constants per component (57 modules)
+│   ├── styles/                        # Extracted MUI style constants per component (71 modules)
 │   │   └── UpdateDialog.styles.ts     # Styled components for the update dialog
 │   └── utils/
 │       └── formatters.ts              # Duration/bitrate/stream formatting helpers

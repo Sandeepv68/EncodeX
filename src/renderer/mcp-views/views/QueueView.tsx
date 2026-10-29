@@ -19,11 +19,7 @@ import ViewCard from '../kit/ViewCard';
 import ViewEmptyState from '../kit/ViewEmptyState';
 import ViewProgress from '../kit/ViewProgress';
 import { ViewRow, ViewRowFooter, ViewStack } from '../kit/styles';
-import type { McpUiJob } from '../../../shared/mcp-ui';
-
-interface QueuePayload {
-  jobs?: McpUiJob[];
-}
+import type { QueuePayload, QueueRowProps } from './types';
 
 /**
  * Renders the queue view.
@@ -73,11 +69,6 @@ export default function QueueView() {
       )}
     </ViewCard>
   );
-}
-
-interface QueueRowProps {
-  job: McpUiJob;
-  onCancel: (jobId: string) => Promise<void>;
 }
 
 /**

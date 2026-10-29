@@ -23,19 +23,12 @@
  * Panchangs themselves disagree by one day on lunar festival dates (sunrise
  * vs. pradosh conventions, regional almanacs), so the computed dates are
  * expected to be within one day of any given panchang. This is purely a
- * fallback; the curated table always wins when present.
+ *    fallback; the curated table always wins when present.
  */
 
-/**
- * A calendar date as month/day numbers, month is 1-based.
- * @typedef {Object} LunarDate
- * @property {number} month - Month of the year (1-12).
- * @property {number} day - Day of the month (1-31).
- */
-export interface LunarDate {
-  month: number;
-  day: number;
-}
+import type { LunarDate, Syzygy } from './types';
+
+export type { LunarDate };
 
 /**
  * The sidereal epoch offset (ayanamsa) in degrees used to convert the Sun's
@@ -180,18 +173,6 @@ function elongation(jde: number): number {
  */
 function siderealSun(jde: number): number {
   return norm(sunLongitude(jde) - AYANAMSA);
-}
-
-/**
- * A detected syzygy: the exact Julian Ephemeris Day and the sidereal longitude
- * of the Sun at that instant.
- * @typedef {Object} Syzygy
- * @property {number} jde - Julian Ephemeris Day of the syzygy.
- * @property {number} siderealSun - Sidereal solar longitude at the syzygy.
- */
-interface Syzygy {
-  jde: number;
-  siderealSun: number;
 }
 
 /**

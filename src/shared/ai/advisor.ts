@@ -9,32 +9,11 @@
  */
 
 import type { EncoderCapabilities } from '../types';
-import type { AnalysisFinding, MediaFacts } from './types';
+import type { AnalysisFinding, EncodingAdvice, MediaFacts } from './types';
 import { codecFamily } from './recommend';
 import { detectHardwareAcceleration } from './estimate';
 
-/**
- * The advisor's recommendation plus the reasoning behind it.
- * @interface EncodingAdvice
- * @property {string} sourceCodecFamily - Normalized source codec family.
- * @property {string} recommendedVideoCodec - Encoder to use (software or GPU).
- * @property {boolean} useHardware - Whether a GPU encoder is recommended.
- * @property {string} [hardwareMethod] - The chosen hardware method, when used.
- * @property {string[]} rationale - Human-readable reasons, one per line.
- * @property {AnalysisFinding[]} findings - Ordered, plain-language findings.
- * @property {string[]} notes - Assumptions and caveats.
- * @property {{ available: boolean; methods: string[] }} hardware - Availability.
- */
-export interface EncodingAdvice {
-  sourceCodecFamily: string;
-  recommendedVideoCodec: string;
-  useHardware: boolean;
-  hardwareMethod?: string;
-  rationale: string[];
-  findings: AnalysisFinding[];
-  notes: string[];
-  hardware: { available: boolean; methods: string[] };
-}
+export type { EncodingAdvice };
 
 /** Software encoder per codec family. */
 const SOFTWARE_ENCODERS: Record<string, string> = {

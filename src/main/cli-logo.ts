@@ -9,6 +9,10 @@
  * pure function of no state so it is trivial to test and print to any stream.
  */
 
+import type { CliThemeId, CliThemePalette } from './types';
+
+export type { CliThemeId };
+
 /**
  * ANSI escape codes used to colorize the banner.
  * @enum {string} ANSI
@@ -28,35 +32,11 @@ const ANSI = {
 export const CLI_THEME_IDS = ['light', 'ocean', 'sunset', 'forest', 'lavender', 'rose', 'slate', 'dark'] as const;
 
 /**
- * A theme id usable for the CLI logo.
- * @typedef {(typeof CLI_THEME_IDS)[number]} CliThemeId
- */
-export type CliThemeId = (typeof CLI_THEME_IDS)[number];
-
-/**
  * The theme used for the logo when no `--theme` is supplied: the default
  * 'light' brand palette.
  * @const {CliThemeId} DEFAULT_CLI_THEME
  */
 export const DEFAULT_CLI_THEME: CliThemeId = 'light';
-
-/**
- * An RGB triple.
- * @typedef {readonly [number, number, number]} Rgb
- */
-type Rgb = readonly [number, number, number];
-
-/**
- * A theme palette's accent colors as RGB triples, mirroring the `primary` and
- * `secondary` hex values of each theme in src/shared/theme/colors.ts.
- * @interface CliThemePalette
- * @property {Rgb} primary - The theme's primary accent color (darker).
- * @property {Rgb} secondary - The theme's secondary accent color (brighter).
- */
-interface CliThemePalette {
-  primary: Rgb;
-  secondary: Rgb;
-}
 
 /**
  * RGB triples for every selectable theme, sourced from the `THEMES` palette

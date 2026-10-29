@@ -13,7 +13,7 @@ import ChatInput from './ChatInput';
 import AiConnectionStatus from '../AiConnectionStatus';
 import type { CopilotOperationChoice } from '../../../shared/copilot';
 import { COPILOT_QUEUE_OPERATIONS, COPILOT_INTELLIGENCE_OPERATIONS } from '../../../shared/copilot';
-import type { AIProviderId } from '../../../shared/ai/types';
+import type { ChatComposerProps } from './types';
 import {
   ActionsRow,
   AdvancedPanel,
@@ -29,42 +29,6 @@ import {
 
 /** The selectable operations, in menu order (auto first, then queue, then read-only). */
 const OPERATION_CHOICES: CopilotOperationChoice[] = ['auto', ...COPILOT_QUEUE_OPERATIONS, ...COPILOT_INTELLIGENCE_OPERATIONS];
-
-/** The active AI connection shown under the composer, when known. */
-interface ComposerConnection {
-  connected: boolean;
-  providerId?: AIProviderId;
-  model?: string;
-}
-
-interface ChatComposerProps {
-  input: string;
-  onInputChange: (value: string) => void;
-  onSubmit: () => void;
-  onChooseFiles: () => void;
-  onChooseFolder: () => void;
-  onOpenSettings: () => void;
-  inputs: string[];
-  operation: CopilotOperationChoice;
-  onOperationChange: (value: CopilotOperationChoice) => void;
-  query: string;
-  onQueryChange: (value: string) => void;
-  targetLanguage: string;
-  onTargetLanguageChange: (value: string) => void;
-  onRemoveInput?: (path: string) => void;
-  disabled?: boolean;
-  busy?: boolean;
-  hasInputs?: boolean;
-  connection?: ComposerConnection;
-  onResetConversation?: () => void;
-  showReset?: boolean;
-  /** Saves the current transcript; only shown when `showSave` is true. */
-  onSaveChat?: () => void;
-  showSave?: boolean;
-  /** Opens the saved-conversations drawer. */
-  onOpenSavedChats?: () => void;
-  inputsLoading?: boolean;
-}
 
 /**
  * Renders the bottom composer with attachments, input, actions and advanced

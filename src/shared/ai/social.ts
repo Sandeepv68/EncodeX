@@ -9,39 +9,9 @@
  * module is Electron-/FFmpeg-free, so it is trivially unit-testable.
  */
 
-import type { Workflow, WorkflowStep } from './workflow';
+import type { SocialClip, SocialPack, SocialPackOptions, SocialPreset, Workflow, WorkflowStep } from './types';
 
-/**
- * One target platform's encoding preset. Resolutions are the platform's
- * recommended upload resolution; the crop is framed from the centre.
- * @interface SocialPreset
- * @property {string} id - Stable preset id (also the workflow step suffix).
- * @property {string} label - Human-readable platform name.
- * @property {number} width - Target width in pixels.
- * @property {number} height - Target height in pixels.
- * @property {string} aspect - Human-readable aspect ratio (e.g. '9:16').
- * @property {number} [maxDurationSeconds] - Platform length cap, when it has one.
- * @property {string} videoCodec - Video encoder for the crop/scale re-encode.
- * @property {number} qscale - Quality scale (1 best - 31 worst) for the encode.
- * @property {string} audioCodec - Audio encoder.
- * @property {string} audioBitrate - Audio bitrate.
- * @property {string} container - Output container extension.
- * @property {string[]} tags - Keywords describing the target.
- */
-export interface SocialPreset {
-  id: string;
-  label: string;
-  width: number;
-  height: number;
-  aspect: string;
-  maxDurationSeconds?: number;
-  videoCodec: string;
-  qscale: number;
-  audioCodec: string;
-  audioBitrate: string;
-  container: string;
-  tags: string[];
-}
+export type { SocialClip, SocialPack, SocialPackOptions, SocialPreset };
 
 /**
  * Every shipped platform preset, in a stable, intentional order.
@@ -191,66 +161,6 @@ export function socialPresetById(id: string): SocialPreset | undefined {
     .trim()
     .toLowerCase();
   return SOCIAL_PRESETS.find((preset) => preset.id === wanted);
-}
-
-/**
- * One platform clip in a social pack: the target dimensions and the
- * `convert_media`-shaped arguments that produce it.
- * @interface SocialClip
- * @property {string} platform - The preset id.
- * @property {string} label - Human-readable platform name.
- * @property {string} aspect - Aspect ratio label.
- * @property {number} width - Target width.
- * @property {number} height - Target height.
- * @property {number} [maxDurationSeconds] - Applied duration cap, when any.
- * @property {string} container - Output container extension (e.g. 'mp4').
- * @property {string[]} filters - The scale+crop filter chain.
- * @property {Record<string, unknown>} args - `convert_media` arguments.
- * @property {string} rationale - Why the clip is shaped this way.
- */
-export interface SocialClip {
-  platform: string;
-  label: string;
-  aspect: string;
-  width: number;
-  height: number;
-  maxDurationSeconds?: number;
-  container: string;
-  filters: string[];
-  args: Record<string, unknown>;
-  rationale: string;
-}
-
-/**
- * A social pack: the per-platform clips and a ready-to-run workflow.
- * @interface SocialPack
- * @property {string} source - The input file path.
- * @property {SocialClip[]} clips - One clip per requested platform.
- * @property {Workflow} workflow - A validated, runnable workflow of the clips.
- * @property {string} rationale - One-line pack summary.
- * @property {string[]} notes - Caveats for the caller.
- */
-export interface SocialPack {
-  source: string;
-  clips: SocialClip[];
-  workflow: Workflow;
-  rationale: string;
-  notes: string[];
-}
-
-/**
- * Options for {@link buildSocialPack}.
- * @interface SocialPackOptions
- * @property {string[]} [platforms] - Preset ids to build; defaults to all.
- * @property {number} [maxDurationSeconds] - Overrides every preset's cap.
- * @property {(clip: SocialClip, index: number) => string} [resolveOutput] -
- *   Supplies each clip's explicit output path (the MCP layer derives these with
- *   the shared naming helper; the pure module never joins paths).
- */
-export interface SocialPackOptions {
-  platforms?: string[];
-  maxDurationSeconds?: number;
-  resolveOutput?: (clip: SocialClip, index: number) => string;
 }
 
 /** Builds the replace-then-crop filter chain that frames a target aspect. */

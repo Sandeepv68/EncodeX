@@ -7,8 +7,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { Typography, useTheme } from '@mui/material';
 import { measureElement as measureElementDefault, observeElementRect, useVirtualizer } from '@tanstack/react-virtual';
 import { useTranslation } from 'react-i18next';
-import type { CopilotPlan } from '../../../shared/copilot';
-import type { AIProviderId } from '../../../shared/ai/types';
+import type { ConversationMessage, ConversationProps } from './types';
 import MessageBubble from './MessageBubble';
 import AssistantMessage from './AssistantMessage';
 import Welcome from './Welcome';
@@ -23,27 +22,7 @@ import {
   VirtualRow,
 } from '../../styles/copilot/Conversation.styles';
 
-export interface ConversationMessage {
-  id: string;
-  role: 'user' | 'assistant';
-  content?: string;
-  attachments?: string[];
-  plan?: CopilotPlan | null;
-  error?: string | null;
-  notice?: string | null;
-  /** The AI provider that produced this assistant message. */
-  providerId?: AIProviderId;
-  timestamp: number;
-}
-
-interface ConversationProps {
-  messages: ConversationMessage[];
-  isThinking?: boolean;
-  onAddToQueue: (plan: CopilotPlan) => void;
-  busy?: boolean;
-  /** The currently connected provider, shown as the action icon. */
-  providerId?: AIProviderId | null;
-}
+export type { ConversationMessage };
 
 const FALLBACK_VIEWPORT_HEIGHT = 640;
 const THINKING_ROW_ESTIMATE = 72;

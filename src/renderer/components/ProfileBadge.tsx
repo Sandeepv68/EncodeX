@@ -8,15 +8,9 @@
 import { Tooltip, Stack } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import type { ConversionProfile } from '../../shared/types';
 import { ProfileChipIcon } from './ProfileIcon';
+import type { ProfileBadgeProps } from './types';
 import { BadgeName, BadgeDescription, ProfileChip } from '../styles/ProfileBadge.styles';
-
-interface ProfileBadgeProps {
-  profile: ConversionProfile;
-  onClear?: () => void;
-  testId?: string;
-}
 
 export default function ProfileBadge({ profile, onClear, testId }: ProfileBadgeProps) {
   return (

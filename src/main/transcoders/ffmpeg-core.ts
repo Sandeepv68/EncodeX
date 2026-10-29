@@ -13,7 +13,7 @@ import ffmpeg from 'fluent-ffmpeg';
 import type Ffmpeg from 'fluent-ffmpeg';
 import { Logger } from '../../shared/logger';
 import { getFfmpegPath, getFfprobePath } from '../media-binaries';
-import type { ITranscoder } from './types';
+import type { ChildProcessLike, ITranscoder } from './types';
 import { ConversionOptions, ConversionProgress, MediaInfo, type AppError } from '../../shared/types';
 import { FFMPEG_FLAGS, TRANSCODER_DEFAULTS, TRANSCODER_TYPES, EMPTY_PROGRESS } from '../../shared/transcoder-constants';
 import { suspendProcess, resumeProcess } from '../process-utils';
@@ -82,12 +82,6 @@ import {
 } from '../../shared/log-constants';
 
 const log = new Logger('main/transcoders/ffmpeg-core');
-
-/** The slice of a spawned child process this class relies on. */
-interface ChildProcessLike {
-  pid?: number;
-  kill(signal?: string): boolean;
-}
 
 /**
  * Narrowing wrapper around `Number.isFinite`.

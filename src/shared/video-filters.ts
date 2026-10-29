@@ -14,57 +14,9 @@
  */
 
 import { FFMPEG_FLAGS } from './transcoder-constants';
+import type { FilterParamValues, VideoFilterDef, VideoFilterParam } from './types';
 
-/**
- * Parameter descriptor for a curated filter preset.
- * @interface VideoFilterParam
- * @property {string} key - Stable key used in FilterParamValues.
- * @property {string} labelKey - i18n key for the field label.
- * @property {'number'|'text'|'select'} type - Input kind rendered by the GUI.
- * @property {number|string} [default] - Value used when the caller omits the key.
- * @property {number} [min] - Minimum value for `number` inputs.
- * @property {number} [max] - Maximum value for `number` inputs.
- * @property {number} [step] - Step for `number` inputs (defaults to 0.01).
- * @property {{value: string; labelKey: string}[]} [options] - Choices for `select` inputs.
- * @property {boolean} [optional] - Omitted from the emitted filter when unset.
- */
-export interface VideoFilterParam {
-  key: string;
-  labelKey: string;
-  type: 'number' | 'text' | 'select';
-  default?: number | string;
-  min?: number;
-  max?: number;
-  step?: number;
-  options?: { value: string; labelKey: string }[];
-  optional?: boolean;
-}
-
-/**
- * Values supplied by a caller for a preset's parameters.
- * @typedef {Record<string, number | string | undefined>} FilterParamValues
- */
-export type FilterParamValues = Record<string, number | string | undefined>;
-
-/**
- * A curated filter preset.
- * @interface VideoFilterDef
- * @property {string} id - Stable id used by the GUI/CLI/MCP (e.g. 'crop').
- * @property {string} ffmpegName - Base FFmpeg filter name (e.g. 'crop').
- * @property {VideoFilterParam[]} params - Ordered parameters with defaults.
- * @property {(values: FilterParamValues) => string} build - Produces the full
- *   filter expression (e.g. 'crop=in_w/2:in_h/2').
- * @property {string} labelKey - i18n key for the preset display name.
- * @property {string} hintKey - i18n key for the preset tooltip/description.
- */
-export interface VideoFilterDef {
-  id: string;
-  ffmpegName: string;
-  params: VideoFilterParam[];
-  build: (values: FilterParamValues) => string;
-  labelKey: string;
-  hintKey: string;
-}
+export type { FilterParamValues, VideoFilterDef, VideoFilterParam } from './types';
 
 /** Maximum length of a single filter entry (characters). */
 export const VIDEO_FILTER_MAX_ENTRY = 200;

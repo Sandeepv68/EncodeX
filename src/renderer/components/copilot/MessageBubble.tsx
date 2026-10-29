@@ -2,13 +2,10 @@
  * @fileoverview Chat message bubble for the Copilot conversation UI.
  */
 
-import type { ReactNode } from 'react';
 import { Bubble, BubbleRow } from '../../styles/copilot/MessageBubble.styles';
+import type { MessageBubbleProps } from './types';
 
-export interface MessageBubbleProps {
-  speaker: 'user' | 'assistant' | 'thought';
-  children: ReactNode;
-}
+export type { MessageBubbleProps };
 
 /**
  * Renders one message bubble, aligned by speaker.

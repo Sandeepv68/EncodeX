@@ -33,6 +33,9 @@ import { SUPPORTED_PROTOCOL_VERSIONS, LATEST_PROTOCOL_VERSION } from '@modelcont
 import { Logger } from '../../shared/logger';
 import { LOG_MCP_HTTP_STARTED, LOG_MCP_HTTP_START_FAILED, LOG_MCP_HTTP_STOPPED, LOG_MCP_HTTP_REJECTED } from '../../shared/log-constants';
 import type { McpSettings } from './settings';
+import type { McpHttpHandle, McpHttpSession, McpSessionServerFactory } from './types';
+
+export type { McpHttpHandle, McpSessionServerFactory };
 
 /** Per-module logger for the embedded MCP HTTP server. @const {Logger} */
 const log = new Logger('main/mcp/http-server');
@@ -40,32 +43,8 @@ const log = new Logger('main/mcp/http-server');
 /** Single MCP route mounted at this path. @const {string} */
 export const MCP_HTTP_PATH = '/mcp';
 
-/** Map from live session id to its transport + session server. @type {Map<string, { transport: NodeStreamableHTTPServerTransport; server: McpServer }>} */
-const sessions = new Map<string, { transport: NodeStreamableHTTPServerTransport; server: McpServer }>();
-
-/**
- * Factory that builds a fresh {@link McpServer} per HTTP session. Each MCP
- * session owns its Protocol instance (the SDK forbids sharing one across
- * transports), so the gateway calls this once per new session. The factory
- * must wire every session to the same shared engine (job manager, transcoders).
- * @callback McpSessionServerFactory
- * @returns {McpServer | Promise<McpServer>} A configured, unconnected MCP server.
- */
-export type McpSessionServerFactory = () => McpServer | Promise<McpServer>;
-
-/**
- * Handle returned by {@link startMcpHttpServer} for stopping the server and
- * reading its live bound port.
- * @interface McpHttpHandle
- * @property {function(): Promise<void>} close - Stops all MCP sessions and the
- *   HTTP listener.
- * @property {function(): number} port - Returns the actual bound port (useful
- *   when an ephemeral port was requested).
- */
-export interface McpHttpHandle {
-  close(): Promise<void>;
-  port(): number;
-}
+/** Map from live session id to its transport + session server. @type {Map<string, McpHttpSession>} */
+const sessions = new Map<string, McpHttpSession>();
 
 /**
  * Normalizes a request path to the canonical MCP route, tolerating a trailing

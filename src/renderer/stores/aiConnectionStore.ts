@@ -24,24 +24,12 @@ import type { AiActiveConnection, AiSettingsView } from '../../shared/ai/setting
 import { isAiProviderId } from '../../shared/ai/settings';
 import { Logger } from '../../shared/logger';
 import { bridgePromise } from '../utils/bridge-call';
+import type { AiConnectionState } from './types';
+
+export type { AiConnectionState };
 
 /** Per-module logger for the AI connection mirror. @const {Logger} */
 const log = new Logger('renderer/stores/aiConnectionStore');
-
-/**
- * The store state: the last sanitized settings view seen by the app.
- * @interface AiConnectionState
- * @property {AiSettingsView | null} view - The last view, or null when nothing
- *   has loaded (or the bridge failed).
- * @property {(view: AiSettingsView) => void} patch - Adopts a freshly loaded or
- *   saved view.
- * @property {() => void} reset - Clears the mirror (tests).
- */
-export interface AiConnectionState {
-  view: AiSettingsView | null;
-  patch: (view: AiSettingsView) => void;
-  reset: () => void;
-}
 
 /**
  * Zustand store mirroring the AI settings view for the Copilot status.

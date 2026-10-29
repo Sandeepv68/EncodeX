@@ -10,8 +10,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRobot } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { aiProviderLogo } from '../utils/ai-provider-icons';
-import type { AIProviderId } from '../../shared/ai/types';
 import { ConnectionStatus } from '../styles/copilot/ChatComposer.styles';
+import type { AiConnectionStatusProps } from './types';
 import {
   ProviderBadge,
   ProviderIconFallback,
@@ -20,19 +20,6 @@ import {
   StatusDot,
   StatusPill,
 } from '../styles/AiConnectionStatus.styles';
-
-/** Props for {@link AiConnectionStatus}. */
-interface AiConnectionStatusProps {
-  connected: boolean;
-  providerId?: AIProviderId;
-  model?: string;
-  /** Test id applied to the pill's outer element. */
-  testId?: string;
-  /** Show the caption without waiting for hover. */
-  expanded?: boolean;
-  /** Adds a soft drop shadow to the pill. */
-  elevated?: boolean;
-}
 
 /**
  * Renders the AI connection status pill.

@@ -9,28 +9,11 @@
  */
 
 import type { MediaInfo } from '../types';
-import type { AnalysisFinding, MediaFacts, ValidationCheck, ValidationExpectations } from './types';
+import type { AnalysisFinding, MediaFacts, QualityReport, ValidationCheck, ValidationExpectations } from './types';
 import { extractMediaFacts } from './media-facts';
 import { validateOutput } from './validate';
 
-/**
- * The outcome of comparing a source and its output.
- * @interface QualityReport
- * @property {boolean} passed - True only when every check passed.
- * @property {string} summary - One-sentence human summary.
- * @property {ValidationCheck[]} checks - Per-constraint results.
- * @property {AnalysisFinding[]} findings - Ordered, plain-language findings.
- * @property {MediaFacts} source - Source facts from the probe.
- * @property {MediaFacts} output - Output facts from the re-probe.
- */
-export interface QualityReport {
-  passed: boolean;
-  summary: string;
-  checks: ValidationCheck[];
-  findings: AnalysisFinding[];
-  source: MediaFacts;
-  output: MediaFacts;
-}
+export type { QualityReport };
 
 /** Duration drift tolerated between source and output, as a ratio (1%). */
 const DURATION_TOLERANCE = 0.01;

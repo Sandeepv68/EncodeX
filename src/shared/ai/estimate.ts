@@ -8,27 +8,10 @@
  */
 
 import type { EncoderCapabilities } from '../types';
-import type { ConversionEstimate, MediaFacts } from './types';
+import type { ConversionEstimate, EstimateConversionInput, MediaFacts } from './types';
 import { parseBitrateKbps, toSeconds } from './units';
 
-/**
- * The subset of conversion arguments that affect the estimate.
- * @interface EstimateConversionInput
- * @property {string} [videoBitrate] - Target video bitrate (e.g. '2000k').
- * @property {string} [audioBitrate] - Target audio bitrate (e.g. '192k').
- * @property {string} [duration] - Trim duration (limits the output length).
- * @property {boolean} [copy] - Lossless stream copy (no re-encode).
- * @property {boolean} [audio] - Include audio (false drops it).
- * @property {boolean} [video] - Include video (false drops it).
- */
-export interface EstimateConversionInput {
-  videoBitrate?: string;
-  audioBitrate?: string;
-  duration?: string;
-  copy?: boolean;
-  audio?: boolean;
-  video?: boolean;
-}
+export type { EstimateConversionInput };
 
 /** Fallback video bitrate (kbps) when neither args nor probe supply one. */
 const DEFAULT_VIDEO_KBPS = 2500;

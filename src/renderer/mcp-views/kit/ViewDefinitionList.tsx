@@ -6,20 +6,9 @@
  */
 
 import { ViewDefinitionGrid, ViewDefinitionLabel, ViewDefinitionValue } from './styles';
+import type { ViewDefinitionListProps, ViewDefinitionRow } from './types';
 
-export interface ViewDefinitionRow {
-  /** Row label. */
-  label: string;
-  /** Row value; rendered verbatim as text. */
-  value: string;
-}
-
-export interface ViewDefinitionListProps {
-  /** Rows to render, in order. */
-  rows: ViewDefinitionRow[];
-  /** Test hook for the host-rendering checks. */
-  testId?: string;
-}
+export type { ViewDefinitionListProps, ViewDefinitionRow };
 
 /**
  * Renders a two-column definition list.

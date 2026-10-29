@@ -9,74 +9,10 @@
 
 import { ErrorCode, ERROR_MESSAGES, formatError } from '../errors';
 import type { ErrorCodeType } from '../types';
+import type { ErrorFix, ErrorExplanation, ExplainErrorInput } from './types';
 
-/**
- * How a suggested fix behaves when clicked.
- * - `retry`  — re-runs the same operation unchanged;
- * - `switch` — re-runs the operation with patched arguments;
- * - `info`   — guidance only, no tool call.
- * @typedef {('retry' | 'switch' | 'info')} ErrorFixKind
- */
-export type ErrorFixKind = 'retry' | 'switch' | 'info';
-
-/**
- * One suggested remedy for a failure.
- * @interface ErrorFix
- * @property {ErrorFixKind} kind - How the fix behaves.
- * @property {string} label - Short button/label text.
- * @property {string} description - One-sentence explanation.
- * @property {string} [tool] - Tool to call for `retry`/`switch` fixes.
- * @property {Record<string, unknown>} [args] - Arguments for the tool call.
- */
-export interface ErrorFix {
-  kind: ErrorFixKind;
-  label: string;
-  description: string;
-  tool?: string;
-  args?: Record<string, unknown>;
-}
-
-/**
- * The plain-language explanation of a failure.
- * @interface ErrorExplanation
- * @property {ErrorCodeType} code - The resolved application error code.
- * @property {string} title - Short human title.
- * @property {string} explanation - Canonical human message.
- * @property {string} [detail] - Technical detail preserved from the failure.
- * @property {string[]} causes - Common causes, most likely first.
- * @property {ErrorFix[]} fixes - Suggested remedies.
- * @property {{ tool: string; args: Record<string, unknown> }} [retry] - The
- *   default retry action when a plain retry is possible.
- */
-export interface ErrorExplanation {
-  code: ErrorCodeType;
-  title: string;
-  explanation: string;
-  detail?: string;
-  causes: string[];
-  fixes: ErrorFix[];
-  retry?: { tool: string; args: Record<string, unknown> };
-}
-
-/**
- * Input accepted by {@link explainError}. At least one of `code`, `message` or
- * `detail` should be provided; `tool`/`args` enable argument-patching fixes.
- * @interface ExplainErrorInput
- * @property {string} [code] - A known error code.
- * @property {string} [message] - Raw failure message (code inferred when needed).
- * @property {string} [detail] - Extra technical detail.
- * @property {string} [input] - The input file the operation ran on, when known.
- * @property {string} [tool] - The tool that failed (for `switch` fixes).
- * @property {Record<string, unknown>} [args] - The arguments that failed.
- */
-export interface ExplainErrorInput {
-  code?: string;
-  message?: string;
-  detail?: string;
-  input?: string;
-  tool?: string;
-  args?: Record<string, unknown>;
-}
+export type { ErrorFix, ErrorExplanation, ExplainErrorInput };
+export type { ErrorFixKind } from './types';
 
 /**
  * True when `value` is a known {@link ErrorCode}.

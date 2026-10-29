@@ -24,8 +24,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import type { ITranscoder } from '../transcoders/types';
-import type { ConversionOptions, MediaStreamInfo, RemuxInput } from '../../shared/types';
+import type { MediaStreamInfo, RemuxInput } from '../../shared/types';
 import { isContainerCompatibleWithCover, isContainerCompatibleWithChapters, type RemuxWarning } from '../../shared/codec-containers';
 import { ATTACHED_PIC_DISPOSITION, SUBTITLE_CODEC_CONTAINERS } from '../../shared/transcoder-constants';
 import { buildAndValidateRemuxPlan, buildPrimaryStreamMaps } from '../../shared/remux-utils';
@@ -38,7 +37,9 @@ import { runPreparedConversion, resolveCliVideoFilterChain } from './cli-convert
 import { getInputExtension } from './cli-util';
 import { CliExitError } from './cli-options';
 import { status, warn } from './cli-ui';
-import type { CliThemeId } from '../cli-logo';
+import type { RemuxAddToken, RemuxAddTokenKind, RemuxCliFlags, RemuxCliPlan, RunRemuxParams } from './types';
+
+export type { RemuxAddToken, RemuxAddTokenKind, RemuxCliFlags, RemuxCliPlan, RunRemuxParams };
 
 /**
  * Separator between an added subtitle path and its per-file codec in
@@ -47,28 +48,6 @@ import type { CliThemeId } from '../cli-logo';
  * @const {string} SUBTITLE_CODEC_SEPARATOR
  */
 const SUBTITLE_CODEC_SEPARATOR = '::';
-
-/**
- * Kinds of ordered `--add-*` tokens the remux flags produce.
- * `setSync` tokens carry no input of their own; they shift the token that
- * precedes them.
- * @typedef {'subtitle'|'audio'|'setSync'} RemuxAddTokenKind
- */
-export type RemuxAddTokenKind = 'subtitle' | 'audio' | 'setSync';
-
-/**
- * One `--add-subtitle` / `--add-audio` / `--set-sync` occurrence, recorded in
- * command-line order so `--set-sync` can bind to the input that precedes it.
- * @interface RemuxAddToken
- * @property {RemuxAddTokenKind} kind - Which flag produced the token.
- * @property {string} value - Raw flag value.
- * @property {number} order - Zero-based command-line position.
- */
-export interface RemuxAddToken {
-  kind: RemuxAddTokenKind;
-  value: string;
-  order: number;
-}
 
 /**
  * Creates the Commander coercion factory for the three order-sensitive
@@ -88,77 +67,6 @@ export function createRemuxAddCollector(): {
     },
     tokens: () => tokens,
   };
-}
-
-/**
- * Flags accepted by the `remux` subcommand.
- * @interface RemuxCliFlags
- * @property {string} [output] - Explicit output file (`-o, --output`).
- * @property {string} [format] - Target container (`-f, --format`); defaults to
- *   the output extension, then the input extension.
- * @property {string[]} [map] - Explicit `-map` specs (`--map`, repeatable).
- *   When absent every source stream is selected.
- * @property {RemuxAddToken[]} [addTokens] - Ordered `--add-*` / `--set-sync`
- *   occurrences (see {@link createRemuxAddCollector}).
- * @property {string} [thumbnail] - Cover-art image (`--thumbnail`).
- * @property {string} [chapters] - FFMETADATA chapters file (`--chapters`).
- * @property {boolean} [copyChapters] - Set false by `--no-chapters` to drop the
- *   source chapters instead of copying them.
- * @property {string} [subtitleCodec] - Default codec for added subtitles
- *   (`--subtitle-codec`); overrides the per-file `::codec` suffix.
- * @property {boolean} [subtitles] - Set false by `--no-subtitles` to drop
- *   source subtitle streams from the default selection.
- * @property {string} [audioSync] - Signed seconds to shift the primary file's
- *   audio (`--audio-sync`).
- * @property {string[]} [filters] - Video filter chains (`--filters`, repeatable).
- *   Filters require re-encoding, so a non-empty chain turns the stream copy into
- *   a re-encode.
- */
-export interface RemuxCliFlags {
-  output?: string;
-  format?: string;
-  map?: string[];
-  addTokens?: RemuxAddToken[];
-  thumbnail?: string;
-  chapters?: string;
-  copyChapters?: boolean;
-  subtitleCodec?: string;
-  subtitles?: boolean;
-  audioSync?: string;
-  filters?: string[];
-}
-
-/**
- * A built remux plan plus the resolved output path and the non-blocking
- * findings for the requested container.
- * @interface RemuxCliPlan
- * @property {ConversionOptions} options - Ready-to-run options.
- * @property {string} output - Output path (`-o` when given, else next to the input).
- * @property {string} container - Normalized target container extension.
- * @property {RemuxWarning[]} warnings - Non-blocking findings.
- */
-export interface RemuxCliPlan {
-  options: ConversionOptions;
-  output: string;
-  container: string;
-  warnings: RemuxWarning[];
-}
-
-/**
- * Parameters for a single `remux` run.
- * @interface RunRemuxParams
- * @property {string} input - Primary input file.
- * @property {RemuxCliFlags} flags - Parsed remux flags.
- * @property {ITranscoder} transcoder - Transcoder backend.
- * @property {number} timeoutSeconds - Hard conversion timeout in seconds.
- * @property {CliThemeId} themeId - Theme used to color the progress bar.
- */
-export interface RunRemuxParams {
-  input: string;
-  flags: RemuxCliFlags;
-  transcoder: ITranscoder;
-  timeoutSeconds: number;
-  themeId: CliThemeId;
 }
 
 /**

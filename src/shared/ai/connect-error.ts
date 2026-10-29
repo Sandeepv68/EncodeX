@@ -24,60 +24,9 @@
  * process and (type-only) the renderer.
  */
 
-import type { AIProviderId } from './types';
+import type { AIProviderId, AiConnectErrorInfo, AiConnectErrorReason, ProviderErrorFields } from './types';
 
-/**
- * The canonical reasons a connectivity test can fail. `offline` and `noKey`
- * are decided by the caller (they never reach a provider); `noModel` is decided
- * when no model could be resolved (neither configured nor reported by the
- * provider); the rest come from a provider response or a transport failure.
- * @typedef {('invalidKey' | 'forbidden' | 'modelNotFound' | 'notFound' |
- *   'rateLimit' | 'quota' | 'badRequest' | 'serverError' | 'timeout' |
- *   'network' | 'emptyResponse' | 'noKey' | 'noModel' | 'offline' | 'unknown')} AiConnectErrorReason
- */
-export type AiConnectErrorReason =
-  | 'invalidKey'
-  | 'forbidden'
-  | 'modelNotFound'
-  | 'notFound'
-  | 'rateLimit'
-  | 'quota'
-  | 'badRequest'
-  | 'serverError'
-  | 'timeout'
-  | 'network'
-  | 'emptyResponse'
-  | 'noKey'
-  | 'noModel'
-  | 'offline'
-  | 'unknown';
-
-/**
- * The classified outcome of a failed connection test.
- * @interface AiConnectErrorInfo
- * @property {AiConnectErrorReason} reason - The canonical failure reason.
- * @property {number} [status] - The HTTP status, when the provider answered.
- */
-export interface AiConnectErrorInfo {
-  reason: AiConnectErrorReason;
-  status?: number;
-}
-
-/**
- * The normalized fields pulled out of a provider error body, regardless of the
- * provider's envelope shape.
- * @interface ProviderErrorFields
- * @property {string} [type] - OpenAI/Anthropic error type.
- * @property {string | number} [code] - OpenAI string code or Gemini numeric code.
- * @property {string} [status] - Gemini canonical status string.
- * @property {string} [message] - The provider's human message.
- */
-interface ProviderErrorFields {
-  type?: string;
-  code?: string | number;
-  status?: string;
-  message?: string;
-}
+export type { AiConnectErrorInfo, AiConnectErrorReason };
 
 /**
  * Best-effort extraction of the interesting fields from a provider error body.

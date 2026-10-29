@@ -7,14 +7,8 @@ import { useTheme } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRobot } from '@fortawesome/free-solid-svg-icons';
 import { aiProviderLogo } from '../../utils/ai-provider-icons';
-import type { AIProviderId } from '../../../shared/ai/types';
+import type { ProviderIconProps } from './types';
 import { ProviderGlyph, ProviderLogo } from '../../styles/copilot/ProviderIcon.styles';
-
-interface ProviderIconProps {
-  providerId?: AIProviderId | null;
-  /** Edge length of the icon in pixels. */
-  size?: number;
-}
 
 /**
  * Renders the logo for a provider, or a robot glyph when none is available.

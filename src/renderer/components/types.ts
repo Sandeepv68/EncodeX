@@ -3,8 +3,12 @@
  * Defines prop shapes and shared types used across the component layer.
  */
 
-import type { ReactNode, Ref, RefObject, ReactElement } from 'react';
+import type { ComponentProps, ReactNode, Ref, RefObject, ReactElement } from 'react';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import type { Skeleton } from '@mui/material';
+import type { DraggableAttributes } from '@dnd-kit/core';
+import type { useSortable } from '@dnd-kit/sortable';
+import type { SimpleIcon } from 'simple-icons';
 import type {
   AppError,
   ConversionOptions,
@@ -19,8 +23,10 @@ import type {
   WaveformData,
   WhenDoneConfig,
 } from '../../shared/types';
+import type { AIProviderId } from '../../shared/ai/types';
+import type { OnboardingGoal } from '../../shared/analytics/events';
 import type { TooltipProps } from '@mui/material/Tooltip';
-import type { BatchEncodingValues } from '../utils/batch-options';
+import type { BatchEncodingValues } from '../utils/types';
 
 /**
  * Which navigation blip the job popover currently describes.
@@ -693,3 +699,124 @@ export interface VideoTimelineProps {
   onEndChange: (time: number) => void;
   onAudioEnabledChange?: (enabled: boolean) => void;
 }
+
+/* ------------------------------------------------------------------ *
+ * AiConnectionStatus
+ * ------------------------------------------------------------------ */
+
+/** Props for {@link AiConnectionStatus}. */
+export interface AiConnectionStatusProps {
+  connected: boolean;
+  providerId?: AIProviderId;
+  model?: string;
+  /** Test id applied to the pill's outer element. */
+  testId?: string;
+  /** Show the caption without waiting for hover. */
+  expanded?: boolean;
+  /** Adds a soft drop shadow to the pill. */
+  elevated?: boolean;
+}
+
+/* ------------------------------------------------------------------ *
+ * GettingStartedCard
+ * ------------------------------------------------------------------ */
+
+/**
+ * Maps each onboarding goal to its tool route and i18n key suffix.
+ * @interface GoalSpec
+ */
+export interface GoalSpec {
+  goal: OnboardingGoal;
+  to: string;
+  i18nKey: string;
+}
+
+/* ------------------------------------------------------------------ *
+ * PageSkeletons
+ * ------------------------------------------------------------------ */
+
+/** Props forwarded to the shared skeleton "bone" primitive. */
+export type BoneProps = ComponentProps<typeof Skeleton>;
+
+/* ------------------------------------------------------------------ *
+ * ProfileBadge / ProfileEditorDialog / ProfileIcon / ProfileSelector
+ * ------------------------------------------------------------------ */
+
+/** Props for the inline active-profile chip. */
+export interface ProfileBadgeProps {
+  profile: ConversionProfile;
+  onClear?: () => void;
+  testId?: string;
+}
+
+/** Props for the create/edit conversion-profile dialog. */
+export interface ProfileEditorDialogProps {
+  open: boolean;
+  onClose: () => void;
+  editProfile?: ConversionProfile | null;
+}
+
+/** A resolved profile icon, rendered by <ProfileIcon />. */
+export type ResolvedIcon =
+  | { kind: 'brand'; icon: SimpleIcon }
+  | { kind: 'fa'; icon: IconDefinition; color: string }
+  | { kind: 'badge'; label: string; color: string };
+
+/** Fallback FontAwesome entry (brand has no simple-icons glyph). */
+export interface FallbackEntry {
+  test: (name: string) => boolean;
+  icon: IconDefinition;
+  color: string;
+}
+
+/** Format-badge entry: matches a profile name and renders its abbreviation. */
+export interface BadgeEntry {
+  test: (name: string) => boolean;
+  label: string;
+  color: string;
+}
+
+/** Props for the searchable profile selector dropdown. */
+export interface ProfileSelectorProps {
+  onCreateNew?: () => void;
+  onApplyProfile?: (profile: ConversionProfile) => void;
+  testId?: string;
+}
+
+/* ------------------------------------------------------------------ *
+ * QueueJobCard
+ * ------------------------------------------------------------------ */
+
+/**
+ * Handle props forwarded from {@link QueueJobCard} to the presentational body.
+ * @interface DragHandleProps
+ * @property {DraggableAttributes} attributes - dnd-kit attributes for the handle.
+ * @property {ReturnType<typeof useSortable>['listeners']} listeners - dnd-kit
+ *   pointer/keyboard listeners for the handle.
+ */
+export interface DragHandleProps {
+  attributes: DraggableAttributes;
+  listeners: ReturnType<typeof useSortable>['listeners'];
+}
+
+/* ------------------------------------------------------------------ *
+ * ShortcutsHelpDialog
+ * ------------------------------------------------------------------ */
+
+/**
+ * Props for the shortcuts help dialog.
+ * @interface ShortcutsHelpDialogProps
+ * @property {boolean} open - Controls dialog visibility.
+ * @property {() => void} onClose - Fired when the dialog is dismissed.
+ */
+export interface ShortcutsHelpDialogProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+/* ------------------------------------------------------------------ *
+ * VideoFiltersSection
+ * ------------------------------------------------------------------ */
+
+/** Shape of the transient parameter values for the pending preset. */
+export type PendingValues = Record<string, string>;

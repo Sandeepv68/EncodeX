@@ -19,13 +19,8 @@ import ViewDefinitionList from '../kit/ViewDefinitionList';
 import ViewEmptyState from '../kit/ViewEmptyState';
 import ViewProgress from '../kit/ViewProgress';
 import { ViewBulletList, ViewParagraph, ViewRow, ViewRowFooter, ViewStack } from '../kit/styles';
-import type { McpUiBatchEntry, McpUiConfirmation } from '../../../shared/mcp-ui';
-
-interface BatchPayload {
-  confirmation?: McpUiConfirmation;
-  jobs?: McpUiBatchEntry[];
-  total?: number;
-}
+import type { McpUiConfirmation } from '../../../shared/mcp-ui';
+import type { BatchPayload, BatchRowProps } from './types';
 
 /**
  * Renders the batch view.
@@ -137,10 +132,6 @@ export default function BatchView() {
       )}
     </ViewCard>
   );
-}
-
-interface BatchRowProps {
-  entry: McpUiBatchEntry;
 }
 
 /**

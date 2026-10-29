@@ -159,7 +159,10 @@ npm run lint                # eslint src/renderer
 npm run lint:px             # no raw px values
 npm run lint:colors         # no raw hex/rgba colors
 npm run lint:rem            # rem units via spacing constants
-npm run lint:inline-styles  # no inline styles
+npm run lint:inline-styles  # no inline styles: style/sx props, keyframes
+npm run lint:inline-styles:test  # unit test for the above rule
+npm run lint:types          # no local type declarations: types live in type files
+npm run lint:types:test     # unit test for the above rule
 npm run lint:strings        # no hardcoded UI strings
 npm run lint:strings:test   # unit test for the above rule
 npm run lint:unused         # no unused declarations

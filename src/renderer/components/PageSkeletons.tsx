@@ -1,7 +1,8 @@
-import type { ComponentProps, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Skeleton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { QUEUE_STATUS } from '../../shared/media-options';
+import type { BoneProps } from './types';
 import { ContentPaper, PageBody, PageRoot, TitleIcon } from '../styles/PageContainer.styles';
 import { SectionCard } from '../styles/form.styles';
 import { SectionsStack } from '../styles/VideoCut.styles';
@@ -49,8 +50,6 @@ import {
   SkeletonTimeline,
   SkeletonToggleRow,
 } from '../styles/PageSkeletons.styles';
-
-type BoneProps = ComponentProps<typeof Skeleton>;
 
 function Bone(props: BoneProps) {
   return <Skeleton variant="rounded" {...props} />;

@@ -7,6 +7,8 @@
  * player frames, queue job updates) to the renderer.
  */
 
+import type { RoutedOperation } from '../../shared/ai/llm';
+
 /**
  * Type-safe function for sending IPC messages from the main process to the
  * renderer process.
@@ -27,3 +29,16 @@
  * @returns {void} Nothing is returned.
  */
 export type IpcSender = (channel: string, ...args: unknown[]) => void;
+
+/**
+ * A routing result plus whether it came from the rules fallback after a
+ * configured provider failed to answer.
+ * @interface RouteDecision
+ * @property {RoutedOperation} routed - The chosen operation.
+ * @property {boolean} aiFallback - True when an AI provider was available but
+ *   returned nothing usable, so the deterministic router was used.
+ */
+export interface RouteDecision {
+  routed: RoutedOperation;
+  aiFallback: boolean;
+}

@@ -25,7 +25,8 @@ npm run lint                # eslint src/renderer
 npm run lint:px             # no raw px values
 npm run lint:colors         # no raw hex/rgba colors
 npm run lint:rem            # spacing via rem/token constants
-npm run lint:inline-styles  # no inline styles
+npm run lint:inline-styles  # no inline styles: style/sx props, keyframes (all styling goes in src/renderer/styles/*.styles.ts)
+npm run lint:types          # no local type declarations (types live in types.ts / *.types.ts)
 npm run lint:strings        # no hardcoded UI strings
 npm run lint:unused         # no unused declarations
 npm run lint:aptabase       # no direct @aptabase imports

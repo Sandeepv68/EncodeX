@@ -18,6 +18,9 @@ import {
   TIMELINE_MIN_BAR_PITCH,
   TIMELINE_TICK_STEPS,
 } from '../../shared/constants';
+import type { RulerTicks, WaveformBarGeometry } from './types';
+
+export type { RulerTicks, WaveformBarGeometry };
 
 /**
  * Computes the initial zoom level (pixels per second) that fits the full clip
@@ -64,24 +67,6 @@ export function computeTimelineZoom(zoom: number, factor: number): number {
  */
 export function zoomCenterScrollLeft(centerTime: number, zoom: number, clientWidth: number): number {
   return Math.max(0, centerTime * zoom - clientWidth / 2);
-}
-
-/**
- * Resolved ruler tick layout for a visible time range.
- * @interface RulerTicks
- * @property {number} step - Major tick interval in seconds.
- * @property {number} sub - Minor sub-tick interval in seconds (0 when no room).
- * @property {number[]} major - Major tick time values (seconds).
- * @property {number[]} minor - Minor sub-tick time values that do not coincide
- *   with major ticks.
- * @property {number[]} labels - Major tick values that pass the label-gap test.
- */
-export interface RulerTicks {
-  step: number;
-  sub: number;
-  major: number[];
-  minor: number[];
-  labels: number[];
 }
 
 /**
@@ -149,21 +134,6 @@ export function computeRulerTicks(args: {
   }
 
   return { step, sub, major, minor, labels };
-}
-
-/**
- * Geometry of a single waveform bar.
- * @interface WaveformBarGeometry
- * @property {number} left - Left offset in pixels.
- * @property {number} top - Top offset in pixels.
- * @property {number} width - Bar width in pixels.
- * @property {number} height - Bar height in pixels.
- */
-export interface WaveformBarGeometry {
-  left: number;
-  top: number;
-  width: number;
-  height: number;
 }
 
 /**

@@ -1,12 +1,6 @@
-import type { ConversionProgress } from './types';
+import type { ConversionProgress, TaskProgress } from './types';
 
-/**
- * Subset of conversion progress surfaced to task-oriented UI (audio
- * extraction, media-task hooks). Shares a name with the structurally-identical
- * `TaskProgress` type in the stores/state layer; keep both in sync.
- * @typedef {Pick<ConversionProgress, 'percent'|'time'|'speed'|'eta'>} TaskProgress
- */
-export type TaskProgress = Pick<ConversionProgress, 'percent' | 'time' | 'speed' | 'eta'>;
+export type { TaskProgress } from './types';
 
 /**
  * Projects a raw ConversionProgress payload into the TaskProgress subset.

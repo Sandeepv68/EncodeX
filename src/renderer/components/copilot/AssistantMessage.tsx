@@ -5,9 +5,8 @@
 import { Button, List, ListItemText, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListCheck, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
-import type { CopilotAction, CopilotPlan, CopilotResult } from '../../../shared/copilot';
+import type { CopilotAction, CopilotResult } from '../../../shared/copilot';
 import type { AgentSkip } from '../../../shared/ai/agent';
-import type { AIProviderId } from '../../../shared/ai/types';
 import { useTranslation } from 'react-i18next';
 import {
   ActionListItemIcon,
@@ -23,18 +22,11 @@ import {
   SectionBlock,
   SectionHeading,
 } from '../../styles/copilot/AssistantMessage.styles';
+import type { AssistantMessageProps } from './types';
 import ProviderIcon from './ProviderIcon';
 import McpAppView from './McpAppView';
 
-export interface AssistantMessageProps {
-  plan: CopilotPlan | null;
-  onAddToQueue: () => void;
-  busy?: boolean;
-  error?: string | null;
-  notice?: string | null;
-  /** The currently connected provider; its logo marks each action. */
-  providerId?: AIProviderId | null;
-}
+export type { AssistantMessageProps };
 
 export default function AssistantMessage({
   plan,

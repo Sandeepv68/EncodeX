@@ -24,59 +24,9 @@ import {
   suggestedExtensionForVideoCodec,
 } from '../../shared/codec-containers';
 import { basename, dirname as getSourceDir, stem as getSourceStem } from './path-utils';
+import type { BatchEncodingValues, BatchHwSettings } from './types';
 
-/**
- * Encoding-option field values shared by the batch page and the per-job dialog.
- * Each string mirrors the page's controlled state; empty strings mean "use the
- * encoder default" for the optional fields.
- * @interface BatchEncodingValues
- */
-export interface BatchEncodingValues {
-  videoCodec: string;
-  audioCodec: string;
-  container: string;
-  videoBitrate: string;
-  audioBitrate: string;
-  quality: string;
-  scale: string;
-  rotate: string;
-  flipH: boolean;
-  flipV: boolean;
-  pixelFormat: string;
-  videoFilters: string[];
-  /**
-   * Remux: explicit stream-edge selection of the source file as `-map` specs
-   * (e.g. ['0:v:0', '0:a:1']). Empty or absent selects every stream.
-   */
-  selectedMaps?: string[];
-  /**
-   * Demux: stream kind extracted by THIS per-stream job ('video' | 'audio' |
-   * 'subtitle').
-   */
-  demuxKind?: 'video' | 'audio' | 'subtitle';
-  /**
-   * Demux: stream kinds a batch extracts from each file ('video' | 'audio' |
-   * 'subtitle'). Empty or absent extracts every kind.
-   */
-  demuxKinds?: Array<'video' | 'audio' | 'subtitle'>;
-  /** Demux: `-map` spec of the single stream THIS job extracts (e.g. '0:a:1'). */
-  demuxMap?: string;
-  /** Demux: video re-encode container (extension); empty = lossless stream copy. */
-  demuxVideoContainer?: string;
-  /** Demux: audio encoder for converted audio streams; empty = stream copy. */
-  demuxAudioCodec?: string;
-  /** Demux: subtitle format for converted subtitle streams; empty = stream copy. */
-  demuxSubtitleFormat?: string;
-}
-
-/**
- * Hardware-acceleration settings used to decorate the built options.
- * @interface BatchHwSettings
- */
-export interface BatchHwSettings {
-  hardwareAcceleration: boolean;
-  hwaccelMode: HwAccelMode;
-}
+export type { BatchEncodingValues, BatchHwSettings };
 
 /**
  * Builds the queued `ConversionOptions` for a batch operation from the shared

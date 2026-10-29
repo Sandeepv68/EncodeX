@@ -33,32 +33,10 @@ import type {
   MonitorProvider,
   MonitorUser,
 } from '../../shared/monitoring/types';
+import type { SentryMainSdk } from './types';
 
 /** Per-module logger for the Sentry adapter. @const {Logger} */
 const log = new Logger('main/monitoring/sentryMainProvider');
-
-/**
- * Minimal structural type of the `@sentry/electron/main` module surface this
- * adapter uses. Declaring it locally keeps the file free of a static import
- * (the real module is loaded lazily) while still giving type safety.
- */
-interface SentryMainSdk {
-  init(options: Record<string, unknown>): void;
-  captureException(error: unknown, hint?: Record<string, unknown>): string | undefined;
-  captureMessage(message: string, level?: string, hint?: Record<string, unknown>): string | undefined;
-  captureFeedback(feedback: { message: string; name?: string; email?: string }, hint?: Record<string, unknown>): string | undefined;
-  setTag(key: string, value: string): void;
-  setUser(user: Record<string, unknown> | null): void;
-  addBreadcrumb(breadcrumb: Record<string, unknown>): void;
-  /**
-   * Renderer ANR detection: captures App Not Responding events from renderer
-   * processes (the main-process `anrIntegration` is not part of the Electron
-   * SDK's supported surface in v7).
-   */
-  rendererEventLoopBlockIntegration(options?: { captureNativeStacktrace?: boolean }): Record<string, unknown>;
-  flush(timeout?: number): Promise<boolean>;
-  close(timeout?: number): Promise<boolean>;
-}
 
 /**
  * Maps an optional {@link MonitorUser} to the backend's user record.

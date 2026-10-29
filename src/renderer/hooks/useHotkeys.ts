@@ -37,31 +37,15 @@ import {
   LOG_HOTKEY_UNKNOWN_ID,
 } from '../../shared/log-constants';
 import { SHORTCUT_BY_ID, parseShortcut, shortcutMatches, type ParsedShortcut } from '../constants/shortcuts';
+import type { HotkeyBinding } from './types';
+
+export type { HotkeyBinding };
 
 /**
  * Logger instance scoped to the useHotkeys module.
  * @type {Logger}
  */
 const log = new Logger('renderer/hooks/useHotkeys');
-
-/**
- * One shortcut binding registered by a component.
- * @interface HotkeyBinding
- * @property {string} id - Id of the shortcut spec in the registry; the spec
- *   supplies the chord and label.
- * @property {(event: KeyboardEvent) => void} handler - Invoked when the chord
- *   is pressed (and `enabled` is true). Receives the raw keyboard event.
- * @property {boolean} [enabled] - When false the binding is ignored for that
- *   keypress (but stays registered); defaults to true.
- * @property {boolean} [allowRepeat] - When true the binding also fires on
- *   auto-repeating keydown events (hold to repeat); defaults to false.
- */
-export interface HotkeyBinding {
-  id: string;
-  handler: (event: KeyboardEvent) => void;
-  enabled?: boolean;
-  allowRepeat?: boolean;
-}
 
 /**
  * Selector string describing targets considered "interactive" for the bare-key

@@ -35,3 +35,46 @@ export interface CodecOption {
  * @property {string} eta - Estimated remaining time.
  */
 export type TaskProgress = Pick<ConversionProgress, 'percent' | 'time' | 'speed' | 'eta'>;
+
+/**
+ * One shortcut binding registered by a component.
+ * @interface HotkeyBinding
+ * @property {string} id - Id of the shortcut spec in the registry; the spec
+ *   supplies the chord and label.
+ * @property {(event: KeyboardEvent) => void} handler - Invoked when the chord
+ *   is pressed (and `enabled` is true). Receives the raw keyboard event.
+ * @property {boolean} [enabled] - When false the binding is ignored for that
+ *   keypress (but stays registered); defaults to true.
+ * @property {boolean} [allowRepeat] - When true the binding also fires on
+ *   auto-repeating keydown events (hold to repeat); defaults to false.
+ */
+export interface HotkeyBinding {
+  id: string;
+  handler: (event: KeyboardEvent) => void;
+  enabled?: boolean;
+  allowRepeat?: boolean;
+}
+
+/**
+ * Structural subset of a store-owned media task that `useTaskRunControls` binds
+ * to. Both RemuxState and DemuxState satisfy it (Demux adds `current`, which is
+ * optional here so Remux single-invocation tasks simply report null).
+ * @typedef {Object} TaskRunStoreState
+ * @property {TaskProgress | null} progress - Live task progress, or null when idle.
+ * @property {boolean} isConverting - Whether a task is currently running.
+ * @property {boolean} isPaused - Whether the running task is paused.
+ * @property {string | null} [current] - Label of the current sub-task (Demux),
+ *   or null when the task is a single invocation.
+ * @property {() => Promise<void>} pause - Pauses the running task.
+ * @property {() => Promise<void>} resume - Resumes the paused task.
+ * @property {() => Promise<void>} cancel - Cancels the task.
+ */
+export type TaskRunStoreState = {
+  progress: TaskProgress | null;
+  isConverting: boolean;
+  isPaused: boolean;
+  current?: string | null;
+  pause: () => Promise<void>;
+  resume: () => Promise<void>;
+  cancel: () => Promise<void>;
+};

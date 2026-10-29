@@ -8,6 +8,9 @@
  */
 
 import { createError, ErrorCode, ERROR_MESSAGES } from '../shared/errors';
+import type { BatchEnvelope, SafetyTier } from './types';
+
+export type { BatchEnvelope, SafetyTier } from './types';
 
 /**
  * Safety tiers. Higher tiers require more scrutiny before they run.
@@ -19,12 +22,6 @@ export const SAFETY_TIERS = {
   WRITE: 2,
   DESTRUCTIVE: 3,
 } as const;
-
-/**
- * A safety tier value.
- * @typedef {(0 | 1 | 2 | 3)} SafetyTier
- */
-export type SafetyTier = (typeof SAFETY_TIERS)[keyof typeof SAFETY_TIERS];
 
 /**
  * Safety tier per MCP tool. Unknown tools default to {@link SAFETY_TIERS.READ}
@@ -123,17 +120,6 @@ export function assertSafeExtraArgs(extraArgs?: string[]): void {
   if (unsafe.length > 0) {
     throw createError(ErrorCode.UNSAFE_ARGUMENTS, ERROR_MESSAGES[ErrorCode.UNSAFE_ARGUMENTS], `Rejected extraArgs: ${unsafe.join(', ')}`);
   }
-}
-
-/**
- * The size envelope of a batch plan: how many files and how many total bytes.
- * @interface BatchEnvelope
- * @property {number} fileCount - Number of matched files.
- * @property {number} totalBytes - Total input size in bytes.
- */
-export interface BatchEnvelope {
-  fileCount: number;
-  totalBytes: number;
 }
 
 /**

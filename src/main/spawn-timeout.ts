@@ -26,6 +26,9 @@ import { createError, ErrorCode, ERROR_MESSAGES } from '../shared/errors';
 import { KILL_SIGNAL } from '../shared/transcoder-constants';
 import { LOG_SUBPROCESS_TIMEOUT_INVALID, LOG_SUBPROCESS_TIMEOUT_KILL_FAILED, LOG_SUBPROCESS_TIMED_OUT } from '../shared/log-constants';
 import type { AppError } from '../shared/types';
+import type { Killable, SpawnStarter } from './types';
+
+export type { Killable, SpawnStarter };
 
 /** Budget for decoding a single downscaled image frame for a histogram. */
 export const IMAGE_HISTOGRAM_TIMEOUT_MS = 15000;
@@ -50,28 +53,6 @@ export const TIMELINE_EXTRACT_TIMEOUT_MS = 30000;
  * @const {Logger} log
  */
 const log = new Logger('main/spawn-timeout');
-
-/**
- * The minimum a watchdog needs in order to stop runaway work.
- *
- * Declared with method syntax on purpose: that makes `kill`'s parameter
- * bivariant under `strictFunctionTypes`, so both a Node `ChildProcess`
- * (`kill(signal?: NodeJS.Signals | number)`) and a fluent-ffmpeg `FfmpegCommand`
- * (`kill(signal: string)`) satisfy it without an adapter at each call site.
- */
-export interface Killable {
-  kill(signal?: string | number | NodeJS.Signals): unknown;
-}
-
-/**
- * Starts bounded work and hands the watchdog whatever needs killing.
- *
- * `onSpawn` is called synchronously, immediately after the process is created.
- * It may be called more than once (last registration wins) or not at all, which
- * is why the watchdog treats a missing target as "nothing to kill" rather than
- * as a programming error.
- */
-export type SpawnStarter<T> = (onSpawn: (target: Killable) => void) => Promise<T>;
 
 /**
  * Reports whether a timeout budget is usable.

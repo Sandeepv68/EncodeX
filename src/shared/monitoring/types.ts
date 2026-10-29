@@ -188,10 +188,18 @@ export interface MonitorProvider {
   flush?(timeoutMs?: number): Promise<boolean>;
 
   /**
-   * Shuts the backend down, flushing pending events first. After close the
+   * Shuts the backend down, draining pending events first. After close the
    * provider may be re-initialized via {@link init}.
    * @param {number} [timeoutMs] - Max time to wait in milliseconds.
    * @returns {Promise<boolean>} True when shutdown completed cleanly.
    */
   close?(timeoutMs?: number): Promise<boolean>;
 }
+
+/**
+ * Factory that resolves the concrete provider for a given configuration.
+ * Returning `undefined`/`null` selects the no-op fallback.
+ * @param {MonitoringConfig} config - Resolved startup configuration.
+ * @returns {MonitorProvider | undefined | null} The adapter to activate.
+ */
+export type MonitorProviderFactory = (config: MonitoringConfig) => MonitorProvider | undefined | null;

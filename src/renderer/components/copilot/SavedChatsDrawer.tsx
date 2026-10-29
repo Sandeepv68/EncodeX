@@ -9,8 +9,8 @@ import { IconButton, Tooltip, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
-import type { SavedCopilotChat } from '../../stores/copilotChats';
 import { deriveCopilotChatProvider } from '../../stores/copilotChats';
+import type { SavedChatsDrawerProps } from './types';
 import ProviderIcon from './ProviderIcon';
 import {
   DeleteChatButton,
@@ -58,14 +58,6 @@ export function formatTimeAgo(timestamp: number, now: number, locale: string): s
   // Only a sub-second (or future) elapsed time reaches this point. Keep the
   // value negative so `numeric: 'always'` renders "0 sec. ago" not "in 0 sec.".
   return rtf.format(-elapsedSeconds, 'second');
-}
-
-interface SavedChatsDrawerProps {
-  open: boolean;
-  chats: SavedCopilotChat[];
-  onClose: () => void;
-  onOpen: (chat: SavedCopilotChat) => void;
-  onDelete: (id: string) => void;
 }
 
 /**

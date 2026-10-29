@@ -8,46 +8,12 @@
  * no paths, file names, or stream identifiers.
  */
 
-import type { DemuxTargetKind } from './events';
-import type { DemuxTarget } from '../codec-containers';
+import type { DemuxTargetKind, DemuxAnalyticsSummary, RemuxAnalyticsContext, RemuxAnalyticsSummary } from './types';
+import type { DemuxTarget } from '../types';
 import { AUDIO_EXTENSIONS, SUBTITLE_EXTENSIONS } from '../file-extensions';
 import type { ConversionOptions, RemuxInput } from '../types';
 
-/**
- * Categorical analytics payload shared by the `remux_started`,
- * `remux_completed`, and `remux_failed` events.
- * @interface RemuxAnalyticsSummary
- * @property {string} container - Target container extension.
- * @property {number} streamCount - Number of `-map` specs copied from the source.
- * @property {number} addedSubs - Number of added subtitle inputs.
- * @property {number} addedAudio - Number of added audio inputs.
- * @property {boolean} hasThumbnail - Whether cover art is being muxed.
- * @property {boolean} hasChapters - Whether chapters are being copied/muxed.
- * @property {boolean} hasAudioSync - Whether any audio timeline shift is applied.
- */
-export interface RemuxAnalyticsSummary {
-  container: string;
-  streamCount: number;
-  addedSubs: number;
-  addedAudio: number;
-  hasThumbnail: boolean;
-  hasChapters: boolean;
-  hasAudioSync: boolean;
-}
-
-/**
- * Categorical analytics payload shared by the `demux_started`,
- * `demux_completed`, and `demux_failed` events.
- * @interface DemuxAnalyticsSummary
- * @property {Partial<Record<DemuxTargetKind, number>>} kindCounts - Extracted stream count per kind.
- * @property {number} streamCount - Total number of extraction targets.
- * @property {DemuxTargetKind[]} convertedKinds - Kinds that are re-encoded rather than stream-copied.
- */
-export interface DemuxAnalyticsSummary {
-  kindCounts: Partial<Record<DemuxTargetKind, number>>;
-  streamCount: number;
-  convertedKinds: DemuxTargetKind[];
-}
+export type { DemuxAnalyticsSummary, RemuxAnalyticsContext, RemuxAnalyticsSummary } from './types';
 
 /**
  * Lowercased extension of a path (without the dot), or an empty string when the
@@ -72,19 +38,6 @@ function extensionOf(filePath: string): string {
  */
 function countAddedByExtension(entries: RemuxInput[], extensions: readonly string[]): number {
   return entries.filter((entry) => extensions.includes(extensionOf(entry.path))).length;
-}
-
-/**
- * Context a caller supplies alongside the built remux options, for the facts
- * that only the caller knows (they are not part of `ConversionOptions`).
- * @interface RemuxAnalyticsContext
- * @property {string} [container] - Target container extension of the remux.
- * @property {string} [input] - Primary source path, used to keep the audio-sync
- *   "re-read" entry (which repeats that path) out of the added-audio count.
- */
-export interface RemuxAnalyticsContext {
-  container?: string;
-  input?: string;
 }
 
 /**

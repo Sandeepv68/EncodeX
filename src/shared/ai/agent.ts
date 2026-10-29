@@ -11,105 +11,24 @@
  */
 
 import type { ConversionProfile, EncoderCapabilities } from '../types';
-import type { ConversionConstraints, MediaFacts, PlanRequest, RecommendedSettings } from './types';
-import type { Workflow, WorkflowStep } from './workflow';
+import type {
+  AgentAction,
+  AgentPlan,
+  AgentRequest,
+  AgentSkip,
+  ConversionConstraints,
+  EstimateConversionInput,
+  MediaFacts,
+  PlanRequest,
+  RecommendedSettings,
+  Workflow,
+  WorkflowStep,
+} from './types';
 import { recommendSettings } from './recommend';
 import { estimateConversion } from './estimate';
-import type { EstimateConversionInput } from './estimate';
 
-/**
- * One planned conversion the agent would run.
- * @interface AgentAction
- * @property {string} id - Workflow step id for this action.
- * @property {string} input - Source file path.
- * @property {string} [output] - Explicit output path, when one was derived.
- * @property {string} [profileId] - Built-in profile the settings came from.
- * @property {number} confidence - Planner confidence in `[0, 1]`.
- * @property {string[]} rationale - Why this action was planned.
- * @property {number} [estimatedSizeBytes] - Estimated output size.
- * @property {number} estimatedSavings - Estimated size change as a fraction.
- */
-export interface AgentAction {
-  id: string;
-  input: string;
-  output?: string;
-  profileId?: string;
-  confidence: number;
-  rationale: string[];
-  estimatedSizeBytes?: number;
-  estimatedSavings: number;
-}
-
-/**
- * A file the agent deliberately did not plan, with the reason.
- * @interface AgentSkip
- * @property {string} input - Source file path.
- * @property {string} reason - Why it was skipped.
- */
-export interface AgentSkip {
-  input: string;
-  reason: string;
-}
-
-/**
- * Tuning for {@link planAgent}.
- * @interface AgentOptions
- * @property {number} [maxFiles] - Upper bound on planned actions (default 50).
- * @property {number} [minSavings] - Minimum estimated size reduction (fraction
- *   in `[0, 1]`) required to keep an action; only applied when the plan carries
- *   an explicit target bitrate (a CRF-only plan cannot be sized honestly).
- */
-export interface AgentOptions {
-  maxFiles?: number;
-  minSavings?: number;
-}
-
-/**
- * The agent planning request: a goal plus grounded facts for every file.
- * @interface AgentRequest
- * @property {string} intent - The natural-language goal shared by every file.
- * @property {MediaFacts[]} files - Structured facts for the candidate files.
- * @property {ConversionProfile[]} profiles - Built-in profiles to choose from.
- * @property {EncoderCapabilities} capabilities - Detected encoder capabilities.
- * @property {ConversionConstraints} [constraints] - Optional hard constraints.
- * @property {AgentOptions} [options] - Tuning.
- * @property {(facts: MediaFacts, index: number) => string} [resolveOutput] -
- *   Supplies each action's output path (the MCP layer derives these).
- * @property {(request: PlanRequest) => Promise<RecommendedSettings>} [planner] -
- *   Optional async planner (an LLM provider). Defaults to the deterministic,
- *   offline {@link recommendSettings}, so behavior is unchanged when omitted.
- */
-export interface AgentRequest {
-  intent: string;
-  files: MediaFacts[];
-  profiles: ConversionProfile[];
-  capabilities: EncoderCapabilities;
-  constraints?: ConversionConstraints;
-  options?: AgentOptions;
-  resolveOutput?: (facts: MediaFacts, index: number) => string;
-  planner?: (request: PlanRequest) => Promise<RecommendedSettings>;
-}
-
-/**
- * The planned agent run: the actions, the skips, and a runnable workflow.
- * @interface AgentPlan
- * @property {string} goal - The intent the plan was built for.
- * @property {AgentAction[]} actions - Planned conversions, in file order.
- * @property {AgentSkip[]} skips - Files left out, with reasons.
- * @property {Workflow} workflow - A validated, runnable workflow of the actions.
- * @property {string[]} rationale - Plan-level reasons, one per line.
- * @property {string[]} notes - Caveats for the caller.
- * @property {true} isEstimated - The plan is a proposal, not a measurement.
- */
-export interface AgentPlan {
-  goal: string;
-  actions: AgentAction[];
-  skips: AgentSkip[];
-  workflow: Workflow;
-  rationale: string[];
-  notes: string[];
-  isEstimated: true;
-}
+export type { AgentAction, AgentPlan, AgentRequest, AgentSkip };
+export type { AgentOptions } from './types';
 
 /** Default cap on planned actions. */
 const DEFAULT_MAX_FILES = 50;

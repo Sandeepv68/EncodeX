@@ -22,6 +22,7 @@ import * as path from 'path';
 import { Logger } from '../../shared/logger';
 import { LOG_FAILED_TO_PERSIST_ANALYTICS_CONSENT, LOG_FAILED_TO_READ_STORED_ANALYTICS_CONSENT } from '../../shared/log-constants';
 import { readMonitoringConsent } from '../monitoring/consent';
+import type { AnalyticsConsentFile } from './types';
 
 /** Per-module logger for consent handling. @const {Logger} */
 const log = new Logger('main/analytics/consent');
@@ -31,12 +32,6 @@ const log = new Logger('main/analytics/consent');
  * @const {string}
  */
 export const ANALYTICS_CONSENT_FILENAME = 'analytics-consent.json';
-
-/** In-memory shape of the consent file. */
-interface AnalyticsConsentFile {
-  /** Whether the user consents to usage analytics. */
-  enabled: boolean;
-}
 
 /**
  * Resolves the absolute path of the consent file.

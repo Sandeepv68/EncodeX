@@ -11,8 +11,18 @@
  * `src/main/ai/settings.ts`.
  */
 
-import type { AIProviderId } from './types';
-import type { AiConnectErrorReason } from './connect-error';
+import type {
+  AIProviderId,
+  AiActiveConnection,
+  AiConnectErrorReason,
+  AiProviderConfig,
+  AiProviderSummary,
+  AiServerSettings,
+  AiSettingsView,
+} from './types';
+
+export type { AiActiveConnection, AiProviderConfig, AiProviderSummary, AiServerSettings, AiSettingsView };
+export type { AiConnectTestResult, AiModelsListResult, AiSettingsUpdate } from './types';
 
 /**
  * The provider ids a user may select for Copilot planning. `rules` is the
@@ -34,216 +44,6 @@ export const AI_PROVIDERS_REQUIRING_KEY: ReadonlySet<AIProviderId> = new Set(['o
  * @const {ReadonlySet<AIProviderId>} AI_PROVIDERS_REQUIRING_NETWORK
  */
 export const AI_PROVIDERS_REQUIRING_NETWORK: ReadonlySet<AIProviderId> = new Set(['openai', 'anthropic', 'gemini']);
-
-/**
- * One provider's own configuration (API key, model, endpoint). Kept separate
- * from {@link AiServerSettings}'s flat fields so every provider remembers its
- * own key instead of sharing a single global one.
- * @interface AiProviderConfig
- * @property {string} model - The model id (empty means "not chosen yet": the
- *   app resolves one from the provider's own model list).
- * @property {string} [baseUrl] - OpenAI-compatible base URL override.
- * @property {string | null} key - Encrypted (base64) key, or null when unset.
- * @property {number} [keySetAt] - Epoch ms the key was last set.
- * @property {boolean} [storedInsecurely] - True when the key is plaintext
- *   because `safeStorage` was unavailable and the user accepted the risk.
- */
-export interface AiProviderConfig {
-  model: string;
-  baseUrl?: string;
-  key: string | null;
-  keySetAt?: number;
-  storedInsecurely?: boolean;
-}
-
-/**
- * The single active connection: which provider answered the last successful
- * connectivity test and with which model. Independent of the *selected*
- * provider, so switching the editor's selection never clears it.
- * @interface AiActiveConnection
- * @property {AIProviderId} providerId - The provider that answered.
- * @property {string} [model] - The model that answered.
- * @property {number} at - Epoch ms of the successful test.
- */
-export interface AiActiveConnection {
-  providerId: AIProviderId;
-  model?: string;
-  at: number;
-}
-
-/**
- * The persisted AI settings document (written to `userData/ai-settings.json`).
- *
- * The flat fields always describe the **selected** provider so existing
- * consumers (`decryptApiKey`, `effectiveModel`, `createConnectorFromSettings`)
- * keep working unchanged. Every *other* provider's config lives in
- * {@link AiServerSettings.providers}; the selected provider is never duplicated
- * there, and the connection pointer below is global (one active connection).
- *
- * `providerId` is the **active** provider (the one the Copilot plans with),
- * while {@link AiServerSettings.selectedProviderId} is the provider the user
- * last picked in the Settings editor. The two are kept apart so browsing to
- * another provider never silently changes the active one, while the editor can
- * still restore the tile the user left selected on the next start.
- * @interface AiServerSettings
- * @property {AIProviderId} providerId - The active provider.
- * @property {string} model - The model id (empty means "not chosen yet": the
- *   app resolves one from the provider's own model list).
- * @property {string} [baseUrl] - OpenAI-compatible base URL override.
- * @property {string | null} key - Encrypted (base64) key, or null when unset.
- * @property {number} [keySetAt] - Epoch ms the key was last set.
- * @property {boolean} [storedInsecurely] - True when the key is plaintext
- *   because `safeStorage` was unavailable and the user accepted the risk.
- * @property {Partial<Record<AIProviderId, AiProviderConfig>>} [providers] -
- *   Configs of the providers that are *not* active.
- * @property {AIProviderId} [selectedProviderId] - The provider the user last
- *   selected in the Settings editor. Restored on the next start so the
- *   previously selected (and connected) provider is auto-selected.
- * @property {number} [connectedAt] - Epoch ms of the last successful connection
- *   test. Cleared only when the connected provider's own config changes.
- * @property {AIProviderId} [connectedProvider] - The provider verified by the
- *   last successful test.
- * @property {string} [connectedModel] - The model that answered the last
- *   successful test.
- */
-export interface AiServerSettings {
-  providerId: AIProviderId;
-  model: string;
-  baseUrl?: string;
-  key: string | null;
-  keySetAt?: number;
-  storedInsecurely?: boolean;
-  providers?: Partial<Record<AIProviderId, AiProviderConfig>>;
-  selectedProviderId?: AIProviderId;
-  connectedAt?: number;
-  connectedProvider?: AIProviderId;
-  connectedModel?: string;
-}
-
-/**
- * A non-secret summary of one provider's stored config, so the renderer can
- * show the correct saved-key/model/endpoint for a provider the user selects in
- * the editor without a round-trip (the selected provider's own config is the
- * flat {@link AiSettingsView} fields; every other provider is summarized here).
- * @interface AiProviderSummary
- * @property {string} model - The model id (empty means "not chosen yet").
- * @property {string} [baseUrl] - Base URL override, if any.
- * @property {boolean} hasKey - Whether a key is stored for this provider.
- * @property {string} keyHint - A non-secret hint (e.g. `••••••••`).
- * @property {boolean} storedInsecurely - Whether the key is stored in plaintext.
- */
-export interface AiProviderSummary {
-  model: string;
-  baseUrl?: string;
-  hasKey: boolean;
-  keyHint: string;
-  storedInsecurely: boolean;
-}
-
-/**
- * The sanitized settings view sent to the renderer (never includes the key).
- * @interface AiSettingsView
- * @property {AIProviderId} providerId - The selected provider.
- * @property {string} model - The model id.
- * @property {string} [baseUrl] - Base URL override, if any.
- * @property {boolean} hasKey - Whether a key is stored.
- * @property {string} keyHint - A non-secret hint (e.g. `•••• 1234`).
- * @property {boolean} storedInsecurely - Whether the key is stored in plaintext.
- * @property {boolean} encryptionAvailable - Whether `safeStorage` is usable.
- * @property {boolean} connected - Whether the stored config passed a connection
- *   test (has a key, and the verified provider matches the selected provider).
- * @property {number} [connectedAt] - Epoch ms of the successful test, when connected.
- * @property {string} [connectedModel] - The verified model, when connected.
- * @property {AiActiveConnection} [activeConnection] - The single active
- *   connection, when one is recorded. Present regardless of which provider is
- *   currently selected, so the UI can show a connection that lives elsewhere.
- * @property {AIProviderId} [selectedProviderId] - The provider the user last
- *   selected in the Settings editor. Always present in a view; it falls back
- *   to `providerId` for documents written before the selection was persisted.
- * @property {Partial<Record<AIProviderId, AiProviderSummary>>} [providerSummaries] -
- *   Non-secret summaries of the providers that are *not* active, so the editor
- *   can show each provider's own saved key/model/endpoint the instant it is
- *   selected, without persisting the selection or a round-trip.
- */
-export interface AiSettingsView {
-  providerId: AIProviderId;
-  model: string;
-  baseUrl?: string;
-  hasKey: boolean;
-  keyHint: string;
-  storedInsecurely: boolean;
-  encryptionAvailable: boolean;
-  connected: boolean;
-  connectedAt?: number;
-  connectedModel?: string;
-  activeConnection?: AiActiveConnection;
-  selectedProviderId?: AIProviderId;
-  providerSummaries?: Partial<Record<AIProviderId, AiProviderSummary>>;
-}
-
-/**
- * The renderer's request to update AI settings.
- * @interface AiSettingsUpdate
- * @property {AIProviderId} providerId - The provider the update targets.
- * @property {string} [model] - The model id.
- * @property {string} [baseUrl] - Base URL override.
- * @property {string} [apiKey] - A new plaintext key to store (encrypted at rest).
- * @property {boolean} [clearKey] - Remove any stored key.
- * @property {boolean} [activate] - Whether the targeted provider becomes the
- *   *active* one (the provider the Copilot plans with). Defaults to true;
- *   `false` applies the change to the targeted provider's own stored config
- *   without touching the active provider (used when the user only browses to
- *   another provider in the editor).
- */
-export interface AiSettingsUpdate {
-  providerId: AIProviderId;
-  model?: string;
-  baseUrl?: string;
-  apiKey?: string;
-  clearKey?: boolean;
-  activate?: boolean;
-}
-
-/**
- * The result of a connectivity test.
- * @interface AiConnectTestResult
- * @property {boolean} ok - Whether the connector answered.
- * @property {string} message - A human message (success detail or a fallback).
- * @property {AiConnectErrorReason} [reason] - The classified failure reason, so
- *   the renderer can show a localized message instead of the raw payload.
- * @property {number} [status] - The provider HTTP status, when it answered.
- * @property {string} [model] - The model that answered, on success.
- * @property {number} [latencyMs] - Round-trip time of the test, on success.
- * @property {AiSettingsView} [view] - The refreshed settings view after a
- *   successful test (the connection is recorded), so the renderer can show the
- *   persisted status without a second round-trip.
- */
-export interface AiConnectTestResult {
-  ok: boolean;
-  message: string;
-  reason?: AiConnectErrorReason;
-  status?: number;
-  model?: string;
-  latencyMs?: number;
-  view?: AiSettingsView;
-}
-
-/**
- * The result of listing the available models from a provider's own API, so the
- * settings editor can offer a live pick-list instead of a hardcoded catalog.
- * @interface AiModelsListResult
- * @property {boolean} ok - Whether the provider answered with a model list.
- * @property {string[]} models - The model ids the provider reported (empty on failure).
- * @property {AiConnectErrorReason} [reason] - The classified failure reason, so the
- *   renderer can show a localized message instead of the raw payload.
- * @property {number} [status] - The provider HTTP status, when it answered.
- */
-export interface AiModelsListResult {
-  ok: boolean;
-  models: string[];
-  reason?: AiConnectErrorReason;
-  status?: number;
-}
 
 /**
  * Builds the default (offline) settings document.

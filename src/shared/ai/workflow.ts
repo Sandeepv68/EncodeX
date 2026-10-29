@@ -14,116 +14,17 @@
  * forgets to list `dependsOn` explicitly.
  */
 
+import type { Workflow, WorkflowIssue, WorkflowPlan, WorkflowPlanStep, WorkflowReference, WorkflowStep } from './types';
+
+export type { Workflow, WorkflowIssue, WorkflowPlan, WorkflowPlanStep, WorkflowReference, WorkflowStep };
+export type { WorkflowIssueCode, WorkflowTool } from './types';
+
 /**
  * The media operations a workflow step may run. Every one of these is a
  * single-output mutating tool, so later steps can chain off `output`.
  * @const {readonly string[]}
  */
 export const WORKFLOW_TOOLS = ['convert_media', 'compress_image', 'extract_audio', 'cut_video', 'remux_media'] as const;
-
-/**
- * The name of a workflow-eligible tool.
- * @typedef {typeof WORKFLOW_TOOLS[number]} WorkflowTool
- */
-export type WorkflowTool = (typeof WORKFLOW_TOOLS)[number];
-
-/**
- * One node of a workflow DAG.
- * @interface WorkflowStep
- * @property {string} id - Unique step identifier within the workflow.
- * @property {WorkflowTool} tool - The operation this step runs.
- * @property {Record<string, unknown>} [args] - Raw tool arguments; values may
- *   contain `{{<stepId>.<field>}}` references to earlier steps.
- * @property {string[]} [dependsOn] - Explicit dependency step ids (references
- *   create implicit dependencies too).
- */
-export interface WorkflowStep {
-  id: string;
-  tool: WorkflowTool;
-  args?: Record<string, unknown>;
-  dependsOn?: string[];
-}
-
-/**
- * A workflow DAG as proposed by a model.
- * @interface Workflow
- * @property {WorkflowStep[]} steps - The steps to run.
- */
-export interface Workflow {
-  steps: WorkflowStep[];
-}
-
-/**
- * Stable issue codes so callers (and tests) can branch without parsing prose.
- * @typedef {'empty_workflow' | 'duplicate_step_id' | 'invalid_step_id' |
- *   'unknown_tool' | 'unknown_dependency' | 'self_dependency' | 'cycle'} WorkflowIssueCode
- */
-export type WorkflowIssueCode =
-  'empty_workflow' | 'duplicate_step_id' | 'invalid_step_id' | 'unknown_tool' | 'unknown_dependency' | 'self_dependency' | 'cycle';
-
-/**
- * A validation problem found while planning a workflow.
- * @interface WorkflowIssue
- * @property {WorkflowIssueCode} code - The stable issue code.
- * @property {string} message - Human-readable explanation.
- * @property {string} [stepId] - The step the issue concerns, when applicable.
- */
-export interface WorkflowIssue {
-  code: WorkflowIssueCode;
-  message: string;
-  stepId?: string;
-}
-
-/**
- * A single reference placeholder parsed out of a step's arguments.
- * @interface WorkflowReference
- * @property {string} arg - The argument key holding the reference.
- * @property {string} stepId - The referenced step id.
- * @property {string} field - The referenced field (e.g. `output`, `jobId`).
- */
-export interface WorkflowReference {
-  arg: string;
-  stepId: string;
-  field: string;
-}
-
-/**
- * A planned (validated + ordered) step, with its resolved dependency set and
- * the references it carries.
- * @interface WorkflowPlanStep
- * @property {string} id - The step id.
- * @property {WorkflowTool} tool - The operation.
- * @property {Record<string, unknown>} args - The raw arguments.
- * @property {string[]} dependsOn - Explicit + inferred dependency step ids.
- * @property {WorkflowReference[]} references - Placeholders found in the args.
- * @property {number} order - Zero-based position in execution order.
- */
-export interface WorkflowPlanStep {
-  id: string;
-  tool: WorkflowTool;
-  args: Record<string, unknown>;
-  dependsOn: string[];
-  references: WorkflowReference[];
-  order: number;
-}
-
-/**
- * The result of planning a workflow: whether it is runnable, the execution
- * order, the per-step plan, and any issues.
- * @interface WorkflowPlan
- * @property {boolean} valid - True when there are no issues and execution can run.
- * @property {string[]} order - Step ids in execution order (empty when invalid).
- * @property {WorkflowPlanStep[]} steps - The planned steps (execution order).
- * @property {WorkflowIssue[]} issues - Validation issues (empty when valid).
- * @property {string} summary - One-line description of the plan.
- */
-export interface WorkflowPlan {
-  valid: boolean;
-  order: string[];
-  steps: WorkflowPlanStep[];
-  issues: WorkflowIssue[];
-  summary: string;
-}
 
 /**
  * Matches `{{stepId.field}}` placeholders (tolerating internal whitespace).

@@ -19,6 +19,7 @@ import { DialogContent, DialogTitle } from '@mui/material';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SHORTCUT_SECTIONS, SHORTCUTS, formatShortcut } from '../constants/shortcuts';
+import type { ShortcutsHelpDialogProps } from './types';
 import {
   ShortcutsContent,
   ShortcutsDialog,
@@ -29,16 +30,7 @@ import {
   ShortcutsCloseButton,
 } from '../styles/ShortcutsHelpDialog.styles';
 
-/**
- * Props for the shortcuts help dialog.
- * @interface ShortcutsHelpDialogProps
- * @property {boolean} open - Controls dialog visibility.
- * @property {() => void} onClose - Fired when the dialog is dismissed.
- */
-export interface ShortcutsHelpDialogProps {
-  open: boolean;
-  onClose: () => void;
-}
+export type { ShortcutsHelpDialogProps };
 
 /**
  * Renders the shortcuts help dialog.

@@ -7,19 +7,9 @@
 
 import { Typography } from '@mui/material';
 import { ViewFindingRoot, ViewFindingTag } from './styles';
+import type { ViewFindingProps, ViewFindingSeverity } from './types';
 
-export type ViewFindingSeverity = 'info' | 'warning' | 'error';
-
-export interface ViewFindingProps {
-  /** Severity of the finding. */
-  severity: ViewFindingSeverity;
-  /** Human-readable severity name shown as the tag. */
-  severityLabel: string;
-  /** The finding text. */
-  message: string;
-  /** Test hook for the host-rendering checks. */
-  testId?: string;
-}
+export type { ViewFindingProps, ViewFindingSeverity };
 
 /**
  * Renders a single finding.

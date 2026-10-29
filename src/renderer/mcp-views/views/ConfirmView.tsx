@@ -20,13 +20,8 @@ import ViewDefinitionList from '../kit/ViewDefinitionList';
 import ViewEmptyState from '../kit/ViewEmptyState';
 import ViewProgress from '../kit/ViewProgress';
 import { ViewBulletList, ViewParagraph, ViewStack } from '../kit/styles';
-import type { McpUiConfirmation, McpUiJob } from '../../../shared/mcp-ui';
-
-interface ConfirmPayload {
-  confirmation?: McpUiConfirmation;
-  job?: McpUiJob;
-  jobs?: Array<{ id?: string; output?: string; file?: string; jobId?: string; status?: string }>;
-}
+import type { McpUiConfirmation } from '../../../shared/mcp-ui';
+import type { ConfirmPayload, ConfirmRunButtonProps, JobProgressCardProps } from './types';
 
 /**
  * Renders the confirmation view.
@@ -119,12 +114,6 @@ export default function ConfirmView() {
   );
 }
 
-interface ConfirmRunButtonProps {
-  operation: string;
-  args: Record<string, unknown>;
-  onError: (message: string) => void;
-}
-
 /**
  * Renders the button that commits the confirmed operation.
  *
@@ -160,10 +149,6 @@ function ConfirmRunButton({ operation, args, onError }: ConfirmRunButtonProps) {
       testId="mcp-view-confirm-run"
     />
   );
-}
-
-interface JobProgressCardProps {
-  job: McpUiJob;
 }
 
 /**

@@ -28,6 +28,7 @@ import {
   type VideoFilterParam,
 } from '../../shared/video-filters';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
+import type { PendingValues } from './types';
 import {
   CustomChainInput,
   FilterEntriesBox,
@@ -38,9 +39,6 @@ import {
   PendingPresetPanel,
   PresetSelect,
 } from '../styles/VideoFiltersSection.styles';
-
-/** Shape of the transient parameter values for the pending preset. */
-type PendingValues = Record<string, string>;
 
 /**
  * Renders the input for a single filter parameter based on its type.

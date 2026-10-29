@@ -30,7 +30,6 @@ import {
   suggestedExtensionForVideoCodec,
   type DemuxMediaPreferences,
   type DemuxTarget,
-  type RemuxWarning,
 } from '../shared/codec-containers';
 import { buildAndValidateRemuxPlan, buildPrimaryStreamMaps } from '../shared/remux-utils';
 import { AUDIO_EXTRACT_DEFAULT_CODEC } from '../shared/constants';
@@ -39,38 +38,43 @@ import { validateVideoFilters, expandFilterShorthand } from '../shared/video-fil
 import { deriveOutputPath, getInputExtension, expandInputs } from '../main/cli/cli-util';
 import type { ConversionOptions, MediaStreamInfo, RemuxInput } from '../shared/types';
 import { buildConversionOptions } from './conversion-options';
-import type { MCPConversionFields } from './conversion-options';
 import { assertSafeExtraArgs, MAX_BATCH_FILES } from './safety';
+import type {
+  BatchJobPlan,
+  BatchPlan,
+  CompressPlan,
+  CutPlan,
+  ExtractAudioPlan,
+  MCPCompressFields,
+  MCPConversionFields,
+  MCPCutFields,
+  MCPDemuxFields,
+  MCPDemuxPlan,
+  MCPExtractAudioFields,
+  MCPRemuxAudio,
+  MCPRemuxFields,
+  MCPRemuxPlan,
+  MCPRemuxSubtitle,
+  MCPRemuxThumbnail,
+} from './types';
 
-/**
- * Fields accepted by the `compress_image` MCP tool, mirroring
- * `CompressCliFlags`.
- * @interface MCPCompressFields
- * @property {string} [output] - Explicit output file path.
- * @property {string} [format] - Output image format (defaults to the source format).
- * @property {number|string} [quality] - Quality scale (1 best - 31 worst; default 23).
- * @property {string} [scale] - Output resolution (WxH or percent).
- */
-export interface MCPCompressFields {
-  output?: string;
-  format?: string;
-  quality?: number | string;
-  scale?: string;
-}
-
-/**
- * The materialized plan for an image compression: the conversion options, the
- * resolved output path, and the effective output format.
- * @interface CompressPlan
- * @property {ConversionOptions} options - Options passed to the transcoder.
- * @property {string} output - Resolved absolute output path.
- * @property {string} format - Effective output format (lower-cased).
- */
-export interface CompressPlan {
-  options: ConversionOptions;
-  output: string;
-  format: string;
-}
+export type {
+  BatchJobPlan,
+  BatchPlan,
+  CompressPlan,
+  CutPlan,
+  ExtractAudioPlan,
+  MCPCompressFields,
+  MCPCutFields,
+  MCPDemuxFields,
+  MCPDemuxPlan,
+  MCPExtractAudioFields,
+  MCPRemuxAudio,
+  MCPRemuxFields,
+  MCPRemuxPlan,
+  MCPRemuxSubtitle,
+  MCPRemuxThumbnail,
+} from './types';
 
 /**
  * Builds the conversion plan for an image compression, mirroring
@@ -94,37 +98,6 @@ export function buildCompressPlan(input: string, fields: MCPCompressFields): Com
 }
 
 /**
- * Fields accepted by the `extract_audio` MCP tool, mirroring
- * `ExtractAudioCliFlags`.
- * @interface MCPExtractAudioFields
- * @property {string} [output] - Explicit output file path.
- * @property {string} [audioCodec] - Audio encoder (defaults to
- *   {@link AUDIO_EXTRACT_DEFAULT_CODEC}, i.e. mp3).
- * @property {string} [bitrate] - Audio bitrate (default '192k').
- */
-export interface MCPExtractAudioFields {
-  output?: string;
-  audioCodec?: string;
-  bitrate?: string;
-}
-
-/**
- * The materialized plan for an audio extraction: options, output path,
- * effective audio codec, and output extension.
- * @interface ExtractAudioPlan
- * @property {ConversionOptions} options - Options passed to the transcoder.
- * @property {string} output - Resolved absolute output path.
- * @property {string} ext - Effective output extension (without dot).
- * @property {string} audioCodec - Effective audio encoder.
- */
-export interface ExtractAudioPlan {
-  options: ConversionOptions;
-  output: string;
-  ext: string;
-  audioCodec: string;
-}
-
-/**
  * Builds the plan for audio extraction, mirroring {@link runExtractAudio}: the
  * video stream is dropped (`video: false`), the extension follows the audio
  * codec (defaulting to mp3), and the output keeps the input stem with no suffix.
@@ -142,38 +115,6 @@ export function buildExtractAudioPlan(input: string, fields: MCPExtractAudioFiel
   };
   const output = fields.output ?? deriveOutputPath(input, { suffix: '', outputExt: ext, keepExt: false });
   return { options, output, ext, audioCodec };
-}
-
-/**
- * Fields accepted by the `cut_video` MCP tool.
- * @interface MCPCutFields
- * @property {string} [output] - Explicit output file path.
- * @property {string} [startTime] - Trim start (HH:MM:SS or seconds).
- * @property {string} [endTime] - Trim end (HH:MM:SS or seconds).
- * @property {string} [duration] - Maximum output duration.
- * @property {boolean} [copy] - Lossless stream copy (default true).
- * @property {boolean} [audio] - Include audio streams (default true).
- * @property {string[]} [extraArgs] - Extra FFmpeg output arguments.
- */
-export interface MCPCutFields {
-  output?: string;
-  startTime?: string;
-  endTime?: string;
-  duration?: string;
-  copy?: boolean;
-  audio?: boolean;
-  extraArgs?: string[];
-}
-
-/**
- * The materialized plan for a video cut.
- * @interface CutPlan
- * @property {ConversionOptions} options - Options passed to the transcoder.
- * @property {string} output - Resolved absolute output path.
- */
-export interface CutPlan {
-  options: ConversionOptions;
-  output: string;
 }
 
 /**
@@ -198,30 +139,6 @@ export function buildCutPlan(input: string, fields: MCPCutFields): CutPlan {
   }
   const output = fields.output ?? deriveOutputPath(input, { suffix: '_cut', outputExt: getInputExtension(input) });
   return { options, output };
-}
-
-/**
- * One job in a batch conversion: input, resolved output, and per-file options.
- * @interface BatchJobPlan
- * @property {string} input - Input file path.
- * @property {string} output - Resolved output file path.
- * @property {ConversionOptions} options - Shared conversion options.
- */
-export interface BatchJobPlan {
-  input: string;
-  output: string;
-  options: ConversionOptions;
-}
-
-/**
- * The materialized plan for a batch conversion.
- * @interface BatchPlan
- * @property {BatchJobPlan[]} jobs - One planned job per matched input.
- * @property {string} suffix - Effective output suffix.
- */
-export interface BatchPlan {
-  jobs: BatchJobPlan[];
-  suffix: string;
 }
 
 /**
@@ -269,54 +186,6 @@ export function buildBatchPlan(inputs: string[], fields: MCPConversionFields, ou
 }
 
 /**
- * One added subtitle track for the `remux_media` tool: an external subtitle
- * file, an optional per-file codec, and an optional sync offset.
- * @interface MCPRemuxSubtitle
- * @property {string} file - Subtitle file path.
- * @property {string} [codec] - Per-file codec, used when `subtitleCodec` is
- *   absent and the container has no default.
- * @property {number} [syncOffsetSeconds] - Signed `-itsoffset` applied to this
- *   input (positive = track plays LATER).
- */
-export interface MCPRemuxSubtitle {
-  file: string;
-  codec?: string;
-  syncOffsetSeconds?: number;
-}
-
-/**
- * One added audio track for the `remux_media` tool.
- * @interface MCPRemuxAudio
- * @property {string} file - Audio file path.
- * @property {number} [syncOffsetSeconds] - Signed `-itsoffset` applied to this
- *   input (positive = track plays LATER).
- */
-export interface MCPRemuxAudio {
-  file: string;
-  syncOffsetSeconds?: number;
-}
-
-/**
- * Cover art for the `remux_media` tool. MKV/WebM attach the picture with
- * `-attach`; MP4/MOV map it as an extra video stream with the `attached_pic`
- * disposition.
- * @interface MCPRemuxThumbnail
- * @property {string} file - Cover-art image path.
- * @property {'attachment'|'disposition'} [type] - Cover-art mechanism; inferred
- *   from the target container when omitted.
- */
-export interface MCPRemuxThumbnail {
-  file: string;
-  type?: 'attachment' | 'disposition';
-}
-
-/**
- * Chapters handling for the `remux_media` tool: `'source'` preserves the
- * source chapters (the default), an object imports an FFMETADATA file.
- * @typedef {'source'|{ file: string }} MCPChapters
- */
-
-/**
  * Validates a video filter chain coming from an MCP tool field and returns it
  * with the `preset.value` shorthand expanded, so the shared remux/demux planners
  * receive the same validated list the CLI and GUI build.
@@ -336,59 +205,6 @@ function validatedVideoFilters(filters?: string[]): string[] | undefined {
     );
   }
   return expanded;
-}
-
-/**
- * Fields accepted by the `remux_media` MCP tool, mirroring `RemuxCliFlags` in
- * structured form.
- * @interface MCPRemuxFields
- * @property {string} [container] - Target container extension (e.g. 'mkv');
- *   defaults to the output extension, then the input extension.
- * @property {string} [output] - Explicit output file path.
- * @property {string[]} [map] - Explicit `-map` specs; defaults to every probed
- *   source stream.
- * @property {boolean} [subtitles] - Set false to drop source subtitle streams
- *   from the default selection.
- * @property {MCPRemuxSubtitle[]} [addSubtitle] - Added subtitle inputs.
- * @property {MCPRemuxAudio[]} [addAudio] - Added audio inputs (stream-copied).
- * @property {MCPRemuxThumbnail} [thumbnail] - Cover art.
- * @property {MCPChapters} [chapters] - `'source'` or an FFMETADATA file.
- * @property {string} [subtitleCodec] - Default codec for added subtitles;
- *   overrides each entry's own `codec`.
- * @property {number} [audioSyncSeconds] - Signed seconds shifting the primary
- *   input's audio (positive = audio plays LATER).
- * @property {string[]} [videoFilters] - Ordered FFmpeg video filter
- *   expressions. Filters require re-encoding, so their presence turns the
- *   stream copy into a re-encode (see the `filters_force_reencode` warning).
- */
-export interface MCPRemuxFields {
-  container?: string;
-  output?: string;
-  map?: string[];
-  subtitles?: boolean;
-  addSubtitle?: MCPRemuxSubtitle[];
-  addAudio?: MCPRemuxAudio[];
-  thumbnail?: MCPRemuxThumbnail;
-  chapters?: 'source' | { file: string };
-  subtitleCodec?: string;
-  audioSyncSeconds?: number;
-  videoFilters?: string[];
-}
-
-/**
- * The materialized remux plan: options, output path, resolved container, and
- * the non-blocking compatibility findings.
- * @interface MCPRemuxPlan
- * @property {ConversionOptions} options - Ready-to-run conversion options.
- * @property {string} output - Resolved absolute output path.
- * @property {string} container - Normalized target container extension.
- * @property {RemuxWarning[]} warnings - Non-blocking findings.
- */
-export interface MCPRemuxPlan {
-  options: ConversionOptions;
-  output: string;
-  container: string;
-  warnings: RemuxWarning[];
 }
 
 /**
@@ -539,49 +355,6 @@ export function buildRemuxPlan(input: string, fields: MCPRemuxFields, streams: M
   }
 
   return { options: plan.options, output: fields.output ?? plan.output, container, warnings: plan.warnings };
-}
-
-/**
- * Fields accepted by the `demux_media` MCP tool, mirroring `DemuxCliFlags`.
- * @interface MCPDemuxFields
- * @property {string} [outputDir] - Directory to write the extracted streams
- *   into; defaults to the input's directory.
- * @property {boolean} [video] - Extract video streams.
- * @property {boolean} [audio] - Extract audio streams.
- * @property {boolean} [subtitles] - Extract subtitle streams.
- * @property {boolean} [all] - Extract every kind (the default).
- * @property {string} [videoContainer] - Re-encode video into this container.
- * @property {string} [audioCodec] - Re-encode audio with this encoder.
- * @property {string} [subtitleCodec] - Convert text subtitles to this format
- *   (`srt`, `ass`); `copy` keeps them as-is.
- * @property {string[]} [videoFilters] - Ordered FFmpeg video filter
- *   expressions, applied to video targets that re-encode; a stream-copied video
- *   target ignores them (reported as a `filtersIgnoredCopy` warning).
- */
-export interface MCPDemuxFields {
-  outputDir?: string;
-  video?: boolean;
-  audio?: boolean;
-  subtitles?: boolean;
-  all?: boolean;
-  videoContainer?: string;
-  audioCodec?: string;
-  subtitleCodec?: string;
-  videoFilters?: string[];
-}
-
-/**
- * The materialized demux plan: one extraction target per selected stream, the
- * non-blocking findings, and the streams the targets were built from.
- * @interface MCPDemuxPlan
- * @property {DemuxTarget[]} targets - Extraction targets with absolute outputs.
- * @property {RemuxWarning[]} warnings - Non-blocking findings.
- * @property {MediaStreamInfo[]} streams - The selected source streams.
- */
-export interface MCPDemuxPlan {
-  targets: DemuxTarget[];
-  warnings: RemuxWarning[];
-  streams: MediaStreamInfo[];
 }
 
 /**

@@ -39,6 +39,8 @@ jobs:
         run: npm run lint:rem
       - name: Check no inline styles
         run: npm run lint:inline-styles
+      - name: Check no local type declarations
+        run: npm run lint:types
       - name: Check no hardcoded UI strings
         run: npm run lint:strings
       - name: Check no unused declarations

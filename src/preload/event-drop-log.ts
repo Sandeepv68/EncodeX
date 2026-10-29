@@ -15,6 +15,8 @@
  * operator needs, and it costs one line instead of 1500.
  */
 
+import type { DropLogPayload, DropWindow } from './types';
+
 /** Drops reported individually per channel before that channel is folded into the summary. */
 const DETAILED_DROPS_PER_CHANNEL = 3;
 
@@ -31,21 +33,6 @@ const SUMMARY_INTERVAL_MS = 5_000;
  * keeping the summary to roughly 2% of the drop volume.
  */
 const SUMMARY_EVERY_N_DROPS = 50;
-
-interface DropWindow {
-  /** Start of the current reporting window. */
-  startedAt: number;
-  /** Individually reported drops, keyed by channel. */
-  detailedByChannel: Map<string, number>;
-  /** Drops seen in this window, including those reported individually. */
-  total: number;
-  /** Distinct channels seen in this window. */
-  channels: Set<string>;
-  /** When a summary was last emitted, so the interval is honoured across window boundaries. */
-  lastSummaryAt: number;
-  /** Drops folded into the summary since the last one, i.e. not reported individually. */
-  folded: number;
-}
 
 /**
  * @param {number} startedAt - Window start in milliseconds.
@@ -82,24 +69,10 @@ export function resetDropLogThrottle(): void {
  * @param {number} [deps.now] - Current time in milliseconds; defaults to `Date.now()`.
  * @returns {void}
  */
-export function logDroppedPayload({
-  log,
-  constant,
-  summaryConstant,
-  channel,
-  observed,
-  now = Date.now(),
-}: {
-  // The logger is passed whole and `warn` is called as a method, never detached. `Logger.warn` reads
-  // instance state, so handing this function a bare `log.warn` reference throws `Cannot read
-  // properties of undefined (reading 'context')` - on the first dropped payload, in production.
-  log: { warn: (constant: string, ...args: unknown[]) => void };
-  constant: string;
-  summaryConstant: string;
-  channel: string;
-  observed: string;
-  now?: number;
-}): void {
+// The logger is passed whole and `warn` is called as a method, never detached. `Logger.warn` reads
+// instance state, so handing this function a bare `log.warn` reference throws `Cannot read
+// properties of undefined (reading 'context')` - on the first dropped payload, in production.
+export function logDroppedPayload({ log, constant, summaryConstant, channel, observed, now = Date.now() }: DropLogPayload): void {
   // A window that has aged out is summarised before it is replaced, so a burst that stops cleanly
   // still leaves behind the count it produced rather than losing the tail to a rollover.
   if (now - current.startedAt >= SUMMARY_INTERVAL_MS) {

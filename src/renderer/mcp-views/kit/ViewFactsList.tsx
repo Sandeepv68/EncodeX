@@ -7,20 +7,9 @@
 
 import { Typography } from '@mui/material';
 import { ViewFact, ViewFactsList as ViewFactsListRoot } from './styles';
+import type { ViewFactItem, ViewFactsListProps } from './types';
 
-export interface ViewFactItem {
-  /** Fact name. */
-  label: string;
-  /** Fact value; rendered verbatim as text. */
-  value: string;
-}
-
-export interface ViewFactsListProps {
-  /** Facts to render, in order. */
-  facts: ViewFactItem[];
-  /** Test hook for the host-rendering checks. */
-  testId?: string;
-}
+export type { ViewFactItem, ViewFactsListProps };
 
 /**
  * Renders the fact list.

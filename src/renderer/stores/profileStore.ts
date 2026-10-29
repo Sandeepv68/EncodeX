@@ -26,11 +26,12 @@
 import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
 import { loadJson, saveJson } from '../utils/storage';
-import type { ConversionProfile, ProfileCategory } from '../../shared/types';
+import type { ConversionProfile } from '../../shared/types';
 import { BUILTIN_PROFILES } from '../../shared/profiles';
 import { useConversionStore } from './conversionStore';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
+import type { ProfileState } from './types';
 
 const STORAGE_KEY = 'encodex-custom-profiles';
 const RECENT_KEY = 'encodex-recent-profiles';
@@ -62,21 +63,6 @@ function loadRecentIds(): string[] {
 
 function saveRecentIds(ids: string[]): void {
   saveJson(RECENT_KEY, ids.slice(0, MAX_RECENT));
-}
-
-interface ProfileState {
-  profiles: ConversionProfile[];
-  selectedCategory: ProfileCategory | null;
-  recentProfileIds: string[];
-  setSelectedCategory: (cat: ProfileCategory | null) => void;
-  saveCustomProfile: (profile: Omit<ConversionProfile, 'id' | 'builtin'>) => string;
-  updateCustomProfile: (id: string, updates: Partial<ConversionProfile>) => void;
-  deleteCustomProfile: (id: string) => void;
-  getProfileById: (id: string) => ConversionProfile | undefined;
-  getProfilesByCategory: (cat: ProfileCategory) => ConversionProfile[];
-  getRecentProfiles: () => ConversionProfile[];
-  applyProfileToConversionStore: (profile: ConversionProfile) => void;
-  recordRecentProfile: (id: string) => void;
 }
 
 export const useProfileStore = create<ProfileState>((set, get) => ({

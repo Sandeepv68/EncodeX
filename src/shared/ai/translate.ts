@@ -7,57 +7,11 @@
  * `shared/` stays Node-free: the concrete local/cloud adapters live in `src/mcp`.
  */
 
-import type { DataEgress } from './types';
 import { normalizeSegmentText } from './transcript';
-import type { TranscriptSegment } from './transcript';
+import type { DataEgress, TranscriptSegment, TranslationProviderDescriptor } from './types';
 
-/**
- * A translation request over already-timed subtitle segments.
- * @interface TranslationRequest
- * @property {TranscriptSegment[]} segments - Source segments (timing preserved).
- * @property {string} targetLanguage - Target language code.
- * @property {string} [sourceLanguage] - Optional source language hint.
- */
-export interface TranslationRequest {
-  segments: TranscriptSegment[];
-  targetLanguage: string;
-  sourceLanguage?: string;
-}
-
-/**
- * A subtitle translation backend.
- * @interface TranslationProvider
- * @property {string} id - Stable id.
- * @property {string} label - Human-readable name.
- * @property {DataEgress} dataEgress - What leaves the device.
- * @property {() => Promise<boolean>} available - Whether it can run here.
- * @property {(request: TranslationRequest) => Promise<TranscriptSegment[]>} translate - Translate.
- */
-export interface TranslationProvider {
-  id: string;
-  label: string;
-  dataEgress: DataEgress;
-  available(): Promise<boolean>;
-  translate(request: TranslationRequest): Promise<TranscriptSegment[]>;
-}
-
-/**
- * Public description of a translation backend, surfaced in the UI so egress is
- * never a surprise.
- * @interface TranslationProviderDescriptor
- * @property {string} id - Stable id.
- * @property {string} label - Human-readable name.
- * @property {DataEgress} dataEgress - What leaves the device.
- * @property {boolean} local - Whether translation runs on-device.
- * @property {string} note - Privacy/status note.
- */
-export interface TranslationProviderDescriptor {
-  id: string;
-  label: string;
-  dataEgress: DataEgress;
-  local: boolean;
-  note: string;
-}
+export type { TranslationProviderDescriptor };
+export type { TranslationProvider, TranslationRequest } from './types';
 
 /**
  * Known translation providers, in display order. Only `local` ships in R4; the

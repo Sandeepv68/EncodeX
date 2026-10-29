@@ -12,6 +12,7 @@ import type { ConversionProfile, ProfileCategory } from '../../shared/types';
 import { CATEGORY_ORDER, PROFILE_CATEGORIES } from '../../shared/profiles/categories';
 import { useProfileStore } from '../stores/profileStore';
 import { useToastStore } from '../stores/toastStore';
+import type { ProfileEditorDialogProps } from './types';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
 import { EditorDialogTitle, EditorFieldStack, ExpandChevron } from '../styles/ProfileEditorDialog.styles';
 import CodecSelect from './CodecSelect';
@@ -57,12 +58,6 @@ const CRF_OPTIONS = Array.from({ length: 32 }, (_, i) => i);
 function withUnknownValue(options: readonly string[], value: string): string[] {
   if (!value || options.includes(value)) return [...options];
   return [...options, value];
-}
-
-interface ProfileEditorDialogProps {
-  open: boolean;
-  onClose: () => void;
-  editProfile?: ConversionProfile | null;
 }
 
 export default function ProfileEditorDialog({ open, onClose, editProfile }: ProfileEditorDialogProps) {

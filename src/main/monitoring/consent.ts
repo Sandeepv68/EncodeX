@@ -16,6 +16,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Logger } from '../../shared/logger';
 import { LOG_FAILED_TO_PERSIST_MONITORING_CONSENT, LOG_FAILED_TO_READ_STORED_MONITORING_CONSENT } from '../../shared/log-constants';
+import type { MonitoringConsentFile } from './types';
 
 /** Per-module logger for consent handling. @const {Logger} */
 const log = new Logger('main/monitoring/consent');
@@ -25,12 +26,6 @@ const log = new Logger('main/monitoring/consent');
  * @const {string}
  */
 export const MONITORING_CONSENT_FILENAME = 'monitoring-consent.json';
-
-/** In-memory shape of the consent file. */
-interface MonitoringConsentFile {
-  /** Whether the user consents to error reporting. */
-  enabled: boolean;
-}
 
 /**
  * Resolves the absolute path of the consent file.

@@ -14,10 +14,7 @@ import ViewEmptyState from '../kit/ViewEmptyState';
 import ViewTable from '../kit/ViewTable';
 import { ViewDotList, ViewSectionTitle, ViewStack } from '../kit/styles';
 import type { McpUiCapabilities } from '../../../shared/mcp-ui';
-
-interface CapabilitiesPayload {
-  capabilities?: McpUiCapabilities;
-}
+import type { CapabilitiesPayload } from './types';
 
 /**
  * Renders the capabilities view.

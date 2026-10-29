@@ -11,17 +11,12 @@
 
 import { app } from 'electron';
 import { createLLMOperationRouter } from '../../shared/ai/llm';
-import type { OperationRoutingRequest, RoutedOperation } from '../../shared/ai/llm';
 import { createConnectorFromSettings, isRemoteProvider } from './connectors';
 import { resolveProviderModel } from './model-resolution';
 import { decryptApiKey, effectiveModel, persistProviderModel, readAiSettings } from './settings';
+import type { OperationRouter } from './types';
 
-/**
- * The router seam the Copilot handler consumes: resolves a routed operation, or
- * `undefined` to fall back to the deterministic router.
- * @typedef {function(OperationRoutingRequest): Promise<RoutedOperation | undefined>} OperationRouter
- */
-export type OperationRouter = (request: OperationRoutingRequest) => Promise<RoutedOperation | undefined>;
+export type { OperationRouter };
 
 /**
  * Builds the operation router for the currently configured provider.

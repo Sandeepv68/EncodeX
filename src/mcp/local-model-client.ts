@@ -9,6 +9,9 @@
  */
 
 import type { LocalModelClient } from '../shared/ai/provider';
+import type { HttpLocalModelClientOptions } from './types';
+
+export type { HttpLocalModelClientOptions } from './types';
 
 /**
  * Default local runtime base URL (Ollama's default port).
@@ -21,21 +24,6 @@ const DEFAULT_BASE_URL = 'http://127.0.0.1:11434';
  * @const {string}
  */
 const DEFAULT_MODEL = 'llama3';
-
-/**
- * Options for {@link createHttpLocalModelClient}.
- * @interface HttpLocalModelClientOptions
- * @property {string} [baseUrl] - Runtime base URL (defaults to `ENCODEX_LOCAL_MODEL_URL`).
- * @property {string} [model] - Model name (defaults to `ENCODEX_LOCAL_MODEL_MODEL`).
- * @property {number} [timeoutMs] - Request timeout (default 120000).
- * @property {typeof fetch} [fetchImpl] - Fetch implementation (test seam).
- */
-export interface HttpLocalModelClientOptions {
-  baseUrl?: string;
-  model?: string;
-  timeoutMs?: number;
-  fetchImpl?: typeof fetch;
-}
 
 /**
  * Builds a {@link LocalModelClient} backed by a local runtime, or `undefined`

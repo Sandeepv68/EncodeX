@@ -14,33 +14,10 @@
  */
 
 import type { ConversionProfile, ProfileCategory } from '../types';
-import type { ConversionConstraints, MediaFacts, PlanRequest, RecommendedSettings } from './types';
+import type { ConversionConstraints, IntentSignals, MediaFacts, PlanRequest, RecommendedSettings } from './types';
 import { formatBytesHuman, parseBitrateKbps, parseResolution } from './units';
 
-/**
- * Signals mined from a natural-language intent and optional constraints.
- * @interface IntentSignals
- * @property {ProfileCategory[]} categories - Profile categories the intent points at.
- * @property {string[]} profileHints - Profile-id prefixes the intent names (e.g. 'iphone').
- * @property {string[]} codecs - Codec families requested (h264, hevc, av1, vp9, vp8).
- * @property {string[]} containers - Container names requested.
- * @property {number} [targetClass] - Requested resolution class (long edge in px).
- * @property {boolean} audioOnly - The intent is to extract audio.
- * @property {boolean} copyOnly - The intent asks for a lossless/remux-style copy.
- * @property {boolean} wantsSmall - The intent prioritises small file size.
- * @property {boolean} wantsQuality - The intent prioritises quality.
- */
-export interface IntentSignals {
-  categories: ProfileCategory[];
-  profileHints: string[];
-  codecs: string[];
-  containers: string[];
-  targetClass?: number;
-  audioOnly: boolean;
-  copyOnly: boolean;
-  wantsSmall: boolean;
-  wantsQuality: boolean;
-}
+export type { IntentSignals };
 
 /**
  * Maps a keyword group to the signal it raises. Kept as data so the vocabulary

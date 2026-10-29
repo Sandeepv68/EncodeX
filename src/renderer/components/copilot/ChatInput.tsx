@@ -22,6 +22,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faPlus, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
+import type { ChatInputProps } from './types';
 import {
   ComposerShell,
   EditorArea,
@@ -42,19 +43,6 @@ const editorTheme = { paragraph: 'copilot-input-paragraph' };
  */
 function onError(error: Error): void {
   console.error(error);
-}
-
-interface ChatInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  onSubmit: () => void;
-  disabled?: boolean;
-  placeholder?: string;
-  busy?: boolean;
-  hasInputs?: boolean;
-  onResetConversation?: () => void;
-  showReset?: boolean;
-  onResetConfirm?: () => void;
 }
 
 /**

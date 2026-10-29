@@ -15,18 +15,10 @@ import { Logger } from '../../shared/logger';
 import { LOG_ANALYTICS_INIT_FAILED, LOG_ANALYTICS_TRACK_FAILED } from '../../shared/log-constants';
 import type { AnalyticsEvent } from '../../shared/analytics/events';
 import type { AnalyticsConfig, AnalyticsProvider } from '../../shared/analytics/types';
+import type { AptabaseRendererSdk } from './types';
 
 /** Per-module logger for the renderer Aptabase adapter. @const {Logger} */
 const log = new Logger('renderer/analytics/aptabaseRendererProvider');
-
-/**
- * Minimal structural type of the `@aptabase/electron/renderer` module surface
- * used by this adapter. Keeps the file free of static imports (the real
- * module loads lazily inside {@link init}) while retaining type safety.
- */
-interface AptabaseRendererSdk {
-  trackEvent(eventName: string, props?: Record<string, string | number | boolean>): Promise<void>;
-}
 
 /**
  * Aptabase-backed analytics provider for the renderer process.

@@ -1,10 +1,7 @@
 import type { ProfileCategory } from '../types';
+import type { CategoryMeta } from './types';
 
-export interface CategoryMeta {
-  label: string;
-  icon: string;
-  order: number;
-}
+export type { CategoryMeta } from './types';
 
 export const PROFILE_CATEGORIES: Record<ProfileCategory, CategoryMeta> = {
   'web-social': { label: 'Web & Social', icon: 'fa-globe', order: 0 },

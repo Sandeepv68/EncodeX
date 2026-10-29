@@ -13,17 +13,9 @@
 import { useEffect, useRef } from 'react';
 import { structuredPayload } from './host';
 import { useMcpView } from './McpViewProvider';
+import type { McpViewPollingOptions } from './types';
 
-export interface McpViewPollingOptions {
-  /** Tool to call on every tick. Polling is disabled when omitted. */
-  tool?: string;
-  /** Arguments passed to the polled tool. */
-  args?: Record<string, unknown>;
-  /** Interval between two ticks, in milliseconds. Defaults to 2500. */
-  intervalMs?: number;
-  /** Disables polling without unmounting the view. */
-  enabled?: boolean;
-}
+export type { McpViewPollingOptions };
 
 /**
  * Polls a tool and pushes every successful result into the view state.

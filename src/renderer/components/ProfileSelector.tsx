@@ -31,6 +31,7 @@ import { CATEGORY_ORDER, PROFILE_CATEGORIES } from '../../shared/profiles/catego
 import { useProfileStore } from '../stores/profileStore';
 import { useToastStore } from '../stores/toastStore';
 import { highlightSegments } from '../utils/string-utils';
+import type { ProfileSelectorProps } from './types';
 import ProfileIcon from './ProfileIcon';
 import ProfileBadge from './ProfileBadge';
 import {
@@ -80,12 +81,6 @@ function HighlightText({ text, query }: { text: string; query: string }) {
       )}
     </>
   );
-}
-
-interface ProfileSelectorProps {
-  onCreateNew?: () => void;
-  onApplyProfile?: (profile: ConversionProfile) => void;
-  testId?: string;
 }
 
 export default function ProfileSelector({ onCreateNew, onApplyProfile, testId }: ProfileSelectorProps) {

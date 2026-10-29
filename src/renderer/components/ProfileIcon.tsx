@@ -17,34 +17,14 @@
 
 import type { SimpleIcon } from 'simple-icons';
 import { siYoutube, siInstagram, siTiktok, siFacebook, siX, siApple, siAndroid, siPlaystation, siDolby } from 'simple-icons';
-import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMobileScreen, faTabletScreenButton, faTv, faGamepad } from '@fortawesome/free-solid-svg-icons';
 import { useTheme } from '@mui/material/styles';
 import { PROFILE_ICON_COLORS } from '../../shared/theme/colors';
 import { isNearBlack } from '../utils/colors';
+import type { BadgeEntry, FallbackEntry, ResolvedIcon } from './types';
 import { OptionIcon, FormatBadge, BrandSvg } from '../styles/ProfileSelector.styles';
 import { ColoredOptionIcon, ChipIconBox, ColoredChipIconBox } from '../styles/ProfileIcon.styles';
-
-/** A resolved profile icon, rendered by <ProfileIcon />. */
-type ResolvedIcon =
-  | { kind: 'brand'; icon: SimpleIcon }
-  | { kind: 'fa'; icon: IconDefinition; color: string }
-  | { kind: 'badge'; label: string; color: string };
-
-/** Fallback FontAwesome entry (brand has no simple-icons glyph). */
-interface FallbackEntry {
-  test: (name: string) => boolean;
-  icon: IconDefinition;
-  color: string;
-}
-
-/** Format-badge entry: matches a profile name and renders its abbreviation. */
-interface BadgeEntry {
-  test: (name: string) => boolean;
-  label: string;
-  color: string;
-}
 
 /** Better-fit brands of `simple-icons` that offer per-generation console glyphs. */
 const PLAYSTATION_SPECIFIC: Array<{ test: RegExp; icon: SimpleIcon }> = [

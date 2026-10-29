@@ -8,15 +8,9 @@
 
 import { Table, TableBody, TableHead, TableRow } from '@mui/material';
 import { ViewTableScroll, ViewHeaderCell, ViewBodyCell } from './styles';
+import type { ViewTableProps } from './types';
 
-export interface ViewTableProps {
-  /** Column headers. */
-  columns: string[];
-  /** Rows; each cell is rendered as text. */
-  rows: string[][];
-  /** Test hook for the host-rendering checks. */
-  testId?: string;
-}
+export type { ViewTableProps };
 
 /**
  * Renders a data table.

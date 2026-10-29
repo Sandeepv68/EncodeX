@@ -35,6 +35,8 @@
     "lint:rem": "eslint -c scripts/eslint.rem.config.mjs src/renderer",
     "lint:inline-styles": "eslint -c scripts/eslint.inline-styles.config.mjs src/renderer",
     "lint:inline-styles:test": "node --test eslint-rules/no-inline-styles.test.mjs",
+    "lint:types": "eslint -c scripts/eslint.types.config.mjs src",
+    "lint:types:test": "node --test eslint-rules/no-local-types.test.mjs",
     "lint:regex": "eslint -c scripts/eslint.regex.config.mjs src",
     "lint:aptabase": "eslint -c scripts/eslint.aptabase.config.mjs src",
     "lint:aptabase:test": "node --test eslint-rules/no-direct-aptabase-import.test.mjs",

@@ -11,6 +11,10 @@
  * from the renderer bundle, the preload script, and the main process alike.
  */
 
+import type { McpSettings } from './types';
+
+export type { McpSettings } from './types';
+
 /**
  * Default port the embedded MCP server listens on.
  * @const {number}
@@ -29,19 +33,6 @@ export const MCP_MIN_PORT = 1024;
  * @const {number}
  */
 export const MCP_MAX_PORT = 65535;
-
-/**
- * Renderer-visible MCP server settings.
- * @interface McpSettings
- * @property {boolean} enabled - True starts the loopback server at startup.
- * @property {number} port - TCP port to bind on 127.0.0.1.
- * @property {string} token - Optional bearer token clients must send.
- */
-export interface McpSettings {
-  enabled: boolean;
-  port: number;
-  token: string;
-}
 
 /**
  * Canonical default settings used when the stored file is absent or invalid.

@@ -6,15 +6,9 @@
 
 import { ViewProgressTrack } from './styles';
 import { clampPercent } from '../format';
+import type { ViewProgressProps } from './types';
 
-export interface ViewProgressProps {
-  /** Completion percentage; clamped to 0-100. */
-  percent: number;
-  /** Accessible label for the track. */
-  label: string;
-  /** Test hook for the host-rendering checks. */
-  testId?: string;
-}
+export type { ViewProgressProps };
 
 /**
  * Renders a determinate progress track.
