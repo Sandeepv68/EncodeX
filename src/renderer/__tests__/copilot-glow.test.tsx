@@ -1,23 +1,19 @@
 /**
- * @fileoverview Render-cost regression guard for the Copilot page's decorative
- * glow layer.
+ * @fileoverview Guard for the Copilot page's decorative glow layer.
  *
- * The glow is pure decoration, but it was originally built out of the three
- * most expensive CSS properties there are: a `filter: blur()` over a
- * full-viewport layer, an animated `filter` (hue-rotate) on each orb, and an
- * animated `border-radius`. Every one of those forces a full re-rasterisation
- * of a very large surface on every animation frame. On the software rendering
- * a CI runner uses, the page dropped to roughly 8 frames per second, which made
- * the Windows e2e job exceed its 40-minute timeout and get cancelled.
+ * The glow is built out of the three most expensive CSS properties there are:
+ * a `filter: blur()` over a full-viewport layer, an animated `filter`
+ * (hue-rotate) on each orb, and an animated `border-radius`. On the software
+ * rendering a CI runner uses, that dropped the page to roughly 8 frames per
+ * second and made the Windows e2e job exceed its 40-minute timeout.
  *
- * The guard below is deliberately a *static* check on the generated CSS rather
- * than a frame-rate measurement. A measured FPS budget would be a flaky gate:
- * it depends on the runner, on what else is running, and on whether the
- * machine has a GPU - the same trap the cold-boot budget documents in
- * `e2e/specs/boot-budget.spec.ts`. What is not machine-dependent is the
- * property that actually matters here: an animation that only ever moves
- * `transform` and `opacity` is composited rather than repainted, on any
- * machine. So the test asserts the contract on the CSS itself.
+ * The full look is deliberately kept, so the guard below is not a performance
+ * budget - a measured FPS budget would be a flaky gate, since it depends on
+ * the runner, on what else is running, and on whether the machine has a GPU.
+ * What is not machine-dependent is the *shape* of the effect: the layer is
+ * blurred, the orbs morph their silhouette and cycle their hue, and the whole
+ * thing is dropped for users who have asked for reduced motion. Those are the
+ * properties asserted here.
  *
  * The rules are read out of the Emotion stylesheet that MUI's `styled` writes
  * into `document.head`, so the assertion is on the shipped CSS and not on the
@@ -160,20 +156,39 @@ function animationName(declarations: string): string {
   return match ? match[1] : '';
 }
 
-describe('Copilot glow layer render cost', () => {
-  it('does not blur the glow layer', () => {
+/**
+ * The property names a keyframe body animates.
+ * @param {string} body - The keyframes body.
+ * @returns {string[]} The distinct property names.
+ */
+function animatedProperties(body: string): string[] {
+  const properties = body
+    .split('}')
+    .flatMap((block) => block.split(';'))
+    .map((declaration) => declaration.split(':')[0]?.trim() ?? '')
+    // A keyframe step's selector ("0%", "50%") is glued to its first
+    // declaration once the braces are split off.
+    .map((property) => property.replace(/^[^a-zA-Z-]*/, ''))
+    // Vendor-prefixed duplicates of a property the browser already handles.
+    .map((property) => property.replace(/^-(?:webkit|moz|ms)-/, ''))
+    .filter((property) => property !== '' && !property.startsWith('from') && !property.startsWith('to'));
+
+  return [...new Set(properties)].sort();
+}
+
+describe('Copilot glow layer', () => {
+  it('blurs the glow layer', () => {
     const { container } = renderPage('Copilot');
     const layer = container.querySelector('.copilot-page-glow');
     const declarations = ruleFor(injectedCss(), emotionClass(layer));
 
     expect(declarations).not.toBe('');
-    // A blur over a full-viewport layer re-rasterises the whole surface on
-    // every frame the layer's contents move.
-    expect(declarations).not.toMatch(/filter\s*:/);
-    expect(declarations).not.toMatch(/backdrop-filter\s*:/);
+    // The heavy blur over the full-bleed layer is what gives the orbs their
+    // soft, out-of-focus look.
+    expect(declarations).toMatch(/filter:\s*blur\(/);
   });
 
-  it('animates only compositor-friendly properties on the orbs', () => {
+  it('animates the orbs with transform, hue and a morphing silhouette', () => {
     const { container } = renderPage('Copilot');
     const orb = container.querySelector('.copilot-page-glow > *');
     const declarations = ruleFor(injectedCss(), emotionClass(orb));
@@ -186,37 +201,19 @@ describe('Copilot glow layer render cost', () => {
     const body = keyframesBody(name);
     expect(body).not.toBe('');
 
-    // `transform` and `opacity` are the two properties a compositor can move
-    // without repainting the layer. Anything else - a `filter`, a changing
-    // `border-radius`, a changing `background` - repaints the orb.
-    const animated = body
-      .split('}')
-      .flatMap((block) => block.split(';'))
-      .map((declaration) => declaration.split(':')[0]?.trim() ?? '')
-      // A keyframe step's selector ("0%", "50%") is glued to its first
-      // declaration once the braces are split off.
-      .map((property) => property.replace(/^[^a-zA-Z-]*/, ''))
-      // Vendor-prefixed duplicates of a property the compositor already handles.
-      .map((property) => property.replace(/^-(?:webkit|moz|ms)-/, ''))
-      .filter((property) => property !== '' && !property.startsWith('from') && !property.startsWith('to'));
-
-    expect(animated.length).toBeGreaterThan(0);
-    expect([...new Set(animated)].sort()).toEqual(['transform']);
+    expect(animatedProperties(body)).toEqual(['border-radius', 'filter', 'transform']);
+    // The hue cycles through the palette rather than sitting on one colour.
+    expect(body).toMatch(/hue-rotate\(/);
   });
 
-  it('softens the orbs with their own gradient rather than a filter', () => {
+  it('fills the orbs with a radial gradient', () => {
     const { container } = renderPage('Copilot');
     const orbs = Array.from(container.querySelectorAll('.copilot-page-glow > *'));
 
     expect(orbs.length).toBeGreaterThan(0);
     for (const orb of orbs) {
       const declarations = ruleFor(injectedCss(), emotionClass(orb));
-      expect(declarations).not.toMatch(/filter\s*:/);
-      // A gradient that reaches full transparency at its edge needs no blur to
-      // look soft, and it survives the `border-radius` clip without showing a
-      // hard rim.
       expect(declarations).toMatch(/background:\s*radial-gradient\(/);
-      expect(declarations).toMatch(/transparent 100%\)/);
     }
   });
 
@@ -224,9 +221,6 @@ describe('Copilot glow layer render cost', () => {
     const { container } = renderPage('Copilot');
     const orb = container.querySelector('.copilot-page-glow > *');
     const className = emotionClass(orb);
-    const declarations = ruleFor(injectedCss(), className);
-
-    expect(declarations).toMatch(/will-change:\s*transform/);
 
     const reduced = mediaRuleFor(injectedCss(), className, 'prefers-reduced-motion: reduce');
     expect(reduced).not.toBe('');

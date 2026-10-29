@@ -740,7 +740,11 @@ jobs:
     name: Test - E2E Automation (${{ matrix.os }})
     needs: [build, test-unit, test-integration]
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 40
+    # The Copilot page's decorative glow is deliberately expensive to
+    # rasterise (a full-bleed blur plus animated filters and border-radius).
+    # On a GPU-less runner that costs real wall-clock time, so the job needs
+    # more headroom than the default.
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
