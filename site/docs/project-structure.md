@@ -161,14 +161,14 @@ src/
 │   │   └── providerFactory.ts          # Renderer provider selection
 │   ├── dev/
 │   │   └── useDevScreenshot.ts        # Dev-only window screenshot capture
-│   ├── components/                    # Shared UI components (60 modules: 48 top-level + copilot/ and settings/ subfolders) <!-- drift:renderer-components=60 --> <!-- drift:renderer-components-top=47 -->
+│   ├── components/                    # Shared UI components (61 modules: 48 top-level + copilot/ and settings/ subfolders) <!-- drift:renderer-components=61 --> <!-- drift:renderer-components-top=47 -->
 │   ├── constants/
 │   │   └── shortcuts.ts               # 71 keyboard shortcuts registry (11 sections) + tooltip hints <!-- drift:shortcuts=71 --> <!-- drift:shortcut-sections=11 -->
 │   ├── hooks/                         # useConversion, useErrorHandler, useFormErrors, useMediaTask, useCapabilities, useHotkeys, useFieldId
 │   ├── i18n/                          # i18next config, RTL provider, 56 locales (36 base language subtags) <!-- drift:locales=56 --> <!-- drift:locale-subtags=36 -->
 │   ├── pages/                         # 13 code-split page components (Convert, Remux, Demux, Copilot, BatchQueue, Dashboard, MediaInfo, ImageCompress, AudioExtract, VideoCut, Settings, Logs, About) <!-- drift:renderer-pages=13 -->
 │   ├── stores/                        # 20 Zustand stores (queue, conversion, settings, profile, terms, batchConfig, audioExtract, videoCut, logs, errors, toasts, update, task, dismissedAlerts, aiSettings, aiConnection, audit, copilotChats, remux, demux) <!-- drift:renderer-stores=20 -->
-│   ├── styles/                        # Extracted MUI style constants per component (71 modules + Copilot/Settings subfolders) <!-- drift:renderer-styles=71 -->
+│   ├── styles/                        # Extracted MUI style constants per component (72 modules + Copilot/Settings subfolders) <!-- drift:renderer-styles=72 -->
 │   └── utils/                         # formatters, preview cache helpers, easter egg dates, batch options
 └── shared/                            # Code shared between processes
     ├── app-constants.ts               # App-wide constants

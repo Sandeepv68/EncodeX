@@ -168,7 +168,7 @@ src/
 │   │   └── types.ts                    # Analytics renderer provider contracts
 │   ├── dev/
 │   │   └── useDevScreenshot.ts        # Dev-only window screenshot capture
-│   ├── components/                    # Shared UI components (60 modules: 48 top-level + copilot/ and settings/ subfolders) <!-- drift:renderer-components=60 --> <!-- drift:renderer-components-top=47 -->
+│   ├── components/                    # Shared UI components (61 modules: 48 top-level + copilot/ and settings/ subfolders) <!-- drift:renderer-components=61 --> <!-- drift:renderer-components-top=47 -->
 │   │   └── types.ts                   # Shared component prop shapes
 │   ├── constants/
 │   │   ├── shortcuts.ts               # 71 keyboard shortcuts registry (11 sections) + tooltip hints <!-- drift:shortcuts=71 --> <!-- drift:shortcut-sections=11 -->
@@ -181,7 +181,7 @@ src/
 │   │   └── types.ts                   # Page-level prop and view-model types
 │   ├── stores/                        # 20 Zustand stores (queue, conversion, settings, profile, terms, batchConfig, audioExtract, videoCut, logs, errors, toasts, update, task, dismissedAlerts, aiSettings, aiConnection, audit, copilotChats, remux, demux) <!-- drift:renderer-stores=20 -->
 │   │   └── types.ts                   # Zustand store state shapes + actions
-│   ├── styles/                        # Extracted MUI style constants per component (71 modules + Copilot/Settings subfolders) <!-- drift:renderer-styles=71 -->
+│   ├── styles/                        # Extracted MUI style constants per component (72 modules + Copilot/Settings subfolders) <!-- drift:renderer-styles=72 -->
 │   ├── utils/                         # formatters, preview cache helpers, easter egg dates, batch options
 │   │   └── types.ts                   # Shared renderer utility types
 │   └── types.ts                       # Color mode / theme context types

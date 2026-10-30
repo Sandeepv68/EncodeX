@@ -1,17 +1,17 @@
 /**
- * @fileoverview Guard for the Copilot page's decorative glow layer.
+ * @fileoverview Guard for the Copilot page's decorative aurora backdrop.
  *
- * The glow is built out of the three most expensive CSS properties there are:
- * a `filter: blur()` over a full-viewport layer, an animated `filter`
- * (hue-rotate) on each orb, and an animated `border-radius`. On the software
- * rendering a CI runner uses, that dropped the page to roughly 8 frames per
- * second and made the Windows e2e job exceed its 40-minute timeout.
+ * The aurora is built out of two of the most expensive CSS properties there
+ * are: a `filter: blur()` over a full-bleed layer and an animated `transform`
+ * on each blob. On the software rendering a CI runner uses, that dropped the
+ * page to roughly 8 frames per second and made the Windows e2e job exceed its
+ * 40-minute timeout.
  *
  * The full look is deliberately kept, so the guard below is not a performance
- * budget - a measured FPS budget would be a flaky gate, since it depends on
- * the runner, on what else is running, and on whether the machine has a GPU.
- * What is not machine-dependent is the *shape* of the effect: the layer is
- * blurred, the orbs morph their silhouette and cycle their hue, and the whole
+ * budget - a measured FPS budget would be a flaky gate, since it depends on the
+ * runner, on what else is running, and on whether the machine has a GPU. What is
+ * not machine-dependent is the *shape* of the effect: the blobs are blurred, they
+ * morph their silhouette, they are filled with radial gradients, and the whole
  * thing is dropped for users who have asked for reduced motion. Those are the
  * properties asserted here.
  *
@@ -62,7 +62,7 @@ function blockAfter(css: string, marker: string): string {
   const open = css.indexOf('{', start);
   if (open === -1) return '';
   let depth = 0;
-  for (let i = open; i < css.length; i += 1) {
+  for (let i = open; i < css.length; i++) {
     if (css[i] === '{') depth += 1;
     else if (css[i] === '}') {
       depth -= 1;
@@ -88,7 +88,7 @@ function ruleFor(css: string, className: string): string {
   const open = css.indexOf('{', hit);
   if (open === -1) return '';
   let depth = 0;
-  for (let i = open; i < css.length; i += 1) {
+  for (let i = open; i < css.length; i++) {
     if (css[i] === '{') depth += 1;
     else if (css[i] === '}') {
       depth -= 1;
@@ -119,7 +119,7 @@ function mediaRuleFor(css: string, className: string, media: string): string {
     if (open === -1) return '';
     let depth = 0;
     let close = -1;
-    for (let i = open; i < css.length; i += 1) {
+    for (let i = open; i < css.length; i++) {
       if (css[i] === '{') depth += 1;
       else if (css[i] === '}') {
         depth -= 1;
@@ -176,22 +176,22 @@ function animatedProperties(body: string): string[] {
   return [...new Set(properties)].sort();
 }
 
-describe('Copilot glow layer', () => {
-  it('blurs the glow layer', () => {
+describe('Copilot aurora backdrop', () => {
+  it('blurs the blob layer', () => {
     const { container } = renderPage('Copilot');
-    const layer = container.querySelector('.copilot-page-glow');
+    const layer = container.querySelector('[data-testid="copilot-aurora-blobs"]');
     const declarations = ruleFor(injectedCss(), emotionClass(layer));
 
     expect(declarations).not.toBe('');
-    // The heavy blur over the full-bleed layer is what gives the orbs their
+    // The heavy blur over the full-bleed layer is what gives the blobs their
     // soft, out-of-focus look.
     expect(declarations).toMatch(/filter:\s*blur\(/);
   });
 
-  it('animates the orbs with transform, hue and a morphing silhouette', () => {
+  it('animates the blobs with a morphing silhouette', () => {
     const { container } = renderPage('Copilot');
-    const orb = container.querySelector('.copilot-page-glow > *');
-    const declarations = ruleFor(injectedCss(), emotionClass(orb));
+    const blob = container.querySelector('[data-testid="copilot-aurora-blob"]');
+    const declarations = ruleFor(injectedCss(), emotionClass(blob));
 
     expect(declarations).not.toBe('');
 
@@ -201,51 +201,44 @@ describe('Copilot glow layer', () => {
     const body = keyframesBody(name);
     expect(body).not.toBe('');
 
-    expect(animatedProperties(body)).toEqual(['border-radius', 'filter', 'transform']);
-    // The hue cycles through the palette rather than sitting on one colour.
-    expect(body).toMatch(/hue-rotate\(/);
+    expect(animatedProperties(body)).toEqual(['transform']);
   });
 
-  it('fills the orbs with a radial gradient', () => {
+  it('fills the blobs with a radial gradient', () => {
     const { container } = renderPage('Copilot');
-    const orbs = Array.from(container.querySelectorAll('.copilot-page-glow > *'));
+    const blobs = Array.from(container.querySelectorAll('[data-testid="copilot-aurora-blob"]'));
 
-    expect(orbs.length).toBeGreaterThan(0);
-    for (const orb of orbs) {
-      const declarations = ruleFor(injectedCss(), emotionClass(orb));
+    expect(blobs.length).toBeGreaterThan(0);
+    for (const blob of blobs) {
+      const declarations = ruleFor(injectedCss(), emotionClass(blob));
       expect(declarations).toMatch(/background:\s*radial-gradient\(/);
     }
   });
 
-  it('drifts slowly and linearly', () => {
+  it('drifts slowly', () => {
     const { container } = renderPage('Copilot');
-    const orbs = Array.from(container.querySelectorAll('.copilot-page-glow > *'));
+    const blobs = Array.from(container.querySelectorAll('[data-testid="copilot-aurora-blob"]'));
 
-    expect(orbs.length).toBeGreaterThan(0);
-    for (const orb of orbs) {
-      const declarations = ruleFor(injectedCss(), emotionClass(orb));
+    expect(blobs.length).toBeGreaterThan(0);
+    for (const blob of blobs) {
+      const declarations = ruleFor(injectedCss(), emotionClass(blob));
 
-      // A full cycle takes tens of seconds. Below roughly 30s the drift reads
-      // as a sweep across the page rather than a slow ambient glow.
+      // A full cycle takes many seconds. Below roughly 10s the drift reads as a
+      // sweep across the page rather than a slow ambient glow.
       const duration = Number(/(?:^|;)\s*animation:\s*[\w-]+\s+([\d.]+)s/.exec(declarations)?.[1]);
-      expect(duration).toBeGreaterThanOrEqual(30);
-
-      // The timeline is linear on purpose. Thirteen keyframes with an eased
-      // timing function make every segment accelerate and settle, so the orbs
-      // pulse instead of drifting.
-      expect(declarations).toMatch(/animation:\s*[\w-]+\s+[\d.]+s\s+infinite\s+linear/);
+      expect(duration).toBeGreaterThanOrEqual(10);
     }
   });
 
   it('keeps the travel per keyframe small', () => {
     const { container } = renderPage('Copilot');
-    const orb = container.querySelector('.copilot-page-glow > *');
-    const name = animationName(ruleFor(injectedCss(), emotionClass(orb)));
+    const blob = container.querySelector('[data-testid="copilot-aurora-blob"]');
+    const name = animationName(ruleFor(injectedCss(), emotionClass(blob)));
     const body = keyframesBody(name);
 
     expect(body).not.toBe('');
 
-    // The widest single step is 12vw of horizontal travel. Anything beyond
+    // The widest single step is a few vw of horizontal travel. Anything beyond
     // that, on a timeline this long, is a visible jerk between keyframes.
     const travels = [...body.matchAll(/translate\(\s*(-?\d+(?:\.\d+)?)vw/g)].map((match) => Math.abs(Number(match[1])));
 
@@ -255,8 +248,8 @@ describe('Copilot glow layer', () => {
 
   it('stops the drift when the user asked for reduced motion', () => {
     const { container } = renderPage('Copilot');
-    const orb = container.querySelector('.copilot-page-glow > *');
-    const className = emotionClass(orb);
+    const blob = container.querySelector('[data-testid="copilot-aurora-blob"]');
+    const className = emotionClass(blob);
 
     const reduced = mediaRuleFor(injectedCss(), className, 'prefers-reduced-motion: reduce');
     expect(reduced).not.toBe('');

@@ -358,6 +358,24 @@ export const BRAND_COLORS = {
 } as const;
 
 /**
+ * Colours for the Copilot aurora backdrop: the four morphing gradient blobs and
+ * the tint set used by the sparkle field. They are fixed decorative colours that
+ * stay the same across every theme.
+ * @const {Object} AURORA_COLORS
+ * @property {readonly string[]} blobs - Radial-gradient fills for the blobs.
+ * @property {readonly string[]} sparkleTints - Fill colours for the sparkles.
+ */
+export const AURORA_COLORS = {
+  blobs: [
+    'radial-gradient(circle, rgba(66, 133, 244, 0.8) 0%, rgba(0, 0, 0, 0) 70%)',
+    'radial-gradient(circle, rgba(168, 85, 247, 0.75) 0%, rgba(0, 0, 0, 0) 70%)',
+    'radial-gradient(circle, rgba(236, 72, 153, 0.6) 0%, rgba(0, 0, 0, 0) 70%)',
+    'radial-gradient(circle, rgba(6, 182, 212, 0.65) 0%, rgba(0, 0, 0, 0) 70%)',
+  ],
+  sparkleTints: ['#ffffff', '#a855f7', '#60a5fa', '#38bdf8'],
+} as const;
+
+/**
  * Brand / platform colors used for profile icons in the profile selector
  * dropdown. These are fixed brand colors that stay the same across every theme.
  */

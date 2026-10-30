@@ -26,7 +26,6 @@ import {
 import SavedChatsDrawer from '../components/copilot/SavedChatsDrawer';
 import GeminiAurora from '../components/copilot/GeminiAurora';
 
-
 import { useNavigationGuard } from '../NavigationGuardContext';
 import PageContainer from '../components/PageContainer';
 import { bridgePromise, withBridgeTimeout } from '../utils/bridge-call';
@@ -38,12 +37,7 @@ import Conversation, { type ConversationMessage } from '../components/copilot/Co
 import ChatComposer from '../components/copilot/ChatComposer';
 import { activeConnectionOf, useAiConnectionStore } from '../stores/aiConnectionStore';
 import { VisuallyHidden } from '../styles/a11y.styles';
-import {
-  CopilotAlert,
-  CopilotAlertWrapper,
-  CopilotConversationColumn,
-  CopilotPage,
-} from '../styles/Copilot.styles';
+import { CopilotAlert, CopilotAlertWrapper, CopilotConversationColumn, CopilotPage } from '../styles/Copilot.styles';
 
 /** How long the plan request may take before the page shows a failure. */
 const PLAN_TIMEOUT_MS = 60_000;
@@ -385,11 +379,8 @@ export default function Copilot() {
         over the conversation instead of resizing it.
       */}
       <CopilotPage>
-
-
-
-          <GeminiAurora compact={hasActiveChat} />
-          <SavedChatsDrawer
+        <GeminiAurora compact={hasActiveChat} />
+        <SavedChatsDrawer
           open={savedChatsOpen}
           chats={savedChats}
           onClose={() => setSavedChatsOpen(false)}

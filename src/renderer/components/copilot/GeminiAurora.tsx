@@ -1,38 +1,60 @@
-/* eslint-disable encodex/no-inline-styles, encodex/no-local-types, encodex/no-hardcoded-colors, encodex/no-hardcoded-px */
+/**
+ * @fileoverview Gemini-style aurora backdrop for the Copilot page.
+ *
+ * Renders four slowly morphing, heavily blurred gradient blobs with a sparkle
+ * field painted on a canvas above them. While the composer is idle the aurora
+ * fills the page; once a chat is running it shrinks to a short band above the
+ * composer, where a gradient overlay dissolves its top edge into the page
+ * background. The overlay appears instantly when shrinking and fades out slowly
+ * once the aurora has grown back to its full size.
+ */
+
 import { useEffect, useRef, useState } from 'react';
-import { Box, useTheme } from '@mui/material';
+import { AURORA_COLORS } from '../../../shared/theme/colors';
+import {
+  GeminiAuroraBlob,
+  GeminiAuroraBlobs,
+  GeminiAuroraCanvas,
+  GeminiAuroraEdge,
+  GeminiAuroraLayer,
+  AURORA_BLOB_FILLS,
+} from '../../styles/copilot/GeminiAurora.styles';
+import type { AuroraBlobPlacement, AuroraSparkle } from './GeminiAurora.types';
+
+/** Duration of the height transition, in milliseconds. */
+const HEIGHT_TRANSITION_MS = 600;
+
+/** Placement and timing of the four aurora blobs. */
+const BLOB_PLACEMENTS: readonly AuroraBlobPlacement[] = [
+  { size: '60vw', top: '20%', left: '10%', duration: 14, delay: '0s' },
+  { size: '50vw', top: '40%', right: '15%', duration: 18, delay: '-4s' },
+  { size: '55vw', bottom: '10%', left: '25%', duration: 16, delay: '-8s' },
+  { size: '45vw', top: '10%', right: '30%', duration: 20, delay: '-12s' },
+];
 
 /**
- * Converts a hex colour into an `rgba()` string with the given alpha, so the
- * top-edge gradient can fade through the page background in soft steps.
- * @param {string} hex - The hex colour, e.g. `#0c0c0c`.
- * @param {number} alpha - The alpha channel, from 0 to 1.
- * @returns {string} The `rgba()` colour string.
+ * Renders the aurora backdrop.
+ * @param {object} props - Component props.
+ * @param {boolean} props.compact - Whether the chat is active and the aurora
+ *   should shrink to the composer band.
+ * @returns {JSX.Element} The aurora backdrop.
  */
-function withAlpha(hex: string, alpha: number): string {
-  const h = hex.replace('#', '');
-  const r = parseInt(h.slice(0, 2), 16);
-  const g = parseInt(h.slice(2, 4), 16);
-  const b = parseInt(h.slice(4, 6), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-}
-
 export default function GeminiAurora({ compact = false }: { compact?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const theme = useTheme();
   const [masked, setMasked] = useState(compact);
 
   // The soft top edge stays applied while the aurora shrinks to the composer and
-  // while it grows back. Once it has reached its full size again the mask fades
-  // out, so the growing edge never flashes a hard border.
+  // while it grows back. Once it has reached its full size again the edge fades
+  // out, so the growing aurora never flashes a hard border.
   useEffect(() => {
     if (compact) {
       setMasked(true);
       return;
     }
-    const timer = window.setTimeout(() => setMasked(false), 600);
+    const timer = window.setTimeout(() => setMasked(false), HEIGHT_TRANSITION_MS);
     return () => window.clearTimeout(timer);
   }, [compact]);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -46,33 +68,57 @@ export default function GeminiAurora({ compact = false }: { compact?: boolean })
     resize();
     window.addEventListener('resize', resize);
 
-    interface Sparkle { x: number; y: number; size: number; maxAlpha: number; alpha: number; speed: number; growing: boolean; color: string; }
-    const tints = ['#ffffff', '#a855f7', '#60a5fa', '#38bdf8'];
-    const sparkles: Sparkle[] = [];
+    const tints = AURORA_COLORS.sparkleTints;
+    const sparkles: AuroraSparkle[] = [];
     for (let i = 0; i < 90; i++) {
-      sparkles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: Math.random() * 1.6 + 0.3, maxAlpha: Math.random() * 0.85 + 0.15, alpha: 0, speed: Math.random() * 0.012 + 0.004, growing: true, color: tints[Math.floor(Math.random() * tints.length)] });
+      sparkles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 1.6 + 0.3,
+        maxAlpha: Math.random() * 0.85 + 0.15,
+        alpha: 0,
+        speed: Math.random() * 0.012 + 0.004,
+        growing: true,
+        color: tints[Math.floor(Math.random() * tints.length)],
+      });
     }
+
+    const resetSparkle = (sparkle: AuroraSparkle): void => {
+      sparkle.x = Math.random() * canvas.width;
+      sparkle.y = Math.random() * canvas.height;
+      sparkle.size = Math.random() * 1.6 + 0.3;
+      sparkle.maxAlpha = Math.random() * 0.85 + 0.15;
+      sparkle.alpha = 0;
+      sparkle.speed = Math.random() * 0.012 + 0.004;
+      sparkle.growing = true;
+      sparkle.color = tints[Math.floor(Math.random() * tints.length)];
+    };
 
     let raf = 0;
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      sparkles.forEach((s) => {
-        if (s.growing) { s.alpha += s.speed; if (s.alpha >= s.maxAlpha) s.growing = false; }
-        else { s.alpha -= s.speed; if (s.alpha <= 0) { s.x = Math.random() * canvas.width; s.y = Math.random() * canvas.height; s.size = Math.random() * 1.6 + 0.3; s.maxAlpha = Math.random() * 0.85 + 0.15; s.alpha = 0; s.speed = Math.random() * 0.012 + 0.004; s.growing = true; s.color = tints[Math.floor(Math.random() * tints.length)]; } }
+      sparkles.forEach((sparkle) => {
+        if (sparkle.growing) {
+          sparkle.alpha += sparkle.speed;
+          if (sparkle.alpha >= sparkle.maxAlpha) sparkle.growing = false;
+        } else {
+          sparkle.alpha -= sparkle.speed;
+          if (sparkle.alpha <= 0) resetSparkle(sparkle);
+        }
         ctx.save();
-        ctx.globalAlpha = s.alpha;
-        ctx.fillStyle = s.color;
+        ctx.globalAlpha = sparkle.alpha;
+        ctx.fillStyle = sparkle.color;
         ctx.beginPath();
-        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        ctx.arc(sparkle.x, sparkle.y, sparkle.size, 0, Math.PI * 2);
         ctx.fill();
-        if (s.size > 1.4 && s.alpha > 0.5) {
-          ctx.strokeStyle = s.color;
+        if (sparkle.size > 1.4 && sparkle.alpha > 0.5) {
+          ctx.strokeStyle = sparkle.color;
           ctx.lineWidth = 0.3;
           ctx.beginPath();
-          ctx.moveTo(s.x - s.size * 2.5, s.y);
-          ctx.lineTo(s.x + s.size * 2.5, s.y);
-          ctx.moveTo(s.x, s.y - s.size * 2.5);
-          ctx.lineTo(s.x, s.y + s.size * 2.5);
+          ctx.moveTo(sparkle.x - sparkle.size * 2.5, sparkle.y);
+          ctx.lineTo(sparkle.x + sparkle.size * 2.5, sparkle.y);
+          ctx.moveTo(sparkle.x, sparkle.y - sparkle.size * 2.5);
+          ctx.lineTo(sparkle.x, sparkle.y + sparkle.size * 2.5);
           ctx.stroke();
         }
         ctx.restore();
@@ -81,49 +127,28 @@ export default function GeminiAurora({ compact = false }: { compact?: boolean })
     };
     animate();
 
-    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize', resize);
+    };
   }, []);
 
   return (
-    <Box
-      aria-hidden="true"
-      sx={{
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        bottom: 0,
-        height: compact ? '30%' : '100%',
-        pointerEvents: 'none',
-        zIndex: 0,
-        overflow: 'hidden',
-        transition: 'height 600ms ease',
-      }}
-    >
-      <Box sx={{ position: 'absolute', inset: 0, filter: 'blur(90px)', opacity: 0.85 }}>
-        <Box sx={{ position: 'absolute', width: '60vw', height: '60vw', top: '20%', left: '10%', borderRadius: '50%', background: 'radial-gradient(circle, rgba(66,133,244,0.8) 0%, rgba(0,0,0,0) 70%)', mixBlendMode: 'screen', animation: 'morph 14s ease-in-out infinite alternate', '@keyframes morph': { '0%': { transform: 'translate(0px,0px) scale(1) rotate(0deg)' }, '33%': { transform: 'translate(40px,-60px) scale(1.15) rotate(120deg)' }, '66%': { transform: 'translate(-30px,50px) scale(0.9) rotate(240deg)' }, '100%': { transform: 'translate(20px,-20px) scale(1.05) rotate(360deg)' } } }} />
-        <Box sx={{ position: 'absolute', width: '50vw', height: '50vw', top: '40%', right: '15%', borderRadius: '50%', background: 'radial-gradient(circle, rgba(168,85,247,0.75) 0%, rgba(0,0,0,0) 70%)', mixBlendMode: 'screen', animation: 'morph 18s ease-in-out infinite alternate', animationDelay: '-4s' }} />
-        <Box sx={{ position: 'absolute', width: '55vw', height: '55vw', bottom: '10%', left: '25%', borderRadius: '50%', background: 'radial-gradient(circle, rgba(236,72,153,0.6) 0%, rgba(0,0,0,0) 70%)', mixBlendMode: 'screen', animation: 'morph 16s ease-in-out infinite alternate', animationDelay: '-8s' }} />
-        <Box sx={{ position: 'absolute', width: '45vw', height: '45vw', top: '10%', right: '30%', borderRadius: '50%', background: 'radial-gradient(circle, rgba(6,182,212,0.65) 0%, rgba(0,0,0,0) 70%)', mixBlendMode: 'screen', animation: 'morph 20s ease-in-out infinite alternate', animationDelay: '-12s' }} />
-      </Box>
-      <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />
-      {/* Soft top edge: fades the aurora into the page background. Its opacity
-          animates, so the edge dissolves slowly once the aurora has grown back
-          to its full size. */}
-      <Box
-        sx={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          top: 0,
-          height: '100%',
-          background: `linear-gradient(to bottom, ${theme.palette.background.default} 0%, ${withAlpha(theme.palette.background.default, 0.94)} 10%, ${withAlpha(theme.palette.background.default, 0.85)} 20%, ${withAlpha(theme.palette.background.default, 0.73)} 30%, ${withAlpha(theme.palette.background.default, 0.6)} 40%, ${withAlpha(theme.palette.background.default, 0.47)} 50%, ${withAlpha(theme.palette.background.default, 0.34)} 60%, ${withAlpha(theme.palette.background.default, 0.23)} 70%, ${withAlpha(theme.palette.background.default, 0.14)} 80%, ${withAlpha(theme.palette.background.default, 0.07)} 90%, transparent 100%)`,
-          opacity: masked ? 1 : 0,
-          // The fade-in is instant so the minimised aurora never shows a hard
-          // top edge; only the fade-out (when it grows back) is animated.
-          transition: compact ? 'none' : 'opacity 1200ms ease',
-          pointerEvents: 'none',
-        }}
-      />
-    </Box>
+    <GeminiAuroraLayer $compact={compact}>
+      <GeminiAuroraBlobs data-testid="copilot-aurora-blobs">
+        {BLOB_PLACEMENTS.map((placement, index) => (
+          <GeminiAuroraBlob
+            key={placement.delay}
+            data-testid="copilot-aurora-blob"
+            $fill={AURORA_BLOB_FILLS[index]}
+            $duration={placement.duration}
+            $delay={placement.delay}
+            $placement={placement}
+          />
+        ))}
+      </GeminiAuroraBlobs>
+      <GeminiAuroraCanvas ref={canvasRef} />
+      <GeminiAuroraEdge $visible={masked} $instant={compact} />
+    </GeminiAuroraLayer>
   );
 }
