@@ -44,7 +44,7 @@ Coverage reports are generated in `coverage/`:
 
 ## ✅ Test Suite
 
-The suite is run by Vitest 4 across **314 test/spec files** in `src/`. <!-- drift:test-files=328 --> Coverage uses the v8 provider.
+The suite is run by Vitest 4 across **314 test/spec files** in `src/`. <!-- drift:test-files=329 --> Coverage uses the v8 provider.
 
 | Area | What's Covered |
 | ---- | -------------- |
@@ -58,7 +58,7 @@ The suite is run by Vitest 4 across **314 test/spec files** in `src/`. <!-- drif
 | **Monitoring (9 files)** | MonitoringService facade, noop provider, logger bridge, Sentry providers (main + renderer), provider factories, consent + IPC bridge |
 | **Standalone MCP (27 files)** | Server wiring, the full tool catalogue (37 registrations), conversion-options mapping, job manager, safety/validation, STT/translation, stdio integration |
 | **Preload (3 files)** | Full `electronAPI` bridge surface, every IPC method |
-| **Renderer components (44 files)** | Rendering, interactions, error states, accessibility for all shared UI components <!-- drift:renderer-component-tests=45 --> |
+| **Renderer components (44 files)** | Rendering, interactions, error states, accessibility for all shared UI components <!-- drift:renderer-component-tests=46 --> |
 | **Renderer hooks (9 files)** | Conversion orchestration, error handling, form validation, media task lifecycle, RTL direction, keyboard shortcuts, AI connection |
 | **Renderer pages (14 files)** | Full page flows: form state, validation, IPC invocation, settings persistence, Copilot, Remux/Demux, about/update |
 | **Renderer stores (22 files)** | Zustand store state transitions and persistence, terms gate, batch config, profiles, dismissed alerts, AI/audit/remux/demux |
