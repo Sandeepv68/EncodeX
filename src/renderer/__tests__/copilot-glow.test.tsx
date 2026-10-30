@@ -247,9 +247,7 @@ describe('Copilot glow layer', () => {
 
     // The widest single step is 12vw of horizontal travel. Anything beyond
     // that, on a timeline this long, is a visible jerk between keyframes.
-    const travels = [...body.matchAll(/translate\(\s*(-?\d+(?:\.\d+)?)vw/g)].map((match) =>
-      Math.abs(Number(match[1])),
-    );
+    const travels = [...body.matchAll(/translate\(\s*(-?\d+(?:\.\d+)?)vw/g)].map((match) => Math.abs(Number(match[1])));
 
     expect(travels.length).toBeGreaterThan(0);
     expect(Math.max(...travels)).toBeLessThanOrEqual(12);

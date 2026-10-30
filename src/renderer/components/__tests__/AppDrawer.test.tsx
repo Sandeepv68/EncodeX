@@ -667,8 +667,6 @@ describe('AppDrawer', () => {
 
     // Reduced motion still removes the growth animation.
     const reduced = mediaRules(css, 'prefers-reduced-motion: reduce');
-    expect(
-      reduced.some((rule) => ICON_SVG_RULE.test(rule.selector) && /transition:\s*none/.test(rule.body)),
-    ).toBe(true);
+    expect(reduced.some((rule) => ICON_SVG_RULE.test(rule.selector) && /transition:\s*none/.test(rule.body))).toBe(true);
   });
 });
