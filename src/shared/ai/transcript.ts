@@ -10,35 +10,9 @@
  * pure code (roadmap §7.3).
  */
 
-/**
- * One timed span of speech.
- * @interface TranscriptSegment
- * @property {number} start - Start offset in seconds.
- * @property {number} end - End offset in seconds (>= start).
- * @property {string} text - The spoken text.
- * @property {string} [speaker] - Optional speaker label when diarization is available.
- */
-export interface TranscriptSegment {
-  start: number;
-  end: number;
-  text: string;
-  speaker?: string;
-}
+import type { Transcript, TranscriptSegment } from './types';
 
-/**
- * A full transcription of one media file.
- * @interface Transcript
- * @property {string} [language] - Detected/declared language (BCP-47 or ISO-639-1).
- * @property {number} durationSeconds - Length of the covered media.
- * @property {TranscriptSegment[]} segments - Ordered, non-overlapping segments.
- * @property {string} engine - Identifier of the engine that produced it (e.g. `whisper.cpp`).
- */
-export interface Transcript {
-  language?: string;
-  durationSeconds: number;
-  segments: TranscriptSegment[];
-  engine: string;
-}
+export type { Transcript, TranscriptSegment };
 
 /**
  * Collapses whitespace and trims a segment's text.

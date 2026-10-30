@@ -9,35 +9,9 @@
  */
 
 import { buildTranscript } from './transcript';
-import type { Transcript, TranscriptSegment } from './transcript';
+import type { Transcript, TranscriptSegment } from './types';
 
-/**
- * Options passed through to an STT engine.
- * @interface SttOptions
- * @property {string} [language] - Force the source language (BCP-47 or ISO-639-1).
- * @property {string} [modelPath] - Path to a model file, when the engine needs one.
- * @property {number} [timeoutMs] - Wall-clock budget for the transcription.
- */
-export interface SttOptions {
-  language?: string;
-  modelPath?: string;
-  timeoutMs?: number;
-}
-
-/**
- * A speech-to-text engine.
- * @interface SttEngine
- * @property {string} id - Stable identifier (e.g. `whisper.cpp`).
- * @property {string} label - Human-readable name.
- * @property {() => Promise<boolean>} available - Whether the engine can run here.
- * @property {(audioPath: string, options?: SttOptions) => Promise<Transcript>} transcribe - Transcribe an audio file.
- */
-export interface SttEngine {
-  id: string;
-  label: string;
-  available(): Promise<boolean>;
-  transcribe(audioPath: string, options?: SttOptions): Promise<Transcript>;
-}
+export type { SttEngine, SttOptions } from './types';
 
 /**
  * Parses a `HH:MM:SS,mmm` (or `HH:MM:SS.mmm`) timestamp into seconds.

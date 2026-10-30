@@ -8,25 +8,9 @@
  */
 
 import { Button } from '@mui/material';
+import type { ViewButtonProps, ViewButtonVariant } from './types';
 
-export type ViewButtonVariant = 'primary' | 'secondary' | 'danger';
-
-export interface ViewButtonProps {
-  /** Button label. */
-  label: string;
-  /** Called on every click; armed actions receive the second click only. */
-  onClick: () => void;
-  /** Visual variant. Defaults to `secondary`. */
-  variant?: ViewButtonVariant;
-  /** Label shown while the action is armed. */
-  confirmLabel?: string;
-  /** True while the action is armed. */
-  armed?: boolean;
-  /** Disables the button. */
-  disabled?: boolean;
-  /** Test hook for the host-rendering checks. */
-  testId?: string;
-}
+export type { ViewButtonProps, ViewButtonVariant };
 
 /**
  * Renders a view button.

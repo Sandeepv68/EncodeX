@@ -75,6 +75,9 @@ import {
   LOG_UPDATER_REJECTED_PENDING,
   LOG_UPDATER_CHECK_TIMEOUT,
 } from '../shared/log-constants';
+import type { ParsedVersion, RawRelease, RawReleaseAsset, UpdateChannel } from './types';
+
+export type { RawRelease, UpdateChannel };
 
 const log = new Logger('main/updater');
 
@@ -284,17 +287,6 @@ export function compareVersions(a: string, b: string): number {
 }
 
 /**
- * A version split into its comparable parts.
- * @interface ParsedVersion
- * @property {number[]} core - Numeric major/minor/patch, padded by comparison.
- * @property {Array<string|number>|null} pre - Pre-release identifiers, or null when stable.
- */
-interface ParsedVersion {
-  core: number[];
-  pre: Array<string | number> | null;
-}
-
-/**
  * Splits a version string into its comparable parts, or returns null when the
  * string is not a version.
  *
@@ -412,33 +404,6 @@ export function selectAsset(assets: UpdateAsset[]): UpdateAsset | null {
 
   const archMatch = platformAssets.find((a) => a.name.toLowerCase().includes(arch));
   return archMatch || platformAssets[0];
-}
-
-/**
- * The shape this module needs out of a single release payload.
- * @interface RawReleaseAsset
- * @property {string} name - Asset file name.
- * @property {string} browser_download_url - Direct download URL.
- * @property {number} size - Byte count.
- * @property {string} [digest] - GitHub-published digest, e.g. `sha256:ab12...`.
- */
-interface RawReleaseAsset {
-  name: string;
-  browser_download_url: string;
-  size: number;
-  digest?: string;
-}
-
-/** @interface RawRelease - the validated fields of a single release payload. */
-export interface RawRelease {
-  tag_name: string;
-  body: string;
-  html_url: string;
-  assets: RawReleaseAsset[];
-  /** True when the release is marked as a pre-release on GitHub. */
-  prerelease: boolean;
-  /** True when the release is still a draft. Drafts are never offered. */
-  draft: boolean;
 }
 
 /**
@@ -608,18 +573,6 @@ function fetchReleases(): Promise<unknown | typeof NO_RELEASE> {
     });
   });
 }
-
-/**
- * The update channel a running version belongs to.
- *
- * - `stable`: the running version has no pre-release identifier. Only stable
- *   releases are offered.
- * - `beta`: the running version is a pre-release. Both pre-releases and stable
- *   releases are offered, so a beta user keeps getting betas and still
- *   receives the eventual 1.0.0.
- * @typedef {'stable' | 'beta'} UpdateChannel
- */
-export type UpdateChannel = 'stable' | 'beta';
 
 /**
  * Resolves the update channel a version belongs to.

@@ -58,8 +58,8 @@ export const DashboardSubtitle = styled(Typography)(({ theme }) => ({
 }));
 
 export const FeatureCard = styled(Card, {
-  shouldForwardProp: (prop) => prop !== 'gradientAngle',
-})<{ gradientAngle?: number }>(({ theme, gradientAngle = 180 }) => ({
+  shouldForwardProp: (prop) => prop !== 'gradientAngle' && prop !== '$animationDelay',
+})<{ gradientAngle?: number; $animationDelay?: string }>(({ theme, gradientAngle = 180, $animationDelay }) => ({
   display: 'flex',
   flexDirection: 'column',
   width: '100%',
@@ -72,6 +72,7 @@ export const FeatureCard = styled(Card, {
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
   transition: 'box-shadow 0.2s, border-color 0.2s, transform 0.2s, background-image 0.2s',
   animation: `${fadeSlideUp(theme)} 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards`,
+  animationDelay: $animationDelay,
   '@media (prefers-reduced-motion: reduce)': {
     animation: 'none',
   },

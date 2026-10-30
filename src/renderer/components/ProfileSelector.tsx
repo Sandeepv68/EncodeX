@@ -7,7 +7,7 @@
 
 import { useMemo, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Autocomplete, InputAdornment, Stack, Typography, Paper, Box, Grow } from '@mui/material';
+import { Autocomplete, InputAdornment, Stack, Typography, Grow } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faMagnifyingGlass,
@@ -31,12 +31,14 @@ import { CATEGORY_ORDER, PROFILE_CATEGORIES } from '../../shared/profiles/catego
 import { useProfileStore } from '../stores/profileStore';
 import { useToastStore } from '../stores/toastStore';
 import { highlightSegments } from '../utils/string-utils';
+import type { ProfileSelectorProps } from './types';
 import ProfileIcon from './ProfileIcon';
 import ProfileBadge from './ProfileBadge';
 import {
   HighlightMark,
   OptionContent,
   OptionDescription,
+  OptionItem,
   ActiveCheck,
   DeleteIcon,
   GroupHeader,
@@ -46,6 +48,10 @@ import {
   PopupIcon,
   GroupList,
   SearchTextField,
+  SelectorAutocompleteBox,
+  SelectorFullWidthBox,
+  ActiveProfileRow,
+  DropdownPaper,
 } from '../styles/ProfileSelector.styles';
 import ConfirmDialog from './ConfirmDialog';
 
@@ -75,12 +81,6 @@ function HighlightText({ text, query }: { text: string; query: string }) {
       )}
     </>
   );
-}
-
-interface ProfileSelectorProps {
-  onCreateNew?: () => void;
-  onApplyProfile?: (profile: ConversionProfile) => void;
-  testId?: string;
 }
 
 export default function ProfileSelector({ onCreateNew, onApplyProfile, testId }: ProfileSelectorProps) {
@@ -131,8 +131,7 @@ export default function ProfileSelector({ onCreateNew, onApplyProfile, testId }:
     (props: React.HTMLAttributes<HTMLLIElement>, option: ConversionProfile) => {
       const isActive = option.id === activeProfileId;
       return (
-        // eslint-disable-next-line encodex/no-inline-styles -- MUI Autocomplete passes runtime positioning via props.style
-        <li {...props} key={option.id} style={{ ...props.style, position: 'relative', alignItems: 'flex-start' }}>
+        <OptionItem {...props} key={option.id}>
           <ProfileIcon name={option.name} />
           <OptionContent>
             <Typography variant="body2" noWrap>
@@ -167,7 +166,7 @@ export default function ProfileSelector({ onCreateNew, onApplyProfile, testId }:
               <FontAwesomeIcon icon={faTrashCan} />
             </DeleteIcon>
           )}
-        </li>
+        </OptionItem>
       );
     },
     [activeProfileId, searchQuery],
@@ -208,7 +207,7 @@ export default function ProfileSelector({ onCreateNew, onApplyProfile, testId }:
 
   const dropdownPaper = useCallback(
     (props: React.HTMLAttributes<HTMLDivElement>) => (
-      <Paper {...props}>
+      <DropdownPaper {...props}>
         {props.children}
         {onCreateNew && (
           <CreateNewCard
@@ -237,7 +236,7 @@ export default function ProfileSelector({ onCreateNew, onApplyProfile, testId }:
             {t('profiles.createCustom')}
           </CreateNewCard>
         )}
-      </Paper>
+      </DropdownPaper>
     ),
     [onCreateNew, t],
   );
@@ -252,7 +251,7 @@ export default function ProfileSelector({ onCreateNew, onApplyProfile, testId }:
     <Stack spacing={0.5}>
       {!activeProfile ? (
         <Grow in timeout={350}>
-          <Box sx={{ width: '100%' }}>
+          <SelectorAutocompleteBox>
             <Autocomplete
               key={activeProfileId ?? 'none'}
               fullWidth
@@ -275,21 +274,6 @@ export default function ProfileSelector({ onCreateNew, onApplyProfile, testId }:
                   <FontAwesomeIcon icon={faChevronDown} />
                 </PopupIcon>
               }
-              slotProps={{
-                paper: {
-                  sx: {
-                    '& .MuiAutocomplete-listbox': {
-                      maxHeight: 360,
-                    },
-                  },
-                },
-                popupIndicator: {
-                  sx: {
-                    color: 'text.secondary',
-                    p: 0.5,
-                  },
-                },
-              }}
               renderInput={(params) => (
                 <SearchTextField
                   {...params}
@@ -308,22 +292,16 @@ export default function ProfileSelector({ onCreateNew, onApplyProfile, testId }:
                 />
               )}
             />
-          </Box>
+          </SelectorAutocompleteBox>
         </Grow>
       ) : (
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            py: 1,
-          }}
-        >
+        <ActiveProfileRow>
           <Grow in timeout={350}>
-            <Box sx={{ width: '100%' }}>
+            <SelectorFullWidthBox>
               <ProfileBadge profile={activeProfile} onClear={() => setActiveProfileId(null)} />
-            </Box>
+            </SelectorFullWidthBox>
           </Grow>
-        </Box>
+        </ActiveProfileRow>
       )}
       <ConfirmDialog
         open={!!deletingProfile}

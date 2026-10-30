@@ -10,60 +10,9 @@
  * filesystem, matching the Electron-free `src/shared/ai` rule.
  */
 
-import type { Transcript, TranscriptSegment } from './transcript';
-import type { SceneBoundary } from './highlight';
+import type { EditContext, EditIntent, EditPlan, SceneBoundary, Transcript, TranscriptSegment } from './types';
 
-/**
- * A structured editing intent. The model maps free text ("cut the sponsor
- * intro") onto one of these kinds; every kind resolves to a single keep-range.
- * @typedef {object} EditIntent
- */
-export type EditIntent =
-  | { kind: 'remove-intro'; maxSeconds?: number }
-  | { kind: 'remove-outro'; maxSeconds?: number }
-  | { kind: 'remove-silence'; minGapSeconds?: number }
-  | { kind: 'keep-range'; start: number; end: number }
-  | { kind: 'keep-first'; seconds: number }
-  | { kind: 'keep-last'; seconds: number };
-
-/**
- * The evidence an intent is resolved against. A transcript and/or scene
- * boundaries sharpen the result; a bare `durationSeconds` is always required.
- * @interface EditContext
- * @property {number} durationSeconds - Source duration in seconds.
- * @property {Transcript} [transcript] - Optional speech timing.
- * @property {SceneBoundary[]} [scenes] - Optional scene boundaries.
- */
-export interface EditContext {
-  durationSeconds: number;
-  transcript?: Transcript;
-  scenes?: SceneBoundary[];
-}
-
-/**
- * A resolved edit: the keep span and the `cut_video` arguments that produce it.
- * @interface EditPlan
- * @property {EditIntent} intent - The intent that was resolved.
- * @property {boolean} valid - False when the span could not be determined.
- * @property {number} start - Keep-span start in seconds.
- * @property {number} end - Keep-span end in seconds.
- * @property {number} duration - Keep-span duration in seconds.
- * @property {Record<string, unknown>} args - `cut_video` arguments.
- * @property {string[]} rationale - Human-readable explanations.
- * @property {string[]} issues - Problems that made the plan invalid.
- * @property {string[]} notes - Caveats that do not block the plan.
- */
-export interface EditPlan {
-  intent: EditIntent;
-  valid: boolean;
-  start: number;
-  end: number;
-  duration: number;
-  args: Record<string, unknown>;
-  rationale: string[];
-  issues: string[];
-  notes: string[];
-}
+export type { EditContext, EditIntent, EditPlan };
 
 /** Default cap (seconds) for an "intro"/"outro" region when none is given. */
 const DEFAULT_REGION_SECONDS = 30;

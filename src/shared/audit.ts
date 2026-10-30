@@ -10,26 +10,9 @@
  * server, the main process, and the renderer.
  */
 
-/**
- * One audit record for a mutating operation.
- * @interface AuditEntry
- * @property {string} id - Stable unique id (timestamp + digest).
- * @property {string} timestamp - ISO-8601 UTC timestamp.
- * @property {string} tool - The mutating tool that ran.
- * @property {number} tier - Safety tier (2 = write, 3 = destructive).
- * @property {string} argsDigest - Short stable digest of the arguments.
- * @property {'ok' | 'error'} result - Whether the operation was accepted.
- * @property {string} [detail] - Error summary when `result` is 'error'.
- */
-export interface AuditEntry {
-  id: string;
-  timestamp: string;
-  tool: string;
-  tier: number;
-  argsDigest: string;
-  result: 'ok' | 'error';
-  detail?: string;
-}
+import type { AuditEntry } from './types';
+
+export type { AuditEntry } from './types';
 
 /**
  * Deterministically serializes a value with object keys sorted, so equal

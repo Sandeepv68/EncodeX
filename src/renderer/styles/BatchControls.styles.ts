@@ -1,6 +1,7 @@
 import { styled } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
-import { IconButton, Paper, TextField, Box, FormControlLabel } from '@mui/material';
+import type { ElementType } from 'react';
+import { IconButton, Paper, TextField, Box, FormControlLabel, Typography } from '@mui/material';
 import { SHADOWS } from '../../shared/theme/colors';
 import { FieldBox } from './form.styles';
 import { AccelAlert } from './BatchQueue.styles';
@@ -102,4 +103,9 @@ export const DropdownChevron = styled('span')(({ theme }) => ({
   lineHeight: 1,
   opacity: 0.8,
   verticalAlign: 'middle',
+}));
+
+/** Notice line shown below the transcoder select (BMF availability). @const BmfNotice */
+export const BmfNotice = styled(Typography)<{ component?: ElementType }>(({ theme }) => ({
+  marginTop: theme.spacing(0.5),
 }));

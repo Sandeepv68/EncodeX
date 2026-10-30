@@ -10,22 +10,10 @@
  * drift from the URIs referenced by tool metadata.
  */
 
-import { MCP_UI_VIEW_URIS, type McpUiViewId } from '../../shared/mcp-ui';
+import { MCP_UI_VIEW_URIS } from '../../shared/mcp-ui';
+import type { McpUiView } from './types';
 
-/**
- * One servable MCP App view.
- * @interface McpUiView
- * @property {McpUiViewId} viewId - The id of the view, used to pick the React component.
- * @property {string} id - Human-readable resource name.
- * @property {string} uri - The `ui://` resource URI.
- * @property {string} description - Short description shown in `resources/list`.
- */
-export interface McpUiView {
-  viewId: McpUiViewId;
-  id: string;
-  uri: string;
-  description: string;
-}
+export type { McpUiView } from './types';
 
 /**
  * All views currently served by EncodeX. Order is stable for deterministic

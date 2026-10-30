@@ -17,33 +17,11 @@ import { createError, ErrorCode } from '../../shared/errors';
 import { createMultiBar, status, success, warn, cliConfig } from './cli-ui';
 import { expandInputs, deriveOutputPath, getInputExtension, registerCliSignalCancel } from './cli-util';
 import { buildConversionOptions } from './cli-convert';
-import type { ConvertCliFlags } from './cli-convert';
 import { resolveTranscoderType, transcoderLabel, CliExitError } from './cli-options';
 import type { ConversionOptions, ConversionProgress, QueueJob } from '../../shared/types';
-import type { CliThemeId } from '../cli-logo';
+import type { RunBatchParams } from './types';
 
-/**
- * Parameters for a batch conversion run.
- * @interface RunBatchParams
- * @property {string[]} inputs - Input file paths or glob patterns.
- * @property {string} [outputDir] - Directory to write outputs into (`--output-dir`); created when missing.
- * @property {string} [suffix] - Suffix appended to each output stem (default `_encodex_converted`).
- * @property {ConvertCliFlags} flags - Conversion flags shared by every job.
- * @property {string} transcoder - Raw `--transcoder` backend value.
- * @property {number} [concurrency] - Max parallel conversions (default {@link MAX_QUEUE_CONCURRENCY}).
- * @property {number} timeoutSeconds - Per-job timeout in seconds.
- * @property {CliThemeId} themeId - Theme used to color the progress bars.
- */
-export interface RunBatchParams {
-  inputs: string[];
-  outputDir?: string;
-  suffix?: string;
-  flags: ConvertCliFlags;
-  transcoder: string;
-  concurrency?: number;
-  timeoutSeconds: number;
-  themeId: CliThemeId;
-}
+export type { RunBatchParams };
 
 /**
  * Runs a batch of conversions through the in-memory job queue.

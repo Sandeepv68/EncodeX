@@ -1,7 +1,5 @@
 import { styled } from '@mui/material/styles';
-import type { Theme } from '@mui/material/styles';
-import type { SxProps } from '@mui/material';
-import { Box, Typography } from '@mui/material';
+import { Box, Menu, Typography } from '@mui/material';
 
 export const LanguageMenuBox = styled(Box)(({ theme }) => ({
   height: '100%',
@@ -56,7 +54,12 @@ export const FlagIconWrapper = styled('span', {
   }),
 }));
 
-export const menuPaperSx: SxProps<Theme> = (theme) => ({ maxHeight: theme.typography.pxToRem(400) });
+/** Language menu popup, capped in height so long locale lists scroll. */
+export const LanguageMenuPaper = styled(Menu)(({ theme }) => ({
+  '& .MuiMenu-paper': {
+    maxHeight: theme.typography.pxToRem(400),
+  },
+}));
 
 /** Search-field wrapper inside the language menu. @const SearchBox */
 export const SearchBox = styled(Box)(({ theme }) => ({

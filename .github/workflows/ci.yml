@@ -104,6 +104,23 @@ jobs:
       - run: npm ci
       - run: npm run lint:inline-styles
 
+  lint-types:
+    name: Check - No local type declarations
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Type declarations live in type files (types.ts / *.types.ts); implementation
+    # files only describe what they do. The rule's own unit test runs first so a
+    # broken rule fails here instead of silently passing every file.
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run lint:types:test
+      - run: npm run lint:types
+
   lint-strings:
     name: Check - No hardcoded UI strings
     runs-on: ubuntu-latest
@@ -231,7 +248,7 @@ jobs:
 
   build:
     name: Build - ${{ matrix.os }}
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-types, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 20
     strategy:
@@ -264,7 +281,7 @@ jobs:
 
   test-unit:
     name: Test - Unit Tests (coverage)
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-types, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     # Exposed at job level so the step-level `if` can read it: a step's own
@@ -308,7 +325,7 @@ jobs:
 
   test-integration:
     name: Test - Integration Tests
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-types, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     # Exposed so the integration-tier coverage upload (distinct Codecov flag)
@@ -334,7 +351,7 @@ jobs:
 
   test-fuzz:
     name: Test - Media Fuzz
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-types, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -356,7 +373,7 @@ jobs:
     # Runs in its own job because 56 x 12 mounts with real i18next would slow
     # the shared unit tier to minutes.
     name: Test - i18n matrix (56 locales x 12 routes) + RTL mirror + longest-string
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-types, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -377,7 +394,7 @@ jobs:
     # inside the single <main> landmark the real app provides. Runs as its own
     # job because 72 axe passes are too slow for the shared unit tier.
     name: Test - axe matrix (12 routes x light/dark x 320/768/1440)
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-types, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -399,7 +416,7 @@ jobs:
     # perf tier (row 8 pattern). Runs as its own job because either render would
     # exhaust a shared unit-tier fork.
     name: Test - big-list render budgets (50k log rows / 3k job cards)
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-types, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -420,7 +437,7 @@ jobs:
     # and no queue-state corruption. Runs as its own job because it mounts the
     # whole app tree and takes well over a minute on its own.
     name: Test - 1,000 rapid route-change harness
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-types, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -435,7 +452,7 @@ jobs:
 
   coverage-per-file:
     name: Gate - Per-file coverage ratchet
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-types, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 40
     # Blocking. The per-file floor is enforced as a *ratchet* rather than as a
@@ -564,7 +581,7 @@ jobs:
 
   test-perf:
     name: Test - Performance Benchmarks
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-types, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -594,7 +611,7 @@ jobs:
     # work is split into shards (MUTATION_SHARDS) that run on parallel runners.
     # The weekly mutation-ratchet workflow still runs the full scope.
     name: Gate - Mutation scope (plan shards)
-    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
+    needs: [format-check, lint, lint-px, lint-colors, lint-rem, lint-inline-styles, lint-types, lint-strings, lint-unused, lint-aptabase, lint-regex, typecheck, validate-locales, actionlint]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
@@ -723,7 +740,11 @@ jobs:
     name: Test - E2E Automation (${{ matrix.os }})
     needs: [build, test-unit, test-integration]
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 40
+    # The Copilot page's decorative glow is deliberately expensive to
+    # rasterise (a full-bleed blur plus animated filters and border-radius).
+    # On a GPU-less runner that costs real wall-clock time, so the job needs
+    # more headroom than the default.
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:

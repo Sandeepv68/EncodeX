@@ -19,58 +19,9 @@ import { AUDIO_CODECS, BATCH_OPERATIONS, VIDEO_CODECS } from '../../shared/media
 import { ROTATION_VALUES } from '../../shared/transcoder-constants';
 import { validateVideoFilters } from '../../shared/video-filters';
 import { DEFAULT_DEMUX_KINDS } from '../utils/queue-job-utils';
+import type { BatchConfig } from './types';
 
-/**
- * The persisted batch encoding configuration snapshot.
- * @typedef {Object} BatchConfig
- * @property {string} operation - Batch operation value (one of BATCH_OPERATIONS).
- * @property {string} videoCodec - Selected video encoder name.
- * @property {string} audioCodec - Selected audio encoder name.
- * @property {string} container - Output container/format extension ('' = keep source).
- * @property {string} videoBitrate - Target video bitrate ('' = auto).
- * @property {string} audioBitrate - Target audio bitrate ('' = auto).
- * @property {string} quality - Image compression quality 1-31 ('' = auto).
- * @property {string} scale - Output resolution ('' = original).
- * @property {string} rotate - Output rotation angle ('' | '90' | '180' | '270').
- * @property {boolean} flipH - Whether to mirror the output horizontally.
- * @property {boolean} flipV - Whether to mirror the output vertically.
- * @property {string} pixelFormat - Output pixel format.
- * @property {string[]} videoFilters - Ordered video-filter chain entries
- *   (transcode only).
- * @property {Array<'video'|'audio'|'subtitle'>} demuxKinds - Stream kinds the
- *   'demux' operation extracts from each file.
- * @property {string} demuxVideoContainer - 'demux' video conversion target
- *   container extension ('' = lossless stream copy).
- * @property {string} demuxAudioCodec - 'demux' audio conversion encoder ('' =
- *   lossless stream copy).
- * @property {string} demuxSubtitleFormat - 'demux' subtitle conversion format
- *   ('' = lossless stream copy).
- * @property {string} outputDir - Optional output folder for new jobs; '' means
- *   outputs are written next to their source files.
- * @property {boolean} overwrite - Whether new jobs may replace existing output
- *   files.
- */
-export interface BatchConfig {
-  operation: string;
-  videoCodec: string;
-  audioCodec: string;
-  container: string;
-  videoBitrate: string;
-  audioBitrate: string;
-  quality: string;
-  scale: string;
-  rotate: string;
-  flipH: boolean;
-  flipV: boolean;
-  pixelFormat: string;
-  videoFilters: string[];
-  demuxKinds: Array<'video' | 'audio' | 'subtitle'>;
-  demuxVideoContainer: string;
-  demuxAudioCodec: string;
-  demuxSubtitleFormat: string;
-  outputDir: string;
-  overwrite: boolean;
-}
+export type { BatchConfig };
 
 /**
  * Fallback values used when the persisted config is missing or invalid.

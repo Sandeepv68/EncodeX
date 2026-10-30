@@ -9,30 +9,11 @@ import { Command } from 'commander';
 import { TRANSCODER_TYPES, TRANSCODER_LABELS } from '../../shared/transcoder-constants';
 import { CLI_CONVERSION_TIMEOUT_MS } from '../../shared/constants';
 import { setColor, configureCliOutput } from './cli-ui';
-import { isCliThemeId, DEFAULT_CLI_THEME, CliThemeId } from '../cli-logo';
+import { isCliThemeId, DEFAULT_CLI_THEME } from '../cli-logo';
+import type { CliThemeId } from '../cli-logo';
 import type { TranscoderType } from '../../shared/types';
 
-/**
- * Global options that apply to every CLI subcommand. Values come from
- * `optsWithGlobals()` inside each subcommand action.
- * @interface GlobalCliOptions
- * @property {string} [transcoder] - Transcoder backend name ('FFMPEG' | 'FFTOOL' | 'BMF').
- * @property {string} [theme] - Logo color theme id.
- * @property {boolean} [verbose] - Enable verbose status output.
- * @property {boolean} [quiet] - Suppress non-error status output.
- * @property {boolean} [color] - Whether colors are enabled (from `--no-color`).
- * @property {boolean} [json] - Emit machine-readable JSON instead of tables.
- * @property {string} [timeout] - Conversion timeout in seconds.
- */
-export interface GlobalCliOptions {
-  transcoder?: string;
-  theme?: string;
-  verbose?: boolean;
-  quiet?: boolean;
-  color?: boolean;
-  json?: boolean;
-  timeout?: string;
-}
+export type { GlobalCliOptions } from './types';
 
 /**
  * Error carrying an explicit CLI exit code.

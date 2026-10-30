@@ -7,37 +7,9 @@
 
 import { keywordsFor, titleCase, wordFrequencies } from './text';
 import { normalizeSegmentText } from './transcript';
-import type { Transcript, TranscriptSegment } from './transcript';
+import type { Chapter, ChapterOptions, Transcript, TranscriptSegment } from './types';
 
-/**
- * A generated chapter.
- * @interface Chapter
- * @property {number} start - Start offset in seconds.
- * @property {number} end - End offset in seconds.
- * @property {string} title - Generated title.
- */
-export interface Chapter {
-  start: number;
-  end: number;
-  title: string;
-}
-
-/**
- * Tuning for {@link generateChapters}.
- * @interface ChapterOptions
- * @property {number} [minChapterSeconds] - Shortest allowed chapter before a pause can split (default 45).
- * @property {number} [maxChapterSeconds] - Hard cap that forces a split even without a pause (default 300).
- * @property {number} [gapSeconds] - Silence gap that marks a topic boundary (default 2.5).
- * @property {number} [maxChapters] - Upper bound; extra chapters are merged (default 20).
- * @property {number} [maxKeywords] - Keywords per title (default 4).
- */
-export interface ChapterOptions {
-  minChapterSeconds?: number;
-  maxChapterSeconds?: number;
-  gapSeconds?: number;
-  maxChapters?: number;
-  maxKeywords?: number;
-}
+export type { Chapter, ChapterOptions };
 
 /**
  * Splits ordered segments into raw chapter spans by pause + length heuristics.

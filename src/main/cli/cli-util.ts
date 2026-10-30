@@ -9,25 +9,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 import { clamp } from '../../shared/math';
+import type { DeriveOutputOptions } from './types';
 
-/**
- * Options controlling how an output file path is derived from an input path.
- * @typedef {Object} DeriveOutputOptions
- * @property {string} [outputDir] - Directory to place the output in. Defaults
- *   to the input's directory when omitted.
- * @property {string} [suffix] - Text appended to the file stem before the
- *   extension (e.g. `_converted`). Defaults to '' when omitted.
- * @property {string} [outputExt] - Extension (without dot) to give the output.
- *   When omitted the input extension is kept.
- * @property {boolean} [keepExt] - When false and `outputExt` is omitted, drop
- *   the input extension entirely instead of keeping it.
- */
-export interface DeriveOutputOptions {
-  outputDir?: string;
-  suffix?: string;
-  outputExt?: string;
-  keepExt?: boolean;
-}
+export type { DeriveOutputOptions };
 
 /**
  * Returns the lower-cased extension (without the leading dot) of a file path,

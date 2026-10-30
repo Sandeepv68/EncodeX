@@ -22,6 +22,7 @@ import noHardcodedPx from './eslint-rules/no-hardcoded-px.mjs';
 import noHardcodedRem from './eslint-rules/no-hardcoded-rem.mjs';
 import noHardcodedColors from './eslint-rules/no-hardcoded-colors.mjs';
 import noInlineStyles from './eslint-rules/no-inline-styles.mjs';
+import noLocalTypes from './eslint-rules/no-local-types.mjs';
 import noHardcodedStrings from './eslint-rules/no-hardcoded-strings.mjs';
 import noUnused from './eslint-rules/no-unused.mjs';
 
@@ -53,6 +54,7 @@ export default [
           'no-hardcoded-rem': noHardcodedRem,
           'no-hardcoded-colors': noHardcodedColors,
           'no-inline-styles': noInlineStyles,
+          'no-local-types': noLocalTypes,
           'no-hardcoded-strings': noHardcodedStrings,
           'no-unused': noUnused,
         },
@@ -72,6 +74,7 @@ export default [
       'encodex/no-hardcoded-rem': 'error',
       'encodex/no-hardcoded-colors': 'error',
       'encodex/no-inline-styles': 'error',
+      'encodex/no-local-types': 'error',
       'encodex/no-hardcoded-strings': [
         'error',
         {
@@ -98,6 +101,7 @@ export default [
       'encodex/no-hardcoded-rem': 'off',
       'encodex/no-hardcoded-colors': 'off',
       'encodex/no-inline-styles': 'off',
+      'encodex/no-local-types': 'off',
       'encodex/no-hardcoded-strings': 'off',
     },
   },

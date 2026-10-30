@@ -5,17 +5,29 @@
  * entry opens it, the trash button deletes it.
  */
 
-import { Box, ButtonBase, Chip, IconButton, Tooltip, Typography } from '@mui/material';
+import { IconButton, Tooltip, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
-import type { SavedCopilotChat } from '../../stores/copilotChats';
 import { deriveCopilotChatProvider } from '../../stores/copilotChats';
+import type { SavedChatsDrawerProps } from './types';
 import ProviderIcon from './ProviderIcon';
-import { SHADOWS } from '../../../shared/theme/colors';
-
-/** Width of the panel when open, in pixels. */
-const PANEL_WIDTH_PX = 320;
+import {
+  DeleteChatButton,
+  DrawerHeader,
+  DrawerList,
+  DrawerPanel,
+  DrawerShell,
+  DrawerTitle,
+  EmptyChatsText,
+  SavedChatBody,
+  SavedChatCountChip,
+  SavedChatItem,
+  SavedChatMeta,
+  SavedChatOpen,
+  SavedChatProvider,
+  SavedChatTitle,
+} from '../../styles/copilot/SavedChatsDrawer.styles';
 
 /** Seconds per unit, largest first, used by {@link formatTimeAgo}. */
 const TIME_UNITS: ReadonlyArray<readonly [Intl.RelativeTimeFormatUnit, number]> = [
@@ -48,14 +60,6 @@ export function formatTimeAgo(timestamp: number, now: number, locale: string): s
   return rtf.format(-elapsedSeconds, 'second');
 }
 
-interface SavedChatsDrawerProps {
-  open: boolean;
-  chats: SavedCopilotChat[];
-  onClose: () => void;
-  onOpen: (chat: SavedCopilotChat) => void;
-  onDelete: (id: string) => void;
-}
-
 /**
  * Renders the saved-conversations panel as an overlay that slides over the
  * Copilot column.
@@ -72,163 +76,65 @@ export default function SavedChatsDrawer({ open, chats, onClose, onOpen, onDelet
   const now = Date.now();
 
   return (
-    <Box
-      sx={{
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        left: 0,
-        zIndex: 1,
-        width: PANEL_WIDTH_PX,
-        maxWidth: '100%',
-        display: 'flex',
-        transform: open ? 'translateX(0)' : 'translateX(-100%)',
-        visibility: open ? 'visible' : 'hidden',
-        transition: 'transform 225ms ease, visibility 225ms',
-        '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
-      }}
-    >
-      <Box
-        component="aside"
-        aria-label={t('copilot.savedChatsTitle')}
-        data-testid="saved-chats-drawer"
-        sx={{
-          width: PANEL_WIDTH_PX,
-          maxWidth: '100%',
-          height: '100%',
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: 0,
-          borderRight: 1,
-          borderColor: 'divider',
-          bgcolor: 'background.paper',
-          boxShadow: open ? 6 : 0,
-          transition: 'box-shadow 225ms ease',
-          '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 1,
-            p: 2,
-            borderBottom: 1,
-            borderColor: 'divider',
-          }}
-        >
-          <Typography variant="subtitle1" component="h2" sx={{ fontWeight: 700 }}>
+    <DrawerShell $open={open}>
+      <DrawerPanel component="aside" aria-label={t('copilot.savedChatsTitle')} data-testid="saved-chats-drawer" $open={open}>
+        <DrawerHeader>
+          <DrawerTitle variant="subtitle1" component="h2">
             {t('copilot.savedChatsTitle')}
-          </Typography>
+          </DrawerTitle>
           <IconButton size="small" aria-label={t('copilot.savedChatsClose')} onClick={onClose}>
             <FontAwesomeIcon icon={faXmark} />
           </IconButton>
-        </Box>
-        <Box sx={{ flex: 1, overflowY: 'auto', p: 1 }}>
+        </DrawerHeader>
+        <DrawerList>
           {chats.length === 0 ? (
-            <Typography variant="body2" color="text.secondary" sx={{ p: 1 }} data-testid="saved-chats-empty">
+            <EmptyChatsText variant="body2" color="text.secondary" data-testid="saved-chats-empty">
               {t('copilot.savedChatsEmpty')}
-            </Typography>
+            </EmptyChatsText>
           ) : (
             chats.map((chat) => {
               const providerId = deriveCopilotChatProvider(chat.messages);
               return (
-                <Box
-                  key={chat.id}
-                  data-testid="saved-chat-item"
-                  sx={(theme) => ({
-                    display: 'flex',
-                    alignItems: 'center',
-                    borderRadius: 1,
-                    border: 1,
-                    borderColor: 'divider',
-                    bgcolor: 'background.paper',
-                    boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
-                    transition: 'background-color 150ms ease, box-shadow 150ms ease',
-                    '&:hover': {
-                      bgcolor: 'action.selected',
-                      boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_HOVER_DARK : SHADOWS(theme).SOFT_HOVER_LIGHT,
-                    },
-                    '&:focus-within': { bgcolor: 'action.selected' },
-                  })}
-                >
-                  <ButtonBase
-                    data-testid="saved-chat-open"
-                    onClick={() => onOpen(chat)}
-                    sx={{
-                      flex: 1,
-                      minWidth: 0,
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      justifyContent: 'flex-start',
-                      gap: 1,
-                      p: 1,
-                      borderRadius: 1,
-                      textAlign: 'start',
-                    }}
-                  >
-                    <Box sx={{ flex: 1, minWidth: 0 }}>
-                      <Typography
-                        component="span"
-                        variant="body2"
-                        sx={{ display: 'block', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
-                      >
+                <SavedChatItem key={chat.id} data-testid="saved-chat-item">
+                  <SavedChatOpen data-testid="saved-chat-open" onClick={() => onOpen(chat)}>
+                    <SavedChatBody>
+                      <SavedChatTitle component="span" variant="body2">
                         {chat.title || t('copilot.savedChatUntitled')}
-                      </Typography>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5, minWidth: 0 }}>
-                        <Chip
+                      </SavedChatTitle>
+                      <SavedChatMeta>
+                        <SavedChatCountChip
                           component="span"
                           size="small"
                           variant="outlined"
                           icon={<FontAwesomeIcon icon={faComments} />}
                           label={chat.messages.length}
                           data-testid="saved-chat-count"
-                          sx={{
-                            height: 24,
-                            flexShrink: 0,
-                            px: 0.5,
-                            fontWeight: 600,
-                            '& .MuiChip-icon': { fontSize: 11, ml: 0.75, mr: -0.25 },
-                            '& .MuiChip-label': { px: 0.75, lineHeight: 1 },
-                          }}
                         />
                         <Typography component="span" variant="caption" color="text.secondary" noWrap>
                           {formatTimeAgo(chat.savedAt, now, i18n.language)}
                         </Typography>
-                      </Box>
-                    </Box>
+                      </SavedChatMeta>
+                    </SavedChatBody>
                     <Tooltip
                       title={providerId ? t(`settings.ai.providers.${providerId}`) : ''}
                       disableHoverListener={!providerId}
                       placement="left"
                       arrow
                     >
-                      <Box
-                        component="span"
-                        data-testid="saved-chat-provider"
-                        sx={{ display: 'inline-flex', alignItems: 'center', alignSelf: 'center', flexShrink: 0 }}
-                      >
+                      <SavedChatProvider component="span" data-testid="saved-chat-provider">
                         <ProviderIcon providerId={providerId} size={24} />
-                      </Box>
+                      </SavedChatProvider>
                     </Tooltip>
-                  </ButtonBase>
-                  <IconButton
-                    size="small"
-                    color="error"
-                    aria-label={t('copilot.savedChatDelete')}
-                    onClick={() => onDelete(chat.id)}
-                    sx={{ mr: 0.5, flexShrink: 0 }}
-                  >
+                  </SavedChatOpen>
+                  <DeleteChatButton size="small" color="error" aria-label={t('copilot.savedChatDelete')} onClick={() => onDelete(chat.id)}>
                     <FontAwesomeIcon icon={faXmark} />
-                  </IconButton>
-                </Box>
+                  </DeleteChatButton>
+                </SavedChatItem>
               );
             })
           )}
-        </Box>
-      </Box>
-    </Box>
+        </DrawerList>
+      </DrawerPanel>
+    </DrawerShell>
   );
 }

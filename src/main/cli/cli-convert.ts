@@ -22,50 +22,9 @@ import { CliExitError, resolveTranscoderType, transcoderLabel } from './cli-opti
 import { CLI_EXIT_USAGE } from '../../shared/constants';
 import type { CliThemeId } from '../cli-logo';
 import type { TranscoderType } from '../../shared/types';
+import type { ConvertCliFlags, RunConvertParams, RunPreparedParams } from './types';
 
-/**
- * Conversion flags accepted by the `convert` subcommand.
- * @interface ConvertCliFlags
- * @property {string} [output] - Explicit output file (`-o, --output`).
- * @property {string} [videoCodec] - Video encoder name (`-v, --video-codec`).
- * @property {string} [audioCodec] - Audio encoder name (`-a, --audio-codec`).
- * @property {string} [bitrateVideo] - Video bitrate (`--bitrate-video`).
- * @property {string} [bitrateAudio] - Audio bitrate (`--bitrate-audio`).
- * @property {string} [qscale] - Video quality scale (`-q, --qscale`).
- * @property {string} [pixFmt] - Pixel format (`--pix-fmt`).
- * @property {string} [scale] - Output resolution (`-s, --scale`).
- * @property {string} [startTime] - Trim start time (`--start-time`).
- * @property {string} [endTime] - Trim end time (`--end-time`).
- * @property {string} [duration] - Max output duration (`--duration`).
- * @property {boolean} [copy] - Lossless stream copy (`--copy`).
- * @property {boolean} [audio] - Include audio (`--no-audio` sets false).
- * @property {boolean} [video] - Include video (`--no-video` sets false).
- * @property {boolean} [hwaccel] - Enable hardware acceleration (`--hwaccel`).
- * @property {string} [hwaccelMode] - Hardware acceleration mode (`--hwaccel-mode`).
- * @property {string} [filters] - Comma-joined video filter chain (`--filters`).
- * @property {string[]} [presets] - Curated filter preset ids (`--preset`,
- *   repeatable).
- */
-export interface ConvertCliFlags {
-  output?: string;
-  videoCodec?: string;
-  audioCodec?: string;
-  bitrateVideo?: string;
-  bitrateAudio?: string;
-  qscale?: string;
-  pixFmt?: string;
-  scale?: string;
-  startTime?: string;
-  endTime?: string;
-  duration?: string;
-  copy?: boolean;
-  audio?: boolean;
-  video?: boolean;
-  hwaccel?: boolean;
-  hwaccelMode?: string;
-  filters?: string;
-  presets?: string[];
-}
+export type { ConvertCliFlags, RunConvertParams, RunPreparedParams };
 
 /**
  * Resolves the ordered video-filter entries from the `--preset` shorthand(s)
@@ -168,48 +127,6 @@ export function resolveOutputPath(input: string, flags: ConvertCliFlags, options
   const ext =
     copyMode || videoOff ? getInputExtension(input) : suggestedExtensionForVideoCodec(options.videoCodec) || getInputExtension(input);
   return deriveOutputPath(input, { suffix: '_converted', outputExt: ext });
-}
-
-/**
- * Parameters for a single CLI conversion run.
- * @interface RunConvertParams
- * @property {string} input - Input file path.
- * @property {string} [output] - Output file path (derived when absent).
- * @property {ConvertCliFlags} flags - Parsed conversion flags.
- * @property {ITranscoder} transcoder - Transcoder backend to run the job.
- * @property {number} timeoutSeconds - Hard conversion timeout in seconds.
- * @property {CliThemeId} themeId - Theme used to color the progress bar.
- */
-export interface RunConvertParams {
-  input: string;
-  output?: string;
-  flags: ConvertCliFlags;
-  transcoder: ITranscoder;
-  timeoutSeconds: number;
-  themeId: CliThemeId;
-}
-
-/**
- * Parameters for running an already-built `ConversionOptions` through a
- * transcoder with progress rendering and a hard timeout.
- * @interface RunPreparedParams
- * @property {string} input - Input file path.
- * @property {string} output - Output file path.
- * @property {ConversionOptions} options - Prebuilt conversion options.
- * @property {ITranscoder} transcoder - Transcoder backend to run the job.
- * @property {number} timeoutSeconds - Hard conversion timeout in seconds.
- * @property {CliThemeId} themeId - Theme used to color the progress bar.
- * @property {string} [successText] - Line printed on success (defaults to
- *   `Converted <input> → <output>`).
- */
-export interface RunPreparedParams {
-  input: string;
-  output: string;
-  options: ConversionOptions;
-  transcoder: ITranscoder;
-  timeoutSeconds: number;
-  themeId: CliThemeId;
-  successText?: string;
 }
 
 /**

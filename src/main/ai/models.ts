@@ -15,6 +15,9 @@ import type { AiServerSettings } from './settings';
 import { effectiveModel } from './settings';
 import { ProviderHttpError, requestJson } from './connectors';
 import type { FetchLike } from './connectors';
+import type { ProviderModelEntry } from './types';
+
+export type { ProviderModelEntry };
 
 /** Default per-request timeout for a model-list call. @const {number} */
 const DEFAULT_TIMEOUT_MS = 30_000;
@@ -49,20 +52,6 @@ function isOpenAiTextModel(id: string): boolean {
   // Legacy base models are superseded by the chat/instruct families.
   if (/^(davinci|babbage|curie|ada)(-|$)/.test(lower)) return false;
   return true;
-}
-
-/**
- * One model a provider reported, with the creation date it published (when the
- * provider reports one). The date is what orders the pick-list: the newest
- * model a provider offers is the one least likely to be retired, so it is the
- * safest automatic choice.
- * @interface ProviderModelEntry
- * @property {string} id - The model id.
- * @property {number} [created] - Epoch ms the model was created, when reported.
- */
-export interface ProviderModelEntry {
-  id: string;
-  created?: number;
 }
 
 /**

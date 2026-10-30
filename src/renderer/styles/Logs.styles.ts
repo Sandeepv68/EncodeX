@@ -2,6 +2,7 @@ import { styled } from '@mui/material/styles';
 import { Box, Typography, Select, Paper, TextField } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { COLORS, SHADOWS } from '../../shared/theme/colors';
+import type { ElementType } from 'react';
 
 export const LogsRoot = styled(Box)({ display: 'flex', flexDirection: 'column', height: '100%' });
 
@@ -118,3 +119,15 @@ export const AuditStatus = styled('span', {
 
 /** Muted detail text in an audit row (digest, timestamp, error). */
 export const AuditMuted = styled('span')({ color: COLORS.log.muted, whiteSpace: 'nowrap' });
+
+/** Header row of the audit panel: title, entry count, and the clear button. @const AuditHeader */
+export const AuditHeader = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(1),
+}));
+
+/** Audit panel title, growing to fill the free space of its header row. @const AuditTitle */
+export const AuditTitle = styled(Typography)<{ component?: ElementType }>({
+  flex: 1,
+});

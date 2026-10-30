@@ -8,20 +8,10 @@
  * posture) but resolve to an "unavailable" error until later releases.
  */
 
-import type { AIProvider, AIProviderDescriptor, AIProviderId, PlanRequest, RecommendedSettings } from './types';
+import type { AIProvider, AIProviderDescriptor, AIProviderId, LocalModelClient, PlanRequest, RecommendedSettings } from './types';
 import { recommendSettings } from './recommend';
 
-/**
- * Minimal text-generation transport a local model runtime must provide. Keeping
- * it to a single `generate(prompt)` call lets the provider stay transport-free
- * (the HTTP/Ollama adapter lives in `src/mcp`), so it is trivially fakeable in
- * tests.
- * @interface LocalModelClient
- * @property {(prompt: string) => Promise<string>} generate - Returns the model's raw text.
- */
-export interface LocalModelClient {
-  generate(prompt: string): Promise<string>;
-}
+export type { LocalModelClient };
 
 /**
  * Raised when a provider is requested that this build cannot construct.

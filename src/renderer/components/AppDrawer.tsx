@@ -28,7 +28,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useNavigationGuard } from '../NavigationGuardContext';
-import { Box, Tooltip } from '@mui/material';
+import { Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { NAV_ITEMS } from '../../shared/app-constants';
@@ -56,6 +56,7 @@ import {
   NavItemText,
   NavBlip,
   NavCountBadge,
+  DrawerNav,
 } from '../styles/AppDrawer.styles';
 
 /**
@@ -294,7 +295,7 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
 
   return (
     <>
-      <Box component="nav" aria-label={t('app.navigation')} sx={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+      <DrawerNav component="nav" aria-label={t('app.navigation')}>
         <NavList>
           {NAV_ITEMS.map((item, index) => {
             const label = t(`nav.${navKeyMap[item.to]}`);
@@ -309,7 +310,7 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
                   $condensed={condensed}
                   data-testid={`nav-item-${item.to === '/' ? 'dashboard' : item.to.slice(1)}`}
                   selected={location.pathname === item.to}
-                  sx={{ animationDelay: `${index * 0.05}s` }}
+                  $index={index}
                   onMouseLeave={scheduleClose}
                   onFocus={(e) => openPopover(e, item.to)}
                   onBlur={scheduleClose}
@@ -381,7 +382,7 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
           )}
           <LanguageMenu condensed={condensed} />
         </NavFooter>
-      </Box>
+      </DrawerNav>
       <NavJobPopover
         active={popoverBlip}
         anchorEl={popoverAnchor}

@@ -19,30 +19,9 @@ import { createContext, useCallback, useContext, useMemo, useRef, useState, type
 import { useLocation, useNavigate, type NavigateOptions, type To } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ConfirmDialog from './components/ConfirmDialog';
+import type { GuardedNavigate, NavigationGuard, NavigationGuardApi } from './types';
 
-/** Returns true when leaving the current route should ask for confirmation. */
-export type NavigationGuard = () => boolean;
-
-/** A navigate function that consults the registered guard before routing. */
-type GuardedNavigate = (to: To, options?: NavigateOptions) => void;
-
-/**
- * Navigation helpers exposed to pages and chrome components.
- * @interface NavigationGuardApi
- * @property {GuardedNavigate} navigate - Navigates unless the active guard
- *   blocks the transition and opens the confirmation dialog.
- * @property {GuardedNavigate} navigateWithoutGuard - Navigates immediately,
- *   bypassing the guard. Used for app-initiated transitions such as the
- *   post-enqueue jump to the batch queue.
- * @property {(guard: NavigationGuard) => () => void} registerGuard - Registers
- *   the active route's guard and returns a cleanup that removes it. Registering
- *   a newer guard replaces the previous one.
- */
-export interface NavigationGuardApi {
-  navigate: GuardedNavigate;
-  navigateWithoutGuard: GuardedNavigate;
-  registerGuard: (guard: NavigationGuard) => () => void;
-}
+export type { NavigationGuard, NavigationGuardApi };
 
 const NavigationGuardContext = createContext<NavigationGuardApi | null>(null);
 

@@ -22,44 +22,9 @@
  * dialog; these are unit-tested in `__tests__/shortcuts.test.ts`.
  */
 
-/**
- * Sections used to group shortcuts in the help dialog. The order of
- * `SHORTCUT_SECTIONS` determines the display order.
- * @typedef {string} ShortcutSection
- */
-export type ShortcutSection =
-  | 'global'
-  | 'convert'
-  | 'mediaInfo'
-  | 'imageCompress'
-  | 'audioExtract'
-  | 'videoCut'
-  | 'remux'
-  | 'demux'
-  | 'batchQueue'
-  | 'logs'
-  | 'dashboard';
+import type { HotkeySpec, ParsedShortcut, ShortcutSection } from './types';
 
-/**
- * One registered shortcut.
- * @interface HotkeySpec
- * @property {string} id - Unique identifier, used by `useHotkeys` bindings and
- *   tests (convention: `<section>.<name>`).
- * @property {string} keys - Canonical chord, e.g. 'Ctrl+Shift+S' or 'Space'.
- * @property {string} labelKey - i18n key for the action label, rendered in the
- *   help dialog and tooltip hints.
- * @property {ShortcutSection} section - Help-dialog section the shortcut is
- *   listed under.
- * @property {string} [to] - Target route path for navigation shortcuts (global
- *   Alt+1..9 and dashboard number keys).
- */
-export interface HotkeySpec {
-  id: string;
-  keys: string;
-  labelKey: string;
-  section: ShortcutSection;
-  to?: string;
-}
+export type { HotkeySpec, ParsedShortcut, ShortcutSection };
 
 /**
  * Ordered list of help-dialog sections and their i18n labels.
@@ -175,22 +140,6 @@ export const SHORTCUT_BY_ID: Readonly<Record<string, HotkeySpec>> = SHORTCUTS.re
  * @type {boolean}
  */
 export const IS_MAC: boolean = typeof navigator !== 'undefined' && /mac/i.test(navigator.platform || '');
-
-/**
- * A key chord parsed into a matchable predicate.
- * @interface ParsedShortcut
- * @property {boolean} primary - True when the platform primary modifier
- *   (Ctrl/Cmd) must be down.
- * @property {boolean} alt - True when Alt must be down.
- * @property {boolean} shift - True when Shift must be down.
- * @property {string} code - The `event.code` value that must match.
- */
-export interface ParsedShortcut {
-  primary: boolean;
-  alt: boolean;
-  shift: boolean;
-  code: string;
-}
 
 /**
  * Normalizes a single key token to its `event.code` value.

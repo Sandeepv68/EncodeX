@@ -14,68 +14,9 @@ import { deriveOutputPath, getInputExtension } from '../main/cli/cli-util';
 import { createError, ErrorCode, ERROR_MESSAGES } from '../shared/errors';
 import { presetById, buildPresetFilter, normalizeFilterChain, validateVideoFilters } from '../shared/video-filters';
 import { assertSafeExtraArgs } from './safety';
+import type { MCPConversionFields } from './types';
 
-/**
- * Conversion fields accepted by the `convert_media` MCP tool, mirroring the
- * CLI's `ConvertCliFlags` so behavior matches the headless interface exactly.
- * @interface MCPConversionFields
- * @property {string} [output] - Explicit output file path.
- * @property {string} [videoCodec] - Video encoder name (e.g. 'libx264', 'copy').
- * @property {string} [audioCodec] - Audio encoder name (e.g. 'aac', 'copy').
- * @property {string} [videoBitrate] - Video bitrate (e.g. '2000k').
- * @property {string} [audioBitrate] - Audio bitrate (e.g. '192k').
- * @property {number|string} [qscale] - Video quality scale (1-31).
- * @property {string} [pixelFormat] - Pixel format (e.g. 'yuv420p').
- * @property {string} [scale] - Output resolution (WxH or percent).
- * @property {boolean} [keepAspectRatio] - Preserve source aspect ratio when scaling.
- * @property {'90'|'180'|'270'} [rotate] - Output rotation angle.
- * @property {boolean} [flipH] - Mirror output horizontally.
- * @property {boolean} [flipV] - Mirror output vertically.
- * @property {string} [startTime] - Trim start (HH:MM:SS or seconds).
- * @property {string} [endTime] - Trim end (HH:MM:SS or seconds).
- * @property {string} [duration] - Max output duration.
- * @property {boolean} [copy] - Lossless stream copy.
- * @property {boolean} [audio] - Include audio streams (false excludes them).
- * @property {boolean} [video] - Include video streams (false excludes them).
- * @property {boolean} [hardwareAcceleration] - Enable hardware acceleration.
- * @property {string} [hwaccelMode] - Hardware acceleration mode.
- * @property {string[]} [videoFilters] - Ordered FFmpeg video filter expressions
- *   (one per entry) to append after the built-in scale/rotation filters.
- * @property {string} [filters] - Comma-joined video filter chain (a compact
- *   shorthand for {@link MCPConversionFields.videoFilters}).
- * @property {string[]} [presets] - Curated filter preset ids, expanded to their
- *   default parameter expressions before {@link MCPConversionFields.filters} /
- *   {@link MCPConversionFields.videoFilters}.
- * @property {string[]} [extraArgs] - Extra FFmpeg output arguments. Independent
- *   of the filter fields: `extraArgs` append raw output args while
- *   `videoFilters`/`filters`/`presets` build the single `-vf` chain.
- */
-export interface MCPConversionFields {
-  output?: string;
-  videoCodec?: string;
-  audioCodec?: string;
-  videoBitrate?: string;
-  audioBitrate?: string;
-  qscale?: number | string;
-  pixelFormat?: string;
-  scale?: string;
-  keepAspectRatio?: boolean;
-  rotate?: '90' | '180' | '270';
-  flipH?: boolean;
-  flipV?: boolean;
-  startTime?: string;
-  endTime?: string;
-  duration?: string;
-  copy?: boolean;
-  audio?: boolean;
-  video?: boolean;
-  hardwareAcceleration?: boolean;
-  hwaccelMode?: string;
-  videoFilters?: string[];
-  filters?: string;
-  presets?: string[];
-  extraArgs?: string[];
-}
+export type { MCPConversionFields } from './types';
 
 /**
  * Resolves the ordered video-filter expressions from the `presets` shorthand,

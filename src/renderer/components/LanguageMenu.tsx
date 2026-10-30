@@ -12,7 +12,7 @@
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { InputAdornment, Menu, MenuItem, TextField, Tooltip } from '@mui/material';
+import { InputAdornment, MenuItem, TextField, Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
@@ -28,7 +28,7 @@ import {
   FlagIconWrapper,
   SearchBox,
   LocaleList,
-  menuPaperSx,
+  LanguageMenuPaper,
 } from '../styles/LanguageMenu.styles';
 import { LANGUAGE_STORAGE_KEY } from '../../shared/constants';
 import { LOG_SWITCHING_LANGUAGE_TO } from '../../shared/log-constants';
@@ -163,7 +163,7 @@ export default function LanguageMenu({ condensed = false }: { condensed?: boolea
           </LanguageButton>
         </Tooltip>
       </LanguageMenuBox>
-      <Menu anchorEl={anchor} open={Boolean(anchor)} onClose={closeMenu} disableAutoFocusItem slotProps={{ paper: { sx: menuPaperSx } }}>
+      <LanguageMenuPaper anchorEl={anchor} open={Boolean(anchor)} onClose={closeMenu} disableAutoFocusItem>
         <SearchBox>
           <TextField
             fullWidth
@@ -196,7 +196,7 @@ export default function LanguageMenu({ condensed = false }: { condensed?: boolea
             </MenuItem>
           ))}
         </LocaleList>
-      </Menu>
+      </LanguageMenuPaper>
     </>
   );
 }

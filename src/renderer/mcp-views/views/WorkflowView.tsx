@@ -15,11 +15,7 @@ import ViewEmptyState from '../kit/ViewEmptyState';
 import ViewSteps from '../kit/ViewSteps';
 import { ViewBulletList, ViewStack } from '../kit/styles';
 import type { McpUiWorkflowPlan, McpUiWorkflowResult } from '../../../shared/mcp-ui';
-
-interface WorkflowPayload {
-  plan?: McpUiWorkflowPlan;
-  result?: McpUiWorkflowResult;
-}
+import type { ResultCardProps, WorkflowPayload, WorkflowPlanCardProps } from './types';
 
 /**
  * Renders the workflow view.
@@ -42,22 +38,18 @@ export default function WorkflowView() {
 
   return (
     <ViewStack>
-      {plan && <PlanCard plan={plan} />}
+      {plan && <WorkflowPlanCard plan={plan} />}
       {result && <ResultCard result={result} />}
     </ViewStack>
   );
 }
 
-interface PlanCardProps {
-  plan: McpUiWorkflowPlan;
-}
-
 /**
  * Renders the workflow plan card.
- * @param {PlanCardProps} props - Component props.
+ * @param {WorkflowPlanCardProps} props - Component props.
  * @returns {JSX.Element} The card.
  */
-function PlanCard({ plan }: PlanCardProps) {
+function WorkflowPlanCard({ plan }: WorkflowPlanCardProps) {
   const { t } = useTranslation();
   const steps = plan.steps ?? [];
   const issues = plan.issues ?? [];
@@ -93,10 +85,6 @@ function PlanCard({ plan }: PlanCardProps) {
       </ViewStack>
     </ViewCard>
   );
-}
-
-interface ResultCardProps {
-  result: McpUiWorkflowResult;
 }
 
 /**

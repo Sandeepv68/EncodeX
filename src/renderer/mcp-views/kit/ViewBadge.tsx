@@ -5,17 +5,9 @@
  */
 
 import { ViewBadgeRoot } from './styles';
+import type { ViewBadgeProps, ViewBadgeTone } from './types';
 
-export type ViewBadgeTone = 'neutral' | 'ok' | 'warn' | 'danger' | 'info';
-
-export interface ViewBadgeProps {
-  /** Badge text. */
-  children: string;
-  /** Visual tone. Defaults to `neutral`. */
-  tone?: ViewBadgeTone;
-  /** Test hook for the host-rendering checks. */
-  testId?: string;
-}
+export type { ViewBadgeProps, ViewBadgeTone };
 
 /**
  * Renders a small status pill.

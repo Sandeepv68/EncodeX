@@ -49,7 +49,6 @@ import { useTranslation } from 'react-i18next';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useDndContext } from '@dnd-kit/core';
-import type { DraggableAttributes } from '@dnd-kit/core';
 import {
   faTrashCan,
   faRotateRight,
@@ -65,7 +64,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ErrorBoundary } from './ErrorBoundary';
 import EllipsisTooltip from './EllipsisTooltip';
 import ProgressBar from './ProgressBar';
-import type { QueueJobCardProps } from './types';
+import type { DragHandleProps, QueueJobCardProps } from './types';
 import type { ConversionOptions } from '../../shared/types';
 import { QUEUE_STATUS } from '../../shared/media-options';
 import { useToastStore } from '../stores/toastStore';
@@ -92,18 +91,6 @@ import {
   OptionsGrid,
   OptionRow,
 } from '../styles/QueueJobCard.styles';
-
-/**
- * Handle props forwarded from {@link QueueJobCard} to the presentational body.
- * @interface DragHandleProps
- * @property {DraggableAttributes} attributes - dnd-kit attributes for the handle.
- * @property {ReturnType<typeof useSortable>['listeners']} listeners - dnd-kit
- *   pointer/keyboard listeners for the handle.
- */
-interface DragHandleProps {
-  attributes: DraggableAttributes;
-  listeners: ReturnType<typeof useSortable>['listeners'];
-}
 
 /**
  * Presentational body of a batch queue job card.
@@ -435,14 +422,10 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry, onEditO
       ref={setNodeRef}
       data-testid={`queue-job-card-${job.id}`}
       $status={job.status}
+      $transform={CSS.Transform.toString(transform)}
+      $dragActive={isDragActive}
+      $dragging={isDragging}
       variant="outlined"
-      // eslint-disable-next-line encodex/no-inline-styles -- dnd-kit provides runtime transform values
-      style={{
-        transform: CSS.Transform.toString(transform),
-        transition: isDragActive && !isDragging ? 'transform 250ms cubic-bezier(0.25, 1, 0.5, 1)' : undefined,
-        opacity: isDragging ? 0 : undefined,
-        willChange: isDragActive ? 'transform' : undefined,
-      }}
     >
       <QueueJobCardContent
         job={job}

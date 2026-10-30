@@ -34,23 +34,7 @@ import {
   LOG_VIDEO_PREVIEW_EXTRACTION_FAILED_STDERR,
   LOG_VIDEO_PREVIEW_FFMPEG_ERROR,
 } from '../shared/log-constants';
-
-/**
- * Outcome of a single ffmpeg preview-extraction run.
- * @interface PreviewAttempt
- * @property {string | null} dataUrl - Base64 PNG data URL, or `null` when the
- *   run exited non-zero or produced no frame bytes.
- * @property {number | null} code - Exit code of the ffmpeg process (`null` when
- *   `close` fired without a code, e.g. the process was killed).
- * @property {string} stderr - Captured stderr text (may be empty when the
- *   failure produced no diagnostics, e.g. `-v error` suppresses the empty
- *   output warning for short videos).
- */
-interface PreviewAttempt {
-  dataUrl: string | null;
-  code: number | null;
-  stderr: string;
-}
+import type { PreviewAttempt } from './types';
 
 /**
  * Logger instance scoped to the video preview module. Logs ffmpeg path

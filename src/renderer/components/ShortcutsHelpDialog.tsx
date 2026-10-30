@@ -15,10 +15,11 @@
  */
 
 import { useTranslation } from 'react-i18next';
-import { DialogContent, DialogTitle, IconButton } from '@mui/material';
+import { DialogContent, DialogTitle } from '@mui/material';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SHORTCUT_SECTIONS, SHORTCUTS, formatShortcut } from '../constants/shortcuts';
+import type { ShortcutsHelpDialogProps } from './types';
 import {
   ShortcutsContent,
   ShortcutsDialog,
@@ -26,18 +27,10 @@ import {
   ShortcutKey,
   ShortcutLabel,
   ShortcutRow,
+  ShortcutsCloseButton,
 } from '../styles/ShortcutsHelpDialog.styles';
 
-/**
- * Props for the shortcuts help dialog.
- * @interface ShortcutsHelpDialogProps
- * @property {boolean} open - Controls dialog visibility.
- * @property {() => void} onClose - Fired when the dialog is dismissed.
- */
-export interface ShortcutsHelpDialogProps {
-  open: boolean;
-  onClose: () => void;
-}
+export type { ShortcutsHelpDialogProps };
 
 /**
  * Renders the shortcuts help dialog.
@@ -62,14 +55,9 @@ export default function ShortcutsHelpDialog({ open, onClose }: ShortcutsHelpDial
       slotProps={{ paper: { 'data-testid': 'shortcuts-help-dialog' } }}
     >
       <DialogTitle id="shortcuts-help-title">{t('shortcuts.title')}</DialogTitle>
-      <IconButton
-        aria-label={t('shortcuts.close')}
-        onClick={onClose}
-        data-testid="shortcuts-help-close"
-        sx={{ position: 'absolute', right: 8, top: 8 }}
-      >
+      <ShortcutsCloseButton aria-label={t('shortcuts.close')} onClick={onClose} data-testid="shortcuts-help-close">
         <FontAwesomeIcon icon={faXmark} />
-      </IconButton>
+      </ShortcutsCloseButton>
       <DialogContent>
         <ShortcutsContent>
           {SHORTCUT_SECTIONS.map((section) => {

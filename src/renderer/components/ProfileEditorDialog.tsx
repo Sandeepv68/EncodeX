@@ -5,26 +5,16 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  MenuItem,
-  Button,
-  Stack,
-  Box,
-  IconButton,
-  Collapse,
-} from '@mui/material';
+import { Dialog, DialogContent, DialogActions, TextField, MenuItem, Button, Box, Stack, IconButton, Collapse } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faXmark } from '@fortawesome/free-solid-svg-icons';
 import type { ConversionProfile, ProfileCategory } from '../../shared/types';
 import { CATEGORY_ORDER, PROFILE_CATEGORIES } from '../../shared/profiles/categories';
 import { useProfileStore } from '../stores/profileStore';
 import { useToastStore } from '../stores/toastStore';
+import type { ProfileEditorDialogProps } from './types';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
+import { EditorDialogTitle, EditorFieldStack, ExpandChevron } from '../styles/ProfileEditorDialog.styles';
 import CodecSelect from './CodecSelect';
 import { ErrorBoundary } from './ErrorBoundary';
 import { SCALE_OPTIONS, BITRATE_OPTIONS, VIDEO_BITRATE_OPTIONS, PIXEL_FORMATS } from '../../shared/media-options';
@@ -68,12 +58,6 @@ const CRF_OPTIONS = Array.from({ length: 32 }, (_, i) => i);
 function withUnknownValue(options: readonly string[], value: string): string[] {
   if (!value || options.includes(value)) return [...options];
   return [...options, value];
-}
-
-interface ProfileEditorDialogProps {
-  open: boolean;
-  onClose: () => void;
-  editProfile?: ConversionProfile | null;
 }
 
 export default function ProfileEditorDialog({ open, onClose, editProfile }: ProfileEditorDialogProps) {
@@ -163,15 +147,15 @@ export default function ProfileEditorDialog({ open, onClose, editProfile }: Prof
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <EditorDialogTitle>
         {editProfile ? t('profiles.editTitle') : t('profiles.createTitle')}
         <IconButton size="small" onClick={onClose}>
           <FontAwesomeIcon icon={faXmark} />
         </IconButton>
-      </DialogTitle>
+      </EditorDialogTitle>
 
       <DialogContent dividers>
-        <Stack spacing={2} sx={{ mt: 1 }}>
+        <EditorFieldStack spacing={2}>
           <FieldBox>
             <FieldLabel htmlFor="profile-name">{t('profiles.nameLabel')}</FieldLabel>
             <TextField
@@ -374,22 +358,15 @@ export default function ProfileEditorDialog({ open, onClose, editProfile }: Prof
               size="small"
               onClick={() => setShowAdvanced(!showAdvanced)}
               endIcon={
-                <Box
-                  component="span"
-                  sx={(theme) => ({
-                    display: 'inline-flex',
-                    transform: showAdvanced ? 'rotate(180deg)' : 'rotate(0deg)',
-                    transition: theme.transitions.create('transform', { duration: theme.transitions.duration.short }),
-                  })}
-                >
+                <ExpandChevron component="span" $expanded={showAdvanced}>
                   <FontAwesomeIcon icon={faChevronDown} />
-                </Box>
+                </ExpandChevron>
               }
             >
               {t('profiles.advancedOptions')}
             </Button>
             <Collapse in={showAdvanced}>
-              <Stack spacing={2} sx={{ mt: 1 }}>
+              <EditorFieldStack spacing={2}>
                 <FieldBox>
                   <FieldLabel htmlFor="profile-extension">{t('profiles.extensionOverrideLabel')}</FieldLabel>
                   <TextField
@@ -413,10 +390,10 @@ export default function ProfileEditorDialog({ open, onClose, editProfile }: Prof
                     helperText={t('profiles.extraArgsHelp')}
                   />
                 </FieldBox>
-              </Stack>
+              </EditorFieldStack>
             </Collapse>
           </Box>
-        </Stack>
+        </EditorFieldStack>
       </DialogContent>
 
       <DialogActions>

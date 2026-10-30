@@ -1,5 +1,5 @@
 import { keyframes, styled } from '@mui/material/styles';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 const typingPulse = keyframes`
   0%,
@@ -39,17 +39,40 @@ export const ConversationStream = styled(Box)({
 });
 
 /** Positioning context for the measured virtual rows. */
-export const VirtualConversationStream = styled(ConversationStream)({
+export const VirtualConversationStream = styled(ConversationStream, {
+  shouldForwardProp: (prop) => prop !== '$height',
+})<{ $height: number }>(({ $height }) => ({
   position: 'relative',
-});
+  height: $height,
+}));
 
 /** Absolutely positioned window of conversation rows. */
-export const VirtualRow = styled(Box)({
+export const VirtualRow = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$offset',
+})<{ $offset: number }>(({ $offset }) => ({
   position: 'absolute',
   top: 0,
   left: 0,
   width: '100%',
+  transform: `translateY(${$offset}px)`,
+}));
+
+/** Row that carries the "thinking" indicator inside the assistant bubble. */
+export const ThinkingRow = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
 });
+
+/** Body of a user message, keeping the original line breaks. */
+export const UserMessageText = styled(Typography)({
+  whiteSpace: 'pre-wrap',
+});
+
+/** Caption listing how many files the user attached to the message. */
+export const AttachmentCountText = styled(Typography)(({ theme }) => ({
+  display: 'block',
+  marginTop: theme.spacing(1),
+}));
 
 /** Animated three-dot typing indicator shown while the assistant is thinking. */
 export const TypingDots = styled(Box)(({ theme }) => ({

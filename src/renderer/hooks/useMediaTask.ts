@@ -30,7 +30,7 @@ import { toTaskProgress } from '../../shared/progress';
 import { useErrorStore } from '../stores/errorStore';
 import { useTaskStore } from '../stores/taskStore';
 import { LOG_SUBSCRIBING_TO_CONVERSION_PROGRESS, LOG_UNSUBSCRIBING_FROM_CONVERSION_PROGRESS } from '../../shared/log-constants';
-import type { TaskProgress } from './types';
+import type { TaskProgress, TaskRunStoreState } from './types';
 
 /**
  * Module-scoped logger for the media task hook.
@@ -110,30 +110,6 @@ export function useMediaTask() {
 
   return { progress, setProgress, isConverting, runTask };
 }
-
-/**
- * Structural subset of a store-owned media task that `useTaskRunControls` binds
- * to. Both RemuxState and DemuxState satisfy it (Demux adds `current`, which is
- * optional here so Remux single-invocation tasks simply report null).
- * @typedef {Object} TaskRunStoreState
- * @property {TaskProgress | null} progress - Live task progress, or null when idle.
- * @property {boolean} isConverting - Whether a task is currently running.
- * @property {boolean} isPaused - Whether the running task is paused.
- * @property {string | null} [current] - Label of the current sub-task (Demux),
- *   or null when the task is a single invocation.
- * @property {() => Promise<void>} pause - Pauses the running task.
- * @property {() => Promise<void>} resume - Resumes the paused task.
- * @property {() => Promise<void>} cancel - Cancels the task.
- */
-type TaskRunStoreState = {
-  progress: TaskProgress | null;
-  isConverting: boolean;
-  isPaused: boolean;
-  current?: string | null;
-  pause: () => Promise<void>;
-  resume: () => Promise<void>;
-  cancel: () => Promise<void>;
-};
 
 /**
  * React hook exposing the shared run control surface of a store-owned media

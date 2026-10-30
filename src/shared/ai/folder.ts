@@ -8,55 +8,9 @@
  * is always `isEstimated: true` (D4) — nothing has been encoded yet.
  */
 
-/**
- * One projected file in a library report.
- * @interface LibraryRow
- * @property {string} input - Absolute path of the source file.
- * @property {number} sourceBytes - Current file size in bytes.
- * @property {number} estimatedBytes - Projected size after the recommended encode.
- * @property {number} savingsBytes - `sourceBytes - estimatedBytes` (may be negative).
- * @property {number} savingsPercent - Signed savings as a whole-number percentage.
- * @property {number} [targetBytes] - The per-file ceiling the projection aimed at.
- * @property {string} [profileId] - Built-in profile used, when applicable.
- * @property {string} [error] - Why the file could not be projected.
- */
-export interface LibraryRow {
-  input: string;
-  sourceBytes: number;
-  estimatedBytes: number;
-  savingsBytes: number;
-  savingsPercent: number;
-  targetBytes?: number;
-  profileId?: string;
-  error?: string;
-}
+import type { LibraryRow, LibrarySummary } from './types';
 
-/**
- * The folder-level savings roll-up.
- * @interface LibrarySummary
- * @property {true} isEstimated - Always true: projections, not measurements.
- * @property {number} fileCount - Number of rows considered.
- * @property {number} analyzedCount - Rows with a usable projection.
- * @property {number} errorCount - Rows that could not be projected.
- * @property {number} totalSourceBytes - Sum of analyzable source sizes.
- * @property {number} totalEstimatedBytes - Sum of projected sizes.
- * @property {number} totalSavingsBytes - `totalSourceBytes - totalEstimatedBytes`.
- * @property {number} savingsPercent - Signed savings as a whole-number percentage.
- * @property {LibraryRow[]} largest - Up to five rows with the biggest byte savings.
- * @property {string[]} notes - Assumptions and caveats.
- */
-export interface LibrarySummary {
-  isEstimated: true;
-  fileCount: number;
-  analyzedCount: number;
-  errorCount: number;
-  totalSourceBytes: number;
-  totalEstimatedBytes: number;
-  totalSavingsBytes: number;
-  savingsPercent: number;
-  largest: LibraryRow[];
-  notes: string[];
-}
+export type { LibraryRow, LibrarySummary };
 
 /**
  * Builds a per-file row from a source and a projected size, deriving the

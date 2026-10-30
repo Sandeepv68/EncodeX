@@ -8,7 +8,10 @@
  * versions without leaking runtime state such as ids, status, or progress.
  */
 
-import { ConversionOptions, QueueJob, TranscoderType } from '../../shared/types';
+import type { QueueJob } from '../../shared/types';
+import type { QueueExport, QueueExportJob } from './types';
+
+export type { QueueExport, QueueExportJob };
 
 /** Version of the export file format; bumped on incompatible changes. */
 export const QUEUE_EXPORT_VERSION = 1;
@@ -24,34 +27,6 @@ export const QUEUE_EXPORT_VERSION = 1;
  * realistic batch while keeping the work bounded.
  */
 export const QUEUE_EXPORT_MAX_JOBS = 10_000;
-
-/**
- * A single portable job record inside a {@link QueueExport} file.
- * @interface QueueExportJob
- * @property {string} input - Absolute path of the source file.
- * @property {string} output - Absolute path of the destination file.
- * @property {ConversionOptions} options - Encoding options for the job.
- * @property {TranscoderType} transcoder - Transcoder backend to use.
- */
-export interface QueueExportJob {
-  input: string;
-  output: string;
-  options: ConversionOptions;
-  transcoder: TranscoderType;
-}
-
-/**
- * The portable JSON shape written by queue export and read by queue import.
- * @interface QueueExport
- * @property {number} version - Export format version ({@link QUEUE_EXPORT_VERSION}).
- * @property {number} concurrency - The concurrency cap in effect when exported.
- * @property {QueueExportJob[]} jobs - One record per queued job.
- */
-export interface QueueExport {
-  version: number;
-  concurrency: number;
-  jobs: QueueExportJob[];
-}
 
 /**
  * Builds a portable export snapshot from the live job list, projecting each

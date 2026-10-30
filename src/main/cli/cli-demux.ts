@@ -22,7 +22,6 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import type { ITranscoder } from '../transcoders/types';
 import type { ConversionOptions, MediaStreamInfo } from '../../shared/types';
 import {
   buildDemuxTargets,
@@ -40,56 +39,9 @@ import { CLI_EXIT_USAGE } from '../../shared/constants';
 import { runPreparedConversion, resolveCliVideoFilterChain } from './cli-convert';
 import { CliExitError } from './cli-options';
 import { status, success, warn } from './cli-ui';
-import type { CliThemeId } from '../cli-logo';
+import type { DemuxCliFlags, DemuxKind, RunDemuxParams } from './types';
 
-/**
- * Stream kinds the `demux` kind filters can select.
- * @typedef {'video'|'audio'|'subtitle'} DemuxKind
- */
-export type DemuxKind = 'video' | 'audio' | 'subtitle';
-
-/**
- * Flags accepted by the `demux` subcommand.
- * @interface DemuxCliFlags
- * @property {string} [outputDir] - Directory to write the extracted streams into (`--output-dir`); created when missing.
- * @property {boolean} [video] - Extract video streams (`--video`).
- * @property {boolean} [audio] - Extract audio streams (`--audio`).
- * @property {boolean} [subtitles] - Extract subtitle streams (`--subtitles`).
- * @property {boolean} [all] - Extract every kind (`--all`, the default).
- * @property {string} [videoContainer] - Re-encode video into this container (`--video-container`).
- * @property {string} [audioCodec] - Re-encode audio with this encoder (`--audio-codec`).
- * @property {string} [subtitleFormat] - Convert text subtitles to this format (`--subtitle-format`).
- * @property {string[]} [videoFilters] - Video filter chains (`--video-filters`, repeatable);
- *   only meaningful when the video stream is re-encoded.
- */
-export interface DemuxCliFlags {
-  outputDir?: string;
-  video?: boolean;
-  audio?: boolean;
-  subtitles?: boolean;
-  all?: boolean;
-  videoContainer?: string;
-  audioCodec?: string;
-  subtitleFormat?: string;
-  videoFilters?: string[];
-}
-
-/**
- * Parameters for a single `demux` run.
- * @interface RunDemuxParams
- * @property {string} input - Input media file.
- * @property {DemuxCliFlags} flags - Parsed demux flags.
- * @property {ITranscoder} transcoder - Transcoder backend.
- * @property {number} timeoutSeconds - Per-target conversion timeout in seconds.
- * @property {CliThemeId} themeId - Theme used to color the progress bar.
- */
-export interface RunDemuxParams {
-  input: string;
-  flags: DemuxCliFlags;
-  transcoder: ITranscoder;
-  timeoutSeconds: number;
-  themeId: CliThemeId;
-}
+export type { DemuxCliFlags, DemuxKind, RunDemuxParams };
 
 /**
  * The input file's stem (name without extension), used as the output basename.

@@ -12,8 +12,6 @@
  * builders reach into Node/main helpers and must never enter the renderer.
  */
 
-import type { MediaInfo } from '../../shared/types';
-import type { MediaFacts } from '../../shared/ai/types';
 import type { CopilotAction, CopilotOperation, CopilotResult } from '../../shared/copilot';
 import type { AgentSkip } from '../../shared/ai/agent';
 import type { RoutedOperation } from '../../shared/ai/llm';
@@ -27,33 +25,9 @@ import {
   buildDemuxPlan,
   buildDemuxJobOptions,
 } from '../../mcp/operations';
+import type { BuiltOperation, ProbedEntry } from './types';
 
-/**
- * One probed candidate: its path, the reduced facts, and the raw probe (needed
- * by the stream-aware builders).
- * @interface ProbedEntry
- * @property {string} file - Absolute file path.
- * @property {MediaFacts} facts - Reduced facts.
- * @property {MediaInfo} info - Raw probe info.
- */
-export interface ProbedEntry {
-  file: string;
-  facts: MediaFacts;
-  info: MediaInfo;
-}
-
-/**
- * The actions, read-only results and skips built for one operation.
- * @interface BuiltOperation
- * @property {CopilotAction[]} actions - Queueable jobs.
- * @property {CopilotResult[]} results - Read-only findings.
- * @property {AgentSkip[]} skips - Files that could not be planned.
- */
-export interface BuiltOperation {
-  actions: CopilotAction[];
-  results: CopilotResult[];
-  skips: AgentSkip[];
-}
+export type { BuiltOperation, ProbedEntry };
 
 /** Audio extension/name to the encoder the extract builder should use. */
 const AUDIO_CODEC_BY_NAME: Record<string, string> = {

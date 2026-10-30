@@ -16,8 +16,7 @@ import type { CopilotOperation, CopilotResult } from '../../shared/copilot';
 import type { AgentSkip } from '../../shared/ai/agent';
 import type { Transcript } from '../../shared/ai/transcript';
 import type { SubtitleFormat } from '../../shared/ai/subtitles';
-import type { FrameSampler, MediaSignature } from '../../shared/ai/similarity';
-import type { TranslationProvider } from '../../shared/ai/translate';
+import type { MediaSignature } from '../../shared/ai/similarity';
 import { summarizeTranscript } from '../../shared/ai/summarize';
 import { generateChapters, chaptersToYouTube } from '../../shared/ai/chapters';
 import { searchTranscript } from '../../shared/ai/transcript-search';
@@ -28,6 +27,9 @@ import { createLocalTranslationProvider } from '../../mcp/translate-engine';
 import { defaultFrameSampler } from '../../mcp/frame-sampler';
 import { createError, ErrorCode, formatError } from '../../shared/errors';
 import type { BuiltOperation, ProbedEntry } from './operation-router';
+import type { IntelligenceDeps } from './types';
+
+export type { IntelligenceDeps };
 
 /**
  * The read-only media-intelligence operations handled here.
@@ -49,20 +51,6 @@ export const INTELLIGENCE_OPERATIONS: readonly CopilotOperation[] = [
  */
 export function isIntelligenceOperation(operation: CopilotOperation): boolean {
   return INTELLIGENCE_OPERATIONS.includes(operation);
-}
-
-/**
- * The swappable capabilities the intelligence builder needs. Tests inject fakes
- * so no FFmpeg/whisper binary is required.
- * @interface IntelligenceDeps
- * @property {(file: string, options?: { language?: string }) => Promise<Transcript>} transcribe - Transcribes an audio/video file.
- * @property {TranslationProvider} translate - The subtitle translation provider.
- * @property {FrameSampler} sampleFrame - Samples a perceptual hash for similarity.
- */
-export interface IntelligenceDeps {
-  transcribe(file: string, options?: { language?: string }): Promise<Transcript>;
-  translate: TranslationProvider;
-  sampleFrame: FrameSampler;
 }
 
 /**

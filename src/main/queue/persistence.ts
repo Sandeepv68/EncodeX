@@ -12,39 +12,15 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { QueueJob } from '../../shared/types';
 import { QUEUE_STATUS } from '../../shared/media-options';
+import type { QueuePersistence, QueueSnapshot } from './types';
+
+export type { QueuePersistence, QueueSnapshot };
 
 /** File name of the queue snapshot inside the user-data directory. */
 export const QUEUE_STATE_FILENAME = 'queue-state.json';
 
 /** Version of the serialized snapshot format; bumped on incompatible changes. */
 export const QUEUE_STATE_VERSION = 1;
-
-/**
- * A serializable snapshot of the queue that can be restored after a restart.
- * @interface QueueSnapshot
- * @property {number} version - Snapshot format version ({@link QUEUE_STATE_VERSION}).
- * @property {number} concurrency - The concurrency cap in effect when saved.
- * @property {QueueJob[]} jobs - All known jobs; RUNNING entries are remapped to
- *   QUEUED when restored so they are re-run on launch.
- */
-export interface QueueSnapshot {
-  version: number;
-  concurrency: number;
-  jobs: QueueJob[];
-}
-
-/**
- * Minimal adapter the queue uses to persist and restore its state.
- * @interface QueuePersistence
- */
-export interface QueuePersistence {
-  /** Loads a previously saved snapshot, or null when none/invalid exists. */
-  load(): QueueSnapshot | null;
-  /** Persists the given snapshot (replacing any previous state). */
-  save(snapshot: QueueSnapshot): void;
-  /** Deletes any persisted snapshot (used by cancel-all). */
-  clear(): void;
-}
 
 /**
  * Filesystem-backed queue persistence writing `queue-state.json` into a

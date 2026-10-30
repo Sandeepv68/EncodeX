@@ -1,15 +1,12 @@
 import { QUEUE_STATUS } from '../../shared/media-options';
 import { MEDIA_INPUT_EXTENSIONS, isImageFile } from '../../shared/file-extensions';
 import { buildDemuxTargets } from '../../shared/codec-containers';
-import type { QueueJob, ConversionOptions, HwAccelMode, MediaStreamInfo } from '../../shared/types';
+import type { QueueJob, MediaStreamInfo } from '../../shared/types';
 import { basename, normalizePath, stem as getSourceStem } from './path-utils';
-import { buildBatchOptions, buildOutputPath, type BatchEncodingValues } from './batch-options';
+import { buildBatchOptions, buildOutputPath } from './batch-options';
+import type { EnqueueDraft, EnqueuePlan, PlanEnqueuesContext, StatusChipColor } from './types';
 
-/**
- * MUI Chip color props used for the queue-status chip.
- * @typedef {string} StatusChipColor
- */
-export type StatusChipColor = 'default' | 'primary' | 'success' | 'error' | 'warning';
+export type { EnqueueDraft, EnqueuePlan, PlanEnqueuesContext, StatusChipColor };
 
 /**
  * Returns true while a queue job still represents outstanding work (waiting or
@@ -39,63 +36,6 @@ export function statusChipColor(status: string): StatusChipColor {
     default:
       return 'default';
   }
-}
-
-/**
- * A single validated enqueue request, ready for the IPC call.
- * @interface EnqueueDraft
- * @property {string} file - The source file path.
- * @property {string} output - The derived output path.
- * @property {ConversionOptions} options - The built conversion options.
- * @property {string} transcoder - The transcoder value.
- * @property {boolean} overwrite - Whether overwrite is enabled.
- */
-export interface EnqueueDraft {
-  file: string;
-  output: string;
-  options: ConversionOptions;
-  transcoder: string;
-  overwrite: boolean;
-}
-
-/**
- * Result of planning a set of batch enqueues.
- * @interface EnqueuePlan
- * @property {EnqueueDraft[]} enqueues - Validated drafts, one per accepted file.
- * @property {string[]} skippedNames - Basenames of rejected files (in order).
- */
-export interface EnqueuePlan {
-  enqueues: EnqueueDraft[];
-  skippedNames: string[];
-}
-
-/**
- * Inputs shared by every selection while planning enqueues.
- * @interface PlanEnqueuesContext
- * @property {Array<{ file: string; operation: string }>} selections - Files with
- *   their chosen batch operation.
- * @property {QueueJob[]} currentJobs - Jobs already in the queue.
- * @property {string} outputDir - Target output folder ('' = source-adjacent).
- * @property {BatchEncodingValues} enc - Shared encoding field values.
- * @property {{ hardwareAcceleration: boolean; hwaccelMode: HwAccelMode }} hw -
- *   Hardware-acceleration settings.
- * @property {string} suffix - Name suffix inserted before the extension.
- * @property {string} transcoder - Transcoder value for every job.
- * @property {boolean} overwrite - Overwrite flag for every job.
- * @property {(file: string) => Promise<MediaStreamInfo[]>} [probe] - Optional
- *   stream prober used by 'demux' (and only 'demux') to split each file into
- *   one job per extracted stream. Absent = the operation is skipped.
- */
-export interface PlanEnqueuesContext {
-  selections: Array<{ file: string; operation: string }>;
-  currentJobs: QueueJob[];
-  outputDir: string;
-  enc: BatchEncodingValues;
-  hw: { hardwareAcceleration: boolean; hwaccelMode: HwAccelMode };
-  suffix: string;
-  transcoder: string;
-  overwrite: boolean;
-  probe?: (file: string) => Promise<MediaStreamInfo[]>;
 }
 
 /**

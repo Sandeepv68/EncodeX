@@ -13,64 +13,9 @@
  * still honours the ceiling.
  */
 
-import type { MediaFacts } from './types';
+import type { MediaFacts, TargetSizeCandidate, TargetSizeOptions, TargetSizePlan } from './types';
 
-/**
- * One candidate encode for a size ceiling.
- * @interface TargetSizeCandidate
- * @property {string} id - Stable candidate id ('c1', 'c2', ...).
- * @property {number} videoBitrateKbps - Target video bitrate in kbps.
- * @property {number} audioBitrateKbps - Target audio bitrate in kbps (0 = no audio).
- * @property {number} percentOfBaseline - The candidate as a percent of the size-derived baseline.
- * @property {string} rationale - Why this rung exists in the ladder.
- */
-export interface TargetSizeCandidate {
-  id: string;
-  videoBitrateKbps: number;
-  audioBitrateKbps: number;
-  percentOfBaseline: number;
-  rationale: string;
-}
-
-/**
- * The deterministic candidate plan for a size ceiling.
- * @interface TargetSizePlan
- * @property {true} isEstimated - Always true: candidates are proposals.
- * @property {'bitrate'} method - The only planning method currently used.
- * @property {number} targetBytes - The requested output-size ceiling.
- * @property {number} durationSeconds - Duration the bitrates are computed over.
- * @property {number} audioBitrateKbps - Audio budget applied to every candidate.
- * @property {number} baselineVideoKbps - The size-derived (100%) video bitrate.
- * @property {TargetSizeCandidate[]} candidates - Ordered high quality -> low.
- * @property {string[]} notes - Assumptions and caveats.
- */
-export interface TargetSizePlan {
-  isEstimated: true;
-  method: 'bitrate';
-  targetBytes: number;
-  durationSeconds: number;
-  audioBitrateKbps: number;
-  baselineVideoKbps: number;
-  candidates: TargetSizeCandidate[];
-  notes: string[];
-}
-
-/**
- * Optional tuning for {@link planTargetSizeCandidates}.
- * @interface TargetSizeOptions
- * @property {number} [audioBitrateKbps] - Audio budget override (defaults to 128 when the source has audio).
- * @property {number} [videoFloorKbps] - Lowest usable video bitrate (default 150).
- * @property {number} [videoCeilingKbps] - Highest candidate bitrate (default 25000).
- * @property {number} [maxCandidates] - How many rungs to keep (1-5, default 3).
- * @property {'quality'|'balanced'|'size'} [bias='balanced'] - Which ladder to walk.
- */
-export interface TargetSizeOptions {
-  audioBitrateKbps?: number;
-  videoFloorKbps?: number;
-  videoCeilingKbps?: number;
-  maxCandidates?: number;
-  bias?: 'quality' | 'balanced' | 'size';
-}
+export type { TargetSizeCandidate, TargetSizeOptions, TargetSizePlan };
 
 /** Fallback audio bitrate (kbps) when none is supplied. @const {number} */
 const DEFAULT_AUDIO_KBPS = 128;

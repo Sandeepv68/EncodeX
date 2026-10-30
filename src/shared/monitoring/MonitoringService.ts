@@ -33,20 +33,15 @@ import type {
   MonitoringConfig,
   MonitoringLevel,
   MonitorProvider,
+  MonitorProviderFactory,
   MonitorUser,
 } from './types';
 import { NoopProvider } from './noopProvider';
 
+export type { MonitorProviderFactory } from './types';
+
 /** Per-module logger for the monitoring facade. @const {Logger} */
 const log = new Logger('shared/monitoring');
-
-/**
- * Factory that resolves the concrete provider for a given configuration.
- * Returning `undefined`/`null` selects the no-op fallback.
- * @param {MonitoringConfig} config - Resolved startup configuration.
- * @returns {MonitorProvider | undefined | null} The adapter to activate.
- */
-export type MonitorProviderFactory = (config: MonitoringConfig) => MonitorProvider | undefined | null;
 
 /** Currently active provider; never undefined after module load. @type {MonitorProvider} */
 let activeProvider: MonitorProvider = new NoopProvider();

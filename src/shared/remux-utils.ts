@@ -11,50 +11,9 @@ import { isSubtitleCodecCompatibleWithContainer } from './codec-containers';
 import { remuxWarnings } from './codec-containers';
 import { ATTACHED_PIC_DISPOSITION } from './transcoder-constants';
 import { createError, ErrorCode, ERROR_MESSAGES } from './errors';
-import type { ConversionOptions, MediaStreamInfo, RemuxInput } from './types';
+import type { ConversionOptions, MediaStreamInfo, RemuxInput, RemuxPlan, RemuxPlanInput } from './types';
 
-/**
- * Input the user composes for a remux: container + `-map` stream selection +
- * added assets. Maps and assets reference input indices exactly as documented
- * on `ConversionOptions` (primary = 0, additionalInputs = 1..N, chapters = N+1).
- *
- * @interface RemuxPlanInput
- * @property {string} input - Absolute path of the source file.
- * @property {string} container - Target container extension (e.g. 'mkv').
- * @property {string[]} [maps] - `-map` specs selecting streams for the output.
- * @property {RemuxInput[]} [additionalInputs] - Added subtitles/audio/cover
- *   entries as extra inputs.
- * @property {string} [chaptersFile] - FFMETADATA chapters file to import.
- * @property {boolean} [copyChapters] - Preserve source chapters via
- *   `-map_chapters 0`. Defaults to true.
- * @property {number} [audioSyncSeconds] - Signed seconds to shift the primary's
- *   audio relative to video via the "re-read" trick (positive = audio plays
- *   LATER). Absent = no adjustment.
- * @property {string[]} [videoFilters] - Ordered FFmpeg video filter
- *   expressions. Filters require re-encoding, so a non-empty chain flips
- *   `copy` to false and the whole plan runs as a re-encode.
- */
-export interface RemuxPlanInput {
-  input: string;
-  container: string;
-  maps?: string[];
-  additionalInputs?: RemuxInput[];
-  chaptersFile?: string;
-  copyChapters?: boolean;
-  audioSyncSeconds?: number;
-  videoFilters?: string[];
-}
-
-/**
- * Result of {@link buildRemuxPlanOptions}.
- * @interface RemuxPlan
- * @property {ConversionOptions} options - Ready-to-run conversion options.
- * @property {string} output - Derived output path (same dir as input).
- */
-export interface RemuxPlan {
-  options: ConversionOptions;
-  output: string;
-}
+export type { RemuxPlan, RemuxPlanInput } from './types';
 
 /**
  * Primary audio `-map` specs selectors. A re-read sync entry pulls the primary's

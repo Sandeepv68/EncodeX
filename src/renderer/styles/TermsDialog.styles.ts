@@ -28,3 +28,8 @@ export const TermsSectionBody = styled(Typography)(({ theme }) => ({
   color: theme.palette.text.secondary,
   marginBottom: theme.spacing(0.75),
 }));
+
+/** "Last updated" line rendered under the terms sections. */
+export const TermsLastUpdated = styled(TermsSectionBody)(({ theme }) => ({
+  marginTop: theme.spacing(1.5),
+}));

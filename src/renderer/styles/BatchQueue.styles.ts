@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Typography, Stack, Box, Chip, TextField, Alert } from '@mui/material';
+import { Typography, Stack, Box, Chip, TextField, Alert, IconButton } from '@mui/material';
 import type { ElementType } from 'react';
 import { OVERLAY_COLORS, SHADOWS } from '../../shared/theme/colors';
 
@@ -111,3 +111,13 @@ export const DropOverlay = styled(Box)(({ theme }) => ({
   background: theme.palette.mode === 'dark' ? OVERLAY_COLORS.black70 : OVERLAY_COLORS.white70,
   pointerEvents: 'none',
 }));
+
+/** Condense/expand toggle button, pushed to the far right of the page title. @const CondenseButton */
+export const CondenseButton = styled(IconButton)({
+  marginInlineStart: 'auto',
+});
+
+/** Wrapper of the "clear all" button, pushed to the far right of the filter row. @const ClearAllBox */
+export const ClearAllBox = styled(Box)({
+  marginInlineStart: 'auto',
+});

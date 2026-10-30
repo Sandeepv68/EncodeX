@@ -7,13 +7,9 @@
 
 import { Typography } from '@mui/material';
 import { ViewEmptyRoot } from './styles';
+import type { ViewEmptyStateProps } from './types';
 
-export interface ViewEmptyStateProps {
-  /** Message describing what is being waited for. */
-  message: string;
-  /** Test hook for the host-rendering checks. */
-  testId?: string;
-}
+export type { ViewEmptyStateProps };
 
 /**
  * Renders the placeholder.

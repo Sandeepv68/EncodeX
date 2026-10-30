@@ -11,6 +11,10 @@
  * list of body paragraphs.
  */
 
+import type { TermsSection } from './types';
+
+export type { TermsSection } from './types';
+
 /**
  * Version of the current Terms & Conditions, used as the acceptance marker persisted to
  * localStorage. Date-based so an edit surfaces as an obvious "effective" change; bump it
@@ -18,17 +22,6 @@
  * @const {string} TERMS_VERSION
  */
 export const TERMS_VERSION = '2026-09-16';
-
-/**
- * A single terms section: a heading plus the paragraphs rendered beneath it.
- * @interface TermsSection
- * @property {string} title - Section heading.
- * @property {string[]} body - Paragraphs in this section.
- */
-export interface TermsSection {
-  title: string;
-  body: string[];
-}
 
 /**
  * The full Terms & Conditions document, rendered in the acceptance gate and the About

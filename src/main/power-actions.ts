@@ -23,19 +23,9 @@ import { spawn } from 'child_process';
 import { Logger } from '../shared/logger';
 import type { WhenDoneAction } from '../shared/types';
 import { LOG_WHEN_DONE_EXECUTING, LOG_WHEN_DONE_SPAWN_FAILED, LOG_WHEN_DONE_UNSUPPORTED_PLATFORM } from '../shared/log-constants';
+import type { PowerCommand } from './types';
 
 const log = new Logger('main/power-actions');
-
-/**
- * A fully resolved OS command to execute.
- * @interface PowerCommand
- * @property {string} command - The executable to spawn.
- * @property {string[]} args - Arguments passed to the executable.
- */
-interface PowerCommand {
-  command: string;
-  args: string[];
-}
 
 /**
  * Resolves the platform-specific command that performs the given power action.

@@ -16,11 +16,7 @@ import ViewEmptyState from '../kit/ViewEmptyState';
 import ViewFactsList from '../kit/ViewFactsList';
 import { ViewBulletList, ViewDotList, ViewSectionTitle, ViewStack } from '../kit/styles';
 import type { McpUiEstimate, McpUiPlan } from '../../../shared/mcp-ui';
-
-interface PlanPayload {
-  plan?: McpUiPlan;
-  estimate?: McpUiEstimate;
-}
+import type { EstimateCardProps, PlanCardProps, PlanPayload } from './types';
 
 /**
  * Renders the plan view.
@@ -50,10 +46,6 @@ export default function PlanView() {
       {estimate && <EstimateCard estimate={estimate} />}
     </ViewStack>
   );
-}
-
-interface PlanCardProps {
-  plan: McpUiPlan;
 }
 
 /**
@@ -96,10 +88,6 @@ function PlanCard({ plan }: PlanCardProps) {
       </ViewStack>
     </ViewCard>
   );
-}
-
-interface EstimateCardProps {
-  estimate: McpUiEstimate;
 }
 
 /**

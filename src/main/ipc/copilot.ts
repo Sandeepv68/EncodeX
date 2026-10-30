@@ -34,8 +34,8 @@ import { routeOperationDeterministic, buildOperationActions } from '../ai/operat
 import type { ProbedEntry } from '../ai/operation-router';
 import { buildIntelligenceResults, isIntelligenceOperation } from '../ai/intelligence';
 import { resolveLLMOperationRouter } from '../ai/provider-registry';
-import type { RoutedOperation } from '../../shared/ai/llm';
 import { LOG_COPILOT_PLAN_CALLED, LOG_COPILOT_PLAN_COMPLETED, LOG_COPILOT_PLAN_FAILED } from '../../shared/log-constants';
+import type { RouteDecision } from './types';
 
 const log = new Logger('main/ipc/copilot');
 
@@ -204,19 +204,6 @@ function optimizedOutput(input: string, index: number): string {
  */
 const AI_FALLBACK_WARNING =
   'The configured AI provider could not route this goal, so the built-in rules engine was used instead. Check the AI provider settings and logs.';
-
-/**
- * A routing result plus whether it came from the rules fallback after a
- * configured provider failed to answer.
- * @interface RouteDecision
- * @property {RoutedOperation} routed - The chosen operation.
- * @property {boolean} aiFallback - True when an AI provider was available but
- *   returned nothing usable, so the deterministic router was used.
- */
-interface RouteDecision {
-  routed: RoutedOperation;
-  aiFallback: boolean;
-}
 
 /**
  * Chooses the operation for a goal: an explicit choice wins, otherwise a

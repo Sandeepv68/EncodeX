@@ -38,7 +38,7 @@ import {
 } from '../styles/GettingStartedCard.styles';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
-import type { OnboardingGoal } from '../../shared/analytics/events';
+import type { GoalSpec } from './types';
 import pkg from '../../../package.json';
 
 /**
@@ -50,16 +50,6 @@ const ONBOARDING_STORAGE_KEY = 'encodex-onboarding-completed';
 
 /** App version used to stamp analytics events. @const {string} */
 const APP_VERSION = pkg.version;
-
-/**
- * Maps each onboarding goal to its tool route and i18n key suffix.
- * @interface GoalSpec
- */
-interface GoalSpec {
-  goal: OnboardingGoal;
-  to: string;
-  i18nKey: string;
-}
 
 /** The goals offered on the card. @const {GoalSpec[]} */
 const GOALS: GoalSpec[] = [

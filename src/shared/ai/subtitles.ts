@@ -7,13 +7,9 @@
  */
 
 import { normalizeSegmentText } from './transcript';
-import type { TranscriptSegment } from './transcript';
+import type { SubtitleFormat, TranscriptSegment } from './types';
 
-/**
- * Supported subtitle container formats.
- * @typedef {('srt' | 'vtt' | 'ass')} SubtitleFormat
- */
-export type SubtitleFormat = 'srt' | 'vtt' | 'ass';
+export type { SubtitleFormat };
 
 /**
  * Pads a non-negative integer to a fixed width.

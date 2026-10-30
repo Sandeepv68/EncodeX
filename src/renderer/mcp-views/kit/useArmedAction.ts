@@ -8,22 +8,12 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { ArmedAction } from './types';
+
+export type { ArmedAction };
 
 /** How long an armed action stays armed before it reverts. @const {number} */
 export const ARM_TIMEOUT_MS = 4000;
-
-export interface ArmedAction {
-  /** True while the action is waiting for its confirming click. */
-  armed: boolean;
-  /** True while the confirmed action is running. */
-  busy: boolean;
-  /** Message of the last failure, if any. */
-  error?: string;
-  /** Handles a click: arms on the first call, runs the action on the second. */
-  trigger: () => void;
-  /** Disarms the action and clears the error. */
-  reset: () => void;
-}
 
 /**
  * Creates an armed action.

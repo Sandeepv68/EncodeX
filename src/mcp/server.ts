@@ -21,7 +21,6 @@ import { McpServer } from '@modelcontextprotocol/server';
 import * as z from 'zod';
 import { APP_NAME } from '../shared/app-constants';
 import { createTranscoder } from '../main/transcoders/factory';
-import type { ITranscoder } from '../main/transcoders/types';
 import { createError, formatError, isAppError, ErrorCode } from '../shared/errors';
 import type { ConversionOptions, EncoderCapabilities, MediaInfo, TranscoderType } from '../shared/types';
 import { MAX_QUEUE_CONCURRENCY } from '../shared/constants';
@@ -60,7 +59,6 @@ import {
   WORKFLOW_TOOLS,
 } from '../shared/ai';
 import { createAuditEntry } from '../shared/audit';
-import type { AuditEntry } from '../shared/audit';
 import { batchEnvelopeExceeds, tierForTool } from './safety';
 import type { BatchEnvelope } from './safety';
 import { defaultFrameSampler } from './frame-sampler';
@@ -68,9 +66,7 @@ import { createWhisperCliEngine } from './stt-engine';
 import { createLocalTranslationProvider } from './translate-engine';
 import { createHttpLocalModelClient } from './local-model-client';
 import type {
-  FrameSampler,
   LibraryRow,
-  LocalModelClient,
   MediaSignature,
   MediaFacts,
   PlanRequest,
@@ -78,17 +74,15 @@ import type {
   SceneBoundary,
   EditIntent,
   SocialClip,
-  SttEngine,
   SubtitleFormat,
   Transcript,
   TranscriptSegment,
-  TranslationProvider,
   WorkflowTool,
 } from '../shared/ai';
 import { VIDEO_CODECS, AUDIO_CODECS } from '../shared/media-options';
 import { suggestedExtensionForVideoCodec } from '../shared/codec-containers';
 import { expandInputs, getInputExtension } from '../main/cli/cli-util';
-import { buildConversionOptions, resolveOutputPath, MCPConversionFields } from './conversion-options';
+import { buildConversionOptions, resolveOutputPath } from './conversion-options';
 import { MCP_UI_EXTENSION_ID, MCP_UI_RESOURCE_MIME_TYPE, MCP_UI_VIEW_URIS } from '../shared/mcp-ui';
 import type { McpUiConfirmationField, McpUiJob } from '../shared/mcp-ui';
 import { registerAppTool } from '@modelcontextprotocol/ext-apps/server';
@@ -113,50 +107,9 @@ import {
   buildDemuxJobOptions,
 } from './operations';
 import type { MCPCompressFields, MCPExtractAudioFields, MCPCutFields, MCPRemuxFields, MCPDemuxFields } from './operations';
+import type { CreateMcpServerOptions, MCPConversionFields } from './types';
 
-/**
- * Configuration accepted by {@link createMcpServer}.
- * @interface CreateMcpServerOptions
- * @property {string} [name] - Server name advertised in the MCP handshake.
- *   Defaults to {@link APP_NAME}.
- * @property {string} [version] - Server version advertised in the handshake.
- *   Defaults to the app version from package.json.
- * @property {function(TranscoderType): ITranscoder} [transcoderFactory] -
- *   Overrides transcoder creation (test seam; defaults to the shared factory).
- * @property {MCPJobManager} [jobManager] - Job manager backing the conversion
- *   tools. Shared across tool calls so agents can poll/queue/cancel; a fresh
- *   manager is created when omitted.
- * @property {function(AuditEntry): void} [onAudit] - Optional sink invoked once
- *   for every committed (or headlessly executed) mutating operation, so the
- *   Electron main process can surface an audit trail in the renderer. Errors
- *   thrown by the sink are swallowed.
- * @property {FrameSampler} [frameSampler] - Samples a frame hash for
- *   `find_similar_media`; defaults to the FFmpeg-backed sampler.
- * @property {SttEngine} [sttEngine] - Speech-to-text engine for the transcript
- *   tools; defaults to the whisper.cpp CLI adapter.
- * @property {TranslationProvider} [translator] - Subtitle translation backend;
- *   defaults to the local-model provider built from {@link localModelClient}.
- * @property {LocalModelClient} [localModelClient] - Local model transport used
- *   by translation (and available to the AI provider layer). Defaults to the
- *   HTTP adapter when `ENCODEX_LOCAL_MODEL_URL` is set.
- */
-export interface CreateMcpServerOptions {
-  name?: string;
-  version?: string;
-  transcoderFactory?: (type: TranscoderType) => ITranscoder;
-  jobManager?: MCPJobManager;
-  onAudit?: (entry: AuditEntry) => void;
-  frameSampler?: FrameSampler;
-  sttEngine?: SttEngine;
-  translator?: TranslationProvider;
-  localModelClient?: LocalModelClient;
-  /**
-   * The MCP App view bundle to serve. When omitted, the built bundle is read
-   * from disk on the first `resources/read`; the test suite passes a fixture so
-   * the unit tier never depends on a build artefact.
-   */
-  viewBundle?: string;
-}
+export type { CreateMcpServerOptions } from './types';
 
 /**
  * Reads the application version from the repo's package.json, tolerating a
@@ -165,7 +118,8 @@ export interface CreateMcpServerOptions {
  */
 function resolveAppVersion(): string {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    // The package version is read lazily so the server stays importable from a
+    // packaged layout without a sibling package.json.
     const pkg = require('../../package.json') as { version?: string };
     return pkg.version ?? '0.0.0';
   } catch {

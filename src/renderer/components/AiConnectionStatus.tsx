@@ -5,27 +5,21 @@
  * connection status.
  */
 
-import { Box, useTheme } from '@mui/material';
+import { useTheme } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRobot } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { aiProviderLogo } from '../utils/ai-provider-icons';
-import type { AIProviderId } from '../../shared/ai/types';
-import { ConnectionDot, ConnectionStatus, RightActions } from '../styles/copilot/ChatComposer.styles';
-import { SHADOWS } from '../../shared/theme/colors';
-
-/** Props for {@link AiConnectionStatus}. */
-interface AiConnectionStatusProps {
-  connected: boolean;
-  providerId?: AIProviderId;
-  model?: string;
-  /** Test id applied to the pill's outer element. */
-  testId?: string;
-  /** Show the caption without waiting for hover. */
-  expanded?: boolean;
-  /** Adds a soft drop shadow to the pill. */
-  elevated?: boolean;
-}
+import { ConnectionStatus } from '../styles/copilot/ChatComposer.styles';
+import type { AiConnectionStatusProps } from './types';
+import {
+  ProviderBadge,
+  ProviderIconFallback,
+  ProviderLogo,
+  StatusCaption,
+  StatusDot,
+  StatusPill,
+} from '../styles/AiConnectionStatus.styles';
 
 /**
  * Renders the AI connection status pill.
@@ -45,60 +39,27 @@ export default function AiConnectionStatus({
   const logo = providerId ? aiProviderLogo(providerId, theme.palette.mode) : null;
 
   return (
-    <RightActions
-      data-testid={testId}
-      sx={elevated ? { boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT } : undefined}
-    >
+    <StatusPill data-testid={testId} $elevated={elevated}>
       <ConnectionStatus $connected={connected}>
-        <Box
-          sx={{
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: theme.typography.pxToRem(22),
-            height: theme.typography.pxToRem(22),
-            borderRadius: '50%',
-            bgcolor: 'background.paper',
-            border: `${theme.typography.pxToRem(1)} solid`,
-            borderColor: 'divider',
-            flexShrink: 0,
-          }}
-        >
+        <ProviderBadge>
           {logo ? (
-            <Box component="img" src={logo} alt="" sx={{ width: theme.typography.pxToRem(14), height: theme.typography.pxToRem(14) }} />
+            <ProviderLogo src={logo} alt="" />
           ) : (
-            <Box component="span" sx={{ display: 'inline-flex', fontSize: theme.typography.pxToRem(12) }}>
+            <ProviderIconFallback>
               <FontAwesomeIcon icon={faRobot} />
-            </Box>
+            </ProviderIconFallback>
           )}
-          <ConnectionDot
-            $connected={connected}
-            aria-hidden="true"
-            sx={{ position: 'absolute', bottom: theme.typography.pxToRem(-1), right: theme.typography.pxToRem(-1) }}
-          />
-        </Box>
-        <Box
-          className="copilot-ai-status-text"
-          sx={{
-            maxWidth: expanded ? theme.typography.pxToRem(420) : 0,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            opacity: expanded ? 1 : 0,
-            marginInlineStart: expanded ? theme.spacing(0.75) : 0,
-            transition: theme.transitions.create(['max-width', 'opacity'], {
-              duration: theme.transitions.duration.short,
-            }),
-          }}
-        >
+          <StatusDot $connected={connected} aria-hidden="true" />
+        </ProviderBadge>
+        <StatusCaption className="copilot-ai-status-text" $expanded={expanded}>
           {connected
             ? t('settings.ai.headerConnected', {
                 provider: t(`settings.ai.providers.${providerId}`),
                 model: model || t('settings.ai.modelPlaceholder'),
               })
             : t('copilot.ai.notConnected')}
-        </Box>
+        </StatusCaption>
       </ConnectionStatus>
-    </RightActions>
+    </StatusPill>
   );
 }

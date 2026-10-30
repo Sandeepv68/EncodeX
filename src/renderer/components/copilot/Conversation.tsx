@@ -4,43 +4,25 @@
  */
 
 import { useEffect, useMemo, useRef } from 'react';
-import { Box, Typography, useTheme } from '@mui/material';
+import { Typography, useTheme } from '@mui/material';
 import { measureElement as measureElementDefault, observeElementRect, useVirtualizer } from '@tanstack/react-virtual';
 import { useTranslation } from 'react-i18next';
-import type { CopilotPlan } from '../../../shared/copilot';
-import type { AIProviderId } from '../../../shared/ai/types';
+import type { ConversationMessage, ConversationProps } from './types';
 import MessageBubble from './MessageBubble';
 import AssistantMessage from './AssistantMessage';
 import Welcome from './Welcome';
 import {
+  AttachmentCountText,
   ConversationScroll,
   ConversationStream,
+  ThinkingRow,
   TypingDots,
+  UserMessageText,
   VirtualConversationStream,
   VirtualRow,
 } from '../../styles/copilot/Conversation.styles';
 
-export interface ConversationMessage {
-  id: string;
-  role: 'user' | 'assistant';
-  content?: string;
-  attachments?: string[];
-  plan?: CopilotPlan | null;
-  error?: string | null;
-  notice?: string | null;
-  /** The AI provider that produced this assistant message. */
-  providerId?: AIProviderId;
-  timestamp: number;
-}
-
-interface ConversationProps {
-  messages: ConversationMessage[];
-  isThinking?: boolean;
-  onAddToQueue: (plan: CopilotPlan) => void;
-  busy?: boolean;
-  /** The currently connected provider, shown as the action icon. */
-  providerId?: AIProviderId | null;
-}
+export type { ConversationMessage };
 
 const FALLBACK_VIEWPORT_HEIGHT = 640;
 const THINKING_ROW_ESTIMATE = 72;
@@ -99,7 +81,7 @@ export default function Conversation({ messages, isThinking = false, onAddToQueu
     if (index >= visibleMessages.length) {
       return (
         <MessageBubble speaker="assistant">
-          <Box sx={{ display: 'flex', alignItems: 'center' }} data-testid="copilot-thinking">
+          <ThinkingRow data-testid="copilot-thinking">
             <Typography variant="body2" color="text.secondary">
               🤔 {t('copilot.thinking')}
             </Typography>
@@ -108,7 +90,7 @@ export default function Conversation({ messages, isThinking = false, onAddToQueu
               <span />
               <span />
             </TypingDots>
-          </Box>
+          </ThinkingRow>
         </MessageBubble>
       );
     }
@@ -119,13 +101,9 @@ export default function Conversation({ messages, isThinking = false, onAddToQueu
     if (message.role === 'user') {
       return (
         <MessageBubble speaker="user">
-          <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
-            {message.content}
-          </Typography>
+          <UserMessageText variant="body1">{message.content}</UserMessageText>
           {message.attachments && message.attachments.length > 0 && (
-            <Typography variant="caption" sx={{ display: 'block', marginTop: 1 }}>
-              {t('copilot.selectedCount', { count: message.attachments.length })}
-            </Typography>
+            <AttachmentCountText variant="caption">{t('copilot.selectedCount', { count: message.attachments.length })}</AttachmentCountText>
           )}
         </MessageBubble>
       );
@@ -154,14 +132,14 @@ export default function Conversation({ messages, isThinking = false, onAddToQueu
           <Welcome />
         </ConversationStream>
       ) : (
-        <VirtualConversationStream aria-live="polite" sx={{ height: virtualizer.getTotalSize() }}>
+        <VirtualConversationStream aria-live="polite" $height={virtualizer.getTotalSize()}>
           {virtualizer.getVirtualItems().map((virtualRow) => (
             <VirtualRow
               key={virtualRow.key}
               ref={virtualizer.measureElement}
               data-index={virtualRow.index}
               data-testid="copilot-message-row"
-              sx={{ transform: `translateY(${virtualRow.start}px)` }}
+              $offset={virtualRow.start}
             >
               {renderRow(virtualRow.index)}
             </VirtualRow>

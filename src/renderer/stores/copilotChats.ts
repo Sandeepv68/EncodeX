@@ -9,7 +9,10 @@
 
 import { Logger } from '../../shared/logger';
 import type { AIProviderId } from '../../shared/ai/types';
-import type { ConversationMessage } from '../components/copilot/Conversation';
+import type { ConversationMessage } from '../components/copilot/types';
+import type { SavedCopilotChat } from './types';
+
+export type { SavedCopilotChat };
 
 const log = new Logger('renderer/stores/copilotChats');
 
@@ -21,21 +24,6 @@ export const MAX_SAVED_COPILOT_CHATS = 50;
 
 /** Maximum characters kept from the first user message when deriving a title. */
 const TITLE_MAX_CHARS = 60;
-
-/**
- * A conversation the user chose to keep.
- * @interface SavedCopilotChat
- * @property {string} id - Stable identifier; re-saving the same chat updates it.
- * @property {string} title - Short label derived from the first user message.
- * @property {number} savedAt - Epoch milliseconds of the last save.
- * @property {ConversationMessage[]} messages - The full transcript.
- */
-export interface SavedCopilotChat {
-  id: string;
-  title: string;
-  savedAt: number;
-  messages: ConversationMessage[];
-}
 
 /**
  * Checks that a parsed value has the shape of a ConversationMessage.

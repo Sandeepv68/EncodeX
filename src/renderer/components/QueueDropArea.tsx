@@ -48,7 +48,7 @@ export default function QueueDropArea({ children }: { children: ReactNode }) {
     <DropAreaRoot ref={containerRef}>
       {isDragActive && <DragFrame />}
       <ContentLayer>{children}</ContentLayer>
-      {indicatorTop !== null && <DropIndicator sx={{ top: indicatorTop }} />}
+      {indicatorTop !== null && <DropIndicator $top={indicatorTop} />}
     </DropAreaRoot>
   );
 }

@@ -11,12 +11,9 @@ import { useMemo } from 'react';
 import { AppIpcHost } from '../../mcp-views/AppIpcHost';
 import { McpViewProvider } from '../../mcp-views/McpViewProvider';
 import { findMcpViewComponent } from '../../mcp-views/registry';
-import type { McpViewAttachment } from '../../../shared/mcp-ui';
+import type { McpAppViewProps } from './types';
 
-export interface McpAppViewProps {
-  /** The view to render. */
-  attachment: McpViewAttachment;
-}
+export type { McpAppViewProps };
 
 /**
  * Renders the attached MCP App view.

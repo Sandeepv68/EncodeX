@@ -6,21 +6,9 @@
  */
 
 import { TextField } from '@mui/material';
+import type { ViewFieldProps } from './types';
 
-export interface ViewFieldProps {
-  /** Field label. */
-  label: string;
-  /** Current value. */
-  value: string;
-  /** Called with the next value whenever the user edits the field. */
-  onChange: (value: string) => void;
-  /** Input type; defaults to `text`. */
-  type?: 'text' | 'number';
-  /** Optional placeholder. */
-  placeholder?: string;
-  /** Test hook for the host-rendering checks. */
-  testId?: string;
-}
+export type { ViewFieldProps };
 
 /**
  * Renders a labelled text field.

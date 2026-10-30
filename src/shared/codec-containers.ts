@@ -6,8 +6,10 @@
  * utilities used for suggesting and validating output files.
  */
 
-import type { CodecContainerInfo, MediaStreamInfo, RemuxInput } from './types';
+import type { CodecContainerInfo, DemuxMediaPreferences, DemuxTarget, MediaStreamInfo, RemuxInput, RemuxWarning } from './types';
 import { SUBTITLE_CODEC_CONTAINERS } from './transcoder-constants';
+
+export type { DemuxMediaPreferences, DemuxTarget, RemuxWarning, RemuxWarningIcon } from './types';
 
 /**
  * Maps a generic video codec family to its preferred output extension and the
@@ -332,30 +334,6 @@ export function isContainerCompatibleWithStream(extension: string, stream: Media
 }
 
 /**
- * Severity of a remux compatibility warning, mirroring toast/preload icon tiers.
- * @typedef {'info'|'warning'|'error'} RemuxWarningIcon
- */
-export type RemuxWarningIcon = 'info' | 'warning' | 'error';
-
-/**
- * A non-blocking compatibility finding surfaced by {@link remuxWarnings} for the
- * GUI, CLI, and MCP. Hard incompatibilities are reported with icon 'error';
- * conversions/workarounds with 'warning'; informational notes with 'info'.
- * `stream` is null for asset-level (cover/chapters/added subtitle) findings.
- * @interface RemuxWarning
- * @property {RemuxWarningIcon} icon - Severity tier.
- * @property {string} message - Human-readable finding (English; UI localizes via `code`).
- * @property {MediaStreamInfo|null} stream - The affected source stream, if any.
- * @property {string} [code] - Stable finding key for localization.
- */
-export interface RemuxWarning {
-  icon: RemuxWarningIcon;
-  message: string;
-  stream: MediaStreamInfo | null;
-  code?: string;
-}
-
-/**
  * Computes the remux compatibility findings for a target container across the
  * probed source streams and any added assets. Slow-but-simple linear scan used
  * by GUI (Remux page), CLI (`remux --format`), and MCP (`remux_media`).
@@ -536,55 +514,6 @@ export function demuxWarnings(streams: MediaStreamInfo[], media?: DemuxMediaPref
   }
 
   return warnings;
-}
-
-/**
- * Optional per-kind conversion targets for demux. Any kind left unset is
- * extracted losslessly (stream copy) into the extension suggested by
- * {@link suggestedExtensionForStream}. Values are FFmpeg-native: a container
- * extension for video (`videoContainer`, e.g. 'mp4'), an encoder name for audio
- * (`audioCodec`, e.g. 'mp3'/'aac'/'flac'), and an encoder/format name for
- * subtitles (`subtitleCodec`, e.g. 'srt'/'ass').
- * @interface DemuxMediaPreferences
- * @property {string} [videoContainer] - Re-encode video into this container
- *   (extension) when it differs from the stream's native format; forces copy:false.
- * @property {string} [audioCodec] - Audio encoder to convert to (e.g. 'mp3').
- * @property {string} [subtitleCodec] - Subtitle format to convert to (e.g. 'srt').
- * @property {string[]} [videoFilters] - Ordered FFmpeg video filter expressions.
- *   Only meaningful for a video target that re-encodes (`videoContainer` set and
- *   differing from the stream's native format); a stream-copied video target
- *   ignores them and {@link demuxWarnings} reports `filtersIgnoredCopy`.
- */
-export interface DemuxMediaPreferences {
-  videoContainer?: string;
-  audioCodec?: string;
-  subtitleCodec?: string;
-  videoFilters?: string[];
-}
-
-/**
- * A single demux extraction unit: which source stream, how it is mapped, whether
- * it is stream-copied or re-encoded, and where the output goes.
- * @interface DemuxTarget
- * @property {number} index - Source stream index (ffprobe global index, input 0).
- * @property {'video'|'audio'|'subtitle'} kind - Stream kind.
- * @property {string} map - Single `-map` spec targeting this stream (e.g. '0:v:1').
- * @property {boolean} copy - True = `-c copy`; false = re-encode with `codec`.
- * @property {string} [codec] - Re-encode target encoder when `copy` is false.
- * @property {string} [container] - Output container extension for re-encoded video.
- * @property {string[]} [videoFilters] - Video filter chain carried onto this
- *   target; set only for a re-encoded video target (absent for stream copies).
- * @property {string} output - Absolute output path (baseName + kind_index + ext).
- */
-export interface DemuxTarget {
-  index: number;
-  kind: 'video' | 'audio' | 'subtitle';
-  map: string;
-  copy: boolean;
-  codec?: string;
-  container?: string;
-  videoFilters?: string[];
-  output: string;
 }
 
 /**

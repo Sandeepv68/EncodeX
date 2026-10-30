@@ -22,25 +22,8 @@ import ViewDefinitionList from '../kit/ViewDefinitionList';
 import ViewField from '../kit/ViewField';
 import ViewProgress from '../kit/ViewProgress';
 import { ViewFieldGrid, ViewParagraph, ViewStack } from '../kit/styles';
-import type { McpUiConfirmation, McpUiJob } from '../../../shared/mcp-ui';
-
-interface ConvertPayload {
-  confirmation?: McpUiConfirmation;
-  job?: McpUiJob;
-}
-
-/** The editable settings of the conversion form. */
-interface ConvertForm {
-  input: string;
-  output: string;
-  videoCodec: string;
-  audioCodec: string;
-  videoBitrate: string;
-  audioBitrate: string;
-  qscale: string;
-  scale: string;
-  copy: boolean;
-}
+import type { McpUiConfirmation } from '../../../shared/mcp-ui';
+import type { ConvertForm, ConvertPayload } from './types';
 
 const EMPTY_FORM: ConvertForm = {
   input: '',

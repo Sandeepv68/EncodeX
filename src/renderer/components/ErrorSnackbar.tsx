@@ -20,12 +20,12 @@
  *  - onClose: fired when the snackbar is dismissed or auto-hidden.
  */
 
-import { Snackbar, AlertColor } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { AlertColor } from '@mui/material';
 import { ErrorCode } from '../../shared/errors';
 import type { ErrorSnackbarProps } from './types';
 import { SnackbarAlert, AlertMessage, AlertDetail } from '../styles/ErrorSnackbar.styles';
-import { SNACKBAR_AUTO_HIDE_MS, TITLE_BAR_HEIGHT } from '../../shared/constants';
+import { TitleBarOffsetSnackbar } from '../styles/Snackbar.styles';
+import { SNACKBAR_AUTO_HIDE_MS } from '../../shared/constants';
 
 /**
  * Maps each error code to a MUI Alert severity color.
@@ -61,21 +61,19 @@ const severityMap: Record<string, AlertColor> = {
  * @returns {JSX.Element | null} The snackbar, or null when there is no error.
  */
 export default function ErrorSnackbar({ error, onClose }: ErrorSnackbarProps) {
-  const theme = useTheme();
   if (!error) return null;
   const severity = severityMap[error.code] || 'error';
   return (
-    <Snackbar
+    <TitleBarOffsetSnackbar
       open
       autoHideDuration={SNACKBAR_AUTO_HIDE_MS}
       onClose={onClose}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      slotProps={{ root: { style: { top: `calc(${theme.typography.pxToRem(TITLE_BAR_HEIGHT)} + ${theme.spacing(1)})` } } }}
     >
       <SnackbarAlert onClose={onClose} severity={severity} variant="filled">
         <AlertMessage>{error.message}</AlertMessage>
         {error.detail && <AlertDetail>{error.detail}</AlertDetail>}
       </SnackbarAlert>
-    </Snackbar>
+    </TitleBarOffsetSnackbar>
   );
 }

@@ -15,41 +15,15 @@ import * as os from 'os';
 import { McpServer } from '@modelcontextprotocol/server';
 import * as z from 'zod';
 import { createError, ErrorCode } from '../../shared/errors';
-import type { UpdateInfo } from '../../shared/types';
-import type { MCPJobManager } from '../../mcp/jobs/manager';
-import type { ITranscoder } from '../transcoders/types';
-import type { TranscoderType } from '../../shared/types';
 import { Logger } from '../../shared/logger';
 import { LOG_MCP_GUI_TOOL_ERROR } from '../../shared/log-constants';
 import { ok, fail } from '../../mcp/server';
+import type { GuiToolsDeps } from './types';
+
+export type { GuiToolsDeps };
 
 /** Per-module logger for the GUI-parity tools. @const {Logger} */
 const log = new Logger('main/mcp/gui-tools');
-
-/**
- * Dependencies consumed by the GUI-parity tools.
- * @interface GuiToolsDeps
- * @property {MCPJobManager} jobManager - The shared queue manager (same
- *   instance backing the core conversion tools and the renderer's queue).
- * @property {string} appVersion - The running app version (from Electron's
- *   `app.getVersion()`), supplied by the caller so this module stays
- *   Electron-free.
- * @property {function(TranscoderType): ITranscoder} [transcoderFactory] -
- *   Creates transcoders for probing/timeline reads (defaults to the shared
- *   FFmpeg factory when omitted).
- * @property {function(string): Promise<string | null>} [getPreviewFrame] -
- *   Extracts a base64 PNG data URL preview frame (defaults to EncodeX's
- *   `getVideoPreview` when omitted).
- * @property {function(): Promise<UpdateInfo | null>} [checkForUpdate] -
- *   Queries the latest release (defaults to the updater when omitted).
- */
-export interface GuiToolsDeps {
-  jobManager: MCPJobManager;
-  appVersion: string;
-  transcoderFactory?: (type: TranscoderType) => ITranscoder;
-  getPreviewFrame?: (input: string) => Promise<string | null>;
-  checkForUpdate?: () => Promise<UpdateInfo | null>;
-}
 
 /**
  * Registers the six GUI-parity tools on the given server.

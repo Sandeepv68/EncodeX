@@ -46,6 +46,7 @@ import { LOG_DASHBOARD_RENDERED } from '../../shared/log-constants';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
 import GettingStartedCard from '../components/GettingStartedCard';
+import type { RingGroup } from './types';
 
 /**
  * Logger instance scoped to this page. Used to emit the on-mount render marker.
@@ -69,18 +70,6 @@ const descKeys: Record<string, string> = {
   '/batch': 'descBatch',
   '/copilot': 'descCopilot',
 };
-
-/** One cluster of concentric rings. @interface RingGroup */
-interface RingGroup {
-  /** Stable key for the cluster within the card. */
-  id: number;
-  /** Horizontal center of the rings in viewBox units. */
-  cx: number;
-  /** Vertical center of the rings in viewBox units. */
-  cy: number;
-  /** Radii of the concentric circles, smallest first. */
-  radii: number[];
-}
 
 /** Hashes a string into a 32-bit seed for the deterministic PRNG. @function hashSeed */
 function hashSeed(value: string): number {
@@ -182,7 +171,7 @@ export default function Dashboard() {
         {NAV_ITEMS.filter((item) => item.to !== '/' && item.to !== '/logs' && item.to !== '/settings' && item.to !== '/about').map(
           (item, index) => (
             <FeatureGridItem size={{ xs: 12, sm: 6, md: 4 }} key={item.to}>
-              <FeatureCard gradientAngle={index * 60} sx={{ animationDelay: `${0.3 + index * 0.08}s` }}>
+              <FeatureCard gradientAngle={index * 60} $animationDelay={`${0.3 + index * 0.08}s`}>
                 <CardBackgroundSvg aria-hidden="true" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice">
                   {buildCardRings(item.to).map((ring) => (
                     <g key={ring.id} fill="none" stroke="currentColor" strokeWidth={1} vectorEffect="non-scaling-stroke">

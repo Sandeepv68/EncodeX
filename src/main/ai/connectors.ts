@@ -16,9 +16,9 @@ import type { AIProviderId } from '../../shared/ai/types';
 import { createError, ErrorCode } from '../../shared/errors';
 import { effectiveModel } from './settings';
 import type { AiServerSettings } from './settings';
+import type { FetchLike } from './types';
 
-/** The fetch signature connectors depend on (injectable for tests). */
-export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>;
+export type { FetchLike };
 
 /** Default per-request timeout. @const {number} */
 const DEFAULT_TIMEOUT_MS = 30_000;

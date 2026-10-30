@@ -25,41 +25,9 @@
  */
 
 import { create } from 'zustand';
-import type { AiSettingsView } from '../../shared/ai/settings';
-import type { AIProviderId } from '../../shared/ai/types';
+import type { AiSettingsSnapshot, AiSettingsState } from './types';
 
-/**
- * The snapshot of the AI-provider editor cached for the session.
- * @interface AiSettingsSnapshot
- * @property {AiSettingsView | null} view - The last sanitized settings view,
- *   or null when nothing was ever loaded (or the bridge failed).
- * @property {AIProviderId} providerId - The provider tile currently selected
- *   in the editor (may differ from `view.providerId` before connecting).
- * @property {string} model - The in-progress model id.
- * @property {string} baseUrl - The in-progress base URL override.
- */
-export interface AiSettingsSnapshot {
-  view: AiSettingsView | null;
-  providerId: AIProviderId;
-  model: string;
-  baseUrl: string;
-}
-
-/**
- * The store: the cached snapshot plus mutators.
- * @interface AiSettingsState
- * @property {AiSettingsView | null} view - See {@link AiSettingsSnapshot}.
- * @property {AIProviderId} providerId - See {@link AiSettingsSnapshot}.
- * @property {string} model - See {@link AiSettingsSnapshot}.
- * @property {string} baseUrl - See {@link AiSettingsSnapshot}.
- * @property {(partial: Partial<AiSettingsSnapshot>) => void} patch - Merges a
- *   partial snapshot into the cache (used by the section on every change).
- * @property {() => void} reset - Restores the initial snapshot (tests).
- */
-export interface AiSettingsState extends AiSettingsSnapshot {
-  patch: (partial: Partial<AiSettingsSnapshot>) => void;
-  reset: () => void;
-}
+export type { AiSettingsSnapshot, AiSettingsState };
 
 const INITIAL_SNAPSHOT: AiSettingsSnapshot = {
   view: null,

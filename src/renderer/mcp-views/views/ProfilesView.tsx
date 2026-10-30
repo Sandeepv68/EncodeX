@@ -16,11 +16,7 @@ import ViewEmptyState from '../kit/ViewEmptyState';
 import ViewField from '../kit/ViewField';
 import ViewTable from '../kit/ViewTable';
 import { ViewStack } from '../kit/styles';
-import type { McpUiProfile } from '../../../shared/mcp-ui';
-
-interface ProfilesPayload {
-  profiles?: McpUiProfile[];
-}
+import type { ProfilesPayload } from './types';
 
 /**
  * Renders the profiles view.

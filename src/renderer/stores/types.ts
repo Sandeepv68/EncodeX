@@ -26,20 +26,27 @@
 
 import type {
   AppError,
+  ConversionProfile,
   ConversionProgress,
   EncoderType,
   ErrorCodeType,
   HwAccelMode,
   LogEntry,
   MediaStreamInfo,
+  ProfileCategory,
   QueueJob,
   RemuxInput,
   ThumbnailStrip,
+  UpdateInfo,
+  UpdateProgress,
   WaveformData,
   WhenDoneConfig,
 } from '../../shared/types';
 import type { DemuxMediaPreferences, DemuxTarget, RemuxWarning } from '../../shared/codec-containers';
 import type { AuditEntry } from '../../shared/audit';
+import type { AiSettingsView } from '../../shared/ai/settings';
+import type { AIProviderId } from '../../shared/ai/types';
+import type { ConversationMessage } from '../components/copilot/types';
 
 /**
  * Persisted hardware acceleration settings.
@@ -669,4 +676,250 @@ export interface DemuxState {
   resume: () => Promise<void>;
   cancel: () => Promise<void>;
   clearSelection: () => void;
+}
+
+/* ------------------------------------------------------------------ *
+ * aiConnectionStore
+ * ------------------------------------------------------------------ */
+
+/**
+ * The store state: the last sanitized settings view seen by the app.
+ * @interface AiConnectionState
+ * @property {AiSettingsView | null} view - The last view, or null when nothing
+ *   has loaded (or the bridge failed).
+ * @property {(view: AiSettingsView) => void} patch - Adopts a freshly loaded or
+ *   saved view.
+ * @property {() => void} reset - Clears the mirror (tests).
+ */
+export interface AiConnectionState {
+  view: AiSettingsView | null;
+  patch: (view: AiSettingsView) => void;
+  reset: () => void;
+}
+
+/* ------------------------------------------------------------------ *
+ * aiSettingsStore
+ * ------------------------------------------------------------------ */
+
+/**
+ * The snapshot of the AI-provider editor cached for the session.
+ * @interface AiSettingsSnapshot
+ * @property {AiSettingsView | null} view - The last sanitized settings view,
+ *   or null when nothing was ever loaded (or the bridge failed).
+ * @property {AIProviderId} providerId - The provider tile currently selected
+ *   in the editor (may differ from `view.providerId` before connecting).
+ * @property {string} model - The in-progress model id.
+ * @property {string} baseUrl - The in-progress base URL override.
+ */
+export interface AiSettingsSnapshot {
+  view: AiSettingsView | null;
+  providerId: AIProviderId;
+  model: string;
+  baseUrl: string;
+}
+
+/**
+ * The store: the cached snapshot plus mutators.
+ * @interface AiSettingsState
+ * @property {AiSettingsView | null} view - See {@link AiSettingsSnapshot}.
+ * @property {AIProviderId} providerId - See {@link AiSettingsSnapshot}.
+ * @property {string} model - See {@link AiSettingsSnapshot}.
+ * @property {string} baseUrl - See {@link AiSettingsSnapshot}.
+ * @property {(partial: Partial<AiSettingsSnapshot>) => void} patch - Merges a
+ *   partial snapshot into the cache (used by the section on every change).
+ * @property {() => void} reset - Restores the initial snapshot (tests).
+ */
+export interface AiSettingsState extends AiSettingsSnapshot {
+  patch: (partial: Partial<AiSettingsSnapshot>) => void;
+  reset: () => void;
+}
+
+/* ------------------------------------------------------------------ *
+ * batchConfig
+ * ------------------------------------------------------------------ */
+
+/**
+ * The persisted batch encoding configuration snapshot.
+ * @typedef {Object} BatchConfig
+ * @property {string} operation - Batch operation value (one of BATCH_OPERATIONS).
+ * @property {string} videoCodec - Selected video encoder name.
+ * @property {string} audioCodec - Selected audio encoder name.
+ * @property {string} container - Output container/format extension ('' = keep source).
+ * @property {string} videoBitrate - Target video bitrate ('' = auto).
+ * @property {string} audioBitrate - Target audio bitrate ('' = auto).
+ * @property {string} quality - Image compression quality 1-31 ('' = auto).
+ * @property {string} scale - Output resolution ('' = original).
+ * @property {string} rotate - Output rotation angle ('' | '90' | '180' | '270').
+ * @property {boolean} flipH - Whether to mirror the output horizontally.
+ * @property {boolean} flipV - Whether to mirror the output vertically.
+ * @property {string} pixelFormat - Output pixel format.
+ * @property {string[]} videoFilters - Ordered video-filter chain entries
+ *   (transcode only).
+ * @property {Array<'video'|'audio'|'subtitle'>} demuxKinds - Stream kinds the
+ *   'demux' operation extracts from each file.
+ * @property {string} demuxVideoContainer - 'demux' video conversion target
+ *   container extension ('' = lossless stream copy).
+ * @property {string} demuxAudioCodec - 'demux' audio conversion encoder ('' =
+ *   lossless stream copy).
+ * @property {string} demuxSubtitleFormat - 'demux' subtitle conversion format
+ *   ('' = lossless stream copy).
+ * @property {string} outputDir - Optional output folder for new jobs; '' means
+ *   outputs are written next to their source files.
+ * @property {boolean} overwrite - Whether new jobs may replace existing output
+ *   files.
+ */
+export interface BatchConfig {
+  operation: string;
+  videoCodec: string;
+  audioCodec: string;
+  container: string;
+  videoBitrate: string;
+  audioBitrate: string;
+  quality: string;
+  scale: string;
+  rotate: string;
+  flipH: boolean;
+  flipV: boolean;
+  pixelFormat: string;
+  videoFilters: string[];
+  demuxKinds: Array<'video' | 'audio' | 'subtitle'>;
+  demuxVideoContainer: string;
+  demuxAudioCodec: string;
+  demuxSubtitleFormat: string;
+  outputDir: string;
+  overwrite: boolean;
+}
+
+/* ------------------------------------------------------------------ *
+ * copilotChats
+ * ------------------------------------------------------------------ */
+
+/**
+ * A conversation the user chose to keep.
+ * @interface SavedCopilotChat
+ * @property {string} id - Stable identifier; re-saving the same chat updates it.
+ * @property {string} title - Short label derived from the first user message.
+ * @property {number} savedAt - Epoch milliseconds of the last save.
+ * @property {ConversationMessage[]} messages - The full transcript.
+ */
+export interface SavedCopilotChat {
+  id: string;
+  title: string;
+  savedAt: number;
+  messages: ConversationMessage[];
+}
+
+/* ------------------------------------------------------------------ *
+ * profileStore
+ * ------------------------------------------------------------------ */
+
+/** State of the conversion-profile store. */
+export interface ProfileState {
+  profiles: ConversionProfile[];
+  selectedCategory: ProfileCategory | null;
+  recentProfileIds: string[];
+  setSelectedCategory: (cat: ProfileCategory | null) => void;
+  saveCustomProfile: (profile: Omit<ConversionProfile, 'id' | 'builtin'>) => string;
+  updateCustomProfile: (id: string, updates: Partial<ConversionProfile>) => void;
+  deleteCustomProfile: (id: string) => void;
+  getProfileById: (id: string) => ConversionProfile | undefined;
+  getProfilesByCategory: (cat: ProfileCategory) => ConversionProfile[];
+  getRecentProfiles: () => ConversionProfile[];
+  applyProfileToConversionStore: (profile: ConversionProfile) => void;
+  recordRecentProfile: (id: string) => void;
+}
+
+/* ------------------------------------------------------------------ *
+ * termsStore
+ * ------------------------------------------------------------------ */
+
+/**
+ * A persisted acceptance record: which terms version was accepted and when.
+ * @interface AcceptedTermsRecord
+ * @property {string} version - The accepted TERMS_VERSION.
+ * @property {string} acceptedAt - ISO timestamp of the acceptance.
+ */
+export interface AcceptedTermsRecord {
+  version: string;
+  acceptedAt: string;
+}
+
+/**
+ * Terms gate store type.
+ * @interface TermsState
+ * @property {string | null} acceptedVersion - Version of the terms the user accepted.
+ * @property {boolean} requiresAcceptance - True while the stored version !== TERMS_VERSION.
+ * @property {boolean} dialogOpen - Whether the TermsDialog is visible.
+ * @property {'accept' | 'view'} mode - Dialog behaviour mode.
+ * @property {() => void} accept - Records acceptance of the current terms and closes the dialog.
+ * @property {() => void} rejectTerms - Asks the main process to quit the app.
+ * @property {() => void} openViewer - Opens the dialog in read-only view mode.
+ * @property {() => void} closeDialog - Closes the dialog (view mode only).
+ */
+export interface TermsState {
+  acceptedVersion: string | null;
+  acceptedAt: string | null;
+  requiresAcceptance: boolean;
+  dialogOpen: boolean;
+  mode: 'accept' | 'view';
+  accept: () => void;
+  rejectTerms: () => void;
+  openViewer: () => void;
+  closeDialog: () => void;
+}
+
+/* ------------------------------------------------------------------ *
+ * updateStore
+ * ------------------------------------------------------------------ */
+
+/**
+ * Possible states of the update manager UI flow.
+ * @typedef {string} UpdateStatus
+ */
+export type UpdateStatus =
+  'idle' | 'checking' | 'available' | 'not-available' | 'downloading' | 'downloaded' | 'restart-scheduled' | 'error';
+
+/**
+ * State of the update store.
+ * @interface UpdateState
+ * @property {UpdateStatus} status - Current update lifecycle state.
+ * @property {UpdateInfo | null} info - Available update metadata, or null.
+ * @property {UpdateProgress | null} progress - Live download progress, or null.
+ * @property {string | null} installerPath - Path to the downloaded installer, or null.
+ * @property {string | null} scheduledVersion - Version scheduled for next-restart install, or null.
+ * @property {boolean} restartScheduled - Whether a next-restart install is armed.
+ * @property {string | null} errorMessage - Error message when status is 'error', or null.
+ * @property {boolean} dialogOpen - Whether the update dialog is visible.
+ * @property {() => void} checkForUpdates - Triggers an update check via IPC.
+ * @property {() => void} downloadUpdate - Starts downloading the matched asset.
+ * @property {() => void} cancelDownload - Cancels an in-progress download.
+ * @property {() => void} installUpdate - Launches the downloaded installer.
+ * @property {() => void} installOnRestart - Arms a next-restart install via IPC.
+ * @property {() => void} cancelRestartInstall - Disarms a next-restart install via IPC.
+ * @property {(url: string) => void} openReleaseNotes - Opens the release page in the browser.
+ * @property {() => void} openDialog - Shows the update dialog.
+ * @property {() => void} closeDialog - Hides the update dialog.
+ * @property {() => void} hydratePendingInstall - Restores an armed next-restart install from the persisted marker.
+ * @property {() => void} reset - Resets the store to idle state.
+ */
+export interface UpdateState {
+  status: UpdateStatus;
+  info: UpdateInfo | null;
+  progress: UpdateProgress | null;
+  installerPath: string | null;
+  scheduledVersion: string | null;
+  restartScheduled: boolean;
+  errorMessage: string | null;
+  dialogOpen: boolean;
+  checkForUpdates: () => void;
+  downloadUpdate: () => void;
+  cancelDownload: () => void;
+  installUpdate: () => void;
+  installOnRestart: () => void;
+  cancelRestartInstall: () => void;
+  openReleaseNotes: (url: string) => void;
+  openDialog: () => void;
+  closeDialog: () => void;
+  hydratePendingInstall: () => void;
+  reset: () => void;
 }

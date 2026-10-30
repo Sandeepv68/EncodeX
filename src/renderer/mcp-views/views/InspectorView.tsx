@@ -13,10 +13,7 @@ import ViewFinding from '../kit/ViewFinding';
 import type { ViewFindingSeverity } from '../kit/ViewFinding';
 import { ViewBulletList, ViewParagraph, ViewSectionTitle, ViewStack } from '../kit/styles';
 import type { McpUiAnalysis } from '../../../shared/mcp-ui';
-
-interface InspectorPayload {
-  analysis?: McpUiAnalysis;
-}
+import type { InspectorPayload } from './types';
 
 /**
  * Reads a nested fact from the analysis payload.

@@ -21,6 +21,7 @@ import type {
   MonitorProvider,
   MonitorUser,
 } from '../../shared/monitoring/types';
+import type { MappedUser, SentryRendererSdk } from './types';
 
 /** Per-module logger for the renderer Sentry adapter. @const {Logger} */
 const log = new Logger('renderer/monitoring/sentryRendererProvider');
@@ -31,26 +32,6 @@ const log = new Logger('renderer/monitoring/sentryRendererProvider');
  * @const {string[]}
  */
 const REPLACED_DEFAULT_INTEGRATIONS = ['GlobalHandlers'];
-
-/**
- * Minimal structural type of the `@sentry/electron/renderer` module surface
- * used by this adapter. Keeps the file free of static imports (the real
- * module loads lazily inside {@link init}) while retaining type safety.
- */
-interface SentryRendererSdk {
-  init(options?: Record<string, unknown>): void;
-  captureException(error: unknown, hint?: Record<string, unknown>): string | undefined;
-  captureMessage(message: string, level?: string, hint?: Record<string, unknown>): string | undefined;
-  captureFeedback(feedback: { message: string; name?: string; email?: string }, hint?: Record<string, unknown>): string | undefined;
-  setTag(key: string, value: string): void;
-  setUser(user: Record<string, unknown> | null): void;
-  addBreadcrumb(breadcrumb: Record<string, unknown>): void;
-  flush(timeout?: number): Promise<boolean>;
-  close(timeout?: number): Promise<boolean>;
-}
-
-/** Reuses the user mapping shape of the shared contracts. */
-type MappedUser = Record<string, unknown>;
 
 /**
  * Maps an optional {@link MonitorUser} onto the backend user record.

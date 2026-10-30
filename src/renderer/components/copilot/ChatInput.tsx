@@ -18,22 +18,20 @@ import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $getRoot, COMMAND_PRIORITY_LOW, INSERT_LINE_BREAK_COMMAND, KEY_ENTER_COMMAND } from 'lexical';
 import type { EditorState } from 'lexical';
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  IconButton,
-  Tooltip,
-  useTheme,
-} from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faPlus, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
-import { ComposerShell, EditorArea, EditorPlaceholder } from '../../styles/copilot/ChatInput.styles';
+import type { ChatInputProps } from './types';
+import {
+  ComposerShell,
+  EditorArea,
+  EditorField,
+  EditorPlaceholder,
+  ResetButtonWrap,
+  ResetIconButton,
+  ResetIconGlyph,
+} from '../../styles/copilot/ChatInput.styles';
 
 /** Lexical editor theme; the paragraph class is available for descendant styling. */
 const editorTheme = { paragraph: 'copilot-input-paragraph' };
@@ -45,19 +43,6 @@ const editorTheme = { paragraph: 'copilot-input-paragraph' };
  */
 function onError(error: Error): void {
   console.error(error);
-}
-
-interface ChatInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  onSubmit: () => void;
-  disabled?: boolean;
-  placeholder?: string;
-  busy?: boolean;
-  hasInputs?: boolean;
-  onResetConversation?: () => void;
-  showReset?: boolean;
-  onResetConfirm?: () => void;
 }
 
 /**
@@ -182,7 +167,6 @@ export default function ChatInput({
   showReset = false,
 }: ChatInputProps) {
   const { t } = useTranslation();
-  const theme = useTheme();
   const resetDialogId = useId();
   const placeholderText = placeholder ?? t('copilot.placeholder');
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
@@ -223,46 +207,31 @@ export default function ChatInput({
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <FocusableShell>
-        <EditorArea
-          sx={{
-            alignItems: 'center',
-            flexWrap: 'nowrap',
-            gap: theme.spacing(0.5),
-            display: showReset && onResetConversation ? 'flex' : 'flex',
-          }}
-        >
+        <EditorArea>
           {showReset && onResetConversation && (
             <Tooltip title={t('copilot.resetConversation')} placement="top" arrow>
-              <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0, lineHeight: 0 }}>
-                <IconButton
+              <ResetButtonWrap>
+                <ResetIconButton
                   size="small"
                   onClick={handleResetClick}
                   disabled={busy || disabled}
                   aria-label={t('copilot.resetConversation')}
                   data-testid="copilot-reset-conversation"
-                  sx={{
-                    color: 'text.secondary',
-                    flexShrink: 0,
-                    padding: theme.spacing(0.25),
-                    '&:hover': {
-                      color: 'primary.main',
-                    },
-                  }}
                 >
-                  <Box component="span" sx={{ display: 'block', fontSize: theme.typography.pxToRem(14) }}>
+                  <ResetIconGlyph>
                     <FontAwesomeIcon icon={faPlus} />
-                  </Box>
-                </IconButton>
-              </Box>
+                  </ResetIconGlyph>
+                </ResetIconButton>
+              </ResetButtonWrap>
             </Tooltip>
           )}
-          <Box sx={{ flex: 1, minWidth: 0, position: 'relative', height: theme.typography.pxToRem(28) }}>
+          <EditorField>
             <RichTextPlugin
               contentEditable={<ContentEditable tabIndex={0} aria-label={t('copilot.inputAria')} />}
               placeholder={<EditorPlaceholder>{placeholderText}</EditorPlaceholder>}
               ErrorBoundary={LexicalErrorBoundary}
             />
-          </Box>
+          </EditorField>
           <HistoryPlugin />
           <SubmitOnEnterPlugin onSubmit={onSubmit} />
           <EditablePlugin disabled={disabled} />

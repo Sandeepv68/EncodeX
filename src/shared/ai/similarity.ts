@@ -6,72 +6,10 @@
  * this module stays Electron- and FFmpeg-free and fully unit-testable.
  */
 
-/**
- * A comparable fingerprint of one media file. Hashes are optional; metadata-only
- * comparison is used when a frame could not be sampled.
- * @interface MediaSignature
- * @property {string} file - The file path.
- * @property {number} [sizeBytes] - File size on disk.
- * @property {number} [durationSeconds] - Media duration.
- * @property {number} [width] - Sampled video width.
- * @property {number} [height] - Sampled video height.
- * @property {string} [hash] - Hex perceptual hash of a sampled frame.
- */
-export interface MediaSignature {
-  file: string;
-  sizeBytes?: number;
-  durationSeconds?: number;
-  width?: number;
-  height?: number;
-  hash?: string;
-}
+import type { ClusterReport, MediaSignature, SimilarityCluster, SimilarityMatch, SimilarityReport } from './types';
 
-/**
- * One candidate scored against the subject.
- * @interface SimilarityMatch
- * @property {string} file - The candidate path.
- * @property {number} similarity - Overall score in `[0, 1]`.
- * @property {'duplicate' | 'near-duplicate'} label - Classification at the threshold.
- * @property {number} [hashDistance] - Bit distance when both frames were hashed.
- * @property {number} [durationDeltaSeconds] - Absolute duration difference.
- * @property {boolean} sameResolution - Whether width×height match.
- * @property {string[]} findings - Human-readable observations.
- */
-export interface SimilarityMatch {
-  file: string;
-  similarity: number;
-  label: 'duplicate' | 'near-duplicate';
-  hashDistance?: number;
-  durationDeltaSeconds?: number;
-  sameResolution: boolean;
-  findings: string[];
-}
-
-/**
- * The full similarity report.
- * @interface SimilarityReport
- * @property {string} subject - The reference file.
- * @property {'hash' | 'metadata'} method - Comparison method actually used.
- * @property {number} threshold - Minimum similarity to report.
- * @property {number} compared - Number of candidates compared.
- * @property {SimilarityMatch[]} matches - Ranked candidates above the threshold.
- */
-export interface SimilarityReport {
-  subject: string;
-  method: 'hash' | 'metadata';
-  threshold: number;
-  compared: number;
-  matches: SimilarityMatch[];
-}
-
-/**
- * A frame-sampling function: returns a perceptual hash of the frame at
- * `atSeconds` in `file`, or `undefined` when no frame could be sampled (audio
- * only, unsupported container, missing decoder). The MCP server supplies the
- * FFmpeg-backed implementation; tests inject a fake.
- * @typedef {(file: string, atSeconds: number) => Promise<string | undefined>} FrameSampler
- */
-export type FrameSampler = (file: string, atSeconds: number) => Promise<string | undefined>;
+export type { ClusterReport, MediaSignature, SimilarityCluster, SimilarityMatch, SimilarityReport };
+export type { FrameSampler } from './types';
 
 /**
  * Packs booleans into a hex string, most-significant bit first, padding the tail
@@ -304,36 +242,6 @@ export function compareSignatures(
     compared: candidates.filter((candidate) => candidate.file !== subject.file).length,
     matches,
   };
-}
-
-/**
- * A group of files that are all mutually similar (a dedupe cluster).
- * @interface SimilarityCluster
- * @property {string[]} files - The clustered file paths (sorted).
- * @property {number} similarity - Highest pairwise score in the cluster.
- * @property {'duplicate' | 'near-duplicate'} label - Cluster classification.
- */
-export interface SimilarityCluster {
-  files: string[];
-  similarity: number;
-  label: 'duplicate' | 'near-duplicate';
-}
-
-/**
- * The result of clustering a set of signatures.
- * @interface ClusterReport
- * @property {'hash' | 'metadata'} method - Comparison method used.
- * @property {number} threshold - Minimum similarity to cluster.
- * @property {number} compared - Number of signatures considered.
- * @property {SimilarityCluster[]} clusters - Clusters of two or more files.
- * @property {SimilarityMatch[]} pairs - All above-threshold pairs, ranked.
- */
-export interface ClusterReport {
-  method: 'hash' | 'metadata';
-  threshold: number;
-  compared: number;
-  clusters: SimilarityCluster[];
-  pairs: SimilarityMatch[];
 }
 
 /**

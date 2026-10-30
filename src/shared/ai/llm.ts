@@ -14,10 +14,11 @@
  */
 
 import type { ConversionProfile, EncoderCapabilities } from '../types';
-import type { MediaFacts, AIProviderId } from './types';
+import type { AIConnector, AIProviderId, MediaFacts, OperationRoutingRequest, RoutedOperation } from './types';
 import type { CopilotOperation } from '../copilot';
-import type { AIConnector } from './connector';
 import { extractJsonObject } from './provider';
+
+export type { OperationRoutingRequest, RoutedOperation };
 
 /**
  * The closed operation vocabulary with a short description and the field names
@@ -58,41 +59,6 @@ export const OPERATION_VOCABULARY: Record<CopilotOperation, { summary: string; f
 
 /** The ordered list of operation ids the router may return. */
 export const OPERATION_IDS = Object.keys(OPERATION_VOCABULARY) as CopilotOperation[];
-
-/**
- * A routed operation: the operation to run plus the fields the deterministic
- * builder should use.
- * @interface RoutedOperation
- * @property {CopilotOperation} operation - The chosen operation.
- * @property {Record<string, unknown>} fields - Operation-specific fields.
- * @property {string[]} rationale - Why the operation was chosen.
- * @property {number} confidence - Confidence in `[0, 1]`.
- * @property {AIProviderId} providerId - The provider that routed it.
- */
-export interface RoutedOperation {
-  operation: CopilotOperation;
-  fields: Record<string, unknown>;
-  rationale: string[];
-  confidence: number;
-  providerId: AIProviderId;
-}
-
-/**
- * The inputs an operation router needs to choose an operation.
- * @interface OperationRoutingRequest
- * @property {string} goal - The user's natural-language goal.
- * @property {CopilotOperation | null} operation - A forced operation, or null.
- * @property {MediaFacts[]} files - Structured facts for the candidate files.
- * @property {ConversionProfile[]} profiles - Built-in profiles to choose from.
- * @property {EncoderCapabilities} capabilities - Detected encoders.
- */
-export interface OperationRoutingRequest {
-  goal: string;
-  operation: CopilotOperation | null;
-  files: MediaFacts[];
-  profiles: ConversionProfile[];
-  capabilities: EncoderCapabilities;
-}
 
 /**
  * Whether a string is one of the known operations.

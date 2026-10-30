@@ -7,20 +7,9 @@
 
 import { Typography } from '@mui/material';
 import { ViewStepsIndex, ViewStepsItem, ViewStepsList } from './styles';
+import type { ViewStep, ViewStepsProps } from './types';
 
-export interface ViewStep {
-  /** Primary text of the step (the tool and its id). */
-  primary: string;
-  /** Optional secondary text (dependencies, status, output). */
-  secondary?: string;
-}
-
-export interface ViewStepsProps {
-  /** Steps to render, in order. */
-  steps: ViewStep[];
-  /** Test hook for the host-rendering checks. */
-  testId?: string;
-}
+export type { ViewStep, ViewStepsProps };
 
 /**
  * Renders a numbered step list.

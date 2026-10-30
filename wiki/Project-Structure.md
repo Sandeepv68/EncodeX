@@ -41,7 +41,8 @@ src/
 │   │   ├── cli-compress.ts            # compress + extract-audio subcommands
 │   │   ├── cli-batch.ts               # batch subcommand (JobQueue + MultiBar)
 │   │   ├── cli-remux.ts               # remux subcommand (stream copy + tracks/chapters/sync)
-│   │   └── cli-demux.ts               # demux subcommand (per-stream extraction)
+│   │   ├── cli-demux.ts               # demux subcommand (per-stream extraction)
+│   │   └── types.ts                   # CLI flag and parameter shapes
 │   ├── ipc/                           # IPC handler modules (error-wrapped)
 │   │   ├── handlers.ts                # Central registration + error wrapper
 │   │   ├── dialogs.ts                 # select-file / select-files / select-folder-files / select-output / select-directory / expand-paths
@@ -66,19 +67,22 @@ src/
 │   │   ├── operation-router.ts        # Maps planned actions to engine operations
 │   │   ├── provider-registry.ts       # Provider registration / selection
 │   │   ├── settings.ts                # AI settings persistence + secret encryption
-│   │   └── settings-ipc.ts            # ai-settings-* / ai-connect-test / ai-models-list bridge
+│   │   ├── settings-ipc.ts            # ai-settings-* / ai-connect-test / ai-models-list bridge
+│   │   └── types.ts                   # AI provider, model and operation contracts
 │   ├── analytics/                     # Aptabase usage-analytics adapters
 │   │   ├── aptabaseMainProvider.ts    # Aptabase provider
 │   │   ├── consent.ts                 # userData analytics-consent.json load/save
 │   │   ├── ipcBridge.ts               # analytics-get-state / analytics-set-enabled handlers
-│   │   └── providerFactory.ts         # Provider selection
+│   │   ├── providerFactory.ts         # Provider selection
+│   │   └── types.ts                   # Analytics consent file shape
 │   ├── security/
 │   │   └── csp.ts                     # Content-Security-Policy headers
 │   ├── mcp/                           # Embedded MCP server (GUI mode)
 │   │   ├── http-server.ts             # Streamable HTTP transport (127.0.0.1, DNS-rebinding guard, bearer token)
 │   │   ├── gui-tools.ts               # 6 GUI-parity tools (queue state, preview, timeline, system info, updates)
 │   │   ├── settings.ts                # userData/mcp-settings.json persistence (BOM-tolerant, clamped)
-│   │   └── settings-ipc.ts            # mcp-settings-get / mcp-settings-set IPC bridge
+│   │   ├── settings-ipc.ts            # mcp-settings-get / mcp-settings-set IPC bridge
+│   │   └── types.ts                   # GUI-tool deps, HTTP server and local-client contracts
 │   ├── monitoring/                    # Error-monitoring adapters (main process)
 │   │   ├── types.ts                   # MonitorProvider contract for main
 │   │   ├── sentryMainProvider.ts      # Sentry adapter (crashes, tracing, profiler, ANR, screenshots)
@@ -91,10 +95,11 @@ src/
 │   ├── queue/
 │   │   ├── job-queue.ts               # Concurrency-capped batch queue (1-4 parallel jobs) with EventEmitter
 │   │   ├── persistence.ts             # Durable queue snapshot (queue-state.json) save/restore
-│   │   └── queue-transfer.ts          # Queue export/import (JSON) + validation
+│   │   ├── queue-transfer.ts          # Queue export/import (JSON) + validation
+│   │   └── types.ts                   # Queue snapshot, persistence and export shapes
 │   ├── timeline/
 │   │   └── timeline-media.ts          # Waveform + thumbnail-montage extraction
-│   └── transcoders/
+│   ├── transcoders/
 │       ├── types.ts                   # ITranscoder contract + raw ffprobe JSON shapes
 │       ├── factory.ts                 # Transcoder factory (FFMPEG | FFTOOL | BMF)
 │       ├── ffmpeg-core.ts             # fluent-ffmpeg API core
@@ -104,6 +109,7 @@ src/
 │       ├── ffmpeg-utils.ts            # Shared command/flag builders
 │       ├── ffprobe-mapper.ts          # ffprobe JSON -> MediaInfo normalization
 │       └── hwaccel.ts                 # Hardware-acceleration filter/flag resolution
+│   └── types.ts                       # Shared main-process types (CLI flags, updater, preview cache)
 ├── mcp/                               # Standalone MCP server (Node entry, shared with --mcp)
 │   ├── index.ts                       # Entry: stdio handshake, tool/resources/prompts registration
 │   ├── run.ts                         # Raw fd 0/1 stdio transport + server startup/shutdown
@@ -122,7 +128,7 @@ src/
 │   │   ├── registry.ts                # UI resource registry
 │   │   ├── resources.ts               # UI resource payloads
 │   │   ├── approval.ts                # User approval flow for MCP-initiated operations
-│   │   └── views/                     # 11 interactive MCP Apps views
+│   │   ├── views/                     # 11 interactive MCP Apps views
 │   │       ├── batch.ts               # Batch view
 │   │       ├── confirm.ts             # Confirmation view
 │   │       ├── convert.ts             # Conversion view
@@ -134,11 +140,15 @@ src/
 │   │       ├── plan.ts                # Plan review view
 │   │       ├── queue.ts               # Queue view
 │   │       └── workflow.ts            # Workflow view
-│   └── jobs/
+│   │   └── types.ts                   # MCP Apps view registry contracts
+│   ├── jobs/
 │       ├── manager.ts                 # In-memory async job manager (shared with GUI queue in embedded mode)
-│       └── task-store.ts              # Durable task store for MCP tasks
+│       ├── task-store.ts              # Durable task store for MCP tasks
+│   │   └── types.ts                   # Async job manager contracts
+│   └── types.ts                       # MCP tool request/response contracts
 ├── preload/
-│   └── index.ts                       # contextBridge exposes electronAPI to renderer
+│   ├── index.ts                       # contextBridge exposes electronAPI to renderer
+│   └── types.ts                       # Preload drop-log payload types
 ├── renderer/                          # React UI (served by Vite, root: src/renderer)
 │   ├── main.tsx                       # React entry: monitoring bootstrap + HashRouter + DirectionProvider + I18nextProvider
 │   ├── App.tsx                        # Root layout: TitleBar, Drawer, routes, snackbar, toasts
@@ -150,21 +160,31 @@ src/
 │   ├── electron-api.d.ts              # Global Window.electronAPI type declaration
 │   ├── monitoring/
 │   │   ├── sentryRendererProvider.ts  # Renderer Sentry adapter (events flow to main; DSN never in bundle)
-│   │   └── providerFactory.ts         # Renderer provider selection (queries consent from main)
+│   │   ├── providerFactory.ts         # Renderer provider selection (queries consent from main)
+│   │   └── types.ts                   # Monitoring renderer provider contracts
 │   ├── analytics/
 │   │   ├── aptabaseRendererProvider.ts # Renderer Aptabase adapter (events flow to main)
-│   │   └── providerFactory.ts          # Renderer provider selection
+│   │   ├── providerFactory.ts          # Renderer provider selection
+│   │   └── types.ts                    # Analytics renderer provider contracts
 │   ├── dev/
 │   │   └── useDevScreenshot.ts        # Dev-only window screenshot capture
 │   ├── components/                    # Shared UI components (60 modules: 48 top-level + copilot/ and settings/ subfolders) <!-- drift:renderer-components=60 --> <!-- drift:renderer-components-top=47 -->
+│   │   └── types.ts                   # Shared component prop shapes
 │   ├── constants/
-│   │   └── shortcuts.ts               # 71 keyboard shortcuts registry (11 sections) + tooltip hints <!-- drift:shortcuts=71 --> <!-- drift:shortcut-sections=11 -->
+│   │   ├── shortcuts.ts               # 71 keyboard shortcuts registry (11 sections) + tooltip hints <!-- drift:shortcuts=71 --> <!-- drift:shortcut-sections=11 -->
+│   │   └── types.ts                   # Shortcut and hotkey contracts
 │   ├── hooks/                         # useConversion, useErrorHandler, useFormErrors, useMediaTask, useCapabilities, useHotkeys, useFieldId
+│   │   └── types.ts                   # Codec option + progress subset types
 │   ├── i18n/                          # i18next config, RTL provider, 56 locales (36 base language subtags) <!-- drift:locales=56 --> <!-- drift:locale-subtags=36 -->
+│   │   └── types.ts                   # Locale metadata + flag component types
 │   ├── pages/                         # 13 code-split page components (Convert, Remux, Demux, Copilot, BatchQueue, Dashboard, MediaInfo, ImageCompress, AudioExtract, VideoCut, Settings, Logs, About) <!-- drift:renderer-pages=13 -->
+│   │   └── types.ts                   # Page-level prop and view-model types
 │   ├── stores/                        # 20 Zustand stores (queue, conversion, settings, profile, terms, batchConfig, audioExtract, videoCut, logs, errors, toasts, update, task, dismissedAlerts, aiSettings, aiConnection, audit, copilotChats, remux, demux) <!-- drift:renderer-stores=20 -->
-│   ├── styles/                        # Extracted MUI style constants per component (57 modules + Copilot/Settings subfolders) <!-- drift:renderer-styles=57 -->
-│   └── utils/                         # formatters, preview cache helpers, easter egg dates, batch options
+│   │   └── types.ts                   # Zustand store state shapes + actions
+│   ├── styles/                        # Extracted MUI style constants per component (71 modules + Copilot/Settings subfolders) <!-- drift:renderer-styles=71 -->
+│   ├── utils/                         # formatters, preview cache helpers, easter egg dates, batch options
+│   │   └── types.ts                   # Shared renderer utility types
+│   └── types.ts                       # Color mode / theme context types
 └── shared/                            # Code shared between processes
     ├── app-constants.ts               # App-wide constants
     ├── constants.ts                   # Numeric/string constants
@@ -228,7 +248,8 @@ src/
     ├── profiles/                      # Conversion profiles
     │   ├── builtin.ts                 # 115 built-in profiles across 8 categories <!-- drift:builtin-profiles=115 --> <!-- drift:profile-categories=8 -->
     │   ├── categories.ts              # Profile category metadata (web-social, devices, video, professional, streaming, audio, images, advanced)
-    │   └── index.ts                   # Profile types + helpers
+    │   ├── index.ts                   # Profile types + helpers
+    │   └── types.ts                   # Profile category metadata types
     ├── monitoring/                    # Provider-agnostic monitoring facade
     │   ├── types.ts                   # MonitorProvider contract ("port")
     │   ├── MonitoringService.ts       # Facade singleton (initMonitoring / captureException / …)

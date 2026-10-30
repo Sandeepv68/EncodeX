@@ -152,3 +152,11 @@ export interface ProbeData {
   streams?: ProbeStream[];
   format?: ProbeFormat;
 }
+
+/**
+ * The slice of a spawned child process the FFmpeg backend relies on.
+ */
+export interface ChildProcessLike {
+  pid?: number;
+  kill(signal?: string): boolean;
+}

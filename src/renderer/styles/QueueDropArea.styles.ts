@@ -26,10 +26,15 @@ export const ContentLayer = styled(Box)({
 });
 
 /** Solid accent line marking the current insertion gap. @const DropIndicator */
-export const DropIndicator = styled(Box)(({ theme }) => ({
+export const DropIndicator = styled(Box, {
+  shouldForwardProp: (prop) => prop !== '$top',
+})<{ $top: number }>(({ theme, $top }) => ({
   position: 'absolute',
   zIndex: 2,
   insetInline: 0,
+  // Pixel offset of the insertion gap; kept in raw pixels so the line lands on
+  // the exact gap position computed from the dragged card's rect.
+  top: $top,
   height: INDICATOR_HEIGHT,
   backgroundColor: theme.palette.primary.main,
   borderRadius: INDICATOR_HEIGHT / 2,

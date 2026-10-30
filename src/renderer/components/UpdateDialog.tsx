@@ -15,24 +15,23 @@
  */
 
 import { useTranslation } from 'react-i18next';
-import {
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  LinearProgress,
-  Link,
-  Typography,
-} from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { faArrowUp, faDownload, faXmark, faCircleCheck, faStopwatch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useUpdateStore } from '../stores/updateStore';
 import { formatBytes } from '../utils/formatters';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
-import { UpdateDialogContent, UpdateVersionText, UpdateReleaseNotes, UpdateStatusMessage } from '../styles/UpdateDialog.styles';
+import {
+  UpdateCheckingSpinner,
+  UpdateDialogContent,
+  UpdateProgressBar,
+  UpdateProgressText,
+  UpdateReleaseNotes,
+  UpdateReleaseNotesLink,
+  UpdateStatusMessage,
+  UpdateVersionText,
+} from '../styles/UpdateDialog.styles';
 
 /**
  * Renders the update dialog.
@@ -81,7 +80,7 @@ export default function UpdateDialog() {
         <UpdateDialogContent>
           {status === 'idle' || status === 'checking' ? (
             <UpdateStatusMessage>
-              <CircularProgress size={24} sx={{ mr: 1, verticalAlign: 'middle' }} aria-label={t('update.checking')} />
+              <UpdateCheckingSpinner size={24} aria-label={t('update.checking')} />
               {t('update.checking')}
             </UpdateStatusMessage>
           ) : status === 'not-available' ? (
@@ -91,25 +90,24 @@ export default function UpdateDialog() {
               <Typography variant="body1">{t('update.newVersionAvailable')}</Typography>
               <UpdateVersionText variant="h6">v{info.version}</UpdateVersionText>
               {info.releaseNotes && <UpdateReleaseNotes>{info.releaseNotes}</UpdateReleaseNotes>}
-              <Link
+              <UpdateReleaseNotesLink
                 component="button"
                 variant="body2"
                 underline="hover"
                 onClick={() => openReleaseNotes(info.releaseUrl)}
-                sx={{ alignSelf: 'flex-start' }}
               >
                 {t('update.viewReleaseNotes')}
-              </Link>
+              </UpdateReleaseNotesLink>
             </>
           ) : status === 'downloading' ? (
             <>
               <Typography variant="body1">{t('update.downloading')}</Typography>
               {progress && (
                 <>
-                  <LinearProgress variant="determinate" value={progress.percent} sx={{ height: 8, borderRadius: 4 }} />
-                  <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
+                  <UpdateProgressBar variant="determinate" value={progress.percent} />
+                  <UpdateProgressText variant="body2" color="text.secondary">
                     {progress.percent}% — {formatBytes(progress.transferred)} / {formatBytes(progress.total)}
-                  </Typography>
+                  </UpdateProgressText>
                 </>
               )}
               <UpdateStatusMessage>{t('update.downloadInBackground')}</UpdateStatusMessage>

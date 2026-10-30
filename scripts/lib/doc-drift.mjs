@@ -175,7 +175,7 @@ export function computeFacts(root) {
     'cli-subcommands': countArray(root, 'src/shared/constants.ts', 'CLI_SUBCOMMANDS'),
     'e2e-specs': listFiles(root, 'e2e/specs', (n) => n.endsWith('.spec.ts')).length,
     'video-filter-presets': countArray(root, 'src/shared/video-filters.ts', 'FILTER_PRESETS'),
-    'copilot-operations': countUnion(root, 'src/shared/copilot.ts', 'CopilotOperation'),
+    'copilot-operations': countUnion(root, 'src/shared/types.ts', 'CopilotOperation'),
   };
 }
 

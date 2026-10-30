@@ -7,48 +7,9 @@
 
 import { normalizeSegmentText } from './transcript';
 import { tokenize } from './text';
-import type { TranscriptSegment } from './transcript';
+import type { TranscriptMatch, TranscriptSearchOptions, TranscriptSearchResult, TranscriptSegment } from './types';
 
-/**
- * One matched segment.
- * @interface TranscriptMatch
- * @property {number} start - Start offset in seconds.
- * @property {number} end - End offset in seconds.
- * @property {string} text - The segment text.
- * @property {number} score - Relevance score in `(0, 1]`.
- */
-export interface TranscriptMatch {
-  start: number;
-  end: number;
-  text: string;
-  score: number;
-}
-
-/**
- * The result of a transcript search.
- * @interface TranscriptSearchResult
- * @property {string} query - The original query.
- * @property {TranscriptMatch[]} matches - Ranked matches (best first).
- * @property {{ start: number; end: number }} [bestRange] - Span covering the best passage.
- */
-export interface TranscriptSearchResult {
-  query: string;
-  matches: TranscriptMatch[];
-  bestRange?: { start: number; end: number };
-}
-
-/**
- * Options for {@link searchTranscript}.
- * @interface TranscriptSearchOptions
- * @property {number} [maxMatches] - Maximum matches to return (default 10).
- * @property {number} [minScore] - Discard matches below this score (default 0.34).
- * @property {number} [context] - Extend `bestRange` by this many seconds on each side (default 0).
- */
-export interface TranscriptSearchOptions {
-  maxMatches?: number;
-  minScore?: number;
-  context?: number;
-}
+export type { TranscriptMatch, TranscriptSearchOptions, TranscriptSearchResult };
 
 /**
  * Scores one segment against a query's content tokens.

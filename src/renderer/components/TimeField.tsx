@@ -17,10 +17,11 @@
  *  - onBlur: optional blur handler for validation.
  */
 
-import { TextField, InputAdornment } from '@mui/material';
+import { InputAdornment } from '@mui/material';
 import { faClock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import FormField from './FormField';
+import { TimeInputField } from '../styles/TimeField.styles';
 import type { TimeFieldProps } from './types';
 
 /**
@@ -60,7 +61,7 @@ export default function TimeField({
   return (
     <FormField label={label} hint={hint} required={required} error={error} helperText={formatHint ?? ' '} testId={testId}>
       {(id) => (
-        <TextField
+        <TimeInputField
           id={id}
           fullWidth
           size="small"
@@ -71,7 +72,7 @@ export default function TimeField({
           onChange={(e) => onChange(e.target.value)}
           onBlur={onBlur}
           slotProps={{
-            htmlInput: { sx: { fontFamily: 'monospace' }, ...(required ? { 'aria-required': 'true' } : {}) },
+            htmlInput: required ? { 'aria-required': 'true' } : {},
             input: {
               startAdornment: (
                 <InputAdornment position="start">

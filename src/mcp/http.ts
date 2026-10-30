@@ -39,9 +39,9 @@ import { APP_NAME } from '../shared/app-constants';
 import { createMcpServer } from './server';
 import { MCPJobManager } from './jobs/manager';
 import { createTranscoder } from '../main/transcoders/factory';
-import type { ITranscoder } from '../main/transcoders/types';
-import type { TranscoderType } from '../shared/types';
-import type { McpServer } from '@modelcontextprotocol/server';
+import type { McpHttpServerOptions, SessionRecord } from './types';
+
+export type { McpHttpServerOptions } from './types';
 
 const log = new Logger('mcp/http');
 
@@ -69,39 +69,6 @@ export const MCP_HTTP_LOOPBACK_HOSTNAMES: ReadonlySet<string> = new Set(['127.0.
 
 /** Query-string parameter names that are refused because a token must never ride there. */
 const FORBIDDEN_QUERY_PARAMS = ['access_token', 'token', 'auth', 'authorization'] as const;
-
-/**
- * Configuration for the MCP HTTP listener.
- * @interface McpHttpServerOptions
- * @property {string} [name] - Server name advertised in the MCP handshake.
- * @property {string} [version] - Server version advertised in the handshake.
- * @property {function(TranscoderType): ITranscoder} [transcoderFactory] - Test seam; defaults to the shared factory.
- * @property {MCPJobManager} [jobManager] - Shared job manager used by every session (test seam).
- * @property {string} [basePath] - URL path the listener is mounted at (default {@link MCP_HTTP_DEFAULT_PATH}).
- * @property {string} [host] - Bind host; anything outside {@link MCP_HTTP_LOOPBACK_HOSTNAMES} is refused.
- * @property {number} [port] - Port for `runMcpHttpServer`; 0 picks an ephemeral port.
- * @property {string} [bearerToken] - When set, every request must authenticate with it.
- * @property {number} [maxBodyBytes] - Request body cap (default 10 MB).
- * @property {number} [maxSessions] - Session table cap (default 64).
- */
-export interface McpHttpServerOptions {
-  name?: string;
-  version?: string;
-  transcoderFactory?: (type: TranscoderType) => ITranscoder;
-  jobManager?: MCPJobManager;
-  basePath?: string;
-  host?: string;
-  port?: number;
-  bearerToken?: string;
-  maxBodyBytes?: number;
-  maxSessions?: number;
-}
-
-/** One open MCP session: its transport plus the McpServer bound to it. */
-interface SessionRecord {
-  transport: NodeStreamableHTTPServerTransport;
-  server: McpServer;
-}
 
 /** Refuses any host that could expose the server beyond the local machine. */
 export function assertLoopbackBind(host: string): void {

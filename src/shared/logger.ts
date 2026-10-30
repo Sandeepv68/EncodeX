@@ -6,6 +6,10 @@
  * environment variable, defaulting to DEBUG.
  */
 
+import type { LoggerLogLevel, LoggerRecordSink } from './types';
+
+export type { LoggerLogLevel, LoggerRecordSink } from './types';
+
 /**
  * Log severity levels for filtering output. Higher values are more severe.
  * @enum {number} LogLevel
@@ -112,25 +116,6 @@ function sanitizeLogArgs(args: unknown[]): string[] {
  * @const {LogLevel} currentLevel
  */
 const currentLevel = getLogLevel();
-
-/**
- * Severity label of a log record handed to the registered sink. Mirrors the
- * {@link LogLevel} enum as serializable strings suitable for process
- * boundaries and backend severity scales.
- * @typedef {('debug' | 'info' | 'warn' | 'error')} LoggerLogLevel
- */
-export type LoggerLogLevel = 'debug' | 'info' | 'warn' | 'error';
-
-/**
- * Consumer of log records for external reporting. Installed by the monitoring
- * facade at module load; the Logger itself stays dependency-free. Receives
- * every record regardless of the configured minimum console level so telemetry
- * verbosity stays independent of console verbosity.
- * @param {LoggerLogLevel} level - Severity label of the record.
- * @param {string} context - The logging subsystem label ('main/index', ...).
- * @param {unknown[]} args - Raw arguments passed to the Logger method.
- */
-export type LoggerRecordSink = (level: LoggerLogLevel, context: string, args: unknown[]) => void;
 
 /**
  * Active record sink, or null until a reporter registers. @type {LoggerRecordSink | null}

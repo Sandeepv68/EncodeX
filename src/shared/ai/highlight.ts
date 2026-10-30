@@ -13,91 +13,11 @@
  * than returning nothing.
  */
 
+import type { FrameAnalysisOptions, HighlightReport, HighlightSpan, SampledFrame, SceneBoundary, ThumbnailCandidate } from './types';
+
 import { hammingDistance, hashBitCount } from './similarity';
 
-/**
- * One sampled frame: a seek offset and, when decodable, its perceptual hash.
- * @interface SampledFrame
- * @property {number} atSeconds - Offset of the frame in the media.
- * @property {string} [hash] - Hex perceptual hash, when the frame was sampled.
- */
-export interface SampledFrame {
-  atSeconds: number;
-  hash?: string;
-}
-
-/**
- * A detected scene change: the offset where a new scene begins.
- * @interface SceneBoundary
- * @property {number} atSeconds - Boundary offset in seconds.
- * @property {number} change - Normalized change magnitude in `[0, 1]`.
- */
-export interface SceneBoundary {
-  atSeconds: number;
-  change: number;
-}
-
-/**
- * A suggested highlight span.
- * @interface HighlightSpan
- * @property {number} start - Start offset in seconds.
- * @property {number} end - End offset in seconds.
- * @property {number} score - Relative interestingness in `[0, 1]`.
- * @property {string} reason - Why the span was picked.
- */
-export interface HighlightSpan {
-  start: number;
-  end: number;
-  score: number;
-  reason: string;
-}
-
-/**
- * A suggested thumbnail frame.
- * @interface ThumbnailCandidate
- * @property {number} atSeconds - Frame offset in seconds.
- * @property {number} score - Distinctiveness in `[0, 1]`.
- * @property {string} reason - Why the frame was picked.
- */
-export interface ThumbnailCandidate {
-  atSeconds: number;
-  score: number;
-  reason: string;
-}
-
-/**
- * The full frame analysis.
- * @interface HighlightReport
- * @property {'hash' | 'time'} method - Whether frame hashes drove the result.
- * @property {number} framesSampled - Number of frames with a usable hash.
- * @property {SceneBoundary[]} scenes - Detected scene boundaries (by time).
- * @property {HighlightSpan[]} highlights - Ranked highlight spans (by time).
- * @property {ThumbnailCandidate[]} thumbnails - Suggested thumbnail frames.
- * @property {string[]} notes - Caveats for the caller.
- */
-export interface HighlightReport {
-  method: 'hash' | 'time';
-  framesSampled: number;
-  scenes: SceneBoundary[];
-  highlights: HighlightSpan[];
-  thumbnails: ThumbnailCandidate[];
-  notes: string[];
-}
-
-/**
- * Tuning for {@link analyzeFrames}.
- * @interface FrameAnalysisOptions
- * @property {number} [durationSeconds] - Media duration; defaults to the last frame.
- * @property {number} [sceneThreshold] - Change fraction that opens a scene (default 0.15).
- * @property {number} [maxHighlights] - Maximum highlight spans (default 5).
- * @property {number} [maxThumbnails] - Maximum thumbnail frames (default 6).
- */
-export interface FrameAnalysisOptions {
-  durationSeconds?: number;
-  sceneThreshold?: number;
-  maxHighlights?: number;
-  maxThumbnails?: number;
-}
+export type { FrameAnalysisOptions, HighlightReport, HighlightSpan, SampledFrame, SceneBoundary, ThumbnailCandidate };
 
 /** Normalized change between two hashes: differing bits over total bits. */
 function normalizedDistance(a: string, b: string): number {

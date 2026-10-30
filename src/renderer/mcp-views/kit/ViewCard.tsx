@@ -7,19 +7,10 @@
  * of the app.
  */
 
-import type { ReactNode } from 'react';
 import { ViewCardHeader, ViewCardRoot, ViewCardTitle } from './styles';
+import type { ViewCardProps } from './types';
 
-export interface ViewCardProps {
-  /** Card heading. Rendered as a truncated single line. */
-  title?: ReactNode;
-  /** Controls rendered on the trailing edge of the header. */
-  actions?: ReactNode;
-  /** Card body. */
-  children: ReactNode;
-  /** Test hook for the host-rendering checks. */
-  testId?: string;
-}
+export type { ViewCardProps };
 
 /**
  * Renders a titled card.

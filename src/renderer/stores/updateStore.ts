@@ -18,62 +18,12 @@
  */
 
 import { create } from 'zustand';
-import type { UpdateInfo, UpdateProgress } from '../../shared/types';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { callBridgeVoid, fireAndForgetBridge } from '../utils/bridge-call';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
+import type { UpdateState, UpdateStatus } from './types';
 
-/**
- * Possible states of the update manager UI flow.
- * @typedef {string} UpdateStatus
- */
-export type UpdateStatus =
-  'idle' | 'checking' | 'available' | 'not-available' | 'downloading' | 'downloaded' | 'restart-scheduled' | 'error';
-
-/**
- * State of the update store.
- * @interface UpdateState
- * @property {UpdateStatus} status - Current update lifecycle state.
- * @property {UpdateInfo | null} info - Available update metadata, or null.
- * @property {UpdateProgress | null} progress - Live download progress, or null.
- * @property {string | null} installerPath - Path to the downloaded installer, or null.
- * @property {string | null} scheduledVersion - Version scheduled for next-restart install, or null.
- * @property {boolean} restartScheduled - Whether a next-restart install is armed.
- * @property {string | null} errorMessage - Error message when status is 'error', or null.
- * @property {boolean} dialogOpen - Whether the update dialog is visible.
- * @property {() => void} checkForUpdates - Triggers an update check via IPC.
- * @property {() => void} downloadUpdate - Starts downloading the matched asset.
- * @property {() => void} cancelDownload - Cancels an in-progress download.
- * @property {() => void} installUpdate - Launches the downloaded installer.
- * @property {() => void} installOnRestart - Arms a next-restart install via IPC.
- * @property {() => void} cancelRestartInstall - Disarms a next-restart install via IPC.
- * @property {(url: string) => void} openReleaseNotes - Opens the release page in the browser.
- * @property {() => void} openDialog - Shows the update dialog.
- * @property {() => void} closeDialog - Hides the update dialog.
- * @property {() => void} hydratePendingInstall - Restores an armed next-restart install from the persisted marker.
- * @property {() => void} reset - Resets the store to idle state.
- */
-export interface UpdateState {
-  status: UpdateStatus;
-  info: UpdateInfo | null;
-  progress: UpdateProgress | null;
-  installerPath: string | null;
-  scheduledVersion: string | null;
-  restartScheduled: boolean;
-  errorMessage: string | null;
-  dialogOpen: boolean;
-  checkForUpdates: () => void;
-  downloadUpdate: () => void;
-  cancelDownload: () => void;
-  installUpdate: () => void;
-  installOnRestart: () => void;
-  cancelRestartInstall: () => void;
-  openReleaseNotes: (url: string) => void;
-  openDialog: () => void;
-  closeDialog: () => void;
-  hydratePendingInstall: () => void;
-  reset: () => void;
-}
+export type { UpdateState, UpdateStatus };
 
 /**
  * Zustand store for the update manager.

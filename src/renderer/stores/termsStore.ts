@@ -33,21 +33,11 @@ import { TERMS_VERSION } from '../../shared/terms';
 import { TERMS_ACCEPTED_STORAGE_KEY } from '../../shared/constants';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
+import type { AcceptedTermsRecord, TermsState } from './types';
 
 const STORAGE_KEY = TERMS_ACCEPTED_STORAGE_KEY;
 
 const log = new Logger('renderer/stores/termsStore');
-
-/**
- * A persisted acceptance record: which terms version was accepted and when.
- * @interface AcceptedTermsRecord
- * @property {string} version - The accepted TERMS_VERSION.
- * @property {string} acceptedAt - ISO timestamp of the acceptance.
- */
-interface AcceptedTermsRecord {
-  version: string;
-  acceptedAt: string;
-}
 
 /**
  * Reads and validates the persisted acceptance record from localStorage.
@@ -76,36 +66,6 @@ function loadAcceptedRecord(): AcceptedTermsRecord | null {
  */
 function saveAcceptedRecord(record: AcceptedTermsRecord): void {
   saveJson(STORAGE_KEY, record, (err) => log.warn('Failed to persist accepted terms record to localStorage', err));
-}
-
-/**
- * Dialog behaviour modes: 'accept' is the blocking startup gate (Accept/Reject,
- * no dismissal); 'view' is the read-only About page viewer (Close only).
- * @type {'accept' | 'view'}
- */
-
-/**
- * Terms gate store type.
- * @interface TermsState
- * @property {string | null} acceptedVersion - Version of the terms the user accepted.
- * @property {boolean} requiresAcceptance - True while the stored version !== TERMS_VERSION.
- * @property {boolean} dialogOpen - Whether the TermsDialog is visible.
- * @property {'accept' | 'view'} mode - Dialog behaviour mode.
- * @property {() => void} accept - Records acceptance of the current terms and closes the dialog.
- * @property {() => void} rejectTerms - Asks the main process to quit the app.
- * @property {() => void} openViewer - Opens the dialog in read-only view mode.
- * @property {() => void} closeDialog - Closes the dialog (view mode only).
- */
-interface TermsState {
-  acceptedVersion: string | null;
-  acceptedAt: string | null;
-  requiresAcceptance: boolean;
-  dialogOpen: boolean;
-  mode: 'accept' | 'view';
-  accept: () => void;
-  rejectTerms: () => void;
-  openViewer: () => void;
-  closeDialog: () => void;
 }
 
 const acceptedRecord = loadAcceptedRecord();

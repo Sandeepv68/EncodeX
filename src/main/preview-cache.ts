@@ -34,23 +34,12 @@ import {
   LOG_PREVIEW_CACHE_STAT_MISMATCH,
   LOG_PREVIEW_CACHE_WRITE_FAILED,
 } from '../shared/log-constants';
+import type { PreviewCacheEntry } from './types';
+
+export type { PreviewCacheEntry };
 
 /** Directory name of the preview cache inside the user-data directory. */
 export const PREVIEW_CACHE_DIRNAME = 'previews';
-
-/**
- * On-disk shape of one cached preview.
- * @interface PreviewCacheEntry
- * @property {number} size - Byte size of the source file when generated.
- * @property {number} mtimeMs - Modification time (integer milliseconds) of the
- *   source file when generated; used together with {@link size} to detect edits.
- * @property {string} dataUrl - The generated base64 data URL.
- */
-export interface PreviewCacheEntry {
-  size: number;
-  mtimeMs: number;
-  dataUrl: string;
-}
 
 /**
  * Disk-persisted cache for media preview thumbnails.

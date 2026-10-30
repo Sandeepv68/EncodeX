@@ -7,35 +7,9 @@
 
 import { contentTokens, splitSentences, wordFrequencies } from './text';
 import { transcriptWordCount } from './transcript';
-import type { Transcript } from './transcript';
+import type { SummaryOptions, Transcript, TranscriptSummary } from './types';
 
-/**
- * An extractive summary of a transcript.
- * @interface TranscriptSummary
- * @property {string[]} summary - Selected sentences, in original order.
- * @property {string[]} topics - Most salient keywords.
- * @property {number} wordCount - Total words in the source transcript.
- * @property {number} durationSeconds - Source duration.
- * @property {number} sentenceCount - Number of candidate sentences considered.
- */
-export interface TranscriptSummary {
-  summary: string[];
-  topics: string[];
-  wordCount: number;
-  durationSeconds: number;
-  sentenceCount: number;
-}
-
-/**
- * Tuning for {@link summarizeTranscript}.
- * @interface SummaryOptions
- * @property {number} [maxSentences] - Summary length in sentences (default 5).
- * @property {number} [maxTopics] - Number of topics to report (default 8).
- */
-export interface SummaryOptions {
-  maxSentences?: number;
-  maxTopics?: number;
-}
+export type { SummaryOptions, TranscriptSummary };
 
 /**
  * Builds an extractive summary from a transcript.

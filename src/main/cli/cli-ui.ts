@@ -20,23 +20,12 @@
 import chalk from 'chalk';
 import ora, { Ora } from 'ora';
 import cliProgress from 'cli-progress';
-import { CliThemeId } from '../cli-logo';
+import type { CliThemeId } from '../cli-logo';
 import { setConsoleErrorStacksIncluded } from '../../shared/logger';
+import type { CliOutputConfig, ThemeChalk } from './types';
 
-/**
- * Mutable output configuration shared across CLI subcommands. Set once argument
- * parsing completes.
- * @interface CliOutputConfig
- * @property {boolean} quiet - When true, suppress all non-error status output.
- * @property {boolean} verbose - When true, allow debug-level status output.
- * @property {boolean} machine - When true, status lines route to stderr so
- *   stdout stays reserved for data (JSON).
- */
-export interface CliOutputConfig {
-  quiet: boolean;
-  verbose: boolean;
-  machine: boolean;
-}
+export type { CliOutputConfig, ThemeChalk };
+export type { BarPayload } from './types';
 
 /**
  * The current CLI output configuration. Defaults to interactive, non-quiet,
@@ -83,17 +72,6 @@ export const interactive = Boolean(process.stdout.isTTY) && !process.env.CI;
  */
 export function setColor(enabled: boolean): void {
   chalk.level = enabled && !process.env.NO_COLOR ? 1 : 0;
-}
-
-/**
- * Theme-aware chalk accessors derived from the selected CLI theme palette.
- * @interface ThemeChalk
- * @property {(s: string) => string} primary - The theme's primary accent color.
- * @property {(s: string) => string} secondary - The theme's secondary accent color.
- */
-export interface ThemeChalk {
-  primary: (s: string) => string;
-  secondary: (s: string) => string;
 }
 
 /**
@@ -243,26 +221,6 @@ function barFormatter(
     const bitrate = chalk.dim(String(payload.bitrate ?? ''));
     return `${prefix}${bar} ${String(percent).padStart(3)}% ${time} ${speed} ${fps}fps eta ${eta}s ${bitrate}`;
   };
-}
-
-/**
- * Progress payload accepted by the bar update methods. Mirrors
- * {@link ConversionProgress} plus an optional batch label.
- * @interface BarPayload
- * @property {string} [label] - Batch job label shown before the bar.
- * @property {string} [time] - Current output timestamp.
- * @property {string} [speed] - Speed relative to realtime.
- * @property {number} [fps] - Encoding frames per second.
- * @property {string} [eta] - Estimated remaining seconds.
- * @property {string} [bitrate] - Current encoding bitrate.
- */
-export interface BarPayload {
-  label?: string;
-  time?: string;
-  speed?: string;
-  fps?: number;
-  eta?: string;
-  bitrate?: string;
 }
 
 /**

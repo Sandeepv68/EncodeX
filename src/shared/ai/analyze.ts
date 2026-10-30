@@ -8,15 +8,11 @@
  */
 
 import type { MediaInfo } from '../types';
-import type { AnalysisFinding, MediaAnalysis, MediaFacts } from './types';
+import type { AnalysisFinding, AnalysisFocus, MediaAnalysis, MediaFacts } from './types';
 import { extractMediaFacts } from './media-facts';
 import { formatBytesHuman } from './units';
 
-/**
- * Which lens the analysis is framed through.
- * @typedef {('compat' | 'quality' | 'size')} AnalysisFocus
- */
-export type AnalysisFocus = 'compat' | 'quality' | 'size';
+export type { AnalysisFocus };
 
 /** Codecs that need a re-encode to play broadly. */
 const NON_BROAD_VIDEO_CODECS: Record<string, string> = {

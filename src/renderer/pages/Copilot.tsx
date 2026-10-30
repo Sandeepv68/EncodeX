@@ -15,7 +15,7 @@
 
 import { useEffect, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import {
   deleteCopilotChat,
   deriveCopilotChatTitle,
@@ -28,14 +28,21 @@ import { useNavigationGuard } from '../NavigationGuardContext';
 import PageContainer from '../components/PageContainer';
 import { bridgePromise, withBridgeTimeout } from '../utils/bridge-call';
 import { useToastStore } from '../stores/toastStore';
-import { SHADOWS } from '../../shared/theme/colors';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
 import type { CopilotOperationChoice, CopilotPlan } from '../../shared/copilot';
 import { formatError } from '../../shared/errors';
 import Conversation, { type ConversationMessage } from '../components/copilot/Conversation';
 import ChatComposer from '../components/copilot/ChatComposer';
 import { activeConnectionOf, useAiConnectionStore } from '../stores/aiConnectionStore';
-import { visuallyHidden } from '../utils/a11y';
+import { VisuallyHidden } from '../styles/a11y.styles';
+import {
+  CopilotAlert,
+  CopilotAlertWrapper,
+  CopilotConversationColumn,
+  CopilotGlowLayer,
+  CopilotGlowOrb,
+  CopilotPage,
+} from '../styles/Copilot.styles';
 
 /** How long the plan request may take before the page shows a failure. */
 const PLAN_TIMEOUT_MS = 60_000;
@@ -376,22 +383,15 @@ export default function Copilot() {
         container is a positioning context for the panel, which overlays and slides
         over the conversation instead of resizing it.
       */}
-      <Box
-        sx={(theme) => ({
-          position: 'relative',
-          display: 'flex',
-          flexDirection: 'row',
-          flex: 1,
-          minHeight: 0,
-          overflow: 'hidden',
-          marginInline: theme.spacing(-2),
-          marginTop: theme.spacing(-2),
-          [theme.breakpoints.up('sm')]: {
-            marginInline: theme.spacing(-3),
-            marginTop: theme.spacing(-3),
-          },
-        })}
-      >
+      <CopilotPage>
+        <CopilotGlowLayer className="copilot-page-glow">
+          <CopilotGlowOrb $variant={1} $duration={44} $delay="0s" $size="40vw" $max={680} $min={420} $left="10%" $top="15%" />
+          <CopilotGlowOrb $variant={2} $duration={52} $delay="-9s" $size="38vw" $max={640} $min={380} $left="50%" $top="5%" />
+          <CopilotGlowOrb $variant={3} $duration={62} $delay="-17s" $size="36vw" $max={600} $min={360} $left="20%" $bottom="10%" />
+          <CopilotGlowOrb $variant={4} $duration={56} $delay="-25s" $size="32vw" $max={560} $min={340} $right="15%" $bottom="25%" />
+          <CopilotGlowOrb $variant={5} $duration={70} $delay="-33s" $size="28vw" $max={500} $min={300} $left="65%" $top="45%" />
+          <CopilotGlowOrb $variant={6} $duration={64} $delay="-41s" $size="26vw" $max={460} $min={280} $left="35%" $top="60%" />
+        </CopilotGlowLayer>
         <SavedChatsDrawer
           open={savedChatsOpen}
           chats={savedChats}
@@ -399,25 +399,8 @@ export default function Copilot() {
           onOpen={handleOpenChat}
           onDelete={handleDeleteChat}
         />
-        <Box
-          sx={(theme) => ({
-            display: 'flex',
-            flexDirection: 'column',
-            flex: 1,
-            minWidth: 0,
-            minHeight: 0,
-            justifyContent: hasActiveChat ? 'flex-start' : 'center',
-            paddingInline: theme.spacing(2),
-            paddingTop: theme.spacing(2),
-            paddingBottom: theme.spacing(2),
-            [theme.breakpoints.up('sm')]: {
-              paddingInline: theme.spacing(3),
-              paddingTop: theme.spacing(3),
-              paddingBottom: theme.spacing(3),
-            },
-          })}
-        >
-          <h1 style={visuallyHidden}>{t('nav.copilot')}</h1>
+        <CopilotConversationColumn $hasChat={hasActiveChat}>
+          <VisuallyHidden as="h1">{t('nav.copilot')}</VisuallyHidden>
           <Dialog
             open={pendingChat !== null}
             onClose={() => setPendingChat(null)}
@@ -441,32 +424,18 @@ export default function Copilot() {
             </DialogActions>
           </Dialog>
           {globalError && (
-            <Box sx={{ paddingInline: 2, paddingTop: 2, paddingBottom: 2 }}>
-              <Alert
-                severity="error"
-                data-testid="copilot-error"
-                sx={{
-                  boxShadow: (theme) => (theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT),
-                  '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
-                }}
-              >
+            <CopilotAlertWrapper>
+              <CopilotAlert severity="error" data-testid="copilot-error">
                 {globalError}
-              </Alert>
-            </Box>
+              </CopilotAlert>
+            </CopilotAlertWrapper>
           )}
           {notice && (
-            <Box sx={{ paddingInline: 2, paddingTop: 2, paddingBottom: 2 }}>
-              <Alert
-                severity="info"
-                data-testid="copilot-notice"
-                sx={{
-                  boxShadow: (theme) => (theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT),
-                  '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
-                }}
-              >
+            <CopilotAlertWrapper>
+              <CopilotAlert severity="info" data-testid="copilot-notice">
                 {notice}
-              </Alert>
-            </Box>
+              </CopilotAlert>
+            </CopilotAlertWrapper>
           )}
           <Conversation
             messages={messages}
@@ -515,8 +484,8 @@ export default function Copilot() {
             }}
             inputsLoading={inputsLoading}
           />
-        </Box>
-      </Box>
+        </CopilotConversationColumn>
+      </CopilotPage>
     </PageContainer>
   );
 }

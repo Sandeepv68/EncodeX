@@ -2,16 +2,9 @@
  * @fileoverview String manipulation helpers for the renderer.
  */
 
-/**
- * A single segment of text, flagged as highlighted when it matched the query.
- * @interface HighlightSegment
- * @property {string} text - The segment's text content.
- * @property {boolean} highlight - True when the segment is a query match.
- */
-export interface HighlightSegment {
-  text: string;
-  highlight: boolean;
-}
+import type { HighlightSegment } from './types';
+
+export type { HighlightSegment };
 
 /**
  * Splits `text` into alternating non-match and match segments for the given

@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Alert } from '@mui/material';
+import { Alert, Button } from '@mui/material';
 
 export const ToastAlert = styled(Alert)(({ theme }) => ({
   maxWidth: theme.typography.pxToRem(600),
@@ -16,3 +16,8 @@ export const ToastDetail = styled('div')(({ theme }) => ({
   opacity: 0.9,
   marginTop: theme.typography.pxToRem(2),
 }));
+
+/** Action button rendered inside a toast. */
+export const ToastActionButton = styled(Button)({
+  fontWeight: 600,
+});

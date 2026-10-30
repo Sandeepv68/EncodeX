@@ -17,26 +17,9 @@
 import { Client, InMemoryTransport } from '@modelcontextprotocol/client';
 import type { McpServer } from '@modelcontextprotocol/server';
 import { MCP_UI_EXTENSION_ID, MCP_UI_RESOURCE_MIME_TYPE } from '../../shared/mcp-ui';
+import type { LocalMcpClient, LocalToolResult } from './types';
 
-/** One tool result as seen by a view. */
-export interface LocalToolResult {
-  /** Machine-readable payload the views render. */
-  structuredContent?: Record<string, unknown>;
-  /** Text blocks, used as a fallback when there is no structured payload. */
-  content?: Array<{ type: string; text?: string }>;
-  /** True when the tool reported a failure. */
-  isError?: boolean;
-}
-
-/** A client bound to an in-process MCP server. */
-export interface LocalMcpClient {
-  /** Calls a tool on the server. */
-  callTool(name: string, args?: Record<string, unknown>): Promise<LocalToolResult>;
-  /** Lists the tools the server exposes. */
-  listTools(): Promise<Array<{ name: string; title?: string }>>;
-  /** Closes the session. */
-  close(): Promise<void>;
-}
+export type { LocalMcpClient, LocalToolResult };
 
 /**
  * Connects a client to an in-process MCP server.

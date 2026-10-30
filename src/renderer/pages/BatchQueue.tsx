@@ -66,6 +66,8 @@ import {
   DropOverlay,
   AnimatedSection,
   CondenseIcon,
+  CondenseButton,
+  ClearAllBox,
 } from '../styles/BatchQueue.styles';
 import { TitleIcon } from '../styles/PageContainer.styles';
 import { pageIcons } from '../pageIcons';
@@ -1317,7 +1319,7 @@ export default function BatchQueue() {
         <TitleIcon>{pageIcons['/batch']}</TitleIcon>
         {t('batchQueue.title')}
         <Tooltip title={condensed ? t('batchQueue.expand') : t('batchQueue.condense')} placement="left">
-          <IconButton
+          <CondenseButton
             size="small"
             aria-label={condensed ? t('batchQueue.expand') : t('batchQueue.condense')}
             aria-expanded={!condensed}
@@ -1326,13 +1328,12 @@ export default function BatchQueue() {
               setCondensed((prev) => !prev);
               recordAnalyticsEvent(createAnalyticsEvent('batch_condense_toggled', { condensed: !condensed }));
             }}
-            sx={{ marginInlineStart: 'auto' }}
             data-testid="batch-queue-condense"
           >
             <CondenseIcon $rotated={condensed}>
               <FontAwesomeIcon icon={condensed ? faLayerGroup : faListOl} />
             </CondenseIcon>
-          </IconButton>
+          </CondenseButton>
         </Tooltip>
       </PageTitle>
 
@@ -1452,13 +1453,13 @@ export default function BatchQueue() {
               </FilterEta>
             )}
             {allDone && (
-              <Box sx={{ marginInlineStart: 'auto' }}>
+              <ClearAllBox>
                 <Tooltip title={t('batchQueue.clearAll')}>
                   <IconButton size="small" color="error" aria-label={t('batchQueue.clearAll')} onClick={handleClearCompleted}>
                     <FontAwesomeIcon icon={faTrashCan} />
                   </IconButton>
                 </Tooltip>
-              </Box>
+              </ClearAllBox>
             )}
           </FilterRow>
         )}

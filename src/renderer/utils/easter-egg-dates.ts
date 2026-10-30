@@ -21,23 +21,9 @@
  */
 
 import { diwaliDate, holiDate } from './lunar-calendar';
+import type { CalendarDate, FestivalId } from './types';
 
-/**
- * Identifier for every festival that has a seasonal logo.
- * @typedef {('diwali'|'christmas'|'easter'|'holi'|'halloween'|'july4th'|'new_year')} FestivalId
- */
-export type FestivalId = 'diwali' | 'christmas' | 'easter' | 'holi' | 'halloween' | 'july4th' | 'new_year';
-
-/**
- * A calendar date as month/day numbers, month is 1-based.
- * @typedef {Object} CalendarDate
- * @property {number} month - Month of the year (1-12).
- * @property {number} day - Day of the month (1-31).
- */
-interface CalendarDate {
-  month: number;
-  day: number;
-}
+export type { FestivalId };
 
 /**
  * Half-width of the active window around each festival date, in days.

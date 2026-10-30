@@ -20,11 +20,7 @@ import ViewDefinitionList from '../kit/ViewDefinitionList';
 import ViewEmptyState from '../kit/ViewEmptyState';
 import ViewProgress from '../kit/ViewProgress';
 import { ViewStack } from '../kit/styles';
-import type { McpUiJob } from '../../../shared/mcp-ui';
-
-interface JobPayload {
-  job?: McpUiJob;
-}
+import type { JobCancelButtonProps, JobPayload } from './types';
 
 /**
  * Renders the job view.
@@ -94,11 +90,6 @@ export default function JobView() {
       </ViewStack>
     </ViewCard>
   );
-}
-
-interface JobCancelButtonProps {
-  jobId: string;
-  onCancel: (jobId: string) => Promise<void>;
 }
 
 /**

@@ -22,7 +22,9 @@ import type { ITranscoder } from '../transcoders/types';
 import { QUEUE_STATUS } from '../../shared/media-options';
 import { COMPLETED_PROGRESS } from '../../shared/transcoder-constants';
 import { MAX_QUEUE_CONCURRENCY } from '../../shared/constants';
-import { QUEUE_STATE_VERSION, QueuePersistence } from './persistence';
+import { QUEUE_STATE_VERSION } from './persistence';
+import type { QueuePersistence } from './persistence';
+import type { JobQueueOptions } from './types';
 import {
   LOG_ADD_JOB,
   LOG_ARROW,
@@ -54,6 +56,8 @@ import {
   LOG_TRANSCODER,
 } from '../../shared/log-constants';
 
+export type { JobQueueOptions };
+
 const log = new Logger('main/queue/job-queue');
 
 /**
@@ -84,27 +88,6 @@ const DEFAULT_PERSIST_DELAY_MS = 500;
 function clampConcurrency(value: unknown, fallback: number): number {
   if (typeof value !== 'number' || !Number.isFinite(value)) return fallback;
   return Math.min(Math.max(Math.trunc(value), 1), MAX_QUEUE_CONCURRENCY);
-}
-
-/**
- * Construction options for a {@link JobQueue}.
- * @interface JobQueueOptions
- * @property {number} [concurrency=1] - Initial concurrency cap (clamped 1-4).
- * @property {QueuePersistence} [persistence] - Optional adapter used to restore
- *   the queue on startup and persist it after mutations. When omitted, the
- *   queue is in-memory only.
- * @property {number} [persistDelayMs=500] - Debounce delay before a mutation is
- *   written through the persistence adapter.
- * @property {function(TranscoderType): ITranscoder} [transcoderFactory] -
- *   Factory used to create the transcoder driving each job. Defaults to
- *   {@link createTranscoder}; overridable so tests (and the MCP layer) can
- *   inject deterministic fakes.
- */
-export interface JobQueueOptions {
-  concurrency?: number;
-  persistence?: QueuePersistence;
-  persistDelayMs?: number;
-  transcoderFactory?: (type: TranscoderType) => ITranscoder;
 }
 
 /**

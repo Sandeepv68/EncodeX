@@ -1,16 +1,19 @@
 /**
- * @fileoverview Type definitions and interfaces for media conversion, playback, and queuing operations.
+ * @fileoverview Type definitions and interfaces for the shared layer.
  * Defines all core data structures used throughout the EncodeX application, spanning
  * errors, codec/container compatibility, conversion options, probed media information,
  * image analysis results, queue jobs, player frames/audio, waveform and thumbnail data,
- * log entries, and encoder capabilities. These types are shared by the main, preload,
- * and renderer processes.
+ * log entries, encoder capabilities, MCP App views, Copilot planning, video-filter
+ * presets, remux/demux plans, audit records, and shared settings. These types are shared
+ * by the main, preload, and renderer processes.
  */
 
 import { QUEUE_STATUS, FALLBACK_VALUES } from './media-options';
 import { ErrorCode } from './errors';
 import { TRANSCODER_TYPES } from './transcoder-constants';
 import { HWACCEL_MODES, ENCODER_TYPES } from './hwaccel-settings';
+import { MCP_UI_VIEW_URIS } from './mcp-ui';
+import type { AgentAction, AgentSkip, AIProviderId, WorkflowPlan } from './ai/types';
 
 /**
  * Hardware acceleration mode type: how hardware acceleration is applied during encoding.
@@ -661,3 +664,768 @@ export interface BmfStatus {
   available: boolean;
   missing: string[];
 }
+
+/**
+ * Identifier of a shipped view, derived from {@link MCP_UI_VIEW_URIS}.
+ * @typedef {keyof typeof MCP_UI_VIEW_URIS} McpUiViewId
+ */
+export type McpUiViewId = keyof typeof MCP_UI_VIEW_URIS;
+
+/**
+ * One MCP App view attached to a Copilot message.
+ *
+ * The Copilot renders the same React components an external MCP Apps host
+ * renders; the attachment carries the payload the view shows and the tool the
+ * payload came from.
+ * @interface McpViewAttachment
+ * @property {McpUiViewId} viewId - The view to render.
+ * @property {string} uri - The `ui://` resource URI of the view.
+ * @property {string} toolName - The MCP tool that produced the payload.
+ * @property {unknown} structuredContent - The payload the view renders.
+ */
+export interface McpViewAttachment {
+  viewId: McpUiViewId;
+  uri: string;
+  toolName: string;
+  structuredContent: unknown;
+}
+
+/**
+ * One entry of the job status returned to the queue/job views. Mirrors the
+ * job manager's serialized shape without importing it, keeping this contract
+ * usable from any process.
+ * @interface McpUiJob
+ * @property {string} id - Stable job id.
+ * @property {string} input - Absolute input path.
+ * @property {string} output - Absolute output path.
+ * @property {string} status - Lifecycle status (queued, running, done, ...).
+ * @property {number} progress - Completion percentage (0-100).
+ * @property {string} [error] - Failure message, when the job failed.
+ */
+export interface McpUiJob {
+  id: string;
+  input: string;
+  output: string;
+  status: string;
+  progress: number;
+  error?: string;
+}
+
+/**
+ * One label/value row of a confirmation rendered before an operation runs.
+ * @interface McpUiConfirmationField
+ * @property {string} label - Short field name (e.g. "Output").
+ * @property {string} value - Human-readable value.
+ */
+export interface McpUiConfirmationField {
+  label: string;
+  value: string;
+}
+
+/**
+ * A mutating operation awaiting explicit user approval.
+ *
+ * When the host supports MCP Apps, the server never runs a mutating tool from
+ * a model call: it returns a confirmation instead, the app renders the details,
+ * and only a user click replays {@link McpUiConfirmation.args} into the
+ * app-only `commit_operation` tool. Hosts without the extension keep the old
+ * headless behaviour and execute immediately (see `approval.ts`).
+ * @interface McpUiConfirmation
+ * @property {string} operation - Executor tool that the approval runs.
+ * @property {string} title - Short imperative heading (e.g. "Cut video").
+ * @property {string} summary - One-line summary of the effect.
+ * @property {Record<string, unknown>} args - Raw arguments replayed verbatim.
+ * @property {McpUiConfirmationField[]} [details] - Key/value rows to show.
+ * @property {string[]} [warnings] - Warnings surfaced before running.
+ */
+export interface McpUiConfirmation {
+  operation: string;
+  title: string;
+  summary: string;
+  args: Record<string, unknown>;
+  details?: McpUiConfirmationField[];
+  warnings?: string[];
+}
+
+/**
+ * A media stream as the media-info view renders it.
+ *
+ * The view only needs a handful of fields per stream, and the server sends
+ * the full probe result, so every field is optional here.
+ * @interface McpUiStream
+ * @property {number} [index] - Stream index in the container.
+ * @property {string} [type] - Stream kind (`video`, `audio`, `subtitle`).
+ * @property {string} [codec] - Short codec name.
+ * @property {number} [width] - Video width in pixels.
+ * @property {number} [height] - Video height in pixels.
+ * @property {string} [frameRate] - Frame rate string.
+ * @property {string} [pixelFormat] - Pixel format.
+ * @property {number} [channels] - Audio channel count.
+ * @property {string} [channelLayout] - Audio channel layout.
+ * @property {number} [sampleRate] - Audio sample rate in Hz.
+ * @property {string} [title] - Stream title.
+ * @property {string} [language] - Stream language tag.
+ */
+export interface McpUiStream {
+  index?: number;
+  type?: string;
+  codec?: string;
+  width?: number;
+  height?: number;
+  frameRate?: string;
+  pixelFormat?: string;
+  channels?: number;
+  channelLayout?: string;
+  sampleRate?: number;
+  title?: string;
+  language?: string;
+}
+
+/**
+ * Container and per-stream metadata shown by the media-info view.
+ * @interface McpUiMediaInfo
+ * @property {string} [file] - Absolute path of the probed file.
+ * @property {string} [format] - Container format name.
+ * @property {string} [formatLong] - Long container description.
+ * @property {number} [duration] - Duration in seconds.
+ * @property {number} [size] - File size in bytes.
+ * @property {string | number} [bitrate] - Overall bitrate.
+ * @property {McpUiStream[]} [streams] - Streams of the container.
+ */
+export interface McpUiMediaInfo {
+  file?: string;
+  format?: string;
+  formatLong?: string;
+  duration?: number;
+  size?: number;
+  bitrate?: string | number;
+  streams?: McpUiStream[];
+}
+
+/**
+ * One finding of a media diagnosis.
+ * @interface McpUiFinding
+ * @property {string} [severity] - `info`, `warning` or `error`.
+ * @property {string} [message] - Human-readable description.
+ */
+export interface McpUiFinding {
+  severity?: 'info' | 'warning' | 'error' | string;
+  message?: string;
+}
+
+/**
+ * A plain-language media diagnosis shown by the inspector view.
+ * @interface McpUiAnalysis
+ * @property {string} [file] - Absolute path of the analysed file.
+ * @property {string} [summary] - One-sentence summary.
+ * @property {Record<string, unknown>} [facts] - Structured facts.
+ * @property {McpUiFinding[]} [findings] - Findings ordered by severity.
+ * @property {string[]} [recommendations] - Suggested next steps.
+ */
+export interface McpUiAnalysis {
+  file?: string;
+  summary?: string;
+  facts?: Record<string, unknown>;
+  findings?: McpUiFinding[];
+  recommendations?: string[];
+}
+
+/**
+ * A recommended conversion plan shown by the plan view.
+ * @interface McpUiPlan
+ * @property {string} [providerId] - Provider that produced the plan.
+ * @property {string} [profileId] - Profile the plan maps to.
+ * @property {number} [confidence] - Confidence between 0 and 1.
+ * @property {string[]} [rationale] - Why the plan recommends these settings.
+ * @property {Record<string, unknown>} [args] - The recommended settings.
+ */
+export interface McpUiPlan {
+  providerId?: string;
+  profileId?: string;
+  confidence?: number;
+  rationale?: string[];
+  args?: Record<string, unknown>;
+}
+
+/**
+ * An output-size estimate shown by the plan view.
+ * @interface McpUiEstimate
+ * @property {string} [method] - Estimation method.
+ * @property {number} [estimatedSizeBytes] - Estimated output size.
+ * @property {number} [estimatedDurationSeconds] - Estimated output duration.
+ * @property {number} [videoBitrateKbps] - Estimated video bitrate.
+ * @property {number} [audioBitrateKbps] - Estimated audio bitrate.
+ * @property {boolean} [copy] - True when the streams are copied as-is.
+ * @property {{available?: boolean; methods?: string[]}} [hardwareAcceleration] - Hardware acceleration support.
+ * @property {string[]} [notes] - Assumptions behind the estimate.
+ */
+export interface McpUiEstimate {
+  method?: string;
+  estimatedSizeBytes?: number;
+  estimatedDurationSeconds?: number;
+  videoBitrateKbps?: number;
+  audioBitrateKbps?: number;
+  copy?: boolean;
+  hardwareAcceleration?: { available?: boolean; methods?: string[] };
+  notes?: string[];
+}
+
+/**
+ * One measured attempt of the size-target compression loop.
+ * @interface McpUiLabAttempt
+ * @property {string} [candidate] - Candidate id.
+ * @property {number} [videoBitrateKbps] - Requested video bitrate.
+ * @property {number} [audioBitrateKbps] - Requested audio bitrate.
+ * @property {number} [sizeBytes] - Measured output size.
+ * @property {string} [output] - Output path.
+ * @property {string} [status] - Attempt outcome.
+ * @property {boolean} [fits] - True when the attempt met the size ceiling.
+ */
+export interface McpUiLabAttempt {
+  candidate?: string;
+  videoBitrateKbps?: number;
+  audioBitrateKbps?: number;
+  sizeBytes?: number;
+  output?: string;
+  status?: string;
+  fits?: boolean;
+}
+
+/**
+ * The measured size-target compression result shown by the lab view.
+ * @interface McpUiLab
+ * @property {string} [input] - Source path.
+ * @property {number} [maxBytes] - Requested size ceiling.
+ * @property {string} [videoCodec] - Video codec used.
+ * @property {string} [audioCodec] - Audio codec used.
+ * @property {boolean} [converged] - True when a candidate met the ceiling.
+ * @property {McpUiLabAttempt} [chosen] - The winning attempt.
+ * @property {McpUiLabAttempt[]} [attempts] - Every attempt, in order.
+ * @property {{baselineVideoKbps?: number; audioBitrateKbps?: number; candidates?: Array<{videoBitrateKbps?: number; percentOfBaseline?: number; rationale?: string}>; notes?: string[]}} [plan] - The candidate ladder.
+ */
+export interface McpUiLab {
+  input?: string;
+  maxBytes?: number;
+  videoCodec?: string;
+  audioCodec?: string;
+  converged?: boolean;
+  chosen?: McpUiLabAttempt;
+  attempts?: McpUiLabAttempt[];
+  plan?: {
+    baselineVideoKbps?: number;
+    audioBitrateKbps?: number;
+    candidates?: Array<{ videoBitrateKbps?: number; percentOfBaseline?: number; rationale?: string }>;
+    notes?: string[];
+  };
+}
+
+/**
+ * A fix the error view can apply on the user's behalf.
+ * @interface McpUiErrorFix
+ * @property {string} label - Short fix name.
+ * @property {string} [description] - What the fix does.
+ * @property {string} [kind] - `retry` for a retry, anything else for a fix.
+ * @property {string} [tool] - Tool to call when the fix is applied.
+ * @property {Record<string, unknown>} [args] - Arguments for that tool.
+ */
+export interface McpUiErrorFix {
+  label?: string;
+  description?: string;
+  kind?: string;
+  tool?: string;
+  args?: Record<string, unknown>;
+}
+
+/**
+ * A plain-language error explanation shown by the error view.
+ * @interface McpUiErrorExplanation
+ * @property {string} [code] - Stable error code.
+ * @property {string} [title] - Short heading.
+ * @property {string} [explanation] - What went wrong.
+ * @property {string} [detail] - Raw detail.
+ * @property {string[]} [causes] - Likely causes.
+ * @property {McpUiErrorFix[]} [fixes] - Suggested fixes.
+ */
+export interface McpUiErrorExplanation {
+  code?: string;
+  title?: string;
+  explanation?: string;
+  detail?: string;
+  causes?: string[];
+  fixes?: McpUiErrorFix[];
+}
+
+/**
+ * One step of a workflow plan.
+ * @interface McpUiWorkflowStep
+ * @property {string} id - Step id.
+ * @property {string} tool - Tool the step calls.
+ * @property {number} [order] - Execution order.
+ * @property {string[]} [dependsOn] - Ids of the steps this one depends on.
+ */
+export interface McpUiWorkflowStep {
+  id?: string;
+  tool?: string;
+  order?: number;
+  dependsOn?: string[];
+}
+
+/**
+ * A workflow dry-run shown by the workflow view.
+ * @interface McpUiWorkflowPlan
+ * @property {string} [summary] - One-line description of the plan.
+ * @property {boolean} [valid] - True when the plan can run.
+ * @property {McpUiWorkflowStep[]} [steps] - Ordered steps.
+ * @property {Array<{message?: string}>} [issues] - Why the plan is invalid.
+ */
+export interface McpUiWorkflowPlan {
+  summary?: string;
+  valid?: boolean;
+  steps?: McpUiWorkflowStep[];
+  issues?: Array<{ message?: string }>;
+}
+
+/**
+ * The result of a workflow run shown by the workflow view.
+ * @interface McpUiWorkflowResult
+ * @property {number} [completed] - Number of completed steps.
+ * @property {number} [failed] - Number of failed steps.
+ * @property {Array<{id?: string; tool?: string; jobId?: string; output?: string; status?: string}>} [steps] - Per-step outcome.
+ */
+export interface McpUiWorkflowResult {
+  completed?: number;
+  failed?: number;
+  steps?: Array<{ id?: string; tool?: string; jobId?: string; output?: string; status?: string }>;
+}
+
+/**
+ * One entry of the batch dashboard.
+ * @interface McpUiBatchEntry
+ * @property {string} [id] - Job id.
+ * @property {string} [jobId] - Job id (alias used by the batch tool).
+ * @property {string} [input] - Source path.
+ * @property {string} [output] - Destination path.
+ * @property {string} [file] - Source path (alias used by the batch tool).
+ * @property {string} [status] - Lifecycle status.
+ * @property {number} [progress] - Completion percentage.
+ */
+export interface McpUiBatchEntry {
+  id?: string;
+  jobId?: string;
+  input?: string;
+  output?: string;
+  file?: string;
+  status?: string;
+  progress?: number;
+}
+
+/**
+ * A built-in conversion profile shown by the profiles view.
+ * @interface McpUiProfile
+ * @property {string} id - Profile id.
+ * @property {string} name - Display name.
+ * @property {string} [category] - Profile category.
+ * @property {string} [container] - Output container.
+ * @property {string} [videoCodec] - Video codec.
+ * @property {string} [audioCodec] - Audio codec.
+ * @property {string} [preset] - Encoder preset.
+ */
+export interface McpUiProfile {
+  id?: string;
+  name?: string;
+  category?: string;
+  container?: string;
+  videoCodec?: string;
+  audioCodec?: string;
+  preset?: string;
+}
+
+/**
+ * The encoder capabilities shown by the capabilities view.
+ * @interface McpUiCapabilities
+ * @property {string[]} [videoEncoders] - Available video encoders.
+ * @property {string[]} [audioEncoders] - Available audio encoders.
+ * @property {string[]} [hwaccels] - Available hardware accelerations.
+ */
+export interface McpUiCapabilities {
+  videoEncoders?: string[];
+  audioEncoders?: string[];
+  hwaccels?: string[];
+}
+
+/**
+ * Structured content delivered to the confirm view for a pending operation.
+ * @interface McpUiConfirmationPayload
+ * @property {McpUiConfirmation} confirmation - The pending confirmation.
+ */
+export interface McpUiConfirmationPayload {
+  confirmation: McpUiConfirmation;
+}
+
+/**
+ * Client capability payload advertised by MCP Apps hosts under
+ * {@link MCP_UI_EXTENSION_ID}; presence of the MIME type signals support.
+ * @interface McpUiClientCapabilities
+ * @property {string[]} [mimeTypes] - Supported UI resource MIME types.
+ */
+export interface McpUiClientCapabilities {
+  mimeTypes?: string[];
+}
+
+/**
+ * The operation a Copilot plan performs. `convert` and the queue-backed
+ * operations produce Batch Queue jobs; `analyze` and the media-intelligence
+ * operations (`transcribe`, `summarize`, `chapters`, `search_transcript`,
+ * `translate`, `find_similar`) are read-only and produce results instead.
+ *
+ * The queue-backed set mirrors `BATCH_OPERATIONS` plus the audio-extract and
+ * cut operations the individual pages expose.
+ * @typedef {('convert'|'remux'|'demux'|'extract_audio'|'compress_image'|'cut'|'analyze'|'transcribe'|'summarize'|'chapters'|'search_transcript'|'translate'|'find_similar')} CopilotOperation
+ */
+export type CopilotOperation =
+  | 'convert'
+  | 'remux'
+  | 'demux'
+  | 'extract_audio'
+  | 'compress_image'
+  | 'cut'
+  | 'analyze'
+  | 'transcribe'
+  | 'summarize'
+  | 'chapters'
+  | 'search_transcript'
+  | 'translate'
+  | 'find_similar';
+
+/**
+ * The operation selector value: a concrete operation, or `auto` to let the goal
+ * text (and any configured AI provider) choose.
+ * @typedef {('auto'|CopilotOperation)} CopilotOperationChoice
+ */
+export type CopilotOperationChoice = 'auto' | CopilotOperation;
+
+/**
+ * A Copilot planning request issued by the renderer.
+ * @interface CopilotPlanRequest
+ * @property {string} goal - The natural-language goal shared by every file.
+ * @property {string[]} inputs - Files and/or folders to plan against.
+ * @property {CopilotOperationChoice} [operation] - Force an operation, or `auto`.
+ * @property {boolean} [recursive] - Descend into subfolders (default false).
+ * @property {number} [maxFiles] - Upper bound on planned actions (default 50).
+ * @property {number} [minSavings] - Minimum estimated size reduction to keep.
+ * @property {string} [query] - Passage to find for `search_transcript`.
+ * @property {string} [targetLanguage] - Target language for `translate`.
+ */
+export interface CopilotPlanRequest {
+  goal: string;
+  inputs: string[];
+  operation?: CopilotOperationChoice;
+  recursive?: boolean;
+  maxFiles?: number;
+  minSavings?: number;
+  query?: string;
+  targetLanguage?: string;
+}
+
+/**
+ * A planned conversion action, carrying the ready-to-enqueue options.
+ * @interface CopilotAction
+ * @augments AgentAction
+ * @property {CopilotOperation} operation - The operation this action performs.
+ * @property {ConversionOptions} options - Options for the Batch Queue.
+ */
+export interface CopilotAction extends AgentAction {
+  operation: CopilotOperation;
+  options: ConversionOptions;
+}
+
+/**
+ * A read-only finding produced by an `analyze`-style operation. It is rendered
+ * for review and is never enqueued.
+ * @interface CopilotResult
+ * @property {CopilotOperation} operation - The operation that produced it.
+ * @property {string} input - Source file the result describes.
+ * @property {string} [title] - Short heading for the result.
+ * @property {string} [summary] - One-line human summary.
+ * @property {unknown} [content] - Structured payload (analysis, facts, ...).
+ */
+export interface CopilotResult {
+  operation: CopilotOperation;
+  input: string;
+  title?: string;
+  summary?: string;
+  content?: unknown;
+}
+
+/**
+ * The plan the Copilot panel renders: the agent's actions, skips and rationale,
+ * plus the dry-run of the workflow the actions form.
+ * @interface CopilotPlan
+ * @property {string} goal - The goal the plan was built for.
+ * @property {CopilotOperation | null} operation - The routed operation, if any.
+ * @property {CopilotAction[]} actions - Planned conversions, in file order.
+ * @property {CopilotResult[]} results - Read-only findings (analyze operations).
+ * @property {AgentSkip[]} skips - Files left out, with reasons.
+ * @property {string[]} rationale - Plan-level reasons, one per line.
+ * @property {string[]} notes - Caveats for the caller.
+ * @property {string} [routingWarning] - Set when a configured AI provider could
+ *   not choose the operation and the offline rules engine was used instead.
+ * @property {WorkflowPlan} plan - The dry-run validation of the workflow.
+ * @property {AIProviderId} providerId - The provider that chose the operation.
+ * @property {true} isEstimated - The plan is a proposal, not a measurement.
+ * @property {McpViewAttachment[]} [views] - MCP App views the transcript renders
+ *   inline (the same components an external MCP Apps host renders).
+ */
+export interface CopilotPlan {
+  goal: string;
+  operation: CopilotOperation | null;
+  actions: CopilotAction[];
+  results: CopilotResult[];
+  skips: AgentSkip[];
+  rationale: string[];
+  notes: string[];
+  routingWarning?: string;
+  plan: WorkflowPlan;
+  providerId: AIProviderId;
+  isEstimated: true;
+  views?: McpViewAttachment[];
+}
+
+/**
+ * Severity of a remux compatibility warning, mirroring toast/preload icon tiers.
+ * @typedef {'info'|'warning'|'error'} RemuxWarningIcon
+ */
+export type RemuxWarningIcon = 'info' | 'warning' | 'error';
+
+/**
+ * A non-blocking compatibility finding surfaced by {@link remuxWarnings} for the
+ * GUI, CLI, and MCP. Hard incompatibilities are reported with icon 'error';
+ * conversions/workarounds with 'warning'; informational notes with 'info'.
+ * `stream` is null for asset-level (cover/chapters/added subtitle) findings.
+ * @interface RemuxWarning
+ * @property {RemuxWarningIcon} icon - Severity tier.
+ * @property {string} message - Human-readable finding (English; UI localizes via `code`).
+ * @property {MediaStreamInfo|null} stream - The affected source stream, if any.
+ * @property {string} [code] - Stable finding key for localization.
+ */
+export interface RemuxWarning {
+  icon: RemuxWarningIcon;
+  message: string;
+  stream: MediaStreamInfo | null;
+  code?: string;
+}
+
+/**
+ * Optional per-kind conversion targets for demux. Any kind left unset is
+ * extracted losslessly (stream copy) into the extension suggested by
+ * {@link suggestedExtensionForStream}. Values are FFmpeg-native: a container
+ * extension for video (`videoContainer`, e.g. 'mp4'), an encoder name for audio
+ * (`audioCodec`, e.g. 'mp3'/'aac'/'flac'), and an encoder/format name for
+ * subtitles (`subtitleCodec`, e.g. 'srt'/'ass').
+ * @interface DemuxMediaPreferences
+ * @property {string} [videoContainer] - Re-encode video into this container
+ *   (extension) when it differs from the stream's native format; forces copy:false.
+ * @property {string} [audioCodec] - Audio encoder to convert to (e.g. 'mp3').
+ * @property {string} [subtitleCodec] - Subtitle format to convert to (e.g. 'srt').
+ * @property {string[]} [videoFilters] - Ordered FFmpeg video filter expressions.
+ *   Only meaningful for a video target that re-encodes (`videoContainer` set and
+ *   differing from the stream's native format); a stream-copied video target
+ *   ignores them and {@link demuxWarnings} reports `filtersIgnoredCopy`.
+ */
+export interface DemuxMediaPreferences {
+  videoContainer?: string;
+  audioCodec?: string;
+  subtitleCodec?: string;
+  videoFilters?: string[];
+}
+
+/**
+ * A single demux extraction unit: which source stream, how it is mapped, whether
+ * it is stream-copied or re-encoded, and where the output goes.
+ * @interface DemuxTarget
+ * @property {number} index - Source stream index (ffprobe global index, input 0).
+ * @property {'video'|'audio'|'subtitle'} kind - Stream kind.
+ * @property {string} map - Single `-map` spec targeting this stream (e.g. '0:v:1').
+ * @property {boolean} copy - True = `-c copy`; false = re-encode with `codec`.
+ * @property {string} [codec] - Re-encode target encoder when `copy` is false.
+ * @property {string} [container] - Output container extension for re-encoded video.
+ * @property {string[]} [videoFilters] - Video filter chain carried onto this
+ *   target; set only for a re-encoded video target (absent for stream copies).
+ * @property {string} output - Absolute output path (baseName + kind_index + ext).
+ */
+export interface DemuxTarget {
+  index: number;
+  kind: 'video' | 'audio' | 'subtitle';
+  map: string;
+  copy: boolean;
+  codec?: string;
+  container?: string;
+  videoFilters?: string[];
+  output: string;
+}
+
+/**
+ * Parameter descriptor for a curated filter preset.
+ * @interface VideoFilterParam
+ * @property {string} key - Stable key used in FilterParamValues.
+ * @property {string} labelKey - i18n key for the field label.
+ * @property {'number'|'text'|'select'} type - Input kind rendered by the GUI.
+ * @property {number|string} [default] - Value used when the caller omits the key.
+ * @property {number} [min] - Minimum value for `number` inputs.
+ * @property {number} [max] - Maximum value for `number` inputs.
+ * @property {number} [step] - Step for `number` inputs (defaults to 0.01).
+ * @property {{value: string; labelKey: string}[]} [options] - Choices for `select` inputs.
+ * @property {boolean} [optional] - Omitted from the emitted filter when unset.
+ */
+export interface VideoFilterParam {
+  key: string;
+  labelKey: string;
+  type: 'number' | 'text' | 'select';
+  default?: number | string;
+  min?: number;
+  max?: number;
+  step?: number;
+  options?: { value: string; labelKey: string }[];
+  optional?: boolean;
+}
+
+/**
+ * Values supplied by a caller for a preset's parameters.
+ * @typedef {Record<string, number | string | undefined>} FilterParamValues
+ */
+export type FilterParamValues = Record<string, number | string | undefined>;
+
+/**
+ * A curated filter preset.
+ * @interface VideoFilterDef
+ * @property {string} id - Stable id used by the GUI/CLI/MCP (e.g. 'crop').
+ * @property {string} ffmpegName - Base FFmpeg filter name (e.g. 'crop').
+ * @property {VideoFilterParam[]} params - Ordered parameters with defaults.
+ * @property {(values: FilterParamValues) => string} build - Produces the full
+ *   filter expression (e.g. 'crop=in_w/2:in_h/2').
+ * @property {string} labelKey - i18n key for the preset display name.
+ * @property {string} hintKey - i18n key for the preset tooltip/description.
+ */
+export interface VideoFilterDef {
+  id: string;
+  ffmpegName: string;
+  params: VideoFilterParam[];
+  build: (values: FilterParamValues) => string;
+  labelKey: string;
+  hintKey: string;
+}
+
+/**
+ * Subset of conversion progress surfaced to task-oriented UI (audio
+ * extraction, media-task hooks). Shares a name with the structurally-identical
+ * `TaskProgress` type in the stores/state layer; keep both in sync.
+ * @typedef {Pick<ConversionProgress, 'percent'|'time'|'speed'|'eta'>} TaskProgress
+ */
+export type TaskProgress = Pick<ConversionProgress, 'percent' | 'time' | 'speed' | 'eta'>;
+
+/**
+ * One audit record for a mutating operation.
+ * @interface AuditEntry
+ * @property {string} id - Stable unique id (timestamp + digest).
+ * @property {string} timestamp - ISO-8601 UTC timestamp.
+ * @property {string} tool - The mutating tool that ran.
+ * @property {number} tier - Safety tier (2 = write, 3 = destructive).
+ * @property {string} argsDigest - Short stable digest of the arguments.
+ * @property {'ok' | 'error'} result - Whether the operation was accepted.
+ * @property {string} [detail] - Error summary when `result` is 'error'.
+ */
+export interface AuditEntry {
+  id: string;
+  timestamp: string;
+  tool: string;
+  tier: number;
+  argsDigest: string;
+  result: 'ok' | 'error';
+  detail?: string;
+}
+
+/**
+ * Input the user composes for a remux: container + `-map` stream selection +
+ * added assets. Maps and assets reference input indices exactly as documented
+ * on `ConversionOptions` (primary = 0, additionalInputs = 1..N, chapters = N+1).
+ *
+ * @interface RemuxPlanInput
+ * @property {string} input - Absolute path of the source file.
+ * @property {string} container - Target container extension (e.g. 'mkv').
+ * @property {string[]} [maps] - `-map` specs selecting streams for the output.
+ * @property {RemuxInput[]} [additionalInputs] - Added subtitles/audio/cover
+ *   entries as extra inputs.
+ * @property {string} [chaptersFile] - FFMETADATA chapters file to import.
+ * @property {boolean} [copyChapters] - Preserve source chapters via
+ *   `-map_chapters 0`. Defaults to true.
+ * @property {number} [audioSyncSeconds] - Signed seconds to shift the primary's
+ *   audio relative to video via the "re-read" trick (positive = audio plays
+ *   LATER). Absent = no adjustment.
+ * @property {string[]} [videoFilters] - Ordered FFmpeg video filter
+ *   expressions. Filters require re-encoding, so a non-empty chain flips
+ *   `copy` to false and the whole plan runs as a re-encode.
+ */
+export interface RemuxPlanInput {
+  input: string;
+  container: string;
+  maps?: string[];
+  additionalInputs?: RemuxInput[];
+  chaptersFile?: string;
+  copyChapters?: boolean;
+  audioSyncSeconds?: number;
+  videoFilters?: string[];
+}
+
+/**
+ * Result of {@link buildRemuxPlanOptions}.
+ * @interface RemuxPlan
+ * @property {ConversionOptions} options - Ready-to-run conversion options.
+ * @property {string} output - Derived output path (same dir as input).
+ */
+export interface RemuxPlan {
+  options: ConversionOptions;
+  output: string;
+}
+
+/**
+ * Renderer-visible MCP server settings.
+ * @interface McpSettings
+ * @property {boolean} enabled - True starts the loopback server at startup.
+ * @property {number} port - TCP port to bind on 127.0.0.1.
+ * @property {string} token - Optional bearer token clients must send.
+ */
+export interface McpSettings {
+  enabled: boolean;
+  port: number;
+  token: string;
+}
+
+/**
+ * A single terms section: a heading plus the paragraphs rendered beneath it.
+ * @interface TermsSection
+ * @property {string} title - Section heading.
+ * @property {string[]} body - Paragraphs in this section.
+ */
+export interface TermsSection {
+  title: string;
+  body: string[];
+}
+
+/**
+ * Severity label of a log record handed to the registered sink. Mirrors the
+ * {@link LogLevel} enum as serializable strings suitable for process
+ * boundaries and backend severity scales.
+ * @typedef {('debug' | 'info' | 'warn' | 'error')} LoggerLogLevel
+ */
+export type LoggerLogLevel = 'debug' | 'info' | 'warn' | 'error';
+
+/**
+ * Consumer of log records for external reporting. Installed by the monitoring
+ * facade at module load; the Logger itself stays dependency-free. Receives
+ * every record regardless of the configured minimum console level so telemetry
+ * verbosity stays independent of console verbosity.
+ * @param {LoggerLogLevel} level - Severity label of the record.
+ * @param {string} context - The logging subsystem label ('main/index', ...).
+ * @param {unknown[]} args - Raw arguments passed to the Logger method.
+ */
+export type LoggerRecordSink = (level: LoggerLogLevel, context: string, args: unknown[]) => void;

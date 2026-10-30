@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Box, Typography } from '@mui/material';
+import { Box, CircularProgress, LinearProgress, Link, Typography } from '@mui/material';
 
 /** Container for the update dialog content. @const UpdateDialogContent */
 export const UpdateDialogContent = styled(Box)(() => ({
@@ -32,4 +32,26 @@ export const UpdateReleaseNotes = styled(Box)(({ theme }) => ({
 export const UpdateStatusMessage = styled(Typography)(() => ({
   textAlign: 'center',
   padding: 16,
+}));
+
+/** Spinner shown next to the "checking for updates" caption. @const UpdateCheckingSpinner */
+export const UpdateCheckingSpinner = styled(CircularProgress)(({ theme }) => ({
+  marginRight: theme.spacing(1),
+  verticalAlign: 'middle',
+}));
+
+/** Link to the full release notes, aligned to the start of the dialog. @const UpdateReleaseNotesLink */
+export const UpdateReleaseNotesLink = styled(Link)<{ component?: React.ElementType }>(() => ({
+  alignSelf: 'flex-start',
+}));
+
+/** Determinate download progress bar. @const UpdateProgressBar */
+export const UpdateProgressBar = styled(LinearProgress)(({ theme }) => ({
+  height: theme.typography.pxToRem(8),
+  borderRadius: theme.typography.pxToRem(4),
+}));
+
+/** Download progress caption, centred under the progress bar. @const UpdateProgressText */
+export const UpdateProgressText = styled(Typography)(() => ({
+  textAlign: 'center',
 }));

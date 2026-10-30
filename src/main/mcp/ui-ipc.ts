@@ -10,15 +10,9 @@
 import { ipcMain } from 'electron';
 import { IPC } from '../../shared/ipc-channels';
 import { createError, ErrorCode, formatError } from '../../shared/errors';
-import { MCP_UI_VIEW_URIS, type McpUiViewId } from '../../shared/mcp-ui';
+import { MCP_UI_VIEW_URIS } from '../../shared/mcp-ui';
 import type { LocalMcpClient } from './local-client';
-
-/** A view the in-app host can render. */
-interface ViewDescriptor {
-  viewId: McpUiViewId;
-  uri: string;
-  title: string;
-}
+import type { ViewDescriptor } from './types';
 
 /** The views the in-app host can render, with the titles it shows. */
 const VIEWS: ViewDescriptor[] = [

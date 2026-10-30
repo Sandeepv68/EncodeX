@@ -16,10 +16,7 @@ import ViewEmptyState from '../kit/ViewEmptyState';
 import ViewTable from '../kit/ViewTable';
 import { ViewDotList, ViewSectionTitle, ViewStack } from '../kit/styles';
 import type { McpUiLab } from '../../../shared/mcp-ui';
-
-interface LabPayload {
-  lab?: McpUiLab;
-}
+import type { LabPayload } from './types';
 
 /**
  * Renders the lab view.

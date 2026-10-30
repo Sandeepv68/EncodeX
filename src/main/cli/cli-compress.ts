@@ -13,21 +13,9 @@ import { deriveOutputPath, getInputExtension } from './cli-util';
 import { runConvert } from './cli-convert';
 import type { ConvertCliFlags } from './cli-convert';
 import type { CliThemeId } from '../cli-logo';
+import type { CompressCliFlags, ExtractAudioCliFlags } from './types';
 
-/**
- * Flags accepted by the `compress` subcommand.
- * @interface CompressCliFlags
- * @property {string} [output] - Explicit output file (`-o, --output`).
- * @property {string} [format] - Output image format (`-f, --format`).
- * @property {string} [quality] - Quality scale (`-q, --quality`, 1-31).
- * @property {string} [scale] - Output resolution (`-s, --scale`).
- */
-export interface CompressCliFlags {
-  output?: string;
-  format?: string;
-  quality?: string;
-  scale?: string;
-}
+export type { CompressCliFlags, ExtractAudioCliFlags };
 
 /**
  * Runs the `compress` subcommand: lossily compresses an image.
@@ -55,19 +43,6 @@ export async function runCompress(
   const convertFlags = buildCompressFlags(input, flags);
   const output = flags.output ?? deriveOutputPath(input, { suffix: '_compressed', outputExt: format });
   await runConvert({ input, output, flags: convertFlags, transcoder, timeoutSeconds, themeId });
-}
-
-/**
- * Flags accepted by the `extract-audio` subcommand.
- * @interface ExtractAudioCliFlags
- * @property {string} [output] - Explicit output file (`-o, --output`).
- * @property {string} [audioCodec] - Audio encoder (`-a, --audio-codec`).
- * @property {string} [bitrateAudio] - Audio bitrate (`--bitrate-audio`).
- */
-export interface ExtractAudioCliFlags {
-  output?: string;
-  audioCodec?: string;
-  bitrateAudio?: string;
 }
 
 /**

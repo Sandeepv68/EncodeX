@@ -16,11 +16,8 @@ import ViewButton from '../kit/ViewButton';
 import ViewCard from '../kit/ViewCard';
 import ViewEmptyState from '../kit/ViewEmptyState';
 import { ViewBulletList, ViewDetail, ViewParagraph, ViewSectionTitle, ViewStack } from '../kit/styles';
-import type { McpUiErrorExplanation, McpUiErrorFix } from '../../../shared/mcp-ui';
-
-interface ErrorPayload {
-  error?: McpUiErrorExplanation;
-}
+import type { McpUiErrorExplanation } from '../../../shared/mcp-ui';
+import type { ErrorPayload, FixRowProps } from './types';
 
 /**
  * Renders the error view.
@@ -85,10 +82,6 @@ export default function ErrorView() {
       </ViewStack>
     </ViewCard>
   );
-}
-
-interface FixRowProps {
-  fix: McpUiErrorFix;
 }
 
 /**

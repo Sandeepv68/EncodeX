@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Box, TextField, Typography } from '@mui/material';
+import { Box, Paper, TextField, Typography } from '@mui/material';
 
 /** Highlighted search match span */
 export const HighlightMark = styled('span')(({ theme }) => ({
@@ -57,6 +57,17 @@ export const FormatBadge = styled(Box, {
 export const OptionContent = styled(Box)({
   minWidth: 0,
   flex: 1,
+});
+
+/**
+ * The option row itself (list item rendered inside the Autocomplete listbox).
+ * `position: relative` anchors the absolutely positioned check/delete icons,
+ * and `alignItems: flex-start` keeps multi-line content top-aligned.
+ * @const OptionItem
+ */
+export const OptionItem = styled('li')({
+  position: 'relative',
+  alignItems: 'flex-start',
 });
 
 /** Description line below the profile name */
@@ -167,5 +178,36 @@ export const SearchTextField = styled(TextField)(({ theme }) => ({
   },
   '& .MuiOutlinedInput-root.MuiInputBase-sizeSmall .MuiOutlinedInput-input': {
     paddingLeft: theme.typography.pxToRem(14),
+  },
+}));
+
+/** Full-width wrapper around the profile autocomplete */
+export const SelectorAutocompleteBox = styled(Box)(({ theme }) => ({
+  width: '100%',
+  // The popup indicator is rendered inside the Autocomplete root, so it can be
+  // targeted from the wrapper instead of reaching into the component's slots.
+  '& .MuiAutocomplete-popupIndicator': {
+    color: theme.palette.text.secondary,
+    padding: theme.spacing(0.5),
+  },
+}));
+
+/** Full-width wrapper around the active-profile chip */
+export const SelectorFullWidthBox = styled(Box)({
+  width: '100%',
+});
+
+/** Row that holds the active-profile chip */
+export const ActiveProfileRow = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  paddingTop: theme.spacing(1),
+  paddingBottom: theme.spacing(1),
+}));
+
+/** Dropdown surface of the profile autocomplete (list + create-new card) */
+export const DropdownPaper = styled(Paper)(({ theme }) => ({
+  '& .MuiAutocomplete-listbox': {
+    maxHeight: theme.typography.pxToRem(360),
   },
 }));
