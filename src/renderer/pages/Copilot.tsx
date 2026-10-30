@@ -388,7 +388,7 @@ export default function Copilot() {
 
 
 
-          <GeminiAurora />
+          <GeminiAurora compact={hasActiveChat} />
           <SavedChatsDrawer
           open={savedChatsOpen}
           chats={savedChats}
