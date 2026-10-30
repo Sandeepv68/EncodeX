@@ -1,6 +1,6 @@
 # 🗂️ Project Structure
 
-<!-- drift: renderer-components=60 renderer-components-top=47 renderer-styles=71 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 renderer-pages=13 renderer-stores=20 log-constants=528 builtin-profiles=115 profile-categories=8 e2e-specs=32 -->
+<!-- drift: renderer-components=61 renderer-components-top=47 renderer-styles=72 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 renderer-pages=13 renderer-stores=20 log-constants=528 builtin-profiles=115 profile-categories=8 e2e-specs=32 -->
 
 ```
 src/
@@ -203,7 +203,7 @@ src/
 │   │   ├── batchConfig.ts             # Batch encoding config persistence
 │   │   ├── dismissedAlertsStore.ts    # Dismissed alert banners (Zustand)
 │   │   └── types.ts                   # Zustand store state shapes + actions
-│   ├── styles/                        # Extracted MUI style constants per component (71 modules)
+│   ├── styles/                        # Extracted MUI style constants per component (72 modules)
 │   │   └── UpdateDialog.styles.ts     # Styled components for the update dialog
 │   └── utils/
 │       ├── formatters.ts              # Duration/bitrate/stream formatting helpers

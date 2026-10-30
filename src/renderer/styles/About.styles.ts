@@ -1,16 +1,60 @@
 import { alpha, keyframes, styled } from '@mui/material/styles';
 import { Box, Button, Typography } from '@mui/material';
-import { THEMES, OVERLAY_COLORS } from '../../shared/theme/colors';
+import { BRAND_COLORS, THEMES, OVERLAY_COLORS, SHADOWS } from '../../shared/theme/colors';
 
-/** Centered application logo rendered at the top of the About page. @const AboutLogo */
+/** Horizontal lockup that groups the app mark and the typographic wordmark. @const AboutBrand */
+export const AboutBrand = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  flexWrap: 'wrap',
+  gap: theme.spacing(2),
+}));
+
+/**
+ * Square app mark rendered at the top of the About page. The source asset is an
+ * opaque dark icon, so dark mode adds a primary-tinted glow to keep it from
+ * blending into the page background, while light mode uses the shared soft
+ * shadow.
+ * @const AboutLogo
+ */
 export const AboutLogo = styled('img')(({ theme }) => ({
   display: 'block',
+  width: theme.spacing(16),
+  height: theme.spacing(16),
   maxWidth: '100%',
-  maxHeight: theme.spacing(14),
-  margin: '0 auto',
-  objectFit: 'contain',
+  borderRadius: theme.typography.pxToRem(28),
+  objectFit: 'cover',
   userSelect: 'none',
+  boxShadow:
+    theme.palette.mode === 'dark'
+      ? `${SHADOWS(theme).SOFT_DARK}, 0 0 ${theme.typography.pxToRem(36)} ${alpha(theme.palette.primary.main, 0.55)}`
+      : SHADOWS(theme).SOFT_HOVER_LIGHT,
 }));
+
+/**
+ * Typographic "EncodeX" wordmark beside the app mark. "Encode" uses the
+ * maximum-contrast text color for the active mode (black in light, white in
+ * dark) while the "X" keeps the fixed bright-blue brand accent.
+ * @const AboutWordmark
+ */
+export const AboutWordmark = styled('span')(({ theme }) => ({
+  fontWeight: 800,
+  lineHeight: 1,
+  fontSize: theme.typography.pxToRem(56),
+  letterSpacing: theme.typography.pxToRem(-1),
+  userSelect: 'none',
+  color: theme.palette.mode === 'dark' ? theme.palette.common.white : theme.palette.common.black,
+  textShadow:
+    theme.palette.mode === 'dark'
+      ? `0 ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(12)} ${alpha(theme.palette.common.black, 0.6)}`
+      : `0 ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(8)} ${alpha(theme.palette.common.black, 0.2)}`,
+}));
+
+/** Bright-blue "X" that closes the typographic EncodeX wordmark. @const AboutWordmarkX */
+export const AboutWordmarkX = styled('span')({
+  color: BRAND_COLORS.wordmarkAccent,
+});
 
 /** Bulleted list of the app's feature highlights. @const AboutFeatureList */
 export const AboutFeatureList = styled('ul')(({ theme }) => ({

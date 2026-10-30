@@ -1,4 +1,4 @@
-import { styled, keyframes } from '@mui/material/styles';
+import { alpha, styled, keyframes } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
 import { Box, Card, CardActionArea, CardContent, Grid, Typography } from '@mui/material';
 import type { ElementType } from 'react';
@@ -22,6 +22,10 @@ export const WelcomeTitle = styled(Typography)<{ component?: ElementType }>(({ t
   color: theme.palette.primary.main,
   fontWeight: 700,
   marginBottom: theme.spacing(1),
+  textShadow:
+    theme.palette.mode === 'dark'
+      ? `0 ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(12)} ${alpha(theme.palette.common.black, 0.6)}`
+      : `0 ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(8)} ${alpha(theme.palette.common.black, 0.2)}`,
   animation: `${fadeSlideUp(theme)} 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards`,
   animationDelay: '0.05s',
   '@media (prefers-reduced-motion: reduce)': {
@@ -50,6 +54,10 @@ export const DashboardSubtitle = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(3),
   textAlign: 'center',
   maxWidth: theme.typography.pxToRem(560),
+  textShadow:
+    theme.palette.mode === 'dark'
+      ? `0 ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(10)} ${alpha(theme.palette.common.black, 0.5)}`
+      : `0 ${theme.typography.pxToRem(1)} ${theme.typography.pxToRem(6)} ${alpha(theme.palette.common.black, 0.18)}`,
   animation: `${fadeSlideUp(theme)} 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards`,
   animationDelay: '0.18s',
   '@media (prefers-reduced-motion: reduce)': {
@@ -111,6 +119,12 @@ export const FeatureIconBox = styled(Box)(({ theme }) => ({
   marginBottom: theme.spacing(1),
   display: 'flex',
   justifyContent: 'flex-start',
+  '& svg': {
+    filter:
+      theme.palette.mode === 'dark'
+        ? `drop-shadow(0 ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(4)} ${alpha(theme.palette.common.black, 0.55)})`
+        : `drop-shadow(0 ${theme.typography.pxToRem(1)} ${theme.typography.pxToRem(3)} ${alpha(theme.palette.common.black, 0.25)})`,
+  },
 }));
 
 export const CardTitleText = styled(Typography)<{ component?: ElementType }>(({ theme }) => ({

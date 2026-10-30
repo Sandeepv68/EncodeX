@@ -1,6 +1,6 @@
 # टेस्टिंग
 
-<!-- drift: test-files=328 renderer-component-tests=45 -->
+<!-- drift: test-files=329 renderer-component-tests=46 -->
 
 EncodeX एक विस्तृत टेस्ट सुइट बनाए रखता है: `src/` के भीतर 314 test/spec files, `e2e/` में 39 test/spec files, और `perf/` में 11 performance suites। Unit और integration tests Vitest से चलते हैं, जबकि end-to-end specs Playwright के Electron automation के माध्यम से पैकेज्ड ऐप चलाते हैं। CI प्रत्येक push और pull request पर full matrix (lint + typecheck + unit + E2E) चलाता है।
 

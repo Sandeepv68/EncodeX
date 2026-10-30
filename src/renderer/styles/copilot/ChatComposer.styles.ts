@@ -11,6 +11,8 @@ export const ComposerBar = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   flexShrink: 0,
   gap: theme.spacing(1),
+  maxWidth: '80%',
+  marginInline: 'auto',
   paddingInline: theme.spacing(1),
   paddingBottom: theme.spacing(2),
   [theme.breakpoints.up('sm')]: { paddingInline: theme.spacing(2) },

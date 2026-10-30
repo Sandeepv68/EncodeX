@@ -55,6 +55,7 @@ export const CondenseButton = styled(IconButton)(({ theme }) => ({
 export const NavList = styled('div')(({ theme }) => ({
   flex: 1,
   paddingInline: theme.spacing(1),
+  paddingTop: theme.spacing(1),
 }));
 
 /** Root navigation element of the drawer. */
@@ -120,6 +121,10 @@ export const NavItemIcon = styled(ListItemIcon, {
   '& svg': {
     transformOrigin: 'center center',
     transition: `transform ${NAV_ICON_HOVER_TRANSITION} cubic-bezier(0.34, 1.4, 0.64, 1)`,
+    filter:
+      theme.palette.mode === 'dark'
+        ? `drop-shadow(0 ${theme.typography.pxToRem(2)} ${theme.typography.pxToRem(4)} ${alpha(theme.palette.common.black, 0.55)})`
+        : `drop-shadow(0 ${theme.typography.pxToRem(1)} ${theme.typography.pxToRem(3)} ${alpha(theme.palette.common.black, 0.25)})`,
   },
   '@media (prefers-reduced-motion: reduce)': {
     transition: 'none',

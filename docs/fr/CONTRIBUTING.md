@@ -1,6 +1,6 @@
 # Aidez à améliorer EncodeX
 
-<!-- drift: locales=56 locale-subtags=36 test-files=328 -->
+<!-- drift: locales=56 locale-subtags=36 test-files=329 -->
 
 EncodeX est gratuit et construit par des bénévoles — et vous n'avez pas besoin d'être programmeur pour aider. Voici comment tout le monde peut participer :
 
