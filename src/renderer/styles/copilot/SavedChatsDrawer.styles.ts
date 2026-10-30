@@ -1,5 +1,5 @@
 import type { ElementType } from 'react';
-import { styled } from '@mui/material/styles';
+import { alpha, styled } from '@mui/material/styles';
 import { Box, ButtonBase, Chip, IconButton, Typography } from '@mui/material';
 import { SHADOWS } from '../../../shared/theme/colors';
 
@@ -72,15 +72,16 @@ export const SavedChatItem = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   borderRadius: theme.shape.borderRadius,
   border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
-  backgroundColor: theme.palette.background.default,
+  backgroundColor: theme.palette.background.paper,
   backgroundImage: 'none',
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
   transition: 'background-color 150ms ease, box-shadow 150ms ease',
   '&:hover': {
-    backgroundColor: theme.palette.action.selected,
-    boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_HOVER_DARK : SHADOWS(theme).SOFT_HOVER_LIGHT,
+    boxShadow: `0 0 ${theme.typography.pxToRem(12)} ${alpha(theme.palette.primary.main, 0.45)}, ${theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_HOVER_DARK : SHADOWS(theme).SOFT_HOVER_LIGHT}`,
   },
-  '&:focus-within': { backgroundColor: theme.palette.action.selected },
+  '&:focus-within': {
+    boxShadow: `0 0 ${theme.typography.pxToRem(12)} ${alpha(theme.palette.primary.main, 0.45)}, ${theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_HOVER_DARK : SHADOWS(theme).SOFT_HOVER_LIGHT}`,
+  },
 }));
 
 /** Clickable region that opens a saved conversation. */
