@@ -21,9 +21,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PageContainer from '../components/PageContainer';
 import { pageIcons } from '../pageIcons';
 import pkg from '../../../package.json';
-import appLogo from '../../../assets/banner.png';
+import appLogo from '../../../assets/icons/appstore.png';
 import {
+  AboutBrand,
   AboutLogo,
+  AboutWordmark,
+  AboutWordmarkX,
   AboutFeatureList,
   AboutFeatureItem,
   AboutMetaRow,
@@ -50,6 +53,19 @@ const FEATURE_DESC_KEYS: readonly string[] = [
   'about.featureHardware',
   'about.featureAutomation',
 ];
+
+/**
+ * Base text of the typographic EncodeX wordmark. The brand name is intentionally
+ * not localized.
+ * @const {string} WORDMARK_BASE
+ */
+const WORDMARK_BASE = 'Encode';
+
+/**
+ * Accent letter that closes the typographic EncodeX wordmark.
+ * @const {string} WORDMARK_ACCENT
+ */
+const WORDMARK_ACCENT = 'X';
 
 /**
  * Author name shown in the author meta row. @const {string} AUTHOR_NAME
@@ -118,7 +134,13 @@ export default function About() {
           }
         `}
       />
-      <AboutLogo src={appLogo} alt={t('about.logoAlt')} />
+      <AboutBrand>
+        <AboutLogo src={appLogo} alt={t('about.logoAlt')} />
+        <AboutWordmark aria-hidden="true">
+          {WORDMARK_BASE}
+          <AboutWordmarkX>{WORDMARK_ACCENT}</AboutWordmarkX>
+        </AboutWordmark>
+      </AboutBrand>
       <Typography variant="body1" color="text.secondary">
         {t('about.subtitle')}
       </Typography>

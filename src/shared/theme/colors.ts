@@ -348,6 +348,16 @@ export const TITLEBAR_COLORS = {
 } as const;
 
 /**
+ * Fixed brand colors for the EncodeX wordmark. The accent stays the same in
+ * every theme so the "X" always reads as the bright-blue brand highlight.
+ * @const {Object} BRAND_COLORS
+ * @property {string} wordmarkAccent - Accent color for the wordmark's "X".
+ */
+export const BRAND_COLORS = {
+  wordmarkAccent: '#2196f3',
+} as const;
+
+/**
  * Brand / platform colors used for profile icons in the profile selector
  * dropdown. These are fixed brand colors that stay the same across every theme.
  */
