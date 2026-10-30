@@ -134,6 +134,15 @@ export async function launchApp(options: LaunchOptions = {}): Promise<AppSession
 
   await app.firstWindow();
   const page = await getMainWindow(app);
+  // Decorative animation is a paint cost the suite does not need to pay. The
+  // CI runners force software rendering (`CHROMIUM_STABILITY_ARGS`), where the
+  // Copilot glow's drifting orbs drop the route to single-digit frames per
+  // second; hostile-bridge runs six instances at once, so the whole file
+  // starves and Playwright's actionability checks time out. The app already
+  // honours `prefers-reduced-motion` by dropping those animations, so asking
+  // for it here keeps the tests about behaviour instead of frame rate. It
+  // survives `page.reload()`, and relaunches go back through `launchApp`.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   return { app, page, userDataDir, bootMs: Date.now() - startedAt };
 }
 
