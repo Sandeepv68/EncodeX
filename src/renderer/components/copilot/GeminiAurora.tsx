@@ -148,7 +148,7 @@ export default function GeminiAurora({ compact = false }: { compact?: boolean })
         ))}
       </GeminiAuroraBlobs>
       <GeminiAuroraCanvas ref={canvasRef} />
-      <GeminiAuroraEdge $visible={masked} $instant={compact} />
+      <GeminiAuroraEdge data-testid="copilot-aurora-edge" $visible={masked} $instant={compact} />
     </GeminiAuroraLayer>
   );
 }
