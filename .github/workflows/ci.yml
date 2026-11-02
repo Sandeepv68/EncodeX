@@ -273,7 +273,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: dist-${{ matrix.os }}
           path: dist
@@ -298,7 +298,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run test:coverage
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: coverage
@@ -481,7 +481,7 @@ jobs:
         run: npm run test:coverage:floor
       - name: Report the files still below the global floor (informational)
         run: node scripts/coverage-floor-report.mjs 2>&1 | tee per-file-coverage.txt
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: per-file-coverage
@@ -540,7 +540,7 @@ jobs:
       # it would convert a one-in-three failure into a green result.
       - name: Run e2e three times and fail on intermittent results
         run: xvfb-run --auto-servernum npm run test:flake-detect
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: flake-report
@@ -597,7 +597,7 @@ jobs:
         run: npm run perf
       - name: Compare against baseline (regression gate)
         run: npm run perf:compare
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: perf-results
@@ -682,7 +682,7 @@ jobs:
       - name: Run mutation testing (shard ${{ matrix.shard }})
         continue-on-error: ${{ steps.baseline.outputs.armed != 'true' }}
         run: npm run test:mutate -- --concurrency 4 --mutate "${{ matrix.files }}"
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: mutation-report-shard-${{ matrix.shard }}
@@ -729,7 +729,7 @@ jobs:
         if: steps.baseline.outputs.armed != 'true'
         run: |
           echo "::notice title=Mutation gate not armed::No mutation/baseline.json is committed, so the mutation score has no recorded floor yet. Commit the candidate the weekly Mutation Ratchet workflow produces to arm this gate."
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: mutation-report
