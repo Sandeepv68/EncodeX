@@ -123,7 +123,7 @@
     "@modelcontextprotocol/node": "^2.1.2",
     "@modelcontextprotocol/server": "^2.4.0",
     "@mui/material": "^9.5.0",
-    "@sentry/electron": "^7.17.0",
+    "@sentry/electron": "^8.3.0",
     "@tanstack/react-virtual": "^3.14.22",
     "chalk": "4.1.2",
     "cli-progress": "3.12.0",
