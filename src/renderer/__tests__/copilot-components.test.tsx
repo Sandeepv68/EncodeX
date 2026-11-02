@@ -547,6 +547,46 @@ describe('ChatComposer', () => {
     expect(within(list).getByText('b.mkv')).toBeInTheDocument();
   });
 
+  it('closes the file list when the same card is clicked again', async () => {
+    renderComposer({
+      attachments: [{ id: '/in', isFolder: true, label: 'in', paths: ['/in/a.mp4', '/in/b.mkv'] }],
+    });
+
+    fireEvent.click(screen.getByTestId('copilot-attachment-card'));
+    expect(await screen.findByTestId('copilot-folder-file-list')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('copilot-attachment-card'));
+    await waitFor(() => expect(screen.queryByTestId('copilot-folder-file-list')).toBeNull());
+  });
+
+  it('closes the file list when the user clicks outside of it', async () => {
+    renderComposer({
+      attachments: [{ id: '/in', isFolder: true, label: 'in', paths: ['/in/a.mp4', '/in/b.mkv'] }],
+    });
+
+    fireEvent.click(screen.getByTestId('copilot-attachment-card'));
+    expect(await screen.findByTestId('copilot-folder-file-list')).toBeInTheDocument();
+
+    fireEvent.click(document.body);
+    await waitFor(() => expect(screen.queryByTestId('copilot-folder-file-list')).toBeNull());
+  });
+
+  it('opens the file list from the keyboard and closes it again', async () => {
+    renderComposer({
+      attachments: [{ id: '/in', isFolder: true, label: 'in', paths: ['/in/a.mp4', '/in/b.mkv'] }],
+    });
+    const card = screen.getByTestId('copilot-attachment-card');
+
+    fireEvent.keyDown(card, { key: 'Enter' });
+    expect(await screen.findByTestId('copilot-folder-file-list')).toBeInTheDocument();
+
+    fireEvent.keyDown(card, { key: 'Enter' });
+    await waitFor(() => expect(screen.queryByTestId('copilot-folder-file-list')).toBeNull());
+
+    fireEvent.keyDown(card, { key: ' ' });
+    expect(await screen.findByTestId('copilot-folder-file-list')).toBeInTheDocument();
+  });
+
   it('shows the loading card with a progress bar while files are being selected', () => {
     renderComposer({ inputsLoading: true });
     expect(screen.getByTestId('copilot-attachment-loading')).toBeInTheDocument();

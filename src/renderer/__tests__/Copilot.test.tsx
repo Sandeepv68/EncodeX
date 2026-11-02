@@ -20,7 +20,7 @@ import { useQueueStore } from '../stores/queueStore';
 import { readSavedCopilotChats, saveCopilotChat } from '../stores/copilotChats';
 import type { SavedCopilotChat } from '../stores/copilotChats';
 import type { CopilotPlan } from '../../shared/copilot';
-import type { FolderSelection } from '../../shared/types';
+import type { FolderSelection, QueueJob } from '../../shared/types';
 import { expectAppLog } from '../../test-utils/crash-tripwire';
 
 /** The most recent route the page navigated to, captured by {@link LocationProbe}. */
@@ -216,6 +216,7 @@ describe('Copilot page', () => {
     vi.clearAllMocks();
     localStorage.clear();
     useToastStore.setState({ toasts: [] });
+    useQueueStore.setState({ jobs: [] });
     useAiConnectionStore.getState().reset();
     lastPath = '';
     vi.mocked(window.electronAPI.selectFolderFiles).mockResolvedValue({ folder: '/in', files: ['/in/one.mp4', '/in/two.mkv'] });
@@ -263,12 +264,27 @@ describe('Copilot page', () => {
 
     fireEvent.click(screen.getByTestId('copilot-reset-conversation'));
     const dialog = await screen.findByRole('dialog');
-    // DialogActions order: cancel first, confirm second.
-    fireEvent.click(within(dialog).getAllByRole('button')[1]);
+    fireEvent.click(within(dialog).getByText('copilot.resetConfirmAction'));
 
     await waitFor(() => expect(screen.queryByTestId('copilot-plan-summary')).not.toBeInTheDocument());
     expect(screen.getByTestId('copilot-conversation')).toHaveAttribute('data-empty', 'true');
     expect(getEditor().textContent ?? '').toBe('');
+  });
+
+  it('saves the chat and clears the conversation when the save-and-reset action is used', async () => {
+    renderPage('Copilot');
+    await typeMessage('compress for web');
+    await chooseFolder();
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await screen.findByTestId('copilot-plan-summary');
+
+    fireEvent.click(screen.getByTestId('copilot-reset-conversation'));
+    const dialog = await screen.findByRole('dialog');
+    fireEvent.click(within(dialog).getByText('copilot.saveAndReset'));
+
+    await waitFor(() => expect(screen.queryByTestId('copilot-plan-summary')).not.toBeInTheDocument());
+    expect(screen.getByTestId('copilot-conversation')).toHaveAttribute('data-empty', 'true');
+    expect(readSavedCopilotChats()).toHaveLength(1);
   });
 
   it('shows the connected provider and model from the mirrored connection', async () => {
@@ -979,5 +995,61 @@ describe('Copilot page', () => {
 
     await waitFor(() => expect(useQueueStore.getState().jobs).toHaveLength(1));
     expect(useQueueStore.getState().jobs[0].id).toBe('q1');
+  });
+
+  it('keeps working when the queue list cannot be read', async () => {
+    vi.mocked(window.electronAPI.queueList).mockReset().mockRejectedValue(new Error('bridge down'));
+
+    renderPage('Copilot');
+
+    await waitFor(() => expect(useQueueStore.getState().jobs).toHaveLength(0));
+    expect(screen.getByTestId('copilot-conversation')).toBeInTheDocument();
+  });
+
+  it('applies the queue events pushed by the main process', async () => {
+    let onAdded: ((job: QueueJob) => void) | undefined;
+    let onRemoved: ((id: string) => void) | undefined;
+    let onStatusChange: ((job: QueueJob) => void) | undefined;
+    vi.mocked(window.electronAPI.onQueueAdded).mockImplementation((cb) => {
+      onAdded = cb;
+      return () => undefined;
+    });
+    vi.mocked(window.electronAPI.onQueueRemoved).mockImplementation((cb) => {
+      onRemoved = cb;
+      return () => undefined;
+    });
+    vi.mocked(window.electronAPI.onQueueStatusChange).mockImplementation((cb) => {
+      onStatusChange = cb;
+      return () => undefined;
+    });
+
+    renderPage('Copilot');
+    await waitFor(() => expect(onAdded).toBeDefined());
+
+    const queuedJob = {
+      id: 'q2',
+      input: '/in/b.mkv',
+      output: '/out/b.mp4',
+      options: {},
+      transcoder: 'ffmpeg',
+      status: 'queued',
+      progress: 0,
+      createdAt: 0,
+    } as unknown as QueueJob;
+
+    act(() => {
+      onAdded?.(queuedJob);
+    });
+    expect(useQueueStore.getState().jobs.map((job) => job.id)).toContain('q2');
+
+    act(() => {
+      onStatusChange?.({ ...queuedJob, status: 'running', progress: 10 } as unknown as QueueJob);
+    });
+    expect(useQueueStore.getState().jobs.find((job) => job.id === 'q2')?.status).toBe('running');
+
+    act(() => {
+      onRemoved?.('q2');
+    });
+    expect(useQueueStore.getState().jobs.map((job) => job.id)).not.toContain('q2');
   });
 });

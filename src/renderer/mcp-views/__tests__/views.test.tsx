@@ -72,6 +72,13 @@ describe('queue view', () => {
     expect(screen.getByText(/Running · 42%/)).toBeTruthy();
   });
 
+  it('labels a failed job with the translated failed status', () => {
+    renderView(<QueueView />, new FakeViewHost(), {
+      jobs: [{ id: 'a', input: '/in/a.mkv', output: '/out/a.mp4', status: 'error', progress: 0 }],
+    });
+    expect(screen.getByText(/Failed · 0%/)).toBeTruthy();
+  });
+
   it('arms the cancel button before it cancels the job', async () => {
     const host = new FakeViewHost();
     renderView(<QueueView />, host, { jobs: [{ id: 'a', input: '/in/a.mkv', output: '/out/a.mp4', status: 'running', progress: 10 }] });
