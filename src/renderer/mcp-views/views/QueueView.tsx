@@ -13,6 +13,8 @@ import { basename, clampPercent } from '../format';
 import { useMcpView, useMcpViewData } from '../McpViewProvider';
 import { useMcpViewPolling } from '../useMcpViewPolling';
 import { useArmedAction } from '../kit/useArmedAction';
+import { useQueueStore } from '../../stores/queueStore';
+import type { McpUiJob } from '../../../shared/types';
 import ViewBadge from '../kit/ViewBadge';
 import ViewButton from '../kit/ViewButton';
 import ViewCard from '../kit/ViewCard';
@@ -29,7 +31,22 @@ export default function QueueView() {
   const { t } = useTranslation();
   const { callTool, host } = useMcpView();
   const payload = useMcpViewData<QueuePayload>();
-  const jobs = payload?.jobs ?? [];
+  const hostJobs = payload?.jobs ?? [];
+  // The in-app queue store mirrors the main-process queue, so a job that is
+  // already queued shows up in the transcript even when the MCP host has not
+  // pushed a payload for it.
+  const storeJobs = useQueueStore((state) => state.jobs);
+  const jobs: McpUiJob[] =
+    hostJobs.length > 0
+      ? hostJobs
+      : storeJobs.map((job) => ({
+          id: job.id,
+          input: job.input,
+          output: job.output,
+          status: job.status,
+          progress: job.progress,
+          ...(job.error ? { error: job.error } : {}),
+        }));
 
   useMcpViewPolling({
     tool: 'list_jobs',
@@ -72,6 +89,25 @@ export default function QueueView() {
 }
 
 /**
+ * Maps a job status to the batch-queue filter key that carries its translated
+ * label.
+ * @param {string} status - The raw job status.
+ * @returns {string} The `batchQueue.filters` key for that status.
+ */
+function statusFilterKey(status: string): string {
+  switch (status) {
+    case 'running':
+      return 'running';
+    case 'done':
+      return 'done';
+    case 'error':
+      return 'failed';
+    default:
+      return 'queued';
+  }
+}
+
+/**
  * Renders one job row.
  * @param {QueueRowProps} props - Component props.
  * @returns {JSX.Element} The row.
@@ -81,13 +117,14 @@ function QueueRow({ job, onCancel }: QueueRowProps) {
   const percent = clampPercent(job.progress);
   const armed = useArmedAction(() => onCancel(job.id));
   const name = basename(job.output || job.input || job.id);
+  const status = t(`batchQueue.filters.${statusFilterKey(job.status)}`);
   return (
     <ViewRow>
       <Typography variant="body2" noWrap title={job.output || job.input || job.id}>
         {name}
       </Typography>
       <Typography variant="caption" color="text.secondary">
-        {t('mcpViews.common.progressWithStatus', { status: job.status, percent })}
+        {t('mcpViews.common.progressWithStatus', { status, percent })}
       </Typography>
       <ViewButton
         label={t('mcpViews.common.cancel')}

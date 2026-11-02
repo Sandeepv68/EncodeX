@@ -87,6 +87,7 @@ import {
   UpdateInfo,
   UpdateProgress,
   PendingInstall,
+  FolderSelection,
 } from '../shared/types';
 import type { McpSettings } from '../shared/mcp-settings';
 import type { AiConnectTestResult, AiModelsListResult, AiSettingsUpdate, AiSettingsView } from '../shared/ai/settings';
@@ -298,14 +299,14 @@ const api = {
    * invokes the main process over the `IPC.SELECT_FOLDER_FILES`
    * ('select-folder-files') channel.
    *
-   * @returns {Promise<string[]>} Resolves with the absolute paths of every
-   *   supported media file found inside the chosen folder (recursively), or an
-   *   empty array if the user cancelled the dialog.
+   * @returns {Promise<FolderSelection>} Resolves with the chosen folder and
+   *   every supported media file found inside it (recursively). The folder is
+   *   null when the user cancelled the dialog.
    * @throws {Error} Rejects if the dialog could not be opened in the main process.
    */
   selectFolderFiles: () => {
     log.debug(LOG_SELECT_FOLDER_FILES_CALLED);
-    return ipcRenderer.invoke(IPC.SELECT_FOLDER_FILES) as Promise<string[]>;
+    return ipcRenderer.invoke(IPC.SELECT_FOLDER_FILES) as Promise<FolderSelection>;
   },
   /**
    * Builds a deterministic conversion plan for a goal against a folder of

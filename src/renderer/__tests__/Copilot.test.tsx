@@ -16,9 +16,11 @@ import { useLocation } from 'react-router-dom';
 import { NavigationGuardProvider } from '../NavigationGuardContext';
 import { useToastStore } from '../stores/toastStore';
 import { useAiConnectionStore } from '../stores/aiConnectionStore';
+import { useQueueStore } from '../stores/queueStore';
 import { readSavedCopilotChats, saveCopilotChat } from '../stores/copilotChats';
 import type { SavedCopilotChat } from '../stores/copilotChats';
 import type { CopilotPlan } from '../../shared/copilot';
+import type { FolderSelection, QueueJob } from '../../shared/types';
 import { expectAppLog } from '../../test-utils/crash-tripwire';
 
 /** The most recent route the page navigated to, captured by {@link LocationProbe}. */
@@ -214,9 +216,10 @@ describe('Copilot page', () => {
     vi.clearAllMocks();
     localStorage.clear();
     useToastStore.setState({ toasts: [] });
+    useQueueStore.setState({ jobs: [] });
     useAiConnectionStore.getState().reset();
     lastPath = '';
-    vi.mocked(window.electronAPI.selectFolderFiles).mockResolvedValue(['/in/one.mp4', '/in/two.mkv']);
+    vi.mocked(window.electronAPI.selectFolderFiles).mockResolvedValue({ folder: '/in', files: ['/in/one.mp4', '/in/two.mkv'] });
     vi.mocked(window.electronAPI.selectFiles).mockReset().mockResolvedValue([]);
     vi.mocked(window.electronAPI.queueAdd).mockReset().mockResolvedValue('');
     vi.mocked(window.electronAPI.copilotPlan).mockResolvedValue(PLAN_FIXTURE);
@@ -261,12 +264,27 @@ describe('Copilot page', () => {
 
     fireEvent.click(screen.getByTestId('copilot-reset-conversation'));
     const dialog = await screen.findByRole('dialog');
-    // DialogActions order: cancel first, confirm second.
-    fireEvent.click(within(dialog).getAllByRole('button')[1]);
+    fireEvent.click(within(dialog).getByText('copilot.resetConfirmAction'));
 
     await waitFor(() => expect(screen.queryByTestId('copilot-plan-summary')).not.toBeInTheDocument());
     expect(screen.getByTestId('copilot-conversation')).toHaveAttribute('data-empty', 'true');
     expect(getEditor().textContent ?? '').toBe('');
+  });
+
+  it('saves the chat and clears the conversation when the save-and-reset action is used', async () => {
+    renderPage('Copilot');
+    await typeMessage('compress for web');
+    await chooseFolder();
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await screen.findByTestId('copilot-plan-summary');
+
+    fireEvent.click(screen.getByTestId('copilot-reset-conversation'));
+    const dialog = await screen.findByRole('dialog');
+    fireEvent.click(within(dialog).getByText('copilot.saveAndReset'));
+
+    await waitFor(() => expect(screen.queryByTestId('copilot-plan-summary')).not.toBeInTheDocument());
+    expect(screen.getByTestId('copilot-conversation')).toHaveAttribute('data-empty', 'true');
+    expect(readSavedCopilotChats()).toHaveLength(1);
   });
 
   it('shows the connected provider and model from the mirrored connection', async () => {
@@ -431,7 +449,7 @@ describe('Copilot page', () => {
   });
 
   it('shows a notice when the chosen folder contains no media files', async () => {
-    vi.mocked(window.electronAPI.selectFolderFiles).mockResolvedValue([]);
+    vi.mocked(window.electronAPI.selectFolderFiles).mockResolvedValue({ folder: '/in', files: [] });
     renderPage('Copilot');
     fireEvent.click(screen.getByTestId('copilot-choose-folder'));
     expect(await screen.findByTestId('copilot-notice')).toBeInTheDocument();
@@ -504,6 +522,59 @@ describe('Copilot page', () => {
     );
   });
 
+  it('groups files picked in separate dialogs into one card that lists them', async () => {
+    vi.mocked(window.electronAPI.selectFiles).mockResolvedValueOnce(['/in/one.mp4']).mockResolvedValueOnce(['/in/two.mkv']);
+    renderPage('Copilot');
+
+    fireEvent.click(screen.getByTestId('copilot-choose-files'));
+    await waitFor(() => expect(window.electronAPI.selectFiles).toHaveBeenCalledTimes(1));
+    expect(await screen.findByText('one.mp4')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('copilot-choose-files'));
+    await waitFor(() => expect(window.electronAPI.selectFiles).toHaveBeenCalledTimes(2));
+    expect(await screen.findByText('one.mp4, two.mkv')).toBeInTheDocument();
+    expect(screen.getByText('2 files')).toBeInTheDocument();
+
+    const cards = screen.getAllByTestId('copilot-attachment-card');
+    expect(cards).toHaveLength(1);
+    fireEvent.click(cards[0]);
+    const list = await screen.findByTestId('copilot-folder-file-list');
+    expect(within(list).getByText('one.mp4')).toBeInTheDocument();
+    expect(within(list).getByText('two.mkv')).toBeInTheDocument();
+  });
+
+  it('replaces picked files when a folder is chosen afterwards', async () => {
+    vi.mocked(window.electronAPI.selectFiles).mockResolvedValue(['/in/one.mp4']);
+    renderPage('Copilot');
+
+    fireEvent.click(screen.getByTestId('copilot-choose-files'));
+    await waitFor(() => expect(window.electronAPI.selectFiles).toHaveBeenCalledTimes(1));
+    expect(await screen.findByText('one.mp4')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
+    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
+    expect(await screen.findByText('in')).toBeInTheDocument();
+    expect(screen.queryByText('one.mp4')).toBeNull();
+    expect(screen.getAllByTestId('copilot-attachment-card')).toHaveLength(1);
+  });
+
+  it('replaces an existing folder when another folder is chosen', async () => {
+    vi.mocked(window.electronAPI.selectFolderFiles)
+      .mockResolvedValueOnce({ folder: '/in', files: ['/in/one.mp4'] })
+      .mockResolvedValueOnce({ folder: '/out', files: ['/out/two.mkv'] });
+    renderPage('Copilot');
+
+    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
+    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
+    expect(await screen.findByText('in')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
+    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(2));
+    expect(await screen.findByText('out')).toBeInTheDocument();
+    expect(screen.queryByText('in')).toBeNull();
+    expect(screen.getAllByTestId('copilot-attachment-card')).toHaveLength(1);
+  });
+
   it('shows a notice when the file dialog returns no files', async () => {
     vi.mocked(window.electronAPI.selectFiles).mockResolvedValue([]);
     renderPage('Copilot');
@@ -512,17 +583,28 @@ describe('Copilot page', () => {
     expect(window.electronAPI.copilotPlan).not.toHaveBeenCalled();
   });
 
-  it('removes an attachment when its chip delete icon is clicked', async () => {
+  it('shows a folder card with its file count and removes it with the close button', async () => {
     renderPage('Copilot');
     await typeMessage('compress for web');
     await chooseFolder();
-    expect(screen.getByText('one.mp4')).toBeInTheDocument();
-    expect(screen.getByText('two.mkv')).toBeInTheDocument();
+    expect(screen.getByText('in')).toBeInTheDocument();
+    expect(screen.getByText('2 files')).toBeInTheDocument();
 
-    fireEvent.click(screen.getAllByTestId('CancelIcon')[0]);
-    await waitFor(() => expect(screen.queryByText('one.mp4')).toBeNull());
-    fireEvent.click(screen.getByTestId('copilot-plan'));
-    await waitFor(() => expect(window.electronAPI.copilotPlan).toHaveBeenCalledWith(expect.objectContaining({ inputs: ['/in/two.mkv'] })));
+    fireEvent.click(screen.getAllByTestId('copilot-remove-attachment')[0]);
+    await waitFor(() => expect(screen.queryByText('in')).toBeNull());
+    expect((screen.getByTestId('copilot-plan') as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it('lists the files inside a folder card when it is clicked', async () => {
+    renderPage('Copilot');
+    await typeMessage('compress for web');
+    await chooseFolder();
+
+    const card = screen.getAllByTestId('copilot-attachment-card')[0];
+    fireEvent.click(card);
+    const list = await screen.findByTestId('copilot-folder-file-list');
+    expect(within(list).getByText('one.mp4')).toBeInTheDocument();
+    expect(within(list).getByText('two.mkv')).toBeInTheDocument();
   });
 
   it('passes a target language when the translate operation is chosen', async () => {
@@ -638,7 +720,7 @@ describe('Copilot page', () => {
   });
 
   it('ignores a folder dialog that never settles', async () => {
-    vi.mocked(window.electronAPI.selectFolderFiles).mockReturnValue(new Promise<string[]>(() => {}));
+    vi.mocked(window.electronAPI.selectFolderFiles).mockReturnValue(new Promise<FolderSelection>(() => {}));
     renderPage('Copilot');
     vi.useFakeTimers();
     fireEvent.click(screen.getByTestId('copilot-choose-folder'));
@@ -662,7 +744,7 @@ describe('Copilot page', () => {
   });
 
   it('de-duplicates a file chosen through both the folder and file dialogs', async () => {
-    vi.mocked(window.electronAPI.selectFolderFiles).mockResolvedValue(['/in/one.mp4']);
+    vi.mocked(window.electronAPI.selectFolderFiles).mockResolvedValue({ folder: '/in', files: ['/in/one.mp4'] });
     vi.mocked(window.electronAPI.selectFiles).mockResolvedValue(['/in/one.mp4', '/in/two.mkv']);
     renderPage('Copilot');
     await typeMessage('compress for web');
@@ -784,6 +866,19 @@ describe('Copilot page', () => {
     expect(within(screen.getByTestId('copilot-conversation')).getByText('compress for web')).toBeInTheDocument();
   });
 
+  it('lists a chat saved while the saved-chats panel is open', async () => {
+    renderPage('Copilot');
+    await startActivePlan();
+
+    fireEvent.click(screen.getByTestId('copilot-saved-chats'));
+    expect(await screen.findByTestId('saved-chats-drawer')).toBeTruthy();
+    expect(screen.queryByTestId('saved-chat-item')).toBeNull();
+
+    fireEvent.click(screen.getByTestId('copilot-save-chat'));
+
+    await waitFor(() => expect(screen.getAllByTestId('saved-chat-item')).toHaveLength(1));
+  });
+
   it('loads a saved chat straight away when the transcript is empty', async () => {
     seedChat('saved-1', 'saved transcript', 2);
     renderPage('Copilot');
@@ -878,5 +973,83 @@ describe('Copilot page', () => {
 
     await waitFor(() => expect(screen.getAllByTestId('saved-chat-item')).toHaveLength(1));
     expect(readSavedCopilotChats()).toHaveLength(1);
+  });
+
+  it('mirrors the queued jobs into the shared queue store', async () => {
+    vi.mocked(window.electronAPI.queueList)
+      .mockReset()
+      .mockResolvedValue([
+        {
+          id: 'q1',
+          input: '/in/a.mkv',
+          output: '/out/a.mp4',
+          options: {},
+          transcoder: 'ffmpeg',
+          status: 'queued',
+          progress: 0,
+          createdAt: 0,
+        },
+      ] as unknown as Awaited<ReturnType<typeof window.electronAPI.queueList>>);
+
+    renderPage('Copilot');
+
+    await waitFor(() => expect(useQueueStore.getState().jobs).toHaveLength(1));
+    expect(useQueueStore.getState().jobs[0].id).toBe('q1');
+  });
+
+  it('keeps working when the queue list cannot be read', async () => {
+    vi.mocked(window.electronAPI.queueList).mockReset().mockRejectedValue(new Error('bridge down'));
+
+    renderPage('Copilot');
+
+    await waitFor(() => expect(useQueueStore.getState().jobs).toHaveLength(0));
+    expect(screen.getByTestId('copilot-conversation')).toBeInTheDocument();
+  });
+
+  it('applies the queue events pushed by the main process', async () => {
+    let onAdded: ((job: QueueJob) => void) | undefined;
+    let onRemoved: ((id: string) => void) | undefined;
+    let onStatusChange: ((job: QueueJob) => void) | undefined;
+    vi.mocked(window.electronAPI.onQueueAdded).mockImplementation((cb) => {
+      onAdded = cb;
+      return () => undefined;
+    });
+    vi.mocked(window.electronAPI.onQueueRemoved).mockImplementation((cb) => {
+      onRemoved = cb;
+      return () => undefined;
+    });
+    vi.mocked(window.electronAPI.onQueueStatusChange).mockImplementation((cb) => {
+      onStatusChange = cb;
+      return () => undefined;
+    });
+
+    renderPage('Copilot');
+    await waitFor(() => expect(onAdded).toBeDefined());
+
+    const queuedJob = {
+      id: 'q2',
+      input: '/in/b.mkv',
+      output: '/out/b.mp4',
+      options: {},
+      transcoder: 'ffmpeg',
+      status: 'queued',
+      progress: 0,
+      createdAt: 0,
+    } as unknown as QueueJob;
+
+    act(() => {
+      onAdded?.(queuedJob);
+    });
+    expect(useQueueStore.getState().jobs.map((job) => job.id)).toContain('q2');
+
+    act(() => {
+      onStatusChange?.({ ...queuedJob, status: 'running', progress: 10 } as unknown as QueueJob);
+    });
+    expect(useQueueStore.getState().jobs.find((job) => job.id === 'q2')?.status).toBe('running');
+
+    act(() => {
+      onRemoved?.('q2');
+    });
+    expect(useQueueStore.getState().jobs.map((job) => job.id)).not.toContain('q2');
   });
 });

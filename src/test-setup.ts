@@ -89,6 +89,7 @@ vi.mock('react-i18next', () => ({
         'mediaInfo.tagKeys.encoder': 'Encoder',
         'mediaInfo.dispositionFlags.default': 'Default',
         'mediaInfo.dispositionFlags.forced': 'Forced',
+        'mcpViews.common.fileCount': '{{count}} files',
         'mediaInfo.video': 'Video',
         'mediaInfo.audio': 'Audio',
         'mediaInfo.subtitle': 'Subtitle',
@@ -117,6 +118,7 @@ vi.mock('react-i18next', () => ({
         'logs.auditTier': 'T{{tier}}',
         'logs.auditStatusOk': 'ok',
         'logs.auditStatusFailed': 'failed',
+        'copilot.folderFilesCount': '{{name}} ({{count}})',
       };
       // `map[key]` on a plain object reaches Object.prototype for keys like
       // '__proto__' or 'constructor', returning a non-string that then blew up
@@ -146,7 +148,7 @@ Object.defineProperty(globalThis, 'electronAPI', {
     getPathForFile: vi.fn(() => ''),
     selectFile: vi.fn().mockResolvedValue(null),
     selectFiles: vi.fn().mockResolvedValue([]),
-    selectFolderFiles: vi.fn().mockResolvedValue([]),
+    selectFolderFiles: vi.fn().mockResolvedValue({ folder: null, files: [] }),
     getBmfStatus: vi.fn().mockResolvedValue({ available: true, missing: [] }),
     copilotPlan: vi.fn().mockResolvedValue({
       goal: '',

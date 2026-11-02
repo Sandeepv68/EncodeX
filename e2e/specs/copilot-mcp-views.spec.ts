@@ -74,7 +74,7 @@ async function gotoCopilot(page: Page): Promise<void> {
  * @returns {Promise<void>} Resolves once the plan was requested.
  */
 async function planGoal(page: Page): Promise<void> {
-  await mockApi.setSelectFolderFiles(page, FOLDER_FILES);
+  await mockApi.setSelectFolderFiles(page, FOLDER_FILES, 'C:/media');
   await page.locator('[data-testid="copilot-choose-folder"]').click();
   await expect.poll(() => page.locator('[data-testid="copilot-choose-folder"]').isDisabled()).toBe(false);
   await page.locator('[contenteditable="true"]').click();

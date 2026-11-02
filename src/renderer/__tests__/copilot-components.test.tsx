@@ -9,13 +9,14 @@
 
 import { useState } from 'react';
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, act, waitFor, within } from '@testing-library/react';
 import { ColorModeProvider } from '../ColorModeContext';
 import ChatInput from '../components/copilot/ChatInput';
 import ChatComposer from '../components/copilot/ChatComposer';
 import AssistantMessage from '../components/copilot/AssistantMessage';
 import Conversation, { type ConversationMessage } from '../components/copilot/Conversation';
 import type { CopilotPlan, CopilotOperationChoice } from '../../shared/copilot';
+import type { ComposerAttachment } from '../components/copilot/types';
 
 const PLAN: CopilotPlan = {
   goal: 'compress for web',
@@ -99,11 +100,12 @@ function Harness({
 
 describe('ChatInput', () => {
   it('streams typed text up to the controlled value', async () => {
-    render(<Harness onSubmit={vi.fn()} />);
-    expect((screen.getByTestId('copilot-send') as HTMLButtonElement).disabled).toBe(true);
+    render(<Harness onSubmit={vi.fn()} hasInputs />);
+    expect((screen.getByTestId('copilot-plan') as HTMLButtonElement).disabled).toBe(true);
     await typeText('hello world');
     expect(getEditor().textContent).toBe('hello world');
-    expect((screen.getByTestId('copilot-send') as HTMLButtonElement).disabled).toBe(false);
+    expect((screen.getByTestId('copilot-plan') as HTMLButtonElement).disabled).toBe(false);
+    expect(screen.queryByTestId('copilot-send')).toBeNull();
   });
 
   it('submits on Enter', async () => {
@@ -136,8 +138,8 @@ describe('ChatInput', () => {
   });
 
   it('makes the editor read-only when disabled', async () => {
-    render(<Harness onSubmit={vi.fn()} disabled />);
-    expect((screen.getByTestId('copilot-send') as HTMLButtonElement).disabled).toBe(true);
+    render(<Harness onSubmit={vi.fn()} hasInputs disabled />);
+    expect((screen.getByTestId('copilot-plan') as HTMLButtonElement).disabled).toBe(true);
     await waitFor(() => expect(getEditor().getAttribute('contenteditable')).toBe('false'));
   });
 
@@ -179,12 +181,12 @@ describe('ChatInput', () => {
   });
 
   it('does not steal focus when a button inside the shell is pressed', async () => {
-    render(<Harness onSubmit={vi.fn()} />);
+    render(<Harness onSubmit={vi.fn()} startValue="go" hasInputs />);
     const editor = getEditor();
     const lexical = (editor as unknown as { __lexicalEditor: { focus: () => void } }).__lexicalEditor;
     const focusSpy = vi.spyOn(lexical, 'focus').mockImplementation(() => {});
     await act(async () => {
-      fireEvent.mouseDown(screen.getByTestId('copilot-send'));
+      fireEvent.mouseDown(screen.getByTestId('copilot-plan'));
     });
     expect(focusSpy).not.toHaveBeenCalled();
     focusSpy.mockRestore();
@@ -435,7 +437,7 @@ describe('ChatComposer', () => {
       onChooseFiles: vi.fn(),
       onChooseFolder: vi.fn(),
       onOpenSettings: vi.fn(),
-      inputs: [] as string[],
+      attachments: [] as ComposerAttachment[],
       operation: 'auto' as CopilotOperationChoice,
       onOperationChange: vi.fn(),
       query: '',
@@ -501,16 +503,107 @@ describe('ChatComposer', () => {
     expect(props.onTargetLanguageChange).toHaveBeenCalledWith('es');
   });
 
-  it('removes an attachment through its chip delete icon', () => {
-    const onRemoveInput = vi.fn();
-    renderComposer({ inputs: ['/in/a.mp4'], onRemoveInput });
-    fireEvent.click(screen.getByTestId('CancelIcon'));
-    expect(onRemoveInput).toHaveBeenCalledWith('/in/a.mp4');
+  it('removes an attachment through the card close button', () => {
+    const onRemoveAttachment = vi.fn();
+    renderComposer({
+      attachments: [{ id: '/in/a.mp4', isFolder: false, label: 'a.mp4', paths: ['/in/a.mp4'] }],
+      onRemoveAttachment,
+    });
+    fireEvent.click(screen.getByTestId('copilot-remove-attachment'));
+    expect(onRemoveAttachment).toHaveBeenCalledWith('/in/a.mp4');
   });
 
-  it('renders a non-removable chip when no remove handler is given', () => {
-    renderComposer({ inputs: ['/in/a.mp4'] });
+  it('renders a non-removable card when no remove handler is given', () => {
+    renderComposer({ attachments: [{ id: '/in/a.mp4', isFolder: false, label: 'a.mp4', paths: ['/in/a.mp4'] }] });
     expect(screen.getByText('a.mp4')).toBeInTheDocument();
-    expect(screen.queryByTestId('CancelIcon')).toBeNull();
+    expect(screen.queryByTestId('copilot-remove-attachment')).toBeNull();
+  });
+
+  it('shows a folder card with its file count', () => {
+    renderComposer({
+      attachments: [{ id: '/in', isFolder: true, label: 'in', paths: ['/in/a.mp4', '/in/b.mkv'] }],
+    });
+    expect(screen.getByText('in')).toBeInTheDocument();
+    expect(screen.getByText('2 files')).toBeInTheDocument();
+  });
+
+  it('groups picked files into one card that lists every file on click', async () => {
+    renderComposer({
+      attachments: [
+        {
+          id: 'picked-files',
+          isFolder: false,
+          label: 'a.mp4, b.mkv',
+          paths: ['/in/a.mp4', '/in/b.mkv'],
+        },
+      ],
+    });
+    expect(screen.getByText('a.mp4, b.mkv')).toBeInTheDocument();
+    expect(screen.getByText('2 files')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('copilot-attachment-card'));
+    const list = await screen.findByTestId('copilot-folder-file-list');
+    expect(within(list).getByText('a.mp4')).toBeInTheDocument();
+    expect(within(list).getByText('b.mkv')).toBeInTheDocument();
+  });
+
+  it('closes the file list when the same card is clicked again', async () => {
+    renderComposer({
+      attachments: [{ id: '/in', isFolder: true, label: 'in', paths: ['/in/a.mp4', '/in/b.mkv'] }],
+    });
+
+    fireEvent.click(screen.getByTestId('copilot-attachment-card'));
+    expect(await screen.findByTestId('copilot-folder-file-list')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('copilot-attachment-card'));
+    await waitFor(() => expect(screen.queryByTestId('copilot-folder-file-list')).toBeNull());
+  });
+
+  it('closes the file list when the user clicks outside of it', async () => {
+    renderComposer({
+      attachments: [{ id: '/in', isFolder: true, label: 'in', paths: ['/in/a.mp4', '/in/b.mkv'] }],
+    });
+
+    fireEvent.click(screen.getByTestId('copilot-attachment-card'));
+    expect(await screen.findByTestId('copilot-folder-file-list')).toBeInTheDocument();
+
+    fireEvent.click(document.body);
+    await waitFor(() => expect(screen.queryByTestId('copilot-folder-file-list')).toBeNull());
+  });
+
+  it('opens the file list from the keyboard and closes it again', async () => {
+    renderComposer({
+      attachments: [{ id: '/in', isFolder: true, label: 'in', paths: ['/in/a.mp4', '/in/b.mkv'] }],
+    });
+    const card = screen.getByTestId('copilot-attachment-card');
+
+    fireEvent.keyDown(card, { key: 'Enter' });
+    expect(await screen.findByTestId('copilot-folder-file-list')).toBeInTheDocument();
+
+    fireEvent.keyDown(card, { key: 'Enter' });
+    await waitFor(() => expect(screen.queryByTestId('copilot-folder-file-list')).toBeNull());
+
+    fireEvent.keyDown(card, { key: ' ' });
+    expect(await screen.findByTestId('copilot-folder-file-list')).toBeInTheDocument();
+  });
+
+  it('shows the loading card with a progress bar while files are being selected', () => {
+    renderComposer({ inputsLoading: true });
+    expect(screen.getByTestId('copilot-attachment-loading')).toBeInTheDocument();
+    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+  });
+
+  it('shows the loading progress on the existing card instead of stacking a new one', () => {
+    renderComposer({
+      inputsLoading: true,
+      attachments: [{ id: '/in/a.mp4', isFolder: false, label: 'a.mp4', paths: ['/in/a.mp4'] }],
+    });
+
+    const cards = screen.getAllByTestId('copilot-attachment-card');
+    expect(cards).toHaveLength(1);
+    const loader = screen.getByTestId('copilot-attachment-loading');
+    expect(cards[0].contains(loader)).toBe(true);
+    expect(screen.getByRole('progressbar')).toBe(loader);
+    expect(screen.queryByText('copilot.loadingFiles')).toBeNull();
   });
 });

@@ -875,8 +875,9 @@ export default function BatchQueue() {
    * @returns {Promise<void>} Resolves once the folder picker closes.
    */
   const handleAddFolder = async () => {
-    const files = await window.electronAPI.selectFolderFiles();
-    if (!files || files.length === 0) return;
+    const selection = await window.electronAPI.selectFolderFiles();
+    const files = selection?.files ?? [];
+    if (files.length === 0) return;
     lastAddSourceRef.current = 'folder';
     setReviewFiles(files);
   };

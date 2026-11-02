@@ -26,6 +26,7 @@ import {
   UpdateInfo,
   UpdateProgress,
   PendingInstall,
+  FolderSelection,
 } from '../shared/types';
 import type { McpSettings } from '../shared/mcp-settings';
 import type { AiConnectTestResult, AiModelsListResult, AiSettingsUpdate, AiSettingsView } from '../shared/ai/settings';
@@ -70,11 +71,12 @@ export interface ElectronAPI {
   /**
    * Opens a native folder-selection dialog in the main process over the
    * `IPC.SELECT_FOLDER_FILES` ('select-folder-files') channel and returns the
-   * supported media files found inside the chosen folder (recursively).
-   * @returns {Promise<string[]>} The media file paths found inside the chosen
-   *   folder, or an empty array if the user cancelled the dialog.
+   * chosen folder together with the supported media files found inside it
+   * (recursively).
+   * @returns {Promise<FolderSelection>} The chosen folder (null when the
+   *   dialog was cancelled) and its media file paths.
    */
-  selectFolderFiles(): Promise<string[]>;
+  selectFolderFiles(): Promise<FolderSelection>;
   /**
    * Builds a deterministic conversion plan for a goal against a folder of
    * media over the `IPC.COPILOT_PLAN` ('copilot-plan') channel. Main scans and

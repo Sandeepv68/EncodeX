@@ -33,7 +33,7 @@ function emit(channel, payload) {
 const defaults = {
   selectFileResult: null,
   selectFilesResult: [],
-  selectFolderFilesResult: [],
+  selectFolderFilesResult: { folder: null, files: [] },
   copilotPlanResult: null,
   copilotPlanBehavior: 'resolve',
   expandPathsResult: [],

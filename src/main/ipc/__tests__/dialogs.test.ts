@@ -18,6 +18,16 @@ const { ipcMainMock, dialogMock, getHandlers } = vi.hoisted(() => {
 
 vi.mock('electron', () => ({ ipcMain: ipcMainMock, dialog: dialogMock, BrowserWindow: class {} }));
 
+// The folder selection walks the real filesystem, so the collector is stubbed
+// with a deterministic file list; every other export stays real.
+vi.mock('../../media-files', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../media-files')>();
+  return {
+    ...actual,
+    collectMediaFiles: vi.fn((dir: string) => [`${dir}/a.mp4`]),
+  };
+});
+
 const { registerDialogHandlers } = await import('../dialogs');
 import { IPC } from '../../../shared/ipc-channels';
 import { expectAppLog } from '../../../test-utils/crash-tripwire';
@@ -119,5 +129,16 @@ describe('registerDialogHandlers', () => {
   it('SELECT_DIRECTORY returns null when cancelled', async () => {
     dialogMock.showOpenDialog.mockResolvedValue({ canceled: true, filePaths: [] });
     expect(await getHandlers()[IPC.SELECT_DIRECTORY]()).toBeNull();
+  });
+
+  it('SELECT_FOLDER_FILES returns the chosen folder with the media files inside it', async () => {
+    dialogMock.showOpenDialog.mockResolvedValue({ canceled: false, filePaths: ['/media'] });
+    const result = await getHandlers()[IPC.SELECT_FOLDER_FILES]();
+    expect(result).toEqual({ folder: '/media', files: expect.arrayContaining(['/media/a.mp4']) });
+  });
+
+  it('SELECT_FOLDER_FILES returns an empty selection when the dialog is cancelled', async () => {
+    dialogMock.showOpenDialog.mockResolvedValue({ canceled: true, filePaths: [] });
+    expect(await getHandlers()[IPC.SELECT_FOLDER_FILES]()).toEqual({ folder: null, files: [] });
   });
 });

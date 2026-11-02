@@ -118,7 +118,7 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `getPathForFile(file) -> string`
 - `selectFile(filters?) -> Promise<string | null>`
 - `selectFiles(filters?) -> Promise<string[]>`
-- `selectFolderFiles() -> Promise<string[]>`
+- `selectFolderFiles() -> Promise<FolderSelection>`
 - `selectOutput() -> Promise<string | null>`
 - `selectDirectory() -> Promise<string | null>`
 - `expandPaths(paths) -> Promise<string[]>`

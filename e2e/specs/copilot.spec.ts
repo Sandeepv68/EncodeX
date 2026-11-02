@@ -93,7 +93,7 @@ async function typeGoal(page: Page, goal: string): Promise<void> {
 
 /** Picks a folder by seeding the dialog result, then clicking "Choose folder". */
 async function chooseFolder(page: Page, files: string[]): Promise<void> {
-  await mockApi.setSelectFolderFiles(page, files);
+  await mockApi.setSelectFolderFiles(page, files, 'C:/media');
   await page.locator('[data-testid="copilot-choose-folder"]').click();
   await expect.poll(() => page.locator('[data-testid="copilot-choose-folder"]').isDisabled()).toBe(false);
 }
@@ -137,7 +137,7 @@ describe.runIf(IS_E2E)('Copilot page', () => {
   it('shows the empty-state welcome and an inert composer', async () => {
     const { page } = session;
     await expect.poll(() => page.locator('[data-testid="copilot-plan"]').isDisabled()).toBe(true);
-    await expect.poll(() => page.locator('[data-testid="copilot-send"]').isDisabled()).toBe(true);
+    await expect.poll(() => page.locator('[data-testid="copilot-send"]').count()).toBe(0);
     await expect.poll(() => page.locator('[data-testid="copilot-conversation"]').innerText()).toContain('How can I help?');
   });
 

@@ -128,6 +128,33 @@ describe('BatchQueue', () => {
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
+  it('stages the media files of a picked folder for review', async () => {
+    queueListMock.mockResolvedValue([]);
+    vi.mocked(window.electronAPI.selectFolderFiles).mockResolvedValue({
+      folder: '/media',
+      files: ['/media/clip.mp4'],
+    });
+    renderPage();
+
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
+    fireEvent.click(screen.getByRole('menuitem', { name: 'batchQueue.addFolder' }));
+
+    expect(await screen.findByText('clip.mp4')).toBeInTheDocument();
+    expect(screen.getByText('batchQueue.reviewTitle')).toBeInTheDocument();
+  });
+
+  it('ignores a folder pick that holds no media files', async () => {
+    queueListMock.mockResolvedValue([]);
+    vi.mocked(window.electronAPI.selectFolderFiles).mockResolvedValue({ folder: '/media', files: [] });
+    renderPage();
+
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.addFiles' }));
+    fireEvent.click(screen.getByRole('menuitem', { name: 'batchQueue.addFolder' }));
+
+    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalled());
+    expect(screen.queryByText('batchQueue.reviewTitle')).not.toBeInTheDocument();
+  });
+
   it('adds files with a transcode operation and the default suffix', async () => {
     queueListMock.mockResolvedValue([]);
     selectFilesMock.mockResolvedValue(['/in/video.mp4']);
