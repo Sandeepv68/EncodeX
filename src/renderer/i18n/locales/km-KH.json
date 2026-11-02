@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "នេះនឹងលុបប្រវត្តិការសន្ទនាទាំងអស់។ សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។",
     "resetConfirmAction": "កំណត់ឡើងវិញ",
     "loadingFiles": "កំពុងផ្ទុកឯកសារ...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "ដកចេញឯកសារភ្ជាប់",
+    "folderFilesCount": "{{name}} ({{count}} ឯកសារ)",
     "saveAndReset": "រក្សាទុក និងកំណត់ឡើងវិញ"
   },
   "leaveConfirm": {

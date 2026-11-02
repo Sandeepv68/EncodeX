@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "Þetta mun hreinsa alla samtalssögu. Ekki er hægt að afturkalla þessa aðgerð.",
     "resetConfirmAction": "Endurstilla",
     "loadingFiles": "Hleð skrám...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "Fjarlægja viðhengi",
+    "folderFilesCount": "{{name}} ({{count}} skrár)",
     "saveAndReset": "Vista og endurstilla"
   },
   "leaveConfirm": {

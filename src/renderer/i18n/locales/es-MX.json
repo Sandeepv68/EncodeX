@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "Esto borrará todo el historial de la conversación. Esta acción no se puede deshacer.",
     "resetConfirmAction": "Restablecer",
     "loadingFiles": "Cargando archivos...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "Quitar adjunto",
+    "folderFilesCount": "{{name}} ({{count}} archivos)",
     "saveAndReset": "Guardar y reiniciar"
   },
   "leaveConfirm": {

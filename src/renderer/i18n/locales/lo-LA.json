@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "ສິ່ງນີ້ຈະລຶບປະຫວັດການສົນທະນາທັງໝົດ. ບໍ່ສາມາດຍົກເລີກການກະທຳນີ້ໄດ້.",
     "resetConfirmAction": "ຣີເຊັດ",
     "loadingFiles": "ກຳລັງໂຫຼດໄຟລ໌...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "ລຶກໄຟລ໌ແນບ",
+    "folderFilesCount": "{{name}} ({{count}} ໄຟລ໌)",
     "saveAndReset": "Lưu cùng đặt lại"
   },
   "leaveConfirm": {

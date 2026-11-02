@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "Ka ūkui tēnei i te hitori katoa o te kōrerorero. Kāore e taea te whakakore.",
     "resetConfirmAction": "Tautuhi anō",
     "loadingFiles": "E uta ana i ngā kōnae...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "Tangohia te whakapiri",
+    "folderFilesCount": "{{name}} ({{count}} ngā kōrero)",
     "saveAndReset": "Tiakina me te tautuhi"
   },
   "leaveConfirm": {

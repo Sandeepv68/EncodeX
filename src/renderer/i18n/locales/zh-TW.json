@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "這將清除整個對話記錄。此操作無法復原。",
     "resetConfirmAction": "重設",
     "loadingFiles": "正在載入檔案...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "移除附件",
+    "folderFilesCount": "{{name}} ({{count}} 個檔案)",
     "saveAndReset": "保存并重置"
   },
   "leaveConfirm": {

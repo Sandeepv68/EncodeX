@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "Dit sal die hele gesprekgeskiedenis uitwis. Hierdie aksie kan nie ongedaan gemaak word nie.",
     "resetConfirmAction": "Terugstel",
     "loadingFiles": "Laai lêers...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "Verwyder aanhegsing",
+    "folderFilesCount": "{{name}} ({{count}} lêers)",
     "saveAndReset": "Stoor en herstel"
   },
   "leaveConfirm": {

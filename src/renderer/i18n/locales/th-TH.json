@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "การดำเนินการนี้จะล้างประวัติบทสนทนาทั้งหมด และไม่สามารถยกเลิกได้",
     "resetConfirmAction": "รีเซ็ต",
     "loadingFiles": "กำลังโหลดไฟล์...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "ลบไฟล์แนบ",
+    "folderFilesCount": "{{name}} ({{count}} ไฟล์)",
     "saveAndReset": "บันทึกและรีเซ็ต"
   },
   "leaveConfirm": {

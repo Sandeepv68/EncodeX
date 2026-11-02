@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "Detta rensar hela konversationshistoriken. Åtgärden kan inte ångras.",
     "resetConfirmAction": "Återställ",
     "loadingFiles": "Läser in filer...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "Ta bort bilaga",
+    "folderFilesCount": "{{name}} ({{count}} filer)",
     "saveAndReset": "Spara och återställ"
   },
   "leaveConfirm": {

@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "سيؤدي هذا إلى مسح سجل المحادثة بالكامل. لا يمكن التراجع عن هذا الإجراء.",
     "resetConfirmAction": "إعادة تعيين",
     "loadingFiles": "جارٍ تحميل الملفات...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "إزالة المرفق",
+    "folderFilesCount": "{{name}} ({{count}} ملفات)",
     "saveAndReset": "حفظ وإعادة تعيين"
   },
   "leaveConfirm": {

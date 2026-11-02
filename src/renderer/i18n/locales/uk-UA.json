@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "Це очистить усю історію розмови. Цю дію неможливо скасувати.",
     "resetConfirmAction": "Скинути",
     "loadingFiles": "Завантаження файлів...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "Видалити вкладення",
+    "folderFilesCount": "{{name}} ({{count}} файлів)",
     "saveAndReset": "Зберегти та скинути"
   },
   "leaveConfirm": {

@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "Dette sletter hele samtalehistorikken. Denne handlingen kan ikke angres.",
     "resetConfirmAction": "Tilbakestill",
     "loadingFiles": "Laster inn filer...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "Fjern vedlegg",
+    "folderFilesCount": "{{name}} ({{count}} filer)",
     "saveAndReset": "Lagre og tilbakestill"
   },
   "leaveConfirm": {

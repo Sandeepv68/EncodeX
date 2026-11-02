@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "Энэ нь бүх ярианы түүхийг устгана. Энэ үйлдлийг буцаах боломжгүй.",
     "resetConfirmAction": "Шинэчлэх",
     "loadingFiles": "Файлууд ачааллаж байна...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "Хавсгалтыг хасах",
+    "folderFilesCount": "{{name}} ({{count}} файлууд)",
     "saveAndReset": "Хадгалах ба сбэр хийх"
   },
   "leaveConfirm": {

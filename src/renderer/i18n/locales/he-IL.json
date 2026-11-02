@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "זה ימחק את כל היסטוריית השיחה. לא ניתן לבטל פעולה זו.",
     "resetConfirmAction": "איפוס",
     "loadingFiles": "טוען קבצים...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "הסר קובץ מצורף",
+    "folderFilesCount": "{{name}} ({{count}} קבצים)",
     "saveAndReset": "שמירה ואיפוס"
   },
   "leaveConfirm": {

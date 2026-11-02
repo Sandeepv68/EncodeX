@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "Вся история разговора будет очищена. Это действие нельзя отменить.",
     "resetConfirmAction": "Сбросить",
     "loadingFiles": "Загрузка файлов...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "Удалить вложение",
+    "folderFilesCount": "{{name}} ({{count}} файлов)",
     "saveAndReset": "Сохранить и сбросить"
   },
   "leaveConfirm": {

@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "Spowoduje to wyczyszczenie całej historii rozmowy. Tej czynności nie można cofnąć.",
     "resetConfirmAction": "Resetuj",
     "loadingFiles": "Ładowanie plików...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "Usuń załącznik",
+    "folderFilesCount": "{{name}} ({{count}} plików)",
     "saveAndReset": "Zapisz i zresetuj"
   },
   "leaveConfirm": {

@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "Ito ay magbubura ng buong history ng usapan. Hindi na ito maibabalik.",
     "resetConfirmAction": "I-reset",
     "loadingFiles": "Naglo-load ng mga file...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "Alisin ang attachment",
+    "folderFilesCount": "{{name}} ({{count}} file)",
     "saveAndReset": "I-save at i-reset"
   },
   "leaveConfirm": {

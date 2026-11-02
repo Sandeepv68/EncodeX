@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "这将清除整个对话历史。此操作无法撤销。",
     "resetConfirmAction": "重置",
     "loadingFiles": "正在加载文件...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "移除附件",
+    "folderFilesCount": "{{name}} ({{count}} 个文件)",
     "saveAndReset": "保存并重置"
   },
   "leaveConfirm": {

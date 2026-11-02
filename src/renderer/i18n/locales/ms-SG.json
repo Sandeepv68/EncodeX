@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "Ini akan memadam seluruh sejarah perbualan. Tindakan ini tidak boleh dibatalkan.",
     "resetConfirmAction": "Tetapkan semula",
     "loadingFiles": "Memuatkan fail...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "Buang lampiran",
+    "folderFilesCount": "{{name}} ({{count}} fail)",
     "saveAndReset": "Simpan dan set semula"
   },
   "leaveConfirm": {

@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "전체 대화 기록이 지워집니다. 이 작업은 되돌릴 수 없습니다.",
     "resetConfirmAction": "재설정",
     "loadingFiles": "파일 불러오는 중...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "첨부 파일 제거",
+    "folderFilesCount": "{{name}} ({{count}} 파일)",
     "saveAndReset": "저장 후 초기화"
   },
   "leaveConfirm": {

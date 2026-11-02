@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "Dadurch wird der gesamte Unterhaltungsverlauf gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
     "resetConfirmAction": "Zurücksetzen",
     "loadingFiles": "Dateien werden geladen...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "Anhang entfernen",
+    "folderFilesCount": "{{name}} ({{count}} Dateien)",
     "saveAndReset": "Speichern und zurücksetzen"
   },
   "leaveConfirm": {

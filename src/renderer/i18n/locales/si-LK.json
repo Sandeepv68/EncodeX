@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "මෙය සම්පූර්ණ සංවාද ඉතිහාසය ඉවත් කරනු ඇත. මෙම ක්‍රියාව අහෝසි කළ නොහැක.",
     "resetConfirmAction": "යළි පිහිටුවන්න",
     "loadingFiles": "ගොනු පූරණය වෙමින්...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "අංකුණ ඉවත් කරන්න",
+    "folderFilesCount": "{{name}} ({{count}} ගොනු)",
     "saveAndReset": "සුරැකීම සහ යළි පිහිටන්න"
   },
   "leaveConfirm": {

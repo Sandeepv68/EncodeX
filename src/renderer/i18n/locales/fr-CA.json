@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "Cela effacera tout l'historique de la conversation. Cette action est irréversible.",
     "resetConfirmAction": "Réinitialiser",
     "loadingFiles": "Chargement des fichiers...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "Supprimer la pièce jointe",
+    "folderFilesCount": "{{name}} ({{count}} fichiers)",
     "saveAndReset": "Enregistrer et réinitialiser"
   },
   "leaveConfirm": {

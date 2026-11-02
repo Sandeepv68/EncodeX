@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "Oqallinneq oqaluttuassartaa tamarmik piiarneqassaaq. Iliuuseq una utoqqatserneqarsinnaanngilaq.",
     "resetConfirmAction": "Nutaaguk",
     "loadingFiles": "Fiilit nassarneqarput...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "Kinaartussat naaliartut",
+    "folderFilesCount": "{{name}} ({{count}} filer)",
     "saveAndReset": "Taqqerkit uuta imaalannik"
   },
   "leaveConfirm": {

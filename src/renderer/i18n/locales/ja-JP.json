@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "会話履歴がすべて消去されます。この操作は元に戻せません。",
     "resetConfirmAction": "リセット",
     "loadingFiles": "ファイルを読み込み中...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "添付ファイルを削除",
+    "folderFilesCount": "{{name}} ({{count}} ファイル)",
     "saveAndReset": "保存してリセット"
   },
   "leaveConfirm": {

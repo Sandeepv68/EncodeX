@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "इससे पूरा बातचीत इतिहास मिट जाएगा। यह क्रिया पूर्ववत नहीं की जा सकती।",
     "resetConfirmAction": "रीसेट",
     "loadingFiles": "फ़ाइलें लोड हो रही हैं...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "अटैचमेंट हटाएँ",
+    "folderFilesCount": "{{name}} ({{count}} फ़ाइलें)",
     "saveAndReset": "सहेजें और रीसेट करें"
   },
   "leaveConfirm": {

@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "Questo cancellerà l'intera cronologia della conversazione. Questa azione non può essere annullata.",
     "resetConfirmAction": "Reimposta",
     "loadingFiles": "Caricamento file...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "Rimuovi allegato",
+    "folderFilesCount": "{{name}} ({{count}} file)",
     "saveAndReset": "Salva e reimposta"
   },
   "leaveConfirm": {

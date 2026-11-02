@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "Thao tác này sẽ xóa toàn bộ lịch sử trò chuyện. Không thể hoàn tác.",
     "resetConfirmAction": "Đặt lại",
     "loadingFiles": "Đang tải tệp...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "Xóa tệp đính kèm",
+    "folderFilesCount": "{{name}} ({{count}} tệp)",
     "saveAndReset": "Lưu và đặt lại"
   },
   "leaveConfirm": {

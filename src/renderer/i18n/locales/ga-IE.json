@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "Glanfaidh sé seo stair iomlán an chomhrá. Ní féidir an gníomh seo a chealú.",
     "resetConfirmAction": "Athshocraigh",
     "loadingFiles": "Ag lódáil comhad...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "Bain ceangal as",
+    "folderFilesCount": "{{name}} ({{count}} comhéad)",
     "saveAndReset": "Sábháil agus athshocraigh"
   },
   "leaveConfirm": {

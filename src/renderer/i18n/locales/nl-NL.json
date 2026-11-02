@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "Hiermee wordt de volledige gespreksgeschiedenis gewist. Deze actie kan niet ongedaan worden gemaakt.",
     "resetConfirmAction": "Resetten",
     "loadingFiles": "Bestanden laden...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "Bijlage verwijderen",
+    "folderFilesCount": "{{name}} ({{count}} bestanden)",
     "saveAndReset": "Opslaan en herstellen"
   },
   "leaveConfirm": {

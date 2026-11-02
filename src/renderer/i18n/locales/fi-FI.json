@@ -1147,8 +1147,8 @@
     "resetConfirmMessage": "Tämä tyhjentää koko keskusteluhistorian. Toimintoa ei voi kumota.",
     "resetConfirmAction": "Nollaa",
     "loadingFiles": "Ladataan tiedostoja...",
-    "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
+    "removeAttachment": "Poista liite",
+    "folderFilesCount": "{{name}} ({{count}} tiedostoa)",
     "saveAndReset": "Tallenna ja nollaa"
   },
   "leaveConfirm": {
