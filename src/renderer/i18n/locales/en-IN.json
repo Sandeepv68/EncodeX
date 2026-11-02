@@ -1148,7 +1148,8 @@
     "resetConfirmAction": "Reset",
     "loadingFiles": "Loading files...",
     "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})"
+    "folderFilesCount": "{{name}} ({{count}})",
+    "saveAndReset": "Save and reset"
   },
   "leaveConfirm": {
     "title": "Leave Copilot?",

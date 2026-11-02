@@ -1,10 +1,10 @@
 import { alpha, styled } from '@mui/material/styles';
-import { Box, IconButton } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { SHADOWS } from '../../../shared/theme/colors';
 
 /**
- * Rounded composer surface that holds the Lexical editor and the inline send
- * and plan buttons.
+ * Rounded composer surface that holds the Lexical editor and the inline plan
+ * button.
  * The focus ring is applied to the shell rather than the bare contenteditable so
  * keyboard focus is visible around the whole control.
  */
@@ -81,6 +81,7 @@ export const EditorPlaceholder = styled(Box)(({ theme }) => ({
   paddingInline: theme.typography.pxToRem(4),
   pointerEvents: 'none',
   color: theme.palette.text.secondary,
+  opacity: 0.6,
   fontSize: theme.typography.body1.fontSize,
   whiteSpace: 'nowrap',
   overflow: 'hidden',
@@ -103,10 +104,14 @@ export const ResetButtonWrap = styled('span')({
  * "Reset conversation" icon button, muted until hovered.
  * @const ResetIconButton
  */
-export const ResetIconButton = styled(IconButton)(({ theme }) => ({
+export const ResetIconButton = styled(Button)(({ theme }) => ({
   color: theme.palette.text.secondary,
   flexShrink: 0,
-  padding: theme.spacing(0.25),
+  minWidth: 0,
+  width: theme.typography.pxToRem(64),
+  height: theme.typography.pxToRem(64),
+  borderRadius: theme.typography.pxToRem(999),
+  padding: 0,
   '&:hover': {
     color: theme.palette.primary.main,
   },
@@ -118,7 +123,7 @@ export const ResetIconButton = styled(IconButton)(({ theme }) => ({
  */
 export const ResetIconGlyph = styled('span')(({ theme }) => ({
   display: 'block',
-  fontSize: theme.typography.pxToRem(14),
+  fontSize: theme.typography.pxToRem(18),
 }));
 
 /**
@@ -130,4 +135,21 @@ export const EditorField = styled(Box)(({ theme }) => ({
   minWidth: 0,
   position: 'relative',
   height: theme.typography.pxToRem(64),
+}));
+
+/**
+ * Primary "Plan" action. Sized to the editor row so it reads as part of the
+ * composer field rather than a small inline control.
+ * @const ComposerPlanButton
+ */
+export const ComposerPlanButton = styled(Button)(({ theme }) => ({
+  flexShrink: 0,
+  height: theme.typography.pxToRem(64),
+  paddingInline: theme.spacing(2.5),
+  borderRadius: theme.typography.pxToRem(999),
+  fontSize: theme.typography.body1.fontSize,
+  color: theme.palette.mode === 'dark' ? theme.palette.primary.light : theme.palette.primary.dark,
+  '& .MuiButton-startIcon': {
+    marginInlineEnd: theme.spacing(0.75),
+  },
 }));

@@ -17,12 +17,6 @@ export const ComposerBar = styled(Box)(({ theme }) => ({
   paddingBottom: theme.spacing(2),
   [theme.breakpoints.up('sm')]: { paddingInline: theme.spacing(2) },
   [theme.breakpoints.up('md')]: { paddingInline: theme.spacing(3) },
-  // The primary accent sits below the WCAG AA 4.5:1 minimum on the default background
-  // (about 4.4:1 in light mode, 4.1:1 in dark). Use the darker shade on light surfaces
-  // and the lighter shade on dark surfaces so the text buttons clear the threshold.
-  '& .MuiButton-text': {
-    color: theme.palette.mode === 'light' ? theme.palette.primary.dark : theme.palette.primary.light,
-  },
 }));
 
 /**
@@ -76,6 +70,13 @@ export const ActionsRow = styled(Box)(({ theme }) => ({
   gap: theme.spacing(1),
   paddingInline: theme.spacing(0.5),
   flexWrap: 'wrap',
+  // The primary accent sits below the WCAG AA 4.5:1 minimum on the default
+  // background (about 4.4:1 in light mode). Use the darker shade on light
+  // surfaces so the text buttons clear the threshold, and plain white on the
+  // dark theme's near-black background.
+  '& .MuiButton-text': {
+    color: theme.palette.mode === 'light' ? theme.palette.primary.dark : theme.palette.common.white,
+  },
 }));
 
 /** Left-hand cluster of secondary actions (files, folder, advanced, AI settings). */
@@ -155,16 +156,15 @@ export const AdvancedPanel = styled(Box)(({ theme }) => ({
  * centred in the band that stays visible.
  */
 export const AttachmentCard = styled(Paper)(({ theme }) => ({
+  position: 'relative',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'stretch',
   justifyContent: 'flex-start',
   minWidth: 0,
   width: '90%',
-  paddingBlockStart: theme.spacing(1.5),
-  paddingBlockEnd: theme.spacing(3),
-  paddingInlineStart: theme.spacing(1.25),
-  paddingInlineEnd: theme.spacing(0.25),
+  paddingBlock: `${theme.spacing(1.5)} ${theme.spacing(3)}`,
+  paddingInline: theme.spacing(1.5),
   borderRadius: `${theme.typography.pxToRem(16)} ${theme.typography.pxToRem(16)} 0 0`,
   backgroundColor: theme.palette.mode === 'dark' ? COLORS.composer.cardDark : COLORS.composer.cardLight,
   border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
@@ -204,7 +204,7 @@ export const AttachmentName = styled('span')(({ theme }) => ({
   whiteSpace: 'nowrap',
   textAlign: 'left',
   fontSize: theme.typography.pxToRem(13),
-  color: theme.palette.text.primary,
+  color: theme.palette.text.secondary,
 }));
 
 /** Chip appended to a folder card showing how many files it contains. */
@@ -246,6 +246,21 @@ export const ChipProgress = styled(LinearProgress)(({ theme }) => ({
   height: theme.typography.pxToRem(4),
   borderRadius: theme.typography.pxToRem(4),
   marginBlockStart: theme.spacing(0.5),
+}));
+
+/**
+ * Thin loading strip pinned to the top edge of an existing attachment card, so
+ * adding files to a populated list animates the current card instead of
+ * stacking a second loading card above it.
+ */
+export const AttachmentCardProgress = styled(LinearProgress)(({ theme }) => ({
+  position: 'absolute',
+  insetBlockStart: 0,
+  insetInline: 0,
+  zIndex: 1,
+  height: theme.typography.pxToRem(3),
+  borderRadius: 0,
+  pointerEvents: 'none',
 }));
 
 /** Panel listing the files inside a folder, shown when its card is clicked. */

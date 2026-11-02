@@ -50,8 +50,7 @@ function invoke(page: Page, method: string, args: unknown[]): Promise<unknown> {
 export const mockApi = {
   setSelectFile: (page: Page, v: string | null) => invoke(page, 'setSelectFile', [v]),
   setSelectFiles: (page: Page, v: string[]) => invoke(page, 'setSelectFiles', [v]),
-  setSelectFolderFiles: (page: Page, v: string[], folder: string | null = null) =>
-    invoke(page, 'setSelectFolderFiles', [v, folder]),
+  setSelectFolderFiles: (page: Page, v: string[], folder: string | null = null) => invoke(page, 'setSelectFolderFiles', [v, folder]),
   setCopilotPlan: (page: Page, v: CopilotPlan | null) => invoke(page, 'setCopilotPlan', [v]),
   setCopilotPlanBehavior: (page: Page, v: 'resolve' | 'reject') => invoke(page, 'setCopilotPlanBehavior', [v]),
   setAiSettingsView: (page: Page, v: Partial<AiSettingsView>) => invoke(page, 'setAiSettingsView', [v]),

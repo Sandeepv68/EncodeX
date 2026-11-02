@@ -7,7 +7,7 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 // The global test setup mocks react-i18next with a tiny key dictionary; the
@@ -28,11 +28,36 @@ import ProfilesView from '../views/ProfilesView';
 import QueueView from '../views/QueueView';
 import WorkflowView from '../views/WorkflowView';
 import { FakeViewHost, renderView } from './harness';
+import { useQueueStore } from '../../stores/queueStore';
+import type { QueueJob } from '../../../shared/types';
 
 describe('queue view', () => {
   it('shows the empty state until the host delivers jobs', () => {
     renderView(<QueueView />);
     expect(screen.getByTestId('mcp-view-queue-empty')).toBeTruthy();
+  });
+
+  it('lists jobs that are already queued in the app queue store', () => {
+    renderView(<QueueView />);
+    act(() => {
+      useQueueStore.getState().setJobs([
+        {
+          id: 'q1',
+          input: '/in/queued.mkv',
+          output: '/out/queued.mp4',
+          options: {} as QueueJob['options'],
+          transcoder: 'ffmpeg' as QueueJob['transcoder'],
+          status: 'queued' as QueueJob['status'],
+          progress: 0,
+          createdAt: 0,
+        },
+      ]);
+    });
+    expect(screen.queryByTestId('mcp-view-queue-empty')).toBeNull();
+    expect(screen.getByText('queued.mp4')).toBeTruthy();
+    act(() => {
+      useQueueStore.getState().setJobs([]);
+    });
   });
 
   it('renders one row per job with its status and progress', () => {
@@ -44,7 +69,7 @@ describe('queue view', () => {
     });
     expect(screen.getByText('a.mp4')).toBeTruthy();
     expect(screen.getByText('b.mp4')).toBeTruthy();
-    expect(screen.getByText(/running · 42%/)).toBeTruthy();
+    expect(screen.getByText(/Running · 42%/)).toBeTruthy();
   });
 
   it('arms the cancel button before it cancels the job', async () => {

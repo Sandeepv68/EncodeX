@@ -18,12 +18,13 @@ import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $getRoot, COMMAND_PRIORITY_LOW, INSERT_LINE_BREAK_COMMAND, KEY_ENTER_COMMAND } from 'lexical';
 import type { EditorState } from 'lexical';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Tooltip } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane, faPlus, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import type { ChatInputProps } from './types';
 import {
+  ComposerPlanButton,
   ComposerShell,
   EditorArea,
   EditorField,
@@ -151,7 +152,7 @@ function FocusableShell({ children }: { children: ReactNode }) {
 }
 
 /**
- * Renders the Lexical composer input with its inline send and plan buttons.
+ * Renders the Lexical composer input with its inline plan button.
  * @param {ChatInputProps} props - Component props.
  * @returns {JSX.Element} The composer input.
  */
@@ -165,6 +166,8 @@ export default function ChatInput({
   hasInputs = false,
   onResetConversation,
   showReset = false,
+  onSaveAndResetConversation,
+  showSaveAndReset = false,
 }: ChatInputProps) {
   const { t } = useTranslation();
   const resetDialogId = useId();
@@ -237,27 +240,15 @@ export default function ChatInput({
           <EditablePlugin disabled={disabled} />
           <ValueSyncPlugin value={value} onChange={onChange} />
         </EditorArea>
-        <IconButton
-          color="primary"
-          size="small"
-          onClick={onSubmit}
-          disabled={disabled || value.trim() === ''}
-          aria-label={t('copilot.send')}
-          title={t('copilot.send')}
-          data-testid="copilot-send"
-        >
-          <FontAwesomeIcon icon={faPaperPlane} aria-hidden />
-        </IconButton>
-        <Button
-          variant="contained"
-          size="small"
+        <ComposerPlanButton
+          variant="text"
           startIcon={<FontAwesomeIcon icon={faWandMagicSparkles} />}
           onClick={onSubmit}
           disabled={disabled || busy || value.trim() === '' || !hasInputs}
           data-testid="copilot-plan"
         >
           {busy ? t('copilot.planning') : t('copilot.plan')}
-        </Button>
+        </ComposerPlanButton>
       </FocusableShell>
       <Dialog
         open={resetDialogOpen}
@@ -271,6 +262,16 @@ export default function ChatInput({
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setResetDialogOpen(false)}>{t('closeConfirm.cancelLabel')}</Button>
+          {showSaveAndReset && onSaveAndResetConversation && (
+            <Button
+              onClick={() => {
+                setResetDialogOpen(false);
+                onSaveAndResetConversation();
+              }}
+            >
+              {t('copilot.saveAndReset')}
+            </Button>
+          )}
           <Button ref={resetConfirmRef} onClick={handleResetConfirm} color="error" variant="contained">
             {t('copilot.resetConfirmAction')}
           </Button>

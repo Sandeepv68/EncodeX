@@ -137,7 +137,7 @@ describe.runIf(IS_E2E)('Copilot page', () => {
   it('shows the empty-state welcome and an inert composer', async () => {
     const { page } = session;
     await expect.poll(() => page.locator('[data-testid="copilot-plan"]').isDisabled()).toBe(true);
-    await expect.poll(() => page.locator('[data-testid="copilot-send"]').isDisabled()).toBe(true);
+    await expect.poll(() => page.locator('[data-testid="copilot-send"]').count()).toBe(0);
     await expect.poll(() => page.locator('[data-testid="copilot-conversation"]').innerText()).toContain('How can I help?');
   });
 

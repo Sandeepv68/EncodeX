@@ -57,6 +57,11 @@ export const DrawerTitle = styled(Typography)<{ component?: ElementType }>({
 /** Scrollable list of saved conversations. */
 export const DrawerList = styled(Box)(({ theme }) => ({
   flex: 1,
+  display: 'flex',
+  flexDirection: 'column',
+  // The gap between the cards matches the panel padding, so the list reads as
+  // evenly spaced rows rather than a stack of touching cards.
+  gap: theme.spacing(1),
   overflowY: 'auto',
   padding: theme.spacing(1),
 }));

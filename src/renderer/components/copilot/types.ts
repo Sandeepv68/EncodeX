@@ -76,15 +76,19 @@ export interface ComposerConnection {
 }
 
 /**
- * One attachment shown as a card in the composer: either a single file the
- * user picked, or a folder whose media files were collected recursively.
+ * One attachment shown as a card in the composer: the files the user picked
+ * (grouped into a single card) or a folder whose media files were collected
+ * recursively.
  */
 export interface ComposerAttachment {
   /** Stable identity, used as the React key and to remove the attachment. */
   id: string;
-  /** True when the attachment stands for a folder rather than one file. */
+  /** True when the attachment stands for a folder rather than picked files. */
   isFolder: boolean;
-  /** Display name: the file name, or the folder name. */
+  /**
+   * Display name: the folder name, or the comma-separated names of the picked
+   * files.
+   */
   label: string;
   /** Absolute paths of the media files this attachment covers. */
   paths: string[];
@@ -116,6 +120,8 @@ export interface ChatComposerProps {
   showReset?: boolean;
   /** Saves the current transcript; only shown when `showSave` is true. */
   onSaveChat?: () => void;
+  onSaveAndResetConversation?: () => void;
+  showSaveAndReset?: boolean;
   showSave?: boolean;
   /** Opens the saved-conversations drawer. */
   onOpenSavedChats?: () => void;
@@ -138,6 +144,8 @@ export interface ChatInputProps {
   onResetConversation?: () => void;
   showReset?: boolean;
   onResetConfirm?: () => void;
+  onSaveAndResetConversation?: () => void;
+  showSaveAndReset?: boolean;
 }
 
 /* ------------------------------------------------------------------ *

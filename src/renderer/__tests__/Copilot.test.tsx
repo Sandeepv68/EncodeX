@@ -16,6 +16,7 @@ import { useLocation } from 'react-router-dom';
 import { NavigationGuardProvider } from '../NavigationGuardContext';
 import { useToastStore } from '../stores/toastStore';
 import { useAiConnectionStore } from '../stores/aiConnectionStore';
+import { useQueueStore } from '../stores/queueStore';
 import { readSavedCopilotChats, saveCopilotChat } from '../stores/copilotChats';
 import type { SavedCopilotChat } from '../stores/copilotChats';
 import type { CopilotPlan } from '../../shared/copilot';
@@ -505,6 +506,59 @@ describe('Copilot page', () => {
     );
   });
 
+  it('groups files picked in separate dialogs into one card that lists them', async () => {
+    vi.mocked(window.electronAPI.selectFiles).mockResolvedValueOnce(['/in/one.mp4']).mockResolvedValueOnce(['/in/two.mkv']);
+    renderPage('Copilot');
+
+    fireEvent.click(screen.getByTestId('copilot-choose-files'));
+    await waitFor(() => expect(window.electronAPI.selectFiles).toHaveBeenCalledTimes(1));
+    expect(await screen.findByText('one.mp4')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('copilot-choose-files'));
+    await waitFor(() => expect(window.electronAPI.selectFiles).toHaveBeenCalledTimes(2));
+    expect(await screen.findByText('one.mp4, two.mkv')).toBeInTheDocument();
+    expect(screen.getByText('2 files')).toBeInTheDocument();
+
+    const cards = screen.getAllByTestId('copilot-attachment-card');
+    expect(cards).toHaveLength(1);
+    fireEvent.click(cards[0]);
+    const list = await screen.findByTestId('copilot-folder-file-list');
+    expect(within(list).getByText('one.mp4')).toBeInTheDocument();
+    expect(within(list).getByText('two.mkv')).toBeInTheDocument();
+  });
+
+  it('replaces picked files when a folder is chosen afterwards', async () => {
+    vi.mocked(window.electronAPI.selectFiles).mockResolvedValue(['/in/one.mp4']);
+    renderPage('Copilot');
+
+    fireEvent.click(screen.getByTestId('copilot-choose-files'));
+    await waitFor(() => expect(window.electronAPI.selectFiles).toHaveBeenCalledTimes(1));
+    expect(await screen.findByText('one.mp4')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
+    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
+    expect(await screen.findByText('in')).toBeInTheDocument();
+    expect(screen.queryByText('one.mp4')).toBeNull();
+    expect(screen.getAllByTestId('copilot-attachment-card')).toHaveLength(1);
+  });
+
+  it('replaces an existing folder when another folder is chosen', async () => {
+    vi.mocked(window.electronAPI.selectFolderFiles)
+      .mockResolvedValueOnce({ folder: '/in', files: ['/in/one.mp4'] })
+      .mockResolvedValueOnce({ folder: '/out', files: ['/out/two.mkv'] });
+    renderPage('Copilot');
+
+    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
+    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(1));
+    expect(await screen.findByText('in')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('copilot-choose-folder'));
+    await waitFor(() => expect(window.electronAPI.selectFolderFiles).toHaveBeenCalledTimes(2));
+    expect(await screen.findByText('out')).toBeInTheDocument();
+    expect(screen.queryByText('in')).toBeNull();
+    expect(screen.getAllByTestId('copilot-attachment-card')).toHaveLength(1);
+  });
+
   it('shows a notice when the file dialog returns no files', async () => {
     vi.mocked(window.electronAPI.selectFiles).mockResolvedValue([]);
     renderPage('Copilot');
@@ -796,6 +850,19 @@ describe('Copilot page', () => {
     expect(within(screen.getByTestId('copilot-conversation')).getByText('compress for web')).toBeInTheDocument();
   });
 
+  it('lists a chat saved while the saved-chats panel is open', async () => {
+    renderPage('Copilot');
+    await startActivePlan();
+
+    fireEvent.click(screen.getByTestId('copilot-saved-chats'));
+    expect(await screen.findByTestId('saved-chats-drawer')).toBeTruthy();
+    expect(screen.queryByTestId('saved-chat-item')).toBeNull();
+
+    fireEvent.click(screen.getByTestId('copilot-save-chat'));
+
+    await waitFor(() => expect(screen.getAllByTestId('saved-chat-item')).toHaveLength(1));
+  });
+
   it('loads a saved chat straight away when the transcript is empty', async () => {
     seedChat('saved-1', 'saved transcript', 2);
     renderPage('Copilot');
@@ -890,5 +957,27 @@ describe('Copilot page', () => {
 
     await waitFor(() => expect(screen.getAllByTestId('saved-chat-item')).toHaveLength(1));
     expect(readSavedCopilotChats()).toHaveLength(1);
+  });
+
+  it('mirrors the queued jobs into the shared queue store', async () => {
+    vi.mocked(window.electronAPI.queueList)
+      .mockReset()
+      .mockResolvedValue([
+        {
+          id: 'q1',
+          input: '/in/a.mkv',
+          output: '/out/a.mp4',
+          options: {},
+          transcoder: 'ffmpeg',
+          status: 'queued',
+          progress: 0,
+          createdAt: 0,
+        },
+      ] as unknown as Awaited<ReturnType<typeof window.electronAPI.queueList>>);
+
+    renderPage('Copilot');
+
+    await waitFor(() => expect(useQueueStore.getState().jobs).toHaveLength(1));
+    expect(useQueueStore.getState().jobs[0].id).toBe('q1');
   });
 });

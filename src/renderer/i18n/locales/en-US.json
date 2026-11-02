@@ -582,6 +582,7 @@
     "resetConfirmTitle": "Reset conversation?",
     "resetConfirmMessage": "This will clear the entire conversation history. This action cannot be undone.",
     "resetConfirmAction": "Reset",
+    "saveAndReset": "Save and reset",
     "loadingFiles": "Loading files...",
     "removeAttachment": "Remove attachment",
     "folderFilesCount": "{{name}} ({{count}})",
