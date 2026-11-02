@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "¿Restablecer conversación?",
     "resetConfirmMessage": "Esto borrará todo el historial de la conversación. Esta acción no se puede deshacer.",
     "resetConfirmAction": "Restablecer",
-    "loadingFiles": "Cargando archivos..."
+    "loadingFiles": "Cargando archivos...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "¿Salir de Copilot?",

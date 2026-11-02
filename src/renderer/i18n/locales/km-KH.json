@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "កំណត់ការសន្ទនាឡើងវិញ?",
     "resetConfirmMessage": "នេះនឹងលុបប្រវត្តិការសន្ទនាទាំងអស់។ សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។",
     "resetConfirmAction": "កំណត់ឡើងវិញ",
-    "loadingFiles": "កំពុងផ្ទុកឯកសារ..."
+    "loadingFiles": "កំពុងផ្ទុកឯកសារ...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "ចាកចេញពី Copilot?",

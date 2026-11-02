@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "Repor conversa?",
     "resetConfirmMessage": "Isto irá limpar todo o histórico da conversa. Esta ação não pode ser anulada.",
     "resetConfirmAction": "Repor",
-    "loadingFiles": "A carregar ficheiros..."
+    "loadingFiles": "A carregar ficheiros...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Sair do Copilot?",

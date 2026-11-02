@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "Скинути розмову?",
     "resetConfirmMessage": "Це очистить усю історію розмови. Цю дію неможливо скасувати.",
     "resetConfirmAction": "Скинути",
-    "loadingFiles": "Завантаження файлів..."
+    "loadingFiles": "Завантаження файлів...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Залишити Copilot?",

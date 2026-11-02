@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "සංවාදය යළි පිහිටුවන්නද?",
     "resetConfirmMessage": "මෙය සම්පූර්ණ සංවාද ඉතිහාසය ඉවත් කරනු ඇත. මෙම ක්‍රියාව අහෝසි කළ නොහැක.",
     "resetConfirmAction": "යළි පිහිටුවන්න",
-    "loadingFiles": "ගොනු පූරණය වෙමින්..."
+    "loadingFiles": "ගොනු පූරණය වෙමින්...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Copilot වෙතින් පිටවන්නද?",

@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "Reimpostare la conversazione?",
     "resetConfirmMessage": "Questo cancellerà l'intera cronologia della conversazione. Questa azione non può essere annullata.",
     "resetConfirmAction": "Reimposta",
-    "loadingFiles": "Caricamento file..."
+    "loadingFiles": "Caricamento file...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Uscire da Copilot?",

@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "Đặt lại cuộc trò chuyện?",
     "resetConfirmMessage": "Thao tác này sẽ xóa toàn bộ lịch sử trò chuyện. Không thể hoàn tác.",
     "resetConfirmAction": "Đặt lại",
-    "loadingFiles": "Đang tải tệp..."
+    "loadingFiles": "Đang tải tệp...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Rời khỏi Copilot?",

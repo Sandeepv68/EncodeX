@@ -75,6 +75,21 @@ export interface ComposerConnection {
   model?: string;
 }
 
+/**
+ * One attachment shown as a card in the composer: either a single file the
+ * user picked, or a folder whose media files were collected recursively.
+ */
+export interface ComposerAttachment {
+  /** Stable identity, used as the React key and to remove the attachment. */
+  id: string;
+  /** True when the attachment stands for a folder rather than one file. */
+  isFolder: boolean;
+  /** Display name: the file name, or the folder name. */
+  label: string;
+  /** Absolute paths of the media files this attachment covers. */
+  paths: string[];
+}
+
 /** Props for the Copilot chat composer. */
 export interface ChatComposerProps {
   input: string;
@@ -83,14 +98,16 @@ export interface ChatComposerProps {
   onChooseFiles: () => void;
   onChooseFolder: () => void;
   onOpenSettings: () => void;
-  inputs: string[];
+  /** The attachments shown as cards above the input. */
+  attachments: ComposerAttachment[];
   operation: CopilotOperationChoice;
   onOperationChange: (value: CopilotOperationChoice) => void;
   query: string;
   onQueryChange: (value: string) => void;
   targetLanguage: string;
   onTargetLanguageChange: (value: string) => void;
-  onRemoveInput?: (path: string) => void;
+  /** Removes the attachment with the given id. */
+  onRemoveAttachment?: (id: string) => void;
   disabled?: boolean;
   busy?: boolean;
   hasInputs?: boolean;

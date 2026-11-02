@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "Athshocraigh an comhrá?",
     "resetConfirmMessage": "Glanfaidh sé seo stair iomlán an chomhrá. Ní féidir an gníomh seo a chealú.",
     "resetConfirmAction": "Athshocraigh",
-    "loadingFiles": "Ag lódáil comhad..."
+    "loadingFiles": "Ag lódáil comhad...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Fág Copilot?",

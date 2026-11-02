@@ -93,7 +93,7 @@ async function typeGoal(page: Page, goal: string): Promise<void> {
 
 /** Picks a folder by seeding the dialog result, then clicking "Choose folder". */
 async function chooseFolder(page: Page, files: string[]): Promise<void> {
-  await mockApi.setSelectFolderFiles(page, files);
+  await mockApi.setSelectFolderFiles(page, files, 'C:/media');
   await page.locator('[data-testid="copilot-choose-folder"]').click();
   await expect.poll(() => page.locator('[data-testid="copilot-choose-folder"]').isDisabled()).toBe(false);
 }

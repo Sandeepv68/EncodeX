@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "รีเซ็ตบทสนทนา?",
     "resetConfirmMessage": "การดำเนินการนี้จะล้างประวัติบทสนทนาทั้งหมด และไม่สามารถยกเลิกได้",
     "resetConfirmAction": "รีเซ็ต",
-    "loadingFiles": "กำลังโหลดไฟล์..."
+    "loadingFiles": "กำลังโหลดไฟล์...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "ออกจาก Copilot?",

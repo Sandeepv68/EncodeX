@@ -113,7 +113,7 @@ preload 脚本通过 `window.electronAPI` 暴露全部 IPC（类型定义在 `sr
 - `getPathForFile(file) -> string`
 - `selectFile(filters?) -> Promise<string | null>`
 - `selectFiles(filters?) -> Promise<string[]>`
-- `selectFolderFiles() -> Promise<string[]>`
+- `selectFolderFiles() -> Promise<FolderSelection>`
 - `selectOutput() -> Promise<string | null>`
 - `selectDirectory() -> Promise<string | null>`
 - `expandPaths(paths) -> Promise<string[]>`

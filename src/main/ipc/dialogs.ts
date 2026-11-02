@@ -17,6 +17,7 @@ import { ipcMain, dialog, BrowserWindow } from 'electron';
 import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';
 import { FILE_EXTENSIONS } from '../../shared/file-extensions';
+import type { FolderSelection } from '../../shared/types';
 import { coerceNonEmptyArray } from '../../shared/validation';
 import { collectMediaFiles, expandMediaPaths } from '../media-files';
 import {
@@ -104,23 +105,23 @@ export function registerDialogHandlers(win: BrowserWindow): void {
    * Handles the IPC.SELECT_FOLDER_FILES channel (select-folder-files).
    * Opens a single-folder open dialog (`openDirectory`). When a folder is
    * chosen, its supported media files are collected recursively (via
-   * collectMediaFiles) and returned. A cancelled dialog resolves with an
-   * empty array.
+   * collectMediaFiles) and returned. A cancelled dialog resolves with an empty
+   * folder and an empty file list.
    *
-   * @returns {Promise<string[]>} The media file paths found inside the chosen
-   *   folder, or an empty array when the dialog was cancelled.
+   * @returns {Promise<FolderSelection>} The chosen folder and the media file
+   *   paths found inside it.
    */
-  ipcMain.handle(IPC.SELECT_FOLDER_FILES, async () => {
+  ipcMain.handle(IPC.SELECT_FOLDER_FILES, async (): Promise<FolderSelection> => {
     log.debug(LOG_IPC_SELECT_FOLDER_FILES_CALLED);
     const preset = realTierPreset('E2E_REAL_INPUT_DIR');
     const dir = preset || (await dialog.showOpenDialog(win, { properties: ['openDirectory'] })).filePaths[0];
     if (!dir) {
       log.info(LOG_IPC_SELECT_FOLDER_FILES_RESULT, 'cancelled');
-      return [];
+      return { folder: null, files: [] };
     }
     const files = collectMediaFiles(dir);
     log.info(LOG_IPC_SELECT_FOLDER_FILES_RESULT, `${files.length} files`);
-    return files;
+    return { folder: dir, files };
   });
 
   /**

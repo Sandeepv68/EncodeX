@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "Oqallinneq nutaagussaviuk?",
     "resetConfirmMessage": "Oqallinneq oqaluttuassartaa tamarmik piiarneqassaaq. Iliuuseq una utoqqatserneqarsinnaanngilaq.",
     "resetConfirmAction": "Nutaaguk",
-    "loadingFiles": "Fiilit nassarneqarput..."
+    "loadingFiles": "Fiilit nassarneqarput...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Copilot qimassava?",

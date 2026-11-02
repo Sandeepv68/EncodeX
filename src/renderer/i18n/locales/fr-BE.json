@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "Réinitialiser la conversation ?",
     "resetConfirmMessage": "Cela effacera tout l'historique de la conversation. Cette action est irréversible.",
     "resetConfirmAction": "Réinitialiser",
-    "loadingFiles": "Chargement des fichiers..."
+    "loadingFiles": "Chargement des fichiers...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Quitter Copilot ?",

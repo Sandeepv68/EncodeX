@@ -113,7 +113,7 @@ Das Preload-Skript stellt den gesamten IPC über `window.electronAPI` bereit (ty
 - `getPathForFile(file) -> string`
 - `selectFile(filters?) -> Promise<string | null>`
 - `selectFiles(filters?) -> Promise<string[]>`
-- `selectFolderFiles() -> Promise<string[]>`
+- `selectFolderFiles() -> Promise<FolderSelection>`
 - `selectOutput() -> Promise<string | null>`
 - `selectDirectory() -> Promise<string | null>`
 - `expandPaths(paths) -> Promise<string[]>`

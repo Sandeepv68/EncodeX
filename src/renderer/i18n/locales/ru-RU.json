@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "Сбросить разговор?",
     "resetConfirmMessage": "Вся история разговора будет очищена. Это действие нельзя отменить.",
     "resetConfirmAction": "Сбросить",
-    "loadingFiles": "Загрузка файлов..."
+    "loadingFiles": "Загрузка файлов...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Покинуть Copilot?",

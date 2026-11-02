@@ -583,6 +583,8 @@
     "resetConfirmMessage": "This will clear the entire conversation history. This action cannot be undone.",
     "resetConfirmAction": "Reset",
     "loadingFiles": "Loading files...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})",
     "applyNote": "Jobs are added to the Batch Queue; nothing runs until you start it there.",
     "addedToQueue": "Added {{count}} job(s) to the queue",
     "partiallyAdded": "Some jobs could not be added to the queue.",

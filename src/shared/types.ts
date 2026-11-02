@@ -542,6 +542,20 @@ export interface LogEntry {
 }
 
 /**
+ * The result of a folder-selection dialog: the folder the user picked and the
+ * supported media files found inside it (recursively).
+ * @interface FolderSelection
+ * @property {string|null} folder - Absolute path of the chosen folder, or null
+ *   when the dialog was cancelled.
+ * @property {string[]} files - Absolute paths of the media files the folder
+ *   contains (an empty array when the dialog was cancelled).
+ */
+export interface FolderSelection {
+  folder: string | null;
+  files: string[];
+}
+
+/**
  * A file entry in a batch processing session.
  * @interface FileItem
  * @property {string} path - Absolute path of the file.

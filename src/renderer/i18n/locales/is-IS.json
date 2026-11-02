@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "Endurstilla samtal?",
     "resetConfirmMessage": "Þetta mun hreinsa alla samtalssögu. Ekki er hægt að afturkalla þessa aðgerð.",
     "resetConfirmAction": "Endurstilla",
-    "loadingFiles": "Hleð skrám..."
+    "loadingFiles": "Hleð skrám...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Yfirgefa Copilot?",

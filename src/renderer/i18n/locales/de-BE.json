@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "Unterhaltung zurücksetzen?",
     "resetConfirmMessage": "Dadurch wird der gesamte Unterhaltungsverlauf gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
     "resetConfirmAction": "Zurücksetzen",
-    "loadingFiles": "Dateien werden geladen..."
+    "loadingFiles": "Dateien werden geladen...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Copilot verlassen?",

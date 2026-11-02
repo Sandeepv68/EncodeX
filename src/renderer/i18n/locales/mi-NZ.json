@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "Tautuhi anō i te kōrerorero?",
     "resetConfirmMessage": "Ka ūkui tēnei i te hitori katoa o te kōrerorero. Kāore e taea te whakakore.",
     "resetConfirmAction": "Tautuhi anō",
-    "loadingFiles": "E uta ana i ngā kōnae..."
+    "loadingFiles": "E uta ana i ngā kōnae...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Wehe atu i a Copilot?",

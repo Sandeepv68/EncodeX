@@ -35,7 +35,9 @@ import type { CopilotOperationChoice, CopilotPlan } from '../../shared/copilot';
 import { formatError } from '../../shared/errors';
 import Conversation, { type ConversationMessage } from '../components/copilot/Conversation';
 import ChatComposer from '../components/copilot/ChatComposer';
+import type { ComposerAttachment } from '../components/copilot/types';
 import { activeConnectionOf, useAiConnectionStore } from '../stores/aiConnectionStore';
+import { basename } from '../utils/path-utils';
 import { VisuallyHidden } from '../styles/a11y.styles';
 import { CopilotAlert, CopilotAlertWrapper, CopilotConversationColumn, CopilotPage } from '../styles/Copilot.styles';
 
@@ -58,8 +60,7 @@ export default function Copilot() {
   /** The composer's current text. */
   const [input, setInput] = useState('');
   /** Media files picked by the user (files and/or a folder). */
-  const [inputs, setInputs] = useState<string[]>([]);
-  /** The forced operation, or 'auto' to let the planner decide. */
+  const [attachments, setAttachments] = useState<ComposerAttachment[]>([]);  /** The forced operation, or 'auto' to let the planner decide. */
   const [operation, setOperation] = useState<CopilotOperationChoice>('auto');
   /** Passage to look for when searching a transcript. */
   const [query, setQuery] = useState('');
@@ -134,7 +135,7 @@ export default function Copilot() {
     setMessages(chat.messages);
     setSavedChatId(chat.id);
     setInput('');
-    setInputs([]);
+    setAttachments([]);
     setGlobalError(null);
     setNotice(null);
     setSavedChatsOpen(false);
@@ -184,7 +185,8 @@ export default function Copilot() {
   useEffect(() => registerGuard(() => hasActiveChat), [registerGuard, hasActiveChat]);
 
   /**
-   * Opens the folder dialog (recursively) and replaces the current inputs.
+   * Opens the folder dialog (recursively) and replaces the current inputs with
+   * a single folder attachment.
    * @returns {Promise<void>} Resolves after the selection is stored.
    */
   const chooseFolder = async (): Promise<void> => {
@@ -192,15 +194,22 @@ export default function Copilot() {
     setNotice(null);
     setInputsLoading(true);
     try {
-      const files = await withBridgeTimeout(
+      const selection = await withBridgeTimeout(
         bridgePromise(() => window.electronAPI.selectFolderFiles()),
         FOLDER_TIMEOUT_MS,
         null,
       );
       setInputsLoading(false);
-      if (files && Array.isArray(files) && files.length > 0) {
-        setInputs(files);
-      } else if (Array.isArray(files) && files.length === 0) {
+      // A null result means the dialog never answered; only a folder that was
+      // actually opened but held no media is worth reporting.
+      if (!selection) return;
+      const files = Array.isArray(selection.files) ? selection.files : [];
+      const folder = typeof selection.folder === 'string' ? selection.folder : null;
+      // A null folder means the dialog was cancelled, which is not an error.
+      if (!folder) return;
+      if (files.length > 0) {
+        setAttachments([{ id: folder, isFolder: true, label: basename(folder), paths: files }]);
+      } else {
         setNotice(t('copilot.folderEmpty'));
       }
     } catch {
@@ -225,7 +234,13 @@ export default function Copilot() {
       );
       setInputsLoading(false);
       if (files && Array.isArray(files) && files.length > 0) {
-        setInputs((current) => [...new Set([...current, ...files])]);
+        setAttachments((current) => {
+          const covered = new Set(current.flatMap((attachment) => attachment.paths));
+          const added = files
+            .filter((path) => !covered.has(path))
+            .map((path) => ({ id: path, isFolder: false, label: basename(path), paths: [path] }));
+          return [...current, ...added];
+        });
       } else if (Array.isArray(files) && files.length === 0) {
         setNotice(t('copilot.filesEmpty'));
       }
@@ -237,11 +252,11 @@ export default function Copilot() {
 
   /**
    * Removes one attachment from the composer.
-   * @param {string} path - The path to drop.
+   * @param {string} id - The id of the attachment to drop.
    * @returns {void}
    */
-  const removeInput = (path: string): void => {
-    setInputs((current) => current.filter((p) => p !== path));
+  const removeAttachment = (id: string): void => {
+    setAttachments((current) => current.filter((attachment) => attachment.id !== id));
   };
 
   /**
@@ -263,7 +278,8 @@ export default function Copilot() {
       setGlobalError(t('copilot.errorNoGoal'));
       return;
     }
-    if (inputs.length === 0) {
+    const inputPaths = attachments.flatMap((attachment) => attachment.paths);
+    if (inputPaths.length === 0) {
       setGlobalError(t('copilot.errorNoInputs'));
       return;
     }
@@ -272,7 +288,7 @@ export default function Copilot() {
       id: `user-${Date.now()}`,
       role: 'user',
       content: goalText,
-      attachments: [...inputs],
+      attachments: [...inputPaths],
       timestamp: Date.now(),
     };
     const assistantMessageId = `assistant-${Date.now()}`;
@@ -301,7 +317,7 @@ export default function Copilot() {
         bridgePromise(() =>
           window.electronAPI.copilotPlan({
             goal: goalText,
-            inputs,
+            inputs: inputPaths,
             recursive: true,
             maxFiles: 50,
             ...(operation !== 'auto' ? { operation } : {}),
@@ -439,17 +455,17 @@ export default function Copilot() {
             onChooseFiles={chooseFiles}
             onChooseFolder={chooseFolder}
             onOpenSettings={openSettings}
-            inputs={inputs}
+            attachments={attachments}
             operation={operation}
             onOperationChange={setOperation}
             query={query}
             onQueryChange={setQuery}
             targetLanguage={targetLanguage}
             onTargetLanguageChange={setTargetLanguage}
-            onRemoveInput={removeInput}
+            onRemoveAttachment={removeAttachment}
             disabled={busy || inputsLoading}
             busy={busy || inputsLoading}
-            hasInputs={inputs.length > 0}
+            hasInputs={attachments.length > 0}
             connection={{
               connected: aiConnection !== null,
               ...(aiConnection ? { providerId: aiConnection.providerId, model: aiConnection.model } : {}),
@@ -462,7 +478,7 @@ export default function Copilot() {
               setMessages([]);
               setSavedChatId(null);
               setInput('');
-              setInputs([]);
+              setAttachments([]);
               setOperation('auto');
               setQuery('');
               setTargetLanguage('');

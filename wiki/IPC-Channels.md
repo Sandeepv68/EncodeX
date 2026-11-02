@@ -111,7 +111,7 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `getPathForFile(file)` — resolve dropped `File` to absolute path
 - `selectFile(filters?)` — open file dialog, return path
 - `selectFiles(filters?)` — open multi-file dialog, return paths
-- `selectFolderFiles()` — pick a source folder, return its media files (recursive)
+- `selectFolderFiles()` — pick a source folder, return the folder and its media files (recursive)
 - `selectOutput()` — open save dialog
 - `selectDirectory()` — open directory picker
 - `expandPaths(paths)` — expand a mixed list of files/directories into media files

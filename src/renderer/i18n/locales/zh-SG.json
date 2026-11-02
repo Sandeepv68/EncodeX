@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "重置对话？",
     "resetConfirmMessage": "这将清除整个对话历史。此操作无法撤销。",
     "resetConfirmAction": "重置",
-    "loadingFiles": "正在加载文件..."
+    "loadingFiles": "正在加载文件...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "离开 Copilot？",

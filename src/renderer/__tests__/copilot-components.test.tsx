@@ -16,6 +16,7 @@ import ChatComposer from '../components/copilot/ChatComposer';
 import AssistantMessage from '../components/copilot/AssistantMessage';
 import Conversation, { type ConversationMessage } from '../components/copilot/Conversation';
 import type { CopilotPlan, CopilotOperationChoice } from '../../shared/copilot';
+import type { ComposerAttachment } from '../components/copilot/types';
 
 const PLAN: CopilotPlan = {
   goal: 'compress for web',
@@ -435,7 +436,7 @@ describe('ChatComposer', () => {
       onChooseFiles: vi.fn(),
       onChooseFolder: vi.fn(),
       onOpenSettings: vi.fn(),
-      inputs: [] as string[],
+      attachments: [] as ComposerAttachment[],
       operation: 'auto' as CopilotOperationChoice,
       onOperationChange: vi.fn(),
       query: '',
@@ -501,16 +502,33 @@ describe('ChatComposer', () => {
     expect(props.onTargetLanguageChange).toHaveBeenCalledWith('es');
   });
 
-  it('removes an attachment through its chip delete icon', () => {
-    const onRemoveInput = vi.fn();
-    renderComposer({ inputs: ['/in/a.mp4'], onRemoveInput });
-    fireEvent.click(screen.getByTestId('CancelIcon'));
-    expect(onRemoveInput).toHaveBeenCalledWith('/in/a.mp4');
+  it('removes an attachment through the card close button', () => {
+    const onRemoveAttachment = vi.fn();
+    renderComposer({
+      attachments: [{ id: '/in/a.mp4', isFolder: false, label: 'a.mp4', paths: ['/in/a.mp4'] }],
+      onRemoveAttachment,
+    });
+    fireEvent.click(screen.getByTestId('copilot-remove-attachment'));
+    expect(onRemoveAttachment).toHaveBeenCalledWith('/in/a.mp4');
   });
 
-  it('renders a non-removable chip when no remove handler is given', () => {
-    renderComposer({ inputs: ['/in/a.mp4'] });
+  it('renders a non-removable card when no remove handler is given', () => {
+    renderComposer({ attachments: [{ id: '/in/a.mp4', isFolder: false, label: 'a.mp4', paths: ['/in/a.mp4'] }] });
     expect(screen.getByText('a.mp4')).toBeInTheDocument();
-    expect(screen.queryByTestId('CancelIcon')).toBeNull();
+    expect(screen.queryByTestId('copilot-remove-attachment')).toBeNull();
+  });
+
+  it('shows a folder card with its file count', () => {
+    renderComposer({
+      attachments: [{ id: '/in', isFolder: true, label: 'in', paths: ['/in/a.mp4', '/in/b.mkv'] }],
+    });
+    expect(screen.getByText('in')).toBeInTheDocument();
+    expect(screen.getByText('2 files')).toBeInTheDocument();
+  });
+
+  it('shows the loading card with a progress bar while files are being selected', () => {
+    renderComposer({ inputsLoading: true });
+    expect(screen.getByTestId('copilot-attachment-loading')).toBeInTheDocument();
+    expect(screen.getByRole('progressbar')).toBeInTheDocument();
   });
 });

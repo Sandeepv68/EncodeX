@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "Nollataanko keskustelu?",
     "resetConfirmMessage": "Tämä tyhjentää koko keskusteluhistorian. Toimintoa ei voi kumota.",
     "resetConfirmAction": "Nollaa",
-    "loadingFiles": "Ladataan tiedostoja..."
+    "loadingFiles": "Ladataan tiedostoja...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Poistu Copilotista?",

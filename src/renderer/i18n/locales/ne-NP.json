@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "कुराकानी रिसेट गर्ने हो?",
     "resetConfirmMessage": "यसले सम्पूर्ण कुराकानी इतिहास मेटाउनेछ। यो कार्य पूर्ववत गर्न सकिँदैन।",
     "resetConfirmAction": "रिसेट",
-    "loadingFiles": "फाइलहरू लोड हुँदैछन्..."
+    "loadingFiles": "फाइलहरू लोड हुँदैछन्...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Copilot छोड्ने हो?",

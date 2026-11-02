@@ -224,6 +224,8 @@ export function isThemeId(value: string | null): value is ThemeId {
  * @property {string} error - Error status color.
  * @property {string} success - Success status color.
  * @property {string} warning - Warning status color.
+ * @property {Object} composer - Surfaces of the Copilot composer's attachment
+ *   cards (`cardLight` for light themes, `cardDark` for the dark theme).
  * @property {Object} tint - 10% translucent tints for error/warning/info.
  * @property {string} tint.error10 - Error color at 10% opacity.
  * @property {string} tint.warning10 - Warning color at 10% opacity.
@@ -248,6 +250,18 @@ export const COLORS = {
   error: '#e74c3c',
   success: '#2ecc71',
   warning: '#f39c12',
+  /**
+   * Surfaces of the Copilot composer's attachment cards. The card is a sheet
+   * of off-white grey paper that sits under the composer's white input field,
+   * so its background is a shade off the input's paper rather than the paper
+   * itself.
+   */
+  composer: {
+    /** Light grey card surface in light themes. */
+    cardLight: '#eeeeee',
+    /** Slightly lifted grey card surface in the dark theme. */
+    cardDark: '#26262a',
+  },
   tint: {
     error10: 'rgba(231,76,60,0.1)',
     error45: 'rgba(231, 76, 60, 0.45)',

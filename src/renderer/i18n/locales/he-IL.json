@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "לאפס את השיחה?",
     "resetConfirmMessage": "זה ימחק את כל היסטוריית השיחה. לא ניתן לבטל פעולה זו.",
     "resetConfirmAction": "איפוס",
-    "loadingFiles": "טוען קבצים..."
+    "loadingFiles": "טוען קבצים...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "לצאת מ-Copilot?",

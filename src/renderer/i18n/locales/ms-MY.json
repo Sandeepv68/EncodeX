@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "Tetapkan semula perbualan?",
     "resetConfirmMessage": "Ini akan memadam seluruh sejarah perbualan. Tindakan ini tidak boleh dibatalkan.",
     "resetConfirmAction": "Tetapkan semula",
-    "loadingFiles": "Memuatkan fail..."
+    "loadingFiles": "Memuatkan fail...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Tinggalkan Copilot?",

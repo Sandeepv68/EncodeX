@@ -100,7 +100,7 @@ async function typeGoal(page: Page, goal: string): Promise<void> {
 
 /** Builds an active transcript with one planned turn. */
 async function startActivePlan(page: Page): Promise<void> {
-  await mockApi.setSelectFolderFiles(page, FOLDER_FILES);
+  await mockApi.setSelectFolderFiles(page, FOLDER_FILES, 'C:/media');
   await page.locator('[data-testid="copilot-choose-folder"]').click();
   await expect.poll(() => page.locator('[data-testid="copilot-choose-folder"]').isDisabled()).toBe(false);
   await mockApi.setCopilotPlan(page, PLAN);

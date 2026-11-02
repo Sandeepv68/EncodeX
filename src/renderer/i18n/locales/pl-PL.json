@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "Zresetować rozmowę?",
     "resetConfirmMessage": "Spowoduje to wyczyszczenie całej historii rozmowy. Tej czynności nie można cofnąć.",
     "resetConfirmAction": "Resetuj",
-    "loadingFiles": "Ładowanie plików..."
+    "loadingFiles": "Ładowanie plików...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Opuścić Copilot?",

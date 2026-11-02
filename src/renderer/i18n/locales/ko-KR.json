@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "대화를 재설정할까요?",
     "resetConfirmMessage": "전체 대화 기록이 지워집니다. 이 작업은 되돌릴 수 없습니다.",
     "resetConfirmAction": "재설정",
-    "loadingFiles": "파일 불러오는 중..."
+    "loadingFiles": "파일 불러오는 중...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Copilot에서 나가시겠어요?",

@@ -19,6 +19,7 @@ import { useAiConnectionStore } from '../stores/aiConnectionStore';
 import { readSavedCopilotChats, saveCopilotChat } from '../stores/copilotChats';
 import type { SavedCopilotChat } from '../stores/copilotChats';
 import type { CopilotPlan } from '../../shared/copilot';
+import type { FolderSelection } from '../../shared/types';
 import { expectAppLog } from '../../test-utils/crash-tripwire';
 
 /** The most recent route the page navigated to, captured by {@link LocationProbe}. */
@@ -216,7 +217,7 @@ describe('Copilot page', () => {
     useToastStore.setState({ toasts: [] });
     useAiConnectionStore.getState().reset();
     lastPath = '';
-    vi.mocked(window.electronAPI.selectFolderFiles).mockResolvedValue(['/in/one.mp4', '/in/two.mkv']);
+    vi.mocked(window.electronAPI.selectFolderFiles).mockResolvedValue({ folder: '/in', files: ['/in/one.mp4', '/in/two.mkv'] });
     vi.mocked(window.electronAPI.selectFiles).mockReset().mockResolvedValue([]);
     vi.mocked(window.electronAPI.queueAdd).mockReset().mockResolvedValue('');
     vi.mocked(window.electronAPI.copilotPlan).mockResolvedValue(PLAN_FIXTURE);
@@ -431,7 +432,7 @@ describe('Copilot page', () => {
   });
 
   it('shows a notice when the chosen folder contains no media files', async () => {
-    vi.mocked(window.electronAPI.selectFolderFiles).mockResolvedValue([]);
+    vi.mocked(window.electronAPI.selectFolderFiles).mockResolvedValue({ folder: '/in', files: [] });
     renderPage('Copilot');
     fireEvent.click(screen.getByTestId('copilot-choose-folder'));
     expect(await screen.findByTestId('copilot-notice')).toBeInTheDocument();
@@ -512,17 +513,28 @@ describe('Copilot page', () => {
     expect(window.electronAPI.copilotPlan).not.toHaveBeenCalled();
   });
 
-  it('removes an attachment when its chip delete icon is clicked', async () => {
+  it('shows a folder card with its file count and removes it with the close button', async () => {
     renderPage('Copilot');
     await typeMessage('compress for web');
     await chooseFolder();
-    expect(screen.getByText('one.mp4')).toBeInTheDocument();
-    expect(screen.getByText('two.mkv')).toBeInTheDocument();
+    expect(screen.getByText('in')).toBeInTheDocument();
+    expect(screen.getByText('2 files')).toBeInTheDocument();
 
-    fireEvent.click(screen.getAllByTestId('CancelIcon')[0]);
-    await waitFor(() => expect(screen.queryByText('one.mp4')).toBeNull());
-    fireEvent.click(screen.getByTestId('copilot-plan'));
-    await waitFor(() => expect(window.electronAPI.copilotPlan).toHaveBeenCalledWith(expect.objectContaining({ inputs: ['/in/two.mkv'] })));
+    fireEvent.click(screen.getAllByTestId('copilot-remove-attachment')[0]);
+    await waitFor(() => expect(screen.queryByText('in')).toBeNull());
+    expect((screen.getByTestId('copilot-plan') as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it('lists the files inside a folder card when it is clicked', async () => {
+    renderPage('Copilot');
+    await typeMessage('compress for web');
+    await chooseFolder();
+
+    const card = screen.getAllByTestId('copilot-attachment-card')[0];
+    fireEvent.click(card);
+    const list = await screen.findByTestId('copilot-folder-file-list');
+    expect(within(list).getByText('one.mp4')).toBeInTheDocument();
+    expect(within(list).getByText('two.mkv')).toBeInTheDocument();
   });
 
   it('passes a target language when the translate operation is chosen', async () => {
@@ -638,7 +650,7 @@ describe('Copilot page', () => {
   });
 
   it('ignores a folder dialog that never settles', async () => {
-    vi.mocked(window.electronAPI.selectFolderFiles).mockReturnValue(new Promise<string[]>(() => {}));
+    vi.mocked(window.electronAPI.selectFolderFiles).mockReturnValue(new Promise<FolderSelection>(() => {}));
     renderPage('Copilot');
     vi.useFakeTimers();
     fireEvent.click(screen.getByTestId('copilot-choose-folder'));
@@ -662,7 +674,7 @@ describe('Copilot page', () => {
   });
 
   it('de-duplicates a file chosen through both the folder and file dialogs', async () => {
-    vi.mocked(window.electronAPI.selectFolderFiles).mockResolvedValue(['/in/one.mp4']);
+    vi.mocked(window.electronAPI.selectFolderFiles).mockResolvedValue({ folder: '/in', files: ['/in/one.mp4'] });
     vi.mocked(window.electronAPI.selectFiles).mockResolvedValue(['/in/one.mp4', '/in/two.mkv']);
     renderPage('Copilot');
     await typeMessage('compress for web');

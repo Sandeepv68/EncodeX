@@ -5,25 +5,46 @@
  */
 
 import { useState } from 'react';
-import { Box, Button, MenuItem, Popover, TextField, Tooltip, Typography } from '@mui/material';
+import { Box, Button, ClickAwayListener, MenuItem, Popover, TextField, Tooltip, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClockRotateLeft, faFileImport, faFloppyDisk, faFolderOpen, faGear, faSliders } from '@fortawesome/free-solid-svg-icons';
+import {
+  faClockRotateLeft,
+  faFile,
+  faFileImport,
+  faFloppyDisk,
+  faFolder,
+  faFolderOpen,
+  faGear,
+  faSliders,
+  faXmark,
+} from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import ChatInput from './ChatInput';
 import AiConnectionStatus from '../AiConnectionStatus';
 import type { CopilotOperationChoice } from '../../../shared/copilot';
 import { COPILOT_QUEUE_OPERATIONS, COPILOT_INTELLIGENCE_OPERATIONS } from '../../../shared/copilot';
-import type { ChatComposerProps } from './types';
+import { basename } from '../../utils/path-utils';
+import type { ChatComposerProps, ComposerAttachment } from './types';
 import {
   ActionsRow,
   AdvancedPanel,
-  AttachmentChip,
+  AttachmentCard,
+  AttachmentCardRow,
+  AttachmentCountChip,
+  AttachmentFileList,
+  AttachmentFileListArrow,
+  AttachmentFileListItem,
+  AttachmentFileListPopper,
+  AttachmentIcon,
+  AttachmentLoadingLabel,
+  AttachmentName,
+  AttachmentRemoveButton,
   AttachmentRow,
-  ChipDeleteIconWrap,
   ChipProgress,
   ComposerBar,
+  ComposerStack,
+  InputLayer,
   LeftActions,
-  LoadingAttachmentChip,
   RightActions,
 } from '../../styles/copilot/ChatComposer.styles';
 
@@ -43,14 +64,14 @@ export default function ChatComposer({
   onChooseFiles,
   onChooseFolder,
   onOpenSettings,
-  inputs,
+  attachments,
   operation,
   onOperationChange,
   query,
   onQueryChange,
   targetLanguage,
   onTargetLanguageChange,
-  onRemoveInput,
+  onRemoveAttachment,
   disabled = false,
   busy = false,
   hasInputs = false,
@@ -64,44 +85,155 @@ export default function ChatComposer({
 }: ChatComposerProps) {
   const { t } = useTranslation();
   const [advancedAnchor, setAdvancedAnchor] = useState<HTMLElement | null>(null);
+  /** The folder whose file list is currently shown in the popover. */
+  const [selectedFolder, setSelectedFolder] = useState<ComposerAttachment | null>(null);
+  /** Anchor element of the folder popover. */
+  const [folderAnchor, setFolderAnchor] = useState<HTMLElement | null>(null);
+  /** Arrow element of the folder popover. */
+  const [folderArrow, setFolderArrow] = useState<HTMLElement | null>(null);
+
+  /**
+   * Opens/closes the folder popover on click, anchored to the card.
+   * @param {ComposerAttachment} attachment - The clicked folder attachment.
+   * @param {HTMLElement} anchor - The card element the popover points at.
+   * @returns {void}
+   */
+  const toggleFolderList = (attachment: ComposerAttachment, anchor: HTMLElement): void => {
+    if (selectedFolder?.id === attachment.id && folderAnchor === anchor) {
+      setSelectedFolder(null);
+      setFolderAnchor(null);
+      return;
+    }
+    setFolderAnchor(anchor);
+    setSelectedFolder(attachment);
+  };
+
+  /** Closes the folder popover. */
+  const closeFolderList = (): void => {
+    setSelectedFolder(null);
+    setFolderAnchor(null);
+  };
 
   return (
     <ComposerBar>
-      {(inputs.length > 0 || inputsLoading) && (
-        <AttachmentRow>
-          {inputsLoading && inputs.length === 0 && (
-            <LoadingAttachmentChip
-              label={t('copilot.loadingFiles')}
-              size="small"
-              deleteIcon={
-                <ChipDeleteIconWrap>
-                  <ChipProgress />
-                </ChipDeleteIconWrap>
-              }
-              onDelete={() => {}}
-            />
-          )}
-          {inputs.map((path) => (
-            <AttachmentChip
-              key={path}
-              label={path.split(/[/\\]/).pop() || path}
-              size="small"
-              onDelete={onRemoveInput ? () => onRemoveInput(path) : undefined}
-            />
-          ))}
-        </AttachmentRow>
-      )}
-      <ChatInput
-        value={input}
-        onChange={onInputChange}
-        onSubmit={onSubmit}
-        disabled={busy || disabled}
-        placeholder={t('copilot.placeholder')}
-        busy={busy}
-        hasInputs={hasInputs}
-        showReset={showReset}
-        onResetConversation={onResetConversation}
-      />
+      <ComposerStack>
+        {(attachments.length > 0 || inputsLoading) && (
+          <AttachmentRow>
+            {inputsLoading && (
+              <AttachmentCard data-testid="copilot-attachment-loading">
+                <AttachmentCardRow>
+                  <AttachmentLoadingLabel>{t('copilot.loadingFiles')}</AttachmentLoadingLabel>
+                </AttachmentCardRow>
+                <ChipProgress />
+              </AttachmentCard>
+            )}
+            {attachments.map((attachment) => (
+              <AttachmentCard
+                key={attachment.id}
+                data-testid="copilot-attachment-card"
+                onClick={
+                  attachment.isFolder
+                    ? (event) => {
+                        event.stopPropagation();
+                        toggleFolderList(attachment, event.currentTarget);
+                      }
+                    : undefined
+                }
+                onKeyDown={
+                  attachment.isFolder
+                    ? (event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          toggleFolderList(attachment, event.currentTarget);
+                        }
+                      }
+                    : undefined
+                }
+                role={attachment.isFolder ? 'button' : undefined}
+                tabIndex={attachment.isFolder ? 0 : undefined}
+                aria-haspopup={attachment.isFolder ? 'dialog' : undefined}
+                aria-expanded={
+                  attachment.isFolder ? selectedFolder?.id === attachment.id : undefined
+                }
+              >
+                <AttachmentCardRow>
+                  <AttachmentIcon>
+                    <FontAwesomeIcon icon={attachment.isFolder ? faFolder : faFile} size="sm" />
+                  </AttachmentIcon>
+                  {attachment.isFolder ? (
+                    <>
+                      <AttachmentName title={attachment.paths.join('\n')}>
+                        {attachment.label}
+                      </AttachmentName>
+                      <AttachmentCountChip
+                        size="small"
+                        label={t('mcpViews.common.fileCount', { count: attachment.paths.length })}
+                      />
+                    </>
+                  ) : (
+                    <AttachmentName title={attachment.paths.join('\n')}>
+                      {attachment.label}
+                    </AttachmentName>
+                  )}
+                  {onRemoveAttachment && (
+                    <AttachmentRemoveButton
+                      size="small"
+                      aria-label={t('copilot.removeAttachment')}
+                      data-testid="copilot-remove-attachment"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        if (selectedFolder?.id === attachment.id) closeFolderList();
+                        onRemoveAttachment(attachment.id);
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faXmark} size="xs" />
+                    </AttachmentRemoveButton>
+                  )}
+                </AttachmentCardRow>
+              </AttachmentCard>
+            ))}
+          </AttachmentRow>
+        )}
+        <InputLayer>
+          <ChatInput
+            value={input}
+            onChange={onInputChange}
+            onSubmit={onSubmit}
+            disabled={busy || disabled}
+            placeholder={t('copilot.placeholder')}
+            busy={busy}
+            hasInputs={hasInputs}
+            showReset={showReset}
+            onResetConversation={onResetConversation}
+          />
+        </InputLayer>
+      </ComposerStack>
+      <AttachmentFileListPopper
+        open={selectedFolder !== null && folderAnchor !== null}
+        anchorEl={folderAnchor}
+        placement="top"
+        modifiers={[
+          {
+            name: 'offset',
+            options: { offset: [0, 12] },
+          },
+          {
+            name: 'arrow',
+            options: { element: folderArrow },
+          },
+        ]}
+      >
+        <ClickAwayListener onClickAway={closeFolderList}>
+          <AttachmentFileList data-testid="copilot-folder-file-list" tabIndex={0}>
+            {selectedFolder?.paths.map((path) => (
+              <AttachmentFileListItem key={path} title={path}>
+                {basename(path)}
+              </AttachmentFileListItem>
+            ))}
+          </AttachmentFileList>
+        </ClickAwayListener>
+        <AttachmentFileListArrow ref={setFolderArrow} data-popper-arrow />
+      </AttachmentFileListPopper>
       <ActionsRow>
         <LeftActions>
           <Button

@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "Яриаг шинэчлэх үү?",
     "resetConfirmMessage": "Энэ нь бүх ярианы түүхийг устгана. Энэ үйлдлийг буцаах боломжгүй.",
     "resetConfirmAction": "Шинэчлэх",
-    "loadingFiles": "Файлууд ачааллаж байна..."
+    "loadingFiles": "Файлууд ачааллаж байна...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Copilot-оос гарах уу?",

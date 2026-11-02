@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "I-reset ang usapan?",
     "resetConfirmMessage": "Ito ay magbubura ng buong history ng usapan. Hindi na ito maibabalik.",
     "resetConfirmAction": "I-reset",
-    "loadingFiles": "Naglo-load ng mga file..."
+    "loadingFiles": "Naglo-load ng mga file...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Umalis sa Copilot?",

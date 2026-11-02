@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "Redefinir conversa?",
     "resetConfirmMessage": "Isso apagará todo o histórico da conversa. Esta ação não pode ser desfeita.",
     "resetConfirmAction": "Redefinir",
-    "loadingFiles": "Carregando arquivos..."
+    "loadingFiles": "Carregando arquivos...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Sair do Copilot?",

@@ -9,6 +9,10 @@ import { SHADOWS } from '../../../shared/theme/colors';
  * keyboard focus is visible around the whole control.
  */
 export const ComposerShell = styled(Box)(({ theme }) => ({
+  position: 'relative',
+  // The input sheet sits above the floating attachment cards so the cards read
+  // as a layer tucked behind it.
+  zIndex: 1,
   display: 'flex',
   alignItems: 'center',
   flexWrap: 'nowrap',

@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "Gesprek resetten?",
     "resetConfirmMessage": "Hiermee wordt de volledige gespreksgeschiedenis gewist. Deze actie kan niet ongedaan worden gemaakt.",
     "resetConfirmAction": "Resetten",
-    "loadingFiles": "Bestanden laden..."
+    "loadingFiles": "Bestanden laden...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Copilot verlaten?",

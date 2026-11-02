@@ -225,10 +225,11 @@ function benignResolveFor(name: string): unknown {
     case 'selectDirectory':
       return null;
     case 'selectFiles':
-    case 'selectFolderFiles':
     case 'expandPaths':
     case 'queueList':
       return [];
+    case 'selectFolderFiles':
+      return { folder: null, files: [] };
     case 'copilotPlan':
       return {
         goal: '',

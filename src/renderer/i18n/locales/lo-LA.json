@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "ຣີເຊັດການສົນທະນາ?",
     "resetConfirmMessage": "ສິ່ງນີ້ຈະລຶບປະຫວັດການສົນທະນາທັງໝົດ. ບໍ່ສາມາດຍົກເລີກການກະທຳນີ້ໄດ້.",
     "resetConfirmAction": "ຣີເຊັດ",
-    "loadingFiles": "ກຳລັງໂຫຼດໄຟລ໌..."
+    "loadingFiles": "ກຳລັງໂຫຼດໄຟລ໌...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "ອອກຈາກ Copilot?",

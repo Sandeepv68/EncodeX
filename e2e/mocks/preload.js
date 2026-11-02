@@ -493,8 +493,8 @@ const api = {
     setSelectFiles: (v) => {
       state.selectFilesResult = v;
     },
-    setSelectFolderFiles: (v) => {
-      state.selectFolderFilesResult = v;
+    setSelectFolderFiles: (v, folder) => {
+      state.selectFolderFilesResult = { folder: folder ?? null, files: v };
     },
     setCopilotPlan: (v) => {
       state.copilotPlanResult = v;

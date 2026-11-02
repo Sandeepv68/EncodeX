@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "Återställa konversationen?",
     "resetConfirmMessage": "Detta rensar hela konversationshistoriken. Åtgärden kan inte ångras.",
     "resetConfirmAction": "Återställ",
-    "loadingFiles": "Läser in filer..."
+    "loadingFiles": "Läser in filer...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Lämna Copilot?",

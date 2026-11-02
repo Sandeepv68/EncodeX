@@ -113,7 +113,7 @@ Le script preload expose tout l'IPC via `window.electronAPI` (typé dans `src/re
 - `getPathForFile(file) -> string`
 - `selectFile(filters?) -> Promise<string | null>`
 - `selectFiles(filters?) -> Promise<string[]>`
-- `selectFolderFiles() -> Promise<string[]>`
+- `selectFolderFiles() -> Promise<FolderSelection>`
 - `selectOutput() -> Promise<string | null>`
 - `selectDirectory() -> Promise<string | null>`
 - `expandPaths(paths) -> Promise<string[]>`

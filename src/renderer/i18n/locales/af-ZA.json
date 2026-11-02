@@ -1146,7 +1146,9 @@
     "resetConfirmTitle": "Gesprek terugstel?",
     "resetConfirmMessage": "Dit sal die hele gesprekgeskiedenis uitwis. Hierdie aksie kan nie ongedaan gemaak word nie.",
     "resetConfirmAction": "Terugstel",
-    "loadingFiles": "Laai lêers..."
+    "loadingFiles": "Laai lêers...",
+    "removeAttachment": "Remove attachment",
+    "folderFilesCount": "{{name}} ({{count}})"
   },
   "leaveConfirm": {
     "title": "Copilot verlaat?",
