@@ -167,7 +167,7 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
     "@vitest/coverage-v8": "^4.1.10",
-    "axe-core": "^4.13.0",
+    "axe-core": "^4.14.0",
     "concurrently": "^10.0.4",
     "electron": "^43.4.0",
     "electron-builder": "^26.15.3",
