@@ -592,6 +592,21 @@ describe('ChatComposer', () => {
     expect(screen.queryByTestId('copilot-remove-attachment')).toBeNull();
   });
 
+  it('closes the open file list when the attachment is removed', async () => {
+    const onRemoveAttachment = vi.fn();
+    renderComposer({
+      attachments: [{ id: '/in', isFolder: true, label: 'in', paths: ['/in/a.mp4', '/in/b.mkv'] }],
+      onRemoveAttachment,
+    });
+
+    fireEvent.click(screen.getByTestId('copilot-attachment-card'));
+    expect(await screen.findByTestId('copilot-folder-file-list')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('copilot-remove-attachment'));
+    expect(onRemoveAttachment).toHaveBeenCalledWith('/in');
+    await waitFor(() => expect(screen.queryByTestId('copilot-folder-file-list')).toBeNull());
+  });
+
   it('shows a folder card with its file count', () => {
     renderComposer({
       attachments: [{ id: '/in', isFolder: true, label: 'in', paths: ['/in/a.mp4', '/in/b.mkv'] }],

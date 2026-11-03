@@ -28,6 +28,9 @@ const NO_HW: EncoderCapabilities = { videoEncoders: ['libx264', 'libx265'], audi
 /** Capabilities with a hardware encoder. */
 const WITH_HW: EncoderCapabilities = { videoEncoders: ['h264_nvenc', 'libx264'], audioEncoders: ['aac'], hwaccels: ['cuda'] };
 
+/** Video facts for a 1080p stream. */
+const VIDEO = { codec: 'h264', width: 1920, height: 1080, hdr: false, interlaced: false };
+
 /**
  * Facts without any bitrate information, so the estimator cannot run its
  * model and has to fall back to the default bitrate scaled by the resolution.
@@ -181,6 +184,31 @@ describe('estimateConversion', () => {
     const numeric = estimateConversion({ qscale: 20 }, FACTS, NO_HW);
     const textual = estimateConversion({ qscale: '20' }, FACTS, NO_HW);
     expect(textual.videoBitrateKbps).toBe(numeric.videoBitrateKbps);
+  });
+
+  it('keeps the source bitrate when the source has no audio track', () => {
+    const silent: MediaFacts = { ...FACTS, hasAudio: false, audio: undefined };
+    const estimate = estimateConversion({}, silent, NO_HW);
+    expect(estimate.audioBitrateKbps).toBe(0);
+    expect(estimate.videoBitrateKbps).toBeGreaterThan(0);
+  });
+
+  it('falls back to the default frame rate for a broken frame rate', () => {
+    const broken: MediaFacts = { ...FACTS, video: { ...VIDEO, frameRate: '0/1' } };
+    const estimate = estimateConversion({}, broken, NO_HW);
+    expect(estimate.videoBitrateKbps).toBeGreaterThan(0);
+  });
+
+  it('ignores a video stream without pixel dimensions', () => {
+    const sizeless: MediaFacts = { ...FACTS, video: { ...VIDEO, width: 0, height: 0 } };
+    const estimate = estimateConversion({ scale: '1280x720' }, sizeless, NO_HW);
+    expect(estimate.videoBitrateKbps).toBeGreaterThan(0);
+  });
+
+  it('ignores a source whose pixel count is not positive', () => {
+    const broken: MediaFacts = { ...FACTS, video: { ...VIDEO, width: -1920, height: 1080 } };
+    const estimate = estimateConversion({ scale: '1280x720' }, broken, NO_HW);
+    expect(estimate.videoBitrateKbps).toBeGreaterThan(0);
   });
 });
 
