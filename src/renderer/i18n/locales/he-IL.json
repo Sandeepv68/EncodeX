@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "מעבר למצב בהיר",
-    "switchDark": "מעבר למצב כהה",
     "language": "שפה",
     "searchLanguage": "חיפוש שפות",
     "condense": "כווץ את סרגל הצד",
@@ -32,7 +30,7 @@
     },
     "remux": "אריזה מחדש",
     "demux": "פיצול זרמים",
-    "copilot": "Copilot"
+    "copilot": "קופילוט"
   },
   "dashboard": {
     "welcome": "ברוכים הבאים ל-EncodeX",
@@ -59,7 +57,7 @@
       "extract": "חילוץ אודיו",
       "trim": "חיתוך קטע",
       "remux": "ארוז מחדש קובץ",
-      "copilot": "שאל את Copilot"
+      "copilot": "שאל את קופילוט"
     }
   },
   "closeConfirm": {
@@ -78,7 +76,6 @@
     "advanced": "מתקדם",
     "inputFile": "קובץ קלט",
     "outputFile": "קובץ פלט",
-    "noFile": "לא נבחר קובץ",
     "noOutput": "לא נבחר פלט",
     "browse": "עיון",
     "saveAs": "שמירה בשם",
@@ -96,9 +93,6 @@
     "pause": "השהיה",
     "resume": "המשך",
     "cancel": "ביטול",
-    "placeholderBitrate": "לדוגמה 2000k",
-    "placeholderAudioBitrate": "לדוגמה 192k",
-    "placeholderScale": "לדוגמה 1280x720",
     "cancelTitle": "ביטול ההמרה",
     "cancelMessage": "האם אתה בטוח שברצונך לבטל את ההמרה הנוכחית?",
     "cancelJob": "ביטול משימה",
@@ -144,9 +138,7 @@
     "filtersHint": "מחיל מסנני וידאו של FFmpeg (חיתוך, קצב פריימים, ביטול שזירה, הפחתת רעש, צבע…) במהלך המרת הקוד. כל המסננים ממוזגים לשרשרת ‎-vf‎ יחידה לאחר שינוי קנה המידה וסיבוב.",
     "addPreset": "הוספת מסנן מוגדר מראש…",
     "addFilter": "הוספת מסנן",
-    "customChainLabel": "שרשרת מסננים מותאמת אישית",
     "customChainPlaceholder": "לדוגמה: fps=30, eq=brightness=0.1",
-    "customChainHint": "ביטויי מסנני FFmpeg המופרדים בפסקים. כל רשומה חייבת להכיל סוגריים וסוגריים מרובעים מאוזנים, גרשיים תואמים וללא תווי מטא של מעטפת.",
     "addCustom": "הוספת מותאם אישית",
     "removeFilter": "הסרת מסנן",
     "moveUp": "הזזה למעלה",
@@ -262,7 +254,6 @@
     "compress": "דחיסת תמונה",
     "compressing": "דוחס...",
     "placeholderOutput": "נתיב פלט",
-    "placeholderScale": "לדוגמה 800x600",
     "validationRequired": "אנא בחר תמונת קלט.",
     "selectedImage": "התמונה שנבחרה: {{file}}",
     "inputImageHint": "תמונת המקור לדחיסה. נתמכים JPEG, PNG, WebP ו-BMP.",
@@ -289,7 +280,6 @@
     "extract": "חילוץ אודיו",
     "extracting": "מחלץ...",
     "placeholderOutput": "לדוגמה output.mp3",
-    "validationRequired": "אנא בחר קובץ וידאו.",
     "selectedVideo": "הווידאו שנבחר: {{file}}",
     "pause": "השהיה",
     "resume": "המשך",
@@ -302,11 +292,8 @@
   "videoCut": {
     "title": "חיתוך וידאו",
     "videoFile": "קובץ וידאו",
-    "noFile": "לא נבחר קובץ",
-    "browse": "עיון",
     "dropLabel": "גרור קובץ וידאו לכאן או לחץ כדי לעיין",
     "videoFileHint": "גרור ושחרר קובץ וידאו לכאן או לחץ כדי לעיין במחשב שלך.",
-    "videoFiles": "קובצי וידאו",
     "changeFile": "החלף וידאו",
     "changeFileHint": "בחר קובץ וידאו אחר.",
     "outputFile": "קובץ פלט",
@@ -357,9 +344,7 @@
     "stop": "עצור",
     "mute": "השתק",
     "unmute": "בטל השתקה",
-    "seek": "חיפוש",
-    "playbackTime": "זמן נגינה",
-    "videoPlayer": "נגן וידאו"
+    "seek": "חיפוש"
   },
   "batchQueue": {
     "bmfNotBundled": "BMF אינו כלול ב-EncodeX. התקן אותו ידנית וודא ש-bmf_ffmpeg ו-bmf_ffprobe נמצאים ב-PATH שלך.",
@@ -486,12 +471,8 @@
     "outputRequired": "נדרש קובץ פלט",
     "invalidTime": "פורמט זמן לא חוקי (שעון:דקה:שניה או שניות)",
     "durationRequired": "נדרש משך",
-    "invalidScale": "פורמט קנה מידה לא חוקי (לדוגמה 1920:1080, 50%)",
-    "invalidBitrate": "קצב סיביות לא חוקי (לדוגמה 128k, 1M)",
     "qscaleRange": "QScale חייב להיות בין 1 ל-31",
-    "qualityRange": "האיכות חייבת להיות בין 1 ל-31",
-    "inputRequired": "אנא בחר קובץ קלט.",
-    "outputRequiredDetailed": "אנא בחר קובץ פלט."
+    "qualityRange": "האיכות חייבת להיות בין 1 ל-31"
   },
   "logs": {
     "clear": "נקה",
@@ -539,8 +520,6 @@
     "pathCopied": "נתיב הפלט הועתק ללוח",
     "logsDownloaded": "היומנים הורדו",
     "mediaInfoLoaded": "מידע המדיה נטען",
-    "languageChanged": "השפה שונתה ל-{{language}}",
-    "cancelled": "בוטל",
     "updateAvailable": "עדכון זמין: v{{version}}",
     "updateNow": "עדכן עכשיו",
     "updateDownloaded": "העדכון v{{version}} הורד",
@@ -604,8 +583,6 @@
     "alwaysOnTopHint": "שומר על חלון האפליקציה מעל כל החלונות האחרים.",
     "launchAtLogin": "הפעלה בעת התחברות",
     "launchAtLoginHint": "מפעיל את EncodeX אוטומטית בעת התחברות למחשב שלך.",
-    "monitoringErrorReporting": "דיווח שגיאות",
-    "monitoringErrorReportingHint": "עוזר לשפר את EncodeX על ידי שליחת דוחות שגיאה אנונימיים. ניתן לכבות זאת בכל עת.",
     "telemetry": "נתוני שימוש ודיווח שגיאות",
     "telemetryHint": "עוזר לשפר את EncodeX על ידי שליחת נתוני שימוש ודוחות שגיאה אנונימיים. ניתן לכבות זאת בכל עת.",
     "mcpServer": "שרת MCP",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "מפתחות מאוחסנים כטקסט מטושטש ({{hint}}).",
       "keyNone": "אין מפתח שמור.",
-      "save": "שמור",
-      "saved": "ההגדרות נשמרו.",
       "saveFailed": "לא ניתן היה לשמור את ההגדרות.",
-      "test": "בדיקת חיבור",
       "testing": "נבדק…",
       "testFailed": "אין תגובה מהספק.",
       "privacy": "נשלחים רק נתוני הבדיקה וטקסט המטרה שלך; קבצי מדיה לעולם לא מועלים.",
@@ -692,8 +666,6 @@
       "statusConnected": "מחובר ומאומת.",
       "requiresNetwork": "ספק זה דורש חיבור רשת פעיל.",
       "offlineFallback": "אתה במצב לא מקוון. עבר לספק הכללים המובנה. ספקים מרוחקים דורשים חיבור רשת פעיל.",
-      "modelsLoading": "טוען מודלים...",
-      "modelsUnavailable": "לא ניתן לטעון מודלים מהספק. עדיין ניתן להקליד מזהה מודל.",
       "keySavedPlaceholder": "המפתח נשמר. הדבק מפתח חדש כדי להחליפו.",
       "connected": "מחובר",
       "testAgain": "בדוק שוב את החיבור",
@@ -816,8 +788,8 @@
   },
   "about": {
     "title": "אודות EncodeX",
-    "subtitle": "ערכת כלים לעיבוד מולטימדיה חינמית ובקוד פתוח, המבוססת על FFmpeg. המירו, דחסו, חלצו, חתכו ועבדו בקבוצות קבצי שמע, וידאו ותמונות, או הפעילו את אותו מנוע מ-CLI, משרת MCP או מעוזר ה-AI Copilot.",
-    "description": "EncodeX היא ערכת כלים מולטימדיה רב-פלטפורמית שמביאה את עוצמתו של FFmpeg לממשק שולחני מודרני ונוח. המירו שמע, וידאו ותמונות עם שליטה מדויקת בקודקים, בקצב סיביות, ברזולוציה, בפורמט הפיקסלים ובאיכות; העתיקו רצועות ללא אובדן; סובבו והפכו מדיה; החילו מסנני וידאו; וחתכו סרטונים בנגן תצוגה מקדימה מדויק עד לפריים. פרופילי המרה מגדירים יעדים נפוצים בלחיצה אחת, ואפשר לשמור פרופילים משלכם. קידוד מואץ חומרה תומך ב-NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox ו-Microsoft Media Foundation, ומשפחות המקודדים מזוהות אוטומטית מתוך FFmpeg הכלול בתוכנה בזמן ההרצה. תור הקבוצות מריץ משימות במקביל עם התקדמות חיה, שמירת מצב, ייבוא וייצוא. מעבר לממשק הגרפי, שורת פקודה ללא ממשק, שרת MCP עצמאי ומשובץ ומעוזר ה-AI Copilot מאפשרים לסקריפטים ולעוזרים להפעיל את אותו מנוע מדיה.",
+    "subtitle": "ערכת כלים לעיבוד מולטימדיה חינמית ובקוד פתוח, המבוססת על FFmpeg. המירו, דחסו, חלצו, חתכו ועבדו בקבוצות קבצי שמע, וידאו ותמונות, או הפעילו את אותו מנוע מ-CLI, משרת MCP או מעוזר ה-AI קופילוט.",
+    "description": "EncodeX היא ערכת כלים מולטימדיה רב-פלטפורמית שמביאה את עוצמתו של FFmpeg לממשק שולחני מודרני ונוח. המירו שמע, וידאו ותמונות עם שליטה מדויקת בקודקים, בקצב סיביות, ברזולוציה, בפורמט הפיקסלים ובאיכות; העתיקו רצועות ללא אובדן; סובבו והפכו מדיה; החילו מסנני וידאו; וחתכו סרטונים בנגן תצוגה מקדימה מדויק עד לפריים. פרופילי המרה מגדירים יעדים נפוצים בלחיצה אחת, ואפשר לשמור פרופילים משלכם. קידוד מואץ חומרה תומך ב-NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox ו-Microsoft Media Foundation, ומשפחות המקודדים מזוהות אוטומטית מתוך FFmpeg הכלול בתוכנה בזמן ההרצה. תור הקבוצות מריץ משימות במקביל עם התקדמות חיה, שמירת מצב, ייבוא וייצוא. מעבר לממשק הגרפי, שורת פקודה ללא ממשק, שרת MCP עצמאי ומשובץ ומעוזר ה-AI קופילוט מאפשרים לסקריפטים ולעוזרים להפעיל את אותו מנוע מדיה.",
     "logoAlt": "הלוגו של EncodeX",
     "featuresTitle": "מה אפשר לעשות",
     "featureConvert": "המירו וידאו, שמע ותמונות עם שליטה מדויקת בקודקים, בקצב סיביות, ברזולוציה ובאיכות, כולל סיבוב ומסננים",
@@ -829,7 +801,7 @@
     "featureProfiles": "התחילו מפרופילי המרה מובנים, או שמרו פרופילים משלכם",
     "featureBatch": "הריצו משימות קבוצתיות במקביל עם השהיה, סידור מחדש, ייבוא וייצוא, ופעולת חשמל בסיום",
     "featureHardware": "השתמשו במקודדי GPU כגון NVENC, Quick Sync, AMF, VAAPI ו-VideoToolbox, שמזוהים אוטומטית",
-    "featureAutomation": "תארו מטרה לעוזר ה-AI Copilot, או כתבו סקריפטים ל-EncodeX דרך ה-CLI ושרת ה-MCP",
+    "featureAutomation": "תארו מטרה לעוזר ה-AI קופילוט, או כתבו סקריפטים ל-EncodeX דרך ה-CLI ושרת ה-MCP",
     "version": "גרסה",
     "builtWith": "נבנה עם",
     "authorTitle": "מחבר ומשוב",
@@ -961,7 +933,6 @@
     "addAudioTrack": "הוספת רצועת שמע",
     "removeAudioTrack": "הסרת רצועת השמע",
     "addedTrackDelay": "הזזת רצועה זו (שניות)",
-    "addedTrackDelayHint": "הזחה חתומה לרצועה זו ביחס לווידאו (חיובי = מתנגן מאוחר יותר). ללא אובדנים: מוחל כ‑‎-itsoffset‎ עם העתקת זרם.",
     "thumbnail": "תמונה ממוזערת / כריכה",
     "thumbnailHint": "תמונת כריכה רשות (‎.jpg‎, ‎.jpeg‎, ‎.png‎) המוטמעת בקובץ לאחר האריזה. MKV‎/‏WebM מצרפים אותה כזרם תמונה; ‏MP4‎/‏MOV מטמיעים אותה כזרם וידאו עם הייעוד ‎attached_pic‎.",
     "addThumbnail": "הוספת תמונה ממוזערת",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "אין שיחות שמורות. השתמש ב'שמור שיחה' כדי לשמור אחת.",
     "savedChatsClose": "סגור",
     "savedChatUntitled": "שיחה ללא כותרת",
-    "savedChatMeta": "{{count}} הודעות · {{date}}",
-    "savedChatOpen": "פתח",
     "savedChatDelete": "מחק שיחה שמורה",
     "savedChatSaveFailed": "לא ניתן לשמור את השיחה. אחסון הדפדפן עשוי להיות מלא.",
     "openChatConfirmTitle": "לפתוח שיחה שמורה?",
@@ -1056,23 +1025,17 @@
     "openChatSave": "שמור ופתח",
     "openChatDiscard": "בטל ופתח",
     "openChatCancel": "ביטול",
-    "title": "Copilot",
-    "subtitle": "תאר מטרה ותן ל-Copilot לתכנן את ההמרות, ואז דחוף את התוכנית לתור המשימות.",
-    "goalLabel": "מטרה",
-    "goalPlaceholder": "לדוגמה: הקטנת הסרטונים האלה לאינטרנט",
     "chooseFolder": "בחירת תיקייה",
     "selectedCount": "נבחרו {{count}} קובצים",
-    "selectedNone": "לא נבחרו קבצים",
     "plan": "תכנן",
     "planning": "מתכנן…",
     "folderEmpty": "לא נמצאו מדיה נתמכים בתיקייה הזו.",
     "errorNoGoal": "הזן מטרה לפני התכנון.",
     "errorNoInputs": "בחר תיקיית מדיה לפני התכנון.",
     "dialogFailed": "לא ניתן היה לפתוח את בורר הקבצים. נסה שוב.",
-    "errorFallback": "Copilot לא הצליח לבנות תוכנית למטרה זו.",
     "errorEnqueue": "לא ניתן היה להוסיף אף אחת מהמשימות המתוכננות לתור.",
     "actionsTitle": "פעולות מתוכננות",
-    "noActions": "Copilot לא מצא מה לשנות עבור מטרה זו.",
+    "noActions": "קופילוט לא מצא מה לשנות עבור מטרה זו.",
     "savings": "חיסכון משוער של ~{{pct}}%",
     "output": "אל {{output}}",
     "skipsTitle": "קבצים שדולגו",
@@ -1084,7 +1047,7 @@
     "chooseFiles": "בחר קבצים",
     "operationLabel": "פעולה",
     "op": {
-      "auto": "אוטומטי (תן ל-Copilot להחליט)",
+      "auto": "אוטומטי (תן ל-קופילוט להחליט)",
       "convert": "המרה",
       "remux": "Remux",
       "demux": "Demux",
@@ -1103,27 +1066,6 @@
     "routedAs": "פעולה: {{operation}}",
     "resultsTitle": "ממצאים",
     "ai": {
-      "title": "ספק בינה מלאכותית",
-      "provider": "ספק",
-      "model": "מודל",
-      "modelPlaceholder": "ברירת מחדל של הספק",
-      "apiKey": "מפתח API",
-      "keyStored": "מפתחות מאוחסנים כטקסט מטושטש ({{hint}}).",
-      "keyNone": "אין מפתח שמור.",
-      "save": "שמור",
-      "test": "בדיקת חיבור",
-      "testing": "נבדק…",
-      "saved": "ההגדרות נשמרו.",
-      "saveFailed": "לא ניתן היה לשמור את ההגדרות.",
-      "testFailed": "אין תגובה מהספק.",
-      "privacy": "נשלחים רק נתוני הבדיקה וטקסט המטרה שלך; קבצי מדיה לעולם לא מועלים.",
-      "providers": {
-        "rules": "כללים מובנים (ללא חיבור)",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "מודל מקומי"
-      },
       "configure": "הגדרת ספק בינה מלאכותית",
       "locationNote": "ספקי בינה מלאכותית מוגדרים בהגדרות.",
       "notConnected": "לא מחובר"
@@ -1135,12 +1077,11 @@
     "welcome": "איך אפשר לעזור?",
     "goal": "תאר מה אתה רוצה ש-EncodeX יעשה, ואז צרף קבצים או תיקייה.",
     "placeholder": "נסה: לדחוס וידאו לאינטרנט, לחלץ אודיו ל-MP3, או לתרגם כתוביות...",
-    "inputAria": "שלח הודעה ל-Copilot",
-    "send": "שלח",
+    "inputAria": "שלח הודעה ל-קופילוט",
     "advanced": "מתקדם",
     "advancedTitle": "אפשרויות מתקדמות",
     "bridgeTimeout": "EncodeX לא הגיב בזמן. נסה שוב.",
-    "planFailed": "Copilot לא הצליח לבנות תוכנית עבור מטרה זו.",
+    "planFailed": "קופילוט לא הצליח לבנות תוכנית עבור מטרה זו.",
     "thinking": "חושב...",
     "resetConversation": "התחל שיחה חדשה",
     "resetConfirmTitle": "לאפס את השיחה?",
@@ -1148,11 +1089,20 @@
     "resetConfirmAction": "איפוס",
     "loadingFiles": "טוען קבצים...",
     "removeAttachment": "הסר קובץ מצורף",
-    "folderFilesCount": "{{name}} ({{count}} קבצים)",
-    "saveAndReset": "שמירה ואיפוס"
+    "saveAndReset": "שמירה ואיפוס",
+    "target": {
+      "profile": "פרופיל",
+      "resolution": "רזולוציה",
+      "sameAsSource": "זהה למקור",
+      "video": "וידאו",
+      "audio": "אודיו",
+      "container": "מיכל",
+      "losslessCopy": "העתקה ללא אובדן",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
-    "title": "לצאת מ-Copilot?",
+    "title": "לצאת מ-קופילוט?",
     "message": "הצ'אט הזה עדיין פעיל. יציאה מהדף תמחק את השיחה.",
     "confirmLabel": "צא בכל זאת",
     "cancelLabel": "הישאר"
@@ -1161,20 +1111,15 @@
     "common": {
       "cancel": "ביטול",
       "confirmCancel": "אישור ביטול",
-      "run": "הרצה",
       "retry": "ניסיון חוזר",
       "applyFix": "החלת תיקון",
-      "waiting": "ממתין לנתונים מהמארח…",
       "input": "קלט",
       "output": "פלט",
-      "status": "סטטוס",
       "duration": "משך",
       "size": "גודל",
       "bitrate": "קצב סיביות",
       "video": "וידאו",
       "audio": "שמע",
-      "details": "פרטים",
-      "warnings": "אזהרות",
       "findings": "ממצאים",
       "nextSteps": "הצעדים הבאים המומלצים",
       "attempts": "ניסיונות",
@@ -1183,9 +1128,7 @@
       "assumptions": "הנחות",
       "causes": "סיבות סבירות",
       "fixes": "תיקונים מוצעים",
-      "summary": "סיכום",
       "settings": "הגדרות",
-      "error": "שגיאה",
       "unknown": "-",
       "confidence": "ביטחון {{value}}%",
       "jobCount": "{{count}} משימות",
@@ -1199,12 +1142,10 @@
     },
     "queue": {
       "title": "תור EncodeX",
-      "empty": "אין משימות בתור.",
-      "waiting": "ממתין לנתוני התור מהמארח…"
+      "empty": "אין משימות בתור."
     },
     "job": {
-      "waiting": "ממתין לנתוני המשימה מהמארח…",
-      "cancelled": "בוטל"
+      "waiting": "ממתין לנתוני המשימה מהמארח…"
     },
     "mediaInfo": {
       "title": "מדיה",
@@ -1275,8 +1216,7 @@
     },
     "error": {
       "title": "שגיאה",
-      "waiting": "ממתין לשגיאה מהמארח…",
-      "code": "קוד שגיאה"
+      "waiting": "ממתין לשגיאה מהמארח…"
     },
     "batch": {
       "title": "אישור אצווה",
@@ -1316,8 +1256,7 @@
       "hardware": "האצת חומרה",
       "hardwareNone": "תוכנה בלבד",
       "encoderVideo": "וידאו",
-      "encoderAudio": "שמע",
-      "encoderOther": "אחר"
+      "encoderAudio": "שמע"
     }
   }
 }

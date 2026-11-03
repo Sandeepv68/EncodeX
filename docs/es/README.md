@@ -255,7 +255,7 @@ Consulta [Uso de la CLI](./cli.md) para conocer todos los subcomandos, opciones 
 ## 🧪 Pruebas
 
 ```bash
-npm test           # Ejecuta las pruebas unitarias (314 archivos de prueba/spec en src/)
+npm test           # Ejecuta las pruebas unitarias (330 archivos de prueba/spec en src/)
 npm run test:watch
 npm run test:coverage
 npm run test:unit

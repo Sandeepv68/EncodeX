@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "Skipta yfir í ljósa stillingu",
-    "switchDark": "Skipta yfir í dökka stillingu",
     "language": "Tungumál",
     "searchLanguage": "Leita að tungumálum",
     "condense": "Þjappa hliðarstiku",
@@ -78,7 +76,6 @@
     "advanced": "Ítarlegt",
     "inputFile": "Inntaksskrá",
     "outputFile": "Úttaksskrá",
-    "noFile": "Engin skrá valin",
     "noOutput": "Ekkert úttak valið",
     "browse": "Fletta",
     "saveAs": "Vista sem",
@@ -96,9 +93,6 @@
     "pause": "Gera hlé",
     "resume": "Halda áfram",
     "cancel": "Hætta við",
-    "placeholderBitrate": "t.d. 2000k",
-    "placeholderAudioBitrate": "t.d. 192k",
-    "placeholderScale": "t.d. 1280x720",
     "cancelTitle": "Hætta við umbreytingu",
     "cancelMessage": "Ertu viss um að þú viljir hætta við núverandi umbreytingu?",
     "cancelJob": "Hætta við verk",
@@ -144,9 +138,7 @@
     "filtersHint": "Beitir FFmpeg myndarsíum (skerðing, rammatíðni, deinterlacing, hávaðaleysing, litur…) við umkóðun. Allar síurnar sameinast í eina -vf keðju eftir kvarðun og snúning.",
     "addPreset": "Bæta við forstillu síu…",
     "addFilter": "Bæta við síu",
-    "customChainLabel": "Sérstök síukeðja",
     "customChainPlaceholder": "t.d. fps=30, eq=brightness=0.1",
-    "customChainHint": "FFmpeg síuformúlur aðskildar með kommu. Hver liður þarf að hafa jafnmörg sviga og hornklofa, passandi gæsalappi og engin skelstákn.",
     "addCustom": "Bæta við sérstöku",
     "removeFilter": "Fjarlægja síu",
     "moveUp": "Færa upp",
@@ -262,7 +254,6 @@
     "compress": "Þjappa mynd",
     "compressing": "Þjappa...",
     "placeholderOutput": "Úttaksleið",
-    "placeholderScale": "t.d. 800x600",
     "validationRequired": "Veldu inntaksmynd.",
     "selectedImage": "Valin mynd: {{file}}",
     "inputImageHint": "Frummyndin sem á að þjappa. JPEG, PNG, WebP og BMP eru studd.",
@@ -289,7 +280,6 @@
     "extract": "Draga út hljóð",
     "extracting": "Dreg út...",
     "placeholderOutput": "t.d. output.mp3",
-    "validationRequired": "Veldu myndbandsskrá.",
     "selectedVideo": "Valið myndband: {{file}}",
     "pause": "Gera hlé",
     "resume": "Halda áfram",
@@ -302,11 +292,8 @@
   "videoCut": {
     "title": "Klippa myndband",
     "videoFile": "Myndbandsskrá",
-    "noFile": "Engin skrá valin",
-    "browse": "Fletta",
     "dropLabel": "Slepptu myndbandsskrá hér eða smelltu til að fletta",
     "videoFileHint": "Dragðu og slepptu myndbandsskrá hér eða smelltu til að fletta á tölvunni þinni.",
-    "videoFiles": "Myndbandsskrár",
     "changeFile": "Skipta um myndband",
     "changeFileHint": "Veldu aðra myndbandsskrá.",
     "outputFile": "Úttaksskrá",
@@ -357,9 +344,7 @@
     "stop": "Stoppa",
     "mute": "Slökkva á hljóði",
     "unmute": "Kveikja á hljóði",
-    "seek": "Leita",
-    "playbackTime": "Spilunartími",
-    "videoPlayer": "Videóspilari"
+    "seek": "Leita"
   },
   "batchQueue": {
     "bmfNotBundled": "BMF fylgir ekki með EncodeX. Settu það upp handvirkt og gakktu úr skugga um að bmf_ffmpeg og bmf_ffprobe séu í PATH.",
@@ -486,12 +471,8 @@
     "outputRequired": "Úttaksskrá er nauðsynleg",
     "invalidTime": "Ógilt tímasnið (HH:MM:SS eða sekúndur)",
     "durationRequired": "Lengd er nauðsynleg",
-    "invalidScale": "Ógilt skalasnið (t.d. 1920:1080, 50%)",
-    "invalidBitrate": "Ógildur bithraði (t.d. 128k, 1M)",
     "qscaleRange": "QScale verður að vera á milli 1 og 31",
-    "qualityRange": "Gæði verða að vera á milli 1 og 31",
-    "inputRequired": "Veldu inntaksskrá.",
-    "outputRequiredDetailed": "Veldu úttaksskrá."
+    "qualityRange": "Gæði verða að vera á milli 1 og 31"
   },
   "logs": {
     "clear": "Hreinsa",
@@ -539,8 +520,6 @@
     "pathCopied": "Úttaksleiðin var afrituð á klippiborðið",
     "logsDownloaded": "Annálar sóttir",
     "mediaInfoLoaded": "Miðlaupplýsingar hlaðnar",
-    "languageChanged": "Tungumáli var skipt í {{language}}",
-    "cancelled": "Hætt við",
     "updateAvailable": "Uppfærsla tiltæk: v{{version}}",
     "updateNow": "Uppfæra núna",
     "updateDownloaded": "Uppfærsla v{{version}} sótt",
@@ -604,8 +583,6 @@
     "alwaysOnTopHint": "Heldur app-glugganum fyrir ofan alla aðra glugga.",
     "launchAtLogin": "Ræsa við innskráningu",
     "launchAtLoginHint": "Ræsir EncodeX sjálfkrafa þegar þú skráir þig inn á tölvuna þína.",
-    "monitoringErrorReporting": "Villutilkynning",
-    "monitoringErrorReportingHint": "Hjálpar til við að bæta EncodeX með því að senda nafnlausa villuskýrslu. Þú getur slökkt á þessu hvenær sem er.",
     "telemetry": "Notkunargögn og villutilkynning",
     "telemetryHint": "Hjálpar til við að bæta EncodeX með því að senda nafnlaus notkunargögn og villuskýrslur. Þú getur slökkt á þessu hvenær sem er.",
     "mcpServer": "MCP-þjónn",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "Lyklar eru vistaðir sem óljós texti ({{hint}}).",
       "keyNone": "Enginn lykill vistaður.",
-      "save": "Vista",
-      "saved": "Stillingar vistaðar.",
       "saveFailed": "Ekki tókst að vista stillingarnar.",
-      "test": "Prófa tengingu",
       "testing": "Prófa…",
       "testFailed": "Engin svörun frá þjónustuaðila.",
       "privacy": "Aðeins skoðunarstaðreyndir og texti markmiðs þíns er sendur; skrár eru aldrei hlaðnar upp.",
@@ -692,8 +666,6 @@
       "statusConnected": "Tengt og staðfest.",
       "requiresNetwork": "Þessi þjónustuaðili þarf virka nettengingu.",
       "offlineFallback": "Þú ert ótengd(ur). Skipt yfir í innbyggða regluþjónustuaðilann. Fjarlægir þjónustuaðilar þurfa virka nettengingu.",
-      "modelsLoading": "Hleð inn líkönum...",
-      "modelsUnavailable": "Gat ekki hlaðið líkönum frá þjónustuaðilanum. Þú getur samt slegið inn líkanaauðkenni.",
       "keySavedPlaceholder": "Lykill vistaður. Límdu nýjan lykil til að skipta honum út.",
       "connected": "Tengt",
       "testAgain": "Prófa tenginguna aftur",
@@ -961,7 +933,6 @@
     "addAudioTrack": "Bæta við hljóðlag",
     "removeAudioTrack": "Fjarlægja hljóðlagið",
     "addedTrackDelay": "Seinka þessu lagi (sekúndur)",
-    "addedTrackDelayHint": "Virk hliðsjálf þessa lags gagnvart myndinni (jákvætt = leikað síðar). Taplost: notað sem -itsoffset með straumafritun.",
     "thumbnail": "Smáfynd / kynningarborð",
     "thumbnailHint": "Valfrjálst kynningarmynd (.jpg, .jpeg, .png) innfelld í remux-skránni. MKV/WebM hengja hana við sem myndarstraum; MP4/MOV fellda hana inn sem myndarstraum með attached_pic-merki.",
     "addThumbnail": "Bæta við smáfynd",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "Engin vistuð samtöl. Notaðu Vista spjall til að geyma eitt.",
     "savedChatsClose": "Loka",
     "savedChatUntitled": "Samtal án titils",
-    "savedChatMeta": "{{count}} skilaboð · {{date}}",
-    "savedChatOpen": "Opna",
     "savedChatDelete": "Eyða vistuðu samtali",
     "savedChatSaveFailed": "Ekki tókst að vista samtalið. Geymsla vafrans gæti verið full.",
     "openChatConfirmTitle": "Opna vistað samtal?",
@@ -1056,20 +1025,14 @@
     "openChatSave": "Vista og opna",
     "openChatDiscard": "Henda og opna",
     "openChatCancel": "Hætta við",
-    "title": "Copilot",
-    "subtitle": "Lýstu markmiði og leyfðu Copilot að skipuleggja umbreytingarnar, ýttu síðan áætluninni inn í runu biðröðina.",
-    "goalLabel": "Markmið",
-    "goalPlaceholder": "t.d. minnka þessi myndbönd fyrir vefinn",
     "chooseFolder": "Velja möppu",
     "selectedCount": "{{count}} skrá valin",
-    "selectedNone": "Engar skrár valdar",
     "plan": "Skipuleggja",
     "planning": "Er að skipuleggja…",
     "folderEmpty": "Engir studdir miðlar fundust í þeirri möppu.",
     "errorNoGoal": "Sláðu inn markmið áður en þú skipuleggur.",
     "errorNoInputs": "Veldu möppu með miðlum áður en þú skipuleggur.",
     "dialogFailed": "Gat ekki opnað skráarvalið. Reyndu aftur.",
-    "errorFallback": "Copilot gat ekki byggt áætlun fyrir það markmið.",
     "errorEnqueue": "Engu af þeim skipulögðu verkum var hægt að bæta við biðröðina.",
     "actionsTitle": "Skipulögð verk",
     "noActions": "Copilot fann ekkert til að breyta fyrir þetta markmið.",
@@ -1103,27 +1066,6 @@
     "routedAs": "Aðgerð: {{operation}}",
     "resultsTitle": "Niðurstöður",
     "ai": {
-      "title": "AI-þjónustuaðili",
-      "provider": "Þjónustuaðili",
-      "model": "Líkan",
-      "modelPlaceholder": "Sjálfgefið þjónustuaðila",
-      "apiKey": "API-lykill",
-      "keyStored": "Lyklar eru vistaðir sem óljós texti ({{hint}}).",
-      "keyNone": "Enginn lykill vistaður.",
-      "save": "Vista",
-      "test": "Prófa tengingu",
-      "testing": "Prófa…",
-      "saved": "Stillingar vistaðar.",
-      "saveFailed": "Ekki tókst að vista stillingarnar.",
-      "testFailed": "Engin svörun frá þjónustuaðila.",
-      "privacy": "Aðeins skoðunarstaðreyndir og texti markmiðs þíns er sendur; skrár eru aldrei hlaðnar upp.",
-      "providers": {
-        "rules": "Innbyggðar reglur (án nettengingar)",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "Staðbundið líkan"
-      },
       "configure": "Skerpðu AI-þjónustuaðila",
       "locationNote": "AI-þjónustuaðilar eru stilltir í Stillingum.",
       "notConnected": "Ekki tengt"
@@ -1136,7 +1078,6 @@
     "goal": "Lýstu því sem þú vilt að EncodeX geri, festu síðan við skrár eða möppu.",
     "placeholder": "Prófaðu: þjappaðu myndbandi fyrir vefinn, dragðu út hljóð í MP3 eða þýddu texta...",
     "inputAria": "Senda skilaboð til Copilot",
-    "send": "Senda",
     "advanced": "Ítarlegt",
     "advancedTitle": "Ítarlegir valkostir",
     "bridgeTimeout": "EncodeX svaraði ekki í tíma. Reyndu aftur.",
@@ -1148,8 +1089,17 @@
     "resetConfirmAction": "Endurstilla",
     "loadingFiles": "Hleð skrám...",
     "removeAttachment": "Fjarlægja viðhengi",
-    "folderFilesCount": "{{name}} ({{count}} skrár)",
-    "saveAndReset": "Vista og endurstilla"
+    "saveAndReset": "Vista og endurstilla",
+    "target": {
+      "profile": "Snið",
+      "resolution": "Upplausn",
+      "sameAsSource": "Sama og frumskráin",
+      "video": "Myndband",
+      "audio": "Hljóð",
+      "container": "Gáma",
+      "losslessCopy": "Tapgjaldslaus afritun",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Yfirgefa Copilot?",
@@ -1161,20 +1111,15 @@
     "common": {
       "cancel": "Hætta vi",
       "confirmCancel": "Staðfesta hættu",
-      "run": "Keyra",
       "retry": "Reyna aftur",
       "applyFix": "Beita leiðréttingu",
-      "waiting": "Bíð eftir gögnum frá hýsilinni…",
       "input": "Inntak",
       "output": "Úttak",
-      "status": "Staða",
       "duration": "Tími",
       "size": "Stærð",
       "bitrate": "Bitrate",
       "video": "Myndskeið",
       "audio": "Hljóð",
-      "details": "Nánari upplýsingar",
-      "warnings": "Aðvörunar",
       "findings": "Niðurstöður",
       "nextSteps": "Mælt með næstu skref",
       "attempts": "Tilraunir",
@@ -1183,9 +1128,7 @@
       "assumptions": "Forsendur",
       "causes": "Líklegar ástæður",
       "fixes": "Tillagaðar leiðréttingar",
-      "summary": "Yfirlit",
       "settings": "Stillingar",
-      "error": "Villa",
       "unknown": "-",
       "confidence": "{{value}}% traust",
       "jobCount": "{{count}} verkefni",
@@ -1199,12 +1142,10 @@
     },
     "queue": {
       "title": "EncodeX-biðraðra",
-      "empty": "Engin verkefni í biðröðinni.",
-      "waiting": "Bíð eftir biðröðu gögnum frá hýsilinni…"
+      "empty": "Engin verkefni í biðröðinni."
     },
     "job": {
-      "waiting": "Bíð eftir verkefnisgögnum frá hýsilinni…",
-      "cancelled": "afþakkað"
+      "waiting": "Bíð eftir verkefnisgögnum frá hýsilinni…"
     },
     "mediaInfo": {
       "title": "Miðlun",
@@ -1275,8 +1216,7 @@
     },
     "error": {
       "title": "Villa",
-      "waiting": "Bíð eftir villu frá hýsilinni…",
-      "code": "Villukóði"
+      "waiting": "Bíð eftir villu frá hýsilinni…"
     },
     "batch": {
       "title": "Staðfesta þvíð",
@@ -1316,8 +1256,7 @@
       "hardware": "Vélbúnaðsaukning",
       "hardwareNone": "Aðeins hugbúnaður",
       "encoderVideo": "Myndskeið",
-      "encoderAudio": "Hljóð",
-      "encoderOther": "Annað"
+      "encoderAudio": "Hljóð"
     }
   }
 }

@@ -156,7 +156,7 @@ src/
 │   │   └── providerFactory.ts          # Renderer provider selection
 │   ├── dev/
 │   │   └── useDevScreenshot.ts        # Dev-only window screenshot capture
-│   ├── components/                    # Shared UI components (61 modules: 48 top-level + copilot/ and settings/ subfolders) <!-- drift:renderer-components=61 --> <!-- drift:renderer-components-top=47 -->
+│   ├── components/                    # Shared UI components (62 modules: 48 top-level + copilot/ and settings/ subfolders) <!-- drift:renderer-components=62 --> <!-- drift:renderer-components-top=47 -->
 │   ├── constants/
 │   │   └── shortcuts.ts               # 71 keyboard shortcuts registry (11 sections) + tooltip hints <!-- drift:shortcuts=71 --> <!-- drift:shortcut-sections=11 -->
 │   ├── hooks/                         # useConversion, useErrorHandler, useFormErrors, useMediaTask, useCapabilities, useHotkeys, useFieldId

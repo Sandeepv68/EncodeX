@@ -90,6 +90,48 @@ describe('queue view', () => {
     await waitFor(() => expect(host.calls).toHaveLength(1));
     expect(host.calls[0]).toEqual({ name: 'cancel_job', args: { jobId: 'a' } });
   });
+
+  it('cancels a job of the app queue through the queue bridge', async () => {
+    const host = new FakeViewHost();
+    const queueRemove = vi.spyOn(window.electronAPI, 'queueRemove').mockResolvedValue(undefined);
+    renderView(<QueueView />, host);
+    act(() => {
+      useQueueStore.getState().setJobs([
+        {
+          id: 'app-1',
+          input: '/in/app.mkv',
+          output: '/out/app.mp4',
+          options: {} as QueueJob['options'],
+          transcoder: 'ffmpeg' as QueueJob['transcoder'],
+          status: 'queued' as QueueJob['status'],
+          progress: 0,
+          createdAt: 0,
+        },
+      ]);
+    });
+    const cancel = screen.getByTestId('mcp-view-queue-cancel-app-1');
+    await userEvent.click(cancel);
+    await userEvent.click(cancel);
+    await waitFor(() => expect(queueRemove).toHaveBeenCalledWith('app-1'));
+    expect(host.calls).toHaveLength(0);
+    act(() => {
+      useQueueStore.getState().setJobs([]);
+    });
+    queueRemove.mockRestore();
+  });
+
+  it('shows the error when the cancel fails', async () => {
+    const host = new FakeViewHost();
+    host.callTool = async () => {
+      throw new Error('Job not found: a');
+    };
+    renderView(<QueueView />, host, { jobs: [{ id: 'a', input: '/in/a.mkv', output: '/out/a.mp4', status: 'running', progress: 10 }] });
+    const cancel = screen.getByTestId('mcp-view-queue-cancel-a');
+    await userEvent.click(cancel);
+    await userEvent.click(cancel);
+    await waitFor(() => expect(screen.getByTestId('mcp-view-queue-cancel-error-a')).toBeTruthy());
+    expect(screen.getByText('Job not found: a')).toBeTruthy();
+  });
 });
 
 describe('job view', () => {

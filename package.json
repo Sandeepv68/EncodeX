@@ -45,6 +45,8 @@
     "lint:unused": "eslint -c scripts/eslint.unused.config.mjs src/renderer",
     "lint:unused:test": "node --test eslint-rules/no-unused.test.mjs",
     "validate:locales": "node scripts/validate-locales.mjs",
+    "validate:locale-usage": "node scripts/validate-locale-usage.mjs",
+    "validate:locale-usage:fix": "node scripts/validate-locale-usage.mjs --fix",
     "sync:locales": "node scripts/sync-locale-keys.mjs",
     "doc:drift": "node scripts/check-doc-drift.mjs",
     "doc:drift:strict": "node scripts/check-doc-drift.mjs --strict",

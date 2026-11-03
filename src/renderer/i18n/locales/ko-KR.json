@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "라이트 모드로 전환",
-    "switchDark": "다크 모드로 전환",
     "language": "언어",
     "searchLanguage": "언어 검색",
     "condense": "사이드바 접기",
@@ -32,7 +30,7 @@
     },
     "remux": "리멀텍스",
     "demux": "디멀텍스",
-    "copilot": "Copilot"
+    "copilot": "코파일롯"
   },
   "dashboard": {
     "welcome": "EncodeX에 오신 것을 환영합니다",
@@ -59,7 +57,7 @@
       "extract": "오디오 추출",
       "trim": "클립 자르기",
       "remux": "파일 리먹싱",
-      "copilot": "Copilot에 묻기"
+      "copilot": "코파일롯에 묻기"
     }
   },
   "closeConfirm": {
@@ -78,7 +76,6 @@
     "advanced": "고급",
     "inputFile": "입력 파일",
     "outputFile": "출력 파일",
-    "noFile": "선택된 파일 없음",
     "noOutput": "선택된 출력 없음",
     "browse": "찾아보기",
     "saveAs": "다른 이름으로 저장",
@@ -96,9 +93,6 @@
     "pause": "정지시키다",
     "resume": "재개하다",
     "cancel": "취소",
-    "placeholderBitrate": "예: 2000k",
-    "placeholderAudioBitrate": "예: 192k",
-    "placeholderScale": "예: 1280x720",
     "cancelJob": "작업 취소",
     "jobCancelTitle": "작업 취소",
     "jobCancelMessage": "그러면 현재 변환 작업이 지워집니다. ",
@@ -144,9 +138,7 @@
     "filtersHint": "재인코딩 중 FFmpeg 비디오 필터(자르기, 프레임레이트, 디인터레이싱, 노이즈 감소, 색상 등)를 적용합니다. 모든 필터는 스케일과 회전 이후 하나의 -vf 체인으로 합쳐집니다.",
     "addPreset": "프리셋 필터 추가…",
     "addFilter": "필터 추가",
-    "customChainLabel": "사용자 지정 필터 체인",
     "customChainPlaceholder": "예: fps=30, eq=brightness=0.1",
-    "customChainHint": "쉼표로 구분한 FFmpeg 필터 표현식입니다. 각 항목은 괄호와 대괄호가 짝을 이루어야 하고, 따옴표가 일치해야 하며, 셸 메타문자를 포함하면 안 됩니다.",
     "addCustom": "사용자 지정 추가",
     "removeFilter": "필터 제거",
     "moveUp": "위로 이동",
@@ -262,7 +254,6 @@
     "compress": "이미지 압축",
     "compressing": "압축 중...",
     "placeholderOutput": "출력 경로",
-    "placeholderScale": "예: 800x600",
     "validationRequired": "입력 이미지를 선택하세요.",
     "selectedImage": "선택한 이미지: {{file}}",
     "inputImageHint": "압축할 원본 이미지입니다. JPEG, PNG, WebP, BMP를 지원합니다.",
@@ -289,7 +280,6 @@
     "extract": "오디오 추출",
     "extracting": "추출 중...",
     "placeholderOutput": "예: output.mp3",
-    "validationRequired": "동영상 파일을 선택하세요.",
     "selectedVideo": "선택한 비디오: {{file}}",
     "pause": "일시 정지",
     "resume": "재개",
@@ -302,8 +292,6 @@
   "videoCut": {
     "title": "비디오 자르기",
     "videoFile": "비디오 파일",
-    "noFile": "선택된 파일 없음",
-    "browse": "찾아보기",
     "outputFile": "출력 파일",
     "startTime": "시작 시간 (HH:MM:SS)",
     "duration": "재생 시간 (HH:MM:SS)",
@@ -324,7 +312,6 @@
     "jobCancelMessage": "현재 비디오 자르기 양식이 지워집니다. 계속하시겠습니까?",
     "closePreview": "미리보기 닫기",
     "videoFileHint": "비디오 파일을 여기에 끌어다 놓거나 클릭하여 컴퓨터에서 찾습니다.",
-    "videoFiles": "비디오 파일",
     "dropLabel": "여기에 비디오 파일을 놓거나 클릭하여 찾아보기",
     "changeFile": "비디오 변경",
     "changeFileHint": "다른 비디오 파일을 선택하세요.",
@@ -357,9 +344,7 @@
     "stop": "정지",
     "mute": "음소거",
     "unmute": "음소거 해제",
-    "seek": "검색",
-    "playbackTime": "재생 시간",
-    "videoPlayer": "비디오 플레이어"
+    "seek": "검색"
   },
   "batchQueue": {
     "bmfNotBundled": "BMF는 EncodeX에 포함되어 있지 않습니다. 직접 설치하고 bmf_ffmpeg와 bmf_ffprobe가 PATH에 있는지 확인하세요.",
@@ -486,12 +471,8 @@
     "outputRequired": "출력 파일이 필요합니다",
     "invalidTime": "잘못된 시간 형식입니다 (HH:MM:SS 또는 초)",
     "durationRequired": "재생 시간이 필요합니다",
-    "invalidScale": "잘못된 크기 조정 형식입니다 (예: 1920:1080, 50%)",
-    "invalidBitrate": "잘못된 비트레이트입니다 (예: 128k, 1M)",
     "qscaleRange": "QScale은 1에서 31 사이여야 합니다",
-    "qualityRange": "품질은 1에서 31 사이여야 합니다",
-    "inputRequired": "입력 파일을 선택하세요.",
-    "outputRequiredDetailed": "출력 파일을 선택하세요."
+    "qualityRange": "품질은 1에서 31 사이여야 합니다"
   },
   "logs": {
     "clear": "지우기",
@@ -538,8 +519,6 @@
     "allCancelled": "모든 작업이 취소되었습니다",
     "logsDownloaded": "로그가 다운로드되었습니다",
     "mediaInfoLoaded": "미디어 정보가 로드되었습니다",
-    "languageChanged": "언어가 {{language}}(으)로 변경되었습니다",
-    "cancelled": "취소됨",
     "pathCopied": "출력 경로가 클립보드에 복사되었습니다",
     "updateAvailable": "업데이트 가능: v{{version}}",
     "updateNow": "지금 업데이트",
@@ -594,8 +573,6 @@
     "alwaysOnTopHint": "앱 창을 다른 모든 창 위에 유지합니다.",
     "launchAtLogin": "시작할 때 실행",
     "launchAtLoginHint": "컴퓨터에 로그인하면 EncodeX가 자동으로 시작됩니다.",
-    "monitoringErrorReporting": "오류 보고",
-    "monitoringErrorReportingHint": "익명 오류 보고서를 전송하여 EncodeX 개선에 도움을 줍니다. 언제든지 끌 수 있습니다.",
     "telemetry": "사용 데이터 및 오류 보고",
     "telemetryHint": "익명 사용 데이터와 오류 보고서를 전송하여 EncodeX 개선에 도움을 줍니다. 언제든지 끌 수 있습니다.",
     "mcpServer": "MCP 서버",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "키는 난독화된 텍스트로 저장됩니다({{hint}}).",
       "keyNone": "저장된 키가 없습니다.",
-      "save": "저장",
-      "saved": "설정이 저장되었습니다.",
       "saveFailed": "설정을 저장할 수 없습니다.",
-      "test": "연결 테스트",
       "testing": "테스트 중…",
       "testFailed": "공급자의 응답이 없습니다.",
       "privacy": "검사 결과와 목표 텍스트만 전송되며 미디어 파일은 절대 업로드되지 않습니다.",
@@ -692,8 +666,6 @@
       "statusConnected": "연결 및 확인됨.",
       "requiresNetwork": "이 공급자에는 활성 네트워크 연결이 필요합니다.",
       "offlineFallback": "오프라인 상태입니다. 내장 규칙 공급자로 전환했습니다. 원격 공급자에는 활성 네트워크 연결이 필요합니다.",
-      "modelsLoading": "모델 로드 중...",
-      "modelsUnavailable": "공급자에서 모델을 로드할 수 없습니다. 그래도 모델 ID를 입력할 수 있습니다.",
       "keySavedPlaceholder": "키가 저장되었습니다. 교체하려면 새 키를 붙여넣으세요.",
       "connected": "연결됨",
       "testAgain": "연결 다시 테스트",
@@ -816,8 +788,8 @@
   },
   "about": {
     "title": "EncodeX 정보",
-    "subtitle": "FFmpeg을 기반으로 한 무료 오픈 소스 멀티미디어 툴킷입니다. 오디오, 비디오, 이미지를 변환, 압축, 추출, 자르기, 일괄 처리할 수 있으며, CLI, MCP 서버 또는 AI 어시스턴트 Copilot으로 같은 엔진을 제어할 수 있습니다.",
-    "description": "EncodeX는 FFmpeg의 강력한 기능을 현대적이고 직관적인 데스크톱 인터페이스로 제공하는 크로스 플랫폼 멀티미디어 툴킷입니다. 코덱, 비트레이트, 해상도, 픽셀 포맷, 품질을 세밀하게 제어하여 오디오, 비디오, 이미지를 변환할 수 있습니다. 트랙을 손실 없이 스트림 복사하고, 미디어를 회전 및 반전하며, 비디오 필터를 적용하고, 프레임 단위로 정확한 미리보기 플레이어로 비디오를 자를 수 있습니다. 변환 프로필을 사용하면 자주 쓰는 대상을 한 번의 클릭으로 설정할 수 있으며, 직접 만든 프로필도 저장할 수 있습니다. 하드웨어 가속 인코딩은 NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, Microsoft Media Foundation을 지원하며, 번들된 FFmpeg에서 인코더 계열을 실행 시 자동으로 감지합니다. 일괄 처리 큐는 실시간 진행률, 상태 저장, 가져오기 및 내보내기와 함께 작업을 병렬로 실행합니다. GUI 외에도 헤드리스 CLI, 독립형 및 내장형 MCP 서버, AI 어시스턴트 Copilot을 통해 스크립트와 어시스턴트가 같은 미디어 엔진을 제어할 수 있습니다.",
+    "subtitle": "FFmpeg을 기반으로 한 무료 오픈 소스 멀티미디어 툴킷입니다. 오디오, 비디오, 이미지를 변환, 압축, 추출, 자르기, 일괄 처리할 수 있으며, CLI, MCP 서버 또는 AI 어시스턴트 코파일롯으로 같은 엔진을 제어할 수 있습니다.",
+    "description": "EncodeX는 FFmpeg의 강력한 기능을 현대적이고 직관적인 데스크톱 인터페이스로 제공하는 크로스 플랫폼 멀티미디어 툴킷입니다. 코덱, 비트레이트, 해상도, 픽셀 포맷, 품질을 세밀하게 제어하여 오디오, 비디오, 이미지를 변환할 수 있습니다. 트랙을 손실 없이 스트림 복사하고, 미디어를 회전 및 반전하며, 비디오 필터를 적용하고, 프레임 단위로 정확한 미리보기 플레이어로 비디오를 자를 수 있습니다. 변환 프로필을 사용하면 자주 쓰는 대상을 한 번의 클릭으로 설정할 수 있으며, 직접 만든 프로필도 저장할 수 있습니다. 하드웨어 가속 인코딩은 NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox, Microsoft Media Foundation을 지원하며, 번들된 FFmpeg에서 인코더 계열을 실행 시 자동으로 감지합니다. 일괄 처리 큐는 실시간 진행률, 상태 저장, 가져오기 및 내보내기와 함께 작업을 병렬로 실행합니다. GUI 외에도 헤드리스 CLI, 독립형 및 내장형 MCP 서버, AI 어시스턴트 코파일롯을 통해 스크립트와 어시스턴트가 같은 미디어 엔진을 제어할 수 있습니다.",
     "logoAlt": "EncodeX 로고",
     "featuresTitle": "할 수 있는 작업",
     "featureConvert": "코덱, 비트레이트, 해상도, 품질을 세밀하게 조정하여 동영상, 오디오, 이미지를 변환하며, 회전과 필터도 지원합니다",
@@ -829,7 +801,7 @@
     "featureProfiles": "기본 제공 변환 프로필로 시작하거나 직접 만든 프로필을 저장합니다",
     "featureBatch": "일괄 작업을 병렬로 실행하고, 일시 정지, 순서 변경, 가져오기/내보내기, 완료 후 전원 동작을 지원합니다",
     "featureHardware": "NVENC, Quick Sync, AMF, VAAPI, VideoToolbox 같은 GPU 인코더를 자동으로 감지해 사용합니다",
-    "featureAutomation": "AI 어시스턴트 Copilot에 목표를 설명하거나, CLI와 MCP 서버로 EncodeX를 스크립트로 제어합니다",
+    "featureAutomation": "AI 어시스턴트 코파일롯에 목표를 설명하거나, CLI와 MCP 서버로 EncodeX를 스크립트로 제어합니다",
     "version": "버전",
     "builtWith": "사용한 기술",
     "authorTitle": "작성자 및 피드백",
@@ -961,7 +933,6 @@
     "addAudioTrack": "오디오 트랙 추가",
     "removeAudioTrack": "오디오 트랙 제거",
     "addedTrackDelay": "이 트랙 지연 (초)",
-    "addedTrackDelayHint": "이 트랙에 비디오를 기준으로 한 부호 있는 오프셋입니다(양수 = 더 늦게 재생). 무손실: 스트림 복리와 함께 -itsoffset으로 적용됩니다.",
     "thumbnail": "썸네일 / 커버",
     "thumbnailHint": "선택적 커버 이미지(.jpg, .jpeg, .png)를 리멀텍스된 파일에 포함합니다. MKV/WebM은 이미지 스트림으로 첨부하고, MP4/MOV는 attached_pic 플래그를 가진 비디오 스트림으로 포함합니다.",
     "addThumbnail": "썸네일 추가",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "저장된 대화가 없습니다. '채팅 저장'을 사용하여 대화를 저장하세요.",
     "savedChatsClose": "닫기",
     "savedChatUntitled": "제목 없는 대화",
-    "savedChatMeta": "메시지 {{count}}개 · {{date}}",
-    "savedChatOpen": "열기",
     "savedChatDelete": "저장된 대화 삭제",
     "savedChatSaveFailed": "대화를 저장할 수 없습니다. 브라우저 저장 공간이 가득 찼을 수 있습니다.",
     "openChatConfirmTitle": "저장된 대화를 여시겠습니까?",
@@ -1056,23 +1025,17 @@
     "openChatSave": "저장 후 열기",
     "openChatDiscard": "삭제 후 열기",
     "openChatCancel": "취소",
-    "title": "Copilot",
-    "subtitle": "목표를 설명하면 Copilot이 변환을 계획하고, 그 계획을 일괄 큐로 보냅니다.",
-    "goalLabel": "목표",
-    "goalPlaceholder": "예: 이 영상들을 웹용으로 축소",
     "chooseFolder": "폴더 선택",
     "selectedCount": "파일 {{count}}개 선택됨",
-    "selectedNone": "선택된 파일 없음",
     "plan": "계획",
     "planning": "계획 중…",
     "folderEmpty": "해당 폴더에서 지원되는 미디어를 찾지 못했습니다.",
     "errorNoGoal": "계획을 세우기 전에 목표를 입력하세요.",
     "errorNoInputs": "계획을 세우기 전에 미디어 폴더를 선택하세요.",
     "dialogFailed": "파일 선택기를 열 수 없습니다. 다시 시도하세요.",
-    "errorFallback": "Copilot이 해당 목표에 대한 계획을 만들 수 없었습니다.",
     "errorEnqueue": "계획된 작업 중 큐에 추가할 수 있는 항목이 없습니다.",
     "actionsTitle": "계획된 작업",
-    "noActions": "Copilot이 이 목표에 대해 변경할 항목을 찾지 못했습니다.",
+    "noActions": "코파일롯이 이 목표에 대해 변경할 항목을 찾지 못했습니다.",
     "savings": "예상 절감 ~{{pct}}%",
     "output": "{{output}}로",
     "skipsTitle": "건너뛴 파일",
@@ -1084,7 +1047,7 @@
     "chooseFiles": "파일 선택",
     "operationLabel": "작업",
     "op": {
-      "auto": "자동 (Copilot이 결정하도록 함)",
+      "auto": "자동 (코파일롯이 결정하도록 함)",
       "convert": "변환",
       "remux": "Remux",
       "demux": "Demux",
@@ -1103,27 +1066,6 @@
     "routedAs": "작업: {{operation}}",
     "resultsTitle": "결과",
     "ai": {
-      "title": "AI 공급자",
-      "provider": "공급자",
-      "model": "모델",
-      "modelPlaceholder": "공급자 기본값",
-      "apiKey": "API 키",
-      "keyStored": "키는 난독화된 텍스트로 저장됩니다({{hint}}).",
-      "keyNone": "저장된 키가 없습니다.",
-      "save": "저장",
-      "test": "연결 테스트",
-      "testing": "테스트 중…",
-      "saved": "설정이 저장되었습니다.",
-      "saveFailed": "설정을 저장할 수 없습니다.",
-      "testFailed": "공급자의 응답이 없습니다.",
-      "privacy": "검사 결과와 목표 텍스트만 전송되며 미디어 파일은 절대 업로드되지 않습니다.",
-      "providers": {
-        "rules": "내장 규칙(오프라인)",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "로컬 모델"
-      },
       "configure": "AI 공급자 구성",
       "locationNote": "AI 공급자는 설정에서 구성됩니다.",
       "notConnected": "연결되지 않음"
@@ -1135,12 +1077,11 @@
     "welcome": "어떻게 도와드릴까요?",
     "goal": "EncodeX가 수행할 작업을 설명한 다음 파일이나 폴더를 첨부하세요.",
     "placeholder": "사용해 보세요: 웹용으로 동영상 압축, 오디오를 MP3로 추출 또는 자막 번역...",
-    "inputAria": "Copilot에게 메시지 보내기",
-    "send": "보내기",
+    "inputAria": "코파일롯에게 메시지 보내기",
     "advanced": "고급",
     "advancedTitle": "고급 옵션",
     "bridgeTimeout": "EncodeX가 제때 응답하지 않았습니다. 다시 시도하세요.",
-    "planFailed": "Copilot이 해당 목표에 대한 계획을 만들지 못했습니다.",
+    "planFailed": "코파일롯이 해당 목표에 대한 계획을 만들지 못했습니다.",
     "thinking": "생각 중...",
     "resetConversation": "새 대화 시작",
     "resetConfirmTitle": "대화를 재설정할까요?",
@@ -1148,11 +1089,20 @@
     "resetConfirmAction": "재설정",
     "loadingFiles": "파일 불러오는 중...",
     "removeAttachment": "첨부 파일 제거",
-    "folderFilesCount": "{{name}} ({{count}} 파일)",
-    "saveAndReset": "저장 후 초기화"
+    "saveAndReset": "저장 후 초기화",
+    "target": {
+      "profile": "프로필",
+      "resolution": "해상도",
+      "sameAsSource": "원본과 동일",
+      "video": "비디오",
+      "audio": "오디오",
+      "container": "컨테이너",
+      "losslessCopy": "무손실 복사",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
-    "title": "Copilot에서 나가시겠어요?",
+    "title": "코파일롯에서 나가시겠어요?",
     "message": "이 채팅은 아직 진행 중입니다. 페이지를 나가면 대화가 삭제됩니다.",
     "confirmLabel": "그래도 나가기",
     "cancelLabel": "머무르기"
@@ -1161,20 +1111,15 @@
     "common": {
       "cancel": "취소",
       "confirmCancel": "취소 확인",
-      "run": "실행",
       "retry": "다시 시도",
       "applyFix": "수정 적용",
-      "waiting": "호스트에서 데이터를 기다리는 중…",
       "input": "입력",
       "output": "출력",
-      "status": "상태",
       "duration": "길이",
       "size": "크기",
       "bitrate": "비트레이트",
       "video": "비디오",
       "audio": "오디오",
-      "details": "세부 정보",
-      "warnings": "경고",
       "findings": "점검 결과",
       "nextSteps": "권장 다음 단계",
       "attempts": "시도 횟수",
@@ -1183,9 +1128,7 @@
       "assumptions": "가정",
       "causes": "예상 원인",
       "fixes": "제안된 수정",
-      "summary": "요약",
       "settings": "설정",
-      "error": "오류",
       "unknown": "-",
       "confidence": "{{value}}% 신뢰도",
       "jobCount": "{{count}}개 작업",
@@ -1199,12 +1142,10 @@
     },
     "queue": {
       "title": "EncodeX 대기열",
-      "empty": "대기열에 작업이 없습니다.",
-      "waiting": "호스트에서 대기열 데이터를 기다리는 중…"
+      "empty": "대기열에 작업이 없습니다."
     },
     "job": {
-      "waiting": "호스트에서 작업 데이터를 기다리는 중…",
-      "cancelled": "취소됨"
+      "waiting": "호스트에서 작업 데이터를 기다리는 중…"
     },
     "mediaInfo": {
       "title": "미디어",
@@ -1275,8 +1216,7 @@
     },
     "error": {
       "title": "오류",
-      "waiting": "호스트의 오류를 기다리는 중…",
-      "code": "오류 코드"
+      "waiting": "호스트의 오류를 기다리는 중…"
     },
     "batch": {
       "title": "배치 확인",
@@ -1316,8 +1256,7 @@
       "hardware": "하드웨어 가속",
       "hardwareNone": "소프트웨어 전용",
       "encoderVideo": "비디오",
-      "encoderAudio": "오디오",
-      "encoderOther": "기타"
+      "encoderAudio": "오디오"
     }
   }
 }

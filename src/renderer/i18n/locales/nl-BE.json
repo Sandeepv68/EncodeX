@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "Overschakelen naar lichte modus",
-    "switchDark": "Overschakelen naar donkere modus",
     "language": "Taal",
     "searchLanguage": "Talen zoeken",
     "condense": "Zijbalk samenvouwen",
@@ -78,7 +76,6 @@
     "advanced": "Geavanceerd",
     "inputFile": "Invoerbestand",
     "outputFile": "Uitvoerbestand",
-    "noFile": "Geen bestand geselecteerd",
     "noOutput": "Geen uitvoer geselecteerd",
     "browse": "Bladeren",
     "saveAs": "Opslaan als",
@@ -96,9 +93,6 @@
     "pause": "Pauze",
     "resume": "Hervatten",
     "cancel": "Annuleren",
-    "placeholderBitrate": "bijv. 2000k",
-    "placeholderAudioBitrate": "bijv. 192k",
-    "placeholderScale": "bijv. 1280x720",
     "cancelJob": "Taak annuleren",
     "jobCancelTitle": "Taak annuleren",
     "jobCancelMessage": "Hierdoor wordt de huidige conversietaak gewist. ",
@@ -144,9 +138,7 @@
     "filtersHint": "Past FFmpeg-videofilters (bijsnijden, framerate, deinterlacing, ruisonderdrukking, kleur…) toe tijdens het opnieuw coderen. Alle filters worden na schalen en draaien samengevoegd tot één -vf-keten.",
     "addPreset": "Voorinstelling toevoegen…",
     "addFilter": "Filter toevoegen",
-    "customChainLabel": "Aangepaste filterketen",
     "customChainPlaceholder": "bijv. fps=30, eq=brightness=0.1",
-    "customChainHint": "Door komma's gescheiden FFmpeg-filterexpressies. Elke invoer moet gebalanceerde haakjes en vierkante haken hebben, overeenkomende aanhalingstekens en geen shell-metatekens.",
     "addCustom": "Aangepast toevoegen",
     "removeFilter": "Filter verwijderen",
     "moveUp": "Omhoog verplaatsen",
@@ -262,7 +254,6 @@
     "compress": "Afbeelding comprimeren",
     "compressing": "Bezig met comprimeren...",
     "placeholderOutput": "uitvoerpad",
-    "placeholderScale": "bijv. 800x600",
     "validationRequired": "Selecteer een invoerafbeelding.",
     "selectedImage": "Geselecteerde afbeelding: {{file}}",
     "inputImageHint": "De bronafbeelding om te comprimeren. JPEG, PNG, WebP en BMP worden ondersteund.",
@@ -289,7 +280,6 @@
     "extract": "Audio extraheren",
     "extracting": "Bezig met extraheren...",
     "placeholderOutput": "bijv. output.mp3",
-    "validationRequired": "Selecteer een videobestand.",
     "selectedVideo": "Geselecteerde video: {{file}}",
     "pause": "Pauzeren",
     "resume": "Hervatten",
@@ -302,8 +292,6 @@
   "videoCut": {
     "title": "Video knippen",
     "videoFile": "Videobestand",
-    "noFile": "Geen bestand geselecteerd",
-    "browse": "Bladeren",
     "outputFile": "Uitvoerbestand",
     "startTime": "Starttijd (HH:MM:SS)",
     "duration": "Duur (HH:MM:SS)",
@@ -324,7 +312,6 @@
     "jobCancelMessage": "Dit wist het huidige videoformulier. Weet je het zeker?",
     "closePreview": "Voorbeeld sluiten",
     "videoFileHint": "Sleep hier een videobestand neer of klik om uw computer te doorzoeken.",
-    "videoFiles": "Videobestanden",
     "dropLabel": "Zet hier een videobestand neer of klik om te bladeren",
     "changeFile": "Video wijzigen",
     "changeFileHint": "Selecteer een ander videobestand.",
@@ -357,9 +344,7 @@
     "stop": "Stoppen",
     "mute": "Dempen",
     "unmute": "Geluid aanzetten",
-    "seek": "Zoeken",
-    "playbackTime": "Afspeeltijd",
-    "videoPlayer": "Videospeler"
+    "seek": "Zoeken"
   },
   "batchQueue": {
     "bmfNotBundled": "BMF is niet meegeleverd met EncodeX. Installeer het handmatig en zorg dat bmf_ffmpeg en bmf_ffprobe in je PATH staan.",
@@ -486,12 +471,8 @@
     "outputRequired": "Uitvoerbestand is vereist",
     "invalidTime": "Ongeldig tijdformaat (HH:MM:SS of seconden)",
     "durationRequired": "Duur is vereist",
-    "invalidScale": "Ongeldig schaalformaat (bijv. 1920:1080, 50%)",
-    "invalidBitrate": "Ongeldige bitrate (bijv. 128k, 1M)",
     "qscaleRange": "QScale moet tussen 1 en 31 liggen",
-    "qualityRange": "Kwaliteit moet tussen 1 en 31 liggen",
-    "inputRequired": "Selecteer een invoerbestand.",
-    "outputRequiredDetailed": "Selecteer een uitvoerbestand."
+    "qualityRange": "Kwaliteit moet tussen 1 en 31 liggen"
   },
   "logs": {
     "clear": "Wissen",
@@ -538,8 +519,6 @@
     "allCancelled": "Alle taken geannuleerd",
     "logsDownloaded": "Logs gedownload",
     "mediaInfoLoaded": "Mediainfo geladen",
-    "languageChanged": "Taal gewijzigd naar {{language}}",
-    "cancelled": "Geannuleerd",
     "pathCopied": "Uitvoerpad gekopieerd naar klembord",
     "updateAvailable": "Update beschikbaar: v{{version}}",
     "updateNow": "Nu bijwerken",
@@ -594,8 +573,6 @@
     "alwaysOnTopHint": "Houdt het app-venster boven alle andere vensters.",
     "launchAtLogin": "Starten bij opstarten",
     "launchAtLoginHint": "Start EncodeX automatisch wanneer u zich aanmeldt bij uw computer.",
-    "monitoringErrorReporting": "Foutrapportage",
-    "monitoringErrorReportingHint": "Helpt EncodeX te verbeteren door anonieme foutrapporten te verzenden. U kunt dit op elk moment uitschakelen.",
     "telemetry": "Gebruiksgegevens en foutrapportage",
     "telemetryHint": "Helpt EncodeX te verbeteren door anonieme gebruiksgegevens en foutrapporten te verzenden. U kunt dit op elk moment uitschakelen.",
     "mcpServer": "MCP-server",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "Sleutels worden als vertekende tekst opgeslagen ({{hint}}).",
       "keyNone": "Geen sleutel opgeslagen.",
-      "save": "Opslaan",
-      "saved": "Instellingen opgeslagen.",
       "saveFailed": "De instellingen konden niet worden opgeslagen.",
-      "test": "Verbinding testen",
       "testing": "Bezig met testen…",
       "testFailed": "Geen reactie van de provider.",
       "privacy": "Alleen de analysegegevens en de tekst van je doel worden verzonden; mediabestanden worden nooit geüpload.",
@@ -692,8 +666,6 @@
       "statusConnected": "Verbonden en geverifieerd.",
       "requiresNetwork": "Deze aanbieder vereist een actieve netwerkverbinding.",
       "offlineFallback": "U bent offline. Overgeschakeld naar de ingebouwde regelaanbieder. Externe aanbieders vereisen een actieve netwerkverbinding.",
-      "modelsLoading": "Modellen laden...",
-      "modelsUnavailable": "Modellen konden niet van de aanbieder worden geladen. U kunt nog steeds een model-id typen.",
       "keySavedPlaceholder": "Sleutel opgeslagen. Plak een nieuwe sleutel om deze te vervangen.",
       "connected": "Verbonden",
       "testAgain": "Verbinding opnieuw testen",
@@ -961,7 +933,6 @@
     "addAudioTrack": "Audiotrack toevoegen",
     "removeAudioTrack": "Audiotrack verwijderen",
     "addedTrackDelay": "Deze track vertragen (seconden)",
-    "addedTrackDelayHint": "Gesigneerde verschuiving van deze track ten opzichte van de video (positief = later afspelen). Verliesvrij: toegepast als -itsoffset met streamkopie.",
     "thumbnail": "Miniatuur / omslag",
     "thumbnailHint": "Optionele omslagafbeelding (.jpg, .jpeg, .png) die in het remux-bestand wordt ingesloten. MKV/WebM voegen deze toe als afbeeldingsstream; MP4/MOV sluiten deze in als videostream met de markering attached_pic.",
     "addThumbnail": "Miniatuur toevoegen",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "Geen opgeslagen gesprekken. Gebruik Chat opslaan om er een op te slaan.",
     "savedChatsClose": "Sluiten",
     "savedChatUntitled": "Naamloos gesprek",
-    "savedChatMeta": "{{count}} berichten · {{date}}",
-    "savedChatOpen": "Openen",
     "savedChatDelete": "Opgeslagen gesprek verwijderen",
     "savedChatSaveFailed": "Het gesprek kon niet worden opgeslagen. De browseropslag is mogelijk vol.",
     "openChatConfirmTitle": "Opgeslagen gesprek openen?",
@@ -1056,20 +1025,14 @@
     "openChatSave": "Opslaan en openen",
     "openChatDiscard": "Negeren en openen",
     "openChatCancel": "Annuleren",
-    "title": "Copilot",
-    "subtitle": "Beschrijf een doel en laat Copilot de conversies plannen, en duw het plan vervolgens naar de batchwachtrij.",
-    "goalLabel": "Doel",
-    "goalPlaceholder": "bijv. deze video's voor het web verkleinen",
     "chooseFolder": "Map kiezen",
     "selectedCount": "{{count}} bestand(en) geselecteerd",
-    "selectedNone": "Geen bestanden geselecteerd",
     "plan": "Plannen",
     "planning": "Bezig met plannen…",
     "folderEmpty": "Er is geen ondersteunde media gevonden in die map.",
     "errorNoGoal": "Voer een doel in voordat u gaat plannen.",
     "errorNoInputs": "Kies een map met media voordat u gaat plannen.",
     "dialogFailed": "Kan de bestandskiezer niet openen. Probeer het opnieuw.",
-    "errorFallback": "Copilot kon geen plan maken voor dat doel.",
     "errorEnqueue": "Geen van de geplande taken kon aan de wachtrij worden toegevoegd.",
     "actionsTitle": "Geplande acties",
     "noActions": "Copilot vond niets om te wijzigen voor dit doel.",
@@ -1103,27 +1066,6 @@
     "routedAs": "Bewerking: {{operation}}",
     "resultsTitle": "Bevindingen",
     "ai": {
-      "title": "AI-provider",
-      "provider": "Aanbieder",
-      "model": "Model",
-      "modelPlaceholder": "Standaard van de provider",
-      "apiKey": "API-sleutel",
-      "keyStored": "Sleutels worden als vertekende tekst opgeslagen ({{hint}}).",
-      "keyNone": "Geen sleutel opgeslagen.",
-      "save": "Opslaan",
-      "test": "Verbinding testen",
-      "testing": "Bezig met testen…",
-      "saved": "Instellingen opgeslagen.",
-      "saveFailed": "De instellingen konden niet worden opgeslagen.",
-      "testFailed": "Geen reactie van de provider.",
-      "privacy": "Alleen de analysegegevens en de tekst van je doel worden verzonden; mediabestanden worden nooit geüpload.",
-      "providers": {
-        "rules": "Ingebouwde regels (offline)",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "Lokaal model"
-      },
       "configure": "AI-provider configureren",
       "locationNote": "AI-providers worden geconfigureerd in Instellingen.",
       "notConnected": "Niet verbonden"
@@ -1136,7 +1078,6 @@
     "goal": "Beschrijf wat je wilt dat EncodeX doet en voeg daarna bestanden of een map toe.",
     "placeholder": "Probeer: comprimeer een video voor het web, extraheer audio naar MP3 of vertaal ondertitels...",
     "inputAria": "Bericht naar Copilot sturen",
-    "send": "Verzenden",
     "advanced": "Geavanceerd",
     "advancedTitle": "Geavanceerde opties",
     "bridgeTimeout": "EncodeX reageerde niet op tijd. Probeer het opnieuw.",
@@ -1148,8 +1089,17 @@
     "resetConfirmAction": "Resetten",
     "loadingFiles": "Bestanden laden...",
     "removeAttachment": "Bijlage verwijderen",
-    "folderFilesCount": "{{name}} ({{count}} bestanden)",
-    "saveAndReset": "Opslaan en herstellen"
+    "saveAndReset": "Opslaan en herstellen",
+    "target": {
+      "profile": "Profiel",
+      "resolution": "Resolutie",
+      "sameAsSource": "Zelfde als bron",
+      "video": "Video",
+      "audio": "Audio",
+      "container": "Container",
+      "losslessCopy": "Verliesvrije kopie",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Copilot verlaten?",
@@ -1161,20 +1111,15 @@
     "common": {
       "cancel": "Annuleren",
       "confirmCancel": "Annuleren bevestigen",
-      "run": "Uitvoeren",
       "retry": "Opnieuw proberen",
       "applyFix": "Correctie toepassen",
-      "waiting": "Wachten op gegevens van de host…",
       "input": "Invoer",
       "output": "Uitvoer",
-      "status": "Status",
       "duration": "Duur",
       "size": "Grootte",
       "bitrate": "Bitrate",
       "video": "Video",
       "audio": "Audio",
-      "details": "Details",
-      "warnings": "Waarschuwingen",
       "findings": "Bevindingen",
       "nextSteps": "Aanbevolen volgende stappen",
       "attempts": "Pogingen",
@@ -1183,9 +1128,7 @@
       "assumptions": "Aannames",
       "causes": "Waarschijnlijke oorzaken",
       "fixes": "Voorgestelde correcties",
-      "summary": "Samenvatting",
       "settings": "Instellingen",
-      "error": "Fout",
       "unknown": "-",
       "confidence": "{{value}}% zekerheid",
       "jobCount": "{{count}} taken",
@@ -1199,12 +1142,10 @@
     },
     "queue": {
       "title": "EncodeX-wachtrij",
-      "empty": "Geen taken in de wachtrij.",
-      "waiting": "Wachten op wachtrijgegevens van de host…"
+      "empty": "Geen taken in de wachtrij."
     },
     "job": {
-      "waiting": "Wachten op taakgegevens van de host…",
-      "cancelled": "geannuleerd"
+      "waiting": "Wachten op taakgegevens van de host…"
     },
     "mediaInfo": {
       "title": "Media",
@@ -1275,8 +1216,7 @@
     },
     "error": {
       "title": "Fout",
-      "waiting": "Wachten op een fout van de host…",
-      "code": "Foutcode"
+      "waiting": "Wachten op een fout van de host…"
     },
     "batch": {
       "title": "Batch bevestigen",
@@ -1316,8 +1256,7 @@
       "hardware": "Hardwareversnelling",
       "hardwareNone": "Alleen software",
       "encoderVideo": "Video",
-      "encoderAudio": "Audio",
-      "encoderOther": "Overig"
+      "encoderAudio": "Audio"
     }
   }
 }

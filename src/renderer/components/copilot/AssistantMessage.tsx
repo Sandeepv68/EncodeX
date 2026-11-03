@@ -25,6 +25,7 @@ import {
 import type { AssistantMessageProps } from './types';
 import ProviderIcon from './ProviderIcon';
 import McpAppView from './McpAppView';
+import PlanTargetSummary from './PlanTargetSummary';
 
 export type { AssistantMessageProps };
 
@@ -88,12 +89,21 @@ export default function AssistantMessage({
                 primary={action.input}
                 secondary={
                   <>
-                    <Typography component="span" variant="body2" color="text.secondary">
-                      {t('copilot.savings', { pct: Math.round(action.estimatedSavings * 100) })}
-                    </Typography>
+                    {/*
+                      The saving is only shown when the planner produced a size
+                      estimate. Operations without one (remux, extract audio,
+                      ...) used to report a hardcoded 0%, which reads as "this
+                      saves nothing" rather than "this is not known".
+                    */}
+                    {action.estimatedSizeBytes !== undefined && (
+                      <Typography component="span" variant="body2" color="text.secondary">
+                        {t('copilot.savings', { pct: Math.round(action.estimatedSavings * 100) })}
+                      </Typography>
+                    )}
                     <SavingsText component="span" variant="body2" color="text.secondary">
                       {t('copilot.output', { output: action.output ?? '' })}
                     </SavingsText>
+                    <PlanTargetSummary action={action} />
                   </>
                 }
               />

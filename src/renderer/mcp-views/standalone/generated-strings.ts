@@ -14,20 +14,15 @@ export const MCP_VIEW_STRINGS = {
   common: {
     cancel: 'Cancel',
     confirmCancel: 'Confirm cancel',
-    run: 'Run',
     retry: 'Retry',
     applyFix: 'Apply fix',
-    waiting: 'Waiting for the host to provide data…',
     input: 'Input',
     output: 'Output',
-    status: 'Status',
     duration: 'Duration',
     size: 'Size',
     bitrate: 'Bitrate',
     video: 'Video',
     audio: 'Audio',
-    details: 'Details',
-    warnings: 'Warnings',
     findings: 'Findings',
     nextSteps: 'Recommended next steps',
     attempts: 'Attempts',
@@ -36,9 +31,7 @@ export const MCP_VIEW_STRINGS = {
     assumptions: 'Assumptions',
     causes: 'Likely causes',
     fixes: 'Suggested fixes',
-    summary: 'Summary',
     settings: 'Settings',
-    error: 'Error',
     unknown: '-',
     confidence: '{{value}}% confidence',
     jobCount: '{{count}} jobs',
@@ -53,11 +46,9 @@ export const MCP_VIEW_STRINGS = {
   queue: {
     title: 'EncodeX queue',
     empty: 'No jobs in the queue.',
-    waiting: 'Waiting for the host to provide queue data…',
   },
   job: {
     waiting: 'Waiting for the host to provide job data…',
-    cancelled: 'cancelled',
   },
   mediaInfo: {
     title: 'Media',
@@ -129,7 +120,6 @@ export const MCP_VIEW_STRINGS = {
   error: {
     title: 'Error',
     waiting: 'Waiting for the host to provide an error…',
-    code: 'Error code',
   },
   batch: {
     title: 'Confirm batch',
@@ -170,6 +160,5 @@ export const MCP_VIEW_STRINGS = {
     hardwareNone: 'Software only',
     encoderVideo: 'Video',
     encoderAudio: 'Audio',
-    encoderOther: 'Other',
   },
 } as const;

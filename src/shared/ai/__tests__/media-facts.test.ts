@@ -78,4 +78,26 @@ describe('extractMediaFacts', () => {
     expect(empty.hasVideo).toBe(false);
     expect(empty.video).toBeUndefined();
   });
+
+  it('normalizes ffprobe bits-per-second bitrates to kbps', () => {
+    // ffprobe reports bare numbers in bits per second; the planners parse these
+    // fields as kbps, so the adapter must convert (or the source looks 1000x
+    // larger than it is).
+    const facts = extractMediaFacts(
+      makeInfo({
+        bitrate: '9808000',
+        streams: [stream({ type: 'audio', codec: 'aac', bitrate: '128000' })],
+      }),
+    );
+    expect(facts.overallBitrate).toBe('9808k');
+    expect(facts.audio?.bitrate).toBe('128k');
+  });
+
+  it('passes through bitrates that already carry a unit and drops unknown ones', () => {
+    expect(extractMediaFacts(makeInfo({ bitrate: '3200k' })).overallBitrate).toBe('3200k');
+    expect(extractMediaFacts(makeInfo({ bitrate: '8M' })).overallBitrate).toBe('8M');
+    expect(extractMediaFacts(makeInfo({ bitrate: 'N/A' })).overallBitrate).toBeUndefined();
+    const audio = extractMediaFacts(makeInfo({ streams: [stream({ type: 'audio', bitrate: 'N/A' })] }));
+    expect(audio.audio?.bitrate).toBeUndefined();
+  });
 });

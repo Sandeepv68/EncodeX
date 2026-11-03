@@ -57,7 +57,7 @@ export interface AIProviderDescriptor {
  * @property {string} format - Container/format name.
  * @property {number} sizeBytes - File size in bytes.
  * @property {number} durationSeconds - Container duration in seconds.
- * @property {string} [overallBitrate] - Overall bitrate as reported (e.g. '2000k').
+ * @property {string} [overallBitrate] - Overall bitrate in kbps (e.g. '2000k').
  * @property {boolean} hasVideo - Whether the file has a video stream.
  * @property {boolean} hasAudio - Whether the file has an audio stream.
  * @property {number} subtitleCount - Number of subtitle streams.
@@ -350,6 +350,10 @@ export interface EncodingAdvice {
  * @property {string[]} rationale - Why this action was planned.
  * @property {number} [estimatedSizeBytes] - Estimated output size.
  * @property {number} estimatedSavings - Estimated size change as a fraction.
+ * @property {number} [estimatedVideoBitrateKbps] - Effective video bitrate
+ *   (kbps) the size estimate used, when a video stream is encoded.
+ * @property {number} [estimatedAudioBitrateKbps] - Effective audio bitrate
+ *   (kbps) the size estimate used, when an audio stream is encoded.
  */
 export interface AgentAction {
   id: string;
@@ -360,6 +364,8 @@ export interface AgentAction {
   rationale: string[];
   estimatedSizeBytes?: number;
   estimatedSavings: number;
+  estimatedVideoBitrateKbps?: number;
+  estimatedAudioBitrateKbps?: number;
 }
 
 /**
@@ -721,6 +727,9 @@ export interface ExplainErrorInput {
  * @property {boolean} [copy] - Lossless stream copy (no re-encode).
  * @property {boolean} [audio] - Include audio (false drops it).
  * @property {boolean} [video] - Include video (false drops it).
+ * @property {string} [scale] - Output resolution (`WxH` or a percentage).
+ * @property {string} [videoCodec] - Target video codec.
+ * @property {number | string} [qscale] - Target quality (CRF/qscale).
  */
 export interface EstimateConversionInput {
   videoBitrate?: string;
@@ -729,6 +738,12 @@ export interface EstimateConversionInput {
   copy?: boolean;
   audio?: boolean;
   video?: boolean;
+  /** Output resolution (`WxH`), used to scale the estimate when no bitrate is set. */
+  scale?: string;
+  /** Target video codec (e.g. 'libx265'), used to scale the estimate. */
+  videoCodec?: string;
+  /** Target quality (CRF/qscale), used to scale the estimate. */
+  qscale?: number | string;
 }
 
 /* ---------------------------------------------------------------- folder */

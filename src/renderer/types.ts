@@ -62,3 +62,11 @@ export interface ColorModeContextValue {
   setDirection: (dir: 'ltr' | 'rtl') => void;
   setTheme: (themeId: ThemeId) => void;
 }
+
+/**
+ * Signature of the console methods that the renderer entry point patches.
+ * The `__encodeXPatched` flag marks a method as already wrapped so a
+ * re-evaluated entry point does not wrap it twice (which would duplicate
+ * every log entry).
+ */
+export type ConsoleMethod = ((...args: unknown[]) => void) & { __encodeXPatched?: boolean };

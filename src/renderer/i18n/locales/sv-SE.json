@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "Växla till ljust läge",
-    "switchDark": "Växla till mörkt läge",
     "language": "Språk",
     "searchLanguage": "Sök språk",
     "condense": "Komprimera sidofältet",
@@ -78,7 +76,6 @@
     "advanced": "Avancerat",
     "inputFile": "Indatafil",
     "outputFile": "Utdatafil",
-    "noFile": "Ingen fil vald",
     "noOutput": "Ingen utdata vald",
     "browse": "Bläddra",
     "saveAs": "Spara som",
@@ -96,9 +93,6 @@
     "pause": "Pausa",
     "resume": "Återuppta",
     "cancel": "Avbryt",
-    "placeholderBitrate": "t.ex. 2000k",
-    "placeholderAudioBitrate": "t.ex. 192k",
-    "placeholderScale": "t.ex. 1280x720",
     "cancelJob": "Avbryt jobb",
     "jobCancelTitle": "Avbryt jobb",
     "jobCancelMessage": "Detta tar bort det aktuella konverteringsjobbet. ",
@@ -144,9 +138,7 @@
     "filtersHint": "Tillämpar FFmpeg-videofilter (beskärning, bildfrekvens, deinterlacing, brusreducering, färg…) vid omkodning. Alla filter slås ihop till en enda -vf-kedja efter skalning och rotation.",
     "addPreset": "Lägg till förinställt filter…",
     "addFilter": "Lägg till filter",
-    "customChainLabel": "Anpassad filterkedja",
     "customChainPlaceholder": "t.ex. fps=30, eq=brightness=0.1",
-    "customChainHint": "FFmpeg-filteruttryck åtskilda med kommatecken. Varje post måste ha balanserade parenteser och hakparenteser, matchande citattecken och inga skalmeta-tecken.",
     "addCustom": "Lägg till anpassad",
     "removeFilter": "Ta bort filter",
     "moveUp": "Flytta upp",
@@ -262,7 +254,6 @@
     "compress": "Komprimera bild",
     "compressing": "Komprimerar...",
     "placeholderOutput": "utdatasökväg",
-    "placeholderScale": "t.ex. 800x600",
     "validationRequired": "Välj en ingångsbild.",
     "selectedImage": "Vald bild: {{file}}",
     "inputImageHint": "Källbilden som ska komprimeras. JPEG, PNG, WebP och BMP stöds.",
@@ -289,7 +280,6 @@
     "extract": "Extrahera ljud",
     "extracting": "Extraherar...",
     "placeholderOutput": "t.ex. output.mp3",
-    "validationRequired": "Välj en videofil.",
     "selectedVideo": "Vald video: {{file}}",
     "pause": "Pausa",
     "resume": "Återuppta",
@@ -302,8 +292,6 @@
   "videoCut": {
     "title": "Klipp video",
     "videoFile": "Videofil",
-    "noFile": "Ingen fil vald",
-    "browse": "Bläddra",
     "outputFile": "Utdatafil",
     "startTime": "Starttid (HH:MM:SS)",
     "duration": "Längd (HH:MM:SS)",
@@ -324,7 +312,6 @@
     "jobCancelMessage": "Detta rensar det aktuella videoklippformuläret. Är du säker?",
     "closePreview": "Stäng förhandsvisning",
     "videoFileHint": "Dra och släpp en videofil här eller klicka för att bläddra på datorn.",
-    "videoFiles": "Videofiler",
     "dropLabel": "Släpp en videofil här eller klicka för att bläddra",
     "changeFile": "Byt video",
     "changeFileHint": "Välj en annan videofil.",
@@ -357,9 +344,7 @@
     "stop": "Stoppa",
     "mute": "Ljud av",
     "unmute": "Ljud på",
-    "seek": "Sök",
-    "playbackTime": "Uppspelningstid",
-    "videoPlayer": "Videospelare"
+    "seek": "Sök"
   },
   "batchQueue": {
     "bmfNotBundled": "BMF ingår inte i EncodeX. Installera det manuellt och se till att bmf_ffmpeg och bmf_ffprobe finns i din PATH.",
@@ -486,12 +471,8 @@
     "outputRequired": "Utdatafil krävs",
     "invalidTime": "Ogiltigt tidsformat (HH:MM:SS eller sekunder)",
     "durationRequired": "Längd krävs",
-    "invalidScale": "Ogiltigt skalaformat (t.ex. 1920:1080, 50%)",
-    "invalidBitrate": "Ogiltig bithastighet (t.ex. 128k, 1M)",
     "qscaleRange": "QScale måste vara mellan 1 och 31",
-    "qualityRange": "Kvalitet måste vara mellan 1 och 31",
-    "inputRequired": "Välj en indatafil.",
-    "outputRequiredDetailed": "Välj en utdatafil."
+    "qualityRange": "Kvalitet måste vara mellan 1 och 31"
   },
   "logs": {
     "clear": "Rensa",
@@ -538,8 +519,6 @@
     "allCancelled": "Alla uppgifter avbrutna",
     "logsDownloaded": "Loggar nedladdade",
     "mediaInfoLoaded": "Mediainfo inläst",
-    "languageChanged": "Språk ändrat till {{language}}",
-    "cancelled": "Avbruten",
     "pathCopied": "Utmatningssökvägen kopierad till urklipp",
     "updateAvailable": "Uppdatering tillgänglig: v{{version}}",
     "updateNow": "Uppdatera nu",
@@ -594,8 +573,6 @@
     "alwaysOnTopHint": "Håller appfönstret ovanför alla andra fönster.",
     "launchAtLogin": "Starta vid inloggning",
     "launchAtLoginHint": "Startar EncodeX automatiskt när du loggar in på datorn.",
-    "monitoringErrorReporting": "Felrapportering",
-    "monitoringErrorReportingHint": "Hjälper till att förbättra EncodeX genom att skicka anonyma felrapporter. Du kan stänga av detta när som helst.",
     "telemetry": "Användningsdata och felrapportering",
     "telemetryHint": "Hjälper till att förbättra EncodeX genom att skicka anonyma användningsdata och felrapporter. Du kan stänga av detta när som helst.",
     "mcpServer": "MCP-server",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "Nycklar lagras som ofuskad text ({{hint}}).",
       "keyNone": "Ingen nyckel lagrad.",
-      "save": "Spara",
-      "saved": "Inställningar sparade.",
       "saveFailed": "Det gick inte att spara inställningarna.",
-      "test": "Testa anslutningen",
       "testing": "Testar…",
       "testFailed": "Inget svar från leverantören.",
       "privacy": "Endast analysdata och måltexten skickas; mediafiler laddas aldrig upp.",
@@ -692,8 +666,6 @@
       "statusConnected": "Ansluten och verifierad.",
       "requiresNetwork": "Denna leverantör kräver en aktiv nätverksanslutning.",
       "offlineFallback": "Du är offline. Bytte till den inbyggda regelleverantören. Fjärrleverantörer kräver en aktiv nätverksanslutning.",
-      "modelsLoading": "Laddar modeller...",
-      "modelsUnavailable": "Kunde inte ladda modeller från leverantören. Du kan fortfarande skriva ett modell-id.",
       "keySavedPlaceholder": "Nyckel sparad. Klistra in en ny nyckel för att ersätta den.",
       "connected": "Ansluten",
       "testAgain": "Testa anslutningen igen",
@@ -961,7 +933,6 @@
     "addAudioTrack": "Lägg till ljudspår",
     "removeAudioTrack": "Ta bort ljudspåret",
     "addedTrackDelay": "Fördröj det här spåret (sekunder)",
-    "addedTrackDelayHint": "Teckenförskjutning för det här spåret relativt videon (positivt = spelas senare). Förlustfritt: tillämpas som -itsoffset med strömkopia.",
     "thumbnail": "Miniatyrbild / omslag",
     "thumbnailHint": "Valfri omslagsbild (.jpg, .jpeg, .png) som bäddas in i den remuxade filen. MKV/WebM bifogar den som en bildström; MP4/MOV bäddar in den som en videström med attached_pic-disposition.",
     "addThumbnail": "Lägg till miniatyrbild",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "Inga sparade konversationer. Använd Spara chatt för att spara en.",
     "savedChatsClose": "Stäng",
     "savedChatUntitled": "Namnlös konversation",
-    "savedChatMeta": "{{count}} meddelanden · {{date}}",
-    "savedChatOpen": "Öppna",
     "savedChatDelete": "Ta bort sparad konversation",
     "savedChatSaveFailed": "Konversationen kunde inte sparas. Webbläsarlagringen kan vara full.",
     "openChatConfirmTitle": "Öppna sparad konversation?",
@@ -1056,20 +1025,14 @@
     "openChatSave": "Spara och öppna",
     "openChatDiscard": "Kasta och öppna",
     "openChatCancel": "Avbryt",
-    "title": "Copilot",
-    "subtitle": "Beskriv ett mål och låt Copilot planera konverteringarna, och skicka sedan planen till batchkön.",
-    "goalLabel": "Mål",
-    "goalPlaceholder": "t.ex. krympa dessa videor för webben",
     "chooseFolder": "Välj mapp",
     "selectedCount": "{{count}} fil(er) valda",
-    "selectedNone": "Inga filer valda",
     "plan": "Planera",
     "planning": "Planerar…",
     "folderEmpty": "Inga medier som stöds hittades i den mappen.",
     "errorNoGoal": "Ange ett mål innan du planerar.",
     "errorNoInputs": "Välj en mapp med medier innan du planerar.",
     "dialogFailed": "Kunde inte öppna filväljaren. Försök igen.",
-    "errorFallback": "Copilot kunde inte skapa en plan för det målet.",
     "errorEnqueue": "Ingen av de planerade uppgifterna kunde läggas till i kön.",
     "actionsTitle": "Planerade åtgärder",
     "noActions": "Copilot hittade ingenting att ändra för det här målet.",
@@ -1103,27 +1066,6 @@
     "routedAs": "Åtgärd: {{operation}}",
     "resultsTitle": "Resultat",
     "ai": {
-      "title": "AI-leverantör",
-      "provider": "Leverantör",
-      "model": "Modell",
-      "modelPlaceholder": "Leverantörens standard",
-      "apiKey": "API-nyckel",
-      "keyStored": "Nycklar lagras som ofuskad text ({{hint}}).",
-      "keyNone": "Ingen nyckel lagrad.",
-      "save": "Spara",
-      "test": "Testa anslutningen",
-      "testing": "Testar…",
-      "saved": "Inställningar sparade.",
-      "saveFailed": "Det gick inte att spara inställningarna.",
-      "testFailed": "Inget svar från leverantören.",
-      "privacy": "Endast analysdata och måltexten skickas; mediafiler laddas aldrig upp.",
-      "providers": {
-        "rules": "Inbyggda regler (offline)",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "Lokal modell"
-      },
       "configure": "Konfigurera AI-leverantör",
       "locationNote": "AI-leverantörer konfigureras i Inställningar.",
       "notConnected": "Inte ansluten"
@@ -1136,7 +1078,6 @@
     "goal": "Beskriv vad du vill att EncodeX ska göra och bifoga sedan filer eller en mapp.",
     "placeholder": "Prova: komprimera en video för webben, extrahera ljud till MP3 eller översätt undertexter...",
     "inputAria": "Skicka meddelande till Copilot",
-    "send": "Skicka",
     "advanced": "Avancerat",
     "advancedTitle": "Avancerade alternativ",
     "bridgeTimeout": "EncodeX svarade inte i tid. Försök igen.",
@@ -1148,8 +1089,17 @@
     "resetConfirmAction": "Återställ",
     "loadingFiles": "Läser in filer...",
     "removeAttachment": "Ta bort bilaga",
-    "folderFilesCount": "{{name}} ({{count}} filer)",
-    "saveAndReset": "Spara och återställ"
+    "saveAndReset": "Spara och återställ",
+    "target": {
+      "profile": "Profil",
+      "resolution": "Upplösning",
+      "sameAsSource": "Samma som källan",
+      "video": "Video",
+      "audio": "Ljud",
+      "container": "Container",
+      "losslessCopy": "Förlustfri kopia",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Lämna Copilot?",
@@ -1161,20 +1111,15 @@
     "common": {
       "cancel": "Avbryt",
       "confirmCancel": "Bekräfta avbryt",
-      "run": "Kör",
       "retry": "Försök igen",
       "applyFix": "Tillämpa åtgärd",
-      "waiting": "Väntar på data från värden…",
       "input": "Indata",
       "output": "Utdata",
-      "status": "Status",
       "duration": "Längd",
       "size": "Storlek",
       "bitrate": "Bithastighet",
       "video": "Video",
       "audio": "Ljud",
-      "details": "Detaljer",
-      "warnings": "Varningar",
       "findings": "Fynd",
       "nextSteps": "Rekommenderade nästa steg",
       "attempts": "Försök",
@@ -1183,9 +1128,7 @@
       "assumptions": "Antaganden",
       "causes": "Troliga orsaker",
       "fixes": "Foreslagna åtgärder",
-      "summary": "Sammanfattning",
       "settings": "Inställningar",
-      "error": "Fel",
       "unknown": "-",
       "confidence": "{{value}}% säkerhet",
       "jobCount": "{{count}} jobb",
@@ -1199,12 +1142,10 @@
     },
     "queue": {
       "title": "EncodeX-kö",
-      "empty": "Inga jobb i kön.",
-      "waiting": "Väntar på ködata från värden…"
+      "empty": "Inga jobb i kön."
     },
     "job": {
-      "waiting": "Väntar på jobbdata från värden…",
-      "cancelled": "avbruten"
+      "waiting": "Väntar på jobbdata från värden…"
     },
     "mediaInfo": {
       "title": "Media",
@@ -1275,8 +1216,7 @@
     },
     "error": {
       "title": "Fel",
-      "waiting": "Väntar på ett fel från värden…",
-      "code": "Felkod"
+      "waiting": "Väntar på ett fel från värden…"
     },
     "batch": {
       "title": "Bekräfta batch",
@@ -1316,8 +1256,7 @@
       "hardware": "Hårdvaruacceleration",
       "hardwareNone": "Endast mjukvara",
       "encoderVideo": "Video",
-      "encoderAudio": "Ljud",
-      "encoderOther": "Övrigt"
+      "encoderAudio": "Ljud"
     }
   }
 }

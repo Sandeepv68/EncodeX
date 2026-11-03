@@ -250,7 +250,7 @@ npm run dist
 ## 🧪 Testing
 
 ```bash
-npm test           # Run unit tests (314 test/spec files under src/)
+npm test           # Run unit tests (330 test/spec files under src/)
 npm run test:watch
 npm run test:coverage
 npm run test:unit

@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "ライトモードに切り替え",
-    "switchDark": "ダークモードに切り替え",
     "language": "言語",
     "searchLanguage": "言語を検索",
     "condense": "サイドバーを折りたたむ",
@@ -32,7 +30,7 @@
     },
     "remux": "Remux",
     "demux": "Demux",
-    "copilot": "Copilot"
+    "copilot": "コパイロット"
   },
   "dashboard": {
     "welcome": "EncodeX へようこそ",
@@ -59,7 +57,7 @@
       "extract": "音声を抽出",
       "trim": "クリップをトリミング",
       "remux": "ファイルをリマックス",
-      "copilot": "Copilot に相談"
+      "copilot": "コパイロットに相談"
     }
   },
   "closeConfirm": {
@@ -78,7 +76,6 @@
     "advanced": "詳細設定",
     "inputFile": "入力ファイル",
     "outputFile": "出力ファイル",
-    "noFile": "ファイルが選択されていません",
     "noOutput": "出力が選択されていません",
     "browse": "参照",
     "saveAs": "名前を付けて保存",
@@ -96,9 +93,6 @@
     "pause": "一時停止",
     "resume": "再開する",
     "cancel": "キャンセル",
-    "placeholderBitrate": "例: 2000k",
-    "placeholderAudioBitrate": "例: 192k",
-    "placeholderScale": "例: 1280x720",
     "cancelJob": "ジョブのキャンセル",
     "jobCancelTitle": "ジョブのキャンセル",
     "jobCancelMessage": "これにより、現在の変換ジョブがクリアされます。",
@@ -144,9 +138,7 @@
     "filtersHint": "再エンコード時に FFmpeg のビデオフィルター（トリミング、フレームレート、デインタレース、ノイズ低減、カラーなど）を適用します。すべてのフィルターはスケールと回転の後に 1 つの -vf チェーンへ統合されます。",
     "addPreset": "プリセットフィルターを追加…",
     "addFilter": "フィルターを追加",
-    "customChainLabel": "カスタムフィルター適用順",
     "customChainPlaceholder": "例: fps=30, eq=brightness=0.1",
-    "customChainHint": "カンマ区切りの FFmpeg フィルター式です。各エントリは括弧が対応し、引用符が一致し、シェルメタ文字を含まない必要があります。",
     "addCustom": "カスタムを追加",
     "removeFilter": "フィルターを削除",
     "moveUp": "上へ移動",
@@ -262,7 +254,6 @@
     "compress": "画像を圧縮",
     "compressing": "圧縮中...",
     "placeholderOutput": "出力パス",
-    "placeholderScale": "例: 800x600",
     "validationRequired": "入力画像を選択してください。",
     "selectedImage": "選択した画像: {{file}}",
     "inputImageHint": "圧縮する元の画像。JPEG、PNG、WebP、BMP に対応しています。",
@@ -289,7 +280,6 @@
     "extract": "音声を抽出",
     "extracting": "抽出中...",
     "placeholderOutput": "例: output.mp3",
-    "validationRequired": "ビデオファイルを選択してください。",
     "selectedVideo": "選択した動画: {{file}}",
     "pause": "一時停止",
     "resume": "再開",
@@ -302,8 +292,6 @@
   "videoCut": {
     "title": "動画カット",
     "videoFile": "動画ファイル",
-    "noFile": "ファイルが選択されていません",
-    "browse": "参照",
     "outputFile": "出力ファイル",
     "startTime": "開始時間 (HH:MM:SS)",
     "duration": "再生時間 (HH:MM:SS)",
@@ -324,7 +312,6 @@
     "jobCancelMessage": "現在のビデオカットフォームがクリアされます。よろしいですか？",
     "closePreview": "プレビューを閉じる",
     "videoFileHint": "ビデオファイルをここにドロップするか、クリックしてコンピューターから選択します。",
-    "videoFiles": "動画ファイル",
     "dropLabel": "ビデオファイルをここにドロップするか、クリックして参照",
     "changeFile": "ビデオを変更",
     "changeFileHint": "別のビデオファイルを選択してください。",
@@ -357,9 +344,7 @@
     "stop": "停止",
     "mute": "ミュート",
     "unmute": "ミュート解除",
-    "seek": "シーク",
-    "playbackTime": "再生時間",
-    "videoPlayer": "ビデオプレーヤー"
+    "seek": "シーク"
   },
   "batchQueue": {
     "bmfNotBundled": "BMF は EncodeX に同梱されていません。手動でインストールし、bmf_ffmpeg と bmf_ffprobe が PATH 上にあることを確認してください。",
@@ -486,12 +471,8 @@
     "outputRequired": "出力ファイルが必要です",
     "invalidTime": "無効な時間形式です（HH:MM:SS または秒）",
     "durationRequired": "再生時間が必要です",
-    "invalidScale": "無効なスケール形式です（例: 1920:1080, 50%）",
-    "invalidBitrate": "無効なビットレートです（例: 128k, 1M）",
     "qscaleRange": "QScale は 1 から 31 の間でなければなりません",
-    "qualityRange": "品質は 1 から 31 の間でなければなりません",
-    "inputRequired": "入力ファイルを選択してください。",
-    "outputRequiredDetailed": "出力ファイルを選択してください。"
+    "qualityRange": "品質は 1 から 31 の間でなければなりません"
   },
   "logs": {
     "clear": "クリア",
@@ -538,8 +519,6 @@
     "allCancelled": "すべてのジョブをキャンセルしました",
     "logsDownloaded": "ログをダウンロードしました",
     "mediaInfoLoaded": "メディア情報を読み込みました",
-    "languageChanged": "言語を{{language}}に変更しました",
-    "cancelled": "キャンセル",
     "pathCopied": "出力パスをクリップボードにコピーしました",
     "updateAvailable": "アップデートがあります: v{{version}}",
     "updateNow": "今すぐ更新",
@@ -594,8 +573,6 @@
     "alwaysOnTopHint": "アプリのウィンドウを他のすべてのウィンドウの上に表示します。",
     "launchAtLogin": "サインイン時に起動",
     "launchAtLoginHint": "コンピューターにサインインすると、EncodeX を自動的に起動します。",
-    "monitoringErrorReporting": "エラーレポート",
-    "monitoringErrorReportingHint": "匿名のエラーレポートを送信して EncodeX の改善に協力します。いつでもオフにできます。",
     "telemetry": "利用データとエラーレポート",
     "telemetryHint": "匿名の利用データとエラーレポートを送信して EncodeX の改善に協力します。いつでもオフにできます。",
     "mcpServer": "MCPサーバー",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "キーは難読化されたテキストとして保存されます（{{hint}}）。",
       "keyNone": "キーは保存されていません。",
-      "save": "保存",
-      "saved": "設定を保存しました。",
       "saveFailed": "設定を保存できませんでした。",
-      "test": "接続をテスト",
       "testing": "テスト中…",
       "testFailed": "プロバイダーからの応答がありません。",
       "privacy": "送信されるのは調査結果と目標テキストのみで、メディアファイルがアップロードされることはありません。",
@@ -692,8 +666,6 @@
       "statusConnected": "接続と確認が完了しました。",
       "requiresNetwork": "このプロバイダーには有効なネットワーク接続が必要です。",
       "offlineFallback": "オフラインです。内蔵のルールプロバイダーに切り替えました。リモートプロバイダーには有効なネットワーク接続が必要です。",
-      "modelsLoading": "モデルを読み込み中...",
-      "modelsUnavailable": "プロバイダーからモデルを読み込めませんでした。モデルIDは引き続き入力できます。",
       "keySavedPlaceholder": "キーは保存されています。置き換えるには新しいキーを貼り付けてください。",
       "connected": "接続済み",
       "testAgain": "接続を再テスト",
@@ -816,8 +788,8 @@
   },
   "about": {
     "title": "EncodeX について",
-    "subtitle": "FFmpeg をベースにした、無料のオープンソースのマルチメディアツールキットです。音声・動画・画像の変換、圧縮、抽出、カット、一括処理を行えます。CLI、MCP サーバー、AI アシスタント Copilot から同じエンジンを操作することもできます。",
-    "description": "EncodeX は、FFmpeg の機能をモダンで使いやすいデスクトップインターフェースに届けるクロスプラットフォームのマルチメディアツールキットです。コーデック、ビットレート、解像度、ピクセルフォーマット、品質を細かく指定して音声・動画・画像を変換できます。トラックを劣化なしでストリームコピーし、メディアの回転や反転を行い、動画フィルターを適用し、フレーム単位で正確なプレビュープレーヤーで動画をカットできます。変換プロファイルを使えば、よく使う設定をワンクリックで適用でき、独自のプロファイルを保存することもできます。ハードウェアアクセラレーションによるエンコードは NVIDIA NVENC、Intel QSV、AMD AMF、VAAPI、Apple VideoToolbox、Microsoft Media Foundation に対応し、同梱の FFmpeg からエンコーダーの種類を実行時に自動検出します。バッチキューでは複数のジョブを並列に実行し、進行状況のリアルタイム表示、状態の保存、インポート／エクスポートにも対応しています。GUI に加えて、ヘッドレス CLI、スタンドアロン版と組み込み版の MCP サーバー、AI アシスタント Copilot を使えば、スクリプトやアシスタントから同じメディアエンジンを操作できます。",
+    "subtitle": "FFmpeg をベースにした、無料のオープンソースのマルチメディアツールキットです。音声・動画・画像の変換、圧縮、抽出、カット、一括処理を行えます。CLI、MCP サーバー、AI アシスタント コパイロットから同じエンジンを操作することもできます。",
+    "description": "EncodeX は、FFmpeg の機能をモダンで使いやすいデスクトップインターフェースに届けるクロスプラットフォームのマルチメディアツールキットです。コーデック、ビットレート、解像度、ピクセルフォーマット、品質を細かく指定して音声・動画・画像を変換できます。トラックを劣化なしでストリームコピーし、メディアの回転や反転を行い、動画フィルターを適用し、フレーム単位で正確なプレビュープレーヤーで動画をカットできます。変換プロファイルを使えば、よく使う設定をワンクリックで適用でき、独自のプロファイルを保存することもできます。ハードウェアアクセラレーションによるエンコードは NVIDIA NVENC、Intel QSV、AMD AMF、VAAPI、Apple VideoToolbox、Microsoft Media Foundation に対応し、同梱の FFmpeg からエンコーダーの種類を実行時に自動検出します。バッチキューでは複数のジョブを並列に実行し、進行状況のリアルタイム表示、状態の保存、インポート／エクスポートにも対応しています。GUI に加えて、ヘッドレス CLI、スタンドアロン版と組み込み版の MCP サーバー、AI アシスタント コパイロットを使えば、スクリプトやアシスタントから同じメディアエンジンを操作できます。",
     "logoAlt": "EncodeX のロゴ",
     "featuresTitle": "できること",
     "featureConvert": "コーデック、ビットレート、解像度、品質を細かく指定して動画・音声・画像を変換。回転やフィルターにも対応",
@@ -829,7 +801,7 @@
     "featureProfiles": "内蔵の変換プロファイルから始めるか、独自のプロファイルを保存",
     "featureBatch": "一括ジョブを並列実行。一時停止、並べ替え、インポート／エクスポート、完了時の電源操作に対応",
     "featureHardware": "NVENC、Quick Sync、AMF、VAAPI、VideoToolbox などの GPU エンコーダーを自動検出して利用",
-    "featureAutomation": "AI アシスタント Copilot に目標を伝えるか、CLI と MCP サーバーから EncodeX をスクリプトで操作",
+    "featureAutomation": "AI アシスタント コパイロットに目標を伝えるか、CLI と MCP サーバーから EncodeX をスクリプトで操作",
     "version": "バージョン",
     "builtWith": "使用技術",
     "authorTitle": "作者とフィードバック",
@@ -961,7 +933,6 @@
     "addAudioTrack": "音声トラックを追加",
     "removeAudioTrack": "音声トラックを削除",
     "addedTrackDelay": "このトラックを遅延 (秒)",
-    "addedTrackDelayHint": "動画に対するこのトラックの符号付きオフセット (正の値は後で再生されます)。無損失: ストリームコピーのまま -itsoffset として適用されます。",
     "thumbnail": "サムネイル / 表紙",
     "thumbnailHint": "任意の表紙画像 (.jpg, .jpeg, .png) を Remux したファイルに埋め込みます。MKV/WebM は画像ストリームとして添付し、MP4/MOV は attached_pic 設定の動画ストリームとして埋め込みます。",
     "addThumbnail": "サムネイルを追加",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "保存された会話はありません。「チャットを保存」を使って会話を保存できます。",
     "savedChatsClose": "閉じる",
     "savedChatUntitled": "無題の会話",
-    "savedChatMeta": "{{count}} 件のメッセージ · {{date}}",
-    "savedChatOpen": "開く",
     "savedChatDelete": "保存した会話を削除",
     "savedChatSaveFailed": "会話を保存できませんでした。ブラウザのストレージがいっぱいの可能性があります。",
     "openChatConfirmTitle": "保存した会話を開きますか？",
@@ -1056,23 +1025,17 @@
     "openChatSave": "保存して開く",
     "openChatDiscard": "破棄して開く",
     "openChatCancel": "キャンセル",
-    "title": "Copilot",
-    "subtitle": "目標を説明すると Copilot が変換を計画し、その計画をバッチキューに送信します。",
-    "goalLabel": "目標",
-    "goalPlaceholder": "例: これらの動画をウェブ用に縮小する",
     "chooseFolder": "フォルダーを選択",
     "selectedCount": "{{count}} 件のファイルを選択中",
-    "selectedNone": "ファイルが選択されていません",
     "plan": "計画する",
     "planning": "計画中…",
     "folderEmpty": "そのフォルダーにサポート対象のメディアは見つかりませんでした。",
     "errorNoGoal": "計画する前に目標を入力してください。",
     "errorNoInputs": "計画する前にメディアのフォルダーを選択してください。",
     "dialogFailed": "ファイル選択画面を開けませんでした。もう一度お試しください。",
-    "errorFallback": "Copilot はその目標の計画を作成できませんでした。",
     "errorEnqueue": "計画したジョブのいずれもキューに追加できませんでした。",
     "actionsTitle": "計画したアクション",
-    "noActions": "この目標に対して変更できるものは Copilot には見つかりませんでした。",
+    "noActions": "この目標に対して変更できるものは コパイロットには見つかりませんでした。",
     "savings": "推定削減率 ~{{pct}}%",
     "output": "{{output}} へ",
     "skipsTitle": "スキップしたファイル",
@@ -1084,7 +1047,7 @@
     "chooseFiles": "ファイルを選択",
     "operationLabel": "操作",
     "op": {
-      "auto": "自動（Copilot に任せる）",
+      "auto": "自動（コパイロットに任せる）",
       "convert": "変換",
       "remux": "Remux",
       "demux": "Demux",
@@ -1103,27 +1066,6 @@
     "routedAs": "操作: {{operation}}",
     "resultsTitle": "検出結果",
     "ai": {
-      "title": "AIプロバイダー",
-      "provider": "プロバイダー",
-      "model": "モデル",
-      "modelPlaceholder": "プロバイダーの既定",
-      "apiKey": "APIキー",
-      "keyStored": "キーは難読化されたテキストとして保存されます（{{hint}}）。",
-      "keyNone": "キーは保存されていません。",
-      "save": "保存",
-      "test": "接続をテスト",
-      "testing": "テスト中…",
-      "saved": "設定を保存しました。",
-      "saveFailed": "設定を保存できませんでした。",
-      "testFailed": "プロバイダーからの応答がありません。",
-      "privacy": "送信されるのは調査結果と目標テキストのみで、メディアファイルがアップロードされることはありません。",
-      "providers": {
-        "rules": "内蔵ルール（オフライン）",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "ローカルモデル"
-      },
       "configure": "AIプロバイダーを設定",
       "locationNote": "AIプロバイダーは「設定」で構成します。",
       "notConnected": "未接続"
@@ -1135,12 +1077,11 @@
     "welcome": "どのようにお手伝いしましょうか？",
     "goal": "EncodeX に何をしてほしいかを説明し、ファイルまたはフォルダーを添付してください。",
     "placeholder": "試してみましょう: 動画をWeb用に圧縮、音声をMP3に抽出、または字幕を翻訳...",
-    "inputAria": "Copilot にメッセージを送信",
-    "send": "送信",
+    "inputAria": "コパイロットにメッセージを送信",
     "advanced": "詳細",
     "advancedTitle": "詳細オプション",
     "bridgeTimeout": "EncodeX が時間内に応答しませんでした。もう一度お試しください。",
-    "planFailed": "Copilot はその目標の計画を作成できませんでした。",
+    "planFailed": "コパイロットはその目標の計画を作成できませんでした。",
     "thinking": "考え中...",
     "resetConversation": "新しい会話を開始",
     "resetConfirmTitle": "会話をリセットしますか？",
@@ -1148,11 +1089,20 @@
     "resetConfirmAction": "リセット",
     "loadingFiles": "ファイルを読み込み中...",
     "removeAttachment": "添付ファイルを削除",
-    "folderFilesCount": "{{name}} ({{count}} ファイル)",
-    "saveAndReset": "保存してリセット"
+    "saveAndReset": "保存してリセット",
+    "target": {
+      "profile": "プロファイル",
+      "resolution": "解像度",
+      "sameAsSource": "ソースと同じ",
+      "video": "ビデオ",
+      "audio": "オーディオ",
+      "container": "コンテナー",
+      "losslessCopy": "ロスレスコピー",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
-    "title": "Copilot を離れますか？",
+    "title": "コパイロットを離れますか？",
     "message": "このチャットはまだ進行中です。ページを離れると会話は破棄されます。",
     "confirmLabel": "それでも離れる",
     "cancelLabel": "とどまる"
@@ -1161,20 +1111,15 @@
     "common": {
       "cancel": "キャンセル",
       "confirmCancel": "キャンセルの確認",
-      "run": "実行",
       "retry": "再試行",
       "applyFix": "修正を適用",
-      "waiting": "ホストからのデータを待機中…",
       "input": "入力",
       "output": "出力",
-      "status": "ステータス",
       "duration": "長さ",
       "size": "サイズ",
       "bitrate": "ビットレート",
       "video": "動画",
       "audio": "音声",
-      "details": "詳細",
-      "warnings": "警告",
       "findings": "検出結果",
       "nextSteps": "推奨される次の手順",
       "attempts": "試行回数",
@@ -1183,9 +1128,7 @@
       "assumptions": "前提条件",
       "causes": "推定される原因",
       "fixes": "修正の提案",
-      "summary": "概要",
       "settings": "設定",
-      "error": "エラー",
       "unknown": "-",
       "confidence": "{{value}}% の確信度",
       "jobCount": "{{count}} 件のジョブ",
@@ -1199,12 +1142,10 @@
     },
     "queue": {
       "title": "EncodeX キュー",
-      "empty": "キューにジョブはありません。",
-      "waiting": "ホストからのキューデータを待機中…"
+      "empty": "キューにジョブはありません。"
     },
     "job": {
-      "waiting": "ホストからのジョブデータを待機中…",
-      "cancelled": "キャンセル済み"
+      "waiting": "ホストからのジョブデータを待機中…"
     },
     "mediaInfo": {
       "title": "メディア",
@@ -1275,8 +1216,7 @@
     },
     "error": {
       "title": "エラー",
-      "waiting": "ホストからのエラーを待機中…",
-      "code": "エラーコード"
+      "waiting": "ホストからのエラーを待機中…"
     },
     "batch": {
       "title": "バッチの確認",
@@ -1316,8 +1256,7 @@
       "hardware": "ハードウェアアクセラレーション",
       "hardwareNone": "ソフトウェアのみ",
       "encoderVideo": "動画",
-      "encoderAudio": "音声",
-      "encoderOther": "その他"
+      "encoderAudio": "音声"
     }
   }
 }

@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "Huri ki te aratau māmā",
-    "switchDark": "Huri ki te aratau pōuri",
     "language": "Reo",
     "searchLanguage": "Rapua ngā reo",
     "condense": "Whakaiti te pae taha",
@@ -78,7 +76,6 @@
     "advanced": "Matatau",
     "inputFile": "Kōnae Whakauru",
     "outputFile": "Kōnae Putanga",
-    "noFile": "Kāore anō kia tīpakohia he kōnae",
     "noOutput": "Kāore anō kia tīpakohia te putanga",
     "browse": "Tirotiro",
     "saveAs": "Tiaki Hei",
@@ -96,9 +93,6 @@
     "pause": "Tārea",
     "resume": "Haere tonu",
     "cancel": "Whakakore",
-    "placeholderBitrate": "hei tauira. 2000k",
-    "placeholderAudioBitrate": "hei tauira. 192k",
-    "placeholderScale": "hei tauira. 1280x720",
     "cancelTitle": "Whakakore i te Huripoka",
     "cancelMessage": "Kei te tino hiahia koe ki te whakakore i te huripoka o nāianei?",
     "cancelJob": "Whakakore i te Mahi",
@@ -144,9 +138,7 @@
     "filtersHint": "Whakamahi i ngā tātari ataata FFmpeg (tapahi, reiti anga, whakaware-ā-rawhi, whakaiti haruru, tae…) i te wa o te whakawaehere. Ka whakakotahitia ngā tātari katoa ki tētahi meinga -vf kotahi i muri i te tauine me te hurihuri.",
     "addPreset": "Tāpiri tātari kua tautuhi…",
     "addFilter": "Tāpiri tātari",
-    "customChainLabel": "Meinga tātari ake",
     "customChainPlaceholder": "Hei tauira: fps=30, eq=brightness=0.1",
-    "customChainHint": "Kīanga tātari FFmpeg kua wehea ki ngā piko. Ko ia tūemi me whai piko porohita me piko tapawhā rite, ngā tohutohu aruaru kua hāngai, ā, kāore he tohu matapae o te raki.",
     "addCustom": "Tāpiri ake",
     "removeFilter": "Tango tātari",
     "moveUp": "Neke ake",
@@ -262,7 +254,6 @@
     "compress": "Kōmitimiti Whakaahua",
     "compressing": "E kōmitimiti ana...",
     "placeholderOutput": "Ara putanga",
-    "placeholderScale": "hei tauira. 800x600",
     "validationRequired": "Tēnā koa tīpakohia he whakaahua whakauru.",
     "selectedImage": "Whakaahua kua tīpakohia: {{file}}",
     "inputImageHint": "Te whakaahua puna hei kōmitimiti. E tautokohia ana te JPEG, PNG, WebP me te BMP.",
@@ -289,7 +280,6 @@
     "extract": "Tohaina te Oro",
     "extracting": "E tohaina ana...",
     "placeholderOutput": "hei tauira. output.mp3",
-    "validationRequired": "Tēnā koa tīpakohia he kōnae ataata.",
     "selectedVideo": "Ataata kua tīpakohia: {{file}}",
     "pause": "Tārea",
     "resume": "Haere tonu",
@@ -302,11 +292,8 @@
   "videoCut": {
     "title": "Tapahia te Ataata",
     "videoFile": "Kōnae Ataata",
-    "noFile": "Kāore anō kia tīpakohia he kōnae",
-    "browse": "Tirotiro",
     "dropLabel": "Whakatakotoria he kōnae ataata ki konei, ka pāwhiri rānei ki te tirotiro",
     "videoFileHint": "Tōia ka whakatakoto i tētahi kōnae ataata ki konei, ka pāwhiri rānei ki te tirotiro i tō rorohiko.",
-    "videoFiles": "Ngā Kōnae Ataata",
     "changeFile": "Huri i te Ataata",
     "changeFileHint": "Tīpakoa he kōnae ataata kē.",
     "outputFile": "Kōnae Putanga",
@@ -357,9 +344,7 @@
     "stop": "Whakamutu",
     "mute": "Whakamutua te reo",
     "unmute": "Whakahokia te reo",
-    "seek": "Rapua",
-    "playbackTime": "Te wā purei",
-    "videoPlayer": "Pūrere whakaata ataata"
+    "seek": "Rapua"
   },
   "batchQueue": {
     "bmfNotBundled": "Kāore a BMF i whakauruhia ki EncodeX. Whakauruhia ā-ringa, me whakarite kei te PATH bmf_ffmpeg me bmf_ffprobe.",
@@ -486,12 +471,8 @@
     "outputRequired": "E hiahiatia ana he kōnae putanga",
     "invalidTime": "Hōputu wā hē (HH:MM:SS, hēkona rānei)",
     "durationRequired": "E hiahiatia ana te roa",
-    "invalidScale": "Hōputu tauine hē (hei tauira. 1920:1080, 50%)",
-    "invalidBitrate": "Pāraurau hē (hei tauira. 128k, 1M)",
     "qscaleRange": "Me noho te QScale i waenga i te 1 me te 31",
-    "qualityRange": "Me noho te kounga i waenga i te 1 me te 31",
-    "inputRequired": "Tēnā koa tīpakohia he kōnae whakauru.",
-    "outputRequiredDetailed": "Tēnā koa tīpakohia he kōnae putanga."
+    "qualityRange": "Me noho te kounga i waenga i te 1 me te 31"
   },
   "logs": {
     "clear": "Mukua",
@@ -539,8 +520,6 @@
     "pathCopied": "Kua kapetia te ara putanga ki te papatopenga",
     "logsDownloaded": "Kua tangohia ngā rārangi kōrero",
     "mediaInfoLoaded": "Kua utaina ngā pārongo pāpāho",
-    "languageChanged": "Kua huri te reo ki {{language}}",
-    "cancelled": "Kua whakakore",
     "updateAvailable": "Kei te wātea he whakamāoritanga: v{{version}}",
     "updateNow": "Whakamāoritia ināianei",
     "updateDownloaded": "Kua tangohia te whakahoutanga v{{version}}",
@@ -604,8 +583,6 @@
     "alwaysOnTopHint": "Kia noho te matapihi o te taupānga ki runga ake o ngā matapihi katoa.",
     "launchAtLogin": "Whakarewa i te tīmatanga",
     "launchAtLoginHint": "Ka tīmata aunoatia a EncodeX ina takiuru koe ki tō rorohiko.",
-    "monitoringErrorReporting": "Pūrongo hapa",
-    "monitoringErrorReportingHint": "Ka āwhina ki te whakapai ake i te EncodeX mā te tuku pūrongo hapa ohauru. Ka taea te whakaweto i tēnei i ngā wā katoa.",
     "telemetry": "Ngā raraunga whakamahinga me ngā pūrongo hapa",
     "telemetryHint": "Ka āwhina ki te whakapai ake i te EncodeX mā te tuku raraunga whakamahinga me ngā pūrongo hapa ohauru. Ka taea te whakaweto i tēnei i ngā wā katoa.",
     "mcpServer": "Tūmau MCP",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "Ka tiakina ngā kī hei kupu huna ({{hint}}).",
       "keyNone": "Kāore kī i rongoa.",
-      "save": "Tiaki",
-      "saved": "Kua tiakina ngā tautuhinga.",
       "saveFailed": "Kāore i taea te tiaki ngā tautuhinga.",
-      "test": "Whakamātau i te hononga",
       "testing": "E whakamātau ana…",
       "testFailed": "Kāore he whakautu mai i te kaiwhakarato.",
       "privacy": "Ko ngā mēka tātari me te kuputuhi tino pai anake ka tukuna; kāore ngā kōnae pāpāho e tukuna ake.",
@@ -692,8 +666,6 @@
       "statusConnected": "Kua hono, kua whakamanatia.",
       "requiresNetwork": "Me whai hononga whatunga hohe tēnei kaiwhakarato.",
       "offlineFallback": "Kei te tuimotu koe. Kua huri ki te kaiwhakarato ture whakauru. Me whai hononga whatunga hohe ngā kaiwhakarato mamao.",
-      "modelsLoading": "E utaina ana ngā tauira...",
-      "modelsUnavailable": "Kāore i taea ngā tauira te uta mai i te kaiwhakarato. Ka taea tonu e koe te pato i tētahi id tauira.",
       "keySavedPlaceholder": "Kua rongoa te kī. Whakapiri he kī hou hei whakakapi.",
       "connected": "Kua hono",
       "testAgain": "Whakamātauria anō te hononga",
@@ -961,7 +933,6 @@
     "addAudioTrack": "Tāpiri rīpene oro",
     "removeAudioTrack": "Tango rīpene oro",
     "addedTrackDelay": "Whakaroa i tēnei rīpene (hēkona)",
-    "addedTrackDelayHint": "Te tāpae kua tohua mō tēnei rīpene ina whakaritea ki te ataata (pai = purei ā muri). Kore-ngaro: ka whakamahia hei -itsoffset i te tārua o te awa.",
     "thumbnail": "Karakaramata / ūpoko",
     "thumbnailHint": "He atahanga uhi ōmeka (.jpg, .jpeg, .png) ka whakakuhuna ki te kōnae i muri i te Remux. Ka piri a MKV/WebM hei awa atahanga; ka whakakuhuna a MP4/MOV hei awa ataata me te tohu attached_pic.",
     "addThumbnail": "Tāpiri karakaramata",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "Kāore he kōrero kua tiakina. Whakamahia a Tiaki kōrero hei tiaki tētahi.",
     "savedChatsClose": "Kati",
     "savedChatUntitled": "Kōrero kore ingoa",
-    "savedChatMeta": "{{count}} karere · {{date}}",
-    "savedChatOpen": "Whakatuwhera",
     "savedChatDelete": "Mukua te kōrero kua tiakina",
     "savedChatSaveFailed": "Kāore i taea te tiaki i te kōrero. Pea kua ki te tino ki te rokiroki a te kaitirotiro.",
     "openChatConfirmTitle": "Whakatuwhera i te kōrero kua tiakina?",
@@ -1056,20 +1025,14 @@
     "openChatSave": "Tiaki me te whakatuwhera",
     "openChatDiscard": "Whakarere me te whakatuwhera",
     "openChatCancel": "Whakakore",
-    "title": "Copilot",
-    "subtitle": "Whakamāramatia he whāinga, mā Copilot e whakamahere i ngā tahuri, kātahi ka tōia te mahere ki te Rārangi Puranga.",
-    "goalLabel": "Whāinga",
-    "goalPlaceholder": "hei tauira, whakaitihia ēnei ataata mō te ipurangi",
     "chooseFolder": "Kōwhiria he kōpaki",
     "selectedCount": "{{count}} kōnae kua tīpakohia",
-    "selectedNone": "Kāore he kōnae i tīpakohia",
     "plan": "Whakamahere",
     "planning": "Kei te whakamahere…",
     "folderEmpty": "Kāore i kitea he pāpāho tautoko i roto i taua kōpaki.",
     "errorNoGoal": "Tāuruhia he whāinga i mua i te whakamahere.",
     "errorNoInputs": "Kōwhiria he kōpaki pāpāho i mua i te whakamahere.",
     "dialogFailed": "Kāore i taea te whakatuwhera i te kaiwhiriwhiri kōnae. Whakamātauria anō.",
-    "errorFallback": "Kāore i taea e Copilot te hanga mahere mō taua whāinga.",
     "errorEnqueue": "Kāore i taea te tāpiri tētahi o ngā mahi i whakamaheretia ki te rārangi.",
     "actionsTitle": "Ngā mahi kua whakamaheretia",
     "noActions": "Kāore i kitea e Copilot tētahi mea hei whakarerekē mō tēnei whāinga.",
@@ -1103,27 +1066,6 @@
     "routedAs": "Mahi: {{operation}}",
     "resultsTitle": "Kitenga",
     "ai": {
-      "title": "Kaiwhakarato AI",
-      "provider": "Kaiwhakarato",
-      "model": "Tauira",
-      "modelPlaceholder": "Taunoa a te kaiwhakarato",
-      "apiKey": "Kī API",
-      "keyStored": "Ka tiakina ngā kī hei kupu huna ({{hint}}).",
-      "keyNone": "Kāore kī i rongoa.",
-      "save": "Tiaki",
-      "test": "Whakamātau i te hononga",
-      "testing": "E whakamātau ana…",
-      "saved": "Kua tiakina ngā tautuhinga.",
-      "saveFailed": "Kāore i taea te tiaki ngā tautuhinga.",
-      "testFailed": "Kāore he whakautu mai i te kaiwhakarato.",
-      "privacy": "Ko ngā mēka tātari me te kuputuhi tino pai anake ka tukuna; kāore ngā kōnae pāpāho e tukuna ake.",
-      "providers": {
-        "rules": "He ture kōmana (tuimotu)",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "Tauira ā-rohe"
-      },
       "configure": "Whirihora i te kaiwhakarato AI",
       "locationNote": "Ka whirihorahia ngā kaiwhakarato AI ki ngā Tautuhinga.",
       "notConnected": "Kore hono"
@@ -1136,7 +1078,6 @@
     "goal": "Whakaahuahia tāu e hiahia ana kia mahia e EncodeX, kātahi āpitihia he kōnae, he kōpaki rānei.",
     "placeholder": "Whakamātau: pēhia te ataata mō te ipurangi, tangohia te oro ki te MP3, whakawhitia rānei ngā hauraro...",
     "inputAria": "Tukua he karere ki Copilot",
-    "send": "Tukua",
     "advanced": "Aro nui",
     "advancedTitle": "Kōwhiringa matatau",
     "bridgeTimeout": "Kāore a EncodeX i whakautu i te wā tika. Whakamātauria anō.",
@@ -1148,8 +1089,17 @@
     "resetConfirmAction": "Tautuhi anō",
     "loadingFiles": "E uta ana i ngā kōnae...",
     "removeAttachment": "Tangohia te whakapiri",
-    "folderFilesCount": "{{name}} ({{count}} ngā kōrero)",
-    "saveAndReset": "Tiakina me te tautuhi"
+    "saveAndReset": "Tiakina me te tautuhi",
+    "target": {
+      "profile": "Kōtaha",
+      "resolution": "Mārama",
+      "sameAsSource": "He ōrite ki te puna",
+      "video": "Ataata",
+      "audio": "Oro",
+      "container": "Ipu",
+      "losslessCopy": "Kape kore-ngaro",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Wehe atu i a Copilot?",
@@ -1161,20 +1111,15 @@
     "common": {
       "cancel": "Whakakore",
       "confirmCancel": "Whakaaturanga whakakore",
-      "run": "Whakahaere",
       "retry": "Tātona anō",
       "applyFix": "Hoatu te kore",
-      "waiting": "E tatari ana i ngā rara mai i te ho-host…",
       "input": "Whiwhi",
       "output": "Putanga",
-      "status": "Tūmata",
       "duration": "Roa",
       "size": "Nga taonga",
       "bitrate": "Bitrate",
       "video": "Pakiwaituhi",
       "audio": "Whakaororongo",
-      "details": "Ngā taonga",
-      "warnings": "Ngā whakatūranga",
       "findings": "Ngā kitenga",
       "nextSteps": "Ngā huarahi e marohitia ana",
       "attempts": "Ngā whakamātau",
@@ -1183,9 +1128,7 @@
       "assumptions": "Ngā whakapae",
       "causes": "Ngā pūtake e tū ana",
       "fixes": "Ngā whakakore e marohitia ana",
-      "summary": "Whakarāpopototanga",
       "settings": "Ngā tautuhinga",
-      "error": "Hē",
       "unknown": "-",
       "confidence": "{{value}}% te pono",
       "jobCount": "{{count}} ngā mahi",
@@ -1199,12 +1142,10 @@
     },
     "queue": {
       "title": "EncodeX rārangi",
-      "empty": "Kāore he mahi i te rārangi.",
-      "waiting": "E tatari ana i ngā rara rārangi mai i te ho-host…"
+      "empty": "Kāore he mahi i te rārangi."
     },
     "job": {
-      "waiting": "E tatari ana i ngā rara mahi mai i te ho-host…",
-      "cancelled": "kua whakakore"
+      "waiting": "E tatari ana i ngā rara mahi mai i te ho-host…"
     },
     "mediaInfo": {
       "title": "Pāpāho",
@@ -1275,8 +1216,7 @@
     },
     "error": {
       "title": "Hē",
-      "waiting": "E tatari ana i te hē mai i te ho-host…",
-      "code": "Waehere hē"
+      "waiting": "E tatari ana i te hē mai i te ho-host…"
     },
     "batch": {
       "title": "Whakaaturanga rōpū",
@@ -1316,8 +1256,7 @@
       "hardware": "Whakahohoro taputapu",
       "hardwareNone": "Peke ngā kōrero",
       "encoderVideo": "Pakiwaituhi",
-      "encoderAudio": "Whakaororongo",
-      "encoderOther": "Kētahi atu"
+      "encoderAudio": "Whakaororongo"
     }
   }
 }

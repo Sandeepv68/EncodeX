@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "Skakel oor na Ligte Modus",
-    "switchDark": "Skakel oor na Donker Modus",
     "language": "Taal",
     "searchLanguage": "Soek tale",
     "condense": "Vou sybalk in",
@@ -78,7 +76,6 @@
     "advanced": "Gevorderd",
     "inputFile": "Invoerlêer",
     "outputFile": "Uitvoerlêer",
-    "noFile": "Geen lêer gekies nie",
     "noOutput": "Geen uitset gekies nie",
     "browse": "Blaai",
     "saveAs": "Stoor As",
@@ -96,9 +93,6 @@
     "pause": "Rus",
     "resume": "Hervat",
     "cancel": "Kanselleer",
-    "placeholderBitrate": "bv. 2000k",
-    "placeholderAudioBitrate": "bv. 192k",
-    "placeholderScale": "bv. 1280x720",
     "cancelTitle": "Kanselleer Omskakeling",
     "cancelMessage": "Is jy seker jy wil die huidige omskakeling kanselleer?",
     "cancelJob": "Kanselleer Taak",
@@ -144,9 +138,7 @@
     "filtersHint": "Pas FFmpeg-videofilters (knip, raamtempo, dekruis, ruisvermindering, kleur…) toe tydens herkodeering. Alle filters word na skaling en rotasie saamgevoeg in een enkele -vf-ketting.",
     "addPreset": "Voeg voorafgestelde filter by…",
     "addFilter": "Voeg filter by",
-    "customChainLabel": "Eie filterketting",
     "customChainPlaceholder": "bv. fps=30, eq=brightness=0.1",
-    "customChainHint": "FFmpeg-filteruitdrukkinge geskei deur kommas. Elke inskrywing moet gebalanseerde hakies en vierkante hakies hê, ooreenstemmende aanhalingstekens en geen skulpikale metakarakters bevat nie.",
     "addCustom": "Voeg eie by",
     "removeFilter": "Verwyder filter",
     "moveUp": "Beweeg op",
@@ -262,7 +254,6 @@
     "compress": "Komprimeer Beeld",
     "compressing": "Komprimeer...",
     "placeholderOutput": "uitsetpad",
-    "placeholderScale": "bv. 800x600",
     "validationRequired": "Kies asseblief 'n invoerbeeld.",
     "selectedImage": "Gekose beeld: {{file}}",
     "inputImageHint": "Die bronbeeld om te komprimeer. JPEG, PNG, WebP en BMP word ondersteun.",
@@ -289,7 +280,6 @@
     "extract": "Onthou Klank",
     "extracting": "Onthou...",
     "placeholderOutput": "bv. output.mp3",
-    "validationRequired": "Kies asseblief 'n videolêer.",
     "selectedVideo": "Gekose video: {{file}}",
     "pause": "Rus",
     "resume": "Hervat",
@@ -302,11 +292,8 @@
   "videoCut": {
     "title": "Sny Video",
     "videoFile": "Videolêer",
-    "noFile": "Geen lêer gekies nie",
-    "browse": "Blaai",
     "dropLabel": "Los 'n videolêer hier of klik om te blaai",
     "videoFileHint": "Sleep en los 'n videolêer hier of klik om jou rekenaar te deursoek.",
-    "videoFiles": "Videolêers",
     "changeFile": "Verander Video",
     "changeFileHint": "Kies 'n ander videolêer.",
     "outputFile": "Uitvoerlêer",
@@ -357,9 +344,7 @@
     "stop": "Stop",
     "mute": "Demp",
     "unmute": "Klank aan",
-    "seek": "Soek",
-    "playbackTime": "Speeltyd",
-    "videoPlayer": "Videospeler"
+    "seek": "Soek"
   },
   "batchQueue": {
     "bmfNotBundled": "BMF is nie saam met EncodeX verpak nie. Installeer dit self en maak seker bmf_ffmpeg en bmf_ffprobe is op jou PATH.",
@@ -486,12 +471,8 @@
     "outputRequired": "Uitvoerlêer word vereis",
     "invalidTime": "Ongeldige tydformaat (UU:MM:SS of sekondes)",
     "durationRequired": "Duur word vereis",
-    "invalidScale": "Ongeldige skaalformaat (bv. 1920:1080, 50%)",
-    "invalidBitrate": "Ongeldige bitrate (bv. 128k, 1M)",
     "qscaleRange": "QScale moet tussen 1 en 31 wees",
-    "qualityRange": "Kwaliteit moet tussen 1 en 31 wees",
-    "inputRequired": "Kies asseblief 'n invoerlêer.",
-    "outputRequiredDetailed": "Kies asseblief 'n uitvoerlêer."
+    "qualityRange": "Kwaliteit moet tussen 1 en 31 wees"
   },
   "logs": {
     "clear": "Maak skoon",
@@ -539,8 +520,6 @@
     "pathCopied": "Uitsetpad na knipbord gekopieer",
     "logsDownloaded": "Logs afgelaai",
     "mediaInfoLoaded": "Media-inligting gelaai",
-    "languageChanged": "Taal verander na {{language}}",
-    "cancelled": "Gekanselleer",
     "updateAvailable": "Opdatering beskikbaar: v{{version}}",
     "updateNow": "Dateer nou op",
     "updateDownloaded": "Opdatering v{{version}} afgelaai",
@@ -604,8 +583,6 @@
     "alwaysOnTopHint": "Hou die app-venster bo alle ander vensters.",
     "launchAtLogin": "Begin by opstart",
     "launchAtLoginHint": "Begin EncodeX outomaties wanneer jy by jou rekenaar aanmeld.",
-    "monitoringErrorReporting": "Foutberiggewing",
-    "monitoringErrorReportingHint": "Help om EncodeX te verbeter deur anonieme foutverslae te stuur. Jy kan dit enige tyd afskakel.",
     "telemetry": "Gebruiksdata en foutberiggewing",
     "telemetryHint": "Help om EncodeX te verbeter deur anonieme gebruiksdata en foutverslae te stuur. Jy kan dit enige tyd afskakel.",
     "mcpServer": "MCP-bediener",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "Sleutels word as geobfuskeerde teks gestoor ({{hint}}).",
       "keyNone": "Geen sleutel gestoor nie.",
-      "save": "Stoor",
-      "saved": "Instellings gestoor.",
       "saveFailed": "Kon nie die instellings stoor nie.",
-      "test": "Toets verbinding",
       "testing": "Besig om te toets…",
       "testFailed": "Geen reaksie van die verskaffer nie.",
       "privacy": "Slegs ondersoekfeite en jou doel teks word gestuur; media-lêers word nooit opgelaai nie.",
@@ -692,8 +666,6 @@
       "statusConnected": "Gekoppel en bevestig.",
       "requiresNetwork": "Hierdie verskaffer benodig 'n aktiewe netwerkverbinding.",
       "offlineFallback": "Jy is vanlyn. Oorgeskakel na die ingeboude reëls-verskaffer. Afgeleë verskaffers benodig 'n aktiewe netwerkverbinding.",
-      "modelsLoading": "Modelle word gelaai...",
-      "modelsUnavailable": "Kon nie modelle van die verskaffer laai nie. Jy kan steeds 'n model-ID tik.",
       "keySavedPlaceholder": "Sleutel gestoor. Plak 'n nuwe sleutel om dit te vervang.",
       "connected": "Gekoppel",
       "testAgain": "Toets weer die verbinding",
@@ -961,7 +933,6 @@
     "addAudioTrack": "Voeg klankspoor by",
     "removeAudioTrack": "Verwyder die klankspoor",
     "addedTrackDelay": "Vertoog hierdie spoor (sekondes)",
-    "addedTrackDelayHint": "Getekende verskuifing vir hierdie spoor teenoor die video (positief = later speel). Verliesvry: toegepas as -itsoffset met stroomkopie.",
     "thumbnail": "Duinstuk / omslag",
     "thumbnailHint": "Opsionele omslagprent (.jpg, .jpeg, .png) wat in die remux-lêer ingebed word. MKV/WebM heg dit aan as 'n prentstroom; MP4/MOV bed dit in as 'n videostroom met die attached_pic-posisie.",
     "addThumbnail": "Voeg duinstuk by",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "Geen gestoorde gesprekke nie. Gebruik Stoor gesprek om een te bewaar.",
     "savedChatsClose": "Maak toe",
     "savedChatUntitled": "Naamlose gesprek",
-    "savedChatMeta": "{{count}} boodskappe · {{date}}",
-    "savedChatOpen": "Maak oop",
     "savedChatDelete": "Verwyder gestoorde gesprek",
     "savedChatSaveFailed": "Kon nie die gesprek stoor nie. Blaaierberging is dalk vol.",
     "openChatConfirmTitle": "Maak gestoorde gesprek oop?",
@@ -1056,20 +1025,14 @@
     "openChatSave": "Stoor en maak oop",
     "openChatDiscard": "Gooi weg en maak oop",
     "openChatCancel": "Kanselleer",
-    "title": "Copilot",
-    "subtitle": "Beskryf 'n doel en laat Copilot die omskakelings beplan, en stoot die plan dan na die Bondel-waglys.",
-    "goalLabel": "Doel",
-    "goalPlaceholder": "bv. krimp hierdie video's vir die web",
     "chooseFolder": "Kies vouer",
     "selectedCount": "{{count}} lêer(s) gekies",
-    "selectedNone": "Geen lêers gekies nie",
     "plan": "Beplan",
     "planning": "Beplan tans…",
     "folderEmpty": "Geen ondersteunde media is in daardie vouer gevind nie.",
     "errorNoGoal": "Voer 'n doel in voordat jy beplan.",
     "errorNoInputs": "Kies 'n vouer met media voordat jy beplan.",
     "dialogFailed": "Kon nie die lêerkieser oopmaak nie. Probeer weer.",
-    "errorFallback": "Copilot kon nie 'n plan vir daardie doel bou nie.",
     "errorEnqueue": "Geen van die beplande take kon by die waglys gevoeg word nie.",
     "actionsTitle": "Beplande aksies",
     "noActions": "Copilot het niks gevind om vir hierdie doel te verander nie.",
@@ -1103,27 +1066,6 @@
     "routedAs": "Bewerking: {{operation}}",
     "resultsTitle": "Bevindinge",
     "ai": {
-      "title": "AI-verskaffer",
-      "provider": "Verskaffer",
-      "model": "Model",
-      "modelPlaceholder": "Verskaffer-standaard",
-      "apiKey": "API-sleutel",
-      "keyStored": "Sleutels word as geobfuskeerde teks gestoor ({{hint}}).",
-      "keyNone": "Geen sleutel gestoor nie.",
-      "save": "Stoor",
-      "test": "Toets verbinding",
-      "testing": "Besig om te toets…",
-      "saved": "Instellings gestoor.",
-      "saveFailed": "Kon nie die instellings stoor nie.",
-      "testFailed": "Geen reaksie van die verskaffer nie.",
-      "privacy": "Slegs ondersoekfeite en jou doel teks word gestuur; media-lêers word nooit opgelaai nie.",
-      "providers": {
-        "rules": "Ingeboude reëls (aanlyn af)",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "Plaaslike model"
-      },
       "configure": "AI-verskaffer instel",
       "locationNote": "AI-verskaffers word in Instellings opgestel.",
       "notConnected": "Nie gekoppel nie"
@@ -1136,7 +1078,6 @@
     "goal": "Beskryf wat jy wil hê EncodeX moet doen, en heg dan lêers of 'n gids aan.",
     "placeholder": "Probeer: komprimeer 'n video vir die web, onttrek klank na MP3, of vertaal onderskrifte...",
     "inputAria": "Stuur boodskap aan Copilot",
-    "send": "Stuur",
     "advanced": "Gevorderd",
     "advancedTitle": "Gevorderde opsies",
     "bridgeTimeout": "EncodeX het nie betyds gereageer nie. Probeer weer.",
@@ -1148,8 +1089,17 @@
     "resetConfirmAction": "Terugstel",
     "loadingFiles": "Laai lêers...",
     "removeAttachment": "Verwyder aanhegsing",
-    "folderFilesCount": "{{name}} ({{count}} lêers)",
-    "saveAndReset": "Stoor en herstel"
+    "saveAndReset": "Stoor en herstel",
+    "target": {
+      "profile": "Profiel",
+      "resolution": "Resolusie",
+      "sameAsSource": "Dieselfde as bron",
+      "video": "Video",
+      "audio": "Klank",
+      "container": "Houer",
+      "losslessCopy": "Verlieslose kopie",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Copilot verlaat?",
@@ -1161,20 +1111,15 @@
     "common": {
       "cancel": "Kanselleer",
       "confirmCancel": "Bevestig kansellasie",
-      "run": "Voer uit",
       "retry": "Probeer opnieuw",
       "applyFix": "Pas correctie toe",
-      "waiting": "Wag vir data van die gasheer nie…",
       "input": "Invoer",
       "output": "Uitvoer",
-      "status": "Status",
       "duration": "Duur",
       "size": "Grootte",
       "bitrate": "Bistempoed",
       "video": "Video",
       "audio": "Oudio",
-      "details": "Besonderhede",
-      "warnings": "Waarskuwings",
       "findings": "Bevindings",
       "nextSteps": "Aanbevole volgende stappe",
       "attempts": "Pogings",
@@ -1183,9 +1128,7 @@
       "assumptions": "Aannames",
       "causes": "Waarskynlike oorsake",
       "fixes": "Voorgestelde regstellings",
-      "summary": "Opsomming",
       "settings": "Instellings",
-      "error": "Fout",
       "unknown": "-",
       "confidence": "{{value}}% vertroue",
       "jobCount": "{{count}} werke",
@@ -1199,12 +1142,10 @@
     },
     "queue": {
       "title": "EncodeX-ry",
-      "empty": "Daar is geen werke in die ry nie.",
-      "waiting": "Wag vir rydata van die gasheer nie…"
+      "empty": "Daar is geen werke in die ry nie."
     },
     "job": {
-      "waiting": "Wag vir werkdata van die gasheer nie…",
-      "cancelled": "gekanselleer"
+      "waiting": "Wag vir werkdata van die gasheer nie…"
     },
     "mediaInfo": {
       "title": "Media",
@@ -1275,8 +1216,7 @@
     },
     "error": {
       "title": "Fout",
-      "waiting": "Wag vir fout van die gasheer nie…",
-      "code": "Foutkode"
+      "waiting": "Wag vir fout van die gasheer nie…"
     },
     "batch": {
       "title": "Bevestig bondel",
@@ -1316,8 +1256,7 @@
       "hardware": "Hardewareversnelling",
       "hardwareNone": "Slegs sagteware",
       "encoderVideo": "Video",
-      "encoderAudio": "Oudio",
-      "encoderOther": "Ander"
+      "encoderAudio": "Oudio"
     }
   }
 }

@@ -72,6 +72,27 @@ function toVideoFacts(stream: MediaStreamInfo): MediaFactsVideo {
 }
 
 /**
+ * Normalizes a probed bitrate into the kbps string the planners expect.
+ *
+ * ffprobe reports bitrates in bits per second as a bare number ('9808000'),
+ * while {@link parseBitrateKbps} reads a bare number as kbps. Feeding the raw
+ * value through made every source bitrate look 1000x too large, which saturated
+ * the estimate's complexity factor and reported a 0% saving for every file.
+ * Values that already carry a unit ('128k', '8M') pass through unchanged, and
+ * values ffprobe cannot determine ('N/A') become undefined.
+ * @param {string | number | undefined | null} value - The probed bitrate.
+ * @returns {string | undefined} The bitrate as a kbps string, or undefined.
+ */
+function toKbps(value: string | number | undefined | null): string | undefined {
+  if (value === undefined || value === null) return undefined;
+  const text = String(value).trim();
+  if (text === '' || /^(n\/a|unknown)$/i.test(text)) return undefined;
+  if (!/^\d+(?:\.\d+)?$/.test(text)) return text;
+  const kbps = Math.round(Number(text) / 1000);
+  return kbps > 0 ? `${kbps}k` : undefined;
+}
+
+/**
  * Projects a probed audio stream into {@link MediaFactsAudio}.
  * @param {MediaStreamInfo} stream - The primary audio stream.
  * @returns {MediaFactsAudio} The compact audio facts.
@@ -82,7 +103,7 @@ function toAudioFacts(stream: MediaStreamInfo): MediaFactsAudio {
     channels: stream.channels,
     channelLayout: stream.channelLayout,
     sampleRate: stream.sampleRate,
-    bitrate: stream.bitrate,
+    bitrate: toKbps(stream.bitrate),
   };
 }
 
@@ -100,7 +121,7 @@ export function extractMediaFacts(info: MediaInfo): MediaFacts {
     format: info.format,
     sizeBytes: Number(info.size) || 0,
     durationSeconds: Number(info.duration) || 0,
-    overallBitrate: info.bitrate || undefined,
+    overallBitrate: toKbps(info.bitrate),
     hasVideo: video !== undefined,
     hasAudio: audio !== undefined,
     subtitleCount: streams.filter((stream) => stream.type === 'subtitle').length,

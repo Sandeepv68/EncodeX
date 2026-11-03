@@ -1,6 +1,6 @@
 # Pruebas
 
-<!-- drift: test-files=329 renderer-component-tests=46 -->
+<!-- drift: test-files=330 renderer-component-tests=46 -->
 
 ## Comandos
 
@@ -37,7 +37,7 @@ Los reportes de cobertura se generan en `coverage/`:
 
 ## Suite de pruebas
 
-La suite la ejecuta Vitest 4. Hay 314 archivos de prueba/spec en `src/`, 39 archivos de prueba/spec en `e2e/` y 11 suites de rendimiento en `perf/`. La cobertura usa el proveedor v8. La tabla siguiente muestra archivos representativos, no todas las pruebas.
+La suite la ejecuta Vitest 4. Hay 330 archivos de prueba/spec en `src/`, 39 archivos de prueba/spec en `e2e/` y 11 suites de rendimiento en `perf/`. La cobertura usa el proveedor v8. La tabla siguiente muestra archivos representativos, no todas las pruebas.
 
 | Área                     | Archivos representativos                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Qué cubre                                                                                                                       |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |

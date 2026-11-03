@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "ປ່ຽນໄປໂໝດສະຫວ່າງ",
-    "switchDark": "ປ່ຽນໄປໂໝດມືດ",
     "language": "ພາສາ",
     "searchLanguage": "ຄົ້ນຫາພາສາ",
     "condense": "ຫຍໍ້ແຖບຂ້າງ",
@@ -78,7 +76,6 @@
     "advanced": "ຂັ້ນສູງ",
     "inputFile": "ໄຟລ໌ນຳເຂົ້າ",
     "outputFile": "ໄຟລ໌ສົ່ງອອກ",
-    "noFile": "ຍັງບໍ່ໄດ້ເລືອກໄຟລ໌",
     "noOutput": "ຍັງບໍ່ໄດ້ເລືອກຜົນສົ່ງອອກ",
     "browse": "ຊອກຫາ",
     "saveAs": "ບັນທຶກເປັນ",
@@ -96,9 +93,6 @@
     "pause": "ຢຸດຊົ່ວຄາວ",
     "resume": "ສືບຕໍ່",
     "cancel": "ຍົກເລີກ",
-    "placeholderBitrate": "ຕ.ຢ. 2000k",
-    "placeholderAudioBitrate": "ຕ.ຢ. 192k",
-    "placeholderScale": "ຕ.ຢ. 1280x720",
     "cancelTitle": "ຍົກເລີກການແປງ",
     "cancelMessage": "ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການຍົກເລີກການແປງປັດຈຸບັນ?",
     "cancelJob": "ຍົກເລີກວຽກ",
@@ -144,9 +138,7 @@
     "filtersHint": "ນຳໃຊ້ຟິດເຕີວິດີໂອ FFmpeg (ຕັດຕອນ, ອັດຕາເຟຣມ, ລຶບການແຊກສາຍ, ຫຼຸດສຽງລົບກວນ, ສີ…) ໃນລະຫວ່າງການເຂົ້າລະຫັດໃໝ່. ຟິດເຕີທັງໝົດຖືກຮວມເປັນສາຍ -vf ດຽວຫຼັງຈາກການປັບຂະໜາດ ແລະໝຸນ.",
     "addPreset": "ເພີ່ມຟິດເຕີທີ່ຕັ້ງໄວ້…",
     "addFilter": "ເພີ່ມຟິດເຕີ",
-    "customChainLabel": "ສາຍຟິດເຕີແບບກຳນົດເອງ",
     "customChainPlaceholder": "ຕ.ຢ. fps=30, eq=brightness=0.1",
-    "customChainHint": "ນິພົດຟິດເຕີ FFmpeg ແຍກດ້ວຍເຄື່ອງໝາຍຈຸດ. ແຕ່ລະລາຍການຕ້ອງມີວົງເລັບ ແລະວົງເລັບສີ່ຫຼ່ຽມທີ່ສົມດູນ, ເຄື່ອງໝາຍວົງຢືມທີ່ຈັບຄູ່ກັນ ແລະບໍ່ມີອັກຂະລະພິເສດຂອງແຊລ.",
     "addCustom": "ເພີ່ມແບບກຳນົດເອງ",
     "removeFilter": "ລຶບຟິດເຕີ",
     "moveUp": "ຍ້າຍຂຶ້ນ",
@@ -262,7 +254,6 @@
     "compress": "ບີບອັດຮູບພາບ",
     "compressing": "ກຳລັງບີບອັດ...",
     "placeholderOutput": "ເສັ້ນທາງຜົນສົ່ງອອກ",
-    "placeholderScale": "ຕ.ຢ. 800x600",
     "validationRequired": "ກະລຸນາເລືອກຮູບພາບນຳເຂົ້າ.",
     "selectedImage": "ຮູບພາບທີ່ເລືອກ: {{file}}",
     "inputImageHint": "ຮູບພາບແຫຼ່ງທີ່ຈະບີບອັດ. ຮອງຮັບ JPEG, PNG, WebP ແລະ BMP.",
@@ -289,7 +280,6 @@
     "extract": "ດຶງສຽງ",
     "extracting": "ກຳລັງດຶງ...",
     "placeholderOutput": "ຕ.ຢ. output.mp3",
-    "validationRequired": "ກະລຸນາເລືອກໄຟລ໌ວິດີໂອ.",
     "selectedVideo": "ວິດີໂອທີ່ເລືອກ: {{file}}",
     "pause": "ຢຸດຊົ່ວຄາວ",
     "resume": "ສືບຕໍ່",
@@ -302,11 +292,8 @@
   "videoCut": {
     "title": "ຕັດວິດີໂອ",
     "videoFile": "ໄຟລ໌ວິດີໂອ",
-    "noFile": "ຍັງບໍ່ໄດ້ເລືອກໄຟລ໌",
-    "browse": "ຊອກຫາ",
     "dropLabel": "ວາງໄຟລ໌ວິດີໂອຢູ່ທີ່ນີ້ ຫຼື ຄລິກເພື່ອຊອກຫາ",
     "videoFileHint": "ລາກ ແລະ ວາງໄຟລ໌ວິດີໂອຢູ່ທີ່ນີ້ ຫຼື ຄລິກເພື່ອຊອກຫາໃນຄອມພິວເຕີຂອງທ່ານ.",
-    "videoFiles": "ໄຟລ໌ວິດີໂອ",
     "changeFile": "ປ່ຽນວິດີໂອ",
     "changeFileHint": "ເລືອກໄຟລ໌ວິດີໂອອື່ນ.",
     "outputFile": "ໄຟລ໌ສົ່ງອອກ",
@@ -357,9 +344,7 @@
     "stop": "ຢຸດ",
     "mute": "ປິດສຽງ",
     "unmute": "ເປີດສຽງ",
-    "seek": "ຊອກຫາ",
-    "playbackTime": "ເວລາການຫຼິ້ນ",
-    "videoPlayer": "ເຄື່ອງຫຼິ້ນວິດີໂອ"
+    "seek": "ຊອກຫາ"
   },
   "batchQueue": {
     "bmfNotBundled": "BMF ບໍ່ໄດ້ມາພ້ອມກັບ EncodeX. ກະລຸນາຕິດຕັ້ງດ້ວຍຕົນເອງ ແລະ ກວດສອບໃຫ້ bmf_ffmpeg ແລະ bmf_ffprobe ຢູ່ໃນ PATH ຂອງທ່ານ.",
@@ -486,12 +471,8 @@
     "outputRequired": "ຕ້ອງການໄຟລ໌ຜົນສົ່ງອອກ",
     "invalidTime": "ຮູບແບບເວລາບໍ່ຖືກຕ້ອງ (HH:MM:SS ຫຼື ວິນາທີ)",
     "durationRequired": "ຕ້ອງການໄລຍະເວລາ",
-    "invalidScale": "ຮູບແບບອັດຕາສ່ວນບໍ່ຖືກຕ້ອງ (ຕ.ຢ. 1920:1080, 50%)",
-    "invalidBitrate": "Bitrate ບໍ່ຖືກຕ້ອງ (ຕ.ຢ. 128k, 1M)",
     "qscaleRange": "QScale ຕ້ອງຢູ່ລະຫວ່າງ 1 ແລະ 31",
-    "qualityRange": "ຄຸນນະພາບຕ້ອງຢູ່ລະຫວ່າງ 1 ແລະ 31",
-    "inputRequired": "ກະລຸນາເລືອກໄຟລ໌ນຳເຂົ້າ.",
-    "outputRequiredDetailed": "ກະລຸນາເລືອກໄຟລ໌ຜົນສົ່ງອອກ."
+    "qualityRange": "ຄຸນນະພາບຕ້ອງຢູ່ລະຫວ່າງ 1 ແລະ 31"
   },
   "logs": {
     "clear": "ລຶບ",
@@ -539,8 +520,6 @@
     "pathCopied": "ສຳເນົາເສັ້ນທາງຜົນສົ່ງອອກໄປ clipboard ແລ້ວ",
     "logsDownloaded": "ດາວໂຫຼດບັນທຶກແລ້ວ",
     "mediaInfoLoaded": "ໂຫຼດຂໍ້ມູນສື່ແລ້ວ",
-    "languageChanged": "ປ່ຽນພາສາເປັນ {{language}} ແລ້ວ",
-    "cancelled": "ຍົກເລີກແລ້ວ",
     "updateAvailable": "ມີການອັບເດດ: v{{version}}",
     "updateNow": "ອັບເດດຕອນນີ້",
     "updateDownloaded": "ດາວໂຫລດອັບເດດ v{{version}} ແລ້ວ",
@@ -604,8 +583,6 @@
     "alwaysOnTopHint": "ຮັກສາປ່ອງຢ້ຽມແອັບຯໃຫ້ຢູ່ເທິງປ່ອງຢ້ຽມອື່ນໆທັງໝົດ.",
     "launchAtLogin": "ເປີດໃຊ້ເມື່ອເລີ່ມຕົ້ນ",
     "launchAtLoginHint": "ຈະເປີດໃຊ້ EncodeX ອັດຕະໂນມັດ ເມື່ອທ່ານເຂົ້າສູ່ລະບົບຄອມພິວເຕີຂອງທ່ານ.",
-    "monitoringErrorReporting": "ການລາຍງານຄວາມຜິດ",
-    "monitoringErrorReportingHint": "ຊ່ວຍປັບປຸງ EncodeX ໂດຍການສົ່ງລາຍງານຄວາມຜິດແບບນິລະນາມ. ທ່ານສາມາດປິດມັນໄດ້ຕະຫຼອດເວລາ.",
     "telemetry": "ຂໍ້ມູນການໃຊ້ງານ ແລະການລາຍງານຄວາມຜິດ",
     "telemetryHint": "ຊ່ວຍປັບປຸງ EncodeX ໂດຍການສົ່ງຂໍ້ມູນການໃຊ້ງານ ແລະລາຍງານຄວາມຜິດແບບນິລະນາມ. ທ່ານສາມາດປິດມັນໄດ້ຕະຫຼອດເວລາ.",
     "mcpServer": "ເຊີບເວີ MCP",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "ຄີທັງໝົດຖືກເກັບໄວ້ເປັນຂໍ້ຄວາມທີ່ປິດບັງ ({{hint}}).",
       "keyNone": "ບໍ່ມີຄີທີ່ເກັບໄວ້.",
-      "save": "ບັນທຶກ",
-      "saved": "ບັນທຶກການຕັ້ງຄ່າແລ້ວ.",
       "saveFailed": "ບໍ່ສາມາດບັນທຶກການຕັ້ງຄ່າໄດ້.",
-      "test": "ທົດສອບການເຊື່ອມຕໍ່",
       "testing": "ກຳລັງທົດສອບ…",
       "testFailed": "ບໍ່ມີການຕອບສະໜອງຈາກຜູ້ໃຫ້ບໍລິການ.",
       "privacy": "ມີແຕ່ຂໍ້ເທັດຈິງຂອງການກວດເບິ່ງ ແລະຂໍ້ຄວາມເປົ້າໝາຍຂອງທ່ານເທົ່ານັ້ນທີ່ຖືກສົ່ງ; ບໍ່ມີການອັບໂຫຼດໄຟລ໌ສື່ເລີຍ.",
@@ -692,8 +666,6 @@
       "statusConnected": "ເຊື່ອມຕໍ່ ແລະ ຢືນຢັນແລ້ວ.",
       "requiresNetwork": "ຜູ້ໃຫ້ບໍລິການນີ້ຕ້ອງການການເຊື່ອມຕໍ່ເຄືອຂ່າຍທີ່ໃຊ້ໄດ້.",
       "offlineFallback": "ທ່ານອອບລາຍ. ປ່ຽນໄປໃຊ້ຜູ້ໃຫ້ບໍລິການກົດລະບຽບໃນຕົວ. ຜູ້ໃຫ້ບໍລິການທາງໄກຕ້ອງການການເຊື່ອມຕໍ່ເຄືອຂ່າຍທີ່ໃຊ້ໄດ້.",
-      "modelsLoading": "ກຳລັງໂຫຼດໂມເດວ...",
-      "modelsUnavailable": "ບໍ່ສາມາດໂຫຼດໂມເດວຈາກຜູ້ໃຫ້ບໍລິການໄດ້. ທ່ານຍັງສາມາດພິມ id ໂມເດວໄດ້.",
       "keySavedPlaceholder": "ບັນທຶກຄີແລ້ວ. ວາງຄີໃໝ່ເພື່ອທົດແທນ.",
       "connected": "ເຊື່ອມຕໍ່ແລ້ວ",
       "testAgain": "ທົດສອບການເຊື່ອມຕໍ່ອີກຄັ້ງ",
@@ -961,7 +933,6 @@
     "addAudioTrack": "ເພີ່ມເພງສຽງ",
     "removeAudioTrack": "ລຶບເພງສຽງ",
     "addedTrackDelay": "ຫວ່າງເພງນີ້ (ວິນາທີ)",
-    "addedTrackDelayHint": "ອິມສັບທີ່ມີເຄື່ອງໝາຍສຳລັບເພງນີ້ ເມື່ອທຽບກັບວິດີໂອ (ບວກ = ຫຼິ້ນຊ້າກວ່າ). ບໍ່ເສຍຄຸນນະພາບ: ນຳໃຊ້ເປັນ -itsoffset ເມື່ອສຳເນົາສະຣີມ.",
     "thumbnail": "ຮູບຫຍໍ້ / ປົກ",
     "thumbnailHint": "ຮູບປົກທາງເລືອກ (.jpg, .jpeg, .png) ທີ່ຝັງໃສ່ໄຟລ໌ຫຼັງຈາກ Remux. MKV/WebM ຕິດມັນເປັນສະຣີມຮູບ; MP4/MOV ຝັງມັນເປັນສະຣີມວິດີໂອທີ່ມີແທັກ attached_pic.",
     "addThumbnail": "ເພີ່ມຮູບຫຍໍ້",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "ບໍ່ມີການສົນທະນາທີ່ບັນທຶກໄວ້. ໃຊ້ ບັນທຶກແຊັດ ເພື່ອເກັບໄວ້.",
     "savedChatsClose": "ປິດ",
     "savedChatUntitled": "ການສົນທະນາບໍ່ມີຊື່",
-    "savedChatMeta": "{{count}} ຂໍ້ຄວາມ · {{date}}",
-    "savedChatOpen": "ເປີດ",
     "savedChatDelete": "ລຶບການສົນທະນາທີ່ບັນທຶກໄວ້",
     "savedChatSaveFailed": "ບໍ່ສາມາດບັນທຶກການສົນທະນາໄດ້. ບ່ອນເກັບຂໍ້ມູນຂອງບຣາວເຊີອາດເຕັມແລ້ວ.",
     "openChatConfirmTitle": "ເປີດການສົນທະນາທີ່ບັນທຶກໄວ້ບໍ?",
@@ -1056,20 +1025,14 @@
     "openChatSave": "ບັນທຶກ ແລະ ເປີດ",
     "openChatDiscard": "ຍົກເລີກ ແລະ ເປີດ",
     "openChatCancel": "ຍົກເລີກ",
-    "title": "Copilot",
-    "subtitle": "ອະທິບາຍເປົ້າໝາຍ ແລະໃຫ້ Copilot ວາງແຜນການແປງ ຈາກນັ້ນສົ່ງແຜນໄປທີ່ Batch Queue",
-    "goalLabel": "ເປົ້າໝາຍ",
-    "goalPlaceholder": "ຕ.ຢ. ຫຍໍ້ວິດີໂອເຫຼົ່ານີ້ສຳລັບເວັບ",
     "chooseFolder": "ເລືອກໂຟນເດີ",
     "selectedCount": "{{count}} ໄຟລ໌ຖືກເລືອກ",
-    "selectedNone": "ບໍ່ມີໄຟລ໌ທີ່ຖືກເລືອກ",
     "plan": "ວາງແຜນ",
     "planning": "ກຳລັງວາງແຜນ…",
     "folderEmpty": "ບໍ່ພົບສື່ທີ່ຮອງຮັບໃນໂຟນເດີນັ້ນ",
     "errorNoGoal": "ປ້ອນເປົ້າໝາຍກ່ອນວາງແຜນ",
     "errorNoInputs": "ເລືອກໂຟນເດີສື່ກ່ອນວາງແຜນ",
     "dialogFailed": "ບໍ່ສາມາດເປີດຕົວເລືອກໄຟລ໌ໄດ້. ລອງອີກຄັ້ງ.",
-    "errorFallback": "Copilot ບໍ່ສາມາດສ້າງແຜນສຳລັບເປົ້າໝາຍນັ້ນໄດ້",
     "errorEnqueue": "ບໍ່ສາມາດເພີ່ມວຽກທີ່ວາງແຜນໄວ້ໃສ່ຄິວໄດ້",
     "actionsTitle": "ການກະທຳທີ່ວາງແຜນໄວ້",
     "noActions": "Copilot ບໍ່ພົບສິ່ງທີ່ຈະປ່ຽນສຳລັບເປົ້າໝາຍນີ້",
@@ -1103,27 +1066,6 @@
     "routedAs": "ການດຳເນີນການ: {{operation}}",
     "resultsTitle": "ຜົນການຄົ້ນພົບ",
     "ai": {
-      "title": "ຜູ້ໃຫ້ບໍລິການ AI",
-      "provider": "ຜູ້ໃຫ້ບໍລິການ",
-      "model": "ໂມເດວ",
-      "modelPlaceholder": "ຄ່າເລີ່ມຕົ້ນຂອງຜູ້ໃຫ້ບໍລິການ",
-      "apiKey": "ຄີ API",
-      "keyStored": "ຄີທັງໝົດຖືກເກັບໄວ້ເປັນຂໍ້ຄວາມທີ່ປິດບັງ ({{hint}}).",
-      "keyNone": "ບໍ່ມີຄີທີ່ເກັບໄວ້.",
-      "save": "ບັນທຶກ",
-      "test": "ທົດສອບການເຊື່ອມຕໍ່",
-      "testing": "ກຳລັງທົດສອບ…",
-      "saved": "ບັນທຶກການຕັ້ງຄ່າແລ້ວ.",
-      "saveFailed": "ບໍ່ສາມາດບັນທຶກການຕັ້ງຄ່າໄດ້.",
-      "testFailed": "ບໍ່ມີການຕອບສະໜອງຈາກຜູ້ໃຫ້ບໍລິການ.",
-      "privacy": "ມີແຕ່ຂໍ້ເທັດຈິງຂອງການກວດເບິ່ງ ແລະຂໍ້ຄວາມເປົ້າໝາຍຂອງທ່ານເທົ່ານັ້ນທີ່ຖືກສົ່ງ; ບໍ່ມີການອັບໂຫຼດໄຟລ໌ສື່ເລີຍ.",
-      "providers": {
-        "rules": "ກົດລະບຽບໃນຕົວ (ອອບລາຍ)",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "ໂມເດວທ້ອງຖິ່ນ"
-      },
       "configure": "ຕັ້ງຄ່າຜູ້ໃຫ້ບໍລິການ AI",
       "locationNote": "ຜູ້ໃຫ້ບໍລິການ AI ຖືກຕັ້ງຄ່າຢູ່ໃນການຕັ້ງຄ່າ.",
       "notConnected": "ບໍ່ໄດ້ເຊື່ອມຕໍ່"
@@ -1136,7 +1078,6 @@
     "goal": "ອະທິບາຍສິ່ງທີ່ທ່ານຕ້ອງການໃຫ້ EncodeX ເຮັດ ແລ້ວແນບໄຟລ໌ ຫຼື ໂຟນເດີ.",
     "placeholder": "ລອງເບິ່ງ: ບີບອັດວິດີໂອສຳລັບເວັບ, ດຶງສຽງເປັນ MP3, ຫຼືແປຄຳບັນຍາຍ...",
     "inputAria": "ສົ່ງຂໍ້ຄວາມຫາ Copilot",
-    "send": "ສົ່ງ",
     "advanced": "ຂັ້ນສູງ",
     "advancedTitle": "ຕົວເລືອກຂັ້ນສູງ",
     "bridgeTimeout": "EncodeX ບໍ່ຕອບສະໜອງທັນເວລາ. ລອງອີກຄັ້ງ.",
@@ -1148,8 +1089,17 @@
     "resetConfirmAction": "ຣີເຊັດ",
     "loadingFiles": "ກຳລັງໂຫຼດໄຟລ໌...",
     "removeAttachment": "ລຶກໄຟລ໌ແນບ",
-    "folderFilesCount": "{{name}} ({{count}} ໄຟລ໌)",
-    "saveAndReset": "Lưu cùng đặt lại"
+    "saveAndReset": "Lưu cùng đặt lại",
+    "target": {
+      "profile": "ໂປຣໄຟລ໌",
+      "resolution": "ຄວາມລະອຽດ",
+      "sameAsSource": "ເໝືອນຕົ້ນສະບັບ",
+      "video": "ວິດີໂອ",
+      "audio": "ສຽງ",
+      "container": "ຄອນເທນເນີ",
+      "losslessCopy": "ສຳເນົາແບບບໍ່ສູນເສຍ",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "ອອກຈາກ Copilot?",
@@ -1161,20 +1111,15 @@
     "common": {
       "cancel": "ຍົກເລີກ",
       "confirmCancel": "ຢືນຢັນການຍົກເລີກ",
-      "run": "ດຳເນີນ",
       "retry": "ລອງໃໝ່",
       "applyFix": "ໃຊ້ການແກ້ໄຂ",
-      "waiting": "ກຳລັງລໍຖ້າຂໍ້ມູນຈາກເຄື່ອໂປດ…",
       "input": "ຂອງຂ້ອຍ",
       "output": "ຂອງຜລາດ",
-      "status": "ສະຖານະ",
       "duration": "ຄວາມຢາວ",
       "size": "ຂະໜາດ",
       "bitrate": "ບິດເຕັດ",
       "video": "ວິດີໂອ",
       "audio": "ສຽງ",
-      "details": "ລາຍລະອຽດ",
-      "warnings": "ຄຳແນະນຳ",
       "findings": "ຜົນການກວດສອບ",
       "nextSteps": "ຂັ້ນຕອງໄປທີ່ແນະນຳ",
       "attempts": "ຈຳນວນຄັ້ງທີ່ລອງ",
@@ -1183,9 +1128,7 @@
       "assumptions": "ຂໍ້ມູນຕັ້ງ",
       "causes": "ສາມາດ",
       "fixes": "ສາເຫດຸນຳ",
-      "summary": "ສະຫັງ",
       "settings": "ການຕັ້ງຄ່າ",
-      "error": "ຂໍ້ຜິດພາດ",
       "unknown": "-",
       "confidence": "ຄວາມມັ່ນໃຈ {{value}}%",
       "jobCount": "ວຽກ {{count}}",
@@ -1199,12 +1142,10 @@
     },
     "queue": {
       "title": "ຄິວ EncodeX",
-      "empty": "ບໍ່ມີວຽກໃນຄິວ.",
-      "waiting": "ກຳລັງລໍຖ້າຂໍ້ມູນຄິວຈາກເຄື່ອໂປດ…"
+      "empty": "ບໍ່ມີວຽກໃນຄິວ."
     },
     "job": {
-      "waiting": "ກຳລັງລໍຖ້າຂໍ້ມູນວຽກຈາກເຄື່ອໂປດ…",
-      "cancelled": "ຍົກເລີກແລ້ວ"
+      "waiting": "ກຳລັງລໍຖ້າຂໍ້ມູນວຽກຈາກເຄື່ອໂປດ…"
     },
     "mediaInfo": {
       "title": "ມີດີເດີ",
@@ -1275,8 +1216,7 @@
     },
     "error": {
       "title": "ຂໍ້ຜິດພາດ",
-      "waiting": "ກຳລັງລໍຖ້າຂໍ້ຜິດພາດຈາກເຄື່ອໂປດ…",
-      "code": "ລະຫັດຂໍ້ຜິດພາດ"
+      "waiting": "ກຳລັງລໍຖ້າຂໍ້ຜິດພາດຈາກເຄື່ອໂປດ…"
     },
     "batch": {
       "title": "ຢືນຢັນໂຕ່ມມະ",
@@ -1316,8 +1256,7 @@
       "hardware": "ການເລັດດ້ວຍຮາດແວະ",
       "hardwareNone": "ຊັອຟແວະລຸ່ນ",
       "encoderVideo": "ວິດີໂອ",
-      "encoderAudio": "ສຽງ",
-      "encoderOther": "ອື່ນ"
+      "encoderAudio": "ສຽງ"
     }
   }
 }

@@ -255,7 +255,7 @@ Voir [Utilisation de la CLI](./cli.md) pour toutes les sous-commandes, options e
 ## 🧪 Tests
 
 ```bash
-npm test           # Exécute les tests unitaires (314 fichiers de test/spec sous src/)
+npm test           # Exécute les tests unitaires (330 fichiers de test/spec sous src/)
 npm run test:watch
 npm run test:coverage
 npm run test:unit

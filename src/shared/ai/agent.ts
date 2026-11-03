@@ -78,7 +78,10 @@ async function planFile(
 
   const args: Record<string, unknown> = { ...settings.args };
   const estimate = estimateConversion(args as EstimateConversionInput, facts, request.capabilities);
-  const estimatedSavings = facts.sizeBytes > 0 ? Number((1 - estimate.estimatedSizeBytes / facts.sizeBytes).toFixed(4)) : 0;
+  // A saving is a reduction: a plan that would grow the file reports 0%
+  // instead of a negative percentage, which is not a "saving" at all.
+  const rawSavings = facts.sizeBytes > 0 ? 1 - estimate.estimatedSizeBytes / facts.sizeBytes : 0;
+  const estimatedSavings = Number(Math.min(1, Math.max(0, rawSavings)).toFixed(4));
   if (minSavings > 0 && hasTargetBitrate(args) && estimatedSavings < minSavings) {
     return {
       skip: {
@@ -96,6 +99,8 @@ async function planFile(
     rationale: settings.rationale,
     estimatedSizeBytes: estimate.estimatedSizeBytes,
     estimatedSavings,
+    ...(estimate.videoBitrateKbps > 0 ? { estimatedVideoBitrateKbps: estimate.videoBitrateKbps } : {}),
+    ...(estimate.audioBitrateKbps > 0 ? { estimatedAudioBitrateKbps: estimate.audioBitrateKbps } : {}),
   };
   if (request.resolveOutput) {
     action.output = request.resolveOutput(facts, index);

@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "Cambiar a modo claro",
-    "switchDark": "Cambiar a modo oscuro",
     "language": "Idioma",
     "searchLanguage": "Buscar idiomas",
     "condense": "Contraer barra lateral",
@@ -32,7 +30,7 @@
     },
     "remux": "Remux",
     "demux": "Demux",
-    "copilot": "Copilot"
+    "copilot": "Copiloto"
   },
   "dashboard": {
     "welcome": "Bienvenido a EncodeX",
@@ -59,7 +57,7 @@
       "extract": "Extraer audio",
       "trim": "Recortar un clip",
       "remux": "Remultiplexar un archivo",
-      "copilot": "Pregunta a Copilot"
+      "copilot": "Pregunta a Copiloto"
     }
   },
   "closeConfirm": {
@@ -78,7 +76,6 @@
     "advanced": "Avanzado",
     "inputFile": "Archivo de Entrada",
     "outputFile": "Archivo de Salida",
-    "noFile": "Ningún archivo seleccionado",
     "noOutput": "Ninguna salida seleccionada",
     "browse": "Examinar",
     "saveAs": "Guardar Como",
@@ -96,9 +93,6 @@
     "pause": "Pausa",
     "resume": "Reanudar",
     "cancel": "Cancelar",
-    "placeholderBitrate": "ej. 2000k",
-    "placeholderAudioBitrate": "ej. 192k",
-    "placeholderScale": "ej. 1280x720",
     "cancelJob": "Cancelar trabajo",
     "jobCancelTitle": "Cancelar trabajo",
     "jobCancelMessage": "Esto borrará el trabajo de conversión actual. ",
@@ -144,9 +138,7 @@
     "filtersHint": "Aplica filtros de video de FFmpeg (recorte, tasa de cuadros, desinterlazado, reducción de ruido, color…) durante la recodificación. Todos los filtros se combinan en una sola cadena -vf después de la escala y la rotación.",
     "addPreset": "Añadir filtro predefinido…",
     "addFilter": "Añadir filtro",
-    "customChainLabel": "Cadena de filtros personalizada",
     "customChainPlaceholder": "p. ej. fps=30, eq=brightness=0.1",
-    "customChainHint": "Expresiones de filtro de FFmpeg separadas por comas. Cada entrada debe tener paréntesis y corchetes equilibrados, comillas coincidentes y ningún metacarácter de shell.",
     "addCustom": "Añadir personalizado",
     "removeFilter": "Quitar filtro",
     "moveUp": "Subir",
@@ -262,7 +254,6 @@
     "compress": "Comprimir Imagen",
     "compressing": "Comprimiendo...",
     "placeholderOutput": "ruta de salida",
-    "placeholderScale": "ej. 800x600",
     "validationRequired": "Seleccione una imagen de entrada.",
     "selectedImage": "Imagen seleccionada: {{file}}",
     "inputImageHint": "La imagen de origen para comprimir. Se admiten JPEG, PNG, WebP y BMP.",
@@ -289,7 +280,6 @@
     "extract": "Extraer Audio",
     "extracting": "Extrayendo...",
     "placeholderOutput": "ej. output.mp3",
-    "validationRequired": "Seleccione un archivo de vídeo.",
     "selectedVideo": "Video seleccionado: {{file}}",
     "pause": "Pausar",
     "resume": "Reanudar",
@@ -302,8 +292,6 @@
   "videoCut": {
     "title": "Cortar Vídeo",
     "videoFile": "Archivo de Vídeo",
-    "noFile": "Ningún archivo seleccionado",
-    "browse": "Examinar",
     "outputFile": "Archivo de Salida",
     "startTime": "Hora de Inicio (HH:MM:SS)",
     "duration": "Duración (HH:MM:SS)",
@@ -324,7 +312,6 @@
     "jobCancelMessage": "Esto borrará el formulario actual de corte de vídeo. ¿Estás seguro?",
     "closePreview": "Cerrar vista previa",
     "videoFileHint": "Arrastre un archivo de vídeo aquí o haga clic para explorar su equipo.",
-    "videoFiles": "Archivos de Vídeo",
     "dropLabel": "Suelte un archivo de vídeo aquí o haga clic para explorar",
     "changeFile": "Cambiar vídeo",
     "changeFileHint": "Seleccione otro archivo de vídeo.",
@@ -357,9 +344,7 @@
     "stop": "Detener",
     "mute": "Silenciar",
     "unmute": "Reactivar sonido",
-    "seek": "Buscar",
-    "playbackTime": "Tiempo de reproducción",
-    "videoPlayer": "Reproductor de video"
+    "seek": "Buscar"
   },
   "batchQueue": {
     "bmfNotBundled": "BMF no viene incluido con EncodeX. Instálalo manualmente y asegúrate de que bmf_ffmpeg y bmf_ffprobe estén en tu PATH.",
@@ -486,12 +471,8 @@
     "outputRequired": "Se requiere el archivo de salida",
     "invalidTime": "Formato de hora no válido (HH:MM:SS o segundos)",
     "durationRequired": "Se requiere duración",
-    "invalidScale": "Formato de escala no válido (por ejemplo, 1920:1080, 50%)",
-    "invalidBitrate": "Tasa de bits no válida (por ejemplo, 128k, 1M)",
     "qscaleRange": "QScale debe estar entre 1 y 31",
-    "qualityRange": "La calidad debe estar entre 1 y 31.",
-    "inputRequired": "Seleccione un archivo de entrada.",
-    "outputRequiredDetailed": "Seleccione un archivo de salida."
+    "qualityRange": "La calidad debe estar entre 1 y 31."
   },
   "logs": {
     "clear": "Limpiar",
@@ -538,8 +519,6 @@
     "allCancelled": "Todas las tareas canceladas",
     "logsDownloaded": "Registros descargados",
     "mediaInfoLoaded": "Información de medios cargada",
-    "languageChanged": "Idioma cambiado a {{language}}",
-    "cancelled": "Cancelado",
     "pathCopied": "Ruta de salida copiada al portapapeles",
     "updateAvailable": "Actualización disponible: v{{version}}",
     "updateNow": "Actualizar ahora",
@@ -594,8 +573,6 @@
     "alwaysOnTopHint": "Mantiene la ventana de la aplicación por encima de todas las demás.",
     "launchAtLogin": "Iniciar al iniciar sesión",
     "launchAtLoginHint": "Inicia EncodeX automáticamente cuando inicias sesión en tu computadora.",
-    "monitoringErrorReporting": "Informes de errores",
-    "monitoringErrorReportingHint": "Ayuda a mejorar EncodeX enviando informes de errores anónimos. Puedes desactivar esta opción en cualquier momento.",
     "telemetry": "Datos de uso e informes de errores",
     "telemetryHint": "Ayuda a mejorar EncodeX enviando datos de uso e informes de errores anónimos. Puedes desactivar esta opción en cualquier momento.",
     "mcpServer": "Servidor MCP",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "Las claves se almacenan como texto ofuscado ({{hint}}).",
       "keyNone": "No hay ninguna clave guardada.",
-      "save": "Guardar",
-      "saved": "Ajustes guardados.",
       "saveFailed": "No se pudieron guardar los ajustes.",
-      "test": "Probar conexión",
       "testing": "Probando…",
       "testFailed": "Sin respuesta del proveedor.",
       "privacy": "Solo se envían los datos del análisis y el texto de tu objetivo; los archivos de medios nunca se suben.",
@@ -692,8 +666,6 @@
       "statusConnected": "Conectado y verificado.",
       "requiresNetwork": "Este proveedor necesita una conexión de red activa.",
       "offlineFallback": "Estás sin conexión. Se cambió al proveedor de reglas integrado. Los proveedores remotos necesitan una conexión de red activa.",
-      "modelsLoading": "Cargando modelos...",
-      "modelsUnavailable": "No se pudieron cargar los modelos del proveedor. Aún puedes escribir un id de modelo.",
       "keySavedPlaceholder": "Clave guardada. Pega una nueva clave para reemplazarla.",
       "connected": "Conectado",
       "testAgain": "Probar la conexión de nuevo",
@@ -816,8 +788,8 @@
   },
   "about": {
     "title": "Acerca de EncodeX",
-    "subtitle": "Un kit de herramientas multimedia gratuito y de código abierto basado en FFmpeg. Convierte, comprime, extrae, recorta y procesa por lotes audio, video e imágenes, o controla el mismo motor desde la CLI, un servidor MCP o el asistente de IA Copilot.",
-    "description": "EncodeX es un kit de herramientas multimedia multiplataforma que lleva la potencia de FFmpeg a una interfaz de escritorio moderna e intuitiva. Convierte audio, video e imágenes con control detallado de códecs, tasa de bits, resolución, formato de píxel y calidad; copia pistas sin pérdida; rota y refleja medios; aplica filtros de video; y recorta videos con un reproductor de vista previa preciso al fotograma. Los perfiles de conversión configuran los destinos habituales con un clic, y puedes guardar los tuyos. La codificación acelerada por hardware es compatible con NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox y Microsoft Media Foundation; las familias de codificadores se detectan automáticamente desde el FFmpeg incluido durante la ejecución. La cola por lotes procesa trabajos en paralelo con progreso en vivo, persistencia e importación y exportación. Además de la interfaz gráfica, una CLI sin interfaz, un servidor MCP independiente e integrado y el asistente de IA Copilot permiten que scripts y asistentes controlen el mismo motor multimedia.",
+    "subtitle": "Un kit de herramientas multimedia gratuito y de código abierto basado en FFmpeg. Convierte, comprime, extrae, recorta y procesa por lotes audio, video e imágenes, o controla el mismo motor desde la CLI, un servidor MCP o el asistente de IA Copiloto.",
+    "description": "EncodeX es un kit de herramientas multimedia multiplataforma que lleva la potencia de FFmpeg a una interfaz de escritorio moderna e intuitiva. Convierte audio, video e imágenes con control detallado de códecs, tasa de bits, resolución, formato de píxel y calidad; copia pistas sin pérdida; rota y refleja medios; aplica filtros de video; y recorta videos con un reproductor de vista previa preciso al fotograma. Los perfiles de conversión configuran los destinos habituales con un clic, y puedes guardar los tuyos. La codificación acelerada por hardware es compatible con NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox y Microsoft Media Foundation; las familias de codificadores se detectan automáticamente desde el FFmpeg incluido durante la ejecución. La cola por lotes procesa trabajos en paralelo con progreso en vivo, persistencia e importación y exportación. Además de la interfaz gráfica, una CLI sin interfaz, un servidor MCP independiente e integrado y el asistente de IA Copiloto permiten que scripts y asistentes controlen el mismo motor multimedia.",
     "logoAlt": "Logotipo de EncodeX",
     "featuresTitle": "Lo que puedes hacer",
     "featureConvert": "Convierte video, audio e imágenes con control detallado de códecs, tasa de bits, resolución y calidad, además de rotación y filtros",
@@ -829,7 +801,7 @@
     "featureProfiles": "Empieza con perfiles de conversión integrados o guarda los tuyos",
     "featureBatch": "Ejecuta trabajos por lotes en paralelo con pausa, reordenación, importación y exportación, y una acción de energía al terminar",
     "featureHardware": "Usa codificadores por GPU como NVENC, Quick Sync, AMF, VAAPI y VideoToolbox, detectados automáticamente",
-    "featureAutomation": "Describe un objetivo al asistente de IA Copilot, o automatiza EncodeX con scripts desde la CLI y el servidor MCP",
+    "featureAutomation": "Describe un objetivo al asistente de IA Copiloto, o automatiza EncodeX con scripts desde la CLI y el servidor MCP",
     "version": "Versión",
     "builtWith": "Hecho con",
     "authorTitle": "Autor y comentarios",
@@ -961,7 +933,6 @@
     "addAudioTrack": "Añadir pista de audio",
     "removeAudioTrack": "Quitar la pista de audio",
     "addedTrackDelay": "Retrasar esta pista (segundos)",
-    "addedTrackDelayHint": "Desplazamiento con signo aplicado a esta pista respecto al video (positivo = se reproduce más tarde). Sin pérdidas: se aplica como -itsoffset con copia de flujo.",
     "thumbnail": "Miniatura / carátula",
     "thumbnailHint": "Imagen de carátula opcional (.jpg, .jpeg, .png) incrustada en el archivo remuxeado. MKV/WebM la adjuntan como un flujo de imagen; MP4/MOV la incrustan como un flujo de video con la disposición attached_pic.",
     "addThumbnail": "Añadir miniatura",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "No hay conversaciones guardadas. Usa Guardar chat para conservar una.",
     "savedChatsClose": "Cerrar",
     "savedChatUntitled": "Conversación sin título",
-    "savedChatMeta": "{{count}} mensajes · {{date}}",
-    "savedChatOpen": "Abrir",
     "savedChatDelete": "Eliminar conversación guardada",
     "savedChatSaveFailed": "No se pudo guardar la conversación. Es posible que el almacenamiento del navegador esté lleno.",
     "openChatConfirmTitle": "¿Abrir conversación guardada?",
@@ -1056,23 +1025,17 @@
     "openChatSave": "Guardar y abrir",
     "openChatDiscard": "Descartar y abrir",
     "openChatCancel": "Cancelar",
-    "title": "Copilot",
-    "subtitle": "Describe un objetivo y deja que Copilot planifique las conversiones; luego envía el plan a la cola de procesos.",
-    "goalLabel": "Objetivo",
-    "goalPlaceholder": "p. ej., reducir estos vídeos para la web",
     "chooseFolder": "Elegir carpeta",
     "selectedCount": "{{count}} archivo(s) seleccionado(s)",
-    "selectedNone": "No hay archivos seleccionados",
     "plan": "Planificar",
     "planning": "Planificando…",
     "folderEmpty": "No se encontró ningún medio compatible en esa carpeta.",
     "errorNoGoal": "Introduce un objetivo antes de planificar.",
     "errorNoInputs": "Elige una carpeta con medios antes de planificar.",
     "dialogFailed": "No se pudo abrir el selector de archivos. Inténtalo de nuevo.",
-    "errorFallback": "Copilot no pudo elaborar un plan para ese objetivo.",
     "errorEnqueue": "Ninguna de las tareas planificadas pudo añadirse a la cola.",
     "actionsTitle": "Acciones planificadas",
-    "noActions": "Copilot no encontró nada que cambiar para este objetivo.",
+    "noActions": "Copiloto no encontró nada que cambiar para este objetivo.",
     "savings": "Ahorro estimado ~{{pct}}%",
     "output": "a {{output}}",
     "skipsTitle": "Archivos omitidos",
@@ -1084,7 +1047,7 @@
     "chooseFiles": "Elegir archivos",
     "operationLabel": "Operación",
     "op": {
-      "auto": "Automático (deja que Copilot decida)",
+      "auto": "Automático (deja que Copiloto decida)",
       "convert": "Convertir",
       "remux": "Remux",
       "demux": "Demux",
@@ -1103,27 +1066,6 @@
     "routedAs": "Operación: {{operation}}",
     "resultsTitle": "Hallazgos",
     "ai": {
-      "title": "Proveedor de IA",
-      "provider": "Proveedor",
-      "model": "Modelo",
-      "modelPlaceholder": "Valor predeterminado del proveedor",
-      "apiKey": "Clave de API",
-      "keyStored": "Las claves se almacenan como texto ofuscado ({{hint}}).",
-      "keyNone": "No hay ninguna clave guardada.",
-      "save": "Guardar",
-      "test": "Probar conexión",
-      "testing": "Probando…",
-      "saved": "Ajustes guardados.",
-      "saveFailed": "No se pudieron guardar los ajustes.",
-      "testFailed": "Sin respuesta del proveedor.",
-      "privacy": "Solo se envían los datos del análisis y el texto de tu objetivo; los archivos de medios nunca se suben.",
-      "providers": {
-        "rules": "Reglas integradas (sin conexión)",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "Modelo local"
-      },
       "configure": "Configurar proveedor de IA",
       "locationNote": "Los proveedores de IA se configuran en Ajustes.",
       "notConnected": "Sin conexión"
@@ -1135,12 +1077,11 @@
     "welcome": "¿Cómo puedo ayudarte?",
     "goal": "Describe lo que quieres que haga EncodeX y luego adjunta archivos o una carpeta.",
     "placeholder": "Prueba: comprime un video para la web, extrae el audio a MP3 o traduce los subtítulos...",
-    "inputAria": "Enviar mensaje a Copilot",
-    "send": "Enviar",
+    "inputAria": "Enviar mensaje a Copiloto",
     "advanced": "Avanzado",
     "advancedTitle": "Opciones avanzadas",
     "bridgeTimeout": "EncodeX no respondió a tiempo. Inténtalo de nuevo.",
-    "planFailed": "Copilot no pudo crear un plan para ese objetivo.",
+    "planFailed": "Copiloto no pudo crear un plan para ese objetivo.",
     "thinking": "Pensando...",
     "resetConversation": "Iniciar nueva conversación",
     "resetConfirmTitle": "¿Restablecer conversación?",
@@ -1148,11 +1089,20 @@
     "resetConfirmAction": "Restablecer",
     "loadingFiles": "Cargando archivos...",
     "removeAttachment": "Quitar adjunto",
-    "folderFilesCount": "{{name}} ({{count}} archivos)",
-    "saveAndReset": "Guardar y reiniciar"
+    "saveAndReset": "Guardar y reiniciar",
+    "target": {
+      "profile": "Perfil",
+      "resolution": "Resolución",
+      "sameAsSource": "Igual que el origen",
+      "video": "Vídeo",
+      "audio": "Audio",
+      "container": "Contenedor",
+      "losslessCopy": "Copia sin pérdida",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
-    "title": "¿Salir de Copilot?",
+    "title": "¿Salir de Copiloto?",
     "message": "Este chat sigue activo. Si sales de la página, se descartará la conversación.",
     "confirmLabel": "Salir de todos modos",
     "cancelLabel": "Permanecer"
@@ -1161,20 +1111,15 @@
     "common": {
       "cancel": "Cancelar",
       "confirmCancel": "Confirmar cancelación",
-      "run": "Ejecutar",
       "retry": "Reintentar",
       "applyFix": "Aplicar corrección",
-      "waiting": "Esperando datos del host…",
       "input": "Entrada",
       "output": "Salida",
-      "status": "Estado",
       "duration": "Duración",
       "size": "Tamaño",
       "bitrate": "Tasa de bits",
       "video": "Vídeo",
       "audio": "Audio",
-      "details": "Detalles",
-      "warnings": "Advertencias",
       "findings": "Hallazgos",
       "nextSteps": "Próximos pasos recomendados",
       "attempts": "Intentos",
@@ -1183,9 +1128,7 @@
       "assumptions": "Suposiciones",
       "causes": "Causas probables",
       "fixes": "Correcciones sugeridas",
-      "summary": "Resumen",
       "settings": "Ajustes",
-      "error": "Error",
       "unknown": "-",
       "confidence": "{{value}} % de confianza",
       "jobCount": "{{count}} trabajos",
@@ -1199,12 +1142,10 @@
     },
     "queue": {
       "title": "Cola de EncodeX",
-      "empty": "No hay trabajos en la cola.",
-      "waiting": "Esperando datos de la cola del host…"
+      "empty": "No hay trabajos en la cola."
     },
     "job": {
-      "waiting": "Esperando datos del trabajo del host…",
-      "cancelled": "cancelado"
+      "waiting": "Esperando datos del trabajo del host…"
     },
     "mediaInfo": {
       "title": "Multimedia",
@@ -1275,8 +1216,7 @@
     },
     "error": {
       "title": "Error",
-      "waiting": "Esperando un error del host…",
-      "code": "Código de error"
+      "waiting": "Esperando un error del host…"
     },
     "batch": {
       "title": "Confirmar lote",
@@ -1316,8 +1256,7 @@
       "hardware": "Aceleración por hardware",
       "hardwareNone": "Solo software",
       "encoderVideo": "Vídeo",
-      "encoderAudio": "Audio",
-      "encoderOther": "Otro"
+      "encoderAudio": "Audio"
     }
   }
 }

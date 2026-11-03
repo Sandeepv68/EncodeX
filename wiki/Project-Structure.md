@@ -168,7 +168,7 @@ src/
 │   │   └── types.ts                    # Analytics renderer provider contracts
 │   ├── dev/
 │   │   └── useDevScreenshot.ts        # Dev-only window screenshot capture
-│   ├── components/                    # Shared UI components (61 modules: 48 top-level + copilot/ and settings/ subfolders) <!-- drift:renderer-components=61 --> <!-- drift:renderer-components-top=47 -->
+│   ├── components/                    # Shared UI components (62 modules: 48 top-level + copilot/ and settings/ subfolders) <!-- drift:renderer-components=62 --> <!-- drift:renderer-components-top=47 -->
 │   │   └── types.ts                   # Shared component prop shapes
 │   ├── constants/
 │   │   ├── shortcuts.ts               # 71 keyboard shortcuts registry (11 sections) + tooltip hints <!-- drift:shortcuts=71 --> <!-- drift:shortcut-sections=11 -->
