@@ -189,7 +189,20 @@ export interface QueuePayload {
 /** Props of a single queue row. */
 export interface QueueRowProps {
   job: McpUiJob;
-  onCancel: (jobId: string) => Promise<void>;
+  onCancel: () => Promise<void>;
+}
+
+/**
+ * One row of the queue: the job and the queue it belongs to.
+ * @interface QueueEntry
+ * @property {McpUiJob} job - The job to render.
+ * @property {boolean} fromAppQueue - True when the job comes from the app's
+ *   Batch Queue (and is therefore cancelled through the app's queue bridge
+ *   rather than the MCP server's own job manager).
+ */
+export interface QueueEntry {
+  job: McpUiJob;
+  fromAppQueue: boolean;
 }
 
 /* ------------------------------------------------------------------ *

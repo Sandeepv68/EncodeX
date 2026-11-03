@@ -85,6 +85,34 @@ describe('planAgent', () => {
     expect(plan.actions).toHaveLength(1);
   });
 
+  it('reports a real saving for a CRF plan that downscales', async () => {
+    const plan = await planAgent(request({ profiles: [crfProfile] }));
+    // The plan encodes 1080p to 720p, which is about 44% of the pixels.
+    expect(plan.actions[0].estimatedSavings).toBeGreaterThan(0.2);
+    expect(plan.actions[0].estimatedSavings).toBeLessThan(1);
+  });
+
+  it('reports a saving for a CRF plan that keeps the source resolution', async () => {
+    // A 700 MB 720p source encoded far above the target quality: the plan
+    // keeps the resolution but re-encodes at the profile's quality, which is
+    // where the saving comes from.
+    const source: MediaFacts = {
+      ...facts('C:/media/a.mp4'),
+      sizeBytes: 700 * 1024 * 1024,
+      durationSeconds: 600,
+      overallBitrate: '9800k',
+      video: { codec: 'h264', width: 1280, height: 720, frameRate: '30/1', hdr: false, interlaced: false },
+    };
+    const plan = await planAgent(request({ files: [source], profiles: [crfProfile] }));
+    expect(plan.actions[0].estimatedSavings).toBeGreaterThan(0.3);
+  });
+
+  it('never reports a negative saving', async () => {
+    const fatProfile: ConversionProfile = { ...bitrateProfile, id: 'fat', videoBitrate: '40000k' };
+    const plan = await planAgent(request({ profiles: [fatProfile] }));
+    expect(plan.actions[0].estimatedSavings).toBe(0);
+  });
+
   it('honours the maxFiles cap', async () => {
     const plan = await planAgent(
       request({ files: [facts('C:/media/a.mp4'), facts('C:/media/b.mp4'), facts('C:/media/c.mp4')], options: { maxFiles: 2 } }),

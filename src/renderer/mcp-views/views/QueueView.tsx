@@ -14,14 +14,13 @@ import { useMcpView, useMcpViewData } from '../McpViewProvider';
 import { useMcpViewPolling } from '../useMcpViewPolling';
 import { useArmedAction } from '../kit/useArmedAction';
 import { useQueueStore } from '../../stores/queueStore';
-import type { McpUiJob } from '../../../shared/types';
 import ViewBadge from '../kit/ViewBadge';
 import ViewButton from '../kit/ViewButton';
 import ViewCard from '../kit/ViewCard';
 import ViewEmptyState from '../kit/ViewEmptyState';
 import ViewProgress from '../kit/ViewProgress';
 import { ViewRow, ViewRowFooter, ViewStack } from '../kit/styles';
-import type { QueuePayload, QueueRowProps } from './types';
+import type { QueueEntry, QueuePayload, QueueRowProps } from './types';
 
 /**
  * Renders the queue view.
@@ -36,17 +35,24 @@ export default function QueueView() {
   // already queued shows up in the transcript even when the MCP host has not
   // pushed a payload for it.
   const storeJobs = useQueueStore((state) => state.jobs);
-  const jobs: McpUiJob[] =
+  // Each row remembers where its job came from: the rows of the app's Batch
+  // Queue are cancelled through the app's queue bridge, the rows the host
+  // pushed are cancelled through the host's `cancel_job` tool.
+  const entries: QueueEntry[] =
     hostJobs.length > 0
-      ? hostJobs
+      ? hostJobs.map((job) => ({ job, fromAppQueue: false }))
       : storeJobs.map((job) => ({
-          id: job.id,
-          input: job.input,
-          output: job.output,
-          status: job.status,
-          progress: job.progress,
-          ...(job.error ? { error: job.error } : {}),
+          job: {
+            id: job.id,
+            input: job.input,
+            output: job.output,
+            status: job.status,
+            progress: job.progress,
+            ...(job.error ? { error: job.error } : {}),
+          },
+          fromAppQueue: true,
         }));
+  const jobs = entries.map((entry) => entry.job);
 
   useMcpViewPolling({
     tool: 'list_jobs',
@@ -55,7 +61,15 @@ export default function QueueView() {
   });
 
   const cancelJob = useCallback(
-    async (jobId: string) => {
+    async (jobId: string, fromAppQueue: boolean) => {
+      // The MCP `cancel_job` tool addresses the MCP server's own job manager,
+      // which does not know the ids of the app's Batch Queue. Calling it for
+      // such a job failed with "Job not found" and the button looked inert, so
+      // those jobs are cancelled through the app's queue bridge instead.
+      if (fromAppQueue && window.electronAPI?.queueRemove) {
+        await window.electronAPI.queueRemove(jobId);
+        return;
+      }
       await callTool('cancel_job', { jobId });
     },
     [callTool],
@@ -79,8 +93,12 @@ export default function QueueView() {
         <ViewEmptyState message={t('mcpViews.queue.empty')} testId="mcp-view-queue-empty" />
       ) : (
         <ViewStack>
-          {jobs.map((job) => (
-            <QueueRow key={job.id} job={job} onCancel={cancelJob} />
+          {entries.map((entry) => (
+            <QueueRow
+              key={entry.job.id}
+              job={entry.job}
+              onCancel={() => cancelJob(entry.job.id, entry.fromAppQueue)}
+            />
           ))}
         </ViewStack>
       )}
@@ -115,7 +133,7 @@ function statusFilterKey(status: string): string {
 function QueueRow({ job, onCancel }: QueueRowProps) {
   const { t } = useTranslation();
   const percent = clampPercent(job.progress);
-  const armed = useArmedAction(() => onCancel(job.id));
+  const armed = useArmedAction(() => onCancel());
   const name = basename(job.output || job.input || job.id);
   const status = t(`batchQueue.filters.${statusFilterKey(job.status)}`);
   return (
@@ -134,6 +152,11 @@ function QueueRow({ job, onCancel }: QueueRowProps) {
         onClick={armed.trigger}
         testId={`mcp-view-queue-cancel-${job.id}`}
       />
+      {armed.error && (
+        <Typography variant="caption" color="error" data-testid={`mcp-view-queue-cancel-error-${job.id}`}>
+          {armed.error}
+        </Typography>
+      )}
       <ViewRowFooter>
         <ViewProgress percent={percent} label={name} />
       </ViewRowFooter>

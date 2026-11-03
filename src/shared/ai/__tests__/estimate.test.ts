@@ -5,6 +5,7 @@
 import { describe, it, expect } from 'vitest';
 import type { EncoderCapabilities } from '../../types';
 import { estimateConversion, detectHardwareAcceleration } from '../estimate';
+import { extractMediaFacts } from '../media-facts';
 import type { MediaFacts } from '../types';
 
 /** Facts for a 60 s, 10 MB H.264/AAC clip. */
@@ -50,15 +51,84 @@ describe('estimateConversion', () => {
     expect(estimate.notes.join(' ')).toContain('stream copy');
   });
 
-  it('falls back to the source bitrate when none is requested', () => {
+  it('models the target bitrate when the plan carries no target bitrate', () => {
     const estimate = estimateConversion({}, FACTS, NO_HW);
-    expect(estimate.videoBitrateKbps).toBe(1500);
+    // The model anchors on the output resolution, the frame rate and the
+    // quality target instead of the source bitrate: a quality target is an
+    // absolute quality, so the source bitrate only adjusts for the content
+    // complexity. The source audio is not counted into the video part.
+    expect(estimate.videoBitrateKbps).toBeGreaterThan(0);
+    expect(estimate.audioBitrateKbps).toBe(128);
+    expect(estimate.notes.join(' ')).toContain('No target video bitrate');
+  });
+
+  it('models a smaller bitrate for a smaller output resolution', () => {
+    const full = estimateConversion({}, FACTS, NO_HW);
+    const half = estimateConversion({ scale: '1280x720' }, FACTS, NO_HW);
+    expect(half.videoBitrateKbps).toBeLessThan(full.videoBitrateKbps);
+  });
+
+  it('never lets an upscale inflate the estimate', () => {
+    const plain = estimateConversion({}, FACTS, NO_HW);
+    const upscale = estimateConversion({ scale: '3840x2160' }, FACTS, NO_HW);
+    expect(upscale.videoBitrateKbps).toBe(plain.videoBitrateKbps);
+  });
+
+  it('accounts for the codec efficiency', () => {
+    const h264 = estimateConversion({ videoCodec: 'libx264' }, FACTS, NO_HW);
+    const hevc = estimateConversion({ videoCodec: 'libx265' }, FACTS, NO_HW);
+    expect(hevc.videoBitrateKbps).toBeLessThan(h264.videoBitrateKbps);
+  });
+
+  it('accounts for the quality target', () => {
+    const high = estimateConversion({ qscale: 18 }, FACTS, NO_HW);
+    const low = estimateConversion({ qscale: 26 }, FACTS, NO_HW);
+    expect(low.videoBitrateKbps).toBeLessThan(high.videoBitrateKbps);
+  });
+
+  it('keeps the source audio bitrate when no target is given', () => {
+    const facts: MediaFacts = { ...FACTS, audio: { codec: 'aac', channels: 2, bitrate: '320k' } };
+    const estimate = estimateConversion({}, facts, NO_HW);
+    expect(estimate.audioBitrateKbps).toBe(320);
+  });
+
+  it('reports a saving for a high-bitrate source that keeps its resolution', () => {
+    // A 720p source encoded far above the target quality: re-encoding it with
+    // the target's quality shrinks it even though the resolution is unchanged.
+    const facts: MediaFacts = {
+      ...FACTS,
+      sizeBytes: 700 * 1024 * 1024,
+      durationSeconds: 600,
+      overallBitrate: '9800k',
+      video: { codec: 'h264', width: 1280, height: 720, frameRate: '30/1', hdr: false, interlaced: false },
+    };
+    const estimate = estimateConversion({ qscale: 20 }, facts, NO_HW);
+    expect(estimate.estimatedSizeBytes).toBeLessThan(facts.sizeBytes);
+  });
+
+  it('reports a saving for facts built from a real probe', () => {
+    // Regression: ffprobe reports bits per second, and feeding those values to
+    // the estimator unconverted saturated its complexity factor, which made
+    // every plan estimate the same size and report a 0% saving.
+    const facts = extractMediaFacts({
+      file: 'C:/media/movie.mkv',
+      format: 'matroska,webm',
+      size: 700 * 1024 * 1024,
+      duration: 600,
+      bitrate: '9808000',
+      streams: [
+        { index: 0, type: 'video', codec: 'h264', width: 1280, height: 720, frameRate: '30.00', bitrate: '9680000' },
+        { index: 1, type: 'audio', codec: 'aac', channels: 2, bitrate: '128000' },
+      ],
+    });
+    const estimate = estimateConversion({ scale: '1280x720', qscale: 20, videoCodec: 'libx264', audioBitrate: '128k' }, facts, NO_HW);
+    expect(estimate.estimatedSizeBytes).toBeLessThan(facts.sizeBytes * 0.6);
   });
 
   it('notes when it falls back to a default bitrate', () => {
     const bare: MediaFacts = { ...FACTS, overallBitrate: undefined, sizeBytes: 0, durationSeconds: 0 };
     const estimate = estimateConversion({}, bare, NO_HW);
-    expect(estimate.videoBitrateKbps).toBe(2500);
+    expect(estimate.videoBitrateKbps).toBeGreaterThan(0);
     expect(estimate.notes.join(' ')).toContain('No target video bitrate');
   });
 

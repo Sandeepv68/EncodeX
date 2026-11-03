@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import { createRoot, type Root as ReactRoot } from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
 import { I18nextProvider } from 'react-i18next';
 import '@fontsource/roboto/300.css';
@@ -38,6 +38,7 @@ import { useLogStore } from './stores/logStore';
 import { setupSessionCleanup } from './sessionCleanup';
 import { withBridgeTimeout } from './utils/bridge-call';
 import { LOG_MOUNTING_REACT_APP } from '../shared/log-constants';
+import type { ConsoleMethod } from './types';
 
 /** Logger instance used by this module. @const {Logger} */
 const log = new Logger('renderer/main');
@@ -52,6 +53,7 @@ const levels: Array<{ method: 'log' | 'warn' | 'error'; level: 'INFO' | 'WARN' |
   { method: 'warn', level: 'WARN' },
   { method: 'error', level: 'ERROR' },
 ];
+
 /**
  * Patches the console methods listed above so every call still hits the
  * original implementation and is also appended to the log store with a
@@ -59,8 +61,11 @@ const levels: Array<{ method: 'log' | 'warn' | 'error'; level: 'INFO' | 'WARN' |
  * @constant
  */
 for (const { method, level } of levels) {
-  const original = console[method];
-  console[method] = (...args: unknown[]) => {
+  const original = console[method] as ConsoleMethod;
+  if (original.__encodeXPatched) {
+    continue;
+  }
+  const patched = ((...args: unknown[]) => {
     original.apply(console, args);
     const text = args.map((a) => (typeof a === 'string' ? a : JSON.stringify(a))).join(' ');
     useLogStore.getState().addEntry({
@@ -69,7 +74,9 @@ for (const { method, level } of levels) {
       text,
       source: 'renderer',
     });
-  };
+  }) as ConsoleMethod;
+  patched.__encodeXPatched = true;
+  console[method] = patched;
 }
 
 /**
@@ -124,6 +131,36 @@ log.info(LOG_MOUNTING_REACT_APP);
  * @const {number}
  */
 const MONITORING_BOOT_TIMEOUT_MS = 2000;
+
+/**
+ * Global slot holding the already created React root for the `#root` container.
+ *
+ * The renderer entry can be evaluated more than once in a single document
+ * (Vite HMR re-executes the module on change, and any additional dynamic
+ * import of the entry would do the same). `createRoot()` on a container that
+ * already has a root makes React warn "You are calling ReactDOMClient.createRoot()
+ * on a container that has already been passed to createRoot() before" and the
+ * second root never gets the tree it was given.
+ *
+ * Keeping the root in a global slot lets a re-evaluation reuse the existing
+ * root and simply render into it again.
+ *
+ * @const {ReactRoot | undefined}
+ */
+const globalScope = globalThis as typeof globalThis & { __ENCODEX_REACT_ROOT__?: ReactRoot };
+
+/**
+ * Returns the root for the `#root` container, creating it on first use.
+ * @returns {ReactRoot} The root to render the application into.
+ */
+function getOrCreateRoot(): ReactRoot {
+  const container = document.getElementById('root');
+  if (!container) {
+    throw new Error('Root container #root is missing from the document');
+  }
+  globalScope.__ENCODEX_REACT_ROOT__ ??= createRoot(container);
+  return globalScope.__ENCODEX_REACT_ROOT__;
+}
 
 /**
  * Initializes renderer-side monitoring before React mounts so early errors
@@ -201,7 +238,7 @@ async function bootstrapRendererAnalytics(): Promise<void> {
  */
 void bootstrapRendererAnalytics();
 void bootstrapRendererMonitoring().finally(() => {
-  ReactDOM.createRoot(document.getElementById('root')!).render(
+  getOrCreateRoot().render(
     <React.StrictMode>
       <Root />
     </React.StrictMode>,
