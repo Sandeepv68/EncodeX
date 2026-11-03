@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "Qaallariarsorneq toqqaarlugu",
-    "switchDark": "Tarraa-mut nuullugu",
     "language": "Oqaatsit",
     "searchLanguage": "Oqaatsit ujaruk",
     "condense": "Mikissusaruk sidelinje",
@@ -78,7 +76,6 @@
     "advanced": "Siuariaq",
     "inputFile": "Iserneqassaaq",
     "outputFile": "Anineqassaaq",
-    "noFile": "Iserniarfik takussaaqanngilaq",
     "noOutput": "Aniffik takussaaqanngilaq",
     "browse": "Sallugu",
     "saveAs": "Sumunngaannaq allattaaq",
@@ -96,9 +93,6 @@
     "pause": "Unartak",
     "resume": "Saqqummersaruk",
     "cancel": "Piumasuunngit",
-    "placeholderBitrate": "Soqquit. 2000k",
-    "placeholderAudioBitrate": "Soqquit. 192k",
-    "placeholderScale": "Soqquit. 1280x720",
     "cancelTitle": "Allanngortitsineq piumasuunngikkit",
     "cancelMessage": "Allanngortitsineq maanna piumasuunngikkumaarpiuk?",
     "cancelJob": "Suliassaq piumasuunngikkit",
@@ -144,9 +138,7 @@
     "filtersHint": "FFmpeg-video-filterit atatseq (trim, frame rate, deinterlace, noiseunerit, qalipaatsit…) enkoderinermat. Filterit tamaasa ataatsiinut -vf chain-imut kattunneqartarput scale aamma rotation qaangiuteqqaartumik.",
     "addPreset": "Preset-filter ilanngussigit…",
     "addFilter": "Filterik ilanngussigit",
-    "customChainLabel": "Custom-filter-chain",
     "customChainPlaceholder": "assersuut: fps=30, eq=brightness=0.1",
-    "customChainHint": "FFmpeg-filter-expression, komma-mit apornerat. Aappassagut qallusit aamma kvadrat-qallusit ikinngutigiipput, hugissat assigiimmik aaqqissorneqarsimapput, shell-meta-tegnat nammineq aningaaq.",
     "addCustom": "Customik ilanngussigit",
     "removeFilter": "Filter pisissiuk",
     "moveUp": "Qummuk",
@@ -262,7 +254,6 @@
     "compress": "Assersuut qitornaqqusaat",
     "compressing": "Qitornaqqusatut...",
     "placeholderOutput": "Aniffik sumiiffia",
-    "placeholderScale": "Soqquit. 800x600",
     "validationRequired": "Iserneqassaaq assersuut toqqaruk.",
     "selectedImage": "Assersuut toqqarneqartoq: {{file}}",
     "inputImageHint": "Qitornaqqusaatissatut assersuut. JPEG, PNG, WebP aamma BMP tiguneqarsinnaapput.",
@@ -289,7 +280,6 @@
     "extract": "Nipilersorneq nuiaatit",
     "extracting": "Nuiaatut...",
     "placeholderOutput": "Soqquit. output.mp3",
-    "validationRequired": "Video filiussaq toqqaruk.",
     "selectedVideo": "Video toqqarneqartoq: {{file}}",
     "pause": "Unartak",
     "resume": "Saqqummersaruk",
@@ -302,11 +292,8 @@
   "videoCut": {
     "title": "Video nakassat",
     "videoFile": "Video filiussaq",
-    "noFile": "Iserniarfik takussaaqanngilaq",
-    "browse": "Sallugu",
     "dropLabel": "Video filiussaq maani ilissi, imaluunnit sallullugu",
     "videoFileHint": "Video filiussaq maani ilissi, imaluunnit sallullugu. Komputerit sakkut.",
-    "videoFiles": "Video filiussat",
     "changeFile": "Video allanngortit",
     "changeFileHint": "Video filiussaq allanngortit.",
     "outputFile": "Anineqassaaq",
@@ -357,9 +344,7 @@
     "stop": "Unnuk",
     "mute": "Nipiliilluni",
     "unmute": "Nipiliartitsinneq",
-    "seek": "Ujarleruk",
-    "playbackTime": "Aallarneq nalunaaqutaat",
-    "videoPlayer": "Video aallartitsivik"
+    "seek": "Ujarleruk"
   },
   "batchQueue": {
     "bmfNotBundled": "BMF EncodeX-ip ilaanngilaq. Aalajangersakkamik ingerlatsi, bmf_ffmpeg leqqullu bmf_ffprobe PATH-imi pisinnaasut qulakkiiguk.",
@@ -486,12 +471,8 @@
     "outputRequired": "Anineqassaaq filiussaq pisariaqarpoq",
     "invalidTime": "Time format unioqquttuut (HH:MM:SS imaluunnit sekundit)",
     "durationRequired": "Sivisussuseq pisariaqarpoq",
-    "invalidScale": "Scale format unioqquttuut (soqquit. 1920:1080, 50%)",
-    "invalidBitrate": "Bitrate unioqquttuut (soqquit. 128k, 1M)",
     "qscaleRange": "QScale 1-ip aamma 31-p akornanniittussaavoq",
-    "qualityRange": "Pissaaserususeq 1-ip aamma 31-p akornanniittussaavoq",
-    "inputRequired": "Iserneqassaaq filiussaq toqqaruk.",
-    "outputRequiredDetailed": "Anineqassaaq filiussaq toqqaruk."
+    "qualityRange": "Pissaaserususeq 1-ip aamma 31-p akornanniittussaavoq"
   },
   "logs": {
     "clear": "Piiaruk",
@@ -539,8 +520,6 @@
     "pathCopied": "Output path clipboard-mut copy-neqarpoq",
     "logsDownloaded": "Allaaserisat nuiaatinneqarput",
     "mediaInfoLoaded": "Media info ilaneqarpoq",
-    "languageChanged": "Oqaatsit {{language}}-imut allanngortinneqarput",
-    "cancelled": "Piumasuunngineqarpoq",
     "updateAvailable": "Minusqaat princessaluarpoq: v{{version}}",
     "updateNow": "Minusqigivit nuannillit",
     "updateDownloaded": "Uppdateriaq v{{version}} niissutigineqarpoq",
@@ -604,8 +583,6 @@
     "alwaysOnTopHint": "App window-ip allat qaammaanni atugassaa.",
     "launchAtLogin": "Aallartiffimmi aallartikkit",
     "launchAtLoginHint": "EncodeX-imik nammineq aallartippaa, komputerimut iseriaruit.",
-    "monitoringErrorReporting": "Fejlrapportering",
-    "monitoringErrorReportingHint": "Hjælper med at forbedre EncodeX ved at sende anonyme fejlrapporter. Du kan altid slå det fra.",
     "telemetry": "Atortornerisassanik atuinerup fejlrapporteriillu",
     "telemetryHint": "EncodeX-ip qanoq pitsanngorsarneqarsinnaanera: atortornerisassanik nammineerluni atuinerit fejlrapporterit anonimiusut nassiumeqarput. Uannitsinniami taanna marrsurniallarneqarsinnaavooq.",
     "mcpServer": "MCP serveri",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "Umiagaat allanngoriikkavit oqaatsit tassaavoq ({{hint}}).",
       "keyNone": "Matuaraat toqqorsimamgilaq.",
-      "save": "Toqqaruk",
-      "saved": "Aaqqissuutissat toqqorsimapput.",
       "saveFailed": "Aaqqissuutissat toqqorisinnaanngillat.",
-      "test": "Attaveqarfiup misissorsua",
       "testing": "Misissorsuivoq…",
       "testFailed": "Inissisimasunit kiinniatagaasaasut.",
       "privacy": "Misissorsuuummata ilusissat aamma isumassarsiannit allassimasat naapertuutissaatigineqarput; mediafilerit nammineeersissutigineqanngisaannarput.",
@@ -692,8 +666,6 @@
       "statusConnected": "Attaveqarpoq, uppernarsarneqarluni.",
       "requiresNetwork": "Inissisimasut taakkua attaveqarfimmik atuuttumik pisariaqarput.",
       "offlineFallback": "Offline-imiittutit. Innariilu aaqqissugaasut inissisimasunut nuuttut. Inissisimasut avallaanneersut attaveqarfimmik atuuttumik pisariaqarput.",
-      "modelsLoading": "Naatsorsueqaat ilanngullugit...",
-      "modelsUnavailable": "Naatsorsueqaat inissisimasunit piinissinnaanngillat. Naatsorsueqaat-id-imik allanngortinnaasit.",
       "keySavedPlaceholder": "Matuaraat toqqorsimavoq. Matuaraat nutaaq ilaguk allanngortinniaruk.",
       "connected": "Attaveqarpoq",
       "testAgain": "Attaveqarfiup misissorsua kingorna",
@@ -961,7 +933,6 @@
     "addAudioTrack": "Audio-track ilanngussigit",
     "removeAudioTrack": "Audio-track piiaruk",
     "addedTrackDelay": "Track-imik nappartitsineq (sekundit)",
-    "addedTrackDelayHint": "Track-imut sign-offset video-up tunuani (positivit = kingusinnerusikunnaaneq). Lossless: -itsoffset-sutit atatseq stream kopi aqqut.",
     "thumbnail": "Thumbnail / cover",
     "thumbnailHint": "Cover-image ikinngutigalugu (.jpg, .jpeg, .png) remux aaqqissornerup kingunerani file-imut embed-nerunneqarsinnaasoq. MKV/WebM it image-stream-sutut attach-nerpaa; MP4/MOV it video-stream-sutut embed-nersaavat attached_pic-tagigut.",
     "addThumbnail": "Thumbnail ilanngussigit",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "Allaffigineqartut oqaloqatigiit ilaanngillat. Oqaloqatigiit allaffigi atorlugu allaffigisinnaavat.",
     "savedChatsClose": "Akiuk",
     "savedChatUntitled": "Immikkoortinneqanngitsoq oqaloqatigiit",
-    "savedChatMeta": "Iterlanerit {{count}} · {{date}}",
-    "savedChatOpen": "Ammasuk",
     "savedChatDelete": "Allaffigineqartut oqaloqatigiit peerusuk",
     "savedChatSaveFailed": "Oqaloqatigiit allaffigineqarsinnaanngillat. Browser-ip storage-ia immiffiginngilaq.",
     "openChatConfirmTitle": "Allaffigineqartut oqaloqatigiit ammasussanngilaq?",
@@ -1056,20 +1025,14 @@
     "openChatSave": "Allaffissorlugu ammasuk",
     "openChatDiscard": "Peerlugu ammasuk",
     "openChatCancel": "Ajorlugu",
-    "title": "Copilot",
-    "subtitle": "Tassaaneq allaqillugu Copilot-ip allanngortitaanik plaaneriuk, taava plaaniraq batch queue-mut iluatinnguuk.",
-    "goalLabel": "Tassaaneq",
-    "goalPlaceholder": "assersuut: videotit webimut minnerulersiguk",
     "chooseFolder": "Mapa toqqaruk",
     "selectedCount": "{{count}} fili toqqarneqarpoq",
-    "selectedNone": "Fili toqqarneqanngilaq",
     "plan": "Plaaneriuk",
     "planning": "Plaanerineq…",
     "folderEmpty": "Tamanna mapami tapersersorneqartut media qanoq atorneqarsimanngilaq.",
     "errorNoGoal": "Plaaneriarnissamut sianerisut tassaaneq allakkit.",
     "errorNoInputs": "Plaaneriarnissamut sianerisut media mapa toqqaruk.",
     "dialogFailed": "Fajliliivik matuneqarsinnaanngilaq. Misileqqilaariuk.",
-    "errorFallback": "Copilot-ip tassaani plansiorneq ajornartorsiutigaa.",
     "errorEnqueue": "Plaanerinngu taassuma job-ia queue-mut ilanngunneq ajornarnikuuvoq.",
     "actionsTitle": "Plaaneet sulisuusat",
     "noActions": "Copilot-p tamanna tassaanequt allanngortitsisamik nanersuunngilaq.",
@@ -1103,27 +1066,6 @@
     "routedAs": "Suliassaq: {{operation}}",
     "resultsTitle": "Nassaarissat",
     "ai": {
-      "title": "AI-nik inissisimasut",
-      "provider": "Inissisimasut",
-      "model": "Naatsorsueqaat",
-      "modelPlaceholder": "Inissisimasut naapertorlugu piffissaq",
-      "apiKey": "API-p matuaraat",
-      "keyStored": "Umiagaat allanngoriikkavit oqaatsit tassaavoq ({{hint}}).",
-      "keyNone": "Matuaraat toqqorsimamgilaq.",
-      "save": "Toqqaruk",
-      "test": "Attaveqarfiup misissorsua",
-      "testing": "Misissorsuivoq…",
-      "saved": "Aaqqissuutissat toqqorsimapput.",
-      "saveFailed": "Aaqqissuutissat toqqorisinnaanngillat.",
-      "testFailed": "Inissisimasunit kiinniatagaasaasut.",
-      "privacy": "Misissorsuuummata ilusissat aamma isumassarsiannit allassimasat naapertuutissaatigineqarput; mediafilerit nammineeersissutigineqanngisaannarput.",
-      "providers": {
-        "rules": "Innariilu aaqqissugaasut (offline)",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "Nunaniittumi naatsorsueqaat"
-      },
       "configure": "AI-nik inissisimasut aaqqissuerit",
       "locationNote": "AI-nik inissisimasut Aaqqissuutissat iluani aaqqissorneqarput.",
       "notConnected": "Atortuumaanngillat"
@@ -1136,7 +1078,6 @@
     "goal": "EncodeX suna suliaqarfiginiaruk nalunaarutiguk, kingorna filit imaluunniit mappa ilanngukkit.",
     "placeholder": "Misisarit: video web-imut nittingusissagaanni, nipi MP3-mut annaassagaanni, allaggallu nutserlugit...",
     "inputAria": "Copilot-mut nalunaarsuut nassiuk",
-    "send": "Nassiuguk",
     "advanced": "Advanced",
     "advancedTitle": "Toqqagassat qaffasissat",
     "bridgeTimeout": "EncodeX piffissami nassuiaanngilaq. Misileqqikkit.",
@@ -1148,7 +1089,6 @@
     "resetConfirmAction": "Nutaaguk",
     "loadingFiles": "Fiilit nassarneqarput...",
     "removeAttachment": "Kinaartussat naaliartut",
-    "folderFilesCount": "{{name}} ({{count}} filer)",
     "saveAndReset": "Taqqerkit uuta imaalannik",
     "target": {
       "profile": "Profil",
@@ -1171,20 +1111,15 @@
     "common": {
       "cancel": "Atorsarneq",
       "confirmCancel": "Kiu uppernneq pillug",
-      "run": "Malorto",
       "retry": "Uki arlit",
       "applyFix": "Atuutitut iluuliinermut",
-      "waiting": "Taamattumik ilaliartut kip host-imi…",
       "input": "Kiissutsiat",
       "output": "Uumas",
-      "status": "Kinaatsit",
       "duration": "Pilluguider",
       "size": "Niakersist",
       "bitrate": "Bitrate",
       "video": "Video",
       "audio": "Audio",
-      "details": "Fakleet",
-      "warnings": "Kangersuisut",
       "findings": "Fakleet",
       "nextSteps": "Taamattumik inatsisartut",
       "attempts": "Suliamiisut",
@@ -1193,9 +1128,7 @@
       "assumptions": "Taamattumik ilaliartut",
       "causes": "Takulagiler",
       "fixes": "Naujait",
-      "summary": "Takulagiler",
       "settings": "Naujait",
-      "error": "Atuutitut",
       "unknown": "-",
       "confidence": "{{value}}% ilisimatus",
       "jobCount": "{{count}} taamattut",
@@ -1209,12 +1142,10 @@
     },
     "queue": {
       "title": "EncodeX-nik malortoq",
-      "empty": "Taamattut piluani ilaanritut",
-      "waiting": "Taamattumik malortuunermit pilu-imi kip host-imi…"
+      "empty": "Taamattut piluani ilaanritut"
     },
     "job": {
-      "waiting": "Taamattumik taamattu-umi kip host-imi…",
-      "cancelled": "atursarnerneq"
+      "waiting": "Taamattumik taamattu-umi kip host-imi…"
     },
     "mediaInfo": {
       "title": "Media",
@@ -1285,8 +1216,7 @@
     },
     "error": {
       "title": "Atuutitut",
-      "waiting": "Taamattumik atuutitut kip host-imi…",
-      "code": "Atuutitut kood"
+      "waiting": "Taamattumik atuutitut kip host-imi…"
     },
     "batch": {
       "title": "Batch uppernneq",
@@ -1326,8 +1256,7 @@
       "hardware": "Atassut ilusarneq",
       "hardwareNone": "Software-kiisun",
       "encoderVideo": "Video",
-      "encoderAudio": "Audio",
-      "encoderOther": "Taama"
+      "encoderAudio": "Audio"
     }
   }
 }

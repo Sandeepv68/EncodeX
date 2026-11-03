@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "Przełącz na jasny motyw",
-    "switchDark": "Przełącz na ciemny motyw",
     "language": "Język",
     "searchLanguage": "Szukaj języków",
     "condense": "Zwiń pasek boczny",
@@ -78,7 +76,6 @@
     "advanced": "Zaawansowane",
     "inputFile": "Plik wejściowy",
     "outputFile": "Plik wyjściowy",
-    "noFile": "Nie wybrano pliku",
     "noOutput": "Nie wybrano pliku wyjściowego",
     "browse": "Przeglądaj",
     "saveAs": "Zapisz jako",
@@ -96,9 +93,6 @@
     "pause": "Pauza",
     "resume": "Wznów",
     "cancel": "Anuluj",
-    "placeholderBitrate": "np. 2000k",
-    "placeholderAudioBitrate": "np. 192k",
-    "placeholderScale": "np. 1280x720",
     "cancelTitle": "Anuluj konwersję",
     "cancelMessage": "Czy na pewno chcesz anulować bieżącą konwersję?",
     "cancelJob": "Anuluj zadanie",
@@ -144,9 +138,7 @@
     "filtersHint": "Stosuje filtry wideo FFmpeg (przycinanie, liczba klatek, deinterlacing, redukcja szumu, kolor…) podczas ponownego kodowania. Wszystkie filtry są łączone w jeden łańcuch -vf po skalowaniu i obrocie.",
     "addPreset": "Dodaj filtr predefiniowany…",
     "addFilter": "Dodaj filtr",
-    "customChainLabel": "Własny łańcuch filtrów",
     "customChainPlaceholder": "np. fps=30, eq=brightness=0.1",
-    "customChainHint": "Wyrażenia filtrów FFmpeg oddzielone przecinkami. Każdy wpis musi mieć zrównoważone nawiasy i nawiasy kwadratowe, pasujące cudzysłowy oraz nie może zawierać metaznaków powłoki.",
     "addCustom": "Dodaj własny",
     "removeFilter": "Usuń filtr",
     "moveUp": "Przenieś w górę",
@@ -262,7 +254,6 @@
     "compress": "Kompresuj obraz",
     "compressing": "Kompresowanie...",
     "placeholderOutput": "ścieżka wyjściowa",
-    "placeholderScale": "np. 800x600",
     "validationRequired": "Wybierz obraz wejściowy.",
     "selectedImage": "Wybrany obraz: {{file}}",
     "inputImageHint": "Obraz źródłowy do kompresji. Obsługiwane są JPEG, PNG, WebP i BMP.",
@@ -289,7 +280,6 @@
     "extract": "Wyodrębnij audio",
     "extracting": "Wyodrębnianie...",
     "placeholderOutput": "np. output.mp3",
-    "validationRequired": "Wybierz plik wideo.",
     "selectedVideo": "Wybrane wideo: {{file}}",
     "pause": "Pauza",
     "resume": "Wznów",
@@ -302,11 +292,8 @@
   "videoCut": {
     "title": "Przytnij wideo",
     "videoFile": "Plik wideo",
-    "noFile": "Nie wybrano pliku",
-    "browse": "Przeglądaj",
     "dropLabel": "Upuść plik wideo tutaj lub kliknij, aby przeglądać",
     "videoFileHint": "Przeciągnij i upuść plik wideo tutaj lub kliknij, aby przeglądać komputer.",
-    "videoFiles": "Pliki wideo",
     "changeFile": "Zmień wideo",
     "changeFileHint": "Wybierz inny plik wideo.",
     "outputFile": "Plik wyjściowy",
@@ -357,9 +344,7 @@
     "stop": "Zatrzymaj",
     "mute": "Wycisz",
     "unmute": "Włącz dźwięk",
-    "seek": "Szukaj",
-    "playbackTime": "Czas odtwarzania",
-    "videoPlayer": "Odtwarzacz wideo"
+    "seek": "Szukaj"
   },
   "batchQueue": {
     "bmfNotBundled": "BMF nie jest dołączony do EncodeX. Zainstaluj go ręcznie i upewnij się, że bmf_ffmpeg i bmf_ffprobe są w PATH.",
@@ -486,12 +471,8 @@
     "outputRequired": "Plik wyjściowy jest wymagany",
     "invalidTime": "Nieprawidłowy format czasu (GG:MM:SS lub sekundy)",
     "durationRequired": "Czas trwania jest wymagany",
-    "invalidScale": "Nieprawidłowy format skali (np. 1920:1080, 50%)",
-    "invalidBitrate": "Nieprawidłowy bitrate (np. 128k, 1M)",
     "qscaleRange": "QScale musi wynosić od 1 do 31",
-    "qualityRange": "Jakość musi wynosić od 1 do 31",
-    "inputRequired": "Wybierz plik wejściowy.",
-    "outputRequiredDetailed": "Wybierz plik wyjściowy."
+    "qualityRange": "Jakość musi wynosić od 1 do 31"
   },
   "logs": {
     "clear": "Wyczyść",
@@ -539,8 +520,6 @@
     "pathCopied": "Ścieżka wyjściowa skopiowana do schowka",
     "logsDownloaded": "Dzienniki pobrane",
     "mediaInfoLoaded": "Informacje o multimediach załadowane",
-    "languageChanged": "Język zmieniony na {{language}}",
-    "cancelled": "Anulowano",
     "updateAvailable": "Dostępna aktualizacja: v{{version}}",
     "updateNow": "Zaktualizuj teraz",
     "updateDownloaded": "Pobrano aktualizację v{{version}}",
@@ -604,8 +583,6 @@
     "alwaysOnTopHint": "Utrzymuje okno aplikacji nad wszystkimi innymi oknami.",
     "launchAtLogin": "Uruchamiaj przy starcie",
     "launchAtLoginHint": "Automatycznie uruchamia EncodeX po zalogowaniu się do komputera.",
-    "monitoringErrorReporting": "Zgłaszanie błędów",
-    "monitoringErrorReportingHint": "Pomaga ulepszać EncodeX, wysyłając anonimowe raporty błędów. Możesz to wyłączyć w każdej chwili.",
     "telemetry": "Dane dotyczące użytkowania i zgłaszanie błędów",
     "telemetryHint": "Pomaga ulepszać EncodeX, wysyłając anonimowe dane dotyczące użytkowania i raporty błędów. Możesz to wyłączyć w każdej chwili.",
     "mcpServer": "Serwer MCP",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "Klucze są przechowywane jako tekst obfuskowany ({{hint}}).",
       "keyNone": "Nie zapisano klucza.",
-      "save": "Zapisz",
-      "saved": "Ustawienia zapisane.",
       "saveFailed": "Nie udało się zapisać ustawień.",
-      "test": "Przetestuj połączenie",
       "testing": "Testowanie…",
       "testFailed": "Brak odpowiedzi od dostawcy.",
       "privacy": "Wysyłane są tylko dane analizy i tekst celu; pliki multimedialne nigdy nie są wysyłane.",
@@ -692,8 +666,6 @@
       "statusConnected": "Połączono i zweryfikowano.",
       "requiresNetwork": "Ten dostawca wymaga aktywnego połączenia sieciowego.",
       "offlineFallback": "Jesteś offline. Przełączono na wbudowanego dostawcę reguł. Zdalni dostawcy wymagają aktywnego połączenia sieciowego.",
-      "modelsLoading": "Ładowanie modeli...",
-      "modelsUnavailable": "Nie udało się załadować modeli od dostawcy. Nadal możesz wpisać identyfikator modelu.",
       "keySavedPlaceholder": "Klucz zapisany. Wklej nowy klucz, aby go zastąpić.",
       "connected": "Połączono",
       "testAgain": "Przetestuj połączenie ponownie",
@@ -961,7 +933,6 @@
     "addAudioTrack": "Dodaj ścieżkę audio",
     "removeAudioTrack": "Usuń ścieżkę audio",
     "addedTrackDelay": "Opóźnij tę ścieżkę (sekundy)",
-    "addedTrackDelayHint": "Przesunięcie ze znakiem dla tej ścieżki względem wideo (dodatnie = późniejsze odtwarzanie). Bezstratnie: stosowane jako -itsoffset przy kopii strumienia.",
     "thumbnail": "Miniatura / okładka",
     "thumbnailHint": "Opcjonalny obraz okładki (.jpg, .jpeg, .png) osadzany w pliku po remuxie. MKV/WebM dołączają go jako strumień obrazu; MP4/MOV osadzają go jako strumień wideo z oznaczeniem attached_pic.",
     "addThumbnail": "Dodaj miniaturę",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "Brak zapisanych rozmów. Użyj opcji Zapisz czat, aby zapisać rozmowę.",
     "savedChatsClose": "Zamknij",
     "savedChatUntitled": "Rozmowa bez tytułu",
-    "savedChatMeta": "Wiadomości: {{count}} · {{date}}",
-    "savedChatOpen": "Otwórz",
     "savedChatDelete": "Usuń zapisaną rozmowę",
     "savedChatSaveFailed": "Nie udało się zapisać rozmowy. Pamięć przeglądarki może być pełna.",
     "openChatConfirmTitle": "Otworzyć zapisaną rozmowę?",
@@ -1056,20 +1025,14 @@
     "openChatSave": "Zapisz i otwórz",
     "openChatDiscard": "Odrzuć i otwórz",
     "openChatCancel": "Anuluj",
-    "title": "Copilot",
-    "subtitle": "Opisz cel, a Copilot zaplanuje konwersje, a następnie przenieś plan do kolejki zbiorczej.",
-    "goalLabel": "Cel",
-    "goalPlaceholder": "np. zmniejsz te filmy dla sieci web",
     "chooseFolder": "Wybierz folder",
     "selectedCount": "Wybrano {{count}} plik(i)",
-    "selectedNone": "Nie wybrano żadnych plików",
     "plan": "Planuj",
     "planning": "Planowanie…",
     "folderEmpty": "Nie znaleziono obsługiwanego nośnika w tym folderze.",
     "errorNoGoal": "Wprowadź cel przed planowaniem.",
     "errorNoInputs": "Wybierz folder z nośnikami przed planowaniem.",
     "dialogFailed": "Nie udało się otworzyć okna wyboru plików. Spróbuj ponownie.",
-    "errorFallback": "Copilot nie mógł zbudować planu dla tego celu.",
     "errorEnqueue": "Żadne z zaplanowanych zadań nie mogło zostać dodane do kolejki.",
     "actionsTitle": "Zaplanowane działania",
     "noActions": "Copilot nie znalazł nic do zmiany dla tego celu.",
@@ -1103,27 +1066,6 @@
     "routedAs": "Operacja: {{operation}}",
     "resultsTitle": "Wyniki",
     "ai": {
-      "title": "Dostawca AI",
-      "provider": "Dostawca",
-      "model": "Model",
-      "modelPlaceholder": "Domyślny dostawcy",
-      "apiKey": "Klucz API",
-      "keyStored": "Klucze są przechowywane jako tekst obfuskowany ({{hint}}).",
-      "keyNone": "Nie zapisano klucza.",
-      "save": "Zapisz",
-      "test": "Przetestuj połączenie",
-      "testing": "Testowanie…",
-      "saved": "Ustawienia zapisane.",
-      "saveFailed": "Nie udało się zapisać ustawień.",
-      "testFailed": "Brak odpowiedzi od dostawcy.",
-      "privacy": "Wysyłane są tylko dane analizy i tekst celu; pliki multimedialne nigdy nie są wysyłane.",
-      "providers": {
-        "rules": "Wbudowane reguły (offline)",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "Model lokalny"
-      },
       "configure": "Skonfiguruj dostawcę AI",
       "locationNote": "Dostawcy AI są konfigurowani w Ustawieniach.",
       "notConnected": "Niepołączono"
@@ -1136,7 +1078,6 @@
     "goal": "Opisz, co ma zrobić EncodeX, a następnie dołącz pliki lub folder.",
     "placeholder": "Wypróbuj: skompresuj wideo do sieci, wyodrębnij dźwięk do MP3 lub przetłumacz napisy...",
     "inputAria": "Wyślij wiadomość do Copilot",
-    "send": "Wyślij",
     "advanced": "Zaawansowane",
     "advancedTitle": "Opcje zaawansowane",
     "bridgeTimeout": "EncodeX nie odpowiedział na czas. Spróbuj ponownie.",
@@ -1148,7 +1089,6 @@
     "resetConfirmAction": "Resetuj",
     "loadingFiles": "Ładowanie plików...",
     "removeAttachment": "Usuń załącznik",
-    "folderFilesCount": "{{name}} ({{count}} plików)",
     "saveAndReset": "Zapisz i zresetuj",
     "target": {
       "profile": "Profil",
@@ -1171,20 +1111,15 @@
     "common": {
       "cancel": "Anuluj",
       "confirmCancel": "Potwierdź anulowanie",
-      "run": "Uruchom",
       "retry": "Spróbuj ponownie",
       "applyFix": "Zastosuj poprawkę",
-      "waiting": "Oczekiwanie na dane od hosta…",
       "input": "Wejście",
       "output": "Wyjście",
-      "status": "Status",
       "duration": "Czas trwania",
       "size": "Rozmiar",
       "bitrate": "Przepływność",
       "video": "Wideo",
       "audio": "Audio",
-      "details": "Szczegóły",
-      "warnings": "Ostrzeżenia",
       "findings": "Ustalenia",
       "nextSteps": "Zalecane kolejne kroki",
       "attempts": "Próby",
@@ -1193,9 +1128,7 @@
       "assumptions": "Założenia",
       "causes": "Prawdopodobne przyczyny",
       "fixes": "Sugerowane poprawki",
-      "summary": "Podsumowanie",
       "settings": "Ustawienia",
-      "error": "Błąd",
       "unknown": "-",
       "confidence": "{{value}}% pewności",
       "jobCount": "{{count}} zadań",
@@ -1209,12 +1142,10 @@
     },
     "queue": {
       "title": "Kolejka EncodeX",
-      "empty": "Brak zadań w kolejce.",
-      "waiting": "Oczekiwanie na dane kolejki od hosta…"
+      "empty": "Brak zadań w kolejce."
     },
     "job": {
-      "waiting": "Oczekiwanie na dane zadania od hosta…",
-      "cancelled": "anulowane"
+      "waiting": "Oczekiwanie na dane zadania od hosta…"
     },
     "mediaInfo": {
       "title": "Media",
@@ -1285,8 +1216,7 @@
     },
     "error": {
       "title": "Błąd",
-      "waiting": "Oczekiwanie na błąd od hosta…",
-      "code": "Kod błędu"
+      "waiting": "Oczekiwanie na błąd od hosta…"
     },
     "batch": {
       "title": "Potwierdź partię",
@@ -1326,8 +1256,7 @@
       "hardware": "Akceleracja sprzętowa",
       "hardwareNone": "Tylko oprogramowanie",
       "encoderVideo": "Wideo",
-      "encoderAudio": "Audio",
-      "encoderOther": "Inne"
+      "encoderAudio": "Audio"
     }
   }
 }

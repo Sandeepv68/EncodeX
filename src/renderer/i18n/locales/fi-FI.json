@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "Vaihda vaaleaan tilaan",
-    "switchDark": "Vaihda tummaan tilaan",
     "language": "Kieli",
     "searchLanguage": "Hae kieliä",
     "condense": "Tiivistä sivupalkki",
@@ -78,7 +76,6 @@
     "advanced": "Lisäasetukset",
     "inputFile": "Lähdetiedosto",
     "outputFile": "Kohdetiedosto",
-    "noFile": "Tiedostoa ei ole valittu",
     "noOutput": "Kohdetta ei ole valittu",
     "browse": "Selaa",
     "saveAs": "Tallenna nimellä",
@@ -96,9 +93,6 @@
     "pause": "Keskeytä",
     "resume": "Jatka",
     "cancel": "Peruuta",
-    "placeholderBitrate": "esim. 2000k",
-    "placeholderAudioBitrate": "esim. 192k",
-    "placeholderScale": "esim. 1280x720",
     "cancelTitle": "Peruuta muunnos",
     "cancelMessage": "Haluatko varmasti peruuttaa nykyisen muunnoksen?",
     "cancelJob": "Peruuta työ",
@@ -144,9 +138,7 @@
     "filtersHint": "Soveltaa FFmpeg-videosuodattimia (rajaus, ruutunopeus, deinterlacing, kohinan vaimennus, väri…) uudelleenkoodauksen aikana. Kaikki suodattimet yhdistetään yhdeksi -vf-ketjuksi skaalauksen ja kierroksen jälkeen.",
     "addPreset": "Lisää esiasetettu suodatin…",
     "addFilter": "Lisää suodatin",
-    "customChainLabel": "Mukautettu suodatinketju",
     "customChainPlaceholder": "esim. fps=30, eq=brightness=0.1",
-    "customChainHint": "Pilkulla erotetut FFmpeg-suodatinlausekkeet. Jokaisessa kohteessa on oltava tasapainoiset sulut ja hakasulut, vastavat lainausmerkit eikä lainkaan komentorivin erikoismerkkejä.",
     "addCustom": "Lisää mukautettu",
     "removeFilter": "Poista suodatin",
     "moveUp": "Siirrä ylös",
@@ -262,7 +254,6 @@
     "compress": "Pakkaa kuva",
     "compressing": "Pakataan...",
     "placeholderOutput": "Kohdepolku",
-    "placeholderScale": "esim. 800x600",
     "validationRequired": "Valitse lähdekuva.",
     "selectedImage": "Valittu kuva: {{file}}",
     "inputImageHint": "Lähdekuva, joka pakataan. Tuetaan JPEG, PNG, WebP ja BMP.",
@@ -289,7 +280,6 @@
     "extract": "Pura ääni",
     "extracting": "Puretaan...",
     "placeholderOutput": "esim. output.mp3",
-    "validationRequired": "Valitse videotiedosto.",
     "selectedVideo": "Valittu video: {{file}}",
     "pause": "Keskeytä",
     "resume": "Jatka",
@@ -302,11 +292,8 @@
   "videoCut": {
     "title": "Leikkaa video",
     "videoFile": "Videotiedosto",
-    "noFile": "Tiedostoa ei ole valittu",
-    "browse": "Selaa",
     "dropLabel": "Pudota videotiedosto tähän tai napsauta selataksesi",
     "videoFileHint": "Vedä ja pudota videotiedosto tähän tai napsauta selataksesi tietokonettasi.",
-    "videoFiles": "Videotiedostot",
     "changeFile": "Vaihda video",
     "changeFileHint": "Valitse toinen videotiedosto.",
     "outputFile": "Kohdetiedosto",
@@ -357,9 +344,7 @@
     "stop": "Pysäytä",
     "mute": "Mykistä",
     "unmute": "Poista mykistys",
-    "seek": "Hae",
-    "playbackTime": "Toistoaika",
-    "videoPlayer": "Videosoitin"
+    "seek": "Hae"
   },
   "batchQueue": {
     "bmfNotBundled": "BMF ei ole mukana EncodeX:n kanssa. Asenna se manuaalisesti ja varmista, että bmf_ffmpeg ja bmf_ffprobe ovat PATH-polulla.",
@@ -486,12 +471,8 @@
     "outputRequired": "Kohdetiedosto vaaditaan",
     "invalidTime": "Virheellinen aikamuoto (HH:MM:SS tai sekunnit)",
     "durationRequired": "Kesto vaaditaan",
-    "invalidScale": "Virheellinen skaalamuoto (esim. 1920:1080, 50%)",
-    "invalidBitrate": "Virheellinen bittinopeus (esim. 128k, 1M)",
     "qscaleRange": "QScapen on oltava välillä 1-31",
-    "qualityRange": "Laadun on oltava välillä 1-31",
-    "inputRequired": "Valitse lähdetiedosto.",
-    "outputRequiredDetailed": "Valitse kohdetiedosto."
+    "qualityRange": "Laadun on oltava välillä 1-31"
   },
   "logs": {
     "clear": "Tyhjennä",
@@ -539,8 +520,6 @@
     "pathCopied": "Kohdepolku kopioitu leikepöydälle",
     "logsDownloaded": "Lokit ladattu",
     "mediaInfoLoaded": "Mediatiedot ladattu",
-    "languageChanged": "Kieli vaihdettu {{language}}-kieleksi",
-    "cancelled": "Peruutettu",
     "updateAvailable": "Päivitys saatavilla: v{{version}}",
     "updateNow": "Päivitä nyt",
     "updateDownloaded": "Päivitys v{{version}} ladattu",
@@ -604,8 +583,6 @@
     "alwaysOnTopHint": "Pitää sovellusikkunan kaikkien muiden ikkunoiden yläpuolella.",
     "launchAtLogin": "Käynnistä kirjautumisen yhteydessä",
     "launchAtLoginHint": "Käynnistää EncodeX:n automaattisesti, kun kirjaudut tietokoneellesi.",
-    "monitoringErrorReporting": "Virheraportointi",
-    "monitoringErrorReportingHint": "Auttaa parantamaan EncodeX-sovellusta lähettämällä anonyymejä virheraportteja. Voit poistaa tämän käytöstä milloin tahansa.",
     "telemetry": "Käyttötiedot ja virheraportointi",
     "telemetryHint": "Auttaa parantamaan EncodeX-sovellusta lähettämällä anonyymejä käyttötietoja ja virheraportteja. Voit poistaa tämän käytöstä milloin tahansa.",
     "mcpServer": "MCP-palvelin",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "Avaimet tallennetaan sumennettuna tekstinä ({{hint}}).",
       "keyNone": "Ei tallennettua avainta.",
-      "save": "Tallenna",
-      "saved": "Asetukset tallennettu.",
       "saveFailed": "Asetuksia ei voitu tallentaa.",
-      "test": "Testaa yhteys",
       "testing": "Testataan…",
       "testFailed": "Ei vastausta tarjoajalta.",
       "privacy": "Vain tutkitut tiedot ja tavoitteesi teksti lähetetään; mediatiedostoja ei koskaan lähetetä.",
@@ -692,8 +666,6 @@
       "statusConnected": "Yhdistetty ja vahvistettu.",
       "requiresNetwork": "Tämä tarjoaja tarvitsee aktiivisen verkkoyhteyden.",
       "offlineFallback": "Olet offline-tilassa. Vaihdettiin sisäänrakennettuun sääntötarjoajaan. Etätarjoajat tarvitsevat aktiivisen verkkoyhteyden.",
-      "modelsLoading": "Ladataan malleja...",
-      "modelsUnavailable": "Malleja ei voitu ladata tarjoajalta. Voit silti kirjoittaa mallitunnuksen.",
       "keySavedPlaceholder": "Avain tallennettu. Liitä uusi avain korvataksesi sen.",
       "connected": "Yhdistetty",
       "testAgain": "Testaa yhteys uudelleen",
@@ -961,7 +933,6 @@
     "addAudioTrack": "Lisää ääniraita",
     "removeAudioTrack": "Poista ääniraita",
     "addedTrackDelay": "Viivästä tätä raitaa (sekuntia)",
-    "addedTrackDelayHint": "Tämän raidan etumerkillinen siirtymä videoon nähden (positiivinen = toistuu myöhemmin). Häviötön: käytetään -itsoffset-argumenttina virran kopioinnin yhteydessä.",
     "thumbnail": "Pikkukuva / kansikuva",
     "thumbnailHint": "Valinnainen kansikuva (.jpg, .jpeg, .png), joka upotetaan remuxatussa tiedostossa. MKV/WebM liittää sen kuvavirrana; MP4/MOV upottaa sen videovirrana, jossa on attached_pic-asetus.",
     "addThumbnail": "Lisää pikkukuva",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "Ei tallennettuja keskusteluja. Tallenna yksi valitsemalla Tallenna keskustelu.",
     "savedChatsClose": "Sulje",
     "savedChatUntitled": "Nimetön keskustelu",
-    "savedChatMeta": "{{count}} viestiä · {{date}}",
-    "savedChatOpen": "Avaa",
     "savedChatDelete": "Poista tallennettu keskustelu",
     "savedChatSaveFailed": "Keskustelua ei voitu tallentaa. Selaimen tallennustila voi olla täynnä.",
     "openChatConfirmTitle": "Avataanko tallennettu keskustelu?",
@@ -1056,20 +1025,14 @@
     "openChatSave": "Tallenna ja avaa",
     "openChatDiscard": "Hylkää ja avaa",
     "openChatCancel": "Peruuta",
-    "title": "Copilot",
-    "subtitle": "Kuvaile tavoite ja anna Copilotin suunnitella muunnokset, siirrä sitten suunnitelma eräjonoon.",
-    "goalLabel": "Tavoite",
-    "goalPlaceholder": "esim. pienennä nämä videot verkkoa varten",
     "chooseFolder": "Valitse kansio",
     "selectedCount": "{{count}} tiedostoa valittu",
-    "selectedNone": "Ei valittuja tiedostoja",
     "plan": "Suunnittele",
     "planning": "Suunnitellaan…",
     "folderEmpty": "Kyseisestä kansiosta ei löytynyt tuettua mediaa.",
     "errorNoGoal": "Kirjoita tavoite ennen suunnittelua.",
     "errorNoInputs": "Valitse mediakansio ennen suunnittelua.",
     "dialogFailed": "Tiedostovalitsinta ei voitu avata. Yritä uudelleen.",
-    "errorFallback": "Copilot ei pystynyt laatimaan suunnitelmaa tälle tavoitteelle.",
     "errorEnqueue": "Mikään suunnitelluista töistä ei voitu lisätä jonoon.",
     "actionsTitle": "Suunnitellut toimenpiteet",
     "noActions": "Copilot ei löytänyt mitään muutettavaa tälle tavoitteelle.",
@@ -1103,27 +1066,6 @@
     "routedAs": "Toiminto: {{operation}}",
     "resultsTitle": "Löydökset",
     "ai": {
-      "title": "Tekoälyn tarjoaja",
-      "provider": "Tarjoaja",
-      "model": "Malli",
-      "modelPlaceholder": "Tarjoajan oletus",
-      "apiKey": "API-avain",
-      "keyStored": "Avaimet tallennetaan sumennettuna tekstinä ({{hint}}).",
-      "keyNone": "Ei tallennettua avainta.",
-      "save": "Tallenna",
-      "test": "Testaa yhteys",
-      "testing": "Testataan…",
-      "saved": "Asetukset tallennettu.",
-      "saveFailed": "Asetuksia ei voitu tallentaa.",
-      "testFailed": "Ei vastausta tarjoajalta.",
-      "privacy": "Vain tutkitut tiedot ja tavoitteesi teksti lähetetään; mediatiedostoja ei koskaan lähetetä.",
-      "providers": {
-        "rules": "Sisäänrakennetut säännöt (offline)",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "Paikallinen malli"
-      },
       "configure": "Määritä tekoälyn tarjoaja",
       "locationNote": "Tekoälyn tarjoajat määritetään asetuksissa.",
       "notConnected": "Ei yhteyttä"
@@ -1136,7 +1078,6 @@
     "goal": "Kuvaile, mitä haluat EncodeXin tekevän, ja liitä sitten tiedostoja tai kansio.",
     "placeholder": "Kokeile: pakkaa video verkkoon, poimi ääni MP3-muotoon tai käännä tekstitykset...",
     "inputAria": "Lähetä viesti Copilotille",
-    "send": "Lähetä",
     "advanced": "Lisäasetukset",
     "advancedTitle": "Lisäasetukset",
     "bridgeTimeout": "EncodeX ei vastannut ajoissa. Yritä uudelleen.",
@@ -1148,7 +1089,6 @@
     "resetConfirmAction": "Nollaa",
     "loadingFiles": "Ladataan tiedostoja...",
     "removeAttachment": "Poista liite",
-    "folderFilesCount": "{{name}} ({{count}} tiedostoa)",
     "saveAndReset": "Tallenna ja nollaa",
     "target": {
       "profile": "Profiili",
@@ -1171,20 +1111,15 @@
     "common": {
       "cancel": "Peruuta",
       "confirmCancel": "Vahvista peruutus",
-      "run": "Suorita",
       "retry": "Yritä uudelleen",
       "applyFix": "Ota korjaus käyttöön",
-      "waiting": "Odotetaan isännän dataa…",
       "input": "Syöte",
       "output": "Tuloste",
-      "status": "Tila",
       "duration": "Kesto",
       "size": "Koko",
       "bitrate": "Bittinopeus",
       "video": "Video",
       "audio": "Ääni",
-      "details": "Tiedot",
-      "warnings": "Varoitukset",
       "findings": "Havainnot",
       "nextSteps": "Suositellut seuraavat vaiheet",
       "attempts": "Yritykset",
@@ -1193,9 +1128,7 @@
       "assumptions": "Oletukset",
       "causes": "Todennäköiset syyt",
       "fixes": "Ehdotetut korjaukset",
-      "summary": "Yhteenveto",
       "settings": "Asetukset",
-      "error": "Virhe",
       "unknown": "-",
       "confidence": "{{value}}% varmuus",
       "jobCount": "{{count}} työtä",
@@ -1209,12 +1142,10 @@
     },
     "queue": {
       "title": "EncodeX-jono",
-      "empty": "Jonossa ei ole töitä.",
-      "waiting": "Odotetaan jonon tietoja isännältä…"
+      "empty": "Jonossa ei ole töitä."
     },
     "job": {
-      "waiting": "Odotetaan työn tietoja isännältä…",
-      "cancelled": "peruutettu"
+      "waiting": "Odotetaan työn tietoja isännältä…"
     },
     "mediaInfo": {
       "title": "Media",
@@ -1285,8 +1216,7 @@
     },
     "error": {
       "title": "Virhe",
-      "waiting": "Odotetaan isännän virhettä…",
-      "code": "Virhekoodi"
+      "waiting": "Odotetaan isännän virhettä…"
     },
     "batch": {
       "title": "Vahvista erä",
@@ -1326,8 +1256,7 @@
       "hardware": "Laitteistokiihdytys",
       "hardwareNone": "Vain ohjelmisto",
       "encoderVideo": "Video",
-      "encoderAudio": "Ääni",
-      "encoderOther": "Muu"
+      "encoderAudio": "Ääni"
     }
   }
 }

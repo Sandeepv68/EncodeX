@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "Mudar para o Modo Claro",
-    "switchDark": "Mudar para o Modo Escuro",
     "language": "Idioma",
     "searchLanguage": "Pesquisar idiomas",
     "condense": "Recolher a barra lateral",
@@ -32,7 +30,7 @@
     },
     "remux": "Remux",
     "demux": "Demux",
-    "copilot": "Copilot"
+    "copilot": "Copiloto"
   },
   "dashboard": {
     "welcome": "Bem-vindo ao EncodeX",
@@ -59,7 +57,7 @@
       "extract": "Extrair áudio",
       "trim": "Cortar um clipe",
       "remux": "Remux de um ficheiro",
-      "copilot": "Pergunte ao Copilot"
+      "copilot": "Pergunte ao Copiloto"
     }
   },
   "closeConfirm": {
@@ -78,7 +76,6 @@
     "advanced": "Avançado",
     "inputFile": "Ficheiro de Entrada",
     "outputFile": "Ficheiro de Saída",
-    "noFile": "Nenhum ficheiro selecionado",
     "noOutput": "Nenhuma saída selecionada",
     "browse": "Procurar",
     "saveAs": "Guardar Como",
@@ -96,9 +93,6 @@
     "pause": "Pausa",
     "resume": "Retomar",
     "cancel": "Cancelar",
-    "placeholderBitrate": "ex.: 2000k",
-    "placeholderAudioBitrate": "ex.: 192k",
-    "placeholderScale": "ex.: 1280x720",
     "cancelTitle": "Cancelar Conversão",
     "cancelMessage": "Tem a certeza de que deseja cancelar a conversão atual?",
     "cancelJob": "Cancelar Tarefa",
@@ -144,9 +138,7 @@
     "filtersHint": "Aplica filtros de vídeo do FFmpeg (recorte, taxa de quadros, desentrelaçamento, redução de ruído, cor…) durante a recodificação. Todos os filtros são combinados numa única cadeia -vf após a escala e a rotação.",
     "addPreset": "Adicionar filtro predefinido…",
     "addFilter": "Adicionar filtro",
-    "customChainLabel": "Cadeia de filtros personalizada",
     "customChainPlaceholder": "ex.: fps=30, eq=brightness=0.1",
-    "customChainHint": "Expressões de filtro do FFmpeg separadas por vírgulas. Cada entrada deve ter parênteses e colchetes equilibrados, aspas correspondentes e nenhum metacaractere de shell.",
     "addCustom": "Adicionar personalizado",
     "removeFilter": "Remover filtro",
     "moveUp": "Mover para cima",
@@ -262,7 +254,6 @@
     "compress": "Comprimir Imagem",
     "compressing": "A comprimir...",
     "placeholderOutput": "caminho de saída",
-    "placeholderScale": "ex.: 800x600",
     "validationRequired": "Selecione uma imagem de entrada.",
     "selectedImage": "Imagem selecionada: {{file}}",
     "inputImageHint": "A imagem de origem a comprimir. São suportados JPEG, PNG, WebP e BMP.",
@@ -289,7 +280,6 @@
     "extract": "Extrair Áudio",
     "extracting": "A extrair...",
     "placeholderOutput": "ex.: output.mp3",
-    "validationRequired": "Selecione um ficheiro de vídeo.",
     "selectedVideo": "Vídeo selecionado: {{file}}",
     "pause": "Pausa",
     "resume": "Retomar",
@@ -302,11 +292,8 @@
   "videoCut": {
     "title": "Cortar Vídeo",
     "videoFile": "Ficheiro de Vídeo",
-    "noFile": "Nenhum ficheiro selecionado",
-    "browse": "Procurar",
     "dropLabel": "Largue um ficheiro de vídeo aqui ou clique para procurar",
     "videoFileHint": "Arraste e largue um ficheiro de vídeo aqui ou clique para procurar no seu computador.",
-    "videoFiles": "Ficheiros de Vídeo",
     "changeFile": "Alterar Vídeo",
     "changeFileHint": "Selecione outro ficheiro de vídeo.",
     "outputFile": "Ficheiro de Saída",
@@ -357,9 +344,7 @@
     "stop": "Parar",
     "mute": "Silenciar",
     "unmute": "Reativar som",
-    "seek": "Procurar",
-    "playbackTime": "Tempo de reprodução",
-    "videoPlayer": "Leitor de vídeo"
+    "seek": "Procurar"
   },
   "batchQueue": {
     "bmfNotBundled": "O BMF não está incluído no EncodeX. Instale-o manualmente e certifique-se de que bmf_ffmpeg e bmf_ffprobe estão no seu PATH.",
@@ -486,12 +471,8 @@
     "outputRequired": "É necessário um ficheiro de saída",
     "invalidTime": "Formato de hora inválido (HH:MM:SS ou segundos)",
     "durationRequired": "É necessária uma duração",
-    "invalidScale": "Formato de escala inválido (ex.: 1920:1080, 50%)",
-    "invalidBitrate": "Bitrate inválido (ex.: 128k, 1M)",
     "qscaleRange": "O QScale deve estar entre 1 e 31",
-    "qualityRange": "A qualidade deve estar entre 1 e 31",
-    "inputRequired": "Selecione um ficheiro de entrada.",
-    "outputRequiredDetailed": "Selecione um ficheiro de saída."
+    "qualityRange": "A qualidade deve estar entre 1 e 31"
   },
   "logs": {
     "clear": "Limpar",
@@ -539,8 +520,6 @@
     "pathCopied": "Caminho de saída copiado para a área de transferência",
     "logsDownloaded": "Registos transferidos",
     "mediaInfoLoaded": "Informações da mídia carregadas",
-    "languageChanged": "Idioma alterado para {{language}}",
-    "cancelled": "Cancelado",
     "updateAvailable": "Atualização disponível: v{{version}}",
     "updateNow": "Atualizar agora",
     "updateDownloaded": "Atualização v{{version}} transferida",
@@ -604,8 +583,6 @@
     "alwaysOnTopHint": "Mantém a janela da aplicação acima de todas as outras janelas.",
     "launchAtLogin": "Iniciar no arranque",
     "launchAtLoginHint": "Inicia o EncodeX automaticamente quando inicia sessão no seu computador.",
-    "monitoringErrorReporting": "Relatórios de erros",
-    "monitoringErrorReportingHint": "Ajuda a melhorar o EncodeX enviando relatórios de erros anônimos. Você pode desativar isso a qualquer momento.",
     "telemetry": "Dados de utilização e relatórios de erros",
     "telemetryHint": "Ajuda a melhorar o EncodeX enviando dados de utilização e relatórios de erros anônimos. Pode desativar isto a qualquer momento.",
     "mcpServer": "Servidor MCP",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "As chaves são armazenadas como texto ofuscado ({{hint}}).",
       "keyNone": "Nenhuma chave armazenada.",
-      "save": "Guardar",
-      "saved": "Definições guardadas.",
       "saveFailed": "Não foi possível guardar as definições.",
-      "test": "Testar ligação",
       "testing": "A testar…",
       "testFailed": "Sem resposta do fornecedor.",
       "privacy": "Apenas os dados da análise e o texto do seu objetivo são enviados; os ficheiros multimédia nunca são carregados.",
@@ -692,8 +666,6 @@
       "statusConnected": "Ligado e verificado.",
       "requiresNetwork": "Este fornecedor necessita de uma ligação de rede ativa.",
       "offlineFallback": "Está offline. Mudou para o fornecedor de regras integrado. Os fornecedores remotos necessitam de uma ligação de rede ativa.",
-      "modelsLoading": "A carregar modelos...",
-      "modelsUnavailable": "Não foi possível carregar os modelos do fornecedor. Ainda pode escrever um id de modelo.",
       "keySavedPlaceholder": "Chave guardada. Cole uma nova chave para a substituir.",
       "connected": "Ligado",
       "testAgain": "Testar novamente a ligação",
@@ -816,8 +788,8 @@
   },
   "about": {
     "title": "Sobre o EncodeX",
-    "subtitle": "Um kit de ferramentas multimédia gratuito e de código aberto criado sobre o FFmpeg. Converta, comprima, extraia, corte e processe em lote áudio, vídeo e imagens, ou controle o mesmo motor a partir da CLI, de um servidor MCP ou do assistente de IA Copilot.",
-    "description": "O EncodeX é um kit de ferramentas multimédia multiplataforma que traz o poder do FFmpeg para uma interface de secretária moderna e intuitiva. Converta áudio, vídeo e imagens com controlo detalhado sobre codecs, débito binário, resolução, formato de píxel e qualidade; copie faixas sem perdas; rode e espelhe conteúdos multimédia; aplique filtros de vídeo; e corte vídeos com um leitor de pré-visualização preciso até à imagem. Os perfis de conversão configuram os destinos comuns com um clique, e pode guardar os seus próprios. A codificação com aceleração por hardware suporta NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox e Microsoft Media Foundation, sendo as famílias de codificadores detetadas automaticamente a partir do FFmpeg incluído durante a execução. A fila de processamento em lote executa tarefas em paralelo, com progresso em direto, estado guardado e importação e exportação. Para além da interface gráfica, uma CLI sem interface, um servidor MCP autónomo ou incorporado e o assistente de IA Copilot permitem que scripts e assistentes controlem o mesmo motor multimédia.",
+    "subtitle": "Um kit de ferramentas multimédia gratuito e de código aberto criado sobre o FFmpeg. Converta, comprima, extraia, corte e processe em lote áudio, vídeo e imagens, ou controle o mesmo motor a partir da CLI, de um servidor MCP ou do assistente de IA Copiloto.",
+    "description": "O EncodeX é um kit de ferramentas multimédia multiplataforma que traz o poder do FFmpeg para uma interface de secretária moderna e intuitiva. Converta áudio, vídeo e imagens com controlo detalhado sobre codecs, débito binário, resolução, formato de píxel e qualidade; copie faixas sem perdas; rode e espelhe conteúdos multimédia; aplique filtros de vídeo; e corte vídeos com um leitor de pré-visualização preciso até à imagem. Os perfis de conversão configuram os destinos comuns com um clique, e pode guardar os seus próprios. A codificação com aceleração por hardware suporta NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox e Microsoft Media Foundation, sendo as famílias de codificadores detetadas automaticamente a partir do FFmpeg incluído durante a execução. A fila de processamento em lote executa tarefas em paralelo, com progresso em direto, estado guardado e importação e exportação. Para além da interface gráfica, uma CLI sem interface, um servidor MCP autónomo ou incorporado e o assistente de IA Copiloto permitem que scripts e assistentes controlem o mesmo motor multimédia.",
     "logoAlt": "Logotipo do EncodeX",
     "featuresTitle": "O que você pode fazer",
     "featureConvert": "Converta vídeo, áudio e imagens com controlo detalhado sobre codecs, débito binário, resolução e qualidade, além de rotação e filtros",
@@ -829,7 +801,7 @@
     "featureProfiles": "Comece com perfis de conversão incorporados ou guarde os seus",
     "featureBatch": "Execute tarefas em lote em paralelo com pausa, reordenação, importação e exportação e uma ação de energia ao concluir",
     "featureHardware": "Use codificadores por GPU como NVENC, Quick Sync, AMF, VAAPI e VideoToolbox, detetados automaticamente",
-    "featureAutomation": "Descreva um objetivo ao assistente de IA Copilot ou escreva scripts para o EncodeX através da CLI e do servidor MCP",
+    "featureAutomation": "Descreva um objetivo ao assistente de IA Copiloto ou escreva scripts para o EncodeX através da CLI e do servidor MCP",
     "version": "Versão",
     "builtWith": "Construído com",
     "authorTitle": "Autor e feedback",
@@ -961,7 +933,6 @@
     "addAudioTrack": "Adicionar faixa de áudio",
     "removeAudioTrack": "Remover a faixa de áudio",
     "addedTrackDelay": "Atrasar esta faixa (segundos)",
-    "addedTrackDelayHint": "Deslocamento com sinal aplicado a esta faixa em relação ao vídeo (positivo = reproduz mais tarde). Sem perdas: aplicado como -itsoffset com cópia de fluxo.",
     "thumbnail": "Miniatura / capa",
     "thumbnailHint": "Imagem de capa opcional (.jpg, .jpeg, .png) incorporada no ficheiro remuxado. MKV/WebM anexam-na como um fluxo de imagem; MP4/MOV incorporam-na como um fluxo de vídeo com disposição attached_pic.",
     "addThumbnail": "Adicionar miniatura",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "Não há conversas guardadas. Use Guardar conversa para guardar uma.",
     "savedChatsClose": "Fechar",
     "savedChatUntitled": "Conversa sem título",
-    "savedChatMeta": "{{count}} mensagens · {{date}}",
-    "savedChatOpen": "Abrir",
     "savedChatDelete": "Eliminar conversa guardada",
     "savedChatSaveFailed": "Não foi possível guardar a conversa. O armazenamento do navegador pode estar cheio.",
     "openChatConfirmTitle": "Abrir conversa guardada?",
@@ -1056,23 +1025,17 @@
     "openChatSave": "Guardar e abrir",
     "openChatDiscard": "Descartar e abrir",
     "openChatCancel": "Cancelar",
-    "title": "Copilot",
-    "subtitle": "Descreva uma meta e deixe o Copilot planear as conversões; depois, envie o plano para a fila de lote.",
-    "goalLabel": "Meta",
-    "goalPlaceholder": "ex.: reduzir estes vídeos para a web",
     "chooseFolder": "Escolher pasta",
     "selectedCount": "{{count}} ficheiro(s) selecionado(s)",
-    "selectedNone": "Nenhum ficheiro selecionado",
     "plan": "Planear",
     "planning": "A planear…",
     "folderEmpty": "Não foi encontrada nenhuma média compatível nessa pasta.",
     "errorNoGoal": "Introduza uma meta antes de planear.",
     "errorNoInputs": "Escolha uma pasta de média antes de planear.",
     "dialogFailed": "Não foi possível abrir o seletor de ficheiros. Tente novamente.",
-    "errorFallback": "O Copilot não conseguiu criar um plano para essa meta.",
     "errorEnqueue": "Nenhum dos trabalhos planeados pôde ser adicionado à fila.",
     "actionsTitle": "Ações planeadas",
-    "noActions": "O Copilot não encontrou nada para alterar para esta meta.",
+    "noActions": "O Copiloto não encontrou nada para alterar para esta meta.",
     "savings": "Poupança estimada de ~{{pct}}%",
     "output": "para {{output}}",
     "skipsTitle": "Ficheiros ignorados",
@@ -1084,7 +1047,7 @@
     "chooseFiles": "Escolher ficheiros",
     "operationLabel": "Operação",
     "op": {
-      "auto": "Automático (deixar o Copilot decidir)",
+      "auto": "Automático (deixar o Copiloto decidir)",
       "convert": "Converter",
       "remux": "Remux",
       "demux": "Demux",
@@ -1103,27 +1066,6 @@
     "routedAs": "Operação: {{operation}}",
     "resultsTitle": "Resultados",
     "ai": {
-      "title": "Fornecedor de IA",
-      "provider": "Fornecedor",
-      "model": "Modelo",
-      "modelPlaceholder": "Predefinição do fornecedor",
-      "apiKey": "Chave de API",
-      "keyStored": "As chaves são armazenadas como texto ofuscado ({{hint}}).",
-      "keyNone": "Nenhuma chave armazenada.",
-      "save": "Guardar",
-      "test": "Testar ligação",
-      "testing": "A testar…",
-      "saved": "Definições guardadas.",
-      "saveFailed": "Não foi possível guardar as definições.",
-      "testFailed": "Sem resposta do fornecedor.",
-      "privacy": "Apenas os dados da análise e o texto do seu objetivo são enviados; os ficheiros multimédia nunca são carregados.",
-      "providers": {
-        "rules": "Regras incorporadas (offline)",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "Modelo local"
-      },
       "configure": "Configurar fornecedor de IA",
       "locationNote": "Os fornecedores de IA são configurados nas Definições.",
       "notConnected": "Não ligado"
@@ -1135,12 +1077,11 @@
     "welcome": "Como posso ajudar?",
     "goal": "Descreva o que quer que o EncodeX faça e, em seguida, anexe ficheiros ou uma pasta.",
     "placeholder": "Experimente: comprima um vídeo para a web, extraia o áudio em MP3 ou traduza as legendas...",
-    "inputAria": "Enviar mensagem ao Copilot",
-    "send": "Enviar",
+    "inputAria": "Enviar mensagem ao Copiloto",
     "advanced": "Avançado",
     "advancedTitle": "Opções avançadas",
     "bridgeTimeout": "O EncodeX não respondeu a tempo. Tente novamente.",
-    "planFailed": "O Copilot não conseguiu criar um plano para esse objetivo.",
+    "planFailed": "O Copiloto não conseguiu criar um plano para esse objetivo.",
     "thinking": "A pensar...",
     "resetConversation": "Iniciar nova conversa",
     "resetConfirmTitle": "Repor conversa?",
@@ -1148,7 +1089,6 @@
     "resetConfirmAction": "Repor",
     "loadingFiles": "A carregar ficheiros...",
     "removeAttachment": "Remover anexo",
-    "folderFilesCount": "{{name}} ({{count}} arquivos)",
     "saveAndReset": "Guardar e reiniciar",
     "target": {
       "profile": "Perfil",
@@ -1162,7 +1102,7 @@
     }
   },
   "leaveConfirm": {
-    "title": "Sair do Copilot?",
+    "title": "Sair do Copiloto?",
     "message": "Este chat ainda está ativo. Sair da página irá descartar a conversa.",
     "confirmLabel": "Sair mesmo assim",
     "cancelLabel": "Ficar"
@@ -1171,20 +1111,15 @@
     "common": {
       "cancel": "Cancelar",
       "confirmCancel": "Confirmar cancelamento",
-      "run": "Executar",
       "retry": "Tentar novamente",
       "applyFix": "Aplicar correção",
-      "waiting": "A aguardar dados do anfitrião…",
       "input": "Entrada",
       "output": "Saída",
-      "status": "Estado",
       "duration": "Duração",
       "size": "Tamanho",
       "bitrate": "Taxa de bits",
       "video": "Vídeo",
       "audio": "Áudio",
-      "details": "Detalhes",
-      "warnings": "Avisos",
       "findings": "Constatações",
       "nextSteps": "Passos seguintes recomendados",
       "attempts": "Tentativas",
@@ -1193,9 +1128,7 @@
       "assumptions": "Premissas",
       "causes": "Causas prováveis",
       "fixes": "Correções sugeridas",
-      "summary": "Resumo",
       "settings": "Definições",
-      "error": "Erro",
       "unknown": "-",
       "confidence": "{{value}}% de confiança",
       "jobCount": "{{count}} trabalhos",
@@ -1209,12 +1142,10 @@
     },
     "queue": {
       "title": "Fila do EncodeX",
-      "empty": "Não há trabalhos na fila.",
-      "waiting": "A aguardar dados da fila do anfitrião…"
+      "empty": "Não há trabalhos na fila."
     },
     "job": {
-      "waiting": "A aguardar dados do trabalho do anfitrião…",
-      "cancelled": "cancelado"
+      "waiting": "A aguardar dados do trabalho do anfitrião…"
     },
     "mediaInfo": {
       "title": "Multimédia",
@@ -1285,8 +1216,7 @@
     },
     "error": {
       "title": "Erro",
-      "waiting": "A aguardar um erro do anfitrião…",
-      "code": "Código de erro"
+      "waiting": "A aguardar um erro do anfitrião…"
     },
     "batch": {
       "title": "Confirmar lote",
@@ -1326,8 +1256,7 @@
       "hardware": "Aceleração por hardware",
       "hardwareNone": "Apenas software",
       "encoderVideo": "Vídeo",
-      "encoderAudio": "Áudio",
-      "encoderOther": "Outro"
+      "encoderAudio": "Áudio"
     }
   }
 }

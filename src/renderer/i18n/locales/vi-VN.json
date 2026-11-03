@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "Chuyển sang chế độ sáng",
-    "switchDark": "Chuyển sang chế độ tối",
     "language": "Ngôn ngữ",
     "searchLanguage": "Tìm kiếm ngôn ngữ",
     "condense": "Thu gọn thanh bên",
@@ -78,7 +76,6 @@
     "advanced": "Nâng cao",
     "inputFile": "Tệp đầu vào",
     "outputFile": "Tệp đầu ra",
-    "noFile": "Chưa chọn tệp",
     "noOutput": "Chưa chọn đầu ra",
     "browse": "Duyệt",
     "saveAs": "Lưu thành",
@@ -96,9 +93,6 @@
     "pause": "Tạm dừng",
     "resume": "Tiếp tục",
     "cancel": "Hủy",
-    "placeholderBitrate": "vd. 2000k",
-    "placeholderAudioBitrate": "vd. 192k",
-    "placeholderScale": "vd. 1280x720",
     "cancelTitle": "Hủy chuyển đổi",
     "cancelMessage": "Bạn có chắc chắn muốn hủy chuyển đổi hiện tại không?",
     "cancelJob": "Hủy tác vụ",
@@ -144,9 +138,7 @@
     "filtersHint": "Áp dụng bộ lọc video FFmpeg (cắt, tần số khung hình, khử xen kẽ, giảm nhiễu, màu sắc…) trong khi mã hoá lại. Tất cả bộ lọc được gộp thành một chuỗi -vf duy nhất sau khi thay đổi tỉ lệ và xoay.",
     "addPreset": "Thêm bộ lọc đặt trước…",
     "addFilter": "Thêm bộ lọc",
-    "customChainLabel": "Chuỗi bộ lọc tuỳ chỉnh",
     "customChainPlaceholder": "ví dụ: fps=30, eq=brightness=0.1",
-    "customChainHint": "Các biểu thức bộ lọc FFmpeg phân tách bằng dấu phẩy. Mỗi mục phải có dấu ngoặc và dấu ngoặc vuông cân bằng, dấu nháy khớp và không chứa ký tự đặc biệt của shell.",
     "addCustom": "Thêm bộ lọc tuỳ chỉnh",
     "removeFilter": "Xoá bộ lọc",
     "moveUp": "Chuyển lên",
@@ -262,7 +254,6 @@
     "compress": "Nén hình ảnh",
     "compressing": "Đang nén...",
     "placeholderOutput": "Đường dẫn đầu ra",
-    "placeholderScale": "vd. 800x600",
     "validationRequired": "Vui lòng chọn hình ảnh đầu vào.",
     "selectedImage": "Hình ảnh đã chọn: {{file}}",
     "inputImageHint": "Hình ảnh nguồn cần nén. Hỗ trợ JPEG, PNG, WebP và BMP.",
@@ -289,7 +280,6 @@
     "extract": "Trích xuất âm thanh",
     "extracting": "Đang trích xuất...",
     "placeholderOutput": "vd. output.mp3",
-    "validationRequired": "Vui lòng chọn tệp video.",
     "selectedVideo": "Video đã chọn: {{file}}",
     "pause": "Tạm dừng",
     "resume": "Tiếp tục",
@@ -302,11 +292,8 @@
   "videoCut": {
     "title": "Cắt video",
     "videoFile": "Tệp video",
-    "noFile": "Chưa chọn tệp",
-    "browse": "Duyệt",
     "dropLabel": "Thả tệp video vào đây hoặc nhấp để duyệt",
     "videoFileHint": "Kéo và thả tệp video vào đây hoặc nhấp để duyệt máy tính của bạn.",
-    "videoFiles": "Tệp video",
     "changeFile": "Đổi video",
     "changeFileHint": "Chọn một tệp video khác.",
     "outputFile": "Tệp đầu ra",
@@ -357,9 +344,7 @@
     "stop": "Dừng",
     "mute": "Tắt tiếng",
     "unmute": "Bật tiếng",
-    "seek": "Tìm",
-    "playbackTime": "Thời gian phát",
-    "videoPlayer": "Trình phát video"
+    "seek": "Tìm"
   },
   "batchQueue": {
     "bmfNotBundled": "BMF không được đóng gói cùng EncodeX. Hãy tự cài đặt và đảm bảo bmf_ffmpeg và bmf_ffprobe nằm trong PATH của bạn.",
@@ -486,12 +471,8 @@
     "outputRequired": "Cần có tệp đầu ra",
     "invalidTime": "Định dạng thời gian không hợp lệ (HH:MM:SS hoặc giây)",
     "durationRequired": "Cần có thời lượng",
-    "invalidScale": "Định dạng tỷ lệ không hợp lệ (vd. 1920:1080, 50%)",
-    "invalidBitrate": "Bitrate không hợp lệ (vd. 128k, 1M)",
     "qscaleRange": "QScale phải nằm trong khoảng từ 1 đến 31",
-    "qualityRange": "Chất lượng phải nằm trong khoảng từ 1 đến 31",
-    "inputRequired": "Vui lòng chọn tệp đầu vào.",
-    "outputRequiredDetailed": "Vui lòng chọn tệp đầu ra."
+    "qualityRange": "Chất lượng phải nằm trong khoảng từ 1 đến 31"
   },
   "logs": {
     "clear": "Xóa",
@@ -539,8 +520,6 @@
     "pathCopied": "Đường dẫn đầu ra đã được sao chép vào clipboard",
     "logsDownloaded": "Nhật ký đã được tải xuống",
     "mediaInfoLoaded": "Thông tin phương tiện đã được tải",
-    "languageChanged": "Ngôn ngữ đã được chuyển sang {{language}}",
-    "cancelled": "Đã hủy",
     "updateAvailable": "Có bản cập nhật: v{{version}}",
     "updateNow": "Cập nhật ngay",
     "updateDownloaded": "Đã tải xuống bản cập nhật v{{version}}",
@@ -604,8 +583,6 @@
     "alwaysOnTopHint": "Giữ cửa sổ ứng dụng phía trên tất cả các cửa sổ khác.",
     "launchAtLogin": "Khởi chạy khi khởi động",
     "launchAtLoginHint": "Tự động khởi chạy EncodeX khi bạn đăng nhập vào máy tính.",
-    "monitoringErrorReporting": "Báo cáo lỗi",
-    "monitoringErrorReportingHint": "Giúp cải thiện EncodeX bằng cách gửi báo cáo lỗi ẩn danh. Bạn có thể tắt tính năng này bất cứ lúc nào.",
     "telemetry": "Dữ liệu sử dụng và báo cáo lỗi",
     "telemetryHint": "Giúp cải thiện EncodeX bằng cách gửi dữ liệu sử dụng và báo cáo lỗi ẩn danh. Bạn có thể tắt tính năng này bất cứ lúc nào.",
     "mcpServer": "Máy chủ MCP",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "Các khóa được lưu dưới dạng văn bản bị xáo trộn ({{hint}}).",
       "keyNone": "Chưa có khóa nào được lưu.",
-      "save": "Lưu",
-      "saved": "Đã lưu cài đặt.",
       "saveFailed": "Không thể lưu cài đặt.",
-      "test": "Kiểm tra kết nối",
       "testing": "Đang kiểm tra…",
       "testFailed": "Không có phản hồi từ nhà cung cấp.",
       "privacy": "Chỉ có các dữ liệu phân tích và văn bản mục tiêu của bạn được gửi; tệp phương tiện không bao giờ được tải lên.",
@@ -692,8 +666,6 @@
       "statusConnected": "Đã kết nối và xác minh.",
       "requiresNetwork": "Nhà cung cấp này cần kết nối mạng đang hoạt động.",
       "offlineFallback": "Bạn đang ngoại tuyến. Đã chuyển sang nhà cung cấp quy tắc tích hợp. Nhà cung cấp từ xa cần kết nối mạng đang hoạt động.",
-      "modelsLoading": "Đang tải mô hình...",
-      "modelsUnavailable": "Không thể tải mô hình từ nhà cung cấp. Bạn vẫn có thể nhập id mô hình.",
       "keySavedPlaceholder": "Đã lưu khóa. Dán khóa mới để thay thế.",
       "connected": "Đã kết nối",
       "testAgain": "Kiểm tra lại kết nối",
@@ -961,7 +933,6 @@
     "addAudioTrack": "Thêm luồng âm thanh",
     "removeAudioTrack": "Xoá luồng âm thanh",
     "addedTrackDelay": "Trễ luồng này (giây)",
-    "addedTrackDelayHint": "Độ lệch có dấu của luồng này so với video (dương = phát muộn hơn). Không tổn thất: áp dụng dưới dạng -itsoffset khi sao chép luồng.",
     "thumbnail": "Ảnh thu nhỏ / ảnh bìa",
     "thumbnailHint": "Ảnh bìa tuỳ chọn (.jpg, .jpeg, .png) được nhúng vào tệp sau khi đóng gói lại. MKV/WebM đính kèm dưới dạng luồng hình ảnh; MP4/MOV nhúng dưới dạng luồng video với thuộc tính attached_pic.",
     "addThumbnail": "Thêm ảnh thu nhỏ",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "Chưa có cuộc trò chuyện nào được lưu. Dùng Lưu cuộc trò chuyện để lưu lại.",
     "savedChatsClose": "Đóng",
     "savedChatUntitled": "Cuộc trò chuyện chưa đặt tên",
-    "savedChatMeta": "{{count}} tin nhắn · {{date}}",
-    "savedChatOpen": "Mở",
     "savedChatDelete": "Xóa cuộc trò chuyện đã lưu",
     "savedChatSaveFailed": "Không thể lưu cuộc trò chuyện. Bộ nhớ trình duyệt có thể đã đầy.",
     "openChatConfirmTitle": "Mở cuộc trò chuyện đã lưu?",
@@ -1056,20 +1025,14 @@
     "openChatSave": "Lưu và mở",
     "openChatDiscard": "Bỏ và mở",
     "openChatCancel": "Hủy",
-    "title": "Copilot",
-    "subtitle": "Mô tả một mục tiêu và để Copilot lên kế hoạch chuyển đổi, sau đó đưa kế hoạch vào hàng đợi hàng loạt.",
-    "goalLabel": "Mục tiêu",
-    "goalPlaceholder": "ví dụ: thu nhỏ các video này cho web",
     "chooseFolder": "Chọn thư mục",
     "selectedCount": "Đã chọn {{count}} tệp",
-    "selectedNone": "Chưa chọn tệp nào",
     "plan": "Lên kế hoạch",
     "planning": "Đang lên kế hoạch…",
     "folderEmpty": "Không tìm thấy phương tiện được hỗ trợ nào trong thư mục đó.",
     "errorNoGoal": "Nhập mục tiêu trước khi lên kế hoạch.",
     "errorNoInputs": "Chọn thư mục phương tiện trước khi lên kế hoạch.",
     "dialogFailed": "Không thể mở trình chọn tệp. Hãy thử lại.",
-    "errorFallback": "Copilot không thể xây dựng kế hoạch cho mục tiêu đó.",
     "errorEnqueue": "Không thể thêm công việc đã lên kế hoạch nào vào hàng đợi.",
     "actionsTitle": "Các hành động đã lên kế hoạch",
     "noActions": "Copilot không tìm thấy gì để thay đổi cho mục tiêu này.",
@@ -1103,27 +1066,6 @@
     "routedAs": "Thao tác: {{operation}}",
     "resultsTitle": "Kết quả",
     "ai": {
-      "title": "Nhà cung cấp AI",
-      "provider": "Nhà cung cấp",
-      "model": "Mô hình",
-      "modelPlaceholder": "Mặc định của nhà cung cấp",
-      "apiKey": "Khóa API",
-      "keyStored": "Các khóa được lưu dưới dạng văn bản bị xáo trộn ({{hint}}).",
-      "keyNone": "Chưa có khóa nào được lưu.",
-      "save": "Lưu",
-      "test": "Kiểm tra kết nối",
-      "testing": "Đang kiểm tra…",
-      "saved": "Đã lưu cài đặt.",
-      "saveFailed": "Không thể lưu cài đặt.",
-      "testFailed": "Không có phản hồi từ nhà cung cấp.",
-      "privacy": "Chỉ có các dữ liệu phân tích và văn bản mục tiêu của bạn được gửi; tệp phương tiện không bao giờ được tải lên.",
-      "providers": {
-        "rules": "Quy tắc tích hợp (ngoại tuyến)",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "Mô hình cục bộ"
-      },
       "configure": "Định cấu hình nhà cung cấp AI",
       "locationNote": "Các nhà cung cấp AI được định cấu hình trong Cài đặt.",
       "notConnected": "Chưa kết nối"
@@ -1136,7 +1078,6 @@
     "goal": "Mô tả điều bạn muốn EncodeX làm, sau đó đính kèm tệp hoặc thư mục.",
     "placeholder": "Thử: nén video cho web, trích xuất âm thanh sang MP3 hoặc dịch phụ đề...",
     "inputAria": "Gửi tin nhắn cho Copilot",
-    "send": "Gửi",
     "advanced": "Nâng cao",
     "advancedTitle": "Tùy chọn nâng cao",
     "bridgeTimeout": "EncodeX không phản hồi kịp thời. Hãy thử lại.",
@@ -1148,7 +1089,6 @@
     "resetConfirmAction": "Đặt lại",
     "loadingFiles": "Đang tải tệp...",
     "removeAttachment": "Xóa tệp đính kèm",
-    "folderFilesCount": "{{name}} ({{count}} tệp)",
     "saveAndReset": "Lưu và đặt lại",
     "target": {
       "profile": "Hồ sơ",
@@ -1171,20 +1111,15 @@
     "common": {
       "cancel": "Hủy",
       "confirmCancel": "Xác nhận hủy",
-      "run": "Chạy",
       "retry": "Thử lại",
       "applyFix": "Áp dụng bản sửa",
-      "waiting": "Đang chờ dữ liệu từ máy chủ…",
       "input": "Đầu vào",
       "output": "Đầu ra",
-      "status": "Trạng thái",
       "duration": "Thời lượng",
       "size": "Kích thước",
       "bitrate": "Tốc độ bit",
       "video": "Video",
       "audio": "Âm thanh",
-      "details": "Chi tiết",
-      "warnings": "Cảnh báo",
       "findings": "Phát hiện",
       "nextSteps": "Các bước tiếp theo được đề xuất",
       "attempts": "Số lần thử",
@@ -1193,9 +1128,7 @@
       "assumptions": "Giả định",
       "causes": "Nguyên nhân có thể",
       "fixes": "Bản sửa được đề xuất",
-      "summary": "Tóm tắt",
       "settings": "Cài đặt",
-      "error": "Lỗi",
       "unknown": "-",
       "confidence": "Độ tin cậy {{value}}%",
       "jobCount": "{{count}} tác vụ",
@@ -1209,12 +1142,10 @@
     },
     "queue": {
       "title": "Hàng đợi EncodeX",
-      "empty": "Không có tác vụ nào trong hàng đợi.",
-      "waiting": "Đang chờ dữ liệu hàng đợi từ máy chủ…"
+      "empty": "Không có tác vụ nào trong hàng đợi."
     },
     "job": {
-      "waiting": "Đang chờ dữ liệu tác vụ từ máy chủ…",
-      "cancelled": "đã hủy"
+      "waiting": "Đang chờ dữ liệu tác vụ từ máy chủ…"
     },
     "mediaInfo": {
       "title": "Phương tiện",
@@ -1285,8 +1216,7 @@
     },
     "error": {
       "title": "Lỗi",
-      "waiting": "Đang chờ lỗi từ máy chủ…",
-      "code": "Mã lỗi"
+      "waiting": "Đang chờ lỗi từ máy chủ…"
     },
     "batch": {
       "title": "Xác nhận lô",
@@ -1326,8 +1256,7 @@
       "hardware": "Tăng tốc phần cứng",
       "hardwareNone": "Chỉ dùng phần mềm",
       "encoderVideo": "Video",
-      "encoderAudio": "Âm thanh",
-      "encoderOther": "Khác"
+      "encoderAudio": "Âm thanh"
     }
   }
 }

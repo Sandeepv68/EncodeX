@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "切換到淺色模式",
-    "switchDark": "切換到深色模式",
     "language": "語言",
     "searchLanguage": "搜尋語言",
     "condense": "收起側邊欄",
@@ -78,7 +76,6 @@
     "advanced": "高級",
     "inputFile": "輸入檔案",
     "outputFile": "輸出檔案",
-    "noFile": "未選擇檔案",
     "noOutput": "未選擇輸出",
     "browse": "瀏覽",
     "saveAs": "另存新檔",
@@ -96,9 +93,6 @@
     "pause": "暫停",
     "resume": "繼續",
     "cancel": "取消",
-    "placeholderBitrate": "例如 2000k",
-    "placeholderAudioBitrate": "例如 192k",
-    "placeholderScale": "例如 1280x720",
     "cancelTitle": "取消轉換",
     "cancelMessage": "確定要取消目前的轉換嗎？",
     "cancelJob": "取消工作",
@@ -144,9 +138,7 @@
     "filtersHint": "在重新編碼時套用 FFmpeg 影片篩選器（裁切、影格率、去交錯、降噪、色彩等）。所有篩選器會在縮放與旋轉之後合併為單一 -vf 篩選器鏈。",
     "addPreset": "新增預設篩選器…",
     "addFilter": "新增篩選器",
-    "customChainLabel": "自訂篩選器鏈",
     "customChainPlaceholder": "例如 fps=30, eq=brightness=0.1",
-    "customChainHint": "以逗號分隔的 FFmpeg 篩選器運算式。每個項目的括號與方括號必須成對、引號必須相符，且不得含有 shell 中繼字元。",
     "addCustom": "新增自訂",
     "removeFilter": "移除篩選器",
     "moveUp": "上移",
@@ -262,7 +254,6 @@
     "compress": "壓縮圖片",
     "compressing": "壓縮中...",
     "placeholderOutput": "輸出路徑",
-    "placeholderScale": "例如 800x600",
     "validationRequired": "請選擇輸入圖片。",
     "selectedImage": "選定的圖片：{{file}}",
     "inputImageHint": "要壓縮的來源圖片。支援 JPEG、PNG、WebP 和 BMP。",
@@ -289,7 +280,6 @@
     "extract": "擷取音訊",
     "extracting": "擷取中...",
     "placeholderOutput": "例如 output.mp3",
-    "validationRequired": "請選擇影片檔案。",
     "selectedVideo": "選定的影片：{{file}}",
     "pause": "暫停",
     "resume": "繼續",
@@ -302,11 +292,8 @@
   "videoCut": {
     "title": "剪輯影片",
     "videoFile": "影片檔案",
-    "noFile": "未選擇檔案",
-    "browse": "瀏覽",
     "dropLabel": "將影片檔案拖放到此處或按一下瀏覽",
     "videoFileHint": "將影片檔案拖放到此處，或按一下瀏覽您的電腦。",
-    "videoFiles": "影片檔案",
     "changeFile": "變更影片",
     "changeFileHint": "選擇其他影片檔案。",
     "outputFile": "輸出檔案",
@@ -357,9 +344,7 @@
     "stop": "停止",
     "mute": "靜音",
     "unmute": "取消靜音",
-    "seek": "搜尋",
-    "playbackTime": "播放時間",
-    "videoPlayer": "影片播放器"
+    "seek": "搜尋"
   },
   "batchQueue": {
     "bmfNotBundled": "BMF 未隨 EncodeX 一併封裝。請手動安裝，並確認 bmf_ffmpeg 與 bmf_ffprobe 位於您的 PATH 中。",
@@ -486,12 +471,8 @@
     "outputRequired": "需要輸出檔案",
     "invalidTime": "無效的時間格式（HH:MM:SS 或秒）",
     "durationRequired": "需要時間長度",
-    "invalidScale": "無效的縮放格式（例如 1920:1080、50%）",
-    "invalidBitrate": "無效的位元率（例如 128k、1M）",
     "qscaleRange": "QScale 必須介於 1 到 31 之間",
-    "qualityRange": "品質必須介於 1 到 31 之間",
-    "inputRequired": "請選擇輸入檔案。",
-    "outputRequiredDetailed": "請選擇輸出檔案。"
+    "qualityRange": "品質必須介於 1 到 31 之間"
   },
   "logs": {
     "clear": "清除",
@@ -539,8 +520,6 @@
     "pathCopied": "輸出路徑已複製到剪貼簿",
     "logsDownloaded": "記錄已下載",
     "mediaInfoLoaded": "媒體資訊已載入",
-    "languageChanged": "語言已變更為 {{language}}",
-    "cancelled": "已取消",
     "updateAvailable": "有可用更新: v{{version}}",
     "updateNow": "立即更新",
     "updateDownloaded": "已下載更新 v{{version}}",
@@ -604,8 +583,6 @@
     "alwaysOnTopHint": "保持應用程式視窗位於所有其他視窗之上。",
     "launchAtLogin": "登入時啟動",
     "launchAtLoginHint": "登入電腦時自動啟動 EncodeX。",
-    "monitoringErrorReporting": "错误报告",
-    "monitoringErrorReportingHint": "发送匿名错误报告以帮助改进 EncodeX。您可以随时关闭此功能。",
     "telemetry": "使用資料和錯誤報告",
     "telemetryHint": "傳送匿名的使用資料和錯誤報告以協助改進 EncodeX。您可以隨時關閉此功能。",
     "mcpServer": "MCP 伺服器",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "金鑰以混淆文字形式儲存（{{hint}}）。",
       "keyNone": "未儲存任何金鑰。",
-      "save": "儲存",
-      "saved": "設定已儲存。",
       "saveFailed": "無法儲存設定。",
-      "test": "測試連線",
       "testing": "測試中…",
       "testFailed": "提供者沒有回應。",
       "privacy": "僅會傳送分析資訊與您的目標文字；絕不會上傳媒體檔案。",
@@ -692,8 +666,6 @@
       "statusConnected": "已連線並驗證。",
       "requiresNetwork": "此提供者需要作用中的網路連線。",
       "offlineFallback": "你已離線。已切換至內建規則提供者。遠端提供者需要作用中的網路連線。",
-      "modelsLoading": "正在載入模型...",
-      "modelsUnavailable": "無法從提供者載入模型。你仍可以輸入模型 ID。",
       "keySavedPlaceholder": "金鑰已儲存。貼上新的金鑰以取代。",
       "connected": "已連線",
       "testAgain": "再次測試連線",
@@ -961,7 +933,6 @@
     "addAudioTrack": "新增音軌",
     "removeAudioTrack": "移除音軌",
     "addedTrackDelay": "延後此軌道（秒）",
-    "addedTrackDelayHint": "此軌道相對於影片的帶正負號位移（正數表示播放較晚）。無損：以 -itsoffset 搭配串流複製套用。",
     "thumbnail": "縮圖 / 封面",
     "thumbnailHint": "選用的封面圖片（.jpg、.jpeg、.png），會嵌入封裝後的檔案。MKV/WebM 會將其附加為圖片串流；MP4/MOV 則會將其嵌入為帶 attached_pic 標記的影片串流。",
     "addThumbnail": "新增縮圖",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "沒有已儲存的對話。使用「儲存對話」來保存一個。",
     "savedChatsClose": "關閉",
     "savedChatUntitled": "未命名對話",
-    "savedChatMeta": "{{count}} 則訊息 · {{date}}",
-    "savedChatOpen": "開啟",
     "savedChatDelete": "刪除已儲存的對話",
     "savedChatSaveFailed": "無法儲存對話。瀏覽器儲存空間可能已滿。",
     "openChatConfirmTitle": "開啟已儲存的對話？",
@@ -1056,20 +1025,14 @@
     "openChatSave": "儲存並開啟",
     "openChatDiscard": "捨棄並開啟",
     "openChatCancel": "取消",
-    "title": "Copilot",
-    "subtitle": "描述一個目標，讓 Copilot 規劃轉換，然後將計畫推送到批次佇列。",
-    "goalLabel": "目標",
-    "goalPlaceholder": "例如：壓縮這些影片以供網路使用",
     "chooseFolder": "選擇資料夾",
     "selectedCount": "已選取 {{count}} 個檔案",
-    "selectedNone": "未選取任何檔案",
     "plan": "規劃",
     "planning": "規劃中…",
     "folderEmpty": "該資料夾中找不到支援的媒體。",
     "errorNoGoal": "請先輸入目標再規劃。",
     "errorNoInputs": "請先選擇媒體資料夾再規劃。",
     "dialogFailed": "無法開啟檔案選擇器。請再試一次。",
-    "errorFallback": "Copilot 無法為這個目標制定計畫。",
     "errorEnqueue": "任何已規劃的工作都無法加入佇列。",
     "actionsTitle": "已規劃的操作",
     "noActions": "Copilot 找不到需要為此目標變更的內容。",
@@ -1103,27 +1066,6 @@
     "routedAs": "操作：{{operation}}",
     "resultsTitle": "發現",
     "ai": {
-      "title": "AI 提供者",
-      "provider": "提供者",
-      "model": "模型",
-      "modelPlaceholder": "提供者預設",
-      "apiKey": "API 金鑰",
-      "keyStored": "金鑰以混淆文字形式儲存（{{hint}}）。",
-      "keyNone": "未儲存任何金鑰。",
-      "save": "儲存",
-      "test": "測試連線",
-      "testing": "測試中…",
-      "saved": "設定已儲存。",
-      "saveFailed": "無法儲存設定。",
-      "testFailed": "提供者沒有回應。",
-      "privacy": "僅會傳送分析資訊與您的目標文字；絕不會上傳媒體檔案。",
-      "providers": {
-        "rules": "內建規則（離線）",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "本機模型"
-      },
       "configure": "設定 AI 提供者",
       "locationNote": "AI 提供者會在設定中設定。",
       "notConnected": "未連線"
@@ -1136,7 +1078,6 @@
     "goal": "描述你希望 EncodeX 做什麼，然後附加檔案或資料夾。",
     "placeholder": "試試：將影片壓縮以供網頁使用、將音訊擷取為 MP3，或翻譯字幕...",
     "inputAria": "傳送訊息給 Copilot",
-    "send": "傳送",
     "advanced": "進階",
     "advancedTitle": "進階選項",
     "bridgeTimeout": "EncodeX 未及時回應。請重試。",
@@ -1148,7 +1089,6 @@
     "resetConfirmAction": "重設",
     "loadingFiles": "正在載入檔案...",
     "removeAttachment": "移除附件",
-    "folderFilesCount": "{{name}} ({{count}} 個檔案)",
     "saveAndReset": "保存并重置",
     "target": {
       "profile": "設定檔",
@@ -1171,20 +1111,15 @@
     "common": {
       "cancel": "取消",
       "confirmCancel": "確認取消",
-      "run": "執行",
       "retry": "重試",
       "applyFix": "套用修正",
-      "waiting": "正在等待主機提供資料…",
       "input": "輸入",
       "output": "輸出",
-      "status": "狀態",
       "duration": "時長",
       "size": "大小",
       "bitrate": "位元速率",
       "video": "影片",
       "audio": "音訊",
-      "details": "詳細資料",
-      "warnings": "警告",
       "findings": "檢查結果",
       "nextSteps": "建議的後續步驟",
       "attempts": "嘗試次數",
@@ -1193,9 +1128,7 @@
       "assumptions": "假設",
       "causes": "可能的原因",
       "fixes": "建議的修正",
-      "summary": "摘要",
       "settings": "設定",
-      "error": "錯誤",
       "unknown": "-",
       "confidence": "{{value}}% 信心",
       "jobCount": "{{count}} 個工作",
@@ -1209,12 +1142,10 @@
     },
     "queue": {
       "title": "EncodeX 佇列",
-      "empty": "佇列中沒有工作。",
-      "waiting": "正在等待主機提供佇列資料…"
+      "empty": "佇列中沒有工作。"
     },
     "job": {
-      "waiting": "正在等待主機提供工作資料…",
-      "cancelled": "已取消"
+      "waiting": "正在等待主機提供工作資料…"
     },
     "mediaInfo": {
       "title": "媒體",
@@ -1285,8 +1216,7 @@
     },
     "error": {
       "title": "錯誤",
-      "waiting": "正在等待主機的錯誤…",
-      "code": "錯誤代碼"
+      "waiting": "正在等待主機的錯誤…"
     },
     "batch": {
       "title": "確認批次",
@@ -1326,8 +1256,7 @@
       "hardware": "硬體加速",
       "hardwareNone": "僅軟體",
       "encoderVideo": "影片",
-      "encoderAudio": "音訊",
-      "encoderOther": "其他"
+      "encoderAudio": "音訊"
     }
   }
 }

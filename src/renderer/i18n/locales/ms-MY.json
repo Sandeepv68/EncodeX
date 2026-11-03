@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "Tukar ke Mod Terang",
-    "switchDark": "Tukar ke Mod Gelap",
     "language": "Bahasa",
     "searchLanguage": "Cari bahasa",
     "condense": "Ciutkan bar sisi",
@@ -78,7 +76,6 @@
     "advanced": "Lanjutan",
     "inputFile": "Fail Input",
     "outputFile": "Fail Output",
-    "noFile": "Tiada fail dipilih",
     "noOutput": "Tiada output dipilih",
     "browse": "Semak Imbas",
     "saveAs": "Simpan Sebagai",
@@ -96,9 +93,6 @@
     "pause": "Jeda",
     "resume": "Sambung",
     "cancel": "Batal",
-    "placeholderBitrate": "cth. 2000k",
-    "placeholderAudioBitrate": "cth. 192k",
-    "placeholderScale": "cth. 1280x720",
     "cancelTitle": "Batal Penukaran",
     "cancelMessage": "Adakah anda pasti mahu membatalkan penukaran semasa?",
     "cancelJob": "Batal Tugas",
@@ -144,9 +138,7 @@
     "filtersHint": "Gunakan penapis video FFmpeg (pangkas, kadar bingkai, nyah-selang, pengurang hingar, warna…) semasa pengekodan semula. Semua penapis digabungkan menjadi satu rantai -vf selepas penskalaan dan putaran.",
     "addPreset": "Tambah penapis praprakira…",
     "addFilter": "Tambah penapis",
-    "customChainLabel": "Rangkaian penapis tersuai",
     "customChainPlaceholder": "cth. fps=30, eq=brightness=0.1",
-    "customChainHint": "Ungkapan penapis FFmpeg dipisahkan koma. Setiap elemen mesti mempunyai kurungan dan kurungan segi empat sama yang seimbang, petikan yang padan dan tiada aksara meta cengkerang.",
     "addCustom": "Tambah tersuai",
     "removeFilter": "Buang penapis",
     "moveUp": "Gerak ke atas",
@@ -262,7 +254,6 @@
     "compress": "Mampat Imej",
     "compressing": "Memampat...",
     "placeholderOutput": "laluan output",
-    "placeholderScale": "cth. 800x600",
     "validationRequired": "Sila pilih imej input.",
     "selectedImage": "Imej dipilih: {{file}}",
     "inputImageHint": "Imej sumber untuk dimampatkan. JPEG, PNG, WebP dan BMP disokong.",
@@ -289,7 +280,6 @@
     "extract": "Ekstrak Audio",
     "extracting": "Mengekstrak...",
     "placeholderOutput": "cth. output.mp3",
-    "validationRequired": "Sila pilih fail video.",
     "selectedVideo": "Video dipilih: {{file}}",
     "pause": "Jeda",
     "resume": "Sambung",
@@ -302,11 +292,8 @@
   "videoCut": {
     "title": "Potong Video",
     "videoFile": "Fail Video",
-    "noFile": "Tiada fail dipilih",
-    "browse": "Semak Imbas",
     "dropLabel": "Lepaskan fail video di sini atau klik untuk semak imbas",
     "videoFileHint": "Seret dan lepaskan fail video di sini atau klik untuk semak imbas komputer anda.",
-    "videoFiles": "Fail Video",
     "changeFile": "Tukar Video",
     "changeFileHint": "Pilih fail video yang berbeza.",
     "outputFile": "Fail Output",
@@ -357,9 +344,7 @@
     "stop": "Henti",
     "mute": "Senyapkan",
     "unmute": "Nyahsenyapkan",
-    "seek": "Cari",
-    "playbackTime": "Masa main",
-    "videoPlayer": "Pemain video"
+    "seek": "Cari"
   },
   "batchQueue": {
     "bmfNotBundled": "BMF tidak disertakan dengan EncodeX. Pasang secara manual dan pastikan bmf_ffmpeg dan bmf_ffprobe berada dalam PATH anda.",
@@ -486,12 +471,8 @@
     "outputRequired": "Fail output diperlukan",
     "invalidTime": "Format masa tidak sah (HH:MM:SS atau saat)",
     "durationRequired": "Tempoh diperlukan",
-    "invalidScale": "Format skala tidak sah (cth. 1920:1080, 50%)",
-    "invalidBitrate": "Kadar bit tidak sah (cth. 128k, 1M)",
     "qscaleRange": "QScale mesti antara 1 dan 31",
-    "qualityRange": "Kualiti mesti antara 1 dan 31",
-    "inputRequired": "Sila pilih fail input.",
-    "outputRequiredDetailed": "Sila pilih fail output."
+    "qualityRange": "Kualiti mesti antara 1 dan 31"
   },
   "logs": {
     "clear": "Kosongkan",
@@ -539,8 +520,6 @@
     "pathCopied": "Laluan output disalin ke papan klip",
     "logsDownloaded": "Log dimuat turun",
     "mediaInfoLoaded": "Maklumat media dimuat",
-    "languageChanged": "Bahasa ditukar kepada {{language}}",
-    "cancelled": "Dibatalkan",
     "updateAvailable": "Kemas kini tersedia: v{{version}}",
     "updateNow": "Kemas kini sekarang",
     "updateDownloaded": "Kemas kini v{{version}} dimuat turun",
@@ -604,8 +583,6 @@
     "alwaysOnTopHint": "Mengekalkan tetingkap aplikasi di atas semua tetingkap lain.",
     "launchAtLogin": "Lancar semasa permulaan",
     "launchAtLoginHint": "Memulakan EncodeX secara automatik apabila anda log masuk ke komputer anda.",
-    "monitoringErrorReporting": "Pelaporan ralat",
-    "monitoringErrorReportingHint": "Membantu menambah baik EncodeX dengan menghantar laporan ralat tanpa nama. Anda boleh mematikan ini pada bila-bila masa.",
     "telemetry": "Data penggunaan dan pelaporan ralat",
     "telemetryHint": "Membantu menambah baik EncodeX dengan menghantar data penggunaan dan laporan ralat tanpa nama. Anda boleh mematikan ini pada bila-bila masa.",
     "mcpServer": "Pelayan MCP",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "Kunci disimpan sebagai teks tersamar ({{hint}}).",
       "keyNone": "Tiada kunci disimpan.",
-      "save": "Simpan",
-      "saved": "Tetapan disimpan.",
       "saveFailed": "Tetapan tidak dapat disimpan.",
-      "test": "Uji sambungan",
       "testing": "Menguji…",
       "testFailed": "Tiada tindak balas daripada pembekal.",
       "privacy": "Hanya fakta pemeriksaan dan teks matlamat anda yang dihantar; fail media tidak pernah dimuat naik.",
@@ -692,8 +666,6 @@
       "statusConnected": "Bersambung dan disahkan.",
       "requiresNetwork": "Pembekal ini memerlukan sambungan rangkaian yang aktif.",
       "offlineFallback": "Anda di luar talian. Bertukar kepada pembekal peraturan terbina dalam. Pembekal jauh memerlukan sambungan rangkaian yang aktif.",
-      "modelsLoading": "Memuatkan model...",
-      "modelsUnavailable": "Tidak dapat memuatkan model daripada pembekal. Anda masih boleh menaip id model.",
       "keySavedPlaceholder": "Kunci disimpan. Tampal kunci baharu untuk menggantikannya.",
       "connected": "Bersambung",
       "testAgain": "Uji sambungan sekali lagi",
@@ -961,7 +933,6 @@
     "addAudioTrack": "Tambah trek audio",
     "removeAudioTrack": "Buang trek audio",
     "addedTrackDelay": "Kelewatan trek ini (saat)",
-    "addedTrackDelayHint": "Offset bertanda bagi trek ini berbanding video (positif = dimainkan kemudian). Tanpa-rugi: digunakan sebagai -itsoffset semasa menyalin strim.",
     "thumbnail": "Imej kecil / Kulit",
     "thumbnailHint": "Imej kulit pilihan (.jpg, .jpeg, .png) yang dibenamkan ke fail selepas Remux. MKV/WebM melampirkannya sebagai strim imej; MP4/MOV membenamkannya sebagai strim video dengan tag attached_pic.",
     "addThumbnail": "Tambah imej kecil",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "Tiada perbualan disimpan. Gunakan Simpan sembang untuk menyimpan satu.",
     "savedChatsClose": "Tutup",
     "savedChatUntitled": "Perbualan tanpa tajuk",
-    "savedChatMeta": "{{count}} mesej · {{date}}",
-    "savedChatOpen": "Buka",
     "savedChatDelete": "Padam perbualan disimpan",
     "savedChatSaveFailed": "Perbualan tidak dapat disimpan. Storan pelayar mungkin penuh.",
     "openChatConfirmTitle": "Buka perbualan disimpan?",
@@ -1056,20 +1025,14 @@
     "openChatSave": "Simpan dan buka",
     "openChatDiscard": "Buang dan buka",
     "openChatCancel": "Batal",
-    "title": "Copilot",
-    "subtitle": "Terangkan matlamat dan biarkan Copilot merancang penukaran, kemudian tolak rancangan itu ke Baris Gilir Kelompok.",
-    "goalLabel": "Matlamat",
-    "goalPlaceholder": "cth. kecilkan video ini untuk web",
     "chooseFolder": "Pilih folder",
     "selectedCount": "{{count}} fail dipilih",
-    "selectedNone": "Tiada fail dipilih",
     "plan": "Rancang",
     "planning": "Merancang…",
     "folderEmpty": "Tiada media yang disokong ditemui dalam folder itu.",
     "errorNoGoal": "Masukkan matlamat sebelum merancang.",
     "errorNoInputs": "Pilih folder media sebelum merancang.",
     "dialogFailed": "Tidak dapat membuka pemilih fail. Cuba lagi.",
-    "errorFallback": "Copilot tidak dapat membina rancangan untuk matlamat itu.",
     "errorEnqueue": "Tiada pekerjaan yang dirancang dapat ditambah ke baris gilir.",
     "actionsTitle": "Tindakan terancang",
     "noActions": "Copilot tidak menemui apa-apa untuk diubah bagi matlamat ini.",
@@ -1103,27 +1066,6 @@
     "routedAs": "Operasi: {{operation}}",
     "resultsTitle": "Penemuan",
     "ai": {
-      "title": "Pembekal AI",
-      "provider": "Pembekal",
-      "model": "Model",
-      "modelPlaceholder": "Lalai pembekal",
-      "apiKey": "Kunci API",
-      "keyStored": "Kunci disimpan sebagai teks tersamar ({{hint}}).",
-      "keyNone": "Tiada kunci disimpan.",
-      "save": "Simpan",
-      "test": "Uji sambungan",
-      "testing": "Menguji…",
-      "saved": "Tetapan disimpan.",
-      "saveFailed": "Tetapan tidak dapat disimpan.",
-      "testFailed": "Tiada tindak balas daripada pembekal.",
-      "privacy": "Hanya fakta pemeriksaan dan teks matlamat anda yang dihantar; fail media tidak pernah dimuat naik.",
-      "providers": {
-        "rules": "Peraturan terbina dalam (luar talian)",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "Model setempat"
-      },
       "configure": "Konfigurasikan pembekal AI",
       "locationNote": "Pembekal AI dikonfigurasikan dalam Tetapan.",
       "notConnected": "Tidak bersambung"
@@ -1136,7 +1078,6 @@
     "goal": "Terangkan apa yang anda mahu EncodeX lakukan, kemudian lampirkan fail atau folder.",
     "placeholder": "Cuba: mampatkan video untuk web, ekstrak audio ke MP3, atau terjemah sari kata...",
     "inputAria": "Hantar mesej kepada Copilot",
-    "send": "Hantar",
     "advanced": "Lanjutan",
     "advancedTitle": "Pilihan lanjutan",
     "bridgeTimeout": "EncodeX tidak memberi respons tepat pada masanya. Cuba lagi.",
@@ -1148,7 +1089,6 @@
     "resetConfirmAction": "Tetapkan semula",
     "loadingFiles": "Memuatkan fail...",
     "removeAttachment": "Buang lampiran",
-    "folderFilesCount": "{{name}} ({{count}} fail)",
     "saveAndReset": "Simpan dan set semula",
     "target": {
       "profile": "Profil",
@@ -1171,20 +1111,15 @@
     "common": {
       "cancel": "Batal",
       "confirmCancel": "Sahkan pembatalan",
-      "run": "Jalankan",
       "retry": "Cuba lagi",
       "applyFix": "Guna pembetulan",
-      "waiting": "Menunggu data daripada hos…",
       "input": "Input",
       "output": "Output",
-      "status": "Status",
       "duration": "Tempoh",
       "size": "Saiz",
       "bitrate": "Kadar bit",
       "video": "Video",
       "audio": "Audio",
-      "details": "Butiran",
-      "warnings": "Amaran",
       "findings": "Penemuan",
       "nextSteps": "Langkah seterusnya yang disyorkan",
       "attempts": "Percubaan",
@@ -1193,9 +1128,7 @@
       "assumptions": "Andaian",
       "causes": "Sebab yang berkemungkinan",
       "fixes": "Pembetulan yang dicadangkan",
-      "summary": "Ringkasan",
       "settings": "Tetapan",
-      "error": "Ralat",
       "unknown": "-",
       "confidence": "Keyakinan {{value}}%",
       "jobCount": "{{count}} kerja",
@@ -1209,12 +1142,10 @@
     },
     "queue": {
       "title": "Baris gilir EncodeX",
-      "empty": "Tiada kerja dalam baris gilir.",
-      "waiting": "Menunggu data baris gilir daripada hos…"
+      "empty": "Tiada kerja dalam baris gilir."
     },
     "job": {
-      "waiting": "Menunggu data kerja daripada hos…",
-      "cancelled": "dibatalkan"
+      "waiting": "Menunggu data kerja daripada hos…"
     },
     "mediaInfo": {
       "title": "Media",
@@ -1285,8 +1216,7 @@
     },
     "error": {
       "title": "Ralat",
-      "waiting": "Menunggu ralat daripada hos…",
-      "code": "Kod ralat"
+      "waiting": "Menunggu ralat daripada hos…"
     },
     "batch": {
       "title": "Sahkan kelompok",
@@ -1326,8 +1256,7 @@
       "hardware": "Pecutan perkakasan",
       "hardwareNone": "Perisian sahaja",
       "encoderVideo": "Video",
-      "encoderAudio": "Audio",
-      "encoderOther": "Lain-lain"
+      "encoderAudio": "Audio"
     }
   }
 }

@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "Zum hellen Modus wechseln",
-    "switchDark": "Zum dunklen Modus wechseln",
     "language": "Sprache",
     "searchLanguage": "Sprachen suchen",
     "condense": "Seitenleiste einklappen",
@@ -78,7 +76,6 @@
     "advanced": "Erweitert",
     "inputFile": "Eingabedatei",
     "outputFile": "Ausgabedatei",
-    "noFile": "Keine Datei ausgewählt",
     "noOutput": "Keine Ausgabe ausgewählt",
     "browse": "Durchsuchen",
     "saveAs": "Speichern unter",
@@ -96,9 +93,6 @@
     "pause": "Pause",
     "resume": "Wieder aufnehmen",
     "cancel": "Abbrechen",
-    "placeholderBitrate": "z.B. 2000k",
-    "placeholderAudioBitrate": "z.B. 192k",
-    "placeholderScale": "z.B. 1280x720",
     "cancelJob": "Auftrag abbrechen",
     "jobCancelTitle": "Auftrag abbrechen",
     "jobCancelMessage": "Dadurch wird der aktuelle Konvertierungsauftrag gelöscht. ",
@@ -144,9 +138,7 @@
     "filtersHint": "Wendet beim Neukodieren FFmpeg-Videofilter an (Zuschneiden, Bildrate, Deinterlacing, Entrauschen, Farbe …). Alle Filter werden hinter Skalierung und Rotation in einer einzigen -vf-Kette zusammengeführt.",
     "addPreset": "Filter aus Vorlage hinzufügen …",
     "addFilter": "Filter hinzufügen",
-    "customChainLabel": "Eigene Filterkette",
     "customChainPlaceholder": "z. B. fps=30, eq=brightness=0.1",
-    "customChainHint": "Kommagetrennte FFmpeg-Filterausdrücke. Jeder Eintrag muss ausgeglichene Klammern, passende Anführungszeichen und keine Shell-Sonderzeichen enthalten.",
     "addCustom": "Eigenes hinzufügen",
     "removeFilter": "Filter entfernen",
     "moveUp": "Nach oben",
@@ -262,7 +254,6 @@
     "compress": "Bild komprimieren",
     "compressing": "Komprimiere...",
     "placeholderOutput": "Ausgabepfad",
-    "placeholderScale": "z.B. 800x600",
     "validationRequired": "Bitte wählen Sie ein Eingabebild aus.",
     "selectedImage": "Ausgewähltes Bild: {{file}}",
     "inputImageHint": "Das Quellbild für die Komprimierung. Unterstützt werden JPEG, PNG, WebP und BMP.",
@@ -289,7 +280,6 @@
     "extract": "Audio extrahieren",
     "extracting": "Extrahiere...",
     "placeholderOutput": "z.B. output.mp3",
-    "validationRequired": "Bitte wählen Sie eine Videodatei aus.",
     "selectedVideo": "Ausgewähltes Video: {{file}}",
     "pause": "Pausieren",
     "resume": "Fortsetzen",
@@ -302,8 +292,6 @@
   "videoCut": {
     "title": "Video schneiden",
     "videoFile": "Videodatei",
-    "noFile": "Keine Datei ausgewählt",
-    "browse": "Durchsuchen",
     "outputFile": "Ausgabedatei",
     "startTime": "Startzeit (HH:MM:SS)",
     "duration": "Dauer (HH:MM:SS)",
@@ -324,7 +312,6 @@
     "jobCancelMessage": "Dadurch wird das aktuelle Video-Schnittformular gelöscht. Sind Sie sicher?",
     "closePreview": "Vorschau schließen",
     "videoFileHint": "Videodatei hier ablegen oder klicken zum Durchsuchen Ihres Computers.",
-    "videoFiles": "Videodateien",
     "dropLabel": "Videodatei hier ablegen oder klicken zum Durchsuchen",
     "changeFile": "Video ändern",
     "changeFileHint": "Wählen Sie eine andere Videodatei.",
@@ -357,9 +344,7 @@
     "stop": "Stopp",
     "mute": "Stumm",
     "unmute": "Stummschaltung aufheben",
-    "seek": "Suchen",
-    "playbackTime": "Wiedergabezeit",
-    "videoPlayer": "Videoplayer"
+    "seek": "Suchen"
   },
   "batchQueue": {
     "bmfNotBundled": "BMF ist nicht in EncodeX enthalten. Installieren Sie es manuell und stellen Sie sicher, dass bmf_ffmpeg und bmf_ffprobe in Ihrem PATH verfügbar sind.",
@@ -486,12 +471,8 @@
     "outputRequired": "Ausgabedatei ist erforderlich",
     "invalidTime": "Ungültiges Zeitformat (HH:MM:SS oder Sekunden)",
     "durationRequired": "Dauer ist erforderlich",
-    "invalidScale": "Ungültiges Skalierungsformat (z.B. 1920:1080, 50%)",
-    "invalidBitrate": "Ungültige Bitrate (z.B. 128k, 1M)",
     "qscaleRange": "QScale muss zwischen 1 und 31 liegen",
-    "qualityRange": "Qualität muss zwischen 1 und 31 liegen",
-    "inputRequired": "Bitte wählen Sie eine Eingabedatei aus.",
-    "outputRequiredDetailed": "Bitte wählen Sie eine Ausgabedatei aus."
+    "qualityRange": "Qualität muss zwischen 1 und 31 liegen"
   },
   "logs": {
     "clear": "Leeren",
@@ -538,8 +519,6 @@
     "allCancelled": "Alle Aufgaben abgebrochen",
     "logsDownloaded": "Protokolle heruntergeladen",
     "mediaInfoLoaded": "Medieninformationen geladen",
-    "languageChanged": "Sprache geändert zu {{language}}",
-    "cancelled": "Abgebrochen",
     "pathCopied": "Ausgabepfad in die Zwischenablage kopiert",
     "updateAvailable": "Update verfügbar: v{{version}}",
     "updateNow": "Jetzt aktualisieren",
@@ -594,8 +573,6 @@
     "alwaysOnTopHint": "Hält das App-Fenster über allen anderen Fenstern.",
     "launchAtLogin": "Beim Start ausführen",
     "launchAtLoginHint": "Startet EncodeX automatisch, wenn Sie sich an Ihrem Computer anmelden.",
-    "monitoringErrorReporting": "Fehlerberichterstattung",
-    "monitoringErrorReportingHint": "Hilft, EncodeX zu verbessern, indem anonyme Fehlerberichte gesendet werden. Sie können dies jederzeit deaktivieren.",
     "telemetry": "Nutzungsdaten & Fehlerberichterstattung",
     "telemetryHint": "Hilft, EncodeX zu verbessern, indem anonyme Nutzungsdaten und Fehlerberichte gesendet werden. Sie können dies jederzeit deaktivieren.",
     "mcpServer": "MCP-Server",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "Schlüssel werden als obfuskierter Text gespeichert ({{hint}}).",
       "keyNone": "Kein Schlüssel gespeichert.",
-      "save": "Speichern",
-      "saved": "Einstellungen gespeichert.",
       "saveFailed": "Die Einstellungen konnten nicht gespeichert werden.",
-      "test": "Verbindung testen",
       "testing": "Testen…",
       "testFailed": "Keine Antwort vom Anbieter.",
       "privacy": "Nur Prüfdaten und Ihr Zieltext werden gesendet; Mediendateien werden nie hochgeladen.",
@@ -692,8 +666,6 @@
       "statusConnected": "Verbunden und verifiziert.",
       "requiresNetwork": "Dieser Anbieter benötigt eine aktive Netzwerkverbindung.",
       "offlineFallback": "Sie sind offline. Zum integrierten Regel-Anbieter gewechselt. Remote-Anbieter benötigen eine aktive Netzwerkverbindung.",
-      "modelsLoading": "Modelle werden geladen...",
-      "modelsUnavailable": "Modelle konnten nicht vom Anbieter geladen werden. Sie können trotzdem eine Modell-ID eingeben.",
       "keySavedPlaceholder": "Schlüssel gespeichert. Fügen Sie einen neuen Schlüssel ein, um ihn zu ersetzen.",
       "connected": "Verbunden",
       "testAgain": "Verbindung erneut testen",
@@ -961,7 +933,6 @@
     "addAudioTrack": "Audiospur hinzufügen",
     "removeAudioTrack": "Audiospur entfernen",
     "addedTrackDelay": "Diese Spur verzögern (Sekunden)",
-    "addedTrackDelayHint": "Vorzeichenbehafteter Versatz dieser Spur relativ zum Video (positiv = spätere Wiedergabe). Verlustfrei: wird als -itsoffset mit Stream-Kopie angewendet.",
     "thumbnail": "Miniaturbild / Cover",
     "thumbnailHint": "Optionales Titelbild (.jpg, .jpeg, .png), das in die Remux-Datei eingebettet wird. MKV/WebM hängen es als angehängten Bild-Stream an; MP4/MOV betten es als Videostream mit attached_pic-Disposition ein.",
     "addThumbnail": "Miniaturbild hinzufügen",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "Keine gespeicherten Unterhaltungen. Verwenden Sie „Chat speichern“, um eine zu sichern.",
     "savedChatsClose": "Schließen",
     "savedChatUntitled": "Unbenannte Unterhaltung",
-    "savedChatMeta": "{{count}} Nachrichten · {{date}}",
-    "savedChatOpen": "Öffnen",
     "savedChatDelete": "Gespeicherte Unterhaltung löschen",
     "savedChatSaveFailed": "Die Unterhaltung konnte nicht gespeichert werden. Der Browser-Speicher ist möglicherweise voll.",
     "openChatConfirmTitle": "Gespeicherte Unterhaltung öffnen?",
@@ -1056,20 +1025,14 @@
     "openChatSave": "Speichern und öffnen",
     "openChatDiscard": "Verwerfen und öffnen",
     "openChatCancel": "Abbrechen",
-    "title": "Copilot",
-    "subtitle": "Beschreibe ein Ziel und lass Copilot die Konvertierungen planen, dann übernimm den Plan in die Stapel-Warteschlange.",
-    "goalLabel": "Ziel",
-    "goalPlaceholder": "z. B. diese Videos für das Web verkleinern",
     "chooseFolder": "Ordner auswählen",
     "selectedCount": "{{count}} Datei(en) ausgewählt",
-    "selectedNone": "Keine Dateien ausgewählt",
     "plan": "Planen",
     "planning": "Wird geplant…",
     "folderEmpty": "In diesem Ordner wurde kein unterstütztes Medium gefunden.",
     "errorNoGoal": "Gib ein Ziel ein, bevor du planst.",
     "errorNoInputs": "Wähle einen Ordner mit Medien, bevor du planst.",
     "dialogFailed": "Der Dateiauswahldialog konnte nicht geöffnet werden. Versuche es erneut.",
-    "errorFallback": "Copilot konnte für dieses Ziel keinen Plan erstellen.",
     "errorEnqueue": "Keine der geplanten Aufgaben konnte zur Warteschlange hinzugefügt werden.",
     "actionsTitle": "Geplante Aktionen",
     "noActions": "Copilot hat für dieses Ziel nichts zu ändern gefunden.",
@@ -1103,27 +1066,6 @@
     "routedAs": "Vorgang: {{operation}}",
     "resultsTitle": "Ergebnisse",
     "ai": {
-      "title": "KI-Anbieter",
-      "provider": "Anbieter",
-      "model": "Modell",
-      "modelPlaceholder": "Anbieter-Standard",
-      "apiKey": "API-Schlüssel",
-      "keyStored": "Schlüssel werden als obfuskierter Text gespeichert ({{hint}}).",
-      "keyNone": "Kein Schlüssel gespeichert.",
-      "save": "Speichern",
-      "test": "Verbindung testen",
-      "testing": "Testen…",
-      "saved": "Einstellungen gespeichert.",
-      "saveFailed": "Die Einstellungen konnten nicht gespeichert werden.",
-      "testFailed": "Keine Antwort vom Anbieter.",
-      "privacy": "Nur Prüfdaten und Ihr Zieltext werden gesendet; Mediendateien werden nie hochgeladen.",
-      "providers": {
-        "rules": "Integrierte Regeln (offline)",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "Lokales Modell"
-      },
       "configure": "KI-Anbieter konfigurieren",
       "locationNote": "KI-Anbieter werden in den Einstellungen konfiguriert.",
       "notConnected": "Nicht verbunden"
@@ -1136,7 +1078,6 @@
     "goal": "Beschreibe, was EncodeX tun soll, und füge dann Dateien oder einen Ordner hinzu.",
     "placeholder": "Versuchen Sie: ein Video für das Web komprimieren, Audio als MP3 extrahieren oder Untertitel übersetzen...",
     "inputAria": "Copilot eine Nachricht senden",
-    "send": "Senden",
     "advanced": "Erweitert",
     "advancedTitle": "Erweiterte Optionen",
     "bridgeTimeout": "EncodeX hat nicht rechtzeitig geantwortet. Versuche es erneut.",
@@ -1148,7 +1089,6 @@
     "resetConfirmAction": "Zurücksetzen",
     "loadingFiles": "Dateien werden geladen...",
     "removeAttachment": "Anhang entfernen",
-    "folderFilesCount": "{{name}} ({{count}} Dateien)",
     "saveAndReset": "Speichern und zurücksetzen",
     "target": {
       "profile": "Profil",
@@ -1171,20 +1111,15 @@
     "common": {
       "cancel": "Abbrechen",
       "confirmCancel": "Abbrechen bestätigen",
-      "run": "Ausführen",
       "retry": "Wiederholen",
       "applyFix": "Korrektur anwenden",
-      "waiting": "Warten auf Daten vom Host…",
       "input": "Eingabe",
       "output": "Ausgabe",
-      "status": "Status",
       "duration": "Dauer",
       "size": "Größe",
       "bitrate": "Bitrate",
       "video": "Video",
       "audio": "Audio",
-      "details": "Details",
-      "warnings": "Warnungen",
       "findings": "Ergebnisse",
       "nextSteps": "Empfohlene nächste Schritte",
       "attempts": "Versuche",
@@ -1193,9 +1128,7 @@
       "assumptions": "Annahmen",
       "causes": "Wahrscheinliche Ursachen",
       "fixes": "Vorgeschlagene Korrekturen",
-      "summary": "Zusammenfassung",
       "settings": "Einstellungen",
-      "error": "Fehler",
       "unknown": "-",
       "confidence": "{{value}} % Konfidenz",
       "jobCount": "{{count}} Jobs",
@@ -1209,12 +1142,10 @@
     },
     "queue": {
       "title": "EncodeX-Warteschlange",
-      "empty": "Keine Jobs in der Warteschlange.",
-      "waiting": "Warten auf Warteschlangendaten vom Host…"
+      "empty": "Keine Jobs in der Warteschlange."
     },
     "job": {
-      "waiting": "Warten auf Jobdaten vom Host…",
-      "cancelled": "abgebrochen"
+      "waiting": "Warten auf Jobdaten vom Host…"
     },
     "mediaInfo": {
       "title": "Medien",
@@ -1285,8 +1216,7 @@
     },
     "error": {
       "title": "Fehler",
-      "waiting": "Warten auf einen Fehler vom Host…",
-      "code": "Fehlercode"
+      "waiting": "Warten auf einen Fehler vom Host…"
     },
     "batch": {
       "title": "Stapel bestätigen",
@@ -1326,8 +1256,7 @@
       "hardware": "Hardwarebeschleunigung",
       "hardwareNone": "Nur Software",
       "encoderVideo": "Video",
-      "encoderAudio": "Audio",
-      "encoderOther": "Sonstige"
+      "encoderAudio": "Audio"
     }
   }
 }

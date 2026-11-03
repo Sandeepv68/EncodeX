@@ -100,12 +100,8 @@ function interpolationTokens(value: string): string[] {
  * `scripts/locale-backfill.mjs`.
  */
 const ALWAYS_IDENTICAL = new Set([
-  'copilot.title',
   'copilot.op.remux',
   'copilot.op.demux',
-  'copilot.ai.providers.openai',
-  'copilot.ai.providers.anthropic',
-  'copilot.ai.providers.gemini',
   'settings.ai.providers.openai',
   'settings.ai.providers.anthropic',
   'settings.ai.providers.gemini',
@@ -121,10 +117,8 @@ const ALWAYS_IDENTICAL = new Set([
  * English placeholders and must not be flagged.
  */
 const COGNATE_IDENTICAL: Record<string, Set<string>> = {
-  'copilot.ai.model': new Set(['af-ZA', 'da-DK', 'id-ID', 'ms-MY', 'ms-SG', 'nl-BE', 'nl-NL', 'pl-PL']),
   'settings.ai.model': new Set(['af-ZA', 'da-DK', 'id-ID', 'ms-MY', 'ms-SG', 'nl-BE', 'nl-NL', 'pl-PL']),
   'copilot.advanced': new Set(['fil-PH', 'kl-GL', 'tl-PH']),
-  'copilot.send': new Set(['da-DK', 'nb-NO']),
   'copilot.plan': new Set(['da-DK']),
   // The target-summary labels use the standard loanwords of each language.
   'copilot.target.video': new Set([

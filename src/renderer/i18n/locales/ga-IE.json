@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "Athraigh go mód geal",
-    "switchDark": "Athraigh go mód dorcha",
     "language": "Teanga",
     "searchLanguage": "Cuardaigh teangacha",
     "condense": "Crap an barra taoibh",
@@ -78,7 +76,6 @@
     "advanced": "Ardcheann",
     "inputFile": "Comhad Ionchuir",
     "outputFile": "Comhad Aschuir",
-    "noFile": "Níor roghnaíodh comhad",
     "noOutput": "Níor roghnaíodh aschur",
     "browse": "Brabhsáil",
     "saveAs": "Sábháil Mar",
@@ -96,9 +93,6 @@
     "pause": "Sos",
     "resume": "Atosaigh",
     "cancel": "Cealaigh",
-    "placeholderBitrate": "m.sh. 2000k",
-    "placeholderAudioBitrate": "m.sh. 192k",
-    "placeholderScale": "m.sh. 1280x720",
     "cancelTitle": "Cealaigh Tiontú",
     "cancelMessage": "An bhfuil tú cinnte gur mian leat an tiontú reatha a chealú?",
     "cancelJob": "Cealaigh Post",
@@ -144,9 +138,7 @@
     "filtersHint": "Cuireann scagairí físeáin FFmpeg i bhfeidhm (bearradh, ráta frámaí, neamhfhíodóireacht, laghdú torainn, dathanna…) le linn athionchódaithe. Comhcheanglaítear na scagairí uile in aon slabhra -vf amháin tar éis scálú agus rothlú.",
     "addPreset": "Cuir scagaire réamhshocraithe leis…",
     "addFilter": "Cuir scagaire leis",
-    "customChainLabel": "Slabhra scagairí saincheaptha",
     "customChainPlaceholder": "m.sh. fps=30, eq=brightness=0.1",
-    "customChainHint": "Slonn scagairí FFmpeg scartha le camóga. Ní mór lúibíní agus lúibíní cearnacha cothromaithe a bheith i ngach mír, sleachta ag teacht le chéile, agus gan aon mheiteashiombail ó shlógairt.",
     "addCustom": "Cuir saincheaptha leis",
     "removeFilter": "Bain an scagaire",
     "moveUp": "Bog suas",
@@ -262,7 +254,6 @@
     "compress": "Comhbhrúigh Íomhá",
     "compressing": "Ag comhbhrú...",
     "placeholderOutput": "Cosán aschuir",
-    "placeholderScale": "m.sh. 800x600",
     "validationRequired": "Roghnaigh íomhá ionchuir le do thoil.",
     "selectedImage": "Íomhá roghnaithe: {{file}}",
     "inputImageHint": "An íomhá fhoinse le comhbhrú. Tacaítear le JPEG, PNG, WebP agus BMP.",
@@ -289,7 +280,6 @@
     "extract": "Bain Fuaim",
     "extracting": "Ag baint...",
     "placeholderOutput": "m.sh. output.mp3",
-    "validationRequired": "Roghnaigh comhad físeáin le do thoil.",
     "selectedVideo": "Físeán roghnaithe: {{file}}",
     "pause": "Sos",
     "resume": "Atosaigh",
@@ -302,11 +292,8 @@
   "videoCut": {
     "title": "Gearr Físeán",
     "videoFile": "Comhad Físeáin",
-    "noFile": "Níor roghnaíodh comhad",
-    "browse": "Brabhsáil",
     "dropLabel": "Caith comhad físeáin anseo nó cliceáil chun brabhsáil",
     "videoFileHint": "Tarraing agus scaoil comhad físeáin anseo nó cliceáil chun brabhsáil ar do ríomhaire.",
-    "videoFiles": "Comhaid Físeáin",
     "changeFile": "Athraigh Físeán",
     "changeFileHint": "Roghnaigh comhad físeáin eile.",
     "outputFile": "Comhad Aschuir",
@@ -357,9 +344,7 @@
     "stop": "Stop",
     "mute": "Balbhaigh",
     "unmute": "Díbhhalbhaigh",
-    "seek": "Cuardaigh",
-    "playbackTime": "Am seinnte",
-    "videoPlayer": "Seinnteoir físeáin"
+    "seek": "Cuardaigh"
   },
   "batchQueue": {
     "bmfNotBundled": "Níl BMF pacáistithe le EncodeX. Suiteáil de láimh é agus cinntigh go bhfuil bmf_ffmpeg agus bmf_ffprobe ar do PATH.",
@@ -486,12 +471,8 @@
     "outputRequired": "Comhad aschuir ag teastáil",
     "invalidTime": "Formáid ama neamhbhailí (HH:MM:SS nó soicindí)",
     "durationRequired": "Fad ag teastáil",
-    "invalidScale": "Formáid scála neamhbhailí (m.sh. 1920:1080, 50%)",
-    "invalidBitrate": "Giotáráta neamhbhailí (m.sh. 128k, 1M)",
     "qscaleRange": "Caithfidh QScale a bheith idir 1 agus 31",
-    "qualityRange": "Caithfidh cáilíocht a bheith idir 1 agus 31",
-    "inputRequired": "Roghnaigh comhad ionchuir le do thoil.",
-    "outputRequiredDetailed": "Roghnaigh comhad aschuir le do thoil."
+    "qualityRange": "Caithfidh cáilíocht a bheith idir 1 agus 31"
   },
   "logs": {
     "clear": "Glan",
@@ -539,8 +520,6 @@
     "pathCopied": "Cóipeáladh an cosán aschuir chuig an ngearrthaisce",
     "logsDownloaded": "Íoslódáladh na logaí",
     "mediaInfoLoaded": "Lódáladh faisnéis na meán",
-    "languageChanged": "Athraíodh an teanga go {{language}}",
-    "cancelled": "Cealaithe",
     "updateAvailable": "Nuashonrú ar fáil: v{{version}}",
     "updateNow": "Nuashonraigh anois",
     "updateDownloaded": "Nuashonrú v{{version}} íoslódáilte",
@@ -604,8 +583,6 @@
     "alwaysOnTopHint": "Coinníonn fuinneog an aip os cionn na bhfuinneoga eile go léir.",
     "launchAtLogin": "Seol ag am tosaithe",
     "launchAtLoginHint": "Cuireann sé tús le EncodeX go huathoibríoch nuair a logálann tú isteach ar do ríomhaire.",
-    "monitoringErrorReporting": "Tuairisciú earráidí",
-    "monitoringErrorReportingHint": "Cuidíonn sé le EncodeX a fheabhsú trí thuairiscí earráidí gan ainm a sheoladh. Is féidir leat é a mhúchadh ag am ar bith.",
     "telemetry": "Sonraí úsáide agus tuairisciú earráidí",
     "telemetryHint": "Cuidíonn sé le EncodeX a fheabhsú trí shonraí úsáide agus tuairiscí earráidí gan ainm a sheoladh. Is féidir leat é a mhúchadh ag am ar bith.",
     "mcpServer": "Freastalaí MCP",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "Stóráiltear eochracha mar téacs doiléir ({{hint}}).",
       "keyNone": "Níl aon eochair stóráilte.",
-      "save": "Sábháil",
-      "saved": "Socruithe sábháilte.",
       "saveFailed": "Níorbh fhéidir na socruithe a shábháil.",
-      "test": "Tástáil an nasc",
       "testing": "Ag tástáil…",
       "testFailed": "Uimh fhreagra ón soláthraí.",
       "privacy": "Ní sheoltar ach fíricí an anailíse agus téacs do chuspóra; ní uaslódáiltear comhaid meán riamh.",
@@ -692,8 +666,6 @@
       "statusConnected": "Ceangailte agus fíoraithe.",
       "requiresNetwork": "Teastaíonn nasc líonra gníomhach ón soláthraí seo.",
       "offlineFallback": "Tá tú as líne. Aistríodh chuig an soláthraí rialacha ionsuite. Teastaíonn nasc líonra gníomhach ó sholáthraithe cianda.",
-      "modelsLoading": "Ag lódáil samhlacha...",
-      "modelsUnavailable": "Níorbh fhéidir samhlacha a lódáil ón soláthraí. Is féidir leat id samhla a chlóscríobh fós.",
       "keySavedPlaceholder": "Eochair sábháilte. Greamaigh eochair nua chun í a athsholáthar.",
       "connected": "Ceangailte",
       "testAgain": "Tástáil an nasc arís",
@@ -961,7 +933,6 @@
     "addAudioTrack": "Cuir rian fuaime leis",
     "removeAudioTrack": "Bain an rian fuaime",
     "addedTrackDelay": "Frítháireamh an riain seo (soicind)",
-    "addedTrackDelayHint": "Fritháireamh sintithe don rian seo i gcoibhneas leis an bhfíseán (dearfach = seinntear níos déanaí). Gan chailliúint: cuirtear i bhfeidhm mar -itsoffset agus an sruth á chóipeáil.",
     "thumbnail": "Mionsamhail / clúdach",
     "thumbnailHint": "Íomhá clúdaigh roghnach (.jpg, .jpeg, .png) atá leabaithe sa chomhad tar éis an athchumhdaigh. Ceanglaíonn MKV/WebM é mar shruth íomhá; leabaíonn MP4/MOV é mar shruth físeáin le clib attached_pic.",
     "addThumbnail": "Cuir mionsamhail leis",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "Níl aon chomhrá sábháilte ann. Úsáid Sábháil comhrá chun ceann a choinneáil.",
     "savedChatsClose": "Dún",
     "savedChatUntitled": "Comhrá gan teideal",
-    "savedChatMeta": "{{count}} teachtaireacht · {{date}}",
-    "savedChatOpen": "Oscail",
     "savedChatDelete": "Scrios comhrá sábháilte",
     "savedChatSaveFailed": "Níorbh fhéidir an comhrá a shábháil. Seans go bhfuil stór an bhrabhsálaí lán.",
     "openChatConfirmTitle": "Oscail comhrá sábháilte?",
@@ -1056,20 +1025,14 @@
     "openChatSave": "Sábháil agus oscail",
     "openChatDiscard": "Caith amach agus oscail",
     "openChatCancel": "Cealaigh",
-    "title": "Copilot",
-    "subtitle": "Déan cur síos ar sprioc agus lig do Copilot na tiontuithe a phleanáil, ansin brúigh an plean chuig an Scuaine Bhaisc.",
-    "goalLabel": "Sprioc",
-    "goalPlaceholder": "m.sh. laghdaigh na físeáin seo don ghréasán",
     "chooseFolder": "Roghnaigh fillteán",
     "selectedCount": "{{count}} comhad roghnaithe",
-    "selectedNone": "Níl aon chomhad roghnaithe",
     "plan": "Pleanáil",
     "planning": "Ag pleanáil…",
     "folderEmpty": "Níor aimsíodh aon mheán tacaithe sa bhfillteán sin.",
     "errorNoGoal": "Cuir sprioc isteach sula bpleanálann tú.",
     "errorNoInputs": "Roghnaigh fillteán meán sula bpleanálann tú.",
     "dialogFailed": "Níorbh fhéidir an roghnóir comhad a oscailt. Bain triail eile as.",
-    "errorFallback": "Níorbh fhéidir le Copilot plean a chruthú don sprioc sin.",
     "errorEnqueue": "Níorbh fhéidir aon cheann de na poist phleanáilte a chur leis an scuaine.",
     "actionsTitle": "Gníomhartha pleanáilte",
     "noActions": "Níor aimsigh Copilot aon rud le hathrú don sprioc seo.",
@@ -1103,27 +1066,6 @@
     "routedAs": "Oibríocht: {{operation}}",
     "resultsTitle": "Torthaí",
     "ai": {
-      "title": "Soláthraí AI",
-      "provider": "Soláthraí",
-      "model": "Samhail",
-      "modelPlaceholder": "Réamhshocrú an tsoláthraí",
-      "apiKey": "Eochair API",
-      "keyStored": "Stóráiltear eochracha mar téacs doiléir ({{hint}}).",
-      "keyNone": "Níl aon eochair stóráilte.",
-      "save": "Sábháil",
-      "test": "Tástáil an nasc",
-      "testing": "Ag tástáil…",
-      "saved": "Socruithe sábháilte.",
-      "saveFailed": "Níorbh fhéidir na socruithe a shábháil.",
-      "testFailed": "Uimh fhreagra ón soláthraí.",
-      "privacy": "Ní sheoltar ach fíricí an anailíse agus téacs do chuspóra; ní uaslódáiltear comhaid meán riamh.",
-      "providers": {
-        "rules": "Rialacha ionsuite (as líne)",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "Samhail áitiúil"
-      },
       "configure": "Cumraigh soláthraí AI",
       "locationNote": "Cumraítear soláthraithe AI sna Socruithe.",
       "notConnected": "Gan nasc"
@@ -1136,7 +1078,6 @@
     "goal": "Déan cur síos ar a bhfuil tú ag iarraidh ar EncodeX a dhéanamh, ansin ceangail comhaid nó fillteán.",
     "placeholder": "Bain triail as: comhbhrúigh físeán don ghréasán, bain amach an fhuaim mar MP3, nó aistrigh na fotheidil...",
     "inputAria": "Seol teachtaireacht chuig Copilot",
-    "send": "Seol",
     "advanced": "Ardghnéithe",
     "advancedTitle": "Ardroghanna",
     "bridgeTimeout": "Níor thug EncodeX freagra in am. Bain triail eile as.",
@@ -1148,7 +1089,6 @@
     "resetConfirmAction": "Athshocraigh",
     "loadingFiles": "Ag lódáil comhad...",
     "removeAttachment": "Bain ceangal as",
-    "folderFilesCount": "{{name}} ({{count}} comhéad)",
     "saveAndReset": "Sábháil agus athshocraigh",
     "target": {
       "profile": "Próifíl",
@@ -1171,20 +1111,15 @@
     "common": {
       "cancel": "Cealaigh",
       "confirmCancel": "Deimhnigh an cealú",
-      "run": "Rith",
       "retry": "Bain triail eile as",
       "applyFix": "Cuir an ceartúchán i bhfeidhm",
-      "waiting": "Ag feitheamh le sonraí ón óstaigh…",
       "input": "Ionchur",
       "output": "Aschur",
-      "status": "Stádas",
       "duration": "Fad",
       "size": "Méid",
       "bitrate": "Ráta_bits",
       "video": "Fideo",
       "audio": "Fuaim",
-      "details": "Sonraí",
-      "warnings": "Rabhadh",
       "findings": "Aimsithe",
       "nextSteps": "Céimeanna molta eile",
       "attempts": "Iarrachtaí",
@@ -1193,9 +1128,7 @@
       "assumptions": "Cuirí",
       "causes": "Cúiseanna dócha",
       "fixes": "Ceartuithe molta",
-      "summary": "Achoimre",
       "settings": "Socruithe",
-      "error": "Earráid",
       "unknown": "-",
       "confidence": "{{value}}% muiníneacht",
       "jobCount": "{{count}} tasc",
@@ -1209,12 +1142,10 @@
     },
     "queue": {
       "title": "Fàilte EncodeX",
-      "empty": "Níl aon tasc sa fhàilte.",
-      "waiting": "Ag feitheamh le sonraí na fáilte ón óstaigh…"
+      "empty": "Níl aon tasc sa fhàilte."
     },
     "job": {
-      "waiting": "Ag feitheamh le sonraí an tasc ón óstaigh…",
-      "cancelled": "cealaithe"
+      "waiting": "Ag feitheamh le sonraí an tasc ón óstaigh…"
     },
     "mediaInfo": {
       "title": "Meáin",
@@ -1285,8 +1216,7 @@
     },
     "error": {
       "title": "Earráid",
-      "waiting": "Ag feitheamh le hearráid ón óstaigh…",
-      "code": "Cód earráide"
+      "waiting": "Ag feitheamh le hearráid ón óstaigh…"
     },
     "batch": {
       "title": "Deimhnigh an baisc",
@@ -1326,8 +1256,7 @@
       "hardware": "Luathú cruáthardware",
       "hardwareNone": "Bogearadh amháin",
       "encoderVideo": "Fideo",
-      "encoderAudio": "Fuaim",
-      "encoderOther": "Eile"
+      "encoderAudio": "Fuaim"
     }
   }
 }

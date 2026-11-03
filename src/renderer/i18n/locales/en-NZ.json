@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "Switch to Light Mode",
-    "switchDark": "Switch to Dark Mode",
     "language": "Language",
     "searchLanguage": "Search languages",
     "condense": "Condense sidebar",
@@ -78,7 +76,6 @@
     "advanced": "Advanced",
     "inputFile": "Input File",
     "outputFile": "Output File",
-    "noFile": "No file selected",
     "noOutput": "No output selected",
     "browse": "Browse",
     "saveAs": "Save As",
@@ -96,9 +93,6 @@
     "pause": "Pause",
     "resume": "Resume",
     "cancel": "Cancel",
-    "placeholderBitrate": "e.g. 2000k",
-    "placeholderAudioBitrate": "e.g. 192k",
-    "placeholderScale": "e.g. 1280x720",
     "cancelTitle": "Cancel Conversion",
     "cancelMessage": "Are you sure you want to cancel the current conversion?",
     "cancelJob": "Cancel Job",
@@ -144,9 +138,7 @@
     "filtersHint": "Applies FFmpeg video filters (crop, frame rate, deinterlace, denoise, color...) during re-encoding. All filters merge into the single -vf chain after scale and rotation.",
     "addPreset": "Add preset filter...",
     "addFilter": "Add filter",
-    "customChainLabel": "Custom filter chain",
     "customChainPlaceholder": "e.g. fps=30, eq=brightness=0.1",
-    "customChainHint": "Comma-separated FFmpeg filter expressions. Each entry must use balanced brackets, matched quotes, and no shell metacharacters.",
     "addCustom": "Add custom",
     "removeFilter": "Remove filter",
     "moveUp": "Move up",
@@ -262,7 +254,6 @@
     "compress": "Compress Image",
     "compressing": "Compressing...",
     "placeholderOutput": "output path",
-    "placeholderScale": "e.g. 800x600",
     "validationRequired": "Please select an input image.",
     "selectedImage": "Selected image: {{file}}",
     "inputImageHint": "The source image to compress. JPEG, PNG, WebP and BMP are supported.",
@@ -289,7 +280,6 @@
     "extract": "Extract Audio",
     "extracting": "Extracting...",
     "placeholderOutput": "e.g. output.mp3",
-    "validationRequired": "Please select a video file.",
     "selectedVideo": "Selected video: {{file}}",
     "pause": "Pause",
     "resume": "Resume",
@@ -302,11 +292,8 @@
   "videoCut": {
     "title": "Cut Video",
     "videoFile": "Video File",
-    "noFile": "No file selected",
-    "browse": "Browse",
     "dropLabel": "Drop a video file here or click to browse",
     "videoFileHint": "Drag and drop a video file here or click to browse your computer.",
-    "videoFiles": "Video Files",
     "changeFile": "Change Video",
     "changeFileHint": "Select a different video file.",
     "outputFile": "Output File",
@@ -357,9 +344,7 @@
     "stop": "Stop",
     "mute": "Mute",
     "unmute": "Unmute",
-    "seek": "Seek",
-    "playbackTime": "Playback time",
-    "videoPlayer": "Video player"
+    "seek": "Seek"
   },
   "batchQueue": {
     "bmfNotBundled": "BMF is not packaged with EncodeX. Install it manually and make sure bmf_ffmpeg and bmf_ffprobe are on your PATH.",
@@ -486,12 +471,8 @@
     "outputRequired": "Output file is required",
     "invalidTime": "Invalid time format (HH:MM:SS or seconds)",
     "durationRequired": "Duration is required",
-    "invalidScale": "Invalid scale format (e.g. 1920:1080, 50%)",
-    "invalidBitrate": "Invalid bitrate (e.g. 128k, 1M)",
     "qscaleRange": "QScale must be between 1 and 31",
-    "qualityRange": "Quality must be between 1 and 31",
-    "inputRequired": "Please select an input file.",
-    "outputRequiredDetailed": "Please select an output file."
+    "qualityRange": "Quality must be between 1 and 31"
   },
   "logs": {
     "clear": "Clear",
@@ -539,8 +520,6 @@
     "pathCopied": "Output path copied to clipboard",
     "logsDownloaded": "Logs downloaded",
     "mediaInfoLoaded": "Media info loaded",
-    "languageChanged": "Language changed to {{language}}",
-    "cancelled": "Cancelled",
     "updateAvailable": "Update available: v{{version}}",
     "updateNow": "Update Now",
     "updateDownloaded": "Update v{{version}} downloaded",
@@ -604,8 +583,6 @@
     "alwaysOnTopHint": "Keeps the app window above all other windows.",
     "launchAtLogin": "Launch at startup",
     "launchAtLoginHint": "Starts EncodeX automatically when you sign in to your computer.",
-    "monitoringErrorReporting": "Error reporting",
-    "monitoringErrorReportingHint": "Helps improve EncodeX by sending anonymous error reports. You can turn this off at any time.",
     "telemetry": "Usage data & error reporting",
     "telemetryHint": "Helps improve EncodeX by sending anonymous usage data and error reports. You can turn this off at any time.",
     "mcpServer": "MCP Server",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "Keys are stored as obfuscated text ({{hint}}).",
       "keyNone": "No key stored.",
-      "save": "Save",
-      "saved": "Settings saved.",
       "saveFailed": "Could not save the settings.",
-      "test": "Test connection",
       "testing": "Testing...",
       "testFailed": "No response from the provider.",
       "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
@@ -692,8 +666,6 @@
       "statusConnected": "Connected and verified.",
       "requiresNetwork": "This provider needs an active network connection.",
       "offlineFallback": "You're offline. Switched to the built-in rules provider. Remote providers need an active network connection.",
-      "modelsLoading": "Loading models...",
-      "modelsUnavailable": "Couldn't load models from the provider. You can still type a model id.",
       "keySavedPlaceholder": "Key saved. Paste a new key to replace it.",
       "connected": "Connected",
       "testAgain": "Test the connection again",
@@ -961,7 +933,6 @@
     "addAudioTrack": "Add Audio Track",
     "removeAudioTrack": "Remove audio track",
     "addedTrackDelay": "Delay this track (seconds)",
-    "addedTrackDelayHint": "Signed offset applied to this track relative to the video (positive = plays later). Lossless: applied as -itsoffset with stream copy.",
     "thumbnail": "Thumbnail / Cover Art",
     "thumbnailHint": "Optional cover image (.jpg, .jpeg, .png) embedded into the remuxed file. MKV/WebM attach it as an attached picture stream; MP4/MOV embed it as a video stream with an attached_pic disposition.",
     "addThumbnail": "Add Thumbnail",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "No saved conversations. Use Save chat to keep one.",
     "savedChatsClose": "Close",
     "savedChatUntitled": "Untitled conversation",
-    "savedChatMeta": "{{count}} messages · {{date}}",
-    "savedChatOpen": "Open",
     "savedChatDelete": "Delete saved conversation",
     "savedChatSaveFailed": "Could not save the conversation. Browser storage may be full.",
     "openChatConfirmTitle": "Open saved conversation?",
@@ -1056,20 +1025,14 @@
     "openChatSave": "Save and open",
     "openChatDiscard": "Discard and open",
     "openChatCancel": "Cancel",
-    "title": "Copilot",
-    "subtitle": "Describe a goal and let Copilot plan the conversions, then push the plan to the Batch Queue.",
-    "goalLabel": "Goal",
-    "goalPlaceholder": "e.g. shrink these videos for the web",
     "chooseFolder": "Choose folder",
     "selectedCount": "{{count}} file(s) selected",
-    "selectedNone": "No files selected",
     "plan": "Plan",
     "planning": "Planning...",
     "folderEmpty": "No supported media was found in that folder.",
     "errorNoGoal": "Enter a goal before planning.",
     "errorNoInputs": "Choose a folder of media before planning.",
     "dialogFailed": "Could not open the file picker. Try again.",
-    "errorFallback": "Copilot could not build a plan for that goal.",
     "errorEnqueue": "None of the planned jobs could be added to the queue.",
     "actionsTitle": "Planned actions",
     "noActions": "Copilot found nothing to change for this goal.",
@@ -1103,27 +1066,6 @@
     "routedAs": "Operation: {{operation}}",
     "resultsTitle": "Findings",
     "ai": {
-      "title": "AI provider",
-      "provider": "Provider",
-      "model": "Model",
-      "modelPlaceholder": "Provider default",
-      "apiKey": "API key",
-      "keyStored": "Keys are stored as obfuscated text ({{hint}}).",
-      "keyNone": "No key stored.",
-      "save": "Save",
-      "test": "Test connection",
-      "testing": "Testing...",
-      "saved": "Settings saved.",
-      "saveFailed": "Could not save the settings.",
-      "testFailed": "No response from the provider.",
-      "privacy": "Only probe facts and your goal text are sent; media files are never uploaded.",
-      "providers": {
-        "rules": "Built-in rules (offline)",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "Local model"
-      },
       "configure": "Configure AI provider",
       "locationNote": "AI providers are configured in Settings.",
       "notConnected": "Not connected"
@@ -1136,7 +1078,6 @@
     "goal": "Describe what you want EncodeX to do, then attach files or a folder.",
     "placeholder": "Try: compress a video for web, extract audio to MP3, or translate subtitles...",
     "inputAria": "Message Copilot",
-    "send": "Send",
     "advanced": "Advanced",
     "advancedTitle": "Advanced options",
     "bridgeTimeout": "EncodeX did not respond in time. Try again.",
@@ -1148,7 +1089,6 @@
     "resetConfirmAction": "Reset",
     "loadingFiles": "Loading files...",
     "removeAttachment": "Remove attachment",
-    "folderFilesCount": "{{name}} ({{count}})",
     "saveAndReset": "Save and reset",
     "target": {
       "profile": "Profile",
@@ -1171,20 +1111,15 @@
     "common": {
       "cancel": "Cancel",
       "confirmCancel": "Confirm cancel",
-      "run": "Run",
       "retry": "Retry",
       "applyFix": "Apply fix",
-      "waiting": "Waiting for the host to provide data…",
       "input": "Input",
       "output": "Output",
-      "status": "Status",
       "duration": "Duration",
       "size": "Size",
       "bitrate": "Bitrate",
       "video": "Video",
       "audio": "Audio",
-      "details": "Details",
-      "warnings": "Warnings",
       "findings": "Findings",
       "nextSteps": "Recommended next steps",
       "attempts": "Attempts",
@@ -1193,9 +1128,7 @@
       "assumptions": "Assumptions",
       "causes": "Likely causes",
       "fixes": "Suggested fixes",
-      "summary": "Summary",
       "settings": "Settings",
-      "error": "Error",
       "unknown": "-",
       "confidence": "{{value}}% confidence",
       "jobCount": "{{count}} jobs",
@@ -1209,12 +1142,10 @@
     },
     "queue": {
       "title": "EncodeX queue",
-      "empty": "No jobs in the queue.",
-      "waiting": "Waiting for the host to provide queue data…"
+      "empty": "No jobs in the queue."
     },
     "job": {
-      "waiting": "Waiting for the host to provide job data…",
-      "cancelled": "cancelled"
+      "waiting": "Waiting for the host to provide job data…"
     },
     "mediaInfo": {
       "title": "Media",
@@ -1285,8 +1216,7 @@
     },
     "error": {
       "title": "Error",
-      "waiting": "Waiting for the host to provide an error…",
-      "code": "Error code"
+      "waiting": "Waiting for the host to provide an error…"
     },
     "batch": {
       "title": "Confirm batch",
@@ -1326,8 +1256,7 @@
       "hardware": "Hardware acceleration",
       "hardwareNone": "Software only",
       "encoderVideo": "Video",
-      "encoderAudio": "Audio",
-      "encoderOther": "Other"
+      "encoderAudio": "Audio"
     }
   }
 }

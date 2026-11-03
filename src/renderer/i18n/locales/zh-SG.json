@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "切换到浅色模式",
-    "switchDark": "切换到深色模式",
     "language": "语言",
     "searchLanguage": "搜索语言",
     "condense": "收起侧边栏",
@@ -78,7 +76,6 @@
     "advanced": "高级",
     "inputFile": "输入文件",
     "outputFile": "输出文件",
-    "noFile": "未选择文件",
     "noOutput": "未选择输出",
     "browse": "浏览",
     "saveAs": "另存为",
@@ -96,9 +93,6 @@
     "pause": "暂停",
     "resume": "继续",
     "cancel": "取消",
-    "placeholderBitrate": "例如 2000k",
-    "placeholderAudioBitrate": "例如 192k",
-    "placeholderScale": "例如 1280x720",
     "cancelTitle": "取消转换",
     "cancelMessage": "确定要取消当前转换吗？",
     "cancelJob": "取消任务",
@@ -144,9 +138,7 @@
     "filtersHint": "在重新编码时应用 FFmpeg 视频滤镜（裁剪、帧率、去隔行、降噪、色彩等）。所有滤镜会在缩放和旋转之后合并为一条 -vf 滤镜链。",
     "addPreset": "添加预设滤镜…",
     "addFilter": "添加滤镜",
-    "customChainLabel": "自定义滤镜链",
     "customChainPlaceholder": "例如 fps=30, eq=brightness=0.1",
-    "customChainHint": "以逗号分隔的 FFmpeg 滤镜表达式。每项的括号与方括号必须成对、引号必须匹配，且不得包含 shell 元字符。",
     "addCustom": "添加自定义",
     "removeFilter": "移除滤镜",
     "moveUp": "上移",
@@ -262,7 +254,6 @@
     "compress": "压缩图像",
     "compressing": "压缩中...",
     "placeholderOutput": "输出路径",
-    "placeholderScale": "例如 800x600",
     "validationRequired": "请选择输入图像。",
     "selectedImage": "选定的图像：{{file}}",
     "inputImageHint": "要压缩的源图像。支持 JPEG、PNG、WebP 和 BMP。",
@@ -289,7 +280,6 @@
     "extract": "提取音频",
     "extracting": "提取中...",
     "placeholderOutput": "例如 output.mp3",
-    "validationRequired": "请选择视频文件。",
     "selectedVideo": "选定的视频：{{file}}",
     "pause": "暂停",
     "resume": "继续",
@@ -302,11 +292,8 @@
   "videoCut": {
     "title": "剪切视频",
     "videoFile": "视频文件",
-    "noFile": "未选择文件",
-    "browse": "浏览",
     "dropLabel": "将视频文件拖放到此处或点击浏览",
     "videoFileHint": "将视频文件拖放到此处，或点击浏览您的电脑。",
-    "videoFiles": "视频文件",
     "changeFile": "更改视频",
     "changeFileHint": "选择其他视频文件。",
     "outputFile": "输出文件",
@@ -357,9 +344,7 @@
     "stop": "停止",
     "mute": "静音",
     "unmute": "取消静音",
-    "seek": "搜索",
-    "playbackTime": "播放时间",
-    "videoPlayer": "视频播放器"
+    "seek": "搜索"
   },
   "batchQueue": {
     "bmfNotBundled": "BMF 未随 EncodeX 打包。请手动安装，并确保 bmf_ffmpeg 和 bmf_ffprobe 位于您的 PATH 中。",
@@ -486,12 +471,8 @@
     "outputRequired": "需要输出文件",
     "invalidTime": "无效的时间格式（HH:MM:SS 或秒）",
     "durationRequired": "需要时长",
-    "invalidScale": "无效的缩放格式（例如 1920:1080、50%）",
-    "invalidBitrate": "无效的比特率（例如 128k、1M）",
     "qscaleRange": "QScale 必须在 1 到 31 之间",
-    "qualityRange": "质量必须在 1 到 31 之间",
-    "inputRequired": "请选择输入文件。",
-    "outputRequiredDetailed": "请选择输出文件。"
+    "qualityRange": "质量必须在 1 到 31 之间"
   },
   "logs": {
     "clear": "清除",
@@ -539,8 +520,6 @@
     "pathCopied": "输出路径已复制到剪贴板",
     "logsDownloaded": "日志已下载",
     "mediaInfoLoaded": "媒体信息已加载",
-    "languageChanged": "语言已更改为 {{language}}",
-    "cancelled": "已取消",
     "updateAvailable": "有可用更新: v{{version}}",
     "updateNow": "立即更新",
     "updateDownloaded": "更新 v{{version}} 已下载",
@@ -604,8 +583,6 @@
     "alwaysOnTopHint": "保持应用窗口位于所有其他窗口之上。",
     "launchAtLogin": "启动时运行",
     "launchAtLoginHint": "登录计算机时自动启动 EncodeX。",
-    "monitoringErrorReporting": "错误报告",
-    "monitoringErrorReportingHint": "发送匿名错误报告以帮助改进 EncodeX。您可以随时关闭此功能。",
     "telemetry": "使用数据和错误报告",
     "telemetryHint": "发送匿名的使用数据和错误报告以帮助改进 EncodeX。您可以随时关闭此功能。",
     "mcpServer": "MCP 服务器",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "密钥以混淆文本形式存储（{{hint}}）。",
       "keyNone": "未存储密钥。",
-      "save": "保存",
-      "saved": "设置已保存。",
       "saveFailed": "无法保存设置。",
-      "test": "测试连接",
       "testing": "正在测试…",
       "testFailed": "提供商无响应。",
       "privacy": "仅发送分析信息和您的目标文本；媒体文件绝不会被上传。",
@@ -692,8 +666,6 @@
       "statusConnected": "已连接并验证。",
       "requiresNetwork": "此提供商需要有效的网络连接。",
       "offlineFallback": "你已离线。已切换到内置规则提供商。远程提供商需要有效的网络连接。",
-      "modelsLoading": "正在加载模型...",
-      "modelsUnavailable": "无法从提供商加载模型。你仍可以输入模型 ID。",
       "keySavedPlaceholder": "密钥已保存。粘贴新密钥以替换。",
       "connected": "已连接",
       "testAgain": "再次测试连接",
@@ -961,7 +933,6 @@
     "addAudioTrack": "添加音轨",
     "removeAudioTrack": "移除音轨",
     "addedTrackDelay": "延迟此轨道（秒）",
-    "addedTrackDelayHint": "此轨道相对于视频的带符号偏移（正数表示播放更晚）。无损：作为 -itsoffset 配合流复制应用。",
     "thumbnail": "缩略图 / 封面",
     "thumbnailHint": "可选的封面图片（.jpg、.jpeg、.png），会嵌入封装后的文件。MKV/WebM 将其作为图片流附加；MP4/MOV 则将其作为带 attached_pic 标记的视频流嵌入。",
     "addThumbnail": "添加缩略图",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "没有已保存的对话。使用“保存对话”来保存一个。",
     "savedChatsClose": "关闭",
     "savedChatUntitled": "未命名对话",
-    "savedChatMeta": "{{count}} 条消息 · {{date}}",
-    "savedChatOpen": "打开",
     "savedChatDelete": "删除已保存的对话",
     "savedChatSaveFailed": "无法保存对话。浏览器存储空间可能已满。",
     "openChatConfirmTitle": "打开已保存的对话？",
@@ -1056,20 +1025,14 @@
     "openChatSave": "保存并打开",
     "openChatDiscard": "放弃并打开",
     "openChatCancel": "取消",
-    "title": "Copilot",
-    "subtitle": "描述一个目标，让 Copilot 规划转换，然后将计划推送到批量队列。",
-    "goalLabel": "目标",
-    "goalPlaceholder": "例如：压缩这些视频以供网络使用",
     "chooseFolder": "选择文件夹",
     "selectedCount": "已选择 {{count}} 个文件",
-    "selectedNone": "未选择文件",
     "plan": "规划",
     "planning": "规划中…",
     "folderEmpty": "该文件夹中未找到支持的媒体。",
     "errorNoGoal": "请先输入目标再规划。",
     "errorNoInputs": "请先选择媒体文件夹再规划。",
     "dialogFailed": "无法打开文件选择器。请重试。",
-    "errorFallback": "Copilot 无法为这个目标制定计划。",
     "errorEnqueue": "计划的任务均无法加入队列。",
     "actionsTitle": "计划的操作",
     "noActions": "Copilot 没有找到需要为此目标更改的内容。",
@@ -1103,27 +1066,6 @@
     "routedAs": "操作：{{operation}}",
     "resultsTitle": "发现",
     "ai": {
-      "title": "AI 提供商",
-      "provider": "提供商",
-      "model": "模型",
-      "modelPlaceholder": "提供商默认",
-      "apiKey": "API 密钥",
-      "keyStored": "密钥以混淆文本形式存储（{{hint}}）。",
-      "keyNone": "未存储密钥。",
-      "save": "保存",
-      "test": "测试连接",
-      "testing": "正在测试…",
-      "saved": "设置已保存。",
-      "saveFailed": "无法保存设置。",
-      "testFailed": "提供商无响应。",
-      "privacy": "仅发送分析信息和您的目标文本；媒体文件绝不会被上传。",
-      "providers": {
-        "rules": "内置规则（离线）",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "本地模型"
-      },
       "configure": "配置 AI 提供商",
       "locationNote": "AI 提供商在设置中配置。",
       "notConnected": "未连接"
@@ -1136,7 +1078,6 @@
     "goal": "描述你希望 EncodeX 做什么，然后附加文件或文件夹。",
     "placeholder": "试试：将视频压缩以供网页使用、将音频提取为 MP3，或翻译字幕...",
     "inputAria": "向 Copilot 发送消息",
-    "send": "发送",
     "advanced": "高级",
     "advancedTitle": "高级选项",
     "bridgeTimeout": "EncodeX 未及时响应。请重试。",
@@ -1148,7 +1089,6 @@
     "resetConfirmAction": "重置",
     "loadingFiles": "正在加载文件...",
     "removeAttachment": "移除附件",
-    "folderFilesCount": "{{name}} ({{count}} 个文件)",
     "saveAndReset": "保存并重置",
     "target": {
       "profile": "配置",
@@ -1171,20 +1111,15 @@
     "common": {
       "cancel": "取消",
       "confirmCancel": "确认取消",
-      "run": "运行",
       "retry": "重试",
       "applyFix": "应用修复",
-      "waiting": "正在等待宿主提供数据…",
       "input": "输入",
       "output": "输出",
-      "status": "状态",
       "duration": "时长",
       "size": "大小",
       "bitrate": "比特率",
       "video": "视频",
       "audio": "音频",
-      "details": "详情",
-      "warnings": "警告",
       "findings": "检查结果",
       "nextSteps": "建议的后续步骤",
       "attempts": "尝试次数",
@@ -1193,9 +1128,7 @@
       "assumptions": "假设",
       "causes": "可能的原因",
       "fixes": "建议的修复",
-      "summary": "摘要",
       "settings": "设置",
-      "error": "错误",
       "unknown": "-",
       "confidence": "{{value}}% 置信度",
       "jobCount": "{{count}} 个任务",
@@ -1209,12 +1142,10 @@
     },
     "queue": {
       "title": "EncodeX 队列",
-      "empty": "队列中没有任务。",
-      "waiting": "正在等待宿主提供队列数据…"
+      "empty": "队列中没有任务。"
     },
     "job": {
-      "waiting": "正在等待宿主提供任务数据…",
-      "cancelled": "已取消"
+      "waiting": "正在等待宿主提供任务数据…"
     },
     "mediaInfo": {
       "title": "媒体",
@@ -1285,8 +1216,7 @@
     },
     "error": {
       "title": "错误",
-      "waiting": "正在等待宿主的错误…",
-      "code": "错误代码"
+      "waiting": "正在等待宿主的错误…"
     },
     "batch": {
       "title": "确认批处理",
@@ -1326,8 +1256,7 @@
       "hardware": "硬件加速",
       "hardwareNone": "仅软件",
       "encoderVideo": "视频",
-      "encoderAudio": "音频",
-      "encoderOther": "其他"
+      "encoderAudio": "音频"
     }
   }
 }

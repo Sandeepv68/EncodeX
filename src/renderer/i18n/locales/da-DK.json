@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "Skift til lys tilstand",
-    "switchDark": "Skift til mørk tilstand",
     "language": "Sprog",
     "searchLanguage": "Søg sprog",
     "condense": "Kollaps sidepanelet",
@@ -78,7 +76,6 @@
     "advanced": "Avanceret",
     "inputFile": "Inputfil",
     "outputFile": "Outputfil",
-    "noFile": "Ingen fil valgt",
     "noOutput": "Intet output valgt",
     "browse": "Gennemse",
     "saveAs": "Gem som",
@@ -96,9 +93,6 @@
     "pause": "Sæt på pause",
     "resume": "Fortsæt",
     "cancel": "Annuller",
-    "placeholderBitrate": "fx 2000k",
-    "placeholderAudioBitrate": "fx 192k",
-    "placeholderScale": "fx 1280x720",
     "cancelTitle": "Annuller konvertering",
     "cancelMessage": "Er du sikker på, at du vil annullere den aktuelle konvertering?",
     "cancelJob": "Annuller job",
@@ -144,9 +138,7 @@
     "filtersHint": "Anvender FFmpeg-videofiltre (beskæring, billedhastighed, deinterlacing, støjreduktion, farve…) under genkodning. Alle filtre flettes sammen i én -vf-kæde efter skalering og rotation.",
     "addPreset": "Tilføj forudindstillet filter…",
     "addFilter": "Tilføj filter",
-    "customChainLabel": "Tilpasset filterkæde",
     "customChainPlaceholder": "f.eks. fps=30, eq=brightness=0.1",
-    "customChainHint": "FFmpeg-filterudtryk adskilt med kommaer. Hvert element skal have balancerede runde og firkantede parenteser, matchende anførselstegn og ingen shell-metategn.",
     "addCustom": "Tilføj tilpasset",
     "removeFilter": "Fjern filter",
     "moveUp": "Flyt op",
@@ -262,7 +254,6 @@
     "compress": "Komprimer billede",
     "compressing": "Komprimerer...",
     "placeholderOutput": "Outputsti",
-    "placeholderScale": "fx 800x600",
     "validationRequired": "Vælg et inputbillede.",
     "selectedImage": "Valgt billede: {{file}}",
     "inputImageHint": "Kildebilledet, der skal komprimeres. JPEG, PNG, WebP og BMP understøttes.",
@@ -289,7 +280,6 @@
     "extract": "Uddrag lyd",
     "extracting": "Udtrækker...",
     "placeholderOutput": "fx output.mp3",
-    "validationRequired": "Vælg en videofil.",
     "selectedVideo": "Valgt video: {{file}}",
     "pause": "Sæt på pause",
     "resume": "Fortsæt",
@@ -302,11 +292,8 @@
   "videoCut": {
     "title": "Klip video",
     "videoFile": "Videofil",
-    "noFile": "Ingen fil valgt",
-    "browse": "Gennemse",
     "dropLabel": "Smid videofilen her, eller klik for at gennemse",
     "videoFileHint": "Træk og slip en videofil her, eller klik for at gennemse din computer.",
-    "videoFiles": "Videofiler",
     "changeFile": "Skift video",
     "changeFileHint": "Vælg en anden videofil.",
     "outputFile": "Outputfil",
@@ -357,9 +344,7 @@
     "stop": "Stop",
     "mute": "Slå lyd fra",
     "unmute": "Slå lyd til",
-    "seek": "Søg",
-    "playbackTime": "Afspilningstid",
-    "videoPlayer": "Videoafspiller"
+    "seek": "Søg"
   },
   "batchQueue": {
     "bmfNotBundled": "BMF er ikke pakket med EncodeX. Installer det manuelt, og sørg for, at bmf_ffmpeg og bmf_ffprobe er på din PATH.",
@@ -486,12 +471,8 @@
     "outputRequired": "Outputfil påkrævet",
     "invalidTime": "Ugyldigt tidsformat (HH:MM:SS eller sekunder)",
     "durationRequired": "Varighed påkrævet",
-    "invalidScale": "Ugyldigt skalaformat (fx 1920:1080, 50%)",
-    "invalidBitrate": "Ugyldig bithastighed (fx 128k, 1M)",
     "qscaleRange": "QScale skal være mellem 1 og 31",
-    "qualityRange": "Kvalitet skal være mellem 1 og 31",
-    "inputRequired": "Vælg venligst en inputfil.",
-    "outputRequiredDetailed": "Vælg venligst en outputfil."
+    "qualityRange": "Kvalitet skal være mellem 1 og 31"
   },
   "logs": {
     "clear": "Ryd",
@@ -539,8 +520,6 @@
     "pathCopied": "Outputsti kopieret til udklipsholderen",
     "logsDownloaded": "Logfiler downloadet",
     "mediaInfoLoaded": "Medieoplysninger indlæst",
-    "languageChanged": "Sprog ændret til {{language}}",
-    "cancelled": "Annulleret",
     "updateAvailable": "Opdatering tilgængelig: v{{version}}",
     "updateNow": "Opdater nu",
     "updateDownloaded": "Opdatering v{{version}} downloadet",
@@ -604,8 +583,6 @@
     "alwaysOnTopHint": "Holder app-vinduet over alle andre vinduer.",
     "launchAtLogin": "Start ved opstart",
     "launchAtLoginHint": "Starter EncodeX automatisk, når du logger på din computer.",
-    "monitoringErrorReporting": "Fejlrapportering",
-    "monitoringErrorReportingHint": "Hjælper med at forbedre EncodeX ved at sende anonyme fejlrapporter. Du kan slå dette fra når som helst.",
     "telemetry": "Brugsdata og fejlrapportering",
     "telemetryHint": "Hjælper med at forbedre EncodeX ved at sende anonyme brugsdata og fejlrapporter. Du kan slå dette fra når som helst.",
     "mcpServer": "MCP-server",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "Nøgler gemmes som ofuskeret tekst ({{hint}}).",
       "keyNone": "Ingen nøgle gemt.",
-      "save": "Gem",
-      "saved": "Indstillinger gemt.",
       "saveFailed": "Kunne ikke gemme indstillingerne.",
-      "test": "Test forbindelsen",
       "testing": "Tester…",
       "testFailed": "Ingen svar fra udbyderen.",
       "privacy": "Kun undersøgte data og din målsætning-tekst sendes; mediefiler uploades aldrig.",
@@ -692,8 +666,6 @@
       "statusConnected": "Forbundet og bekræftet.",
       "requiresNetwork": "Denne udbyder kræver en aktiv netværksforbindelse.",
       "offlineFallback": "Du er offline. Skiftede til den indbyggede regeludbyder. Fjernudbydere kræver en aktiv netværksforbindelse.",
-      "modelsLoading": "Indlæser modeller...",
-      "modelsUnavailable": "Kunne ikke indlæse modeller fra udbyderen. Du kan stadig skrive et model-id.",
       "keySavedPlaceholder": "Nøgle gemt. Indsæt en ny nøgle for at erstatte den.",
       "connected": "Forbundet",
       "testAgain": "Test forbindelsen igen",
@@ -961,7 +933,6 @@
     "addAudioTrack": "Tilføj lydspor",
     "removeAudioTrack": "Fjern lydsporet",
     "addedTrackDelay": "Forsink dette spor (sekunder)",
-    "addedTrackDelayHint": "Signeret forskydning af dette spor relativt til videoen (positivt = afspilles senere). Tabsfrit: anvendes som -itsoffset med streampkopi.",
     "thumbnail": "Miniaturebillede / omslag",
     "thumbnailHint": "Valgfrit omslagsbillede (.jpg, .jpeg, .png), der indlejres i den remuxede fil. MKV/WebM vedhæfter det som en billedstream; MP4/MOV indlejrer det som en videostream med attached_pic-placering.",
     "addThumbnail": "Tilføj miniaturebillede",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "Ingen gemte samtaler. Brug Gem chat for at gemme en.",
     "savedChatsClose": "Luk",
     "savedChatUntitled": "Samtale uden titel",
-    "savedChatMeta": "{{count}} beskeder · {{date}}",
-    "savedChatOpen": "Åbn",
     "savedChatDelete": "Slet gemt samtale",
     "savedChatSaveFailed": "Samtalen kunne ikke gemmes. Browserlageret er muligvis fuldt.",
     "openChatConfirmTitle": "Åbn gemt samtale?",
@@ -1056,20 +1025,14 @@
     "openChatSave": "Gem og åbn",
     "openChatDiscard": "Kassér og åbn",
     "openChatCancel": "Annuller",
-    "title": "Copilot",
-    "subtitle": "Beskriv et mål, og lad Copilot planlægge konverteringerne, og send derefter planen til køen.",
-    "goalLabel": "Mål",
-    "goalPlaceholder": "fx formindsk disse videoer til nettet",
     "chooseFolder": "Vælg mappe",
     "selectedCount": "{{count}} fil(er) valgt",
-    "selectedNone": "Ingen filer valgt",
     "plan": "Plan",
     "planning": "Planlægger…",
     "folderEmpty": "Der blev ikke fundet noget understøttet medie i den mappe.",
     "errorNoGoal": "Angiv et mål, før du planlægger.",
     "errorNoInputs": "Vælg en mappe med medier, før du planlægger.",
     "dialogFailed": "Kunne ikke åbne filvælgeren. Prøv igen.",
-    "errorFallback": "Copilot kunne ikke bygge en plan for det mål.",
     "errorEnqueue": "Ingen af de planlagte opgaver kunne tilføjes til køen.",
     "actionsTitle": "Planlagte handlinger",
     "noActions": "Copilot fandt intet at ændre for dette mål.",
@@ -1103,27 +1066,6 @@
     "routedAs": "Handling: {{operation}}",
     "resultsTitle": "Fund",
     "ai": {
-      "title": "AI-udbyder",
-      "provider": "Udbyder",
-      "model": "Model",
-      "modelPlaceholder": "Udbyderens standard",
-      "apiKey": "API-nøgle",
-      "keyStored": "Nøgler gemmes som ofuskeret tekst ({{hint}}).",
-      "keyNone": "Ingen nøgle gemt.",
-      "save": "Gem",
-      "test": "Test forbindelsen",
-      "testing": "Tester…",
-      "saved": "Indstillinger gemt.",
-      "saveFailed": "Kunne ikke gemme indstillingerne.",
-      "testFailed": "Ingen svar fra udbyderen.",
-      "privacy": "Kun undersøgte data og din målsætning-tekst sendes; mediefiler uploades aldrig.",
-      "providers": {
-        "rules": "Indbyggede regler (offline)",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "Lokal model"
-      },
       "configure": "Konfigurér AI-udbyder",
       "locationNote": "AI-udbydere konfigureres i Indstillinger.",
       "notConnected": "Ikke forbundet"
@@ -1136,7 +1078,6 @@
     "goal": "Beskriv, hvad du vil have EncodeX til at gøre, og vedhæft derefter filer eller en mappe.",
     "placeholder": "Prøv: komprimer en video til nettet, udtræk lyd til MP3, eller oversæt undertekster...",
     "inputAria": "Send besked til Copilot",
-    "send": "Send",
     "advanced": "Avanceret",
     "advancedTitle": "Avancerede indstillinger",
     "bridgeTimeout": "EncodeX svarede ikke i tide. Prøv igen.",
@@ -1148,7 +1089,6 @@
     "resetConfirmAction": "Nulstil",
     "loadingFiles": "Indlæser filer...",
     "removeAttachment": "Fjern vedhæftning",
-    "folderFilesCount": "{{name}} ({{count}} filer)",
     "saveAndReset": "Gem og nulstil",
     "target": {
       "profile": "Profil",
@@ -1171,20 +1111,15 @@
     "common": {
       "cancel": "Annuller",
       "confirmCancel": "Bekræft annullering",
-      "run": "Kør",
       "retry": "Prøv igen",
       "applyFix": "Anvend rettelse",
-      "waiting": "Venter på data fra værten…",
       "input": "Input",
       "output": "Output",
-      "status": "Status",
       "duration": "Varighed",
       "size": "Størrelse",
       "bitrate": "Bithastighed",
       "video": "Video",
       "audio": "Lyd",
-      "details": "Detaljer",
-      "warnings": "Advarsler",
       "findings": "Fund",
       "nextSteps": "Anbefalede næste skridt",
       "attempts": "Forsøg",
@@ -1193,9 +1128,7 @@
       "assumptions": "Antagelser",
       "causes": "Tilsigtede årsager",
       "fixes": "Foreslåede rettelser",
-      "summary": "Resumé",
       "settings": "Indstillinger",
-      "error": "Fejl",
       "unknown": "-",
       "confidence": "{{value}}% sikkerhed",
       "jobCount": "{{count}} job",
@@ -1209,12 +1142,10 @@
     },
     "queue": {
       "title": "EncodeX-kø",
-      "empty": "Der er ingen job i køen.",
-      "waiting": "Venter på kødata fra værten…"
+      "empty": "Der er ingen job i køen."
     },
     "job": {
-      "waiting": "Venter på jobdata fra værten…",
-      "cancelled": "annulleret"
+      "waiting": "Venter på jobdata fra værten…"
     },
     "mediaInfo": {
       "title": "Medier",
@@ -1285,8 +1216,7 @@
     },
     "error": {
       "title": "Fejl",
-      "waiting": "Venter på en fejl fra værten…",
-      "code": "Fejlkode"
+      "waiting": "Venter på en fejl fra værten…"
     },
     "batch": {
       "title": "Bekræft batch",
@@ -1326,8 +1256,7 @@
       "hardware": "Hardwareacceleration",
       "hardwareNone": "Kun software",
       "encoderVideo": "Video",
-      "encoderAudio": "Lyd",
-      "encoderOther": "Andet"
+      "encoderAudio": "Lyd"
     }
   }
 }

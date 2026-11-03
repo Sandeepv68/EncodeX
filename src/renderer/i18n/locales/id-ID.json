@@ -1,8 +1,6 @@
 {
   "app": {
     "name": "EncodeX",
-    "switchLight": "Beralih ke Mode Terang",
-    "switchDark": "Beralih ke Mode Gelap",
     "language": "Bahasa",
     "searchLanguage": "Cari bahasa",
     "condense": "Ciutkan sidebar",
@@ -78,7 +76,6 @@
     "advanced": "Lanjutan",
     "inputFile": "File Masukan",
     "outputFile": "File Keluaran",
-    "noFile": "Tidak ada file dipilih",
     "noOutput": "Tidak ada output dipilih",
     "browse": "Jelajahi",
     "saveAs": "Simpan Sebagai",
@@ -96,9 +93,6 @@
     "pause": "Berhenti sebentar",
     "resume": "Melanjutkan",
     "cancel": "Batal",
-    "placeholderBitrate": "mis. 2000k",
-    "placeholderAudioBitrate": "mis. 192k",
-    "placeholderScale": "mis. 1280x720",
     "cancelJob": "Batalkan Pekerjaan",
     "jobCancelTitle": "Batalkan Pekerjaan",
     "jobCancelMessage": "Ini akan menghapus tugas konversi saat ini. ",
@@ -144,9 +138,7 @@
     "filtersHint": "Menerapkan filter video FFmpeg (potong, laju bingkai, deinterlace, reduksi noise, warna…) selama penyandian ulang. Semua filter digabung menjadi satu rantai -vf setelah penskalaan dan rotasi.",
     "addPreset": "Tambahkan filter prasetel…",
     "addFilter": "Tambahkan filter",
-    "customChainLabel": "Rantai filter kustom",
     "customChainPlaceholder": "mis. fps=30, eq=brightness=0.1",
-    "customChainHint": "Ekspresi filter FFmpeg yang dipisahkan koma. Setiap item harus berisi tanda kurung dan tanda kurung siku yang seimbang, tanda kutip yang cocok, dan tidak mengandung karakter meta shell.",
     "addCustom": "Tambahkan kustom",
     "removeFilter": "Hapus filter",
     "moveUp": "Pindah ke atas",
@@ -262,7 +254,6 @@
     "compress": "Kompres Gambar",
     "compressing": "Mengompres...",
     "placeholderOutput": "jalur output",
-    "placeholderScale": "mis. 800x600",
     "validationRequired": "Silakan pilih gambar masukan.",
     "selectedImage": "Gambar yang dipilih: {{file}}",
     "inputImageHint": "Gambar sumber yang akan dikompres. JPEG, PNG, WebP, dan BMP didukung.",
@@ -289,7 +280,6 @@
     "extract": "Ekstrak Audio",
     "extracting": "Mengekstrak...",
     "placeholderOutput": "mis. output.mp3",
-    "validationRequired": "Silakan pilih file video.",
     "selectedVideo": "Video terpilih: {{file}}",
     "pause": "Jeda",
     "resume": "Lanjutkan",
@@ -302,8 +292,6 @@
   "videoCut": {
     "title": "Potong Video",
     "videoFile": "File Video",
-    "noFile": "Tidak ada file dipilih",
-    "browse": "Jelajahi",
     "outputFile": "File Keluaran",
     "startTime": "Waktu Mulai (HH:MM:SS)",
     "duration": "Durasi (HH:MM:SS)",
@@ -324,7 +312,6 @@
     "jobCancelMessage": "Ini akan menghapus formulir potong video saat ini. Yakin?",
     "closePreview": "Tutup pratinjau",
     "videoFileHint": "Seret dan lepas file video di sini atau klik untuk menjelajahi komputer Anda.",
-    "videoFiles": "File Video",
     "dropLabel": "Lepas file video di sini atau klik untuk menjelajah",
     "changeFile": "Ganti Video",
     "changeFileHint": "Pilih file video lain.",
@@ -357,9 +344,7 @@
     "stop": "Berhenti",
     "mute": "Bisukan",
     "unmute": "Nyalakan suara",
-    "seek": "Cari",
-    "playbackTime": "Waktu pemutaran",
-    "videoPlayer": "Pemutar video"
+    "seek": "Cari"
   },
   "batchQueue": {
     "bmfNotBundled": "BMF tidak disertakan dengan EncodeX. Instal secara manual dan pastikan bmf_ffmpeg dan bmf_ffprobe ada di PATH Anda.",
@@ -486,12 +471,8 @@
     "outputRequired": "File keluaran diperlukan",
     "invalidTime": "Format waktu tidak valid (HH:MM:SS atau detik)",
     "durationRequired": "Durasi diperlukan",
-    "invalidScale": "Format skala tidak valid (mis. 1920:1080, 50%)",
-    "invalidBitrate": "Bitrate tidak valid (mis. 128k, 1M)",
     "qscaleRange": "QScale harus antara 1 dan 31",
-    "qualityRange": "Kualitas harus antara 1 dan 31",
-    "inputRequired": "Silakan pilih file masukan.",
-    "outputRequiredDetailed": "Silakan pilih file keluaran."
+    "qualityRange": "Kualitas harus antara 1 dan 31"
   },
   "logs": {
     "clear": "Hapus",
@@ -538,8 +519,6 @@
     "allCancelled": "Semua pekerjaan dibatalkan",
     "logsDownloaded": "Log diunduh",
     "mediaInfoLoaded": "Info media dimuat",
-    "languageChanged": "Bahasa diubah menjadi {{language}}",
-    "cancelled": "Dibatalkan",
     "pathCopied": "Jalur output disalin ke clipboard",
     "updateAvailable": "Pembaruan tersedia: v{{version}}",
     "updateNow": "Perbarui sekarang",
@@ -594,8 +573,6 @@
     "alwaysOnTopHint": "Menjaga jendela aplikasi tetap di atas semua jendela lainnya.",
     "launchAtLogin": "Luncurkan saat startup",
     "launchAtLoginHint": "Menjalankan EncodeX secara otomatis saat Anda masuk ke komputer.",
-    "monitoringErrorReporting": "Pelaporan kesalahan",
-    "monitoringErrorReportingHint": "Membantu meningkatkan EncodeX dengan mengirim laporan kesalahan anonim. Anda dapat mematikan ini kapan saja.",
     "telemetry": "Data penggunaan dan pelaporan kesalahan",
     "telemetryHint": "Membantu meningkatkan EncodeX dengan mengirim data penggunaan dan laporan kesalahan anonim. Anda dapat mematikan ini kapan saja.",
     "mcpServer": "Server MCP",
@@ -663,10 +640,7 @@
       "baseUrlPlaceholder": "https://api.example.com/v1",
       "keyStored": "Kunci disimpan sebagai teks yang disamarkan ({{hint}}).",
       "keyNone": "Tidak ada kunci yang disimpan.",
-      "save": "Simpan",
-      "saved": "Pengaturan disimpan.",
       "saveFailed": "Tidak dapat menyimpan pengaturan.",
-      "test": "Uji koneksi",
       "testing": "Menguji…",
       "testFailed": "Tidak ada respons dari penyedia.",
       "privacy": "Hanya fakta pemeriksaan dan teks tujuan Anda yang dikirim; file media tidak pernah diunggah.",
@@ -692,8 +666,6 @@
       "statusConnected": "Terhubung dan terverifikasi.",
       "requiresNetwork": "Penyedia ini memerlukan koneksi jaringan yang aktif.",
       "offlineFallback": "Anda offline. Beralih ke penyedia aturan bawaan. Penyedia jarak jauh memerlukan koneksi jaringan yang aktif.",
-      "modelsLoading": "Memuat model...",
-      "modelsUnavailable": "Tidak dapat memuat model dari penyedia. Anda tetap dapat mengetik id model.",
       "keySavedPlaceholder": "Kunci disimpan. Tempel kunci baru untuk menggantinya.",
       "connected": "Terhubung",
       "testAgain": "Uji koneksi lagi",
@@ -961,7 +933,6 @@
     "addAudioTrack": "Tambahkan trek audio",
     "removeAudioTrack": "Hapus trek audio",
     "addedTrackDelay": "Tunda trek ini (detik)",
-    "addedTrackDelayHint": "Offset bertanda untuk trek ini relatif terhadap video (positif = diputar nanti). Lossless: diterapkan sebagai -itsoffset saat menyalin aliran.",
     "thumbnail": "Thumbnail / sampul",
     "thumbnailHint": "Gambar sampul opsional (.jpg, .jpeg, .png) yang disematkan ke file setelah remuks. MKV/WebM melampirkannya sebagai aliran gambar; MP4/MOV menyematkannya sebagai aliran video dengan tag attached_pic.",
     "addThumbnail": "Tambahkan thumbnail",
@@ -1047,8 +1018,6 @@
     "savedChatsEmpty": "Belum ada percakapan tersimpan. Gunakan Simpan chat untuk menyimpan satu.",
     "savedChatsClose": "Tutup",
     "savedChatUntitled": "Percakapan tanpa judul",
-    "savedChatMeta": "{{count}} pesan · {{date}}",
-    "savedChatOpen": "Buka",
     "savedChatDelete": "Hapus percakapan tersimpan",
     "savedChatSaveFailed": "Tidak dapat menyimpan percakapan. Penyimpanan browser mungkin penuh.",
     "openChatConfirmTitle": "Buka percakapan tersimpan?",
@@ -1056,20 +1025,14 @@
     "openChatSave": "Simpan dan buka",
     "openChatDiscard": "Buang dan buka",
     "openChatCancel": "Batal",
-    "title": "Copilot",
-    "subtitle": "Jelaskan tujuan dan biarkan Copilot merencanakan konversinya, lalu dorong rencana tersebut ke Antrean Batch.",
-    "goalLabel": "Tujuan",
-    "goalPlaceholder": "mis. perkecil video ini untuk web",
     "chooseFolder": "Pilih folder",
     "selectedCount": "{{count}} file dipilih",
-    "selectedNone": "Tidak ada file yang dipilih",
     "plan": "Rencanakan",
     "planning": "Merencanakan…",
     "folderEmpty": "Tidak ada media yang didukung ditemukan di folder tersebut.",
     "errorNoGoal": "Masukkan tujuan sebelum merencanakan.",
     "errorNoInputs": "Pilih folder media sebelum merencanakan.",
     "dialogFailed": "Tidak dapat membuka pemilih file. Coba lagi.",
-    "errorFallback": "Copilot tidak dapat menyusun rencana untuk tujuan tersebut.",
     "errorEnqueue": "Tidak ada pekerjaan terencana yang dapat ditambahkan ke antrean.",
     "actionsTitle": "Tindakan terencana",
     "noActions": "Copilot tidak menemukan apa pun untuk diubah untuk tujuan ini.",
@@ -1103,27 +1066,6 @@
     "routedAs": "Operasi: {{operation}}",
     "resultsTitle": "Temuan",
     "ai": {
-      "title": "Penyedia AI",
-      "provider": "Penyedia",
-      "model": "Model",
-      "modelPlaceholder": "Default penyedia",
-      "apiKey": "Kunci API",
-      "keyStored": "Kunci disimpan sebagai teks yang disamarkan ({{hint}}).",
-      "keyNone": "Tidak ada kunci yang disimpan.",
-      "save": "Simpan",
-      "test": "Uji koneksi",
-      "testing": "Menguji…",
-      "saved": "Pengaturan disimpan.",
-      "saveFailed": "Tidak dapat menyimpan pengaturan.",
-      "testFailed": "Tidak ada respons dari penyedia.",
-      "privacy": "Hanya fakta pemeriksaan dan teks tujuan Anda yang dikirim; file media tidak pernah diunggah.",
-      "providers": {
-        "rules": "Aturan bawaan (offline)",
-        "openai": "OpenAI",
-        "anthropic": "Anthropic",
-        "gemini": "Google Gemini",
-        "local": "Model lokal"
-      },
       "configure": "Konfigurasi penyedia AI",
       "locationNote": "Penyedia AI dikonfigurasi di Pengaturan.",
       "notConnected": "Tidak terhubung"
@@ -1136,7 +1078,6 @@
     "goal": "Jelaskan apa yang Anda ingin EncodeX lakukan, lalu lampirkan file atau folder.",
     "placeholder": "Coba: kompres video untuk web, ekstrak audio ke MP3, atau terjemahkan subtitle...",
     "inputAria": "Kirim pesan ke Copilot",
-    "send": "Kirim",
     "advanced": "Lanjutan",
     "advancedTitle": "Opsi lanjutan",
     "bridgeTimeout": "EncodeX tidak merespons tepat waktu. Coba lagi.",
@@ -1148,7 +1089,6 @@
     "resetConfirmAction": "Atur ulang",
     "loadingFiles": "Memuat file...",
     "removeAttachment": "Hapus lampiran",
-    "folderFilesCount": "{{name}} ({{count}} file)",
     "saveAndReset": "Simpan dan atur ulang",
     "target": {
       "profile": "Profil",
@@ -1171,20 +1111,15 @@
     "common": {
       "cancel": "Batal",
       "confirmCancel": "Konfirmasi batal",
-      "run": "Jalankan",
       "retry": "Coba lagi",
       "applyFix": "Terapkan perbaikan",
-      "waiting": "Menunggu data dari host…",
       "input": "Input",
       "output": "Output",
-      "status": "Status",
       "duration": "Durasi",
       "size": "Ukuran",
       "bitrate": "Bitrate",
       "video": "Video",
       "audio": "Audio",
-      "details": "Detail",
-      "warnings": "Peringatan",
       "findings": "Temuan",
       "nextSteps": "Langkah berikutnya yang disarankan",
       "attempts": "Percobaan",
@@ -1193,9 +1128,7 @@
       "assumptions": "Asumsi",
       "causes": "Kemungkinan penyebab",
       "fixes": "Perbaikan yang disarankan",
-      "summary": "Ringkasan",
       "settings": "Pengaturan",
-      "error": "Kesalahan",
       "unknown": "-",
       "confidence": "Keyakinan {{value}}%",
       "jobCount": "{{count}} tugas",
@@ -1209,12 +1142,10 @@
     },
     "queue": {
       "title": "Antrean EncodeX",
-      "empty": "Tidak ada tugas dalam antrean.",
-      "waiting": "Menunggu data antrean dari host…"
+      "empty": "Tidak ada tugas dalam antrean."
     },
     "job": {
-      "waiting": "Menunggu data tugas dari host…",
-      "cancelled": "dibatalkan"
+      "waiting": "Menunggu data tugas dari host…"
     },
     "mediaInfo": {
       "title": "Media",
@@ -1285,8 +1216,7 @@
     },
     "error": {
       "title": "Kesalahan",
-      "waiting": "Menunggu kesalahan dari host…",
-      "code": "Kode kesalahan"
+      "waiting": "Menunggu kesalahan dari host…"
     },
     "batch": {
       "title": "Konfirmasi batch",
@@ -1326,8 +1256,7 @@
       "hardware": "Akselerasi perangkat keras",
       "hardwareNone": "Hanya perangkat lunak",
       "encoderVideo": "Video",
-      "encoderAudio": "Audio",
-      "encoderOther": "Lainnya"
+      "encoderAudio": "Audio"
     }
   }
 }
