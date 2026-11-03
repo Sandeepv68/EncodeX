@@ -1149,7 +1149,17 @@
     "loadingFiles": "Dateien werden geladen...",
     "removeAttachment": "Anhang entfernen",
     "folderFilesCount": "{{name}} ({{count}} Dateien)",
-    "saveAndReset": "Speichern und zurücksetzen"
+    "saveAndReset": "Speichern und zurücksetzen",
+    "target": {
+      "profile": "Profil",
+      "resolution": "Auflösung",
+      "sameAsSource": "Wie Quelle",
+      "video": "Video",
+      "audio": "Audio",
+      "container": "Container",
+      "losslessCopy": "Verlustfreie Kopie",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Copilot verlassen?",

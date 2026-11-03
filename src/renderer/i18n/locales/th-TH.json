@@ -1149,7 +1149,17 @@
     "loadingFiles": "กำลังโหลดไฟล์...",
     "removeAttachment": "ลบไฟล์แนบ",
     "folderFilesCount": "{{name}} ({{count}} ไฟล์)",
-    "saveAndReset": "บันทึกและรีเซ็ต"
+    "saveAndReset": "บันทึกและรีเซ็ต",
+    "target": {
+      "profile": "โปรไฟล์",
+      "resolution": "ความละเอียด",
+      "sameAsSource": "เหมือนต้นฉบับ",
+      "video": "วิดีโอ",
+      "audio": "เสียง",
+      "container": "คอนเทนเนอร์",
+      "losslessCopy": "คัดลอกแบบไม่สูญเสียข้อมูล",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "ออกจาก Copilot?",

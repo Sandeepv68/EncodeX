@@ -1149,7 +1149,17 @@
     "loadingFiles": "फ़ाइलें लोड हो रही हैं...",
     "removeAttachment": "अटैचमेंट हटाएँ",
     "folderFilesCount": "{{name}} ({{count}} फ़ाइलें)",
-    "saveAndReset": "सहेजें और रीसेट करें"
+    "saveAndReset": "सहेजें और रीसेट करें",
+    "target": {
+      "profile": "प्रोफ़ाइल",
+      "resolution": "रिज़ॉल्यूशन",
+      "sameAsSource": "स्रोत के समान",
+      "video": "वीडियो",
+      "audio": "ऑडियो",
+      "container": "कंटेनर",
+      "losslessCopy": "लॉसलेस कॉपी",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Copilot छोड़ें?",

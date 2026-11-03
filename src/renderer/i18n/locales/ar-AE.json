@@ -1149,7 +1149,17 @@
     "loadingFiles": "جارٍ تحميل الملفات...",
     "removeAttachment": "إزالة المرفق",
     "folderFilesCount": "{{name}} ({{count}} ملفات)",
-    "saveAndReset": "حفظ وإعادة تعيين"
+    "saveAndReset": "حفظ وإعادة تعيين",
+    "target": {
+      "profile": "الملف التعريفي",
+      "resolution": "الدقة",
+      "sameAsSource": "نفس المصدر",
+      "video": "فيديو",
+      "audio": "صوت",
+      "container": "الحاوية",
+      "losslessCopy": "نسخ بدون فقدان",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "مغادرة Copilot؟",

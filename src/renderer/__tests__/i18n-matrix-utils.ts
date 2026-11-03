@@ -110,6 +110,8 @@ const ALWAYS_IDENTICAL = new Set([
   'settings.ai.providers.anthropic',
   'settings.ai.providers.gemini',
   'settings.ai.baseUrlPlaceholder',
+  // CRF is the FFmpeg quality-mode acronym; only the numeric value changes.
+  'copilot.target.crf',
 ]);
 
 /**
@@ -124,6 +126,44 @@ const COGNATE_IDENTICAL: Record<string, Set<string>> = {
   'copilot.advanced': new Set(['fil-PH', 'kl-GL', 'tl-PH']),
   'copilot.send': new Set(['da-DK', 'nb-NO']),
   'copilot.plan': new Set(['da-DK']),
+  // The target-summary labels use the standard loanwords of each language.
+  'copilot.target.video': new Set([
+    'af-ZA',
+    'da-DK',
+    'de-BE',
+    'de-DE',
+    'es-MX',
+    'fi-FI',
+    'id-ID',
+    'it-IT',
+    'kl-GL',
+    'ms-MY',
+    'ms-SG',
+    'nb-NO',
+    'nl-BE',
+    'nl-NL',
+    'sv-SE',
+    'vi-VN',
+  ]),
+  'copilot.target.audio': new Set([
+    'de-BE',
+    'de-DE',
+    'es-AR',
+    'es-CL',
+    'es-ES',
+    'es-MX',
+    'fr-BE',
+    'fr-CA',
+    'fr-FR',
+    'id-ID',
+    'it-IT',
+    'ms-MY',
+    'ms-SG',
+    'nl-BE',
+    'nl-NL',
+    'pl-PL',
+  ]),
+  'copilot.target.container': new Set(['da-DK', 'de-BE', 'de-DE', 'nb-NO', 'nl-BE', 'nl-NL', 'sv-SE']),
 };
 
 /**

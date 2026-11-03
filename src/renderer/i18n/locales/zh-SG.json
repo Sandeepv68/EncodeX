@@ -1149,7 +1149,17 @@
     "loadingFiles": "正在加载文件...",
     "removeAttachment": "移除附件",
     "folderFilesCount": "{{name}} ({{count}} 个文件)",
-    "saveAndReset": "保存并重置"
+    "saveAndReset": "保存并重置",
+    "target": {
+      "profile": "配置",
+      "resolution": "分辨率",
+      "sameAsSource": "与源相同",
+      "video": "视频",
+      "audio": "音频",
+      "container": "容器",
+      "losslessCopy": "无损复制",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "离开 Copilot？",

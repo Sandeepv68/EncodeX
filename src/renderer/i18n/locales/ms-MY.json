@@ -1149,7 +1149,17 @@
     "loadingFiles": "Memuatkan fail...",
     "removeAttachment": "Buang lampiran",
     "folderFilesCount": "{{name}} ({{count}} fail)",
-    "saveAndReset": "Simpan dan set semula"
+    "saveAndReset": "Simpan dan set semula",
+    "target": {
+      "profile": "Profil",
+      "resolution": "Resolusi",
+      "sameAsSource": "Sama seperti sumber",
+      "video": "Video",
+      "audio": "Audio",
+      "container": "Bekas",
+      "losslessCopy": "Salinan tanpa kehilangan",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Tinggalkan Copilot?",

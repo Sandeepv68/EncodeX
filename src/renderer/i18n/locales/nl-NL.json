@@ -1149,7 +1149,17 @@
     "loadingFiles": "Bestanden laden...",
     "removeAttachment": "Bijlage verwijderen",
     "folderFilesCount": "{{name}} ({{count}} bestanden)",
-    "saveAndReset": "Opslaan en herstellen"
+    "saveAndReset": "Opslaan en herstellen",
+    "target": {
+      "profile": "Profiel",
+      "resolution": "Resolutie",
+      "sameAsSource": "Zelfde als bron",
+      "video": "Video",
+      "audio": "Audio",
+      "container": "Container",
+      "losslessCopy": "Verliesvrije kopie",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Copilot verlaten?",

@@ -99,6 +99,8 @@ async function planFile(
     rationale: settings.rationale,
     estimatedSizeBytes: estimate.estimatedSizeBytes,
     estimatedSavings,
+    ...(estimate.videoBitrateKbps > 0 ? { estimatedVideoBitrateKbps: estimate.videoBitrateKbps } : {}),
+    ...(estimate.audioBitrateKbps > 0 ? { estimatedAudioBitrateKbps: estimate.audioBitrateKbps } : {}),
   };
   if (request.resolveOutput) {
     action.output = request.resolveOutput(facts, index);

@@ -1149,7 +1149,17 @@
     "loadingFiles": "Файлууд ачааллаж байна...",
     "removeAttachment": "Хавсгалтыг хасах",
     "folderFilesCount": "{{name}} ({{count}} файлууд)",
-    "saveAndReset": "Хадгалах ба сбэр хийх"
+    "saveAndReset": "Хадгалах ба сбэр хийх",
+    "target": {
+      "profile": "Профиль",
+      "resolution": "Нягтрал",
+      "sameAsSource": "Эх файлтай ижил",
+      "video": "Видео",
+      "audio": "Аудио",
+      "container": "Контейнер",
+      "losslessCopy": "Алдагдалгүй хуулах",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Copilot-оос гарах уу?",

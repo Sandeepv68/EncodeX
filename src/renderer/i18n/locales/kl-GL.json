@@ -1149,7 +1149,17 @@
     "loadingFiles": "Fiilit nassarneqarput...",
     "removeAttachment": "Kinaartussat naaliartut",
     "folderFilesCount": "{{name}} ({{count}} filer)",
-    "saveAndReset": "Taqqerkit uuta imaalannik"
+    "saveAndReset": "Taqqerkit uuta imaalannik",
+    "target": {
+      "profile": "Profil",
+      "resolution": "Uppløsning",
+      "sameAsSource": "Aallutit assigiimmik",
+      "video": "Video",
+      "audio": "Nipilersorneq",
+      "container": "Containeri",
+      "losslessCopy": "Naggarsunngitsoq copy",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Copilot qimassava?",

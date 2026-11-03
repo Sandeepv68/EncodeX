@@ -1149,7 +1149,17 @@
     "loadingFiles": "Läser in filer...",
     "removeAttachment": "Ta bort bilaga",
     "folderFilesCount": "{{name}} ({{count}} filer)",
-    "saveAndReset": "Spara och återställ"
+    "saveAndReset": "Spara och återställ",
+    "target": {
+      "profile": "Profil",
+      "resolution": "Upplösning",
+      "sameAsSource": "Samma som källan",
+      "video": "Video",
+      "audio": "Ljud",
+      "container": "Container",
+      "losslessCopy": "Förlustfri kopia",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Lämna Copilot?",

@@ -1149,7 +1149,17 @@
     "loadingFiles": "Naglo-load ng mga file...",
     "removeAttachment": "Alisin ang attachment",
     "folderFilesCount": "{{name}} ({{count}} file)",
-    "saveAndReset": "I-save at i-reset"
+    "saveAndReset": "I-save at i-reset",
+    "target": {
+      "profile": "Propil",
+      "resolution": "Resolusyon",
+      "sameAsSource": "Pareho sa pinagmulan",
+      "video": "Bidyo",
+      "audio": "Tunog",
+      "container": "Lalagyan",
+      "losslessCopy": "Kopyang walang pagkawala",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Umalis sa Copilot?",

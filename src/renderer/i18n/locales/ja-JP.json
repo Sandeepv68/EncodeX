@@ -1149,7 +1149,17 @@
     "loadingFiles": "ファイルを読み込み中...",
     "removeAttachment": "添付ファイルを削除",
     "folderFilesCount": "{{name}} ({{count}} ファイル)",
-    "saveAndReset": "保存してリセット"
+    "saveAndReset": "保存してリセット",
+    "target": {
+      "profile": "プロファイル",
+      "resolution": "解像度",
+      "sameAsSource": "ソースと同じ",
+      "video": "ビデオ",
+      "audio": "オーディオ",
+      "container": "コンテナー",
+      "losslessCopy": "ロスレスコピー",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Copilot を離れますか？",

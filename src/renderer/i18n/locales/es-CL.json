@@ -1149,7 +1149,17 @@
     "loadingFiles": "Cargando archivos...",
     "removeAttachment": "Quitar adjunto",
     "folderFilesCount": "{{name}} ({{count}} archivos)",
-    "saveAndReset": "Guardar y reiniciar"
+    "saveAndReset": "Guardar y reiniciar",
+    "target": {
+      "profile": "Perfil",
+      "resolution": "Resolución",
+      "sameAsSource": "Igual que el origen",
+      "video": "Vídeo",
+      "audio": "Audio",
+      "container": "Contenedor",
+      "losslessCopy": "Copia sin pérdida",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "¿Salir de Copilot?",

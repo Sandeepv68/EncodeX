@@ -1149,7 +1149,17 @@
     "loadingFiles": "Ag lódáil comhad...",
     "removeAttachment": "Bain ceangal as",
     "folderFilesCount": "{{name}} ({{count}} comhéad)",
-    "saveAndReset": "Sábháil agus athshocraigh"
+    "saveAndReset": "Sábháil agus athshocraigh",
+    "target": {
+      "profile": "Próifíl",
+      "resolution": "Taifeach",
+      "sameAsSource": "Mar an gcéanna leis an bhfoinse",
+      "video": "Físeán",
+      "audio": "Fuaim",
+      "container": "Coimeádán",
+      "losslessCopy": "Cóipeáil gan chaillteanas",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Fág Copilot?",

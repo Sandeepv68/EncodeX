@@ -1149,7 +1149,17 @@
     "loadingFiles": "Chargement des fichiers...",
     "removeAttachment": "Supprimer la pièce jointe",
     "folderFilesCount": "{{name}} ({{count}} fichiers)",
-    "saveAndReset": "Enregistrer et réinitialiser"
+    "saveAndReset": "Enregistrer et réinitialiser",
+    "target": {
+      "profile": "Profil",
+      "resolution": "Résolution",
+      "sameAsSource": "Identique à la source",
+      "video": "Vidéo",
+      "audio": "Audio",
+      "container": "Conteneur",
+      "losslessCopy": "Copie sans perte",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Quitter Copilot ?",

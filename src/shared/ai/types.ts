@@ -350,6 +350,10 @@ export interface EncodingAdvice {
  * @property {string[]} rationale - Why this action was planned.
  * @property {number} [estimatedSizeBytes] - Estimated output size.
  * @property {number} estimatedSavings - Estimated size change as a fraction.
+ * @property {number} [estimatedVideoBitrateKbps] - Effective video bitrate
+ *   (kbps) the size estimate used, when a video stream is encoded.
+ * @property {number} [estimatedAudioBitrateKbps] - Effective audio bitrate
+ *   (kbps) the size estimate used, when an audio stream is encoded.
  */
 export interface AgentAction {
   id: string;
@@ -360,6 +364,8 @@ export interface AgentAction {
   rationale: string[];
   estimatedSizeBytes?: number;
   estimatedSavings: number;
+  estimatedVideoBitrateKbps?: number;
+  estimatedAudioBitrateKbps?: number;
 }
 
 /**

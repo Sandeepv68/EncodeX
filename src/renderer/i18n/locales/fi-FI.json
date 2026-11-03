@@ -1149,7 +1149,17 @@
     "loadingFiles": "Ladataan tiedostoja...",
     "removeAttachment": "Poista liite",
     "folderFilesCount": "{{name}} ({{count}} tiedostoa)",
-    "saveAndReset": "Tallenna ja nollaa"
+    "saveAndReset": "Tallenna ja nollaa",
+    "target": {
+      "profile": "Profiili",
+      "resolution": "Tarkkuus",
+      "sameAsSource": "Sama kuin lähde",
+      "video": "Video",
+      "audio": "Ääni",
+      "container": "Säilö",
+      "losslessCopy": "Häviötön kopio",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Poistu Copilotista?",

@@ -574,6 +574,16 @@
     "noActions": "Copilot found nothing to change for this goal.",
     "savings": "Estimated saving ~{{pct}}%",
     "output": "to {{output}}",
+    "target": {
+      "profile": "Profile",
+      "resolution": "Resolution",
+      "sameAsSource": "Same as source",
+      "video": "Video",
+      "audio": "Audio",
+      "container": "Container",
+      "losslessCopy": "Lossless copy",
+      "crf": "CRF {{value}}"
+    },
     "resultsTitle": "Findings",
     "skipsTitle": "Skipped files",
     "rationaleTitle": "Why",

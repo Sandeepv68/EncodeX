@@ -1149,7 +1149,17 @@
     "loadingFiles": "E uta ana i ngā kōnae...",
     "removeAttachment": "Tangohia te whakapiri",
     "folderFilesCount": "{{name}} ({{count}} ngā kōrero)",
-    "saveAndReset": "Tiakina me te tautuhi"
+    "saveAndReset": "Tiakina me te tautuhi",
+    "target": {
+      "profile": "Kōtaha",
+      "resolution": "Mārama",
+      "sameAsSource": "He ōrite ki te puna",
+      "video": "Ataata",
+      "audio": "Oro",
+      "container": "Ipu",
+      "losslessCopy": "Kape kore-ngaro",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Wehe atu i a Copilot?",

@@ -1149,7 +1149,17 @@
     "loadingFiles": "Indlæser filer...",
     "removeAttachment": "Fjern vedhæftning",
     "folderFilesCount": "{{name}} ({{count}} filer)",
-    "saveAndReset": "Gem og nulstil"
+    "saveAndReset": "Gem og nulstil",
+    "target": {
+      "profile": "Profil",
+      "resolution": "Opløsning",
+      "sameAsSource": "Samme som kilden",
+      "video": "Video",
+      "audio": "Lyd",
+      "container": "Container",
+      "losslessCopy": "Tabsfri kopiering",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Forlad Copilot?",

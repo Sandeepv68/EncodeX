@@ -421,6 +421,79 @@ describe('AssistantMessage', () => {
     expect(screen.getAllByText(/copilot.noticeNoFiles/).length).toBeGreaterThan(0);
     expect(screen.queryByTestId('copilot-plan-summary')).toBeNull();
   });
+
+  it('summarises the target settings of each planned action', () => {
+    renderMessage({
+      plan: {
+        ...PLAN,
+        actions: [
+          {
+            ...PLAN.actions[0],
+            profileId: 'yt-720p',
+            estimatedVideoBitrateKbps: 3085,
+            estimatedAudioBitrateKbps: 128,
+            options: {
+              videoCodec: 'libx264',
+              qscale: 20,
+              scale: '1280x720',
+              audioCodec: 'aac',
+              audioBitrate: '128k',
+            },
+          },
+        ],
+      },
+    });
+    const target = screen.getByTestId('copilot-target-convert_0');
+    expect(target).toHaveTextContent('copilot.target.profile: YouTube 720p');
+    expect(target).toHaveTextContent('copilot.target.resolution: 1280×720');
+    expect(target).toHaveTextContent('H.264');
+    expect(target).toHaveTextContent('copilot.target.crf');
+    expect(target).toHaveTextContent('≈ 3.1 Mbps');
+    expect(target).toHaveTextContent('AAC · 128 kbps');
+    expect(target).toHaveTextContent('copilot.target.container: MP4');
+  });
+
+  it('labels stream copies and source-resolution targets', () => {
+    renderMessage({
+      plan: {
+        ...PLAN,
+        actions: [
+          {
+            id: 'convert_0',
+            operation: 'convert',
+            input: '/in/one.mp4',
+            output: '/in/one.mkv',
+            confidence: 0.9,
+            rationale: ['Remuxes without re-encoding.'],
+            estimatedSavings: 0,
+            options: { copy: true },
+          },
+        ],
+      },
+    });
+    const target = screen.getByTestId('copilot-target-convert_0');
+    expect(target).toHaveTextContent('copilot.target.resolution: copilot.target.sameAsSource');
+    expect(target).toHaveTextContent('copilot.target.video: copilot.target.losslessCopy');
+    expect(target).toHaveTextContent('copilot.target.container: MKV');
+    expect(target).not.toHaveTextContent('copilot.target.profile');
+  });
+
+  it('hides the audio row when the action drops audio', () => {
+    renderMessage({
+      plan: {
+        ...PLAN,
+        actions: [
+          {
+            ...PLAN.actions[0],
+            options: { videoCodec: 'libx264', videoBitrate: '2000k', audio: false },
+          },
+        ],
+      },
+    });
+    const target = screen.getByTestId('copilot-target-convert_0');
+    expect(target).toHaveTextContent('copilot.target.video: H.264 · 2.0 Mbps');
+    expect(target).not.toHaveTextContent('copilot.target.audio');
+  });
 });
 
 describe('ChatComposer', () => {

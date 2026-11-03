@@ -1149,7 +1149,17 @@
     "loadingFiles": "Hleð skrám...",
     "removeAttachment": "Fjarlægja viðhengi",
     "folderFilesCount": "{{name}} ({{count}} skrár)",
-    "saveAndReset": "Vista og endurstilla"
+    "saveAndReset": "Vista og endurstilla",
+    "target": {
+      "profile": "Snið",
+      "resolution": "Upplausn",
+      "sameAsSource": "Sama og frumskráin",
+      "video": "Myndband",
+      "audio": "Hljóð",
+      "container": "Gáma",
+      "losslessCopy": "Tapgjaldslaus afritun",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Yfirgefa Copilot?",

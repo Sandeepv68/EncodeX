@@ -1149,7 +1149,17 @@
     "loadingFiles": "फाइलहरू लोड हुँदैछन्...",
     "removeAttachment": "संलग्नक हटाउनुहोस्",
     "folderFilesCount": "{{name}} ({{count}} फाइलहरू)",
-    "saveAndReset": "सुरक्षित गर्नुहोस् र रिसेट गर्नुहोस्"
+    "saveAndReset": "सुरक्षित गर्नुहोस् र रिसेट गर्नुहोस्",
+    "target": {
+      "profile": "प्रोफाइल",
+      "resolution": "रिजोलुसन",
+      "sameAsSource": "स्रोत जस्तै",
+      "video": "भिडियो",
+      "audio": "अडियो",
+      "container": "कन्टेनर",
+      "losslessCopy": "लसलेस प्रतिलिपि",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Copilot छोड्ने हो?",

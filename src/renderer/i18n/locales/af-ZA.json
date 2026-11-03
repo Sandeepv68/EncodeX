@@ -1149,7 +1149,17 @@
     "loadingFiles": "Laai lêers...",
     "removeAttachment": "Verwyder aanhegsing",
     "folderFilesCount": "{{name}} ({{count}} lêers)",
-    "saveAndReset": "Stoor en herstel"
+    "saveAndReset": "Stoor en herstel",
+    "target": {
+      "profile": "Profiel",
+      "resolution": "Resolusie",
+      "sameAsSource": "Dieselfde as bron",
+      "video": "Video",
+      "audio": "Klank",
+      "container": "Houer",
+      "losslessCopy": "Verlieslose kopie",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Copilot verlaat?",

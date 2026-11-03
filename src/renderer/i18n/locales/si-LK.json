@@ -1149,7 +1149,17 @@
     "loadingFiles": "ගොනු පූරණය වෙමින්...",
     "removeAttachment": "අංකුණ ඉවත් කරන්න",
     "folderFilesCount": "{{name}} ({{count}} ගොනු)",
-    "saveAndReset": "සුරැකීම සහ යළි පිහිටන්න"
+    "saveAndReset": "සුරැකීම සහ යළි පිහිටන්න",
+    "target": {
+      "profile": "පැතිකඩ",
+      "resolution": "විභේදනය",
+      "sameAsSource": "මූලාශ්‍රයට සමානයි",
+      "video": "වීඩියෝ",
+      "audio": "ශ්‍රව්‍ය",
+      "container": "බහාලුම",
+      "losslessCopy": "අලාභ-රහිත පිටපත් කිරීම",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Copilot වෙතින් පිටවන්නද?",

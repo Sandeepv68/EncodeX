@@ -69,6 +69,9 @@ describe('planAgent', () => {
     expect(plan.actions.map((action) => action.id)).toEqual(['convert_0', 'convert_1']);
     expect(plan.actions[0].profileId).toBe('test-720p');
     expect(plan.actions[0].estimatedSavings).toBeGreaterThan(0.5);
+    // The card shows the effective bitrates, so the action must carry them.
+    expect(plan.actions[0].estimatedVideoBitrateKbps).toBe(1500);
+    expect(plan.actions[0].estimatedAudioBitrateKbps).toBe(128);
     const workflowPlan = planWorkflow(plan.workflow);
     expect(workflowPlan.valid).toBe(true);
     expect(plan.isEstimated).toBe(true);
@@ -90,6 +93,8 @@ describe('planAgent', () => {
     // The plan encodes 1080p to 720p, which is about 44% of the pixels.
     expect(plan.actions[0].estimatedSavings).toBeGreaterThan(0.2);
     expect(plan.actions[0].estimatedSavings).toBeLessThan(1);
+    // CRF plans have no explicit bitrate, so the modelled one is carried over.
+    expect(plan.actions[0].estimatedVideoBitrateKbps).toBeGreaterThan(0);
   });
 
   it('reports a saving for a CRF plan that keeps the source resolution', async () => {

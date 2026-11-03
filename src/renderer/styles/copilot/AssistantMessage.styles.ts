@@ -61,6 +61,12 @@ export const SavingsText = styled(Typography)<{ component?: ElementType }>(({ th
   marginLeft: theme.spacing(1),
 }));
 
+/** Block listing the target settings a planned action will encode with. */
+export const TargetRow = styled(Typography)<{ component?: ElementType }>(({ theme }) => ({
+  display: 'block',
+  marginTop: theme.spacing(0.5),
+}));
+
 /** List row of a plan section, flush with the container edges. */
 export const PlanListItem = styled(ListItem)({
   paddingInline: 0,

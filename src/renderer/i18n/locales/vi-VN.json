@@ -1149,7 +1149,17 @@
     "loadingFiles": "Đang tải tệp...",
     "removeAttachment": "Xóa tệp đính kèm",
     "folderFilesCount": "{{name}} ({{count}} tệp)",
-    "saveAndReset": "Lưu và đặt lại"
+    "saveAndReset": "Lưu và đặt lại",
+    "target": {
+      "profile": "Hồ sơ",
+      "resolution": "Độ phân giải",
+      "sameAsSource": "Giống như nguồn",
+      "video": "Video",
+      "audio": "Âm thanh",
+      "container": "Vùng chứa",
+      "losslessCopy": "Sao chép không mất dữ liệu",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Rời khỏi Copilot?",

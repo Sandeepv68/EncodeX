@@ -25,6 +25,7 @@ import {
 import type { AssistantMessageProps } from './types';
 import ProviderIcon from './ProviderIcon';
 import McpAppView from './McpAppView';
+import PlanTargetSummary from './PlanTargetSummary';
 
 export type { AssistantMessageProps };
 
@@ -102,6 +103,7 @@ export default function AssistantMessage({
                     <SavingsText component="span" variant="body2" color="text.secondary">
                       {t('copilot.output', { output: action.output ?? '' })}
                     </SavingsText>
+                    <PlanTargetSummary action={action} />
                   </>
                 }
               />

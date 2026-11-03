@@ -1149,7 +1149,17 @@
     "loadingFiles": "Loading files...",
     "removeAttachment": "Remove attachment",
     "folderFilesCount": "{{name}} ({{count}})",
-    "saveAndReset": "Save and reset"
+    "saveAndReset": "Save and reset",
+    "target": {
+      "profile": "Profile",
+      "resolution": "Resolution",
+      "sameAsSource": "Same as source",
+      "video": "Video",
+      "audio": "Audio",
+      "container": "Container",
+      "losslessCopy": "Lossless copy",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Leave Copilot?",

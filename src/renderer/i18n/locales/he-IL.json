@@ -1149,7 +1149,17 @@
     "loadingFiles": "טוען קבצים...",
     "removeAttachment": "הסר קובץ מצורף",
     "folderFilesCount": "{{name}} ({{count}} קבצים)",
-    "saveAndReset": "שמירה ואיפוס"
+    "saveAndReset": "שמירה ואיפוס",
+    "target": {
+      "profile": "פרופיל",
+      "resolution": "רזולוציה",
+      "sameAsSource": "זהה למקור",
+      "video": "וידאו",
+      "audio": "אודיו",
+      "container": "מיכל",
+      "losslessCopy": "העתקה ללא אובדן",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "לצאת מ-Copilot?",

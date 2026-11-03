@@ -1149,7 +1149,17 @@
     "loadingFiles": "Завантаження файлів...",
     "removeAttachment": "Видалити вкладення",
     "folderFilesCount": "{{name}} ({{count}} файлів)",
-    "saveAndReset": "Зберегти та скинути"
+    "saveAndReset": "Зберегти та скинути",
+    "target": {
+      "profile": "Профіль",
+      "resolution": "Роздільна здатність",
+      "sameAsSource": "Як у джерелі",
+      "video": "Відео",
+      "audio": "Аудіо",
+      "container": "Контейнер",
+      "losslessCopy": "Скопіювати без втрат",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Залишити Copilot?",

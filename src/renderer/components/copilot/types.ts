@@ -6,7 +6,7 @@
  */
 
 import type { ReactNode } from 'react';
-import type { CopilotOperationChoice, CopilotPlan } from '../../../shared/copilot';
+import type { CopilotAction, CopilotOperationChoice, CopilotPlan } from '../../../shared/copilot';
 import type { AIProviderId } from '../../../shared/ai/types';
 import type { McpViewAttachment } from '../../../shared/mcp-ui';
 import type { SavedCopilotChat } from '../../stores/types';
@@ -62,6 +62,11 @@ export interface AssistantMessageProps {
   notice?: string | null;
   /** The currently connected provider; its logo marks each action. */
   providerId?: AIProviderId | null;
+}
+
+/** Props for the target-settings summary of a single planned action. */
+export interface PlanTargetSummaryProps {
+  action: CopilotAction;
 }
 
 /* ------------------------------------------------------------------ *

@@ -1149,7 +1149,17 @@
     "loadingFiles": "កំពុងផ្ទុកឯកសារ...",
     "removeAttachment": "ដកចេញឯកសារភ្ជាប់",
     "folderFilesCount": "{{name}} ({{count}} ឯកសារ)",
-    "saveAndReset": "រក្សាទុក និងកំណត់ឡើងវិញ"
+    "saveAndReset": "រក្សាទុក និងកំណត់ឡើងវិញ",
+    "target": {
+      "profile": "ប្រវត្តិរូប",
+      "resolution": "គុណភាពបង្ហាញ",
+      "sameAsSource": "ដូចប្រភពដើម",
+      "video": "វីដេអូ",
+      "audio": "សំឡេង",
+      "container": "កុងតឺន័រ",
+      "losslessCopy": "ចម្លងដោយមិនបាត់បង់",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "ចាកចេញពី Copilot?",

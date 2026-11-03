@@ -1149,7 +1149,17 @@
     "loadingFiles": "ກຳລັງໂຫຼດໄຟລ໌...",
     "removeAttachment": "ລຶກໄຟລ໌ແນບ",
     "folderFilesCount": "{{name}} ({{count}} ໄຟລ໌)",
-    "saveAndReset": "Lưu cùng đặt lại"
+    "saveAndReset": "Lưu cùng đặt lại",
+    "target": {
+      "profile": "ໂປຣໄຟລ໌",
+      "resolution": "ຄວາມລະອຽດ",
+      "sameAsSource": "ເໝືອນຕົ້ນສະບັບ",
+      "video": "ວິດີໂອ",
+      "audio": "ສຽງ",
+      "container": "ຄອນເທນເນີ",
+      "losslessCopy": "ສຳເນົາແບບບໍ່ສູນເສຍ",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "ອອກຈາກ Copilot?",

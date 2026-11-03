@@ -1149,7 +1149,17 @@
     "loadingFiles": "Carregando arquivos...",
     "removeAttachment": "Remover anexo",
     "folderFilesCount": "{{name}} ({{count}} arquivos)",
-    "saveAndReset": "Guardar e reiniciar"
+    "saveAndReset": "Guardar e reiniciar",
+    "target": {
+      "profile": "Perfil",
+      "resolution": "Resolução",
+      "sameAsSource": "Igual à origem",
+      "video": "Vídeo",
+      "audio": "Áudio",
+      "container": "Contêiner",
+      "losslessCopy": "Cópia sem perdas",
+      "crf": "CRF {{value}}"
+    }
   },
   "leaveConfirm": {
     "title": "Sair do Copilot?",
