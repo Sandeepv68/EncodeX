@@ -28,6 +28,19 @@ const NO_HW: EncoderCapabilities = { videoEncoders: ['libx264', 'libx265'], audi
 /** Capabilities with a hardware encoder. */
 const WITH_HW: EncoderCapabilities = { videoEncoders: ['h264_nvenc', 'libx264'], audioEncoders: ['aac'], hwaccels: ['cuda'] };
 
+/**
+ * Facts without any bitrate information, so the estimator cannot run its
+ * model and has to fall back to the default bitrate scaled by the resolution.
+ */
+const BARE: MediaFacts = {
+  ...FACTS,
+  overallBitrate: undefined,
+  sizeBytes: 0,
+  durationSeconds: 0,
+  hasAudio: false,
+  audio: undefined,
+};
+
 describe('estimateConversion', () => {
   it('computes size from bitrates and duration', () => {
     const estimate = estimateConversion({ videoBitrate: '2000k', audioBitrate: '128k' }, FACTS, NO_HW);
@@ -142,6 +155,32 @@ describe('estimateConversion', () => {
     const estimate = estimateConversion({ videoBitrate: '2000k', audio: false }, FACTS, NO_HW);
     expect(estimate.audioBitrateKbps).toBe(0);
     expect(estimate.estimatedSizeBytes).toBe(Math.round((2000 * 1000 * 60) / 8));
+  });
+
+  it('scales the modelled bitrate by a percentage scale', () => {
+    const full = estimateConversion({}, FACTS, NO_HW);
+    const half = estimateConversion({ scale: '50%' }, FACTS, NO_HW);
+    expect(half.videoBitrateKbps).toBeLessThan(full.videoBitrateKbps);
+  });
+
+  it('scales the fallback bitrate by an explicit resolution', () => {
+    // Without a source bitrate the model cannot run, so the fallback scales the
+    // default bitrate by the ratio between the output and the source pixels.
+    const full = estimateConversion({}, BARE, NO_HW);
+    const half = estimateConversion({ scale: '1280x720' }, BARE, NO_HW);
+    expect(half.videoBitrateKbps).toBeLessThan(full.videoBitrateKbps);
+  });
+
+  it('scales the fallback bitrate by a percentage scale', () => {
+    const full = estimateConversion({}, BARE, NO_HW);
+    const half = estimateConversion({ scale: '50%' }, BARE, NO_HW);
+    expect(half.videoBitrateKbps).toBeLessThan(full.videoBitrateKbps);
+  });
+
+  it('accepts a quality target given as a string', () => {
+    const numeric = estimateConversion({ qscale: 20 }, FACTS, NO_HW);
+    const textual = estimateConversion({ qscale: '20' }, FACTS, NO_HW);
+    expect(textual.videoBitrateKbps).toBe(numeric.videoBitrateKbps);
   });
 });
 
