@@ -252,7 +252,7 @@ Eine vollständige Übersicht aller Unterbefehle, Optionen und Beispiele findest
 ## 🧪 Tests
 
 ```bash
-npm test           # Führt Unit-Tests aus (314 Test-/Spezifikationsdateien unter src/)
+npm test           # Führt Unit-Tests aus (330 Test-/Spezifikationsdateien unter src/)
 npm run test:watch
 npm run test:coverage
 npm run test:unit

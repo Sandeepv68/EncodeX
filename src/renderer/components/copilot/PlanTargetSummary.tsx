@@ -7,12 +7,7 @@
 import { useTranslation } from 'react-i18next';
 import { useProfileStore } from '../../stores/profileStore';
 import { TargetRow } from '../../styles/copilot/AssistantMessage.styles';
-import {
-  codecDisplayName,
-  containerDisplayName,
-  formatTargetBitrate,
-  formatTargetResolution,
-} from '../../utils/plan-target';
+import { codecDisplayName, containerDisplayName, formatTargetBitrate, formatTargetResolution } from '../../utils/plan-target';
 import type { PlanTargetSummaryProps } from './types';
 
 export default function PlanTargetSummary({ action }: PlanTargetSummaryProps) {
@@ -57,12 +52,7 @@ export default function PlanTargetSummary({ action }: PlanTargetSummaryProps) {
   if (container) rows.push(`${t('copilot.target.container')}: ${container}`);
 
   return (
-    <TargetRow
-      variant="caption"
-      component="span"
-      color="text.secondary"
-      data-testid={`copilot-target-${action.id}`}
-    >
+    <TargetRow variant="caption" component="span" color="text.secondary" data-testid={`copilot-target-${action.id}`}>
       {rows.join(' · ')}
     </TargetRow>
   );

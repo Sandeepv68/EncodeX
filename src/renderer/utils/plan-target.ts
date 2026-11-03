@@ -29,7 +29,7 @@ const CODEC_DISPLAY_NAMES: Record<string, string> = {
   dnxhd: 'DNxHD',
   dnxhr: 'DNxHR',
   mpeg4: 'MPEG-4',
-  'mpeg2video': 'MPEG-2',
+  mpeg2video: 'MPEG-2',
   aac: 'AAC',
   ac3: 'AC3',
   eac3: 'E-AC3',

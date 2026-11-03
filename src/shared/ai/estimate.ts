@@ -329,10 +329,7 @@ export function estimateConversion(
       const modelBpp = REFERENCE_BPP * qualityFactor(args.qscale) * codecEfficiency(args.videoCodec);
       if (sourceVideoKbps !== undefined && sourcePixels !== undefined && targetPixels !== undefined && sourcePixels > 0) {
         const sourceBpp = (sourceVideoKbps * 1000) / (sourcePixels * fps);
-        const complexity = Math.min(
-          COMPLEXITY_BOUNDS.max,
-          Math.max(COMPLEXITY_BOUNDS.min, Math.sqrt(sourceBpp / REFERENCE_BPP)),
-        );
+        const complexity = Math.min(COMPLEXITY_BOUNDS.max, Math.max(COMPLEXITY_BOUNDS.min, Math.sqrt(sourceBpp / REFERENCE_BPP)));
         const targetBpp = modelBpp * complexity;
         videoBitrateKbps = Math.max(1, Math.round((targetBpp * targetPixels * fps) / 1000));
       } else {

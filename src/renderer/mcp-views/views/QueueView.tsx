@@ -94,11 +94,7 @@ export default function QueueView() {
       ) : (
         <ViewStack>
           {entries.map((entry) => (
-            <QueueRow
-              key={entry.job.id}
-              job={entry.job}
-              onCancel={() => cancelJob(entry.job.id, entry.fromAppQueue)}
-            />
+            <QueueRow key={entry.job.id} job={entry.job} onCancel={() => cancelJob(entry.job.id, entry.fromAppQueue)} />
           ))}
         </ViewStack>
       )}

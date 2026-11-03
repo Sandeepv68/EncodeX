@@ -3,12 +3,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import {
-  codecDisplayName,
-  containerDisplayName,
-  formatTargetBitrate,
-  formatTargetResolution,
-} from '../plan-target';
+import { codecDisplayName, containerDisplayName, formatTargetBitrate, formatTargetResolution } from '../plan-target';
 
 describe('codecDisplayName', () => {
   it('maps encoder names to friendly codec labels', () => {

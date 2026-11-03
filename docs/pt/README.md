@@ -247,7 +247,7 @@ Consulte o [Uso da CLI](./cli.md) para ver todos os subcomandos, opções e exem
 ## 🧪 Testes
 
 ```bash
-npm test           # Run 314 src test files, 39 e2e, 11 perf suites
+npm test           # Run 330 src test files, 39 e2e, 11 perf suites
 npm run test:watch
 npm run test:coverage
 npm run test:unit

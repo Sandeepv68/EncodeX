@@ -255,7 +255,7 @@ encodex --mcp
 ## 🧪 测试
 
 ```bash
-npm test           # 运行单元测试（`src/` 下 314 个 test/spec 文件）
+npm test           # 运行单元测试（`src/` 下 330 个 test/spec 文件）
 npm run test:watch
 npm run test:coverage
 npm run test:unit

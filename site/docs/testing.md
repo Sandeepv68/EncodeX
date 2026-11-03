@@ -1,6 +1,6 @@
 ---
 
-<!-- drift: test-files=329 renderer-component-tests=46 -->
+<!-- drift: test-files=330 renderer-component-tests=46 -->
 title: "Testing — Unit, Integration & E2E for EncodeX"
 description: "EncodeX test suite: Vitest unit/integration tests, Electron E2E specs, performance suites, test setup, coverage, and CI integration."
 ---
@@ -42,7 +42,7 @@ Coverage reports are generated in `coverage/`:
 
 ## Test Suite
 
-The suite is run by Vitest 4. There are 314 test/spec files under `src/`, 39 test/spec files under `e2e/`, and 11 performance suites under `perf/`. Coverage uses the v8 provider. The table below lists representative files rather than every test.
+The suite is run by Vitest 4. There are 330 test/spec files under `src/`, 39 test/spec files under `e2e/`, and 11 performance suites under `perf/`. Coverage uses the v8 provider. The table below lists representative files rather than every test.
 
 | Area                     | Representative files                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | What's Covered                                                                                                                       |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
