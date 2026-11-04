@@ -191,10 +191,7 @@ export class PostHogMainProvider implements AnalyticsProvider {
         this.identifyGroupOnce('profile_kind', kind, { category: kind });
       }
       if (event.name === 'hw_accel_detected' || typeof sanitized.hwAccel === 'boolean') {
-        const hwAccel =
-          typeof sanitized.hwAccel === 'boolean'
-            ? sanitized.hwAccel
-            : this.superProperties.hw_accel_available === true;
+        const hwAccel = typeof sanitized.hwAccel === 'boolean' ? sanitized.hwAccel : this.superProperties.hw_accel_available === true;
         const hwClass = coerceHardwareClass(hwAccel);
         groups.hardware_class = hwClass;
         this.identifyGroupOnce('hardware_class', hwClass, { hw_accel: hwClass });
