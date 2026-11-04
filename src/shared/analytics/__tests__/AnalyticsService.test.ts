@@ -189,6 +189,20 @@ describe('AnalyticsService', () => {
     expect(provider.tracks).toHaveLength(0);
   });
 
+  it('drops relayed events with non-object props', async () => {
+    resetAnalyticsForTests();
+    await initAnalytics({ enabled: true, provider: 'fake' }, () => provider);
+    trackRelayedAnalyticsEvent({ schema: 2, name: 'tool_opened', props: null });
+    trackRelayedAnalyticsEvent({ schema: 2, name: 'tool_opened', props: 'x' });
+    expect(provider.tracks).toHaveLength(0);
+  });
+
+  it('drops relayed events with non-string name', async () => {
+    resetAnalyticsForTests();
+    await initAnalytics({ enabled: true, provider: 'fake' }, () => provider);
+    trackRelayedAnalyticsEvent({ schema: 2, name: 42, props: {} });
+    expect(provider.tracks).toHaveLength(0);
+  });
   it('drops relayed events when consent is off', async () => {
     resetAnalyticsForTests();
     await initAnalytics({ enabled: false, provider: 'fake' }, () => provider);
