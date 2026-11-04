@@ -42,11 +42,13 @@ function parseEvents(source) {
       if (lm) tierMap[lm[1]] = lm[2];
     }
   }
-  const events = Object.keys(groupMap).sort().map((name) => ({
-    name,
-    group: groupMap[name],
-    tier: tierMap[name] ?? null,
-  }));
+  const events = Object.keys(groupMap)
+    .sort()
+    .map((name) => ({
+      name,
+      group: groupMap[name],
+      tier: tierMap[name] ?? null,
+    }));
   return events;
 }
 

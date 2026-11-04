@@ -180,17 +180,14 @@ export class PostHogMainProvider implements AnalyticsProvider {
       // Group analytics (CP3): attach bounded group keys and identify groups
       // the first time they are seen.
       const groups: Record<string, string> = {};
-      const profileCategory =
-        typeof sanitized.category === 'string' ? sanitized.category : undefined;
+      const profileCategory = typeof sanitized.category === 'string' ? sanitized.category : undefined;
       if (event.name === 'profile_applied' || event.name === 'batch_profile_applied') {
         const kind = coerceProfileKind(profileCategory);
         groups.profile_kind = kind;
         this.identifyGroupOnce('profile_kind', kind, { category: kind });
       }
       if (event.name === 'hw_accel_detected' || typeof sanitized.hwAccel === 'boolean') {
-        const hwClass = coerceHardwareClass(
-          typeof sanitized.hwAccel === 'boolean' ? sanitized.hwAccel : undefined,
-        );
+        const hwClass = coerceHardwareClass(typeof sanitized.hwAccel === 'boolean' ? sanitized.hwAccel : undefined);
         groups.hardware_class = hwClass;
         this.identifyGroupOnce('hardware_class', hwClass, { hw_accel: hwClass });
       }

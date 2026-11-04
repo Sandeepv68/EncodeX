@@ -25,9 +25,7 @@ export const PERSON_PROPERTY_ALLOWLIST = new Set<string>([
  * @param {Record<string, unknown>} props - Candidate person properties.
  * @returns {Record<string, unknown>} Only allowlisted keys.
  */
-export function filterPersonProperties(
-  props: Record<string, unknown>,
-): Record<string, unknown> {
+export function filterPersonProperties(props: Record<string, unknown>): Record<string, unknown> {
   const out: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(props)) {
     if (PERSON_PROPERTY_ALLOWLIST.has(key) && value !== undefined) {

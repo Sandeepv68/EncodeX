@@ -53,7 +53,9 @@ describe('registerAnalyticsIpcBridge', () => {
   });
 
   it('registers exactly the four analytics channels', () => {
-    expect([...handlers.keys()].sort()).toEqual([IPC.ANALYTICS_GET_STATE, IPC.ANALYTICS_SET_ENABLED, IPC.ANALYTICS_TRACK_EVENT, IPC.ANALYTICS_GET_POSTHOG_CONFIG].sort());
+    expect([...handlers.keys()].sort()).toEqual(
+      [IPC.ANALYTICS_GET_STATE, IPC.ANALYTICS_SET_ENABLED, IPC.ANALYTICS_TRACK_EVENT, IPC.ANALYTICS_GET_POSTHOG_CONFIG].sort(),
+    );
   });
 
   it('relays renderer events to the active backend', () => {

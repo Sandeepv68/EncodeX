@@ -5,14 +5,7 @@
  */
 
 /** Allowed profile kinds (built-in profile categories). */
-export const PROFILE_KINDS = new Set<string>([
-  'general',
-  'web',
-  'mobile',
-  'audio',
-  'image',
-  'custom',
-]);
+export const PROFILE_KINDS = new Set<string>(['general', 'web', 'mobile', 'audio', 'image', 'custom']);
 
 /** Allowed hardware classes. */
 export const HARDWARE_CLASSES = new Set<string>(['cpu', 'gpu_hw', 'gpu_sw']);
