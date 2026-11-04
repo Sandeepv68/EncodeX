@@ -13,7 +13,7 @@ const flush = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
 const shutdown = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
 const posthogCtor = vi.hoisted(() =>
   vi.fn(function () {
-    return { capture, flush, shutdown, identify: vi.fn() };
+    return { capture, flush, shutdown, identify: vi.fn(), groupIdentify: vi.fn(), getAllFlags: vi.fn().mockResolvedValue({}) };
   }),
 );
 const logEmit = vi.hoisted(() => vi.fn());
@@ -189,6 +189,16 @@ describe('PostHogMainProvider', () => {
     provider.setEnabled(false);
     provider.track(createAnalyticsEvent('tool_opened', { route: '/convert' }));
     expect(capture).not.toHaveBeenCalled();
+  });
+
+  it('attaches super properties and groups', async () => {
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig({ appVersion: '1.0.0', channel: 'prod', mode: 'gui', locale: 'en', hwAccelAvailable: true }));
+    provider.track(createAnalyticsEvent('profile_applied', { profileId: 'p1', category: 'web' }));
+    provider.track(createAnalyticsEvent('hw_accel_detected', { hwAccel: true }));
+    expect(capture).toHaveBeenCalled();
+    expect(provider.isFeatureFlagEnabled('analytics_group_convert')).toBe(true);
+    expect(provider.getAllFeatureFlags()).toBeDefined();
   });
 
   it('flushes and shuts the client down on close', async () => {
