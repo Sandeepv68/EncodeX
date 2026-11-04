@@ -11,7 +11,20 @@ describe('personProperties', () => {
     expect(out).toEqual({});
   });
   it('allowlist contains the documented fields', () => {
-    for (const key of ['app_version', 'os', 'arch', 'locale', 'channel', 'mode', 'hw_accel_available', 'first_seen_version', 'os_version', 'electron_version', 'node_version', 'environment']) {
+    for (const key of [
+      'app_version',
+      'os',
+      'arch',
+      'locale',
+      'channel',
+      'mode',
+      'hw_accel_available',
+      'first_seen_version',
+      'os_version',
+      'electron_version',
+      'node_version',
+      'environment',
+    ]) {
       expect(PERSON_PROPERTY_ALLOWLIST.has(key)).toBe(true);
     }
   });
