@@ -13,10 +13,14 @@ export const PERSON_PROPERTY_ALLOWLIST = new Set<string>([
   'app_version',
   'os',
   'arch',
+  'os_version',
+  'electron_version',
+  'node_version',
   'locale',
   'channel',
-  'hw_accel_available',
   'mode',
+  'environment',
+  'hw_accel_available',
   'first_seen_version',
 ]);
 

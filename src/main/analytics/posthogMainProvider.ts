@@ -97,12 +97,16 @@ export class PostHogMainProvider implements AnalyticsProvider {
       const superProps: Record<string, unknown> = {
         platform: process.platform,
         arch: process.arch,
+        os_version: process.getuid ? undefined : (require('os') as { release: () => string }).release(),
+        electron_version: process.versions.electron,
+        node_version: process.versions.node,
         $session_id: this.sessionId,
       };
       if (config.appVersion) superProps.app_version = config.appVersion;
       if (config.channel) superProps.channel = config.channel;
       if (config.mode) superProps.mode = config.mode;
       if (config.locale) superProps.locale = config.locale;
+      if (config.environment) superProps.environment = config.environment;
       if (config.hwAccelAvailable !== undefined) superProps.hw_accel_available = config.hwAccelAvailable;
       this.superProperties = superProps;
 
@@ -236,9 +240,13 @@ export class PostHogMainProvider implements AnalyticsProvider {
       if (config.appVersion) personProperties.app_version = config.appVersion;
       if (config.channel) personProperties.channel = config.channel;
       if (config.locale) personProperties.locale = config.locale;
+      if (config.environment) personProperties.environment = config.environment;
       if (config.hwAccelAvailable !== undefined) personProperties.hw_accel_available = config.hwAccelAvailable;
       personProperties.os = process.platform;
       personProperties.arch = process.arch;
+      personProperties.os_version = require('os').release();
+      personProperties.electron_version = process.versions.electron;
+      personProperties.node_version = process.versions.node;
       if (config.mode) personProperties.mode = config.mode;
       const filtered = filterPersonProperties(personProperties);
       this.client.identify({
