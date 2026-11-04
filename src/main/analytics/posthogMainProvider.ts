@@ -43,11 +43,25 @@ export class PostHogMainProvider implements AnalyticsProvider {
 
   async init(config: AnalyticsConfig): Promise<void> {
     try {
+      if (!config.enabled) return;
       const projectToken = config.projectToken ?? process.env.POSTHOG_PROJECT_TOKEN;
-      if (!config.enabled || !projectToken) return;
+      if (!projectToken) {
+        log.warn('PostHog analytics inactive: no project token (POSTHOG_PROJECT_TOKEN).');
+        return;
+      }
       const phHost = config.posthogHost ?? process.env.POSTHOG_HOST;
-      if (!phHost || typeof phHost !== 'string') return;
-      try { new URL(phHost); } catch (e) { return; }
+      if (!phHost || typeof phHost !== 'string') {
+        log.warn('PostHog analytics inactive: POSTHOG_HOST is not set.');
+        return;
+      }
+      try {
+        new URL(phHost);
+      } catch (e) {
+        // A bare project id (e.g. "12345") lands here; the SDK would then try
+        // to fetch an invalid URL and fail silently on every event.
+        log.warn('PostHog analytics inactive: POSTHOG_HOST is not a valid URL.', phHost);
+        return;
+      }
       this.distinctId = config.installId ?? this.distinctId;
       this.groupGate = resolveGroupGate();
       this.client = new PostHog(projectToken, {
@@ -55,16 +69,10 @@ export class PostHogMainProvider implements AnalyticsProvider {
         privacyMode: !this.aiContentCaptureEnabled,
       });
       this.active = true;
+      log.info('PostHog analytics active.', { host: phHost });
 
-      const host = config.posthogHost ?? process.env.POSTHOG_HOST;
-      if (!host || typeof host !== 'string') return;
       try {
-        let logUrl;
-        try {
-          logUrl = new URL('/i/v1/logs', host).toString();
-        } catch (e) {
-          return;
-        }
+        const logUrl = new URL('/i/v1/logs', phHost).toString();
         this.logSdk = new NodeSDK({
           resource: resourceFromAttributes({ 'service.name': 'encodex-electron-main' }),
           logRecordProcessors: [

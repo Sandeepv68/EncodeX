@@ -6,6 +6,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 const capture = vi.hoisted(() => vi.fn());
 const flush = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
@@ -75,6 +76,7 @@ describe('PostHogMainProvider', () => {
   });
 
   it('does not construct a client without a token or host', async () => {
+    expectAppLog('warn', 'main/analytics/posthogMainProvider');
     const noToken = new PostHogMainProvider();
     await noToken.init(baseConfig({ projectToken: undefined, enabled: true }));
     expect(posthogCtor).not.toHaveBeenCalled();
@@ -82,6 +84,14 @@ describe('PostHogMainProvider', () => {
     const noHost = new PostHogMainProvider();
     await noHost.init(baseConfig({ posthogHost: undefined, enabled: true }));
     expect(posthogCtor).not.toHaveBeenCalled();
+  });
+
+  it('does not construct a client when the host is not a URL', async () => {
+    expectAppLog('warn', 'main/analytics/posthogMainProvider');
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig({ posthogHost: '709196' }));
+    expect(posthogCtor).not.toHaveBeenCalled();
+    expect(provider.isEnabled()).toBe(false);
   });
 
   it('constructs a privacy-first client with the configured token and host', async () => {

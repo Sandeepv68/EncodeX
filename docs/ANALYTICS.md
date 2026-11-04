@@ -71,6 +71,22 @@ backend delivery happens on the main side.
 Groups: `lifecycle`, `onboarding`, `nav`, `convert`, `image`, `audio`, `cut`,
 `queue`, `profiles`, `settings`, `mcp`, `updates`, `hw`, `cli`, `ux`.
 
+## Troubleshooting: no events arrive
+
+The main process reports its state in the app log (_Settings → Logs_):
+
+- `PostHog analytics active. { host }` — the client was created; events flow.
+- `PostHog analytics inactive: …` — the adapter refused to start. The message
+  names the missing/invalid value (`POSTHOG_PROJECT_TOKEN` missing,
+  `POSTHOG_HOST` unset, or `POSTHOG_HOST` not a valid URL).
+- `ANALYTICS_PROVIDER=posthog but …` — an explicit backend was requested but
+  its credentials are missing, so the no-op backend is used.
+
+`POSTHOG_HOST` must be the full ingestion URL (for example
+`https://us.i.posthog.com`), **not** the numeric PostHog project id. Duplicate
+keys in `.env` resolve to the last occurrence (dotenv semantics), so a stale
+duplicate entry silently overrides a good one.
+
 ## Privacy & consent
 
 - Analytics is **on by default** but fully user-controllable via _Settings →

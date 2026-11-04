@@ -6,6 +6,7 @@
  */
 
 import { describe, it, expect, vi, afterEach } from 'vitest';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 const aptabaseMainProviderMock = vi.hoisted(() => ({ AptabaseMainProvider: vi.fn() }));
 const posthogMainProviderMock = vi.hoisted(() => ({ PostHogMainProvider: vi.fn() }));
@@ -104,11 +105,13 @@ describe('resolveMainAnalyticsProvider', () => {
   });
 
   it('returns null when provider is aptabase but no app key is available', () => {
+    expectAppLog('warn', 'main/analytics/providerFactory');
     const result = resolveMainAnalyticsProvider(baseConfig({ provider: 'aptabase' }));
     expect(result).toBeNull();
   });
 
   it('returns null when provider is posthog but no project token is available', () => {
+    expectAppLog('warn', 'main/analytics/providerFactory');
     const result = resolveMainAnalyticsProvider(baseConfig({ provider: 'posthog' }));
     expect(result).toBeNull();
   });
