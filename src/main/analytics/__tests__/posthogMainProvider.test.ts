@@ -13,7 +13,7 @@ const flush = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
 const shutdown = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
 const posthogCtor = vi.hoisted(() =>
   vi.fn(function () {
-    return { capture, flush, shutdown };
+    return { capture, flush, shutdown, identify: vi.fn() };
   }),
 );
 const logEmit = vi.hoisted(() => vi.fn());
@@ -123,7 +123,7 @@ describe('PostHogMainProvider', () => {
         fn: () => 'x',
       } as never),
     );
-    expect(capture).toHaveBeenCalledWith(expect.objectContaining({ properties: { route: '/convert' } }));
+    expect(capture).toHaveBeenCalledWith(expect.objectContaining({ properties: expect.objectContaining({ route: '/convert' }) }));
   });
 
   it('honors the ANALYTICS_GROUPS gate', async () => {

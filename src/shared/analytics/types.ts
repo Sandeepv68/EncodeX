@@ -82,6 +82,16 @@ export interface AnalyticsConfig {
   release?: string;
   /** Verbose SDK diagnostics for local debugging. */
   debug?: boolean;
+  /** Entry point the process was launched in: 'gui' | 'cli' | 'mcp'. */
+  mode?: 'gui' | 'cli' | 'mcp';
+  /** Distribution channel: 'dev' (development build) or 'prod' (release). */
+  channel?: 'dev' | 'prod';
+  /** App version (semver), without the leading 'v'. */
+  appVersion?: string;
+  /** User locale, e.g. 'en-US'. */
+  locale?: string;
+  /** Whether hardware acceleration is available on this machine. */
+  hwAccelAvailable?: boolean;
 }
 
 /**

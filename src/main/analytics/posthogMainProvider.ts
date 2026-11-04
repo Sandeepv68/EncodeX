@@ -7,6 +7,9 @@
  */
 
 import { randomUUID } from 'crypto';
+import * as fs from 'fs';
+import * as path from 'path';
+import { app } from 'electron';
 import { logs, type Logger as OpenTelemetryLogger } from '@opentelemetry/api-logs';
 import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
 import { resourceFromAttributes } from '@opentelemetry/resources';
@@ -17,10 +20,14 @@ import { Logger } from '../../shared/logger';
 import { LOG_ANALYTICS_CLOSE_FAILED, LOG_ANALYTICS_INIT_FAILED, LOG_ANALYTICS_TRACK_FAILED } from '../../shared/log-constants';
 import { ANALYTICS_EVENT_GROUP, type AnalyticsEvent } from '../../shared/analytics/events';
 import { sanitizeAnalyticsProps } from '../../shared/analytics/sanitize';
+import { filterPersonProperties } from '../../shared/analytics/personProperties';
 import type { AiGeneration, AnalyticsConfig, AnalyticsProvider } from '../../shared/analytics/types';
 import { resolveGroupGate } from './groupGate';
 
 const log = new Logger('main/analytics/posthogMainProvider');
+
+/** Events that do not need a person profile update (CP1.5). */
+const NO_PERSON_PROFILE_EVENTS = new Set<string>(['ui_error_shown']);
 
 /** PostHog-backed analytics provider for the long-lived Electron main process. */
 export class PostHogMainProvider implements AnalyticsProvider {
@@ -32,6 +39,11 @@ export class PostHogMainProvider implements AnalyticsProvider {
   private active = false;
   private distinctId = `encodex-session-${randomUUID()}`;
   private groupGate: Set<string> | null = null;
+  private superProperties: Record<string, unknown> = {};
+  private sessionId = randomUUID();
+  private lastActivity = Date.now();
+  private identified = false;
+  private firstSeenVersion: string | null = null;
 
   /**
    * AI prompt/completion content is only sent when the operator explicitly
@@ -70,6 +82,25 @@ export class PostHogMainProvider implements AnalyticsProvider {
       });
       this.active = true;
       log.info('PostHog analytics active.', { host: phHost });
+
+      // Phase 1: super properties, person identity, and session.
+      const superProps: Record<string, unknown> = {
+        platform: process.platform,
+        arch: process.arch,
+        $session_id: this.sessionId,
+      };
+      if (config.appVersion) superProps.app_version = config.appVersion;
+      if (config.channel) superProps.channel = config.channel;
+      if (config.mode) superProps.mode = config.mode;
+      if (config.locale) superProps.locale = config.locale;
+      if (config.hwAccelAvailable !== undefined) superProps.hw_accel_available = config.hwAccelAvailable;
+      this.superProperties = superProps;
+
+      this.identifyPerson(config);
+
+      // Release tracking (Phase 1.4): one event per version bump. Guarded by a
+      // marker file so it fires once per installed version, not every launch.
+      this.trackReleaseOnce(config);
 
       try {
         const logUrl = new URL('/i/v1/logs', phHost).toString();
@@ -114,17 +145,91 @@ export class PostHogMainProvider implements AnalyticsProvider {
       log.debug('analytics group gated off:', event.name);
       return;
     }
+    // Session rotation: 30 minutes of inactivity starts a new session.
+    if (Date.now() - this.lastActivity > 30 * 60 * 1000) {
+      this.sessionId = randomUUID();
+      this.superProperties.$session_id = this.sessionId;
+    }
+    this.lastActivity = Date.now();
     try {
+      const sanitized = sanitizeAnalyticsProps(event.props) ?? {};
+      const properties: Record<string, unknown> = {
+        ...this.superProperties,
+        ...sanitized,
+      };
+      if (NO_PERSON_PROFILE_EVENTS.has(event.name)) {
+        properties.$process_person_profile = false;
+      }
       this.client.capture({
         distinctId: this.distinctId,
         event: event.name,
-        properties: sanitizeAnalyticsProps(event.props) ?? {},
+        properties,
       });
       this.posthogLog?.emit({
         severityText: 'info',
         body: 'posthog_product_event_forwarded',
         attributes: { 'analytics.event_name': event.name },
       });
+    } catch (err) {
+      log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
+    }
+  }
+
+  /**
+   * Sends `identify` once per install with coarse, non-PII person properties.
+   * `$set` overwrites mutable fields; `$set_once` records the first-seen version.
+   */
+  private identifyPerson(config: AnalyticsConfig): void {
+    if (!this.client || this.identified) return;
+    if (typeof this.client.identify !== 'function') return;
+    try {
+      const personProperties: Record<string, unknown> = {};
+      if (config.appVersion) personProperties.app_version = config.appVersion;
+      if (config.channel) personProperties.channel = config.channel;
+      if (config.locale) personProperties.locale = config.locale;
+      if (config.hwAccelAvailable !== undefined) personProperties.hw_accel_available = config.hwAccelAvailable;
+      personProperties.os = process.platform;
+      personProperties.arch = process.arch;
+      if (config.mode) personProperties.mode = config.mode;
+      const filtered = filterPersonProperties(personProperties);
+      this.client.identify({
+        distinctId: this.distinctId,
+        properties: {
+          $set: filtered,
+          $set_once: { first_seen_version: config.appVersion },
+        },
+      });
+      this.identified = true;
+    } catch (err) {
+      log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
+    }
+  }
+
+  /**
+   * Emits `app_release` once per installed version, guarded by a marker file in
+   * userData so it fires on first run of a version rather than every launch.
+   */
+  private trackReleaseOnce(config: AnalyticsConfig): void {
+    if (!this.client || !config.appVersion) return;
+    try {
+      const markerPath = path.join(app.getPath('userData'), 'analytics-release-marker.json');
+      let previous: string | null = null;
+      try {
+        previous = JSON.parse(fs.readFileSync(markerPath, 'utf8')).version ?? null;
+      } catch {
+        previous = null;
+      }
+      if (previous === config.appVersion) return;
+      this.client.capture({
+        distinctId: this.distinctId,
+        event: 'app_release',
+        properties: { ...this.superProperties, app_version: config.appVersion },
+      });
+      try {
+        fs.writeFileSync(markerPath, JSON.stringify({ version: config.appVersion }), 'utf8');
+      } catch {
+        // Non-fatal: next launch will re-emit.
+      }
     } catch (err) {
       log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
     }

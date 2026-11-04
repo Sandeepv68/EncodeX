@@ -108,6 +108,10 @@ duplicate entry silently overrides a good one.
   uses a random anonymous installation id persisted in
   `userData/analytics-install-id.txt` so retention can be measured across
   launches; it is not derived from hardware, accounts, or other identifiers.
+- **Person properties** (PostHog) are limited to an allowlist of coarse,
+  non-identifying fields: `app_version`, `os`, `arch`, `locale`, `channel`,
+  `mode`, `hw_accel_available`, and `first_seen_version`. See
+  `src/shared/analytics/personProperties.ts`.
 - **AI Observability is metadata-only by default.** `$ai_generation` events
   carry model, provider, latency, token counts, and error status. Prompt and
   completion content is sent only when `POSTHOG_AI_CAPTURE_CONTENT=true` is

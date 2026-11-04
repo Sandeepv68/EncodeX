@@ -218,6 +218,17 @@ async function bootstrapAnalytics(): Promise<void> {
       release: `encodex@${app.getVersion()}`,
       // Set APTABASE_DEBUG=1 to watch the SDK log event delivery locally.
       debug: process.env.APTABASE_DEBUG === '1',
+      mode: process.argv.includes('--cli') ? 'cli' : process.argv.includes('--mcp') ? 'mcp' : 'gui',
+      channel: process.env.NODE_ENV === 'development' || !app.isPackaged ? 'dev' : 'prod',
+      appVersion: app.getVersion(),
+      locale: app.getLocale(),
+      hwAccelAvailable: (() => {
+        try {
+          return app.getGPUFeatureStatus()?.gpu_compositing === 'enabled';
+        } catch {
+          return undefined;
+        }
+      })(),
     };
     await initAnalytics(config, resolveMainAnalyticsProvider);
   } catch (err) {
