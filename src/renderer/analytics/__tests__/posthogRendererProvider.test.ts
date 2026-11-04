@@ -46,6 +46,27 @@ describe('PostHogRendererProvider', () => {
     );
   });
 
+  it('does nothing when no relay is available', async () => {
+    Object.defineProperty(globalThis, 'window', {
+      configurable: true,
+      value: { electronAPI: {} },
+    });
+    const provider = new PostHogRendererProvider();
+    await provider.init({ enabled: true });
+    provider.track(createAnalyticsEvent('tool_opened', { route: '/convert' }));
+    expect(relay).not.toHaveBeenCalled();
+  });
+
+  it('does nothing when window is undefined', async () => {
+    const originalWindow = globalThis.window;
+    // @ts-expect-error
+    delete globalThis.window;
+    const provider = new PostHogRendererProvider();
+    await provider.init({ enabled: true });
+    provider.track(createAnalyticsEvent('tool_opened', { route: '/convert' }));
+    expect(relay).not.toHaveBeenCalled();
+    Object.defineProperty(globalThis, 'window', { configurable: true, value: originalWindow });
+  });
   it('drops events after setEnabled(false)', async () => {
     const provider = new PostHogRendererProvider();
     await provider.init({ enabled: true });
