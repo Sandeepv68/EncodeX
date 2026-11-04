@@ -2,12 +2,14 @@
  * @fileoverview IPC bridge between the renderer's analytics consent UI and
  * the main-process analytics subsystem.
  *
- * Registers two invoke handlers:
+ * Registers three invoke handlers:
  *  - {@link IPC.ANALYTICS_GET_STATE} returns `{ enabled, backend }` reflecting
  *    both user consent and whether a backend is actually active.
  *  - {@link IPC.ANALYTICS_SET_ENABLED} persists consent to
  *    `userData/analytics-consent.json` and live-toggles the analytics facade
  *    (close/re-init semantics).
+ *  - {@link IPC.ANALYTICS_TRACK_EVENT} relays a renderer-side event to the
+ *    active main-process backend so backend keys stay out of the renderer.
  *
  * The handlers are intentionally thin: all policy lives in consent.ts and the
  * shared facade so future backends require no IPC changes.
@@ -16,8 +18,16 @@
 import { ipcMain } from 'electron';
 import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';
-import { LOG_IPC_ANALYTICS_GET_STATE, LOG_IPC_ANALYTICS_SET_ENABLED } from '../../shared/log-constants';
-import { getAnalyticsBackendName, setAnalyticsEnabled } from '../../shared/analytics/AnalyticsService';
+import {
+  LOG_IPC_ANALYTICS_GET_STATE,
+  LOG_IPC_ANALYTICS_SET_ENABLED,
+  LOG_IPC_ANALYTICS_TRACK_EVENT,
+} from '../../shared/log-constants';
+import {
+  getAnalyticsBackendName,
+  setAnalyticsEnabled,
+  trackRelayedAnalyticsEvent,
+} from '../../shared/analytics/AnalyticsService';
 import type { AnalyticsState } from '../../shared/analytics/types';
 import { writeAnalyticsConsent } from './consent';
 
@@ -57,5 +67,10 @@ export function registerAnalyticsIpcBridge(options: { userDataDir: string; conse
     }
     await setAnalyticsEnabled(next);
     return { enabled: next, backend: getAnalyticsBackendName() };
+  });
+
+  ipcMain.handle(IPC.ANALYTICS_TRACK_EVENT, (_event, event: unknown): void => {
+    log.debug(LOG_IPC_ANALYTICS_TRACK_EVENT);
+    trackRelayedAnalyticsEvent(event);
   });
 }

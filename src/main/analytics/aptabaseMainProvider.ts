@@ -37,34 +37,16 @@ import { Logger } from '../../shared/logger';
 import { protocol } from 'electron';
 import { LOG_ANALYTICS_CLOSE_FAILED, LOG_ANALYTICS_INIT_FAILED, LOG_ANALYTICS_TRACK_FAILED } from '../../shared/log-constants';
 import { ANALYTICS_EVENT_GROUP } from '../../shared/analytics/events';
+import { sanitizeAnalyticsProps } from '../../shared/analytics/sanitize';
 import type { AnalyticsEvent } from '../../shared/analytics/events';
 import type { AnalyticsConfig, AnalyticsProvider } from '../../shared/analytics/types';
+import { ANALYTICS_GROUPS_ENV_VAR, resolveGroupGate } from './groupGate';
 import { initialize as aptabaseInitialize, trackEvent as aptabaseTrackEvent } from '@aptabase/electron/main';
+
+export { ANALYTICS_GROUPS_ENV_VAR };
 
 /** Per-module logger for the main Aptabase adapter. @const {Logger} */
 const log = new Logger('main/analytics/aptabaseMainProvider');
-
-/**
- * Environment variable listing the event groups to emit (comma separated,
- * D10). Absent/empty means every group is emitted.
- * @const {string}
- */
-export const ANALYTICS_GROUPS_ENV_VAR = 'ANALYTICS_GROUPS';
-
-/**
- * Filters a group gate string into a Set of allowed groups. `null` means
- * "no gate" (emit everything).
- * @param {string | undefined} raw - Comma-separated `ANALYTICS_GROUPS` value.
- * @returns {Set<string> | null} The allowed group set, or null when unset.
- */
-function parseGroupGate(raw: string | undefined): Set<string> | null {
-  if (!raw) return null;
-  const groups = raw
-    .split(',')
-    .map((g) => g.trim().toLowerCase())
-    .filter(Boolean);
-  return groups.length > 0 ? new Set(groups) : null;
-}
 
 /**
  * Aptabase-backed analytics provider for the main process.
@@ -107,7 +89,7 @@ export class AptabaseMainProvider implements AnalyticsProvider {
       if (!config.enabled) return;
       const appKey = config.appKey || process.env.APTABASE_APP_KEY;
       if (!appKey) return;
-      this.groupGate = parseGroupGate(process.env[ANALYTICS_GROUPS_ENV_VAR]);
+      this.groupGate = resolveGroupGate();
       await aptabaseInitialize(appKey, config.host ? { host: config.host } : undefined);
       // The SDK disables itself silently (e.g. initialized after `ready`, or a
       // rejected App Key) WITHOUT throwing and WITHOUT registering the
@@ -147,7 +129,7 @@ export class AptabaseMainProvider implements AnalyticsProvider {
       log.debug('analytics group gated off:', event.name);
       return;
     }
-    const props = sanitizeProps(event.props);
+    const props = sanitizeAnalyticsProps(event.props);
     try {
       const promise = aptabaseTrackEvent(event.name, props);
       this.inflight.add(promise);
@@ -198,24 +180,4 @@ export class AptabaseMainProvider implements AnalyticsProvider {
       return false;
     }
   }
-}
-
-/**
- * Reduces raw taxonomy props to the shape the SDK accepts: keys whose values
- * are strings (non-empty), numbers, or booleans survive; everything else is
- * dropped. Taxonomy payloads are already categorical, so this is defense in
- * depth against accidental non-serializable props.
- * @param {Record<string, unknown>} props - Raw event props.
- * @returns {Record<string, string | number | boolean> | undefined} Sanitized props.
- */
-function sanitizeProps(props: Record<string, unknown>): Record<string, string | number | boolean> | undefined {
-  const out: Record<string, string | number | boolean> = {};
-  for (const [key, value] of Object.entries(props)) {
-    if (typeof value === 'string') {
-      if (value.length > 0) out[key] = value;
-    } else if (typeof value === 'number' || typeof value === 'boolean') {
-      out[key] = value;
-    }
-  }
-  return Object.keys(out).length > 0 ? out : undefined;
 }

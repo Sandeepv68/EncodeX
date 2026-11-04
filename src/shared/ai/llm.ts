@@ -171,6 +171,7 @@ export function createLLMOperationRouter(
         jsonMode: true,
         temperature: 0,
         signal: AbortSignal.timeout(timeoutMs),
+        aiTraceId: globalThis.crypto.randomUUID(),
       });
       return parseOperationPlan(response.text, providerId);
     } catch {

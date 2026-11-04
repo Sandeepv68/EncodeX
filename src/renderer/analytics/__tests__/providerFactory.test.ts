@@ -8,8 +8,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const aptabaseRendererProviderMock = vi.hoisted(() => ({ AptabaseRendererProvider: vi.fn() }));
+const posthogRendererProviderMock = vi.hoisted(() => ({ PostHogRendererProvider: vi.fn() }));
 
 vi.mock('../aptabaseRendererProvider', () => aptabaseRendererProviderMock);
+vi.mock('../posthogRendererProvider', () => posthogRendererProviderMock);
 
 const { resolveRendererAnalyticsProvider } = await import('../providerFactory');
 import type { AnalyticsConfig } from '../../../shared/analytics/types';
@@ -30,13 +32,19 @@ describe('resolveRendererAnalyticsProvider', () => {
     expect(result).toBeInstanceOf(aptabaseRendererProviderMock.AptabaseRendererProvider);
   });
 
+  it('returns PostHogRendererProvider when provider is "posthog"', () => {
+    posthogRendererProviderMock.PostHogRendererProvider.mockClear();
+    const result = resolveRendererAnalyticsProvider(baseConfig({ provider: 'posthog' }));
+    expect(result).toBeInstanceOf(posthogRendererProviderMock.PostHogRendererProvider);
+  });
+
   it('returns null when provider is empty', () => {
     const result = resolveRendererAnalyticsProvider(baseConfig());
     expect(result).toBeNull();
   });
 
   it('returns null for an unrecognized provider', () => {
-    const result = resolveRendererAnalyticsProvider(baseConfig({ provider: 'posthog' }));
+    const result = resolveRendererAnalyticsProvider(baseConfig({ provider: 'plausible' }));
     expect(result).toBeNull();
   });
 

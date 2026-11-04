@@ -21,6 +21,7 @@ import {
   setAnalyticsContext,
   isAnalyticsEnabled,
   getAnalyticsBackendName,
+  trackRelayedAnalyticsEvent,
 } from '../AnalyticsService';
 
 /** Minimal trackable fake provider asserting delegation. */
@@ -169,5 +170,29 @@ describe('AnalyticsService', () => {
     expect(getActiveAnalyticsProviderForTests().name).toBe('fake');
     expect(isAnalyticsEnabled()).toBe(true);
     expect(getAnalyticsBackendName()).toBe('fake');
+  });
+
+  it('forwards relayed renderer events without re-stamping the main badge', async () => {
+    resetAnalyticsForTests();
+    await initAnalytics({ enabled: true, provider: 'fake' }, () => provider);
+    setAnalyticsContext({ route: '/main', jobKind: 'single' });
+    const event = createAnalyticsEvent('tool_opened', { route: '/convert' });
+    trackRelayedAnalyticsEvent(event);
+    expect(provider.tracks).toHaveLength(1);
+    expect(provider.tracks[0]).toEqual(event);
+  });
+
+  it('drops relayed events with an unknown event name', async () => {
+    resetAnalyticsForTests();
+    await initAnalytics({ enabled: true, provider: 'fake' }, () => provider);
+    trackRelayedAnalyticsEvent({ schema: 2, name: 'not_a_real_event', props: {} });
+    expect(provider.tracks).toHaveLength(0);
+  });
+
+  it('drops relayed events when consent is off', async () => {
+    resetAnalyticsForTests();
+    await initAnalytics({ enabled: false, provider: 'fake' }, () => provider);
+    trackRelayedAnalyticsEvent(createAnalyticsEvent('tool_opened', { route: '/convert' }));
+    expect(provider.tracks).toHaveLength(0);
   });
 });

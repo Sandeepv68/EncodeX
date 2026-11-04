@@ -15,8 +15,10 @@ import { BatchLogRecordProcessor } from '@opentelemetry/sdk-logs';
 import { PostHog } from 'posthog-node';
 import { Logger } from '../../shared/logger';
 import { LOG_ANALYTICS_CLOSE_FAILED, LOG_ANALYTICS_INIT_FAILED, LOG_ANALYTICS_TRACK_FAILED } from '../../shared/log-constants';
-import type { AnalyticsEvent } from '../../shared/analytics/events';
+import { ANALYTICS_EVENT_GROUP, type AnalyticsEvent } from '../../shared/analytics/events';
+import { sanitizeAnalyticsProps } from '../../shared/analytics/sanitize';
 import type { AiGeneration, AnalyticsConfig, AnalyticsProvider } from '../../shared/analytics/types';
+import { resolveGroupGate } from './groupGate';
 
 const log = new Logger('main/analytics/posthogMainProvider');
 
@@ -28,28 +30,33 @@ export class PostHogMainProvider implements AnalyticsProvider {
   private logSdk: NodeSDK | null = null;
   private posthogLog: OpenTelemetryLogger | null = null;
   private active = false;
-  private readonly distinctId = `encodex-session-${randomUUID()}`;
+  private distinctId = `encodex-session-${randomUUID()}`;
+  private groupGate: Set<string> | null = null;
 
-  /** Manual AI captures include prompt/completion content unless explicitly protected. */
-  private get aiPrivacyMode(): boolean {
-    return process.env.POSTHOG_AI_PRIVACY_MODE === 'true';
+  /**
+   * AI prompt/completion content is only sent when the operator explicitly
+   * opts in. The default is metadata-only to uphold the zero-PII contract.
+   */
+  private get aiContentCaptureEnabled(): boolean {
+    return process.env.POSTHOG_AI_CAPTURE_CONTENT === 'true';
   }
 
   async init(config: AnalyticsConfig): Promise<void> {
     try {
       const projectToken = config.projectToken ?? process.env.POSTHOG_PROJECT_TOKEN;
       if (!config.enabled || !projectToken) return;
-      const phHost = config.host ?? process.env.POSTHOG_HOST;
+      const phHost = config.posthogHost ?? process.env.POSTHOG_HOST;
       if (!phHost || typeof phHost !== 'string') return;
       try { new URL(phHost); } catch (e) { return; }
+      this.distinctId = config.installId ?? this.distinctId;
+      this.groupGate = resolveGroupGate();
       this.client = new PostHog(projectToken, {
         host: phHost,
-        enableExceptionAutocapture: true,
-        privacyMode: this.aiPrivacyMode,
+        privacyMode: !this.aiContentCaptureEnabled,
       });
       this.active = true;
 
-      const host = config.host ?? process.env.POSTHOG_HOST;
+      const host = config.posthogHost ?? process.env.POSTHOG_HOST;
       if (!host || typeof host !== 'string') return;
       try {
         let logUrl;
@@ -95,11 +102,15 @@ export class PostHogMainProvider implements AnalyticsProvider {
 
   track(event: AnalyticsEvent): void {
     if (!this.active || !this.client) return;
+    if (this.groupGate && !this.groupGate.has(ANALYTICS_EVENT_GROUP[event.name])) {
+      log.debug('analytics group gated off:', event.name);
+      return;
+    }
     try {
       this.client.capture({
         distinctId: this.distinctId,
         event: event.name,
-        properties: event.props,
+        properties: sanitizeAnalyticsProps(event.props) ?? {},
       });
       this.posthogLog?.emit({
         severityText: 'info',
@@ -114,9 +125,12 @@ export class PostHogMainProvider implements AnalyticsProvider {
   /**
    * Captures the result of an existing custom LLM transport as an AI
    * Observability generation using the same anonymous main-process identity.
+   * Prompt/completion content is withheld unless `POSTHOG_AI_CAPTURE_CONTENT`
+   * is explicitly enabled; metadata is always sent.
    */
   captureAiGeneration(generation: AiGeneration): void {
     if (!this.active || !this.client) return;
+    const captureContent = this.aiContentCaptureEnabled;
     try {
       this.client.capture({
         distinctId: this.distinctId,
@@ -130,12 +144,12 @@ export class PostHogMainProvider implements AnalyticsProvider {
           ...(generation.inputTokens !== undefined ? { $ai_input_tokens: generation.inputTokens } : {}),
           ...(generation.outputTokens !== undefined ? { $ai_output_tokens: generation.outputTokens } : {}),
           ...(generation.isError ? { $ai_is_error: true } : {}),
-          ...(this.aiPrivacyMode
-            ? {}
-            : {
+          ...(captureContent
+            ? {
                 $ai_input: generation.input,
                 ...(generation.output !== undefined ? { $ai_output_choices: [{ role: 'assistant', content: generation.output }] } : {}),
-              }),
+              }
+            : {}),
         },
       });
       this.posthogLog?.emit({

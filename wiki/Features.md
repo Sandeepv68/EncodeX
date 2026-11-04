@@ -214,7 +214,7 @@ Provider-agnostic error monitoring (first adapter: Sentry) with user-controlled 
 
 ### Usage Analytics
 
-Provider-agnostic, categorical-only usage analytics (first adapter: Aptabase) driven by the same Settings consent switch as error monitoring. Events never contain media content, file names, paths, or sizes; a per-group emission gate (`ANALYTICS_GROUPS`) can silence noisy groups without a release. See the [[Analytics]] page for details.
+Provider-agnostic, categorical-only usage analytics (PostHog or Aptabase) driven by the same Settings consent switch as error monitoring. Events never contain media content, file names, paths, or sizes; a per-group emission gate (`ANALYTICS_GROUPS`) can silence noisy groups without a release. AI Observability is metadata-only unless `POSTHOG_AI_CAPTURE_CONTENT=true` is explicitly set. See the [[Analytics]] page for details.
 
 ### Internationalization
 

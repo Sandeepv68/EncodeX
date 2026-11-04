@@ -11,8 +11,10 @@
  * facts) is sent, matching the `dataEgress: 'metadata'` descriptor.
  */
 
+import { randomUUID } from 'crypto';
 import type { AIConnector, ConnectorId, ConnectorRequest, ConnectorResponse } from '../../shared/ai/connector';
 import type { AIProviderId } from '../../shared/ai/types';
+import { captureAiGeneration } from '../../shared/analytics/AnalyticsService';
 import { createError, ErrorCode } from '../../shared/errors';
 import { effectiveModel } from './settings';
 import type { AiServerSettings } from './settings';
@@ -95,6 +97,51 @@ function geminiText(data: unknown): string {
   const parts = (data as { candidates?: Array<{ content?: { parts?: Array<{ text?: unknown }> } }> }).candidates?.[0]?.content?.parts;
   if (!Array.isArray(parts)) return '';
   return parts.map((part) => (typeof part?.text === 'string' ? part.text : '')).join('');
+}
+
+/** Reads normalized input/output token counts from the supported provider responses. */
+function usage(data: unknown, inputKey: string, outputKey: string): { inputTokens?: number; outputTokens?: number } {
+  const source = data as { usage?: Record<string, unknown>; usageMetadata?: Record<string, unknown> };
+  const values = source.usage ?? source.usageMetadata;
+  if (!values) return {};
+  const input = values[inputKey];
+  const output = values[outputKey];
+  return {
+    ...(typeof input === 'number' ? { inputTokens: input } : {}),
+    ...(typeof output === 'number' ? { outputTokens: output } : {}),
+  };
+}
+
+/** Maps known OpenAI-compatible gateway hosts to their actual AI provider. */
+function openAiProvider(baseUrl: string): string {
+  try {
+    const host = new URL(baseUrl).hostname.toLowerCase();
+    if (host.includes('openrouter')) return 'openrouter';
+    if (host.includes('groq')) return 'groq';
+    if (host.includes('ollama') || host === 'localhost' || host === '127.0.0.1') return 'ollama';
+    if (host.includes('openai')) return 'openai';
+  } catch {
+    // Leave unrecognized user-configured endpoints generic rather than mislabeling them as OpenAI.
+  }
+  return 'openai-compatible';
+}
+
+/** Captures an existing provider request as a manual AI Observability generation. */
+function captureGeneration(
+  request: ConnectorRequest,
+  provider: string,
+  model: string,
+  startedAt: number,
+  result: { text?: string; inputTokens?: number; outputTokens?: number; isError?: boolean },
+): void {
+  captureAiGeneration({
+    traceId: request.aiTraceId ?? randomUUID(),
+    provider,
+    model,
+    input: request.messages,
+    latency: (Date.now() - startedAt) / 1000,
+    ...result,
+  });
 }
 
 /**
@@ -225,18 +272,26 @@ export function createOpenAICompatibleConnector(options: {
   const model = requireModel(options.model, 'openai');
   const baseUrl = (options.baseUrl || 'https://api.openai.com/v1').replace(/\/+$/, '');
   const id: ConnectorId = options.baseUrl ? 'openai-compatible' : 'openai';
+  const provider = openAiProvider(baseUrl);
   return {
     id,
     async complete(request: ConnectorRequest): Promise<ConnectorResponse> {
-      const { system, user } = splitMessages(request);
-      const messages = [...(system ? [{ role: 'system', content: system }] : []), { role: 'user', content: user }];
-      const body: Record<string, unknown> = { model, messages, temperature: request.temperature ?? 0 };
-      if (request.jsonMode) body.response_format = { type: 'json_object' };
-      const signal = request.signal ?? AbortSignal.timeout(DEFAULT_TIMEOUT_MS);
-      const data = await postJson(fetchImpl, `${baseUrl}/chat/completions`, { authorization: `Bearer ${options.apiKey}` }, body, signal);
-      const text = openAiText(data);
-      if (!text) throw createError(ErrorCode.AI_RESPONSE_INVALID, 'Provider returned an empty completion.');
-      return { text, model };
+      const startedAt = Date.now();
+      try {
+        const { system, user } = splitMessages(request);
+        const messages = [...(system ? [{ role: 'system', content: system }] : []), { role: 'user', content: user }];
+        const body: Record<string, unknown> = { model, messages, temperature: request.temperature ?? 0 };
+        if (request.jsonMode) body.response_format = { type: 'json_object' };
+        const signal = request.signal ?? AbortSignal.timeout(DEFAULT_TIMEOUT_MS);
+        const data = await postJson(fetchImpl, `${baseUrl}/chat/completions`, { authorization: `Bearer ${options.apiKey}` }, body, signal);
+        const text = openAiText(data);
+        if (!text) throw createError(ErrorCode.AI_RESPONSE_INVALID, 'Provider returned an empty completion.');
+        captureGeneration(request, provider, model, startedAt, { text, ...usage(data, 'prompt_tokens', 'completion_tokens') });
+        return { text, model };
+      } catch (err) {
+        captureGeneration(request, provider, model, startedAt, { isError: true });
+        throw err;
+      }
     },
   };
 }
@@ -256,25 +311,32 @@ export function createAnthropicConnector(options: { apiKey: string; model: strin
   return {
     id: 'anthropic',
     async complete(request: ConnectorRequest): Promise<ConnectorResponse> {
-      const { system, user } = splitMessages(request);
-      const body: Record<string, unknown> = {
-        model,
-        max_tokens: 1024,
-        temperature: request.temperature ?? 0,
-        messages: [{ role: 'user', content: user }],
-      };
-      if (system) body.system = system;
-      const signal = request.signal ?? AbortSignal.timeout(DEFAULT_TIMEOUT_MS);
-      const data = await postJson(
-        fetchImpl,
-        'https://api.anthropic.com/v1/messages',
-        { 'x-api-key': options.apiKey, 'anthropic-version': '2023-06-01' },
-        body,
-        signal,
-      );
-      const text = anthropicText(data);
-      if (!text) throw createError(ErrorCode.AI_RESPONSE_INVALID, 'Provider returned an empty completion.');
-      return { text, model };
+      const startedAt = Date.now();
+      try {
+        const { system, user } = splitMessages(request);
+        const body: Record<string, unknown> = {
+          model,
+          max_tokens: 1024,
+          temperature: request.temperature ?? 0,
+          messages: [{ role: 'user', content: user }],
+        };
+        if (system) body.system = system;
+        const signal = request.signal ?? AbortSignal.timeout(DEFAULT_TIMEOUT_MS);
+        const data = await postJson(
+          fetchImpl,
+          'https://api.anthropic.com/v1/messages',
+          { 'x-api-key': options.apiKey, 'anthropic-version': '2023-06-01' },
+          body,
+          signal,
+        );
+        const text = anthropicText(data);
+        if (!text) throw createError(ErrorCode.AI_RESPONSE_INVALID, 'Provider returned an empty completion.');
+        captureGeneration(request, 'anthropic', model, startedAt, { text, ...usage(data, 'input_tokens', 'output_tokens') });
+        return { text, model };
+      } catch (err) {
+        captureGeneration(request, 'anthropic', model, startedAt, { isError: true });
+        throw err;
+      }
     },
   };
 }
@@ -294,25 +356,32 @@ export function createGeminiConnector(options: { apiKey: string; model: string; 
   return {
     id: 'gemini',
     async complete(request: ConnectorRequest): Promise<ConnectorResponse> {
-      const { system, user } = splitMessages(request);
-      const generationConfig: Record<string, unknown> = {};
-      if (request.jsonMode) generationConfig.responseMimeType = 'application/json';
-      const body: Record<string, unknown> = {
-        contents: [{ role: 'user', parts: [{ text: user }] }],
-        ...(Object.keys(generationConfig).length > 0 ? { generationConfig } : {}),
-      };
-      if (system) body.systemInstruction = { parts: [{ text: system }] };
-      const signal = request.signal ?? AbortSignal.timeout(DEFAULT_TIMEOUT_MS);
-      const data = await postJson(
-        fetchImpl,
-        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
-        { 'x-goog-api-key': options.apiKey },
-        body,
-        signal,
-      );
-      const text = geminiText(data);
-      if (!text) throw createError(ErrorCode.AI_RESPONSE_INVALID, 'Provider returned an empty completion.');
-      return { text, model };
+      const startedAt = Date.now();
+      try {
+        const { system, user } = splitMessages(request);
+        const generationConfig: Record<string, unknown> = {};
+        if (request.jsonMode) generationConfig.responseMimeType = 'application/json';
+        const body: Record<string, unknown> = {
+          contents: [{ role: 'user', parts: [{ text: user }] }],
+          ...(Object.keys(generationConfig).length > 0 ? { generationConfig } : {}),
+        };
+        if (system) body.systemInstruction = { parts: [{ text: system }] };
+        const signal = request.signal ?? AbortSignal.timeout(DEFAULT_TIMEOUT_MS);
+        const data = await postJson(
+          fetchImpl,
+          `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
+          { 'x-goog-api-key': options.apiKey },
+          body,
+          signal,
+        );
+        const text = geminiText(data);
+        if (!text) throw createError(ErrorCode.AI_RESPONSE_INVALID, 'Provider returned an empty completion.');
+        captureGeneration(request, 'gemini', model, startedAt, { text, ...usage(data, 'promptTokenCount', 'candidatesTokenCount') });
+        return { text, model };
+      } catch (err) {
+        captureGeneration(request, 'gemini', model, startedAt, { isError: true });
+        throw err;
+      }
     },
   };
 }

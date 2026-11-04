@@ -7,15 +7,16 @@
  * changes.
  *
  * Selection rules:
- *  1. `ANALYTICS_PROVIDER` env var wins when set ('noop' | 'aptabase' today).
- *  2. Otherwise 'aptabase' is selected when an App Key is present in
- *     config/env.
+ *  1. `ANALYTICS_PROVIDER` env var wins when set ('noop' | 'posthog' | 'aptabase').
+ *  2. Otherwise PostHog is selected when its project token is present, then
+ *     Aptabase when an App Key is present.
  *  3. Anything unrecognized falls back to null -> facade uses noop.
  */
 
 import { NoopProvider } from '../../shared/analytics/noopProvider';
 import type { AnalyticsProvider, AnalyticsConfig } from '../../shared/analytics/types';
 import { AptabaseMainProvider } from './aptabaseMainProvider';
+import { PostHogMainProvider } from './posthogMainProvider';
 
 /**
  * Environment variable overriding automatic provider selection.
@@ -28,6 +29,9 @@ export const ANALYTICS_PROVIDER_ENV_VAR = 'ANALYTICS_PROVIDER';
  * @const {string}
  */
 export const APTABASE_APP_KEY_ENV_VAR = 'APTABASE_APP_KEY';
+
+/** Environment variable carrying the PostHog public project token. */
+export const POSTHOG_PROJECT_TOKEN_ENV_VAR = 'POSTHOG_PROJECT_TOKEN';
 
 /**
  * Regions the Aptabase SDK accepts, mirroring its `A-{US|EU|DEV|SH}-...` key
@@ -62,6 +66,11 @@ export function resolveMainAnalyticsProvider(config: AnalyticsConfig): Analytics
 
   if (requested === 'noop') {
     return new NoopProvider(true);
+  }
+
+  const projectToken = config.projectToken || process.env[POSTHOG_PROJECT_TOKEN_ENV_VAR];
+  if ((requested === 'posthog' || requested === '') && projectToken) {
+    return new PostHogMainProvider();
   }
 
   const appKey = config.appKey || process.env[APTABASE_APP_KEY_ENV_VAR];

@@ -11,7 +11,7 @@
 npm install
 ```
 
-This installs all dependencies including `ffmpeg-static` and `ffprobe-static`, which download platform-specific binaries during their postinstall scripts. The `prepare` hook also runs `npm run gen:sentry-config` and `npm run gen:aptabase-config`, which bake the Sentry DSN and Aptabase App Key (if present in `.env`) into git-ignored files under `src/main/generated/`.
+This installs all dependencies including `ffmpeg-static` and `ffprobe-static`, which download platform-specific binaries during their postinstall scripts. The `prepare` hook also runs `npm run gen:sentry-config`, `npm run gen:aptabase-config`, and `npm run gen:posthog-config`, which bake the Sentry DSN and any configured Aptabase/PostHog credentials (if present in `.env`) into git-ignored files under `src/main/generated/`.
 
 ## 🧑‍💻 Development
 
