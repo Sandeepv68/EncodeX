@@ -15,7 +15,7 @@ export default function Welcome() {
   return (
     <WelcomeRoot>
       <WelcomeTitle variant="h5" component="h2">
-        {t('copilot.welcome')}
+        👋 {t('copilot.welcome')}
       </WelcomeTitle>
       <WelcomeSubtitle variant="body2" color="text.secondary">
         {t('copilot.goal')}
