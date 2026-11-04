@@ -23,6 +23,8 @@ import { sanitizeAnalyticsProps } from '../../shared/analytics/sanitize';
 import { filterPersonProperties } from '../../shared/analytics/personProperties';
 import type { AiGeneration, AnalyticsConfig, AnalyticsProvider } from '../../shared/analytics/types';
 import { resolveGroupGate } from './groupGate';
+import { coerceProfileKind, coerceHardwareClass } from './groups';
+import { FEATURE_FLAG_DEFAULTS } from './flags';
 
 const log = new Logger('main/analytics/posthogMainProvider');
 
@@ -44,6 +46,9 @@ export class PostHogMainProvider implements AnalyticsProvider {
   private lastActivity = Date.now();
   private identified = false;
   private firstSeenVersion: string | null = null;
+  private seenGroups = new Set<string>();
+  private flags: Record<string, boolean | string | number> = { ...FEATURE_FLAG_DEFAULTS };
+  private flagsLoaded = false;
 
   /**
    * AI prompt/completion content is only sent when the operator explicitly
@@ -82,6 +87,11 @@ export class PostHogMainProvider implements AnalyticsProvider {
       });
       this.active = true;
       log.info('PostHog analytics active.', { host: phHost });
+
+      // Load cached flags immediately so offline starts have values.
+      this.loadCachedFlags();
+      // Refresh flags from the server with a 2-second timeout (CP4).
+      void this.refreshFlags();
 
       // Phase 1: super properties, person identity, and session.
       const superProps: Record<string, unknown> = {
@@ -141,8 +151,14 @@ export class PostHogMainProvider implements AnalyticsProvider {
 
   track(event: AnalyticsEvent): void {
     if (!this.active || !this.client) return;
-    if (this.groupGate && !this.groupGate.has(ANALYTICS_EVENT_GROUP[event.name])) {
+    const group = ANALYTICS_EVENT_GROUP[event.name];
+    if (this.groupGate && !this.groupGate.has(group)) {
       log.debug('analytics group gated off:', event.name);
+      return;
+    }
+    const flagName = `analytics_group_${group}`;
+    if (this.isFeatureFlagEnabled(flagName) === false) {
+      log.debug('analytics group flagged off:', event.name);
       return;
     }
     // Session rotation: 30 minutes of inactivity starts a new session.
@@ -160,16 +176,52 @@ export class PostHogMainProvider implements AnalyticsProvider {
       if (NO_PERSON_PROFILE_EVENTS.has(event.name)) {
         properties.$process_person_profile = false;
       }
+
+      // Group analytics (CP3): attach bounded group keys and identify groups
+      // the first time they are seen.
+      const groups: Record<string, string> = {};
+      const profileCategory =
+        typeof sanitized.category === 'string' ? sanitized.category : undefined;
+      if (event.name === 'profile_applied' || event.name === 'batch_profile_applied') {
+        const kind = coerceProfileKind(profileCategory);
+        groups.profile_kind = kind;
+        this.identifyGroupOnce('profile_kind', kind, { category: kind });
+      }
+      if (event.name === 'hw_accel_detected' || typeof sanitized.hwAccel === 'boolean') {
+        const hwClass = coerceHardwareClass(
+          typeof sanitized.hwAccel === 'boolean' ? sanitized.hwAccel : undefined,
+        );
+        groups.hardware_class = hwClass;
+        this.identifyGroupOnce('hardware_class', hwClass, { hw_accel: hwClass });
+      }
+
       this.client.capture({
         distinctId: this.distinctId,
         event: event.name,
         properties,
+        ...(Object.keys(groups).length > 0 ? { groups } : {}),
       });
       this.posthogLog?.emit({
         severityText: 'info',
         body: 'posthog_product_event_forwarded',
         attributes: { 'analytics.event_name': event.name },
       });
+    } catch (err) {
+      log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
+    }
+  }
+
+  /**
+   * Calls `groupIdentify` once per (groupType, groupKey) pair so group profiles
+   * are created without spamming the API on every event.
+   */
+  private identifyGroupOnce(groupType: string, groupKey: string, properties: Record<string, unknown>): void {
+    if (!this.client || typeof this.client.groupIdentify !== 'function') return;
+    const cacheKey = `${groupType}:${groupKey}`;
+    if (this.seenGroups.has(cacheKey)) return;
+    this.seenGroups.add(cacheKey);
+    try {
+      this.client.groupIdentify({ groupType, groupKey, properties });
     } catch (err) {
       log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
     }
@@ -205,10 +257,64 @@ export class PostHogMainProvider implements AnalyticsProvider {
     }
   }
 
+  isFeatureFlagEnabled(flag: string): boolean | undefined {
+    if (!this.active) return undefined;
+    const value = this.flags[flag];
+    if (typeof value === 'boolean') return value;
+    return FEATURE_FLAG_DEFAULTS[flag];
+  }
+
+  getAllFeatureFlags(): Record<string, boolean | string | number> | undefined {
+    if (!this.active) return undefined;
+    return { ...this.flags };
+  }
+
   /**
-   * Emits `app_release` once per installed version, guarded by a marker file in
-   * userData so it fires on first run of a version rather than every launch.
+   * Loads cached flag values from disk so offline starts have values.
    */
+  private loadCachedFlags(): void {
+    try {
+      const cachePath = path.join(app.getPath('userData'), 'analytics-flags.json');
+      const raw = fs.readFileSync(cachePath, 'utf8');
+      const parsed = JSON.parse(raw) as Record<string, unknown>;
+      for (const [key, value] of Object.entries(parsed)) {
+        if (typeof value === 'boolean' || typeof value === 'string' || typeof value === 'number') {
+          this.flags[key] = value;
+        }
+      }
+    } catch {
+      // No cache yet: defaults remain.
+    }
+  }
+
+  /**
+   * Refreshes flags from the server with a 2-second timeout. Failures keep
+   * the cached/compiled defaults.
+   */
+  private async refreshFlags(): Promise<void> {
+    if (!this.client || typeof this.client.getAllFlags !== 'function') return;
+    try {
+      const result = await Promise.race([
+        this.client.getAllFlags(this.distinctId),
+        new Promise<undefined>((resolve) => setTimeout(() => resolve(undefined), 2000)),
+      ]);
+      if (result && typeof result === 'object') {
+        for (const [key, value] of Object.entries(result)) {
+          if (typeof value === 'boolean' || typeof value === 'string' || typeof value === 'number') {
+            this.flags[key] = value;
+          }
+        }
+        try {
+          const cachePath = path.join(app.getPath('userData'), 'analytics-flags.json');
+          fs.writeFileSync(cachePath, JSON.stringify(this.flags), 'utf8');
+        } catch {
+          // Non-fatal.
+        }
+      }
+    } catch (err) {
+      log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
+    }
+  }
   private trackReleaseOnce(config: AnalyticsConfig): void {
     if (!this.client || !config.appVersion) return;
     try {

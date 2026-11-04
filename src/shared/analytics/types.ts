@@ -125,6 +125,20 @@ export interface AnalyticsProvider {
   captureAiGeneration?(generation: AiGeneration): void | Promise<void>;
 
   /**
+   * Evaluates a feature flag. Returns the resolved boolean, or `undefined`
+   * when the backend does not support flags or consent is off. Never throws.
+   * @param {string} flag - Flag name.
+   * @returns {boolean | undefined} Resolved value, or undefined.
+   */
+  isFeatureFlagEnabled?(flag: string): boolean | undefined;
+
+  /**
+   * Returns all resolved flag values, or undefined when unavailable.
+   * @returns {Record<string, boolean | string | number> | undefined}
+   */
+  getAllFeatureFlags?(): Record<string, boolean | string | number> | undefined;
+
+  /**
    * Enables/disables recording at runtime (user consent toggle). Disabling
    * must stop ALL future tracks, including any buffered internal events.
    * @param {boolean} enabled - Whether recording should occur.

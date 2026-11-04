@@ -978,6 +978,8 @@ const api = {
     log.debug(LOG_IPC_ANALYTICS_TRACK_EVENT, { event: event?.name });
     return ipcRenderer.invoke(IPC.ANALYTICS_TRACK_EVENT, event) as Promise<void>;
   },
+  analyticsGetPosthogConfig: () =>
+    ipcRenderer.invoke(IPC.ANALYTICS_GET_POSTHOG_CONFIG) as Promise<{ projectToken?: string; host?: string }>,
 
   /**
    * Queries the stored embedded MCP server settings from the main process. Logs

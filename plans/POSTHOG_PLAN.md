@@ -25,13 +25,13 @@
 | Checkpoint | Scope | Status | Exit gate |
 | ---------- | ----- | ------ | --------- |
 | **CP0** | Baseline and governance groundwork | `[x]` | Taxonomy snapshot, instrumentation audit, and open decisions recorded here. |
-| **CP1** | Foundations: identity, super properties, release tracking | `[ ]` | Person profiles, global properties, and release annotations verified in PostHog. |
-| **CP2** | Saved analytics: funnels, retention, dashboards as code | `[ ]` | Five dashboards exist in PostHog and are exported to `docs/analytics-dashboards/`. |
-| **CP3** | Group analytics and cohorts | `[ ]` | Group events appear with bounded cardinality; cohorts saved. |
-| **CP4** | Feature flags (remote kill switches and rollouts) | `[ ]` | Group gate and one feature rollout controlled remotely, with offline fallback tested. |
-| **CP5** | Experiments and in-app surveys | `[ ]` | One experiment with a pre-registered metric; one survey live with consent gating. |
-| **CP6** | Error tracking decision and AI observability expansion | `[ ]` | Decision recorded (ADR); AI traces and span hierarchy verified. |
-| **CP7** | Governance: schema sync, CI guard, privacy review | `[ ]` | CI fails on taxonomy drift; privacy review checklist enforced in PRs. |
+| **CP1** | Foundations: identity, super properties, release tracking | `[x]` | Person profiles, global properties, and release annotations verified in PostHog. |
+| **CP2** | Saved analytics: funnels, retention, dashboards as code | `[~]` | Five dashboards exist in PostHog and are exported to `docs/analytics-dashboards/`. |
+| **CP3** | Group analytics and cohorts | `[x]` | Group events appear with bounded cardinality; cohorts saved. |
+| **CP4** | Feature flags (remote kill switches and rollouts) | `[x]` | Group gate and one feature rollout controlled remotely, with offline fallback tested. |
+| **CP5** | Experiments and in-app surveys | `[~]` | One experiment with a pre-registered metric; one survey live with consent gating. |
+| **CP6** | Error tracking decision and AI observability expansion | `[x]` | Decision recorded (ADR); AI traces and span hierarchy verified. |
+| **CP7** | Governance: schema sync, CI guard, privacy review | `[~]` | CI fails on taxonomy drift; privacy review checklist enforced in PRs. |
 
 Update this table as checkpoints close. A checkpoint is `[x]` only when its exit gate is
 demonstrated (screenshot or saved-insight link in the PR, plus passing tests).

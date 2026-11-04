@@ -1,0 +1,611 @@
+{
+  "schemaVersion": 1,
+  "eventCount": 121,
+  "events": [
+    {
+      "name": "always_on_top_toggled",
+      "group": "settings",
+      "tier": null
+    },
+    {
+      "name": "app_installed",
+      "group": "lifecycle",
+      "tier": null
+    },
+    {
+      "name": "app_launched",
+      "group": "lifecycle",
+      "tier": null
+    },
+    {
+      "name": "app_quit",
+      "group": "lifecycle",
+      "tier": null
+    },
+    {
+      "name": "audio_codec_changed",
+      "group": "audio",
+      "tier": null
+    },
+    {
+      "name": "audio_extract_cancelled",
+      "group": "audio",
+      "tier": null
+    },
+    {
+      "name": "audio_extract_completed",
+      "group": "audio",
+      "tier": null
+    },
+    {
+      "name": "audio_extract_failed",
+      "group": "audio",
+      "tier": null
+    },
+    {
+      "name": "audio_extract_paused",
+      "group": "audio",
+      "tier": null
+    },
+    {
+      "name": "audio_extract_resumed",
+      "group": "audio",
+      "tier": null
+    },
+    {
+      "name": "audio_extract_started",
+      "group": "audio",
+      "tier": null
+    },
+    {
+      "name": "audio_input_selected",
+      "group": "audio",
+      "tier": null
+    },
+    {
+      "name": "batch_clear_completed",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "batch_completed",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "batch_concurrency_changed",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "batch_condense_toggled",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "batch_export",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "batch_files_added",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "batch_filter_changed",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "batch_import",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "batch_job_options_edited",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "batch_job_path_copied",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "batch_job_removed",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "batch_job_reordered",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "batch_job_retried",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "batch_job_reveal_in_folder",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "batch_operation_changed",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "batch_profile_applied",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "batch_queue_cancelled_all",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "batch_queue_paused",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "batch_queue_resumed",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "batch_queue_started",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "batch_review_confirmed",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "cli_completed",
+      "group": "cli",
+      "tier": null
+    },
+    {
+      "name": "cli_invoked",
+      "group": "cli",
+      "tier": null
+    },
+    {
+      "name": "codec_changed",
+      "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "compress_completed",
+      "group": "image",
+      "tier": null
+    },
+    {
+      "name": "compress_failed",
+      "group": "image",
+      "tier": null
+    },
+    {
+      "name": "compress_format_changed",
+      "group": "image",
+      "tier": null
+    },
+    {
+      "name": "compress_input_selected",
+      "group": "image",
+      "tier": null
+    },
+    {
+      "name": "compress_started",
+      "group": "image",
+      "tier": null
+    },
+    {
+      "name": "conversion_cancelled",
+      "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "conversion_completed",
+      "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "conversion_failed",
+      "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "conversion_paused",
+      "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "conversion_resumed",
+      "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "conversion_started",
+      "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "convert_form_cleared",
+      "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "convert_input_selected",
+      "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "convert_output_selected",
+      "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "copy_mode_toggled",
+      "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "cut_audio_toggled",
+      "group": "cut",
+      "tier": null
+    },
+    {
+      "name": "cut_input_selected",
+      "group": "cut",
+      "tier": null
+    },
+    {
+      "name": "cut_use_duration_toggled",
+      "group": "cut",
+      "tier": null
+    },
+    {
+      "name": "dashboard_card_clicked",
+      "group": "nav",
+      "tier": null
+    },
+    {
+      "name": "dashboard_shortcut_used",
+      "group": "nav",
+      "tier": null
+    },
+    {
+      "name": "demux_completed",
+      "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "demux_failed",
+      "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "demux_started",
+      "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "encoder_type_changed",
+      "group": "settings",
+      "tier": null
+    },
+    {
+      "name": "hw_accel_detected",
+      "group": "hw",
+      "tier": null
+    },
+    {
+      "name": "hwaccel_mode_changed",
+      "group": "settings",
+      "tier": null
+    },
+    {
+      "name": "hwaccel_toggled",
+      "group": "settings",
+      "tier": null
+    },
+    {
+      "name": "launch_at_login_toggled",
+      "group": "settings",
+      "tier": null
+    },
+    {
+      "name": "locale_changed",
+      "group": "nav",
+      "tier": null
+    },
+    {
+      "name": "logs_cleared",
+      "group": "ux",
+      "tier": null
+    },
+    {
+      "name": "logs_exported",
+      "group": "ux",
+      "tier": null
+    },
+    {
+      "name": "logs_filter_changed",
+      "group": "ux",
+      "tier": null
+    },
+    {
+      "name": "logs_search_changed",
+      "group": "ux",
+      "tier": null
+    },
+    {
+      "name": "mcp_connection_value_copied",
+      "group": "mcp",
+      "tier": null
+    },
+    {
+      "name": "mcp_port_committed",
+      "group": "mcp",
+      "tier": null
+    },
+    {
+      "name": "mcp_server_toggled",
+      "group": "mcp",
+      "tier": null
+    },
+    {
+      "name": "mcp_token_cleared",
+      "group": "mcp",
+      "tier": null
+    },
+    {
+      "name": "mcp_token_generated",
+      "group": "mcp",
+      "tier": null
+    },
+    {
+      "name": "media_info_probed",
+      "group": "ux",
+      "tier": null
+    },
+    {
+      "name": "media_playback_toggled",
+      "group": "cut",
+      "tier": null
+    },
+    {
+      "name": "onboarding_dismissed",
+      "group": "onboarding",
+      "tier": null
+    },
+    {
+      "name": "onboarding_goal_selected",
+      "group": "onboarding",
+      "tier": null
+    },
+    {
+      "name": "onboarding_started",
+      "group": "onboarding",
+      "tier": null
+    },
+    {
+      "name": "preview_closed",
+      "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "preview_opened",
+      "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "profile_applied",
+      "group": "profiles",
+      "tier": null
+    },
+    {
+      "name": "profile_created",
+      "group": "profiles",
+      "tier": null
+    },
+    {
+      "name": "profile_deleted",
+      "group": "profiles",
+      "tier": null
+    },
+    {
+      "name": "profile_reset",
+      "group": "profiles",
+      "tier": null
+    },
+    {
+      "name": "profile_updated",
+      "group": "profiles",
+      "tier": null
+    },
+    {
+      "name": "remux_completed",
+      "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "remux_failed",
+      "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "remux_started",
+      "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "suggested_extension_applied",
+      "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "telemetry_opt_in",
+      "group": "settings",
+      "tier": null
+    },
+    {
+      "name": "telemetry_opt_out",
+      "group": "settings",
+      "tier": null
+    },
+    {
+      "name": "terms_accepted",
+      "group": "onboarding",
+      "tier": null
+    },
+    {
+      "name": "terms_rejected",
+      "group": "onboarding",
+      "tier": null
+    },
+    {
+      "name": "theme_changed",
+      "group": "settings",
+      "tier": null
+    },
+    {
+      "name": "timeline_zoom_changed",
+      "group": "cut",
+      "tier": null
+    },
+    {
+      "name": "tool_opened",
+      "group": "nav",
+      "tier": null
+    },
+    {
+      "name": "transcoder_changed",
+      "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "ui_error_shown",
+      "group": "ux",
+      "tier": null
+    },
+    {
+      "name": "update_available",
+      "group": "updates",
+      "tier": null
+    },
+    {
+      "name": "update_check_triggered",
+      "group": "updates",
+      "tier": null
+    },
+    {
+      "name": "update_dialog_opened",
+      "group": "updates",
+      "tier": null
+    },
+    {
+      "name": "update_download_cancelled",
+      "group": "updates",
+      "tier": null
+    },
+    {
+      "name": "update_download_started",
+      "group": "updates",
+      "tier": null
+    },
+    {
+      "name": "update_downloaded",
+      "group": "updates",
+      "tier": null
+    },
+    {
+      "name": "update_install_now",
+      "group": "updates",
+      "tier": null
+    },
+    {
+      "name": "update_install_on_restart",
+      "group": "updates",
+      "tier": null
+    },
+    {
+      "name": "update_installed",
+      "group": "updates",
+      "tier": null
+    },
+    {
+      "name": "update_release_notes_opened",
+      "group": "updates",
+      "tier": null
+    },
+    {
+      "name": "update_restart_install_cancelled",
+      "group": "updates",
+      "tier": null
+    },
+    {
+      "name": "update_retry",
+      "group": "updates",
+      "tier": null
+    },
+    {
+      "name": "video_cut_cancelled",
+      "group": "cut",
+      "tier": null
+    },
+    {
+      "name": "video_cut_completed",
+      "group": "cut",
+      "tier": null
+    },
+    {
+      "name": "video_cut_failed",
+      "group": "cut",
+      "tier": null
+    },
+    {
+      "name": "video_cut_form_cleared",
+      "group": "cut",
+      "tier": null
+    },
+    {
+      "name": "video_cut_paused",
+      "group": "cut",
+      "tier": null
+    },
+    {
+      "name": "video_cut_resumed",
+      "group": "cut",
+      "tier": null
+    },
+    {
+      "name": "video_cut_started",
+      "group": "cut",
+      "tier": null
+    },
+    {
+      "name": "window_close_deferred",
+      "group": "ux",
+      "tier": null
+    },
+    {
+      "name": "window_close_requested",
+      "group": "ux",
+      "tier": null
+    },
+    {
+      "name": "window_maximize_toggled",
+      "group": "ux",
+      "tier": null
+    }
+  ]
+}

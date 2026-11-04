@@ -309,6 +309,36 @@ export function captureAiGeneration(generation: AiGeneration): void {
 }
 
 /**
+ * Evaluates a feature flag through the active backend. Returns `undefined`
+ * when flags are unavailable or consent is off. Never throws.
+ * @param {string} flag - Flag name.
+ * @returns {boolean | undefined} Resolved value, or undefined.
+ */
+export function isFeatureFlagEnabled(flag: string): boolean | undefined {
+  try {
+    if (!bootstrapped || !activeProvider.isEnabled()) return undefined;
+    return activeProvider.isFeatureFlagEnabled?.(flag);
+  } catch (err) {
+    log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
+    return undefined;
+  }
+}
+
+/**
+ * Returns all resolved feature-flag values, or undefined when unavailable.
+ * @returns {Record<string, boolean | string | number> | undefined}
+ */
+export function getAllFeatureFlags(): Record<string, boolean | string | number> | undefined {
+  try {
+    if (!bootstrapped || !activeProvider.isEnabled()) return undefined;
+    return activeProvider.getAllFeatureFlags?.();
+  } catch (err) {
+    log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
+    return undefined;
+  }
+}
+
+/**
  * Flushes queued backend events within the timeout. Never rejects.
  * @param {number} [timeoutMs] - Max milliseconds to wait.
  * @returns {Promise<boolean>} True when flushed cleanly (noop => true).

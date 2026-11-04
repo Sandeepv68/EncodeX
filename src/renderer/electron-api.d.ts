@@ -492,6 +492,7 @@ export interface ElectronAPI {
    * @returns {Promise<void>} Resolves once main has accepted the event.
    */
   analyticsTrackEvent(event: AnalyticsEvent): Promise<void>;
+  analyticsGetPosthogConfig(): Promise<{ projectToken?: string; host?: string }>;
   /**
    * Queries the stored embedded MCP server settings from the main process over
    * `IPC.MCP_SETTINGS_GET` ('mcp-settings-get').

@@ -189,6 +189,8 @@ export const IPC = {
   ANALYTICS_GET_STATE: 'analytics-get-state',
   ANALYTICS_SET_ENABLED: 'analytics-set-enabled',
   ANALYTICS_TRACK_EVENT: 'analytics-track-event',
+  /** Returns the public PostHog project token and host for survey rendering (CP5). Renderer-only, never a secret. */
+  ANALYTICS_GET_POSTHOG_CONFIG: 'analytics-get-posthog-config',
 
   MCP_SETTINGS_GET: 'mcp-settings-get',
   MCP_SETTINGS_SET: 'mcp-settings-set',
