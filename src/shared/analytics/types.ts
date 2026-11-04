@@ -590,3 +590,21 @@ export interface RemuxAnalyticsContext {
   container?: string;
   input?: string;
 }
+
+/**
+ * Feature-flag definition (CP4). Lives in the shared types file so the
+ * 
+o-local-types rule is satisfied; consumed by src/main/analytics/flags.ts.
+ */
+export interface FeatureFlagDefinition {
+  /** Flag name as it exists in the PostHog project. */
+  name: string;
+  /** Owner responsible for removal. */
+  owner: string;
+  /** Value used when the remote value is unavailable (offline, timeout, quota). */
+  defaultValue: boolean;
+  /** Target removal date (ISO). */
+  removeBy: string;
+  /** Human-readable purpose. */
+  purpose: string;
+}

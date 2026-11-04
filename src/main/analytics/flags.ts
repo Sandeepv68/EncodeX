@@ -7,18 +7,7 @@
  * and cached values on disk.
  */
 
-export interface FeatureFlagDefinition {
-  /** Flag name as it exists in the PostHog project. */
-  name: string;
-  /** Owner responsible for removal. */
-  owner: string;
-  /** Value used when the remote value is unavailable (offline, timeout, quota). */
-  defaultValue: boolean;
-  /** Target removal date (ISO). */
-  removeBy: string;
-  /** Human-readable purpose. */
-  purpose: string;
-}
+import type { FeatureFlagDefinition } from '../../shared/analytics/types';
 
 export const FEATURE_FLAGS: FeatureFlagDefinition[] = [
   {
