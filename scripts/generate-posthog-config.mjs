@@ -41,4 +41,6 @@ export const POSTHOG_BUILD_CONFIG = {
 
 fs.mkdirSync(path.dirname(OUTPUT_PATH), { recursive: true });
 fs.writeFileSync(OUTPUT_PATH, contents);
-console.log(`[INFO] Wrote ${path.relative(process.cwd(), OUTPUT_PATH)} (projectToken: ${projectToken ? 'set' : 'not set'}, host: ${host ? 'set' : 'not set'})`);
+console.log(
+  `[INFO] Wrote ${path.relative(process.cwd(), OUTPUT_PATH)} (projectToken: ${projectToken ? 'set' : 'not set'}, host: ${host ? 'set' : 'not set'})`,
+);

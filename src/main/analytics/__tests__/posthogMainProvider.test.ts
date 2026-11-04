@@ -108,9 +108,7 @@ describe('PostHogMainProvider', () => {
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig({ installId: 'install-123' }));
     provider.track(createAnalyticsEvent('tool_opened', { route: '/convert' }));
-    expect(capture).toHaveBeenCalledWith(
-      expect.objectContaining({ distinctId: 'install-123', event: 'tool_opened' }),
-    );
+    expect(capture).toHaveBeenCalledWith(expect.objectContaining({ distinctId: 'install-123', event: 'tool_opened' }));
   });
 
   it('drops props that are not strings, numbers, or booleans', async () => {
@@ -125,9 +123,7 @@ describe('PostHogMainProvider', () => {
         fn: () => 'x',
       } as never),
     );
-    expect(capture).toHaveBeenCalledWith(
-      expect.objectContaining({ properties: { route: '/convert' } }),
-    );
+    expect(capture).toHaveBeenCalledWith(expect.objectContaining({ properties: { route: '/convert' } }));
   });
 
   it('honors the ANALYTICS_GROUPS gate', async () => {
@@ -135,11 +131,13 @@ describe('PostHogMainProvider', () => {
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig());
 
-    provider.track(createAnalyticsEvent('conversion_started', {
-      jobKind: 'single',
-      transcoder: 'ffmpeg',
-      hwAccel: false,
-    }));
+    provider.track(
+      createAnalyticsEvent('conversion_started', {
+        jobKind: 'single',
+        transcoder: 'ffmpeg',
+        hwAccel: false,
+      }),
+    );
     expect(capture).not.toHaveBeenCalled();
 
     provider.track(createAnalyticsEvent('theme_changed', { themeId: 'dark' }));
@@ -179,10 +177,7 @@ describe('PostHogMainProvider', () => {
       latency: 1.2,
     });
 
-    expect(posthogCtor).toHaveBeenCalledWith(
-      'phc_test',
-      expect.objectContaining({ privacyMode: false }),
-    );
+    expect(posthogCtor).toHaveBeenCalledWith('phc_test', expect.objectContaining({ privacyMode: false }));
     const properties = capture.mock.calls[0][0].properties as Record<string, unknown>;
     expect(properties.$ai_input).toEqual([{ role: 'user', content: 'hello' }]);
     expect(properties.$ai_output_choices).toEqual([{ role: 'assistant', content: 'world' }]);

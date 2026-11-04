@@ -16,12 +16,8 @@ vi.mock('../aptabaseMainProvider', () => aptabaseMainProviderMock);
 vi.mock('../posthogMainProvider', () => posthogMainProviderMock);
 vi.mock('../../../shared/analytics/noopProvider', () => noopProviderMock);
 
-const {
-  resolveMainAnalyticsProvider,
-  ANALYTICS_PROVIDER_ENV_VAR,
-  APTABASE_APP_KEY_ENV_VAR,
-  POSTHOG_PROJECT_TOKEN_ENV_VAR,
-} = await import('../providerFactory');
+const { resolveMainAnalyticsProvider, ANALYTICS_PROVIDER_ENV_VAR, APTABASE_APP_KEY_ENV_VAR, POSTHOG_PROJECT_TOKEN_ENV_VAR } =
+  await import('../providerFactory');
 import type { AnalyticsConfig } from '../../../shared/analytics/types';
 
 const baseConfig = (overrides: Partial<AnalyticsConfig> = {}): AnalyticsConfig => ({

@@ -14,9 +14,7 @@
  * @returns {Record<string, string | number | boolean> | undefined} Sanitized
  *   props, or undefined when every value was dropped.
  */
-export function sanitizeAnalyticsProps(
-  props: Record<string, unknown>,
-): Record<string, string | number | boolean> | undefined {
+export function sanitizeAnalyticsProps(props: Record<string, unknown>): Record<string, string | number | boolean> | undefined {
   const out: Record<string, string | number | boolean> = {};
   for (const [key, value] of Object.entries(props)) {
     if (typeof value === 'string') {

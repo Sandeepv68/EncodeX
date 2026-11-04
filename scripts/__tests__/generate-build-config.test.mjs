@@ -68,9 +68,7 @@ describe('generate build config', () => {
   });
 
   it('resolves a duplicated .env key to its last value (Aptabase)', () => {
-    const dir = makeWorkspace(
-      ['APTABASE_APP_KEY=A-US-first', 'APTABASE_APP_KEY=A-US-second', ''].join('\n'),
-    );
+    const dir = makeWorkspace(['APTABASE_APP_KEY=A-US-first', 'APTABASE_APP_KEY=A-US-second', ''].join('\n'));
     const out = runGenerator('generate-aptabase-config.mjs', 'aptabaseBuildConfig.ts', dir, {
       APTABASE_APP_KEY: '',
       APTABASE_HOST: '',

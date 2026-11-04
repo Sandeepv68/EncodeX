@@ -18,16 +18,8 @@
 import { ipcMain } from 'electron';
 import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';
-import {
-  LOG_IPC_ANALYTICS_GET_STATE,
-  LOG_IPC_ANALYTICS_SET_ENABLED,
-  LOG_IPC_ANALYTICS_TRACK_EVENT,
-} from '../../shared/log-constants';
-import {
-  getAnalyticsBackendName,
-  setAnalyticsEnabled,
-  trackRelayedAnalyticsEvent,
-} from '../../shared/analytics/AnalyticsService';
+import { LOG_IPC_ANALYTICS_GET_STATE, LOG_IPC_ANALYTICS_SET_ENABLED, LOG_IPC_ANALYTICS_TRACK_EVENT } from '../../shared/log-constants';
+import { getAnalyticsBackendName, setAnalyticsEnabled, trackRelayedAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import type { AnalyticsState } from '../../shared/analytics/types';
 import { writeAnalyticsConsent } from './consent';
 
