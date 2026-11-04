@@ -593,7 +593,7 @@ export interface RemuxAnalyticsContext {
 
 /**
  * Feature-flag definition (CP4). Lives in the shared types file so the
- * 
+ *
 o-local-types rule is satisfied; consumed by src/main/analytics/flags.ts.
  */
 export interface FeatureFlagDefinition {
