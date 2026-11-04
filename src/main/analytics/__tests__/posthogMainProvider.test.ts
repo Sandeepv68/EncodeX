@@ -195,7 +195,7 @@ describe('PostHogMainProvider', () => {
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig({ appVersion: '1.0.0', channel: 'prod', mode: 'gui', locale: 'en', hwAccelAvailable: true }));
     provider.track(createAnalyticsEvent('profile_applied', { profileId: 'p1', category: 'web' }));
-    provider.track(createAnalyticsEvent('hw_accel_detected', { hwAccel: true }));
+    provider.track(createAnalyticsEvent('hw_accel_detected', { mode: 'auto', encoderType: 'gpu' }));
     expect(capture).toHaveBeenCalled();
     expect(provider.isFeatureFlagEnabled('analytics_group_convert')).toBe(true);
     expect(provider.getAllFeatureFlags()).toBeDefined();
