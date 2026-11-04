@@ -19,7 +19,7 @@ describe('posthogSurveys', () => {
     (window as unknown as { electronAPI: unknown }).electronAPI = {
       analyticsGetPosthogConfig: vi.fn().mockResolvedValue({ projectToken: 'phc_test', host: 'https://us.i.posthog.com' }),
     };
-    const posthog = (await import('posthog-js')).default as { init: ReturnType<typeof vi.fn> };
+    const posthog = (await import('posthog-js')).default as unknown as { init: ReturnType<typeof vi.fn> };
     const { initPosthogSurveys } = await import('../posthogSurveys');
     await initPosthogSurveys(true);
     expect(posthog.init).toHaveBeenCalled();
