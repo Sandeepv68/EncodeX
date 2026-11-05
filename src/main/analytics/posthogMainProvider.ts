@@ -8,6 +8,7 @@
 
 import { randomUUID } from 'crypto';
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
 import { app } from 'electron';
 import { logs, type Logger as OpenTelemetryLogger } from '@opentelemetry/api-logs';
@@ -97,7 +98,7 @@ export class PostHogMainProvider implements AnalyticsProvider {
       const superProps: Record<string, unknown> = {
         platform: process.platform,
         arch: process.arch,
-        os_version: process.getuid ? undefined : (require('os') as { release: () => string }).release(),
+        os_version: os.release(),
         electron_version: process.versions.electron,
         node_version: process.versions.node,
         $session_id: this.sessionId,
@@ -245,7 +246,7 @@ export class PostHogMainProvider implements AnalyticsProvider {
       if (config.hwAccelAvailable !== undefined) personProperties.hw_accel_available = config.hwAccelAvailable;
       personProperties.os = process.platform;
       personProperties.arch = process.arch;
-      personProperties.os_version = require('os').release();
+      personProperties.os_version = os.release();
       personProperties.electron_version = process.versions.electron;
       personProperties.node_version = process.versions.node;
       if (config.mode) personProperties.mode = config.mode;

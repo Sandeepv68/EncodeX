@@ -5,6 +5,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 const { PostHogRendererProvider } = await import('../posthogRendererProvider');
 import { createAnalyticsEvent } from '../../../shared/analytics/events';
@@ -67,6 +68,45 @@ describe('PostHogRendererProvider', () => {
     expect(relay).not.toHaveBeenCalled();
     Object.defineProperty(globalThis, 'window', { configurable: true, value: originalWindow });
   });
+  it('swallows relay rejections', async () => {
+    const failing = vi.fn().mockRejectedValue(new Error('boom'));
+    Object.defineProperty(globalThis, 'window', {
+      configurable: true,
+      value: { electronAPI: { analyticsTrackEvent: failing } },
+    });
+    const provider = new PostHogRendererProvider();
+    await provider.init({ enabled: true });
+    provider.track(createAnalyticsEvent('tool_opened', { route: '/convert' }));
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(failing).toHaveBeenCalled();
+  });
+
+  it('swallows a relay that throws synchronously', async () => {
+    const throwing = vi.fn(() => {
+      throw new Error('sync boom');
+    });
+    Object.defineProperty(globalThis, 'window', {
+      configurable: true,
+      value: { electronAPI: { analyticsTrackEvent: throwing } },
+    });
+    const provider = new PostHogRendererProvider();
+    await provider.init({ enabled: true });
+    provider.track(createAnalyticsEvent('tool_opened', { route: '/convert' }));
+    expect(throwing).toHaveBeenCalled();
+  });
+
+  it('stays inactive when init throws', async () => {
+    expectAppLog('error', 'renderer/analytics/posthogRendererProvider');
+    const hostile = {
+      get enabled(): boolean {
+        throw new Error('init boom');
+      },
+    } as unknown as Parameters<PostHogRendererProvider['init']>[0];
+    const provider = new PostHogRendererProvider();
+    await provider.init(hostile);
+    expect(provider.isEnabled()).toBe(false);
+  });
+
   it('drops events after setEnabled(false)', async () => {
     const provider = new PostHogRendererProvider();
     await provider.init({ enabled: true });

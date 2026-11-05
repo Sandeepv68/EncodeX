@@ -94,6 +94,7 @@ import { createAnalyticsEvent } from '../shared/analytics/events';
 import { SENTRY_BUILD_CONFIG } from './generated/sentryBuildConfig';
 import { APTABASE_BUILD_CONFIG } from './generated/aptabaseBuildConfig';
 import { POSTHOG_BUILD_CONFIG } from './generated/posthogBuildConfig';
+import { detectHardwareAcceleration } from './analytics/hardware';
 import { readMonitoringConsent } from './monitoring/consent';
 import { registerMonitoringIpcBridge } from './monitoring/ipcBridge';
 import { installContentSecurityPolicy } from './security/csp';
@@ -222,13 +223,7 @@ async function bootstrapAnalytics(): Promise<void> {
       channel: process.env.NODE_ENV === 'development' || !app.isPackaged ? 'dev' : 'prod',
       appVersion: app.getVersion(),
       locale: app.getLocale(),
-      hwAccelAvailable: (() => {
-        try {
-          return app.getGPUFeatureStatus()?.gpu_compositing === 'enabled';
-        } catch {
-          return undefined;
-        }
-      })(),
+      hwAccelAvailable: detectHardwareAcceleration(),
     };
     await initAnalytics(config, resolveMainAnalyticsProvider);
   } catch (err) {
