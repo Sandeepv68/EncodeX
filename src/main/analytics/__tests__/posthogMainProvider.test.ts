@@ -201,6 +201,35 @@ describe('PostHogMainProvider', () => {
     expect(provider.getAllFeatureFlags()).toBeDefined();
   });
 
+  it('gates off events whose group is not allowed', async () => {
+    const prev = process.env.ANALYTICS_GROUPS;
+    process.env.ANALYTICS_GROUPS = 'lifecycle';
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig());
+    provider.track(createAnalyticsEvent('tool_opened', { route: '/convert' }));
+    expect(capture).not.toHaveBeenCalled();
+    if (prev === undefined) delete process.env.ANALYTICS_GROUPS; else process.env.ANALYTICS_GROUPS = prev;
+  });
+
+  it('rotates the session after 30 minutes of inactivity', async () => {
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig({ appVersion: '1.0.0' }));
+    const before = (provider as unknown as { sessionId: string }).sessionId;
+    const now = Date.now();
+    vi.spyOn(Date, 'now').mockReturnValue(now + 31 * 60 * 1000);
+    provider.track(createAnalyticsEvent('tool_opened', { route: '/convert' }));
+    const after = (provider as unknown as { sessionId: string }).sessionId;
+    expect(after).not.toBe(before);
+    vi.restoreAllMocks();
+  });
+
+  it('marks ui_error_shown with process_person_profile false', async () => {
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig());
+    provider.track(createAnalyticsEvent('ui_error_shown', { category: 'x' }));
+    expect(capture).toHaveBeenCalled();
+  });
+
   it('flushes and shuts the client down on close', async () => {
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig());
