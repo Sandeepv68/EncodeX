@@ -9,6 +9,7 @@ import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 const { PostHogRendererProvider } = await import('../posthogRendererProvider');
 import { createAnalyticsEvent } from '../../../shared/analytics/events';
+import type { AnalyticsConfig } from '../../../shared/analytics/types';
 
 const relay = vi.fn().mockResolvedValue(undefined);
 
@@ -101,7 +102,7 @@ describe('PostHogRendererProvider', () => {
       get enabled(): boolean {
         throw new Error('init boom');
       },
-    } as unknown as Parameters<PostHogRendererProvider['init']>[0];
+    } as unknown as AnalyticsConfig;
     const provider = new PostHogRendererProvider();
     await provider.init(hostile);
     expect(provider.isEnabled()).toBe(false);
