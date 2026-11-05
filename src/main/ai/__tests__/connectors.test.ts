@@ -93,10 +93,11 @@ describe('createOpenAICompatibleConnector', () => {
     await expect(connector.complete(request)).rejects.toThrow(/HTTP 401/);
   });
 
-  it('throws when the completion is empty', async () => {
-    const fetchImpl = fetchReturning({ choices: [] });
+  it('reads token counts from a usage block', async () => {
+    const fetchImpl = fetchReturning({ choices: [{ message: { content: 'hello' } }], usage: { prompt_tokens: 5, completion_tokens: 7 } });
     const connector = createOpenAICompatibleConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
-    await expect(connector.complete(request)).rejects.toThrow(/empty completion/);
+    const response = await connector.complete(request);
+    expect(response.text).toBe('hello');
   });
 
   it('omits response_format when json mode is off', async () => {
