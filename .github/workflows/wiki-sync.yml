@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 env:
   NODE_VERSION: 22
@@ -35,6 +35,8 @@ jobs:
 
   sync:
     needs: verify
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

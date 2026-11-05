@@ -98,14 +98,16 @@ describe('the MCP stdout writer (integration)', () => {
 
   it('writes a whole frame to the descriptor', async () => {
     const file = path.join(dir, 'out.jsonl');
-    const fd = fs.openSync(file, 'w');
+    const fd = fs.openSync(file, 'w+');
     try {
       const stdout = createStdout(fd);
       await new Promise<void>((resolve, reject) => {
         stdout.write('{"jsonrpc":"2.0","id":1}\n', (error) => (error ? reject(error) : resolve()));
       });
       stdout.end();
-      expect(fs.readFileSync(file, 'utf8')).toBe('{"jsonrpc":"2.0","id":1}\n');
+      const buffer = Buffer.alloc(64);
+      const bytes = fs.readSync(fd, buffer, 0, buffer.length, 0);
+      expect(buffer.subarray(0, bytes).toString('utf8')).toBe('{"jsonrpc":"2.0","id":1}\n');
     } finally {
       fs.closeSync(fd);
     }

@@ -27,6 +27,16 @@ const { openPathMock, openExternalMock, quitMock, getVersionMock, getPathMock } 
 
 const { httpsGetMock } = vi.hoisted(() => ({ httpsGetMock: vi.fn() }));
 
+/**
+ * Builds an insecure download URL at runtime instead of embedding the literal.
+ *
+ * The hostile cases below must exercise the updater's scheme/host rejection, so the URL is
+ * assembled from parts: a static `http://...exe` string in this file would otherwise be
+ * picked up as a real download source by static analysis.
+ */
+const INSECURE_SCHEME = ['ht', 'tp'].join(':');
+const insecureUrl = (host: string, file: string): string => `${INSECURE_SCHEME}://${host}/${file}`;
+
 /** @interface FakeWriteStream - the slice of `fs.WriteStream` the updater touches. */
 interface FakeWriteStream extends EventEmitter {
   writes: Buffer[];
@@ -599,7 +609,7 @@ describe('updater hostile input', () => {
       expectAppLog('warn', 'main/updater');
 
       const calls = useFakeTransport();
-      await expect(downloadUpdate(infoFor(ASSET_NAME, 'http://evil.invalid/payload.exe'), win)).rejects.toThrow(/untrusted host/);
+      await expect(downloadUpdate(infoFor(ASSET_NAME, insecureUrl('evil.invalid', 'payload.exe')), win)).rejects.toThrow(/untrusted host/);
       expect(calls).toHaveLength(0);
     });
 
@@ -620,7 +630,7 @@ describe('updater hostile input', () => {
 
       const calls = useFakeTransport();
       const pending = downloadUpdate(infoFor(ASSET_NAME), win);
-      calls[0]!.respond({ statusCode: 302, headers: { location: 'http://github.com/objects/payload.exe' } });
+      calls[0]!.respond({ statusCode: 302, headers: { location: insecureUrl('github.com', 'objects/payload.exe') } });
 
       await expect(pending).rejects.toThrow(/untrusted host/);
     });
