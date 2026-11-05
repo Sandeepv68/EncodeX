@@ -226,7 +226,7 @@ describe('ImageCompress', () => {
     fireEvent.click(screen.getByText('WebP'));
     fireEvent.click(screen.getByText('convert.browse'));
     await waitFor(() => expect(selectOutputMock).toHaveBeenCalledOnce());
-    expect(screen.getByPlaceholderText('imageCompress.placeholderOutput')).toHaveValue('/out/photo.webp');
+    await waitFor(() => expect(screen.getByPlaceholderText('imageCompress.placeholderOutput')).toHaveValue('/out/photo.webp'));
   });
 
   it('picks an output file via the browse button', async () => {
@@ -234,7 +234,7 @@ describe('ImageCompress', () => {
     renderPage();
     fireEvent.click(screen.getByText('convert.browse'));
     await waitFor(() => expect(selectOutputMock).toHaveBeenCalledOnce());
-    expect(screen.getByPlaceholderText('imageCompress.placeholderOutput')).toHaveValue('/out/photo.jpg');
+    await waitFor(() => expect(screen.getByPlaceholderText('imageCompress.placeholderOutput')).toHaveValue('/out/photo.jpg'));
   });
 
   it('compresses an image with the default JPEG format', async () => {
