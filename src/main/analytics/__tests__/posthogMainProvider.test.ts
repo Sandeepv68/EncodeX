@@ -208,7 +208,8 @@ describe('PostHogMainProvider', () => {
     await provider.init(baseConfig());
     provider.track(createAnalyticsEvent('tool_opened', { route: '/convert' }));
     expect(capture).not.toHaveBeenCalled();
-    if (prev === undefined) delete process.env.ANALYTICS_GROUPS; else process.env.ANALYTICS_GROUPS = prev;
+    if (prev === undefined) delete process.env.ANALYTICS_GROUPS;
+    else process.env.ANALYTICS_GROUPS = prev;
   });
 
   it('rotates the session after 30 minutes of inactivity', async () => {
