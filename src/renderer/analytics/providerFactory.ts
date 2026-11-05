@@ -10,16 +10,20 @@
 
 import type { AnalyticsProvider, AnalyticsConfig } from '../../shared/analytics/types';
 import { AptabaseRendererProvider } from './aptabaseRendererProvider';
+import { PostHogRendererProvider } from './posthogRendererProvider';
 
 /**
  * Resolves the concrete renderer provider for the given configuration.
  * @param {AnalyticsConfig} config - Config whose `provider` field mirrors the
- *   active main-process backend ('aptabase' | 'noop').
+ *   active main-process backend ('posthog' | 'aptabase' | 'noop').
  * @returns {AnalyticsProvider | null} The adapter instance, or null to request
  *   the facade's no-op fallback.
  */
 export function resolveRendererAnalyticsProvider(config: AnalyticsConfig): AnalyticsProvider | null {
   const requested = (config.provider || '').toLowerCase();
+  if (requested === 'posthog') {
+    return new PostHogRendererProvider();
+  }
   if (requested === 'aptabase') {
     return new AptabaseRendererProvider();
   }

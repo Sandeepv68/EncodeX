@@ -27,6 +27,7 @@ import { config as loadDotenv } from 'dotenv';
 loadDotenv({ quiet: true });
 
 import { app, BrowserWindow, Menu, session, shell } from 'electron';
+import { randomUUID } from 'crypto';
 import * as path from 'path';
 import * as fs from 'fs';
 import { format as formatArgs } from 'util';
@@ -92,6 +93,8 @@ import { recordAnalyticsEvent } from '../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../shared/analytics/events';
 import { SENTRY_BUILD_CONFIG } from './generated/sentryBuildConfig';
 import { APTABASE_BUILD_CONFIG } from './generated/aptabaseBuildConfig';
+import { POSTHOG_BUILD_CONFIG } from './generated/posthogBuildConfig';
+import { detectHardwareAcceleration } from './analytics/hardware';
 import { readMonitoringConsent } from './monitoring/consent';
 import { registerMonitoringIpcBridge } from './monitoring/ipcBridge';
 import { installContentSecurityPolicy } from './security/csp';
@@ -116,6 +119,34 @@ let rendererCrashedDuringSession = false;
 
 /** userData-relative JSON file recording the version whose first run was already observed. @const {string} */
 const ANALYTICS_INSTALL_MARKER_FILE = 'analytics-install-marker.json';
+
+/** userData-relative file holding the stable anonymous analytics installation id. @const {string} */
+const ANALYTICS_INSTALL_ID_FILE = 'analytics-install-id.txt';
+
+/**
+ * Resolves the stable anonymous installation id used as the PostHog distinct
+ * id. It is a random UUID stored in userData - never a user identity or PII -
+ * and lets retention be measured across sessions. Read/write failures fall
+ * back to a fresh per-process id so analytics never blocks startup.
+ * @param {string} userDataDir - The app's userData directory.
+ * @returns {string} The persisted (or newly generated) anonymous installation id.
+ */
+function resolveAnalyticsInstallId(userDataDir: string): string {
+  const idPath = path.join(userDataDir, ANALYTICS_INSTALL_ID_FILE);
+  try {
+    const existing = fs.readFileSync(idPath, 'utf8').trim();
+    if (existing) return existing;
+  } catch {
+    // Missing/unreadable id: fall through and create one.
+  }
+  const id = randomUUID();
+  try {
+    fs.writeFileSync(idPath, id, 'utf8');
+  } catch {
+    // Non-fatal: a later launch will generate a new id.
+  }
+  return id;
+}
 
 /**
  * Initializes the monitoring subsystem as early as possible in the main
@@ -159,7 +190,8 @@ async function bootstrapMonitoring(): Promise<void> {
  * Reads the persisted user consent (`userData/analytics-consent.json`, seeded
  * from monitoring consent when missing and defaulting to enabled) and
  * activates the provider resolved by {@link resolveMainAnalyticsProvider} -
- * Aptabase when an App Key is configured, the no-op fallback otherwise.
+ * PostHog when its project token is configured, Aptabase when its App Key is
+ * configured, and the no-op fallback otherwise.
  *
  * MUST be invoked before `app.whenReady()`: the Aptabase SDK registers its
  * custom `aptabase-ipc` scheme synchronously inside `initialize` (D7).
@@ -177,6 +209,9 @@ async function bootstrapAnalytics(): Promise<void> {
       // releases where end users cannot set APTABASE_APP_KEY.
       appKey: process.env.APTABASE_APP_KEY ?? APTABASE_BUILD_CONFIG.appKey,
       host: process.env.APTABASE_HOST ?? APTABASE_BUILD_CONFIG.host,
+      posthogHost: process.env.POSTHOG_HOST ?? POSTHOG_BUILD_CONFIG.host,
+      projectToken: process.env.POSTHOG_PROJECT_TOKEN ?? POSTHOG_BUILD_CONFIG.projectToken,
+      installId: resolveAnalyticsInstallId(app.getPath('userData')),
       environment:
         process.env.APTABASE_ENVIRONMENT ||
         APTABASE_BUILD_CONFIG.environment ||
@@ -184,6 +219,11 @@ async function bootstrapAnalytics(): Promise<void> {
       release: `encodex@${app.getVersion()}`,
       // Set APTABASE_DEBUG=1 to watch the SDK log event delivery locally.
       debug: process.env.APTABASE_DEBUG === '1',
+      mode: process.argv.includes('--cli') ? 'cli' : process.argv.includes('--mcp') ? 'mcp' : 'gui',
+      channel: process.env.NODE_ENV === 'development' || !app.isPackaged ? 'dev' : 'prod',
+      appVersion: app.getVersion(),
+      locale: app.getLocale(),
+      hwAccelAvailable: detectHardwareAcceleration(),
     };
     await initAnalytics(config, resolveMainAnalyticsProvider);
   } catch (err) {

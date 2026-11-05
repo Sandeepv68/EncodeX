@@ -93,6 +93,7 @@
  * @property {string} MONITORING_SET_ENABLED - Update the monitoring consent (user toggle).
  * @property {string} ANALYTICS_GET_STATE - Query the usage-analytics consent state from main.
  * @property {string} ANALYTICS_SET_ENABLED - Update the usage-analytics consent (user toggle).
+ * @property {string} ANALYTICS_TRACK_EVENT - Relay a renderer analytics event to the active main backend.
  * @property {string} MCP_SETTINGS_GET - Query the embedded MCP server settings from main.
  * @property {string} MCP_SETTINGS_SET - Update the embedded MCP server settings (user toggle).
  * @property {string} MCP_UI_CALL_TOOL - Call an MCP tool on behalf of an in-app MCP App view.
@@ -187,6 +188,9 @@ export const IPC = {
 
   ANALYTICS_GET_STATE: 'analytics-get-state',
   ANALYTICS_SET_ENABLED: 'analytics-set-enabled',
+  ANALYTICS_TRACK_EVENT: 'analytics-track-event',
+  /** Returns the public PostHog project token and host for survey rendering (CP5). Renderer-only, never a secret. */
+  ANALYTICS_GET_POSTHOG_CONFIG: 'analytics-get-posthog-config',
 
   MCP_SETTINGS_GET: 'mcp-settings-get',
   MCP_SETTINGS_SET: 'mcp-settings-set',

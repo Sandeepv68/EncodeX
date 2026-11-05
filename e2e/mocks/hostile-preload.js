@@ -90,6 +90,8 @@ const API_TABLE = {
   monitoringSetEnabled: { kind: 'invoke', channel: IPC.MONITORING_SET_ENABLED, params: ['enabled'] },
   analyticsGetState: { kind: 'invoke', channel: IPC.ANALYTICS_GET_STATE, params: [] },
   analyticsSetEnabled: { kind: 'invoke', channel: IPC.ANALYTICS_SET_ENABLED, params: ['enabled'] },
+  analyticsTrackEvent: { kind: 'invoke', channel: IPC.ANALYTICS_TRACK_EVENT, params: ['event'] },
+  analyticsGetPosthogConfig: { kind: 'invoke', channel: IPC.ANALYTICS_GET_POSTHOG_CONFIG, params: [] },
   mcpGetSettings: { kind: 'invoke', channel: IPC.MCP_SETTINGS_GET, params: [] },
   mcpSetSettings: { kind: 'invoke', channel: IPC.MCP_SETTINGS_SET, params: ['settings'] },
   mcpUiCallTool: { kind: 'invoke', channel: IPC.MCP_UI_CALL_TOOL, params: ['name', 'args'] },

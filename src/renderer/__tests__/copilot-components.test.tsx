@@ -202,7 +202,7 @@ describe('Conversation', () => {
         <Conversation messages={[]} onAddToQueue={vi.fn()} />
       </ColorModeProvider>,
     );
-    expect(screen.getByText('copilot.welcome')).toBeInTheDocument();
+    expect(screen.getByText(/copilot\.welcome/)).toBeInTheDocument();
     expect(screen.getByText('copilot.goal')).toBeInTheDocument();
   });
 

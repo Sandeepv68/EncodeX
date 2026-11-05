@@ -9,7 +9,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ANALYTICS_SCHEMA_VERSION, createAnalyticsEvent } from '../events';
 import type { AnalyticsEvent } from '../events';
-import type { AnalyticsProvider } from '../types';
+import type { AnalyticsProvider, AiGeneration } from '../types';
 
 import {
   AnalyticsService,
@@ -21,6 +21,10 @@ import {
   setAnalyticsContext,
   isAnalyticsEnabled,
   getAnalyticsBackendName,
+  trackRelayedAnalyticsEvent,
+  captureAiGeneration,
+  isFeatureFlagEnabled,
+  getAllFeatureFlags,
 } from '../AnalyticsService';
 
 /** Minimal trackable fake provider asserting delegation. */
@@ -30,6 +34,8 @@ class FakeProvider implements AnalyticsProvider {
   tracks: AnalyticsEvent[] = [];
   inits = 0;
   closes = 0;
+  generations: AiGeneration[] = [];
+  flags: Record<string, boolean | string | number> = { alpha: true, beta: 'x' };
 
   init(): void {
     this.inits += 1;
@@ -39,12 +45,47 @@ class FakeProvider implements AnalyticsProvider {
     this.tracks.push(event);
   }
 
+  captureAiGeneration(generation: AiGeneration): void {
+    this.generations.push(generation);
+  }
+
+  isFeatureFlagEnabled(flag: string): boolean | undefined {
+    const value = this.flags[flag];
+    return typeof value === 'boolean' ? value : undefined;
+  }
+
+  getAllFeatureFlags(): Record<string, boolean | string | number> | undefined {
+    return { ...this.flags };
+  }
+
   setEnabled(enabled: boolean): void {
     this.enabled = enabled;
   }
 
   isEnabled(): boolean {
     return this.enabled;
+  }
+}
+
+/** Provider whose every call throws, to exercise the facade's catch paths. */
+class ThrowingProvider implements AnalyticsProvider {
+  readonly name = 'throwing';
+  init(): void {}
+  track(): void {
+    throw new Error('track boom');
+  }
+  captureAiGeneration(): void {
+    throw new Error('generation boom');
+  }
+  isFeatureFlagEnabled(): boolean | undefined {
+    throw new Error('flag boom');
+  }
+  getAllFeatureFlags(): Record<string, boolean | string | number> | undefined {
+    throw new Error('flags boom');
+  }
+  setEnabled(): void {}
+  isEnabled(): boolean {
+    return true;
   }
 }
 
@@ -169,5 +210,104 @@ describe('AnalyticsService', () => {
     expect(getActiveAnalyticsProviderForTests().name).toBe('fake');
     expect(isAnalyticsEnabled()).toBe(true);
     expect(getAnalyticsBackendName()).toBe('fake');
+  });
+
+  it('forwards relayed renderer events without re-stamping the main badge', async () => {
+    resetAnalyticsForTests();
+    await initAnalytics({ enabled: true, provider: 'fake' }, () => provider);
+    setAnalyticsContext({ route: '/main', jobKind: 'single' });
+    const event = createAnalyticsEvent('tool_opened', { route: '/convert' });
+    trackRelayedAnalyticsEvent(event);
+    expect(provider.tracks).toHaveLength(1);
+    expect(provider.tracks[0]).toEqual(event);
+  });
+
+  it('drops relayed events with an unknown event name', async () => {
+    resetAnalyticsForTests();
+    await initAnalytics({ enabled: true, provider: 'fake' }, () => provider);
+    trackRelayedAnalyticsEvent({ schema: 2, name: 'not_a_real_event', props: {} });
+    expect(provider.tracks).toHaveLength(0);
+  });
+
+  it('drops relayed events with non-object props', async () => {
+    resetAnalyticsForTests();
+    await initAnalytics({ enabled: true, provider: 'fake' }, () => provider);
+    trackRelayedAnalyticsEvent({ schema: 2, name: 'tool_opened', props: null });
+    trackRelayedAnalyticsEvent({ schema: 2, name: 'tool_opened', props: 'x' });
+    expect(provider.tracks).toHaveLength(0);
+  });
+
+  it('drops relayed events with non-string name', async () => {
+    resetAnalyticsForTests();
+    await initAnalytics({ enabled: true, provider: 'fake' }, () => provider);
+    trackRelayedAnalyticsEvent({ schema: 2, name: 42, props: {} });
+    expect(provider.tracks).toHaveLength(0);
+  });
+  it('drops relayed events that are not objects', async () => {
+    resetAnalyticsForTests();
+    await initAnalytics({ enabled: true, provider: 'fake' }, () => provider);
+    trackRelayedAnalyticsEvent(null);
+    trackRelayedAnalyticsEvent(undefined);
+    trackRelayedAnalyticsEvent('tool_opened');
+    trackRelayedAnalyticsEvent(42);
+    expect(provider.tracks).toHaveLength(0);
+  });
+
+  it('drops relayed events when consent is off', async () => {
+    resetAnalyticsForTests();
+    await initAnalytics({ enabled: false, provider: 'fake' }, () => provider);
+    trackRelayedAnalyticsEvent(createAnalyticsEvent('tool_opened', { route: '/convert' }));
+    expect(provider.tracks).toHaveLength(0);
+  });
+
+  it('forwards AI generations to the provider', async () => {
+    resetAnalyticsForTests();
+    await initAnalytics({ enabled: true, provider: 'fake' }, () => provider);
+    const generation: AiGeneration = {
+      traceId: 't1',
+      provider: 'openai',
+      model: 'gpt',
+      input: [{ role: 'user', content: 'hi' }],
+      latency: 1,
+    };
+    captureAiGeneration(generation);
+    expect(provider.generations).toEqual([generation]);
+  });
+
+  it('ignores AI generations when consent is off', async () => {
+    resetAnalyticsForTests();
+    await initAnalytics({ enabled: false, provider: 'fake' }, () => provider);
+    captureAiGeneration({
+      traceId: 't1',
+      provider: 'openai',
+      model: 'gpt',
+      input: [],
+      latency: 1,
+    });
+    expect(provider.generations).toHaveLength(0);
+  });
+
+  it('resolves feature flags through the provider', async () => {
+    resetAnalyticsForTests();
+    await initAnalytics({ enabled: true, provider: 'fake' }, () => provider);
+    expect(isFeatureFlagEnabled('alpha')).toBe(true);
+    expect(isFeatureFlagEnabled('beta')).toBeUndefined();
+    expect(getAllFeatureFlags()).toEqual({ alpha: true, beta: 'x' });
+  });
+
+  it('returns undefined for flags when consent is off', async () => {
+    resetAnalyticsForTests();
+    await initAnalytics({ enabled: false, provider: 'fake' }, () => provider);
+    expect(isFeatureFlagEnabled('alpha')).toBeUndefined();
+    expect(getAllFeatureFlags()).toBeUndefined();
+  });
+
+  it('never throws when the provider fails', async () => {
+    resetAnalyticsForTests();
+    await initAnalytics({ enabled: true, provider: 'throwing' }, () => new ThrowingProvider());
+    expect(() => trackRelayedAnalyticsEvent(createAnalyticsEvent('tool_opened', { route: '/convert' }))).not.toThrow();
+    expect(() => captureAiGeneration({ traceId: 't', provider: 'p', model: 'm', input: [], latency: 1 })).not.toThrow();
+    expect(() => isFeatureFlagEnabled('alpha')).not.toThrow();
+    expect(() => getAllFeatureFlags()).not.toThrow();
   });
 });

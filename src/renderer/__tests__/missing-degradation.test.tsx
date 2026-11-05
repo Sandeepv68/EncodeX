@@ -31,7 +31,7 @@ function restoreBridge(): void {
 
 const EMPTY_MEDIA_INFO: MediaInfo = { file: '', format: '', size: 0, duration: 0, bitrate: '', streams: [] };
 
-const TITLES: Record<string, string> = {
+const TITLES: Record<string, string | RegExp> = {
   Dashboard: 'dashboard.welcome 👋',
   Convert: 'convert.title',
   MediaInfo: 'mediaInfo.title',
@@ -41,7 +41,7 @@ const TITLES: Record<string, string> = {
   Remux: 'remux.title',
   Demux: 'demux.title',
   BatchQueue: 'batchQueue.title',
-  Copilot: 'copilot.welcome',
+  Copilot: /copilot\.welcome/,
   Logs: 'logs.noEntries',
   Settings: 'settings.title',
   About: 'about.title',

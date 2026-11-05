@@ -32,6 +32,7 @@ import type { McpSettings } from '../shared/mcp-settings';
 import type { AiConnectTestResult, AiModelsListResult, AiSettingsUpdate, AiSettingsView } from '../shared/ai/settings';
 import type { AuditEntry } from '../shared/audit';
 import type { CopilotPlan, CopilotPlanRequest } from '../shared/copilot';
+import type { AnalyticsEvent } from '../shared/analytics/events';
 
 /**
  * The bridge API exposed to the renderer as `window.electronAPI`.
@@ -472,7 +473,7 @@ export interface ElectronAPI {
    * Queries the current usage-analytics state from the main process over
    * `IPC.ANALYTICS_GET_STATE` ('analytics-get-state').
    * @returns {Promise<{ enabled: boolean; backend: string }>} Consent flag and
-   *   active backend adapter name in main ('aptabase' | 'noop').
+   *   active backend adapter name in main ('posthog' | 'aptabase' | 'noop').
    */
   analyticsGetState(): Promise<{ enabled: boolean; backend: string }>;
   /**
@@ -483,6 +484,15 @@ export interface ElectronAPI {
    * @returns {Promise<{ enabled: boolean; backend: string }>}> The resulting state.
    */
   analyticsSetEnabled(enabled: boolean): Promise<{ enabled: boolean; backend: string }>;
+  /**
+   * Relays one renderer analytics event to the active main-process backend over
+   * `IPC.ANALYTICS_TRACK_EVENT` ('analytics-track-event'). Backend credentials
+   * stay in main; the renderer only sends the typed event.
+   * @param {AnalyticsEvent} event - The consented, sanitized event to relay.
+   * @returns {Promise<void>} Resolves once main has accepted the event.
+   */
+  analyticsTrackEvent(event: AnalyticsEvent): Promise<void>;
+  analyticsGetPosthogConfig(): Promise<{ projectToken?: string; host?: string }>;
   /**
    * Queries the stored embedded MCP server settings from the main process over
    * `IPC.MCP_SETTINGS_GET` ('mcp-settings-get').

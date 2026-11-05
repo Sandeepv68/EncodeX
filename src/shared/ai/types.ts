@@ -553,12 +553,14 @@ export interface ConnectorMessage {
  *   Anthropic prefill). Providers that cannot honor it fall back to parsing.
  * @property {number} [temperature] - Sampling temperature; defaults to 0.
  * @property {AbortSignal} [signal] - Cancellation/timeout signal.
+ * @property {string} [aiTraceId] - AI Observability trace id shared by calls in one user turn.
  */
 export interface ConnectorRequest {
   messages: ConnectorMessage[];
   jsonMode?: boolean;
   temperature?: number;
   signal?: AbortSignal;
+  aiTraceId?: string;
 }
 
 /**

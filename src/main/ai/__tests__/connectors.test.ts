@@ -13,6 +13,8 @@ import {
   createGeminiConnector,
   createOpenAICompatibleConnector,
   isRemoteProvider,
+  openAiProvider,
+  usage,
 } from '../connectors';
 import type { FetchLike } from '../connectors';
 import type { AiServerSettings } from '../settings';
@@ -93,10 +95,11 @@ describe('createOpenAICompatibleConnector', () => {
     await expect(connector.complete(request)).rejects.toThrow(/HTTP 401/);
   });
 
-  it('throws when the completion is empty', async () => {
-    const fetchImpl = fetchReturning({ choices: [] });
+  it('reads token counts from a usage block', async () => {
+    const fetchImpl = fetchReturning({ choices: [{ message: { content: 'hello' } }], usage: { prompt_tokens: 5, completion_tokens: 7 } });
     const connector = createOpenAICompatibleConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
-    await expect(connector.complete(request)).rejects.toThrow(/empty completion/);
+    const response = await connector.complete(request);
+    expect(response.text).toBe('hello');
   });
 
   it('omits response_format when json mode is off', async () => {
@@ -322,5 +325,48 @@ describe('transient provider failures', () => {
     const connector = createGeminiConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
     await expect(connector.complete({ ...request, signal: controller.signal })).rejects.toThrow(/cancelled/);
     expect(fetchImpl).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('usage', () => {
+  it('returns no counts when the response carries no usage block', () => {
+    expect(usage({}, 'prompt_tokens', 'completion_tokens')).toEqual({});
+    expect(usage({ usage: undefined }, 'prompt_tokens', 'completion_tokens')).toEqual({});
+  });
+
+  it('reads numeric counts from the usage block', () => {
+    expect(usage({ usage: { prompt_tokens: 5, completion_tokens: 7 } }, 'prompt_tokens', 'completion_tokens')).toEqual({
+      inputTokens: 5,
+      outputTokens: 7,
+    });
+  });
+
+  it('ignores non-numeric counts', () => {
+    expect(usage({ usage: { prompt_tokens: '5', completion_tokens: null } }, 'prompt_tokens', 'completion_tokens')).toEqual({});
+  });
+
+  it('falls back to the usageMetadata block', () => {
+    expect(usage({ usageMetadata: { promptTokenCount: 3, candidatesTokenCount: 4 } }, 'promptTokenCount', 'candidatesTokenCount')).toEqual({
+      inputTokens: 3,
+      outputTokens: 4,
+    });
+  });
+});
+
+describe('openAiProvider', () => {
+  it('classifies known gateway hosts', () => {
+    expect(openAiProvider('https://openrouter.ai/api/v1')).toBe('openrouter');
+    expect(openAiProvider('https://api.groq.com/openai/v1')).toBe('groq');
+    expect(openAiProvider('http://localhost:11434/v1')).toBe('ollama');
+    expect(openAiProvider('http://127.0.0.1:11434/v1')).toBe('ollama');
+    expect(openAiProvider('https://api.openai.com/v1')).toBe('openai');
+  });
+
+  it('falls back to a generic label for unknown hosts', () => {
+    expect(openAiProvider('https://gateway.internal/v1')).toBe('openai-compatible');
+  });
+
+  it('falls back to a generic label for an unparsable URL', () => {
+    expect(openAiProvider('not-a-url')).toBe('openai-compatible');
   });
 });

@@ -57,6 +57,8 @@ const {
     getAppPath: vi.fn(() => 'C:\\project'),
     getPath: vi.fn((_name: string) => 'C:\\tmp\\encodex-userdata'),
     getVersion: vi.fn(() => '1.0.0'),
+    getLocale: vi.fn(() => 'en-US'),
+    getGPUFeatureStatus: vi.fn(() => ({ gpu_compositing: 'enabled' })),
     exit: vi.fn(),
     quit: vi.fn(),
     commandLine: {
@@ -157,6 +159,27 @@ vi.mock('electron', () => ({
   ipcMain: { handle: vi.fn() },
 }));
 vi.mock('@aptabase/electron/main', () => aptabaseMainMock);
+// The analytics bootstrap runs inside `index.ts`, so the PostHog client and the
+// OpenTelemetry log pipeline are stubbed: a real client would open network
+// connections and keep timers alive, which stalls the CLI-mode exit paths.
+vi.mock('posthog-node', () => ({
+  PostHog: vi.fn(function () {
+    return {
+      capture: vi.fn(),
+      flush: vi.fn().mockResolvedValue(undefined),
+      shutdown: vi.fn().mockResolvedValue(undefined),
+    };
+  }),
+}));
+vi.mock('@opentelemetry/api-logs', () => ({ logs: { getLogger: () => ({ emit: vi.fn() }) } }));
+vi.mock('@opentelemetry/exporter-logs-otlp-http', () => ({ OTLPLogExporter: vi.fn() }));
+vi.mock('@opentelemetry/resources', () => ({ resourceFromAttributes: vi.fn(() => ({})) }));
+vi.mock('@opentelemetry/sdk-node', () => ({
+  NodeSDK: vi.fn(function () {
+    return { start: vi.fn(), shutdown: vi.fn().mockResolvedValue(undefined) };
+  }),
+}));
+vi.mock('@opentelemetry/sdk-logs', () => ({ BatchLogRecordProcessor: vi.fn() }));
 vi.mock('../cli/cli', () => ({
   runCli: runCliMock,
   mapCliErrorToExitCode: (err: unknown) => (err instanceof Error && err.message === 'usage' ? 2 : 1),

@@ -18,10 +18,12 @@ vi.mock('electron', () => ({
 
 const setEnabledMock = vi.hoisted(() => vi.fn());
 const getBackendNameMock = vi.hoisted(() => vi.fn());
+const trackRelayedMock = vi.hoisted(() => vi.fn());
 
 vi.mock('../../../shared/analytics/AnalyticsService', () => ({
   setAnalyticsEnabled: setEnabledMock,
   getAnalyticsBackendName: getBackendNameMock,
+  trackRelayedAnalyticsEvent: trackRelayedMock,
 }));
 
 import { IPC } from '../../../shared/ipc-channels';
@@ -50,8 +52,16 @@ describe('registerAnalyticsIpcBridge', () => {
     vi.clearAllMocks();
   });
 
-  it('registers exactly the two analytics channels', () => {
-    expect([...handlers.keys()].sort()).toEqual([IPC.ANALYTICS_GET_STATE, IPC.ANALYTICS_SET_ENABLED].sort());
+  it('registers exactly the four analytics channels', () => {
+    expect([...handlers.keys()].sort()).toEqual(
+      [IPC.ANALYTICS_GET_STATE, IPC.ANALYTICS_SET_ENABLED, IPC.ANALYTICS_TRACK_EVENT, IPC.ANALYTICS_GET_POSTHOG_CONFIG].sort(),
+    );
+  });
+
+  it('relays renderer events to the active backend', () => {
+    const event = { schema: 2, name: 'tool_opened', props: { route: '/convert' } };
+    handlers.get(IPC.ANALYTICS_TRACK_EVENT)!({}, event);
+    expect(trackRelayedMock).toHaveBeenCalledWith(event);
   });
 
   it('reports bootstrap consent and the active backend name', () => {

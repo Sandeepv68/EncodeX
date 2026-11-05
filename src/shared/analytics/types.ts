@@ -4,8 +4,8 @@
  * These types define the "port" of a ports-and-adapters design for usage
  * analytics. Application code depends only on the {@link AnalyticsProvider}
  * interface (via the `analyticsService` facade in `AnalyticsService.ts`) and
- * never on a concrete backend such as Aptabase. Swapping backends means
- * implementing this interface once and registering it with the provider
+ * never on a concrete backend such as PostHog or Aptabase. Swapping backends
+ * means implementing this interface once and registering it with the provider
  * factory - no call sites change.
  *
  * The contract mirrors the monitoring contracts in
@@ -22,8 +22,8 @@ import { ANALYTICS_SCHEMA_VERSION } from './events';
 export interface AnalyticsState {
   /** Whether usage analytics are consented/enabled for this installation. */
   enabled: boolean;
-  /** Active backend adapter name in main ('aptabase' | 'noop'), so the
-   *  renderer initializes its matching counterpart or stays idle. */
+  /** Active backend adapter name in main ('posthog' | 'aptabase' | 'noop'), so
+   *  the renderer initializes its matching counterpart or stays idle. */
   backend: string;
 }
 
@@ -32,18 +32,48 @@ export interface AnalyticsState {
  * fields they do not understand so new options can be added without breaking
  * existing adapters.
  */
+export interface AiGeneration {
+  /** Trace id shared by every generation in a Copilot turn. */
+  traceId: string;
+  /** Provider that produced the generation (for example, `openai`). */
+  provider: string;
+  /** Model id supplied to the provider. */
+  model: string;
+  /** Prompt messages supplied to the provider. */
+  input: Array<{ role: 'system' | 'user'; content: string }>;
+  /** Completion content, when the provider returned one. */
+  output?: string;
+  /** Input-token count when the provider reports it. */
+  inputTokens?: number;
+  /** Output-token count when the provider reports it. */
+  outputTokens?: number;
+  /** Wall-clock generation latency in seconds. */
+  latency: number;
+  /** Whether the provider request failed. */
+  isError?: boolean;
+}
+
 export interface AnalyticsConfig {
   /**
-   * Explicit provider selection ('aptabase' | 'noop' today). When omitted the
-   * host factory auto-detects from other config (e.g. App Key presence).
+   * Explicit provider selection ('posthog' | 'aptabase' | 'noop'). When omitted
+   * the host factory auto-detects from other config (e.g. key presence).
    */
   provider?: string;
   /** Backend project key (`A-{US|EU|DEV|SH}-...` for Aptabase). Absent
    *  usually means "disabled". Kept main-process only by design - the
    *  renderer never receives it. */
   appKey?: string;
-  /** Custom ingest endpoint; required only for self-hosted (`A-SH-*`) keys. */
+  /** PostHog public project token. Kept main-process only by design. */
+  projectToken?: string;
+  /** Stable anonymous installation id used as the PostHog distinct id so
+   *  retention can be measured without attaching a user identity. */
+  installId?: string;
+  /** Custom Aptabase ingest endpoint; required only for self-hosted (`A-SH-*`)
+   *  keys. */
   host?: string;
+  /** PostHog ingest endpoint (for example `https://us.i.posthog.com`). */
+  posthogHost?: string;
+
   /** Master switch reflecting user consent. Providers must respect it. */
   enabled: boolean;
   /** Environment label, e.g. 'development' | 'production'. */
@@ -52,6 +82,16 @@ export interface AnalyticsConfig {
   release?: string;
   /** Verbose SDK diagnostics for local debugging. */
   debug?: boolean;
+  /** Entry point the process was launched in: 'gui' | 'cli' | 'mcp'. */
+  mode?: 'gui' | 'cli' | 'mcp';
+  /** Distribution channel: 'dev' (development build) or 'prod' (release). */
+  channel?: 'dev' | 'prod';
+  /** App version (semver), without the leading 'v'. */
+  appVersion?: string;
+  /** User locale, e.g. 'en-US'. */
+  locale?: string;
+  /** Whether hardware acceleration is available on this machine. */
+  hwAccelAvailable?: boolean;
 }
 
 /**
@@ -77,6 +117,26 @@ export interface AnalyticsProvider {
    * @param {AnalyticsEvent} event - A typed event (see `events.ts`).
    */
   track(event: AnalyticsEvent): void | Promise<void>;
+
+  /**
+   * Records an AI generation when this backend supports AI Observability.
+   * Product-only backends intentionally omit this optional capability.
+   */
+  captureAiGeneration?(generation: AiGeneration): void | Promise<void>;
+
+  /**
+   * Evaluates a feature flag. Returns the resolved boolean, or `undefined`
+   * when the backend does not support flags or consent is off. Never throws.
+   * @param {string} flag - Flag name.
+   * @returns {boolean | undefined} Resolved value, or undefined.
+   */
+  isFeatureFlagEnabled?(flag: string): boolean | undefined;
+
+  /**
+   * Returns all resolved flag values, or undefined when unavailable.
+   * @returns {Record<string, boolean | string | number> | undefined}
+   */
+  getAllFeatureFlags?(): Record<string, boolean | string | number> | undefined;
 
   /**
    * Enables/disables recording at runtime (user consent toggle). Disabling
@@ -529,4 +589,22 @@ export interface DemuxAnalyticsSummary {
 export interface RemuxAnalyticsContext {
   container?: string;
   input?: string;
+}
+
+/**
+ * Feature-flag definition (CP4). Lives in the shared types file so the
+ *
+o-local-types rule is satisfied; consumed by src/main/analytics/flags.ts.
+ */
+export interface FeatureFlagDefinition {
+  /** Flag name as it exists in the PostHog project. */
+  name: string;
+  /** Owner responsible for removal. */
+  owner: string;
+  /** Value used when the remote value is unavailable (offline, timeout, quota). */
+  defaultValue: boolean;
+  /** Target removal date (ISO). */
+  removeBy: string;
+  /** Human-readable purpose. */
+  purpose: string;
 }

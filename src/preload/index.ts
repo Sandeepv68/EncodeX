@@ -92,6 +92,7 @@ import {
 import type { McpSettings } from '../shared/mcp-settings';
 import type { AiConnectTestResult, AiModelsListResult, AiSettingsUpdate, AiSettingsView } from '../shared/ai/settings';
 import type { AuditEntry } from '../shared/audit';
+import type { AnalyticsEvent } from '../shared/analytics/events';
 import {
   LOG_ARROW,
   LOG_CANCEL_CONVERSION_CALLED,
@@ -159,6 +160,7 @@ import {
   LOG_IPC_MONITORING_SET_ENABLED,
   LOG_IPC_ANALYTICS_GET_STATE,
   LOG_IPC_ANALYTICS_SET_ENABLED,
+  LOG_IPC_ANALYTICS_TRACK_EVENT,
   LOG_IPC_MCP_GET_SETTINGS,
   LOG_IPC_MCP_SET_SETTINGS,
   LOG_IPC_MCP_UI_CALL_TOOL,
@@ -963,6 +965,21 @@ const api = {
     log.debug(LOG_IPC_ANALYTICS_SET_ENABLED, { enabled });
     return ipcRenderer.invoke(IPC.ANALYTICS_SET_ENABLED, enabled) as Promise<{ enabled: boolean; backend: string }>;
   },
+
+  /**
+   * Relays one renderer analytics event to the active main-process backend.
+   * Invokes `IPC.ANALYTICS_TRACK_EVENT` ('analytics-track-event'). Backend
+   * credentials stay in main; the renderer only sends the typed event.
+   *
+   * @param {AnalyticsEvent} event - The already-consented, sanitized event.
+   * @returns {Promise<void>} Resolves once main has accepted the event.
+   */
+  analyticsTrackEvent: (event: AnalyticsEvent) => {
+    log.debug(LOG_IPC_ANALYTICS_TRACK_EVENT, { event: event?.name });
+    return ipcRenderer.invoke(IPC.ANALYTICS_TRACK_EVENT, event) as Promise<void>;
+  },
+  analyticsGetPosthogConfig: () =>
+    ipcRenderer.invoke(IPC.ANALYTICS_GET_POSTHOG_CONFIG) as Promise<{ projectToken?: string; host?: string }>,
 
   /**
    * Queries the stored embedded MCP server settings from the main process. Logs

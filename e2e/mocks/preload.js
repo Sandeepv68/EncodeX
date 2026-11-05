@@ -334,6 +334,8 @@ const api = {
     state.analyticsCalls.push(!!enabled);
     return Promise.resolve({ enabled: !!enabled, backend: 'noop' });
   },
+  analyticsTrackEvent: () => Promise.resolve(),
+  analyticsGetPosthogConfig: () => Promise.resolve({ projectToken: '', host: '' }),
 
   // --- Embedded MCP server settings --------------------------------------------
   // Mirrors the main-process sanitation contract (src/shared/mcp-settings.ts)

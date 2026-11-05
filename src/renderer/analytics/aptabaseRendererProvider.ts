@@ -13,6 +13,7 @@
 
 import { Logger } from '../../shared/logger';
 import { LOG_ANALYTICS_INIT_FAILED, LOG_ANALYTICS_TRACK_FAILED } from '../../shared/log-constants';
+import { sanitizeAnalyticsProps } from '../../shared/analytics/sanitize';
 import type { AnalyticsEvent } from '../../shared/analytics/events';
 import type { AnalyticsConfig, AnalyticsProvider } from '../../shared/analytics/types';
 import type { AptabaseRendererSdk } from './types';
@@ -75,7 +76,7 @@ export class AptabaseRendererProvider implements AnalyticsProvider {
    */
   track(event: AnalyticsEvent): void {
     if (!this.active || !this.sdk) return;
-    const props = sanitizeProps(event.props);
+    const props = sanitizeAnalyticsProps(event.props);
     try {
       void this.sdk.trackEvent(event.name, props).catch((err) => {
         log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
@@ -94,23 +95,4 @@ export class AptabaseRendererProvider implements AnalyticsProvider {
   setEnabled(enabled: boolean): void {
     this.active = enabled;
   }
-}
-
-/**
- * Reduces raw taxonomy props to the shape the SDK accepts: keys whose values
- * are strings (non-empty), numbers, or booleans survive; everything else is
- * dropped. Mirrors the main adapter's sanitizer.
- * @param {Record<string, unknown>} props - Raw event props.
- * @returns {Record<string, string | number | boolean> | undefined} Sanitized props.
- */
-function sanitizeProps(props: Record<string, unknown>): Record<string, string | number | boolean> | undefined {
-  const out: Record<string, string | number | boolean> = {};
-  for (const [key, value] of Object.entries(props)) {
-    if (typeof value === 'string') {
-      if (value.length > 0) out[key] = value;
-    } else if (typeof value === 'number' || typeof value === 'boolean') {
-      out[key] = value;
-    }
-  }
-  return Object.keys(out).length > 0 ? out : undefined;
 }

@@ -4,13 +4,13 @@
  * This module is the ONLY surface application code uses to record
  * product-analytics events. It delegates to an {@link AnalyticsProvider}
  * adapter chosen at startup, keeping call sites free of any concrete backend
- * (Aptabase today) knowledge so backends can be swapped by adding one adapter
- * file and changing the provider factory.
+ * knowledge so backends can be swapped by adding one adapter file and changing
+ * the provider factory.
  *
  * The taxonomy lives in {@link events.ts}; this module routes typed events to
  * the active provider. Design (documented in `plans/APTABASE_ANALYTICS_PLAN.md`):
  *  - **Provider-agnostic.** Events ride a dedicated analytics channel owned by
- *    whichever provider the factory resolved (Aptabase by default); the old
+ *    whichever provider the factory resolved (PostHog or Aptabase); the old
  *    breadcrumb coupling to the monitoring facade is gone.
  *  - **Consent is central.** When the user disabled telemetry
  *    (`analytics-consent.json` -> `{"enabled": false}`) every track is a
@@ -44,8 +44,9 @@ import {
   LOG_ANALYTICS_TRACK_FAILED,
 } from '../log-constants';
 import type { AnalyticsEvent } from './events';
+import { ANALYTICS_EVENT_GROUP } from './events';
 import { NoopProvider } from './noopProvider';
-import type { AnalyticsConfig, AnalyticsProvider, AnalyticsProviderFactory } from './types';
+import type { AiGeneration, AnalyticsConfig, AnalyticsProvider, AnalyticsProviderFactory } from './types';
 
 /** Per-module logger for the analytics facade. @const {Logger} */
 const log = new Logger('shared/analytics');
@@ -251,6 +252,89 @@ export function trackAnalyticsEvent(event: AnalyticsEvent): void {
     log.debug('analytics event:', event.name, JSON.stringify(event.props));
   } catch (err) {
     log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
+  }
+}
+
+/**
+ * Type guard for an event relayed across a process boundary (renderer -> main).
+ * Only known taxonomy event names with object props are accepted so a
+ * compromised renderer cannot inject arbitrary event names or payloads into
+ * the main-process backend.
+ * @param {unknown} event - Untrusted IPC payload.
+ * @returns {boolean} Whether the payload has the shape of a taxonomy event.
+ */
+function isRelayedAnalyticsEvent(event: unknown): event is AnalyticsEvent {
+  if (typeof event !== 'object' || event === null) return false;
+  const candidate = event as { name?: unknown; props?: unknown };
+  if (typeof candidate.name !== 'string') return false;
+  if (!Object.prototype.hasOwnProperty.call(ANALYTICS_EVENT_GROUP, candidate.name)) return false;
+  return typeof candidate.props === 'object' && candidate.props !== null;
+}
+
+/**
+ * Records an event relayed from the renderer process over IPC.
+ *
+ * The renderer facade already applied consent and the renderer-side journey
+ * badge before sending, so this forwards the event to the active main-process
+ * backend without re-stamping main's badge. Consent and backend state are
+ * still enforced here. Never throws.
+ * @param {unknown} event - The event payload received over IPC.
+ * @returns {void}
+ */
+export function trackRelayedAnalyticsEvent(event: unknown): void {
+  try {
+    if (!bootstrapped || !activeProvider.isEnabled()) return;
+    if (!isRelayedAnalyticsEvent(event)) return;
+    activeProvider.track(event);
+    log.debug('analytics event (relayed):', event.name);
+  } catch (err) {
+    log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
+  }
+}
+
+/**
+ * Records one AI generation through the active backend when it supports AI
+ * Observability. This deliberately bypasses the product-event taxonomy because
+ * prompts and completions are not categorical product analytics properties.
+ * @param {AiGeneration} generation - The provider request and outcome.
+ * @returns {void}
+ */
+export function captureAiGeneration(generation: AiGeneration): void {
+  try {
+    if (!bootstrapped || !activeProvider.isEnabled()) return;
+    activeProvider.captureAiGeneration?.(generation);
+  } catch (err) {
+    log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
+  }
+}
+
+/**
+ * Evaluates a feature flag through the active backend. Returns `undefined`
+ * when flags are unavailable or consent is off. Never throws.
+ * @param {string} flag - Flag name.
+ * @returns {boolean | undefined} Resolved value, or undefined.
+ */
+export function isFeatureFlagEnabled(flag: string): boolean | undefined {
+  try {
+    if (!bootstrapped || !activeProvider.isEnabled()) return undefined;
+    return activeProvider.isFeatureFlagEnabled?.(flag);
+  } catch (err) {
+    log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
+    return undefined;
+  }
+}
+
+/**
+ * Returns all resolved feature-flag values, or undefined when unavailable.
+ * @returns {Record<string, boolean | string | number> | undefined}
+ */
+export function getAllFeatureFlags(): Record<string, boolean | string | number> | undefined {
+  try {
+    if (!bootstrapped || !activeProvider.isEnabled()) return undefined;
+    return activeProvider.getAllFeatureFlags?.();
+  } catch (err) {
+    log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
+    return undefined;
   }
 }
 
