@@ -186,8 +186,8 @@ describe('AptabaseMainProvider', () => {
     let resolveTrack: (() => void) | undefined;
     aptabaseMainMock.trackEvent.mockImplementation(
       () =>
-        new Promise<void>((resolve) => {
-          resolveTrack = resolve;
+        new Promise<undefined>((resolve) => {
+          resolveTrack = () => resolve(undefined);
         }),
     );
     const provider = new AptabaseMainProvider();
