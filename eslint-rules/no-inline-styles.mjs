@@ -102,7 +102,7 @@ export default {
 
       JSXAttribute(node) {
         const name = node.name?.name;
-        if (typeof name !== 'string') return;
+        if (typeof name !== 'string' || !STYLE_PROPS.has(name)) return;
 
         // style={{ ... }}  —  JSXExpressionContainer wrapping an ObjectExpression
         if (name === 'style') {

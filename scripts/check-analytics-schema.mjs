@@ -23,9 +23,6 @@ const SCHEMA_FILE = path.join(ROOT, 'docs/analytics-dashboards/data-schema.json'
 function parseEvents(source) {
   const groupMap = {};
   const tierMap = {};
-  // Group map: `event_name: 'group',`
-  const groupRe = /^\s{2}([a-z_]+):\s*'([a-z_]+)',\s*$/gm;
-  let m;
   // The events.ts file has two maps: ANALYTICS_EVENT_GROUP and ANALYTICS_TIER.
   // We locate each by its export const name.
   const groupSection = source.match(/export const ANALYTICS_EVENT_GROUP[\s\S]*?=\s*\{([\s\S]*?)\};/);

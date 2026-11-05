@@ -13,7 +13,7 @@
 
 import type { AiServerSettings } from './settings';
 import { effectiveModel } from './settings';
-import { ProviderHttpError, requestJson } from './connectors';
+import { requestJson } from './connectors';
 import type { FetchLike } from './connectors';
 import type { ProviderModelEntry } from './types';
 

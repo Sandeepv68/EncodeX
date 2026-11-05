@@ -42,7 +42,7 @@ import { registerGuiTools } from './mcp/gui-tools';
 import { startMcpHttpServer } from './mcp/http-server';
 import type { McpHttpHandle } from './mcp/http-server';
 import { getLocalMcpClient } from './mcp/local-client';
-import { registerMcpUiIpc, setLocalMcpClientProvider } from './mcp/ui-ipc';
+import { setLocalMcpClientProvider } from './mcp/ui-ipc';
 import { readMcpSettings } from './mcp/settings';
 import type { McpSettings } from './mcp/settings';
 import { registerMcpSettingsIpc } from './mcp/settings-ipc';

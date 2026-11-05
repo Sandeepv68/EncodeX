@@ -14,7 +14,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { connectHttp, call, callRaw, waitForJob, assertToolSurface, runCoreSuite } from './client';
+import { connectHttp, call, waitForJob, assertToolSurface, runCoreSuite } from './client';
 import type { McpHandle } from './client';
 import { startHttpServer, rawHttp, createMediaFixtures, CORE_TOOLS } from './harness';
 import type { HttpServerHarness, MediaFixtures } from './harness';

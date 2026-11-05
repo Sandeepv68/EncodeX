@@ -198,7 +198,7 @@ function compareToBaseline(metrics, fileMetrics, baseline) {
 
   // Legacy v1 baseline: a single whole-project score, only meaningful for a
   // full-scope run.
-  const { failed, armed, current, floor } = evaluateMutationDelta(metrics, baseline, delta);
+  const { failed, armed, floor } = evaluateMutationDelta(metrics, baseline, delta);
   if (armed) {
     console.log(`  baseline ${baseline.score.toFixed(1)}% -> floor ${floor.toFixed(1)}%`);
   } else {
