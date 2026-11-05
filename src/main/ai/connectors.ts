@@ -99,8 +99,15 @@ function geminiText(data: unknown): string {
   return parts.map((part) => (typeof part?.text === 'string' ? part.text : '')).join('');
 }
 
-/** Reads normalized input/output token counts from the supported provider responses. */
-function usage(data: unknown, inputKey: string, outputKey: string): { inputTokens?: number; outputTokens?: number } {
+/**
+ * Reads normalized input/output token counts from the supported provider responses.
+ * Exported for direct unit testing of its normalization branches.
+ * @param {unknown} data - The raw provider response.
+ * @param {string} inputKey - Key holding the input token count.
+ * @param {string} outputKey - Key holding the output token count.
+ * @returns {{ inputTokens?: number, outputTokens?: number }} Normalized counts.
+ */
+export function usage(data: unknown, inputKey: string, outputKey: string): { inputTokens?: number; outputTokens?: number } {
   const source = data as { usage?: Record<string, unknown>; usageMetadata?: Record<string, unknown> };
   const values = source.usage ?? source.usageMetadata;
   if (!values) return {};
@@ -112,8 +119,13 @@ function usage(data: unknown, inputKey: string, outputKey: string): { inputToken
   };
 }
 
-/** Maps known OpenAI-compatible gateway hosts to their actual AI provider. */
-function openAiProvider(baseUrl: string): string {
+/**
+ * Maps known OpenAI-compatible gateway hosts to their actual AI provider.
+ * Exported for direct unit testing of its host-classification branches.
+ * @param {string} baseUrl - The configured base URL.
+ * @returns {string} The provider label recorded with AI generations.
+ */
+export function openAiProvider(baseUrl: string): string {
   try {
     const host = new URL(baseUrl).hostname.toLowerCase();
     if (host.includes('openrouter')) return 'openrouter';

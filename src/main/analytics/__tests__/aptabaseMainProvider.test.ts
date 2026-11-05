@@ -173,6 +173,39 @@ describe('AptabaseMainProvider', () => {
     expect(provider.isEnabled()).toBe(true);
   });
 
+  it('survives a tracking failure without throwing', async () => {
+    aptabaseMainMock.trackEvent.mockImplementation(() => {
+      throw new Error('track boom');
+    });
+    const provider = new AptabaseMainProvider();
+    await provider.init(baseConfig());
+    expect(() => provider.track(createAnalyticsEvent('app_launched', { version: '1', arch: 'x64', platform: 'win32' }))).not.toThrow();
+  });
+
+  it('waits for in-flight requests when flushing', async () => {
+    let resolveTrack: (() => void) | undefined;
+    aptabaseMainMock.trackEvent.mockImplementation(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveTrack = resolve;
+        }),
+    );
+    const provider = new AptabaseMainProvider();
+    await provider.init(baseConfig());
+    provider.track(createAnalyticsEvent('app_launched', { version: '1', arch: 'x64', platform: 'win32' }));
+    const flushed = provider.flush();
+    resolveTrack?.();
+    await expect(flushed).resolves.toBe(true);
+  });
+
+  it('reports a close failure without throwing', async () => {
+    expectAppLog('warn', 'main/analytics/aptabaseMainProvider');
+    const provider = new AptabaseMainProvider();
+    await provider.init(baseConfig());
+    (provider as unknown as { flush: () => Promise<boolean> }).flush = () => Promise.reject(new Error('flush boom'));
+    await expect(provider.close()).resolves.toBe(false);
+  });
+
   it('flush returns true when nothing is in flight', async () => {
     const provider = new AptabaseMainProvider();
     expect(await provider.flush()).toBe(true);
