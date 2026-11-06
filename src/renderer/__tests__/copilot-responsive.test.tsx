@@ -105,6 +105,19 @@ describe('Copilot responsive accessibility', () => {
     expect(await screen.findByTestId('copilot-ai-status')).toBeInTheDocument();
   });
 
+  it('closes the provider status popover on Escape', async () => {
+    renderComposer({
+      connection: { connected: true, providerId: 'openai', model: 'gpt-4o-mini' },
+    });
+
+    const statusButton = screen.getByTestId('copilot-ai-status-button');
+    fireEvent.click(statusButton);
+    expect(await screen.findByTestId('copilot-ai-status')).toBeInTheDocument();
+
+    fireEvent.keyDown(screen.getByTestId('copilot-ai-status-popover'), { key: 'Escape', code: 'Escape' });
+    await waitFor(() => expect(screen.queryByTestId('copilot-ai-status')).not.toBeInTheDocument());
+  });
+
   it('keeps the plan button named while a request is in flight', () => {
     render(<InputHarness value="compress for web" busy />);
     expect(screen.getByRole('button', { name: 'copilot.planning' })).toBeInTheDocument();

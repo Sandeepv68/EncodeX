@@ -138,4 +138,26 @@ describe('Aurora', () => {
       vi.useRealTimers();
     }
   });
+
+  it('observes the canvas with a ResizeObserver when the environment provides one', () => {
+    const observe = vi.fn();
+    const disconnect = vi.fn();
+    class ResizeObserverStub {
+      constructor(private readonly callback: () => void) {}
+      observe(): void {
+        observe(this.callback);
+      }
+      unobserve(): void {}
+      disconnect(): void {
+        disconnect();
+      }
+    }
+    vi.stubGlobal('ResizeObserver', ResizeObserverStub);
+
+    const { unmount } = render(<Aurora />);
+    expect(observe).toHaveBeenCalled();
+
+    unmount();
+    expect(disconnect).toHaveBeenCalled();
+  });
 });

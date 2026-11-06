@@ -141,8 +141,10 @@ function AppLayout() {
   useDevScreenshot();
 
   useLayoutEffect(() => {
-    const mainContent = mainContentRef.current;
-    if (!mainContent) return;
+    // A layout effect runs after the DOM is committed, so the ref is attached
+    // by the time the body executes; the assertion only tells TypeScript what
+    // is already true.
+    const mainContent = mainContentRef.current!;
     mainContent.scrollTop = 0;
     mainContent.scrollLeft = 0;
   }, [location.pathname]);
