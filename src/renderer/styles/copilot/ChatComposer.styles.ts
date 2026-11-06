@@ -81,11 +81,11 @@ export const InputLayer = styled(Box)({
 export const ActionsRow = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'space-between',
-  alignItems: 'center',
+  alignItems: 'flex-start',
   gap: theme.spacing(0.5),
   minWidth: 0,
   paddingInline: theme.spacing(0.5),
-  flexWrap: 'wrap',
+  flexWrap: 'nowrap',
   // The primary accent sits below the WCAG AA 4.5:1 minimum on the default
   // background (about 4.4:1 in light mode). Use the darker shade on light
   // surfaces so the text buttons clear the threshold, and plain white on the
@@ -106,18 +106,19 @@ export const ActionsRow = styled(Box)(({ theme }) => ({
     },
   },
   [theme.breakpoints.up('sm')]: {
-    gap: theme.spacing(1),
+    gap: theme.spacing(0.5),
   },
 }));
 
 /** Left-hand cluster of secondary actions (files, folder, advanced, AI settings). */
 export const LeftActions = styled(Box)(({ theme }) => ({
   display: 'flex',
+  flex: '1 1 auto',
   gap: theme.spacing(0.5),
   minWidth: 0,
   flexWrap: 'wrap',
   [theme.breakpoints.up('sm')]: {
-    gap: theme.spacing(1),
+    gap: theme.spacing(0.5),
   },
 }));
 
@@ -127,6 +128,7 @@ export const RightActions = styled(Box, {
 })<{ $plain?: boolean }>(({ theme, $plain }) => ({
   display: 'flex',
   alignItems: 'center',
+  flexShrink: 0,
   gap: theme.spacing(0.75),
   minWidth: 0,
   marginInlineStart: 'auto',

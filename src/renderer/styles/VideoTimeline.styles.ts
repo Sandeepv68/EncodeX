@@ -56,21 +56,14 @@ export const ZoomControls = styled(Box)(({ theme }) => ({
   gap: theme.spacing(0.25),
 }));
 
-export const Viewport = styled(Box)(({ theme }) => ({
+export const Viewport = styled(Box)({
   position: 'relative',
   flex: 1,
   minWidth: 0,
   overflowX: 'auto',
   overflowY: 'hidden',
   cursor: 'pointer',
-  '&::-webkit-scrollbar': {
-    height: theme.typography.pxToRem(8),
-  },
-  '&::-webkit-scrollbar-thumb': {
-    backgroundColor: TIMELINE_COLORS.scrollbarThumb,
-    borderRadius: theme.typography.pxToRem(4),
-  },
-}));
+});
 
 export const TrackLabelPanel = styled(Box)(({ theme }) => ({
   display: 'flex',

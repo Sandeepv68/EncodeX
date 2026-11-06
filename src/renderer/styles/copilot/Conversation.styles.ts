@@ -30,9 +30,13 @@ export const ConversationScroll = styled(Box, {
   overflowY: $empty ? 'visible' : 'auto',
   overscrollBehavior: 'contain',
   scrollbarGutter: 'stable',
-  paddingInline: theme.spacing(1),
-  [theme.breakpoints.up('sm')]: { paddingInline: theme.spacing(2) },
-  [theme.breakpoints.up('md')]: { paddingInline: theme.spacing(3) },
+  marginInline: theme.spacing(-1),
+  paddingInline: theme.spacing(2),
+  [theme.breakpoints.up('sm')]: {
+    marginInline: theme.spacing(-3),
+    paddingInline: theme.spacing(5),
+  },
+  [theme.breakpoints.up('md')]: { paddingInline: theme.spacing(6) },
 }));
 
 /** Inner column that stacks the message rows. */

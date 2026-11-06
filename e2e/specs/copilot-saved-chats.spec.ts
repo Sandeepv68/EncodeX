@@ -233,6 +233,61 @@ describe.runIf(IS_E2E)('Copilot saved conversations and AI status', () => {
     await expect.poll(() => page.locator('[data-testid="copilot-ai-status"]').textContent()).toContain('Not connected');
   });
 
+  it('keeps the AI controls and chat actions on one row while a chat is active', async () => {
+    await mockApi.setAiSettingsView(session.page, {
+      providerId: 'openai',
+      model: 'gpt-4o-mini',
+      hasKey: true,
+      connected: true,
+      connectedAt: Date.now(),
+      connectedModel: 'gpt-4o-mini',
+    });
+    session = await reloadSession(session);
+    const { page } = session;
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await gotoCopilot(page);
+    await startActivePlan(page);
+
+    const centerY = (box: { y: number; height: number }): number => box.y + box.height / 2;
+    try {
+      for (const width of [1440, 768]) {
+        await page.setViewportSize({ width, height: 900 });
+        const files = await page.locator('[data-testid="copilot-choose-files"]').boundingBox();
+        const status = await page.locator('[data-testid="copilot-ai-status"]').boundingBox();
+        const configure = await page.locator('[data-testid="copilot-ai-settings"]').boundingBox();
+        expect(files).not.toBeNull();
+        expect(status).not.toBeNull();
+        expect(configure).not.toBeNull();
+        expect(Math.abs(centerY(status!) - centerY(configure!))).toBeLessThanOrEqual(8);
+        expect(Math.abs(centerY(status!) - centerY(files!))).toBeLessThanOrEqual(8);
+      }
+    } finally {
+      await page.setViewportSize({ width: 1440, height: 900 });
+    }
+  });
+
+  it('keeps the conversation scroll container flush with the window edge while a chat is active', async () => {
+    const { page } = session;
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await gotoCopilot(page);
+    await startActivePlan(page);
+
+    try {
+      for (const width of [1440, 768]) {
+        await page.setViewportSize({ width, height: 900 });
+        const metrics = await page.evaluate(() => {
+          const element = document.querySelector<HTMLElement>('[data-testid="copilot-conversation"]');
+          const rect = element?.getBoundingClientRect();
+          return { right: rect?.right ?? 0, viewport: window.innerWidth, overflowY: element ? getComputedStyle(element).overflowY : '' };
+        });
+        expect(metrics.overflowY).toBe('auto');
+        expect(Math.abs(metrics.right - metrics.viewport)).toBeLessThanOrEqual(1);
+      }
+    } finally {
+      await page.setViewportSize({ width: 1440, height: 900 });
+    }
+  });
+
   it('clears the transcript when a fresh conversation is confirmed', async () => {
     const { page } = session;
     await startActivePlan(page);

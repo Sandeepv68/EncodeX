@@ -17,7 +17,7 @@
  */
 
 import type { ReactNode } from 'react';
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef, lazy, Suspense } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useTheme, CircularProgress } from '@mui/material';
@@ -135,9 +135,17 @@ function AppLayout() {
   const { navigate } = useNavigationGuard();
   const { themeId, setTheme } = useColorMode();
   const location = useLocation();
+  const mainContentRef = useRef<HTMLElement>(null);
 
   useLanguageDirection();
   useDevScreenshot();
+
+  useLayoutEffect(() => {
+    const mainContent = mainContentRef.current;
+    if (!mainContent) return;
+    mainContent.scrollTop = 0;
+    mainContent.scrollLeft = 0;
+  }, [location.pathname]);
 
   useEffect(() => {
     let cleanup: (() => void) | undefined;
@@ -256,7 +264,7 @@ function AppLayout() {
           </PermanentDrawer>
         )}
         <ColumnLayout>
-          <MainContent $flush={location.pathname === '/copilot'}>
+          <MainContent ref={mainContentRef} $flush={location.pathname === '/copilot'}>
             {isMobile && (
               <MobileMenuButton onClick={() => setMobileOpen(true)} aria-label={t('app.menu')} data-testid="mobile-menu-button">
                 <FontAwesomeIcon icon={faBars} />

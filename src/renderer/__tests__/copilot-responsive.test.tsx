@@ -7,7 +7,7 @@
  * while open, and the composer renders in RTL.
  */
 
-import { useState } from 'react';
+import { useState, type ComponentProps } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ColorModeProvider } from '../ColorModeContext';
@@ -40,9 +40,11 @@ function InputHarness({ value, busy = false }: { value: string; busy?: boolean }
 
 /**
  * Renders the composer with sensible defaults.
+ * @param {Partial<ComponentProps<typeof ChatComposer>>} [overrides] - Props that
+ *   replace the defaults for a specific scenario.
  * @returns {void}
  */
-function renderComposer(): void {
+function renderComposer(overrides: Partial<ComponentProps<typeof ChatComposer>> = {}): void {
   render(
     <ColorModeProvider>
       <ChatComposer
@@ -59,6 +61,7 @@ function renderComposer(): void {
         onQueryChange={vi.fn()}
         targetLanguage=""
         onTargetLanguageChange={vi.fn()}
+        {...overrides}
       />
     </ColorModeProvider>,
   );
@@ -78,6 +81,24 @@ describe('Copilot responsive accessibility', () => {
       expect(button).toHaveAttribute('aria-label', label);
       expect(button).toHaveTextContent(label);
     }
+  });
+
+  it('keeps the AI status and configure controls on the action row while a chat is active', () => {
+    renderComposer({
+      showSave: true,
+      onOpenSavedChats: vi.fn(),
+      showSaveAndReset: true,
+      onSaveAndResetConversation: vi.fn(),
+      connection: { connected: true, providerId: 'openai', model: 'gpt-4o-mini' },
+    });
+
+    const status = screen.getByTestId('copilot-ai-status');
+    const rightActions = status.parentElement;
+    const actionsRow = rightActions?.parentElement;
+    expect(rightActions).not.toBeNull();
+    expect(actionsRow).not.toBeNull();
+    expect(getComputedStyle(rightActions!).flexShrink).toBe('0');
+    expect(getComputedStyle(actionsRow!).flexWrap).toBe('nowrap');
   });
 
   it('keeps the plan button named while a request is in flight', () => {
