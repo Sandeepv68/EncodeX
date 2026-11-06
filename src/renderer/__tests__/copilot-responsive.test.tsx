@@ -83,7 +83,7 @@ describe('Copilot responsive accessibility', () => {
     }
   });
 
-  it('keeps the AI status and configure controls on the action row while a chat is active', () => {
+  it('keeps the provider logo at the end of the input and the configure control on the action row', async () => {
     renderComposer({
       showSave: true,
       onOpenSavedChats: vi.fn(),
@@ -92,13 +92,17 @@ describe('Copilot responsive accessibility', () => {
       connection: { connected: true, providerId: 'openai', model: 'gpt-4o-mini' },
     });
 
-    const status = screen.getByTestId('copilot-ai-status');
-    const rightActions = status.parentElement;
-    const actionsRow = rightActions?.parentElement;
-    expect(rightActions).not.toBeNull();
-    expect(actionsRow).not.toBeNull();
-    expect(getComputedStyle(rightActions!).flexShrink).toBe('0');
-    expect(getComputedStyle(actionsRow!).flexWrap).toBe('nowrap');
+    const statusButton = screen.getByTestId('copilot-ai-status-button');
+    expect(screen.getByTestId('copilot-ai-settings')).toBeInTheDocument();
+
+    // The logo sits after the plan button, at the right end of the input.
+    const planButton = screen.getByTestId('copilot-plan');
+    expect(planButton.compareDocumentPosition(statusButton)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+
+    // The status itself lives in a popover that opens on click.
+    expect(screen.queryByTestId('copilot-ai-status')).not.toBeInTheDocument();
+    fireEvent.click(statusButton);
+    expect(await screen.findByTestId('copilot-ai-status')).toBeInTheDocument();
   });
 
   it('keeps the plan button named while a request is in flight', () => {

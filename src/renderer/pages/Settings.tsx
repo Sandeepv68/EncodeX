@@ -14,6 +14,7 @@
 
 import { useTranslation } from 'react-i18next';
 import { Switch, MenuItem } from '@mui/material';
+import { useLocation } from 'react-router-dom';
 import { useSettingsStore } from '../stores/settingsStore';
 import SettingLabel from '../components/settings/SettingLabel';
 import ThemeSettingsSection from '../components/settings/ThemeSettingsSection';
@@ -23,6 +24,7 @@ import { HWACCEL_MODES, ENCODER_TYPES } from '../../shared/hwaccel-settings';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
 import type { HwAccelMode, EncoderType } from '../../shared/types';
+import type { SettingsLocationState } from '../types';
 import { SettingsRoot, SettingsHeader, SettingsTitle, SettingsSection, ModeSelect, ModeSettingsSection } from '../styles/Settings.styles';
 import { ToggleRow } from '../styles/form.styles';
 import { TitleIcon } from '../styles/PageContainer.styles';
@@ -57,6 +59,7 @@ const hwaccelModeLabel: Record<HwAccelMode, string> = {
  */
 export default function Settings() {
   const { t } = useTranslation();
+  const location = useLocation();
   const hardwareAcceleration = useSettingsStore((s) => s.hardwareAcceleration);
   const hwaccelMode = useSettingsStore((s) => s.hwaccelMode);
   const encoderType = useSettingsStore((s) => s.encoderType);
@@ -118,7 +121,7 @@ export default function Settings() {
         </ToggleRow>
       </SettingsSection>
       <McpSettingsSection />
-      <AiProviderSettingsSection />
+      <AiProviderSettingsSection autoOpen={(location.state as SettingsLocationState | null)?.openAiProvider === true} />
       <SettingsSection>
         <ToggleRow>
           <Switch

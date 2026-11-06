@@ -121,4 +121,22 @@ describe.runIf(IS_E2E)('Copilot responsive layout', () => {
 
     await expect.poll(() => page.locator('[data-testid="saved-chats-backdrop"]').isVisible()).toBe(false);
   });
+
+  it('separates the plan button from the provider logo and matches the configure button to the row', async () => {
+    const { page } = session;
+    await page.setViewportSize({ width: 1440, height: HEIGHT });
+
+    const divider = page.locator('[data-testid="copilot-composer-divider"]');
+    await expect.poll(() => divider.count()).toBe(1);
+
+    // The configure button sits on the same baseline and with the same height
+    // as the other actions in the row.
+    const configure = await page.locator('[data-testid="copilot-ai-settings"]').boundingBox();
+    const chooseFiles = await page.locator('[data-testid="copilot-choose-files"]').boundingBox();
+    expect(configure).not.toBeNull();
+    expect(chooseFiles).not.toBeNull();
+    expect(Math.abs(configure!.height - chooseFiles!.height)).toBeLessThanOrEqual(2);
+    const centerY = (box: { y: number; height: number }): number => box.y + box.height / 2;
+    expect(Math.abs(centerY(configure!) - centerY(chooseFiles!))).toBeLessThanOrEqual(2);
+  });
 });

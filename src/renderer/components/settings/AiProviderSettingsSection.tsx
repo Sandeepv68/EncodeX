@@ -101,9 +101,14 @@ function ProviderIcon({ id }: { id: AIProviderId }) {
  * missing, throwing, or garbage bridge leaves the form at its offline defaults
  * instead of crashing the tree. A warm session cache (this app session already
  * loaded the settings) restores the selection instantly, without a round-trip.
+ * @param {{ autoOpen?: boolean }} props - Component props.
+ * @param {boolean} props.autoOpen - Open the editor and scroll it into view on
+ *   mount. Used when the user arrives from the Copilot composer's "configure
+ *   AI provider" action, so the editor is revealed rather than buried at the
+ *   bottom of the page behind a collapsed header.
  * @returns {JSX.Element} The AI-provider settings rows.
  */
-export default function AiProviderSettingsSection() {
+export default function AiProviderSettingsSection({ autoOpen = false }: { autoOpen?: boolean }) {
   const { t } = useTranslation();
   const cached = useAiSettingsStore.getState();
   // The app hydrates the connection mirror at startup, so the provider the user
@@ -112,7 +117,7 @@ export default function AiProviderSettingsSection() {
   const initialView = cached.view ?? useAiConnectionStore.getState().view ?? null;
   const initialSelection = initialView ? (selectedProviderOf(initialView) ?? initialView.providerId) : cached.providerId;
   const initialTarget = initialView ? viewForProvider(initialView, initialSelection) : null;
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(autoOpen);
   const [view, setView] = useState<AiSettingsView | null>(initialView);
   const [providerId, setProviderId] = useState<AIProviderId>(initialSelection);
   const [model, setModel] = useState(initialTarget?.model ?? cached.model);
@@ -129,10 +134,28 @@ export default function AiProviderSettingsSection() {
   // The in-flight (or finished) settings load, so a second expand does not
   // race the first one.
   const loadRef = useRef<Promise<AiSettingsView | null> | null>(null);
+  // The section header, scrolled into view when the section arrives already
+  // open.
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     useAiSettingsStore.getState().patch({ view, providerId, model, baseUrl });
   }, [view, providerId, model, baseUrl]);
+
+  // Bring the section into view when it opens on arrival. The editor expands
+  // after the first paint, so the scroll runs on the next frame to land on the
+  // final layout rather than the collapsed header.
+  useEffect(() => {
+    if (!autoOpen) return;
+    const frame = requestAnimationFrame(() => {
+      const element = sectionRef.current;
+      // jsdom has no layout engine and no `scrollIntoView`; the guard keeps
+      // the effect harmless in tests.
+      if (!element || typeof element.scrollIntoView !== 'function') return;
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [autoOpen]);
 
   /**
    * Adopts a freshly loaded or saved settings view, locally and in the session
@@ -460,7 +483,7 @@ export default function AiProviderSettingsSection() {
   );
 
   return (
-    <AiSettingsSection>
+    <AiSettingsSection ref={sectionRef} data-testid="settings-ai-section">
       <AiHeaderRow>
         <SettingsLabel variant="body1">{t('settings.ai.title')}</SettingsLabel>
         <HeaderActions>

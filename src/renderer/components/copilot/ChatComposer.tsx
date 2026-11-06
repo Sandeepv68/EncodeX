@@ -20,12 +20,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import ChatInput from './ChatInput';
-import AiConnectionStatus from '../AiConnectionStatus';
 import type { CopilotOperationChoice } from '../../../shared/copilot';
 import { COPILOT_QUEUE_OPERATIONS, COPILOT_INTELLIGENCE_OPERATIONS } from '../../../shared/copilot';
 import { basename } from '../../utils/path-utils';
 import type { ChatComposerProps, ComposerAttachment } from './types';
 import {
+  ActionButtonWrap,
   ActionsRow,
   AdvancedPanel,
   AttachmentCard,
@@ -202,6 +202,7 @@ export default function ChatComposer({
             onResetConversation={onResetConversation}
             showSaveAndReset={showSaveAndReset}
             onSaveAndResetConversation={onSaveAndResetConversation}
+            connection={connection}
           />
         </InputLayer>
       </ComposerStack>
@@ -309,17 +310,8 @@ export default function ChatComposer({
           )}
         </LeftActions>
         <RightActions $plain>
-          {connection && (
-            <AiConnectionStatus
-              connected={connection.connected}
-              providerId={connection.providerId}
-              model={connection.model}
-              testId="copilot-ai-status"
-              elevated
-            />
-          )}
           <Tooltip title={t('copilot.ai.locationNote')} placement="top" arrow>
-            <span>
+            <ActionButtonWrap>
               <Button
                 size="small"
                 startIcon={<FontAwesomeIcon icon={faGear} />}
@@ -330,7 +322,7 @@ export default function ChatComposer({
               >
                 <ComposerActionLabel>{t('copilot.ai.configure')}</ComposerActionLabel>
               </Button>
-            </span>
+            </ActionButtonWrap>
           </Tooltip>
         </RightActions>
       </ActionsRow>

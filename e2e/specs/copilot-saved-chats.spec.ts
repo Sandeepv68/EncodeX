@@ -211,7 +211,7 @@ describe.runIf(IS_E2E)('Copilot saved conversations and AI status', () => {
     await expect.poll(() => page.locator('[data-testid="saved-chat-item"]').first().innerText()).toContain(GOAL);
   });
 
-  it('names the connected provider and model in the AI status chip', async () => {
+  it('names the connected provider and model in the AI status popover', async () => {
     const { page } = session;
     await mockApi.setAiSettingsView(page, {
       providerId: 'openai',
@@ -224,16 +224,62 @@ describe.runIf(IS_E2E)('Copilot saved conversations and AI status', () => {
     session = await reloadSession(session);
     await gotoCopilot(session.page);
 
+    await session.page.locator('[data-testid="copilot-ai-status-button"]').click();
     await expect.poll(() => session.page.locator('[data-testid="copilot-ai-status"]').textContent()).toContain('OpenAI');
     await expect.poll(() => session.page.locator('[data-testid="copilot-ai-status"]').textContent()).toContain('gpt-4o-mini');
   });
 
-  it('reports "not connected" in the AI status chip when no provider is configured', async () => {
+  it('anchors the AI status popover to the provider logo', async () => {
     const { page } = session;
+    await page.locator('[data-testid="copilot-ai-status-button"]').click();
+    await expect.poll(() => page.locator('[data-testid="copilot-ai-status-popover"]').count()).toBe(1);
+    const anchor = await page.locator('[data-testid="copilot-ai-status-button"]').boundingBox();
+    const box = await page.locator('[data-testid="copilot-ai-status-popover"]').boundingBox();
+    expect(anchor).not.toBeNull();
+    expect(box).not.toBeNull();
+    // The popover is anchored to the logo: its right edge lines up with the
+    // button's right edge, so it hangs off the end of the input.
+    expect(Math.abs(box!.x + box!.width - (anchor!.x + anchor!.width))).toBeLessThanOrEqual(8);
+    expect(box!.y).toBeGreaterThanOrEqual(anchor!.y);
+    // The popover draws an opaque surface, not a transparent overlay.
+    const background = await page
+      .locator('[data-testid="copilot-ai-status-popover"]')
+      .evaluate((element) => getComputedStyle(element).backgroundColor);
+    expect(background).not.toMatch(/rgba\([^)]*,\s*0\)$/);
+    // The popover carries an anchor arrow pointing back at the logo.
+    const arrow = await page.locator('[data-testid="copilot-ai-status-popover"]').evaluate((element) => {
+      const style = getComputedStyle(element, '::before');
+      return { content: style.content, width: style.width, top: style.top };
+    });
+    expect(arrow.content).toBe('""');
+    expect(parseFloat(arrow.width)).toBeGreaterThan(0);
+    expect(parseFloat(arrow.top)).toBeLessThan(0);
+  });
+
+  it('opens the AI provider settings in place instead of dropping the user at the top of Settings', async () => {
+    const { page } = session;
+    await gotoCopilot(page);
+
+    await page.locator('[data-testid="copilot-ai-settings"]').click();
+    await page.waitForFunction(() => location.hash.startsWith('#/settings'));
+    // The editor arrives already expanded...
+    await page.locator('[data-testid="settings-ai"]').waitFor({ timeout: 15000 });
+    // ...and the section is scrolled into view rather than left below the fold.
+    await expect
+      .poll(async () => {
+        const box = await page.locator('[data-testid="settings-ai-section"]').boundingBox();
+        return box === null ? Number.MAX_SAFE_INTEGER : box.y;
+      })
+      .toBeLessThan(900);
+  });
+
+  it('reports "not connected" in the AI status popover when no provider is configured', async () => {
+    const { page } = session;
+    await page.locator('[data-testid="copilot-ai-status-button"]').click();
     await expect.poll(() => page.locator('[data-testid="copilot-ai-status"]').textContent()).toContain('Not connected');
   });
 
-  it('keeps the AI controls and chat actions on one row while a chat is active', async () => {
+  it('keeps the chat actions on one row while a chat is active', async () => {
     await mockApi.setAiSettingsView(session.page, {
       providerId: 'openai',
       model: 'gpt-4o-mini',
@@ -253,13 +299,10 @@ describe.runIf(IS_E2E)('Copilot saved conversations and AI status', () => {
       for (const width of [1440, 768]) {
         await page.setViewportSize({ width, height: 900 });
         const files = await page.locator('[data-testid="copilot-choose-files"]').boundingBox();
-        const status = await page.locator('[data-testid="copilot-ai-status"]').boundingBox();
         const configure = await page.locator('[data-testid="copilot-ai-settings"]').boundingBox();
         expect(files).not.toBeNull();
-        expect(status).not.toBeNull();
         expect(configure).not.toBeNull();
-        expect(Math.abs(centerY(status!) - centerY(configure!))).toBeLessThanOrEqual(8);
-        expect(Math.abs(centerY(status!) - centerY(files!))).toBeLessThanOrEqual(8);
+        expect(Math.abs(centerY(configure!) - centerY(files!))).toBeLessThanOrEqual(8);
       }
     } finally {
       await page.setViewportSize({ width: 1440, height: 900 });

@@ -15,6 +15,7 @@ export const ComposerBar = styled(Box)(({ theme }) => ({
   maxWidth: '100%',
   marginInline: 'auto',
   paddingInline: theme.spacing(1),
+  paddingTop: theme.spacing(2),
   paddingBottom: theme.spacing(2),
   boxSizing: 'border-box',
   [theme.breakpoints.up('sm')]: {
@@ -122,7 +123,11 @@ export const LeftActions = styled(Box)(({ theme }) => ({
   },
 }));
 
-/** Right-hand cluster of the action row: the AI connection status. */
+/**
+ * Right-hand cluster of the action row. When `$plain` is set the cluster
+ * carries no chrome of its own, so the buttons inside line up with the rest
+ * of the row instead of sitting inside a padded pill.
+ */
 export const RightActions = styled(Box, {
   shouldForwardProp: (prop) => prop !== '$plain',
 })<{ $plain?: boolean }>(({ theme, $plain }) => ({
@@ -132,9 +137,9 @@ export const RightActions = styled(Box, {
   gap: theme.spacing(0.75),
   minWidth: 0,
   marginInlineStart: 'auto',
-  paddingInline: theme.spacing(0.75),
-  paddingBlock: theme.spacing(0.5),
-  borderRadius: theme.typography.pxToRem(999),
+  paddingInline: $plain ? 0 : theme.spacing(0.75),
+  paddingBlock: $plain ? 0 : theme.spacing(0.5),
+  borderRadius: $plain ? 0 : theme.typography.pxToRem(999),
   backgroundColor: $plain ? 'transparent' : theme.palette.action.hover,
   border: $plain ? 0 : `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
   transition: theme.transitions.create(['padding-inline']),
@@ -148,9 +153,22 @@ export const RightActions = styled(Box, {
   },
   [theme.breakpoints.down('sm')]: {
     gap: theme.spacing(0.5),
-    paddingInline: theme.spacing(0.5),
+    paddingInline: $plain ? 0 : theme.spacing(0.5),
   },
 }));
+
+/**
+ * Wrapper around an action button that has to stay reachable by a tooltip
+ * while it is disabled. It is rendered as an inline flex box so the button
+ * keeps the same box as the un-wrapped buttons beside it.
+ * @const ActionButtonWrap
+ */
+export const ActionButtonWrap = styled('span')({
+  display: 'inline-flex',
+  alignItems: 'center',
+  flexShrink: 0,
+  lineHeight: 0,
+});
 
 /**
  * Visible caption for an action button. Hidden below `sm` so the button becomes

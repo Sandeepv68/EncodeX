@@ -149,6 +149,7 @@ export interface ChatInputProps {
   onResetConversation?: () => void;
   showReset?: boolean;
   onResetConfirm?: () => void;
+  connection?: ComposerConnection;
   onSaveAndResetConversation?: () => void;
   showSaveAndReset?: boolean;
 }

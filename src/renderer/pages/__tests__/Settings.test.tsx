@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor, within, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
 import Settings from '../Settings';
 import { ColorModeProvider } from '../../ColorModeContext';
 import { useSettingsStore } from '../../stores/settingsStore';
@@ -11,15 +12,25 @@ import { HWACCEL_DEFAULTS, ENCODER_TYPE_DEFAULT } from '../../../shared/hwaccel-
 import { WINDOW_ALWAYS_ON_TOP_STORAGE_KEY, LAUNCH_AT_LOGIN_STORAGE_KEY } from '../../../shared/constants';
 import { THEME_STORAGE_KEY } from '../../../shared/app-constants';
 import type { AIProviderId } from '../../../shared/ai/types';
+import type { SettingsLocationState } from '../../types';
 import { assertNoAxeViolations } from '../../../test-utils/axe';
 
 const defaultElectronAPI = window.electronAPI;
 
-function renderSettings() {
+/**
+ * Renders the Settings page the way the app does: inside a router (it reads
+ * the location state to find out whether the AI editor should be revealed)
+ * and inside the color-mode provider that installs the MUI theme.
+ * @param {SettingsLocationState} [state] - The location state to render with.
+ * @returns {import('@testing-library/react').RenderResult} The render result.
+ */
+function renderSettings(state?: SettingsLocationState) {
   return render(
-    <ColorModeProvider>
-      <Settings />
-    </ColorModeProvider>,
+    <MemoryRouter initialEntries={[{ pathname: '/settings', state }]}>
+      <ColorModeProvider>
+        <Settings />
+      </ColorModeProvider>
+    </MemoryRouter>,
   );
 }
 
@@ -533,6 +544,25 @@ describe('Settings', () => {
     // itself stays collapsed until the user asks for it.
     await waitFor(() => expect(window.electronAPI.aiGetSettings).toHaveBeenCalled());
     expect(screen.queryByTestId('settings-ai')).not.toBeInTheDocument();
+  });
+
+  it('opens the AI provider editor and scrolls it into view when the page is asked to', async () => {
+    const scrollIntoView = vi.fn();
+    const original = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollIntoView');
+    Object.defineProperty(Element.prototype, 'scrollIntoView', {
+      configurable: true,
+      writable: true,
+      value: scrollIntoView,
+    });
+
+    try {
+      renderSettings({ openAiProvider: true });
+      expect(await screen.findByTestId('settings-ai')).toBeInTheDocument();
+      await waitFor(() => expect(scrollIntoView).toHaveBeenCalled());
+    } finally {
+      if (original) Object.defineProperty(Element.prototype, 'scrollIntoView', original);
+      else delete (Element.prototype as { scrollIntoView?: unknown }).scrollIntoView;
+    }
   });
 
   it('keeps the offline defaults when the loaded settings are malformed', async () => {
