@@ -24,7 +24,7 @@ import {
   type SavedCopilotChat,
 } from '../stores/copilotChats';
 import SavedChatsDrawer from '../components/copilot/SavedChatsDrawer';
-import GeminiAurora from '../components/copilot/GeminiAurora';
+import Aurora from '../components/copilot/Aurora';
 
 import { useNavigationGuard } from '../NavigationGuardContext';
 import PageContainer from '../components/PageContainer';
@@ -438,7 +438,7 @@ export default function Copilot() {
         over the conversation instead of resizing it.
       */}
       <CopilotPage>
-        <GeminiAurora compact={hasActiveChat} />
+        <Aurora compact={hasActiveChat} />
         <SavedChatsDrawer
           open={savedChatsOpen}
           chats={savedChats}

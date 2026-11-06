@@ -31,9 +31,9 @@ export const auroraMorph = keyframes`
 /**
  * Root layer holding the aurora. It is anchored to the bottom of the page and
  * animates its height so the backdrop can shrink to the composer.
- * @const GeminiAuroraLayer
+ * @const AuroraLayer
  */
-export const GeminiAuroraLayer = styled(Box, {
+export const AuroraLayer = styled(Box, {
   shouldForwardProp: (prop) => prop !== '$compact',
 })<{ $compact: boolean }>(({ theme, $compact }) => ({
   position: 'absolute',
@@ -52,9 +52,9 @@ export const GeminiAuroraLayer = styled(Box, {
 
 /**
  * Blurred container that holds the four gradient blobs.
- * @const GeminiAuroraBlobs
+ * @const AuroraBlobs
  */
-export const GeminiAuroraBlobs = styled(Box)(({ theme }) => ({
+export const AuroraBlobs = styled(Box)(({ theme }) => ({
   position: 'absolute',
   inset: 0,
   filter: `blur(${theme.typography.pxToRem(60)})`,
@@ -71,9 +71,9 @@ export const GeminiAuroraBlobs = styled(Box)(({ theme }) => ({
 /**
  * A single morphing gradient blob. Its placement, size and duration vary per
  * blob, so they are passed in as transient props.
- * @const GeminiAuroraBlob
+ * @const AuroraBlob
  */
-export const GeminiAuroraBlob = styled(Box, {
+export const AuroraBlob = styled(Box, {
   shouldForwardProp: (prop) => prop !== '$fill' && prop !== '$duration' && prop !== '$delay' && prop !== '$placement',
 })<{
   $fill: string;
@@ -108,9 +108,9 @@ export const GeminiAuroraBlob = styled(Box, {
 
 /**
  * Sparkle canvas painted above the blobs.
- * @const GeminiAuroraCanvas
+ * @const AuroraCanvas
  */
-export const GeminiAuroraCanvas = styled('canvas')({
+export const AuroraCanvas = styled('canvas')({
   position: 'absolute',
   inset: 0,
   width: '100%',
@@ -121,9 +121,9 @@ export const GeminiAuroraCanvas = styled('canvas')({
  * Gradient overlay that dissolves the aurora's top edge into the page
  * background. It is shown instantly when the aurora shrinks and faded out
  * slowly once the aurora has grown back to its full size.
- * @const GeminiAuroraEdge
+ * @const AuroraEdge
  */
-export const GeminiAuroraEdge = styled(Box, {
+export const AuroraEdge = styled(Box, {
   shouldForwardProp: (prop) => prop !== '$visible' && prop !== '$instant',
 })<{ $visible: boolean; $instant: boolean }>(({ theme, $visible, $instant }) => ({
   position: 'absolute',

@@ -49,7 +49,7 @@ Use `theme.breakpoints` inside `styled()` components. Prefer **CSS-only responsi
 ```
 PageContainer (paper=false, fill)
 └─ CopilotPage                    flex row, negative margins, overflow hidden
-   ├─ GeminiAurora                absolute decorative layer
+   ├─ Aurora                absolute decorative layer
    ├─ SavedChatsDrawer            flex sibling, fixed 320px when open
    └─ CopilotConversationColumn
       ├─ alerts
@@ -87,7 +87,7 @@ Shell context relevant to responsiveness:
 | R8 | P1 | `MessageBubble.styles.ts:38`; `AssistantMessage.tsx:88-109`; `AssistantMessage.styles.ts:71-88` | 85% bubbles and long absolute paths can overflow; list rows lack `minWidth: 0`/wrap rules. | 92% bubbles under `sm`; wrap anywhere; stack secondary text. |
 | R9 | P2 | `styles/Copilot.styles.ts:62-66` | Alert wrapper adds inline padding on top of the column padding, over-narrowing alerts. | Remove the extra inset; rely on column padding. |
 | R10 | P2 | `Welcome.styles.ts:14` | Fixed `paddingBlock: 4` is heavy on short screens. | Responsive/clamped vertical padding. |
-| R11 | P2 | `components/copilot/GeminiAurora.tsx:64-69` | Canvas resolution uses `window.innerWidth/Height`, not its layer; 90 sparkles + 90px blur is heavy on small devices. | Measure the layer, reduce sparkles/blur under `sm`, keep reduced-motion path. |
+| R11 | P2 | `components/copilot/Aurora.tsx:64-69` | Canvas resolution uses `window.innerWidth/Height`, not its layer; 90 sparkles + 90px blur is heavy on small devices. | Measure the layer, reduce sparkles/blur under `sm`, keep reduced-motion path. |
 | R12 | P2 | `ChatComposer.tsx` buttons; `ChatInput.styles.ts:110` | Small buttons/icon buttons fall below a 44px touch target. | Enforce 44px minimum under `sm`. |
 | R13 | P2 | New changes | RTL/logical-property regressions. | Use `insetInline`, `marginInline`, `paddingInline`; add one RTL smoke. |
 | R14 | P3 | `Copilot.styles.ts` | No safe-area inset for the bottom composer in future/web contexts. | Optional `env(safe-area-inset-bottom)` padding. |
@@ -165,7 +165,7 @@ Files: `SavedChatsDrawer.styles.ts`, `SavedChatsDrawer.tsx`, `Copilot.tsx`
 Acceptance: at 320px the drawer fits inside the viewport, the conversation is not shifted horizontally, and closing restores the transcript.
 
 ### Phase 5 — Aurora and performance
-Files: `GeminiAurora.styles.ts`, `GeminiAurora.tsx`
+Files: `Aurora.styles.ts`, `Aurora.tsx`
 
 - Measure the canvas layer with `ResizeObserver` / `getBoundingClientRect` instead of `window.innerWidth/Height`.
 - Reduce sparkles (e.g. 90 → ~45) and blur (90px → ~60px) under `sm`; keep the existing `prefers-reduced-motion` path.
@@ -251,11 +251,11 @@ npm run test:e2e
 | `src/renderer/styles/copilot/Welcome.styles.ts` | Responsive empty-state spacing. |
 | `src/renderer/styles/copilot/SavedChatsDrawer.styles.ts` | Overlay-under-md, backdrop, capped width. |
 | `src/renderer/styles/AiConnectionStatus.styles.ts` | Caption visibility under md. |
-| `src/renderer/styles/copilot/GeminiAurora.styles.ts` | Responsive blur/band sizing. |
+| `src/renderer/styles/copilot/Aurora.styles.ts` | Responsive blur/band sizing. |
 | `src/renderer/components/copilot/ChatComposer.tsx` | `aria-label`s, label spans, tooltips. |
 | `src/renderer/components/copilot/ChatInput.tsx` | Plan label span + accessible name. |
 | `src/renderer/components/copilot/SavedChatsDrawer.tsx` | Backdrop, focus move/restore, Escape close. |
-| `src/renderer/components/copilot/GeminiAurora.tsx` | Container-based canvas sizing, reduced mobile work. |
+| `src/renderer/components/copilot/Aurora.tsx` | Container-based canvas sizing, reduced mobile work. |
 | `src/renderer/pages/Copilot.tsx` | Wire drawer backdrop/close if owned by the page. |
 | `e2e/specs/copilot-responsive.spec.ts` | New responsive E2E suite. |
 | `src/renderer/__tests__/copilot-responsive.test.tsx` | New unit coverage for accessible icon-only actions/drawer. |

@@ -1,5 +1,5 @@
 /**
- * @fileoverview Gemini-style aurora backdrop for the Copilot page.
+ * @fileoverview Decorative aurora backdrop for the Copilot page.
  *
  * Renders four slowly morphing, heavily blurred gradient blobs with a sparkle
  * field painted on a canvas above them. While the composer is idle the aurora
@@ -11,15 +11,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { AURORA_COLORS } from '../../../shared/theme/colors';
-import {
-  GeminiAuroraBlob,
-  GeminiAuroraBlobs,
-  GeminiAuroraCanvas,
-  GeminiAuroraEdge,
-  GeminiAuroraLayer,
-  AURORA_BLOB_FILLS,
-} from '../../styles/copilot/GeminiAurora.styles';
-import type { AuroraBlobPlacement, AuroraSparkle } from './GeminiAurora.types';
+import { AuroraBlob, AuroraBlobs, AuroraCanvas, AuroraEdge, AuroraLayer, AURORA_BLOB_FILLS } from '../../styles/copilot/Aurora.styles';
+import type { AuroraBlobPlacement, AuroraSparkle } from './Aurora.types';
 
 /** Duration of the height transition, in milliseconds. */
 const HEIGHT_TRANSITION_MS = 600;
@@ -39,7 +32,7 @@ const BLOB_PLACEMENTS: readonly AuroraBlobPlacement[] = [
  *   should shrink to the composer band.
  * @returns {JSX.Element} The aurora backdrop.
  */
-export default function GeminiAurora({ compact = false }: { compact?: boolean }) {
+export default function Aurora({ compact = false }: { compact?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [masked, setMasked] = useState(compact);
 
@@ -147,10 +140,10 @@ export default function GeminiAurora({ compact = false }: { compact?: boolean })
   }, []);
 
   return (
-    <GeminiAuroraLayer $compact={compact}>
-      <GeminiAuroraBlobs data-testid="copilot-aurora-blobs">
+    <AuroraLayer $compact={compact}>
+      <AuroraBlobs data-testid="copilot-aurora-blobs">
         {BLOB_PLACEMENTS.map((placement, index) => (
-          <GeminiAuroraBlob
+          <AuroraBlob
             key={placement.delay}
             data-testid="copilot-aurora-blob"
             $fill={AURORA_BLOB_FILLS[index]}
@@ -159,9 +152,9 @@ export default function GeminiAurora({ compact = false }: { compact?: boolean })
             $placement={placement}
           />
         ))}
-      </GeminiAuroraBlobs>
-      <GeminiAuroraCanvas ref={canvasRef} />
-      <GeminiAuroraEdge data-testid="copilot-aurora-edge" $visible={masked} $instant={compact} />
-    </GeminiAuroraLayer>
+      </AuroraBlobs>
+      <AuroraCanvas ref={canvasRef} />
+      <AuroraEdge data-testid="copilot-aurora-edge" $visible={masked} $instant={compact} />
+    </AuroraLayer>
   );
 }
