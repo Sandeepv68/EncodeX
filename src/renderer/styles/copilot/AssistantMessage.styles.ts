@@ -1,6 +1,6 @@
 import type { ElementType } from 'react';
 import { styled } from '@mui/material/styles';
-import { Alert, Box, Chip, ListItem, ListItemIcon, Typography } from '@mui/material';
+import { Alert, Box, Button, Chip, ListItem, ListItemIcon, Typography } from '@mui/material';
 import { SHADOWS } from '../../../shared/theme/colors';
 
 /**
@@ -10,6 +10,9 @@ import { SHADOWS } from '../../../shared/theme/colors';
  */
 export const AssistantBody = styled(Box)(({ theme }) => ({
   width: '100%',
+  minWidth: 0,
+  overflowWrap: 'anywhere',
+  wordBreak: 'break-word',
   '& h1, & h2, & h3, & h4, & h5, & h6': {
     margin: 0,
     marginTop: theme.spacing(2),
@@ -48,7 +51,13 @@ export const AssistantWarningAlert = styled(AssistantAlert)(({ theme }) => ({
 
 /** Chip announcing which operation the assistant routed the request to. */
 export const RoutedChip = styled(Chip)(({ theme }) => ({
+  maxWidth: '100%',
+  height: 'auto',
   marginBottom: theme.spacing(1),
+  '& .MuiChip-label': {
+    whiteSpace: 'normal',
+    overflowWrap: 'anywhere',
+  },
 }));
 
 /** Heading of a section inside the assistant plan. */
@@ -59,22 +68,38 @@ export const SectionHeading = styled(Typography)<{ component?: ElementType }>(({
 /** Inline label showing the estimated savings of a single action. */
 export const SavingsText = styled(Typography)<{ component?: ElementType }>(({ theme }) => ({
   marginLeft: theme.spacing(1),
+  [theme.breakpoints.down('sm')]: {
+    display: 'block',
+    marginLeft: 0,
+  },
 }));
 
 /** Block listing the target settings a planned action will encode with. */
 export const TargetRow = styled(Typography)<{ component?: ElementType }>(({ theme }) => ({
   display: 'block',
   marginTop: theme.spacing(0.5),
+  overflowWrap: 'anywhere',
 }));
 
 /** List row of a plan section, flush with the container edges. */
 export const PlanListItem = styled(ListItem)({
   paddingInline: 0,
+  alignItems: 'flex-start',
+  '& .MuiListItemText-root': {
+    minWidth: 0,
+  },
+  '& .MuiListItemText-primary, & .MuiListItemText-secondary': {
+    overflowWrap: 'anywhere',
+    wordBreak: 'break-word',
+  },
 });
 
 /** Leading icon slot of an action row. */
 export const ActionListItemIcon = styled(ListItemIcon)(({ theme }) => ({
-  minWidth: theme.typography.pxToRem(44),
+  minWidth: theme.typography.pxToRem(36),
+  [theme.breakpoints.up('sm')]: {
+    minWidth: theme.typography.pxToRem(44),
+  },
 }));
 
 /** Leading icon slot of a rationale row. */
@@ -84,13 +109,26 @@ export const RationaleListItemIcon = styled(ListItemIcon)(({ theme }) => ({
 
 /** Block that separates the sections of an assistant plan. */
 export const SectionBlock = styled(Box)(({ theme }) => ({
+  minWidth: 0,
   marginTop: theme.spacing(2),
+}));
+
+/** Primary "add to queue" action at the end of an assistant plan. */
+export const ApplyQueueButton = styled(Button)(({ theme }) => ({
+  maxWidth: '100%',
+  [theme.breakpoints.down('sm')]: {
+    width: '100%',
+  },
 }));
 
 /** Block that holds a single rendered MCP app view. */
 export const McpViewBlock = styled(Box, {
   shouldForwardProp: (prop) => prop !== '$last',
 })<{ $last: boolean }>(({ theme, $last }) => ({
+  width: '100%',
+  maxWidth: '100%',
+  minWidth: 0,
+  overflowX: 'auto',
   marginBottom: $last ? 0 : theme.spacing(2),
 }));
 
@@ -98,4 +136,5 @@ export const McpViewBlock = styled(Box, {
 export const ApplyNoteText = styled(Typography)(({ theme }) => ({
   display: 'block',
   marginTop: theme.spacing(0.5),
+  overflowWrap: 'anywhere',
 }));

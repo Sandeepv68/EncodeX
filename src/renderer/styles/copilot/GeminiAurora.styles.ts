@@ -40,11 +40,14 @@ export const GeminiAuroraLayer = styled(Box, {
   left: 0,
   right: 0,
   bottom: 0,
-  height: $compact ? '30%' : '100%',
+  height: $compact ? '35%' : '100%',
   pointerEvents: 'none',
   zIndex: 0,
   overflow: 'hidden',
   transition: 'height 600ms ease',
+  [theme.breakpoints.up('sm')]: {
+    height: $compact ? '30%' : '100%',
+  },
 }));
 
 /**
@@ -54,8 +57,12 @@ export const GeminiAuroraLayer = styled(Box, {
 export const GeminiAuroraBlobs = styled(Box)(({ theme }) => ({
   position: 'absolute',
   inset: 0,
-  filter: `blur(${theme.typography.pxToRem(90)})`,
-  opacity: 0.85,
+  filter: `blur(${theme.typography.pxToRem(60)})`,
+  opacity: 0.8,
+  [theme.breakpoints.up('sm')]: {
+    filter: `blur(${theme.typography.pxToRem(90)})`,
+    opacity: 0.85,
+  },
   '@media (prefers-reduced-motion: reduce)': {
     filter: `blur(${theme.typography.pxToRem(24)})`,
   },

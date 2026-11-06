@@ -1,24 +1,47 @@
 import type { ElementType } from 'react';
 import { alpha, styled } from '@mui/material/styles';
-import { Box, ButtonBase, Chip, IconButton, Typography } from '@mui/material';
+import { Backdrop, Box, ButtonBase, Chip, IconButton, Typography } from '@mui/material';
 import { SHADOWS } from '../../../shared/theme/colors';
 
 /** Width of the panel when open, in pixels. */
 const PANEL_WIDTH_PX = 320;
 
 /**
- * Outer shell of the drawer. It collapses to zero width while closed so the
- * conversation content is never resized, re-wrapped or re-laid out.
+ * Dim layer behind the drawer. It only exists below `md`, where the drawer
+ * overlays the conversation instead of pushing it.
+ */
+export const DrawerBackdrop = styled(Backdrop)(({ theme }) => ({
+  position: 'absolute',
+  zIndex: 1200,
+  backgroundColor: alpha(theme.palette.common.black, 0.4),
+  [theme.breakpoints.up('md')]: { display: 'none' },
+}));
+
+/**
+ * Outer shell of the drawer. It overlays the conversation below `md` and
+ * collapses to zero width while closed so the content is never resized. At
+ * `md+` it returns to a flex sibling that pushes the conversation.
  */
 export const DrawerShell = styled(Box, {
   shouldForwardProp: (prop) => prop !== '$open',
 })<{ $open: boolean }>(({ theme, $open }) => ({
-  width: $open ? theme.typography.pxToRem(PANEL_WIDTH_PX) : 0,
+  position: 'absolute',
+  insetBlock: 0,
+  insetInlineStart: 0,
+  zIndex: 1201,
+  width: $open ? `min(${theme.typography.pxToRem(PANEL_WIDTH_PX)}, 88vw)` : 0,
   flexShrink: 0,
   height: '100%',
   overflow: 'hidden',
   transition: 'width 225ms ease',
   isolation: 'isolate',
+  [theme.breakpoints.up('md')]: {
+    position: 'relative',
+    insetBlock: 'auto',
+    insetInlineStart: 'auto',
+    zIndex: 1,
+    width: $open ? theme.typography.pxToRem(PANEL_WIDTH_PX) : 0,
+  },
   '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
 }));
 
@@ -26,7 +49,8 @@ export const DrawerShell = styled(Box, {
 export const DrawerPanel = styled(Box, {
   shouldForwardProp: (prop) => prop !== '$open',
 })<{ $open: boolean; component?: ElementType }>(({ theme, $open }) => ({
-  width: theme.typography.pxToRem(PANEL_WIDTH_PX),
+  width: '100%',
+  maxWidth: theme.typography.pxToRem(PANEL_WIDTH_PX),
   height: '100%',
   display: 'flex',
   flexDirection: 'column',

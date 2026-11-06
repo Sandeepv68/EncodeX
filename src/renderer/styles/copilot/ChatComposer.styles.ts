@@ -11,12 +11,20 @@ export const ComposerBar = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   flexShrink: 0,
   gap: theme.spacing(1),
-  maxWidth: '80%',
+  width: '100%',
+  maxWidth: '100%',
   marginInline: 'auto',
   paddingInline: theme.spacing(1),
   paddingBottom: theme.spacing(2),
-  [theme.breakpoints.up('sm')]: { paddingInline: theme.spacing(2) },
-  [theme.breakpoints.up('md')]: { paddingInline: theme.spacing(3) },
+  boxSizing: 'border-box',
+  [theme.breakpoints.up('sm')]: {
+    maxWidth: theme.typography.pxToRem(782),
+    paddingInline: theme.spacing(2),
+  },
+  [theme.breakpoints.up('md')]: {
+    maxWidth: theme.typography.pxToRem(798),
+    paddingInline: theme.spacing(3),
+  },
 }));
 
 /**
@@ -48,9 +56,16 @@ export const AttachmentRow = styled(Box)(({ theme }) => ({
   gap: theme.spacing(0.5),
   width: '100%',
   maxWidth: theme.typography.pxToRem(750),
+  maxHeight: '32vh',
   marginInline: 'auto',
+  overflowY: 'auto',
+  overscrollBehavior: 'contain',
+  boxSizing: 'border-box',
   // Pull the row up so the input sheet overlaps the cards' lower edge.
   marginBottom: `-${theme.spacing(1.5)}`,
+  [theme.breakpoints.up('sm')]: {
+    maxHeight: '40vh',
+  },
 }));
 /**
  * Wrapper around the input field. It sits above the cards in the stacking
@@ -67,7 +82,8 @@ export const ActionsRow = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  gap: theme.spacing(1),
+  gap: theme.spacing(0.5),
+  minWidth: 0,
   paddingInline: theme.spacing(0.5),
   flexWrap: 'wrap',
   // The primary accent sits below the WCAG AA 4.5:1 minimum on the default
@@ -77,13 +93,32 @@ export const ActionsRow = styled(Box)(({ theme }) => ({
   '& .MuiButton-text': {
     color: theme.palette.mode === 'light' ? theme.palette.primary.dark : theme.palette.common.white,
   },
+  [theme.breakpoints.down('sm')]: {
+    gap: theme.spacing(0.25),
+    '& .MuiButton-root': {
+      minWidth: theme.typography.pxToRem(44),
+      minHeight: theme.typography.pxToRem(44),
+      paddingInline: theme.spacing(1),
+    },
+    '& .MuiButton-startIcon': {
+      marginInlineEnd: 0,
+      marginInlineStart: 0,
+    },
+  },
+  [theme.breakpoints.up('sm')]: {
+    gap: theme.spacing(1),
+  },
 }));
 
 /** Left-hand cluster of secondary actions (files, folder, advanced, AI settings). */
 export const LeftActions = styled(Box)(({ theme }) => ({
   display: 'flex',
-  gap: theme.spacing(1),
+  gap: theme.spacing(0.5),
+  minWidth: 0,
   flexWrap: 'wrap',
+  [theme.breakpoints.up('sm')]: {
+    gap: theme.spacing(1),
+  },
 }));
 
 /** Right-hand cluster of the action row: the AI connection status. */
@@ -93,6 +128,7 @@ export const RightActions = styled(Box, {
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing(0.75),
+  minWidth: 0,
   marginInlineStart: 'auto',
   paddingInline: theme.spacing(0.75),
   paddingBlock: theme.spacing(0.5),
@@ -107,6 +143,21 @@ export const RightActions = styled(Box, {
   },
   '&:hover': {
     paddingInline: $plain ? 0 : theme.spacing(1),
+  },
+  [theme.breakpoints.down('sm')]: {
+    gap: theme.spacing(0.5),
+    paddingInline: theme.spacing(0.5),
+  },
+}));
+
+/**
+ * Visible caption for an action button. Hidden below `sm` so the button becomes
+ * icon-only while the text remains in the DOM for tests and screen readers.
+ * @const ComposerActionLabel
+ */
+export const ComposerActionLabel = styled('span')(({ theme }) => ({
+  [theme.breakpoints.down('sm')]: {
+    display: 'none',
   },
 }));
 
@@ -139,7 +190,11 @@ export const AdvancedPanel = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   gap: theme.spacing(2),
   padding: theme.spacing(2),
-  minWidth: theme.typography.pxToRem(280),
+  width: `min(${theme.typography.pxToRem(320)}, calc(100vw - ${theme.spacing(3)}))`,
+  minWidth: 0,
+  maxHeight: '70vh',
+  overflowY: 'auto',
+  boxSizing: 'border-box',
 }));
 
 /**
@@ -162,7 +217,10 @@ export const AttachmentCard = styled(Paper)(({ theme }) => ({
   alignItems: 'stretch',
   justifyContent: 'flex-start',
   minWidth: 0,
-  width: '90%',
+  width: '100%',
+  [theme.breakpoints.up('sm')]: {
+    width: '90%',
+  },
   paddingBlock: `${theme.spacing(1.5)} ${theme.spacing(3)}`,
   paddingInline: theme.spacing(1.5),
   borderRadius: `${theme.typography.pxToRem(16)} ${theme.typography.pxToRem(16)} 0 0`,
@@ -268,10 +326,13 @@ export const AttachmentFileList = styled(Paper)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   gap: theme.spacing(0.25),
-  minWidth: theme.typography.pxToRem(200),
-  maxWidth: theme.typography.pxToRem(360),
-  maxHeight: theme.typography.pxToRem(260),
+  width: '100%',
+  minWidth: 0,
+  maxWidth: `min(${theme.typography.pxToRem(360)}, calc(100vw - ${theme.spacing(3)}))`,
+  maxHeight: '40vh',
   overflowY: 'auto',
+  overscrollBehavior: 'contain',
+  boxSizing: 'border-box',
   padding: theme.spacing(1),
   backgroundColor: theme.palette.background.paper,
   border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,

@@ -2,7 +2,7 @@
  * @fileoverview Assistant message rendering plan details in conversation.
  */
 
-import { Button, List, ListItemText, Typography } from '@mui/material';
+import { List, ListItemText, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListCheck, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 import type { CopilotAction, CopilotResult } from '../../../shared/copilot';
@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import {
   ActionListItemIcon,
   ApplyNoteText,
+  ApplyQueueButton,
   AssistantAlert,
   AssistantBody,
   AssistantWarningAlert,
@@ -172,7 +173,7 @@ export default function AssistantMessage({
 
       {plan.actions.length > 0 && (
         <SectionBlock>
-          <Button
+          <ApplyQueueButton
             variant="contained"
             size="small"
             startIcon={<FontAwesomeIcon icon={faListCheck} />}
@@ -181,7 +182,7 @@ export default function AssistantMessage({
             data-testid="copilot-add-to-queue"
           >
             🚀 {t('copilot.addToQueue', { count: plan.actions.length })}
-          </Button>
+          </ApplyQueueButton>
           <ApplyNoteText variant="caption" color="text.secondary">
             {t('copilot.applyNote')}
           </ApplyNoteText>

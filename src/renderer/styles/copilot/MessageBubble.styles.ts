@@ -35,9 +35,14 @@ export const BubbleRow = styled(Box, {
 export const Bubble = styled(Paper, {
   shouldForwardProp: (prop) => prop !== '$isUser',
 })<{ $isUser: boolean }>(({ theme, $isUser }) => ({
-  maxWidth: '85%',
-  paddingInline: theme.spacing(2),
+  maxWidth: '92%',
+  minWidth: 0,
+  paddingInline: theme.spacing(1.5),
   paddingBlock: theme.spacing(1.5),
+  [theme.breakpoints.up('sm')]: {
+    maxWidth: '85%',
+    paddingInline: theme.spacing(2),
+  },
   borderRadius: $isUser
     ? `${theme.typography.pxToRem(18)} ${theme.typography.pxToRem(18)} ${theme.typography.pxToRem(4)} ${theme.typography.pxToRem(18)}`
     : `${theme.typography.pxToRem(18)} ${theme.typography.pxToRem(18)} ${theme.typography.pxToRem(18)} ${theme.typography.pxToRem(4)}`,

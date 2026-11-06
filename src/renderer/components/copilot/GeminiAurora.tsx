@@ -62,15 +62,27 @@ export default function GeminiAurora({ compact = false }: { compact?: boolean })
     if (!ctx) return;
 
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.max(1, Math.round(rect.width || canvas.clientWidth || window.innerWidth));
+      canvas.height = Math.max(1, Math.round(rect.height || canvas.clientHeight || window.innerHeight));
     };
     resize();
-    window.addEventListener('resize', resize);
+
+    // Observe the decorative layer instead of the window so the canvas stays in
+    // sync with the actual band height. jsdom has no ResizeObserver, so fall
+    // back to the window resize event in that environment.
+    let observer: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined') {
+      observer = new ResizeObserver(resize);
+      observer.observe(canvas);
+    } else {
+      window.addEventListener('resize', resize);
+    }
 
     const tints = AURORA_COLORS.sparkleTints;
     const sparkles: AuroraSparkle[] = [];
-    for (let i = 0; i < 90; i++) {
+    const sparkleCount = canvas.width < 600 ? 45 : 90;
+    for (let i = 0; i < sparkleCount; i++) {
       sparkles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
@@ -129,6 +141,7 @@ export default function GeminiAurora({ compact = false }: { compact?: boolean })
 
     return () => {
       cancelAnimationFrame(raf);
+      observer?.disconnect();
       window.removeEventListener('resize', resize);
     };
   }, []);

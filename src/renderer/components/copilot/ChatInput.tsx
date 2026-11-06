@@ -245,6 +245,7 @@ export default function ChatInput({
           startIcon={<FontAwesomeIcon icon={faWandMagicSparkles} />}
           onClick={onSubmit}
           disabled={disabled || busy || value.trim() === '' || !hasInputs}
+          aria-label={busy ? t('copilot.planning') : t('copilot.plan')}
           data-testid="copilot-plan"
         >
           {busy ? t('copilot.planning') : t('copilot.plan')}

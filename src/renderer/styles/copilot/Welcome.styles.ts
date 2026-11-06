@@ -11,8 +11,12 @@ export const WelcomeRoot = styled(Box)(({ theme }) => ({
   justifyContent: 'center',
   textAlign: 'center',
   height: '100%',
-  paddingBlock: theme.spacing(4),
+  minWidth: 0,
+  paddingBlock: theme.spacing(2),
   paddingInline: theme.spacing(2),
+  [theme.breakpoints.up('sm')]: {
+    paddingBlock: theme.spacing(4),
+  },
 }));
 
 /** Soft drop shadow that lifts the welcome copy off the drifting glow. */
@@ -29,6 +33,7 @@ export const WelcomeTitle = styled(Typography)<{ component?: ElementType }>(({ t
 
 /** Supporting copy of the empty-state prompt. */
 export const WelcomeSubtitle = styled(Typography)(({ theme }) => ({
+  width: '100%',
   maxWidth: theme.typography.pxToRem(480),
   textShadow: welcomeTextShadow(theme),
 }));

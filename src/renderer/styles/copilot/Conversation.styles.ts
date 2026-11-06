@@ -25,8 +25,11 @@ export const ConversationScroll = styled(Box, {
   shouldForwardProp: (prop) => prop !== '$empty',
 })<{ $empty?: boolean }>(({ theme, $empty }) => ({
   flex: $empty ? '0 0 auto' : 1,
+  minWidth: 0,
   minHeight: 0,
   overflowY: $empty ? 'visible' : 'auto',
+  overscrollBehavior: 'contain',
+  scrollbarGutter: 'stable',
   paddingInline: theme.spacing(1),
   [theme.breakpoints.up('sm')]: { paddingInline: theme.spacing(2) },
   [theme.breakpoints.up('md')]: { paddingInline: theme.spacing(3) },

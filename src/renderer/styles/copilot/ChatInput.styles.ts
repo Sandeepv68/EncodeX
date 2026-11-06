@@ -20,8 +20,13 @@ export const ComposerShell = styled(Box)(({ theme }) => ({
   paddingBlock: theme.spacing(1),
   paddingInline: theme.spacing(1),
   marginInline: 'auto',
-  width: theme.typography.pxToRem(750),
-  borderRadius: theme.typography.pxToRem(999),
+  width: '100%',
+  maxWidth: theme.typography.pxToRem(750),
+  minWidth: 0,
+  borderRadius: theme.typography.pxToRem(24),
+  [theme.breakpoints.up('sm')]: {
+    borderRadius: theme.typography.pxToRem(999),
+  },
   backgroundColor: theme.palette.background.paper,
   border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
@@ -49,23 +54,30 @@ export const EditorArea = styled(Box)(({ theme }) => ({
   position: 'relative',
   flex: 1,
   minWidth: 0,
-  height: theme.typography.pxToRem(64),
+  height: theme.typography.pxToRem(56),
   display: 'flex',
   alignItems: 'center',
   flexWrap: 'nowrap',
   gap: theme.spacing(0.5),
+  [theme.breakpoints.up('sm')]: {
+    height: theme.typography.pxToRem(64),
+  },
   '& [contenteditable="true"]': {
     outline: 'none',
     border: 'none',
     width: '100%',
-    height: theme.typography.pxToRem(64),
-    lineHeight: theme.typography.pxToRem(64),
+    height: theme.typography.pxToRem(56),
+    lineHeight: theme.typography.pxToRem(56),
     paddingInline: theme.typography.pxToRem(4),
     fontFamily: theme.typography.fontFamily,
     fontSize: theme.typography.body1.fontSize,
     color: theme.palette.text.primary,
     whiteSpace: 'pre !important',
     overflow: 'hidden',
+    [theme.breakpoints.up('sm')]: {
+      height: theme.typography.pxToRem(64),
+      lineHeight: theme.typography.pxToRem(64),
+    },
   },
   '& p': { margin: 0, lineHeight: 'inherit' },
 }));
@@ -76,8 +88,8 @@ export const EditorPlaceholder = styled(Box)(({ theme }) => ({
   top: 0,
   insetInlineStart: 0,
   insetInlineEnd: 0,
-  height: theme.typography.pxToRem(64),
-  lineHeight: theme.typography.pxToRem(64),
+  height: theme.typography.pxToRem(56),
+  lineHeight: theme.typography.pxToRem(56),
   paddingInline: theme.typography.pxToRem(4),
   pointerEvents: 'none',
   color: alpha(theme.palette.text.primary, 0.72),
@@ -85,6 +97,10 @@ export const EditorPlaceholder = styled(Box)(({ theme }) => ({
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
+  [theme.breakpoints.up('sm')]: {
+    height: theme.typography.pxToRem(64),
+    lineHeight: theme.typography.pxToRem(64),
+  },
 }));
 
 /**
@@ -107,12 +123,16 @@ export const ResetIconButton = styled(Button)(({ theme }) => ({
   color: theme.palette.text.secondary,
   flexShrink: 0,
   minWidth: 0,
-  width: theme.typography.pxToRem(64),
-  height: theme.typography.pxToRem(64),
+  width: theme.typography.pxToRem(40),
+  height: theme.typography.pxToRem(40),
   borderRadius: theme.typography.pxToRem(999),
   padding: 0,
   '&:hover': {
     color: theme.palette.primary.main,
+  },
+  [theme.breakpoints.up('sm')]: {
+    width: theme.typography.pxToRem(64),
+    height: theme.typography.pxToRem(64),
   },
 }));
 
@@ -133,7 +153,10 @@ export const EditorField = styled(Box)(({ theme }) => ({
   flex: 1,
   minWidth: 0,
   position: 'relative',
-  height: theme.typography.pxToRem(64),
+  height: theme.typography.pxToRem(56),
+  [theme.breakpoints.up('sm')]: {
+    height: theme.typography.pxToRem(64),
+  },
 }));
 
 /**
@@ -143,12 +166,28 @@ export const EditorField = styled(Box)(({ theme }) => ({
  */
 export const ComposerPlanButton = styled(Button)(({ theme }) => ({
   flexShrink: 0,
-  height: theme.typography.pxToRem(64),
-  paddingInline: theme.spacing(2.5),
+  minWidth: theme.typography.pxToRem(44),
+  height: theme.typography.pxToRem(56),
+  paddingInline: theme.spacing(1.5),
   borderRadius: theme.typography.pxToRem(999),
   fontSize: theme.typography.body1.fontSize,
   color: theme.palette.mode === 'dark' ? theme.palette.primary.light : theme.palette.primary.dark,
   '& .MuiButton-startIcon': {
-    marginInlineEnd: theme.spacing(0.75),
+    marginInlineEnd: 0,
+  },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: 0,
+    '& .MuiButton-startIcon': {
+      fontSize: theme.typography.body1.fontSize,
+      marginInlineEnd: 0,
+      marginInlineStart: 0,
+    },
+  },
+  [theme.breakpoints.up('sm')]: {
+    height: theme.typography.pxToRem(64),
+    paddingInline: theme.spacing(2.5),
+    '& .MuiButton-startIcon': {
+      marginInlineEnd: theme.spacing(0.75),
+    },
   },
 }));
