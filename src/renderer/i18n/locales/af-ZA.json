@@ -661,7 +661,8 @@
         "emptyResponse": "Die verskaffer het gekoppel, maar 'n leë antwoord teruggegee. Gaan die model-ID na.",
         "noKey": "Daar is geen API-sleutel beskikbaar om te toets nie. Voer eers 'n sleutel in.",
         "offline": "Die gekose verskaffer werk vanlyn en het geen verbindingstoets nodig nie.",
-        "unknown": "Die verbindingstoets het misluk. Gaan die instellings na en probeer weer."
+        "unknown": "Die verbindingstoets het misluk. Gaan die instellings na en probeer weer.",
+        "noModel": "Geen model beskikbaar nie. Kies een onder Gevorderd, of installeer 'n model in jou runtime en probeer dan weer."
       },
       "statusConnected": "Gekoppel en bevestig.",
       "requiresNetwork": "Hierdie verskaffer benodig 'n aktiewe netwerkverbinding.",

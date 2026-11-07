@@ -661,7 +661,8 @@
         "emptyResponse": "Le fournisseur s’est connecté mais a renvoyé une réponse vide. Vérifiez l’identifiant du modèle.",
         "noKey": "Aucune clé API n’est disponible pour le test. Saisissez d’abord une clé.",
         "offline": "Le fournisseur sélectionné fonctionne hors ligne et n’a pas besoin de test de connexion.",
-        "unknown": "Le test de connexion a échoué. Vérifiez les paramètres et réessayez."
+        "unknown": "Le test de connexion a échoué. Vérifiez les paramètres et réessayez.",
+        "noModel": "Aucun modèle n'est disponible. Choisissez-en un dans Avancé ou installez un modèle dans votre environnement d'exécution, puis réessayez."
       },
       "statusConnected": "Connecté et vérifié.",
       "requiresNetwork": "Ce fournisseur nécessite une connexion réseau active.",

@@ -661,7 +661,8 @@
         "emptyResponse": "The provider connected but returned an empty response. Check the model id.",
         "noKey": "No API key is available to test. Enter a key first.",
         "offline": "The selected provider runs offline and needs no connection test.",
-        "unknown": "The connection test failed. Check the settings and try again."
+        "unknown": "The connection test failed. Check the settings and try again.",
+        "noModel": "No model is available. Choose one under Advanced, or install a model in your runtime, then try again."
       },
       "statusConnected": "Connected and verified.",
       "requiresNetwork": "This provider needs an active network connection.",

@@ -661,7 +661,8 @@
         "emptyResponse": "Tarjoaja muodosti yhteyden mutta palautti tyhjän vastauksen. Tarkista mallin tunnus.",
         "noKey": "Testattavaksi ei ole API-avainta. Anna avain ensin.",
         "offline": "Valittu tarjoaja toimii offline-tilassa eikä vaadi yhteystestiä.",
-        "unknown": "Yhteystesti epäonnistui. Tarkista asetukset ja yritä uudelleen."
+        "unknown": "Yhteystesti epäonnistui. Tarkista asetukset ja yritä uudelleen.",
+        "noModel": "Mallia ei ole saatavilla. Valitse malli kohdasta Lisäasetukset tai asenna malli ajonaikaiseen ympäristöösi ja yritä uudelleen."
       },
       "statusConnected": "Yhdistetty ja vahvistettu.",
       "requiresNetwork": "Tämä tarjoaja tarvitsee aktiivisen verkkoyhteyden.",

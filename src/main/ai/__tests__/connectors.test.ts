@@ -7,12 +7,14 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import {
+  DEFAULT_LOCAL_TIMEOUT_MS,
   ProviderHttpError,
   createAnthropicConnector,
   createConnectorFromSettings,
   createGeminiConnector,
   createOpenAICompatibleConnector,
   isRemoteProvider,
+  normalizeLocalBaseUrl,
   openAiProvider,
   usage,
 } from '../connectors';
@@ -229,6 +231,36 @@ describe('createConnectorFromSettings', () => {
     expect(createConnectorFromSettings({ providerId: 'gemini', model: 'test-model', key: 'k' }, 'k').id).toBe('gemini');
   });
 
+  it('builds a keyless OpenAI-compatible connector for the local runtime', async () => {
+    const fetchImpl = fetchReturning({ choices: [{ message: { content: 'OK' } }] });
+    const connector = createConnectorFromSettings(
+      { providerId: 'local', model: 'llama3', key: null, baseUrl: 'http://localhost:11434' },
+      '',
+      fetchImpl,
+    );
+    expect(connector.id).toBe('openai-compatible');
+    await expect(connector.complete(request)).resolves.toMatchObject({ model: 'llama3' });
+    const [url, init] = fetchImpl.mock.calls[0];
+    expect(url).toBe('http://localhost:11434/v1/chat/completions');
+    expect(headersOf(init).authorization).toBeUndefined();
+  });
+
+  it('gives the local runtime longer than the remote providers for its first model load', async () => {
+    const fetchImpl = fetchReturning({ choices: [{ message: { content: 'OK' } }] });
+    const timeoutSpy = vi.spyOn(AbortSignal, 'timeout');
+    try {
+      const connector = createConnectorFromSettings(
+        { providerId: 'local', model: 'llama3', key: null, baseUrl: 'http://localhost:11434' },
+        '',
+        fetchImpl,
+      );
+      await connector.complete(request);
+      expect(timeoutSpy).toHaveBeenCalledWith(DEFAULT_LOCAL_TIMEOUT_MS);
+    } finally {
+      timeoutSpy.mockRestore();
+    }
+  });
+
   it('rejects a provider with no model rather than guessing one', () => {
     expect(() => createConnectorFromSettings({ providerId: 'anthropic', model: '', key: 'k' }, 'k')).toThrow(/No model is configured/);
     expect(() => createConnectorFromSettings({ providerId: 'openai', model: '   ', key: 'k' }, 'k')).toThrow(/No model is configured/);
@@ -236,9 +268,6 @@ describe('createConnectorFromSettings', () => {
 
   it('throws for a provider that has no network connector', () => {
     expect(() => createConnectorFromSettings({ providerId: 'rules', model: '', key: 'k' }, 'k')).toThrow(
-      /does not use a network connector/,
-    );
-    expect(() => createConnectorFromSettings({ providerId: 'local', model: '', key: null }, 'k')).toThrow(
       /does not use a network connector/,
     );
   });
@@ -269,6 +298,19 @@ describe('isRemoteProvider', () => {
     expect(isRemoteProvider('gemini')).toBe(true);
     expect(isRemoteProvider('rules')).toBe(false);
     expect(isRemoteProvider('local')).toBe(false);
+  });
+});
+
+describe('normalizeLocalBaseUrl', () => {
+  it('adds the OpenAI-compatible /v1 path to a bare host', () => {
+    expect(normalizeLocalBaseUrl('http://localhost:11434')).toBe('http://localhost:11434/v1');
+    expect(normalizeLocalBaseUrl('http://localhost:11434/')).toBe('http://localhost:11434/v1');
+  });
+
+  it('keeps an explicit path and falls back to the Ollama default', () => {
+    expect(normalizeLocalBaseUrl('http://localhost:11434/v1/')).toBe('http://localhost:11434/v1');
+    expect(normalizeLocalBaseUrl('http://localhost:1234/custom')).toBe('http://localhost:1234/custom');
+    expect(normalizeLocalBaseUrl('')).toBe('http://127.0.0.1:11434/v1');
   });
 });
 

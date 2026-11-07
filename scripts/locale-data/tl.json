@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Track ng video",
   "videoTimeline.zoomIn": "I-zoom in",
-  "videoTimeline.zoomOut": "I-zoom out"
+  "videoTimeline.zoomOut": "I-zoom out",
+  "settings.ai.errors.noModel": "Walang magagamit na modelo. Pumili sa ilalim ng Makabago, o mag-install ng modelo sa iyong runtime, pagkatapos ay subukan muli."
 }

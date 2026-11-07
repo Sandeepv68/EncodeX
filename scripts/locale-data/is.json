@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Myndalag",
   "videoTimeline.zoomIn": "Stækka",
-  "videoTimeline.zoomOut": "Minnka"
+  "videoTimeline.zoomOut": "Minnka",
+  "settings.ai.errors.noModel": "Ekkert líkan er tiltækt. Veldu eitt undir Ítarlegt eða settu líkan upp í keyrsluumhverfinu þínu og reyndu aftur."
 }

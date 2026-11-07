@@ -661,7 +661,8 @@
         "emptyResponse": "Penyedia terhubung tetapi mengembalikan respons kosong. Periksa id model.",
         "noKey": "Tidak ada kunci API yang tersedia untuk diuji. Masukkan kunci terlebih dahulu.",
         "offline": "Penyedia yang dipilih berjalan offline dan tidak memerlukan uji koneksi.",
-        "unknown": "Uji koneksi gagal. Periksa pengaturan dan coba lagi."
+        "unknown": "Uji koneksi gagal. Periksa pengaturan dan coba lagi.",
+        "noModel": "Tidak ada model yang tersedia. Pilih salah satu di Lanjutan, atau pasang model di runtime Anda, lalu coba lagi."
       },
       "statusConnected": "Terhubung dan terverifikasi.",
       "requiresNetwork": "Penyedia ini memerlukan koneksi jaringan yang aktif.",

@@ -1129,6 +1129,7 @@ describe('Settings', () => {
     expect(screen.queryByTestId('settings-ai-model')).not.toBeInTheDocument();
     fireEvent.click(screen.getByTestId('settings-ai-advanced'));
     expect(screen.getByTestId('settings-ai-model')).toBeInTheDocument();
+    await waitFor(() => expect(window.electronAPI.aiListModels).toHaveBeenCalled());
   });
 
   it('edits the local provider base URL', async () => {
@@ -1140,6 +1141,21 @@ describe('Settings', () => {
     const base = screen.getByRole('textbox', { name: 'settings.ai.baseUrl' }) as HTMLInputElement;
     fireEvent.change(base, { target: { value: 'http://127.0.0.1:11434/v1' } });
     expect(base).toHaveValue('http://127.0.0.1:11434/v1');
+  });
+
+  it('loads local model suggestions without an API key', async () => {
+    const user = userEvent.setup();
+    vi.mocked(window.electronAPI.aiListModels).mockResolvedValue({ ok: true, models: ['llama3'] });
+    renderSettings();
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    fireEvent.click(screen.getByTestId('settings-ai-provider-local'));
+    fireEvent.click(screen.getByTestId('settings-ai-advanced'));
+    await waitFor(() => expect(window.electronAPI.aiListModels).toHaveBeenCalledWith({ providerId: 'local' }));
+    const model = screen.getByRole('combobox', { name: 'settings.ai.model' });
+    await user.click(model);
+    const listbox = await screen.findByRole('listbox');
+    expect(within(listbox).getByText('llama3')).toBeInTheDocument();
   });
 
   it('edits the OpenAI base URL from the advanced panel', async () => {

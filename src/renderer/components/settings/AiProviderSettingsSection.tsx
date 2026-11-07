@@ -434,7 +434,7 @@ export default function AiProviderSettingsSection({ autoOpen = false }: { autoOp
   }, [online, providerId]);
 
   const loadModels = async (): Promise<void> => {
-    if (!configurable || !AI_PROVIDERS_REQUIRING_NETWORK.has(providerId)) {
+    if (!configurable) {
       setModelOptions([]);
       return;
     }

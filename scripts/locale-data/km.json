@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "បទវីដេអូ",
   "videoTimeline.zoomIn": "ពង្រីក",
-  "videoTimeline.zoomOut": "បង្រួម"
+  "videoTimeline.zoomOut": "បង្រួម",
+  "settings.ai.errors.noModel": "មិនមានម៉ូដែលដែលអាចប្រើបានទេ។ ជ្រើសរើសមួយនៅក្រោមកម្រិតខ្ពស់ ឬដំឡើងម៉ូដែលក្នុងរង្វង់រត់របស់អ្នក រួចព្យាយាមម្តងទៀត។"
 }

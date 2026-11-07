@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Rian físeáin",
   "videoTimeline.zoomIn": "Zúmáil isteach",
-  "videoTimeline.zoomOut": "Zúmáil amach"
+  "videoTimeline.zoomOut": "Zúmáil amach",
+  "settings.ai.errors.noModel": "Níl aon mhúnla ar fáil. Roghnaigh ceann faoi Ardghnéithe, nó suiteáil múnla i do rithchomhshaol, agus triail arís."
 }

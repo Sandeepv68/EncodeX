@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Piste vidéo",
   "videoTimeline.zoomIn": "Zoom avant",
-  "videoTimeline.zoomOut": "Zoom arrière"
+  "videoTimeline.zoomOut": "Zoom arrière",
+  "settings.ai.errors.noModel": "Aucun modèle n'est disponible. Choisissez-en un dans Avancé ou installez un modèle dans votre environnement d'exécution, puis réessayez."
 }

@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Videoraita",
   "videoTimeline.zoomIn": "Lähennä",
-  "videoTimeline.zoomOut": "Kaukenna"
+  "videoTimeline.zoomOut": "Kaukenna",
+  "settings.ai.errors.noModel": "Mallia ei ole saatavilla. Valitse malli kohdasta Lisäasetukset tai asenna malli ajonaikaiseen ympäristöösi ja yritä uudelleen."
 }

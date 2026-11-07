@@ -661,7 +661,8 @@
         "emptyResponse": "Cheangail an soláthraí ach thug sé freagra folamh ar ais. Seiceáil aitheantóir na samhla.",
         "noKey": "Níl aon eochair API ar fáil le tástáil. Iontráil eochair ar dtús.",
         "offline": "Ritheann an soláthraí roghnaithe as líne agus ní theastaíonn tástáil naisc uaidh.",
-        "unknown": "Theip ar an tástáil naisc. Seiceáil na socruithe agus triail arís."
+        "unknown": "Theip ar an tástáil naisc. Seiceáil na socruithe agus triail arís.",
+        "noModel": "Níl aon mhúnla ar fáil. Roghnaigh ceann faoi Ardghnéithe, nó suiteáil múnla i do rithchomhshaol, agus triail arís."
       },
       "statusConnected": "Ceangailte agus fíoraithe.",
       "requiresNetwork": "Teastaíonn nasc líonra gníomhach ón soláthraí seo.",

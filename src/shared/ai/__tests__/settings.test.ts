@@ -218,10 +218,15 @@ describe('keyHint / toAiSettingsView', () => {
     expect(stale.connected).toBe(false);
     expect(stale).not.toHaveProperty('connectedAt');
 
-    // A missing key can never be "connected".
+    // A missing key can never be "connected" for a keyed provider.
     expect(
       toAiSettingsView({ providerId: 'openai', model: '', key: null, connectedAt: 1, connectedProvider: 'openai' }, true).connected,
     ).toBe(false);
+
+    // A local runtime is keyless but can still be connected.
+    expect(
+      toAiSettingsView({ providerId: 'local', model: 'llama3', key: null, connectedAt: 2, connectedProvider: 'local' }, true).connected,
+    ).toBe(true);
   });
 
   it('exposes the global active connection even when a different provider is selected', () => {

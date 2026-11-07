@@ -661,7 +661,8 @@
         "emptyResponse": "Il provider si è connesso ma ha restituito una risposta vuota. Controlla l’id del modello.",
         "noKey": "Nessuna chiave API disponibile per il test. Inserisci prima una chiave.",
         "offline": "Il provider selezionato funziona offline e non richiede un test di connessione.",
-        "unknown": "Il test di connessione non è riuscito. Controlla le impostazioni e riprova."
+        "unknown": "Il test di connessione non è riuscito. Controlla le impostazioni e riprova.",
+        "noModel": "Nessun modello disponibile. Scegline uno in Avanzate o installa un modello nel tuo runtime, quindi riprova."
       },
       "statusConnected": "Connesso e verificato.",
       "requiresNetwork": "Questo fornitore richiede una connessione di rete attiva.",

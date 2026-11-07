@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Trek video",
   "videoTimeline.zoomIn": "Perbesar",
-  "videoTimeline.zoomOut": "Perkecil"
+  "videoTimeline.zoomOut": "Perkecil",
+  "settings.ai.errors.noModel": "Tidak ada model yang tersedia. Pilih salah satu di Lanjutan, atau pasang model di runtime Anda, lalu coba lagi."
 }

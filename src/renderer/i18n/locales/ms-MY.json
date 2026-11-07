@@ -661,7 +661,8 @@
         "emptyResponse": "Pembekal berjaya disambung tetapi memulangkan respons kosong. Semak id model.",
         "noKey": "Tiada kunci API tersedia untuk diuji. Masukkan kunci dahulu.",
         "offline": "Pembekal yang dipilih berjalan di luar talian dan tidak memerlukan ujian sambungan.",
-        "unknown": "Ujian sambungan gagal. Semak tetapan dan cuba lagi."
+        "unknown": "Ujian sambungan gagal. Semak tetapan dan cuba lagi.",
+        "noModel": "Tiada model tersedia. Pilih satu di bawah Lanjutan, atau pasang model dalam runtime anda, kemudian cuba lagi."
       },
       "statusConnected": "Bersambung dan disahkan.",
       "requiresNetwork": "Pembekal ini memerlukan sambungan rangkaian yang aktif.",

@@ -661,7 +661,8 @@
         "emptyResponse": "Dostawca połączył się, ale zwrócił pustą odpowiedź. Sprawdź identyfikator modelu.",
         "noKey": "Brak klucza API do przetestowania. Najpierw wprowadź klucz.",
         "offline": "Wybrany dostawca działa offline i nie wymaga testu połączenia.",
-        "unknown": "Test połączenia nie powiódł się. Sprawdź ustawienia i spróbuj ponownie."
+        "unknown": "Test połączenia nie powiódł się. Sprawdź ustawienia i spróbuj ponownie.",
+        "noModel": "Brak dostępnego modelu. Wybierz model w sekcji Zaawansowane lub zainstaluj model w swoim środowisku uruchomieniowym, a następnie spróbuj ponownie."
       },
       "statusConnected": "Połączono i zweryfikowano.",
       "requiresNetwork": "Ten dostawca wymaga aktywnego połączenia sieciowego.",

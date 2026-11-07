@@ -661,7 +661,8 @@
         "emptyResponse": "Udbyderen oprettede forbindelse, men returnerede et tomt svar. Kontrollér model-id'et.",
         "noKey": "Der er ingen API-nøgle tilgængelig til testen. Indtast en nøgle først.",
         "offline": "Den valgte udbyder kører offline og kræver ingen forbindelsestest.",
-        "unknown": "Forbindelsestesten mislykkedes. Kontrollér indstillingerne, og prøv igen."
+        "unknown": "Forbindelsestesten mislykkedes. Kontrollér indstillingerne, og prøv igen.",
+        "noModel": "Der er ingen tilgængelig model. Vælg en under Avanceret, eller installér en model i din runtime, og prøv igen."
       },
       "statusConnected": "Forbundet og bekræftet.",
       "requiresNetwork": "Denne udbyder kræver en aktiv netværksforbindelse.",

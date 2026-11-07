@@ -661,7 +661,8 @@
         "emptyResponse": "Provideri attaveqarpoq, kisianni akissut mannittoq uterpoq. Modeli-ID takukkit.",
         "noKey": "Misiliisoqarnissaanut API-nøgle qanngilaq. Nøgle ilanngukkit.",
         "offline": "Provideri toqqakkat offline-imi ingerlasarpoq, attaveqarnermik misilisarnissaq pisariaqanngilaq.",
-        "unknown": "Attaveqarnermik misilisarneq ajortorsiorpoq. Inissisimaffit takukkit misileqqillu."
+        "unknown": "Attaveqarnermik misilisarneq ajortorsiorpoq. Inissisimaffit takukkit misileqqillu.",
+        "noModel": "Modelli piunngilaq. Qaffasissumik iluani ataaseq toqqaruk, imaluunniit runtime-imi modelli inissiikkuit, kingorna misilera."
       },
       "statusConnected": "Attaveqarpoq, uppernarsarneqarluni.",
       "requiresNetwork": "Inissisimasut taakkua attaveqarfimmik atuuttumik pisariaqarput.",

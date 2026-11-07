@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Videospor",
   "videoTimeline.zoomIn": "Zoom ind",
-  "videoTimeline.zoomOut": "Zoom ud"
+  "videoTimeline.zoomOut": "Zoom ud",
+  "settings.ai.errors.noModel": "Der er ingen tilgængelig model. Vælg en under Avanceret, eller installér en model i din runtime, og prøv igen."
 }

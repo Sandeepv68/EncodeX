@@ -13,7 +13,7 @@
 
 import type { AiServerSettings } from './settings';
 import { effectiveModel } from './settings';
-import { requestJson } from './connectors';
+import { normalizeLocalBaseUrl, requestJson } from './connectors';
 import type { FetchLike } from './connectors';
 import type { ProviderModelEntry } from './types';
 
@@ -179,6 +179,11 @@ export async function listProviderModels(
     case 'openai': {
       const baseUrl = (settings.baseUrl || 'https://api.openai.com/v1').replace(/\/+$/, '');
       const data = await getJson(fetchImpl, `${baseUrl}/models`, { authorization: `Bearer ${apiKey}` });
+      return orderModels(openAiModels(data), preferred).map((entry) => entry.id);
+    }
+    case 'local': {
+      const baseUrl = normalizeLocalBaseUrl(settings.baseUrl);
+      const data = await getJson(fetchImpl, `${baseUrl}/models`, {});
       return orderModels(openAiModels(data), preferred).map((entry) => entry.id);
     }
     case 'anthropic': {

@@ -920,6 +920,7 @@
         "invalidKey": "The API key was rejected. Check that it is correct and still active, then try again.",
         "forbidden": "This API key is not allowed to use the requested model or endpoint. Check your account permissions.",
         "modelNotFound": "The selected model could not be found. Check that the model id is correct.",
+        "noModel": "No model is available. Choose one under Advanced, or install a model in your runtime, then try again.",
         "notFound": "The endpoint could not be found. Check the base URL and try again.",
         "rateLimit": "The provider is receiving too many requests. Wait a moment and try again.",
         "quota": "Your account has reached its quota or has a billing problem. Check your provider account.",
