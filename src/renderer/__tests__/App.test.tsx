@@ -73,6 +73,19 @@ describe('App', () => {
     expect(await screen.findByText('convert.title', {}, { timeout: 20000 })).toBeInTheDocument();
   }, 30000);
 
+  it('resets the main scroll position when the route changes', async () => {
+    renderApp();
+    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
+    const main = document.querySelector('main')!;
+    main.scrollTop = 640;
+    main.scrollLeft = 120;
+
+    fireEvent.click(screen.getByTestId('nav-item-convert'));
+    expect(await screen.findByText('convert.title', {}, { timeout: 20000 })).toBeInTheDocument();
+    expect(main.scrollTop).toBe(0);
+    expect(main.scrollLeft).toBe(0);
+  }, 30000);
+
   it('opens the permanent drawer condensed with icon-only nav rows', async () => {
     renderApp();
     await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });

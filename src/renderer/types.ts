@@ -64,6 +64,20 @@ export interface ColorModeContextValue {
 }
 
 /**
+ * Location state carried when the app navigates to the Settings page.
+ *
+ * The Copilot composer's "configure AI provider" action sends the user to
+ * Settings, but landing on the top of the page is not enough: the AI-provider
+ * editor sits far down and starts collapsed. This flag tells the Settings
+ * page to open that editor and scroll it into view.
+ * @interface SettingsLocationState
+ */
+export interface SettingsLocationState {
+  /** Open and reveal the AI-provider settings editor. */
+  openAiProvider?: boolean;
+}
+
+/**
  * Signature of the console methods that the renderer entry point patches.
  * The `__encodeXPatched` flag marks a method as already wrapped so a
  * re-evaluated entry point does not wrap it twice (which would duplicate

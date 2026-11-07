@@ -16,12 +16,14 @@
  *  - MuiSwitch / MuiChip / MuiTooltip / MuiAlert: rounded, theme-consistent
  *    control styling. Number-input spinners are hidden for a clean look.
  *  - MuiPaper: removes the default background gradient image.
+ *  - MuiCssBaseline: a unified custom scrollbar with light and dark variants.
  *
  * The `direction` argument controls RTL/LTR layout (used together with the
  * DirectionProvider in main.tsx).
  */
 
-import { createTheme } from '@mui/material/styles';
+import { alpha, createTheme } from '@mui/material/styles';
+import type { Theme } from '@mui/material/styles';
 import { COLORS, getTheme, SHADOWS } from './colors';
 import type { ThemeId } from './types';
 import SelectArrowIcon from './SelectArrowIcon';
@@ -31,6 +33,63 @@ import SelectArrowIcon from './SelectArrowIcon';
  * @const {string} FONT_FAMILY
  */
 const FONT_FAMILY = '"Roboto","Helvetica","Arial",sans-serif';
+
+/**
+ * Builds the global scrollbar styles used by MUI's CssBaseline. Chromium
+ * (Electron and the MCP App iframe) gets a rounded, inset thumb via the
+ * `::-webkit-scrollbar-*` pseudo-elements; browsers without those pseudo
+ * elements get the equivalent standard `scrollbar-color` / `scrollbar-width`
+ * fallback. Colors are derived from the palette mode so the light and dark
+ * themes each get their own variant.
+ *
+ * @param {Theme} theme - The MUI theme whose palette selects the variant.
+ * @returns {Object} Global CSS for every scrollable element.
+ */
+function createScrollbarStyles(theme: Theme) {
+  const size = theme.typography.pxToRem(10);
+  const inset = theme.typography.pxToRem(2);
+  const isDark = theme.palette.mode === 'dark';
+  const neutral = isDark ? theme.palette.common.white : theme.palette.common.black;
+  const track = alpha(neutral, isDark ? 0.06 : 0.04);
+  const thumb = alpha(neutral, isDark ? 0.32 : 0.26);
+  const thumbHover = alpha(neutral, isDark ? 0.45 : 0.4);
+  const thumbActive = alpha(theme.palette.primary.main, isDark ? 0.9 : 0.8);
+
+  return {
+    '*::-webkit-scrollbar': {
+      width: size,
+      height: size,
+    },
+    '*::-webkit-scrollbar-track': {
+      backgroundColor: track,
+      borderRadius: size,
+    },
+    '*::-webkit-scrollbar-thumb': {
+      backgroundColor: thumb,
+      border: `${inset} solid transparent`,
+      borderRadius: size,
+      backgroundClip: 'content-box',
+    },
+    '*::-webkit-scrollbar-thumb:hover': {
+      backgroundColor: thumbHover,
+    },
+    '*::-webkit-scrollbar-thumb:active': {
+      backgroundColor: thumbActive,
+    },
+    '*::-webkit-scrollbar-button': {
+      display: 'none',
+    },
+    '*::-webkit-scrollbar-corner': {
+      backgroundColor: 'transparent',
+    },
+    '@supports not selector(::-webkit-scrollbar)': {
+      '*': {
+        scrollbarColor: `${thumb} ${track}`,
+        scrollbarWidth: 'thin',
+      },
+    },
+  };
+}
 
 /**
  * Creates a fully configured MUI theme for the given palette id and text
@@ -62,6 +121,9 @@ export function createAppTheme(themeId: ThemeId, direction: 'ltr' | 'rtl') {
     typography: { fontFamily: FONT_FAMILY },
     shape: { borderRadius: 8 },
     components: {
+      MuiCssBaseline: {
+        styleOverrides: (theme) => createScrollbarStyles(theme),
+      },
       MuiInputBase: {
         styleOverrides: {
           input: {

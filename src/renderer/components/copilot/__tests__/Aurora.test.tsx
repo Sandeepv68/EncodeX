@@ -10,7 +10,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, act } from '@testing-library/react';
-import GeminiAurora from '../GeminiAurora';
+import Aurora from '../Aurora';
 
 /** Recorded drawing calls made through the stubbed canvas context. */
 interface CanvasCalls {
@@ -57,7 +57,7 @@ function createContextStub(): object {
 /** Frames the animation loop is allowed to run. */
 const FRAME_COUNT = 200;
 
-describe('GeminiAurora', () => {
+describe('Aurora', () => {
   beforeEach(() => {
     calls.clearRect = 0;
     calls.fill = 0;
@@ -86,7 +86,7 @@ describe('GeminiAurora', () => {
   });
 
   it('paints the sparkle field onto the canvas', () => {
-    render(<GeminiAurora />);
+    render(<Aurora />);
 
     expect(calls.clearRect).toBeGreaterThan(0);
     expect(calls.fill).toBeGreaterThan(0);
@@ -94,13 +94,13 @@ describe('GeminiAurora', () => {
   });
 
   it('renders four morphing blobs', () => {
-    const { container } = render(<GeminiAurora />);
+    const { container } = render(<Aurora />);
 
     expect(container.querySelectorAll('[data-testid="copilot-aurora-blob"]')).toHaveLength(4);
   });
 
   it('fills the page while the composer is idle', () => {
-    const { container } = render(<GeminiAurora />);
+    const { container } = render(<Aurora />);
     const layer = container.firstElementChild as HTMLElement;
 
     expect(layer).not.toBeNull();
@@ -108,15 +108,15 @@ describe('GeminiAurora', () => {
   });
 
   it('hides the top edge while the aurora is full size', () => {
-    const { container } = render(<GeminiAurora />);
+    const { container } = render(<Aurora />);
     const edge = container.querySelector('[data-testid="copilot-aurora-edge"]');
 
     expect(edge).not.toBeNull();
   });
 
   it('shows the top edge as soon as the aurora shrinks to the composer', () => {
-    const { container, rerender } = render(<GeminiAurora />);
-    rerender(<GeminiAurora compact />);
+    const { container, rerender } = render(<Aurora />);
+    rerender(<Aurora compact />);
 
     const edge = container.querySelector('[data-testid="copilot-aurora-edge"]');
     expect(edge).not.toBeNull();
@@ -125,8 +125,8 @@ describe('GeminiAurora', () => {
   it('fades the top edge out once the aurora grows back', () => {
     vi.useFakeTimers();
     try {
-      const { container, rerender } = render(<GeminiAurora compact />);
-      rerender(<GeminiAurora compact={false} />);
+      const { container, rerender } = render(<Aurora compact />);
+      rerender(<Aurora compact={false} />);
 
       act(() => {
         vi.advanceTimersByTime(1000);
@@ -137,5 +137,27 @@ describe('GeminiAurora', () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it('observes the canvas with a ResizeObserver when the environment provides one', () => {
+    const observe = vi.fn();
+    const disconnect = vi.fn();
+    class ResizeObserverStub {
+      constructor(private readonly callback: () => void) {}
+      observe(): void {
+        observe(this.callback);
+      }
+      unobserve(): void {}
+      disconnect(): void {
+        disconnect();
+      }
+    }
+    vi.stubGlobal('ResizeObserver', ResizeObserverStub);
+
+    const { unmount } = render(<Aurora />);
+    expect(observe).toHaveBeenCalled();
+
+    unmount();
+    expect(disconnect).toHaveBeenCalled();
   });
 });

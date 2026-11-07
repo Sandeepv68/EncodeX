@@ -17,7 +17,11 @@ export const CopilotPage = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'row',
   flex: 1,
+  alignSelf: 'stretch',
+  width: 'auto',
+  minWidth: 0,
   minHeight: 0,
+  boxSizing: 'border-box',
   overflow: 'hidden',
   marginInline: theme.spacing(-2),
   marginTop: theme.spacing(-2),
@@ -41,6 +45,7 @@ export const CopilotConversationColumn = styled(Box, {
   display: 'flex',
   flexDirection: 'column',
   flex: 1,
+  width: '100%',
   minWidth: 0,
   minHeight: 0,
   justifyContent: $hasChat ? 'flex-start' : 'center',
@@ -60,9 +65,7 @@ export const CopilotConversationColumn = styled(Box, {
  * @const CopilotAlertWrapper
  */
 export const CopilotAlertWrapper = styled(Box)(({ theme }) => ({
-  paddingInline: theme.spacing(2),
-  paddingTop: theme.spacing(2),
-  paddingBottom: theme.spacing(2),
+  paddingBlock: theme.spacing(0.5),
 }));
 
 /**

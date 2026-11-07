@@ -336,7 +336,6 @@ export const OVERLAY_COLORS = {
  * Video-timeline surface colors that don't map to the theme palette. The
  * light/dark background pair is shared by the track label panel and the ruler.
  * @const {Object} TIMELINE_COLORS
- * @property {string} scrollbarThumb - Timeline viewport scrollbar thumb color.
  * @property {string} labelPanelBackgroundLight - Label panel/ruler background (light).
  * @property {string} labelPanelBackgroundDark - Label panel/ruler background (dark).
  * @property {string} audioTrack - Audio track strip background gradient.
@@ -344,7 +343,6 @@ export const OVERLAY_COLORS = {
  * @property {string} trackInfoBubbleBackgroundDark - Track info bubble background (dark).
  */
 export const TIMELINE_COLORS = {
-  scrollbarThumb: 'rgba(128, 128, 128, 0.4)',
   labelPanelBackgroundLight: '#fafafa',
   labelPanelBackgroundDark: '#141414',
   audioTrack: 'linear-gradient(180deg, rgba(128, 157, 202, 0.45) 0%, rgba(128, 157, 202, 0.1) 100%)',

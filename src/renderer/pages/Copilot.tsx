@@ -24,7 +24,7 @@ import {
   type SavedCopilotChat,
 } from '../stores/copilotChats';
 import SavedChatsDrawer from '../components/copilot/SavedChatsDrawer';
-import GeminiAurora from '../components/copilot/GeminiAurora';
+import Aurora from '../components/copilot/Aurora';
 
 import { useNavigationGuard } from '../NavigationGuardContext';
 import PageContainer from '../components/PageContainer';
@@ -41,6 +41,7 @@ import type { ComposerAttachment } from '../components/copilot/types';
 import { activeConnectionOf, useAiConnectionStore } from '../stores/aiConnectionStore';
 import { basename } from '../utils/path-utils';
 import { VisuallyHidden } from '../styles/a11y.styles';
+import type { SettingsLocationState } from '../types';
 import { CopilotAlert, CopilotAlertWrapper, CopilotConversationColumn, CopilotPage } from '../styles/Copilot.styles';
 
 /** How long the plan request may take before the page shows a failure. */
@@ -303,11 +304,13 @@ export default function Copilot() {
   };
 
   /**
-   * Opens the Settings page where AI providers are configured.
+   * Opens the Settings page where AI providers are configured. The navigation
+   * carries a flag so the Settings page opens the AI-provider editor and
+   * scrolls it into view instead of dropping the user at the top of the page.
    * @returns {void}
    */
   const openSettings = (): void => {
-    navigate('/settings');
+    navigate('/settings', { state: { openAiProvider: true } satisfies SettingsLocationState });
   };
 
   /**
@@ -438,7 +441,7 @@ export default function Copilot() {
         over the conversation instead of resizing it.
       */}
       <CopilotPage>
-        <GeminiAurora compact={hasActiveChat} />
+        <Aurora compact={hasActiveChat} />
         <SavedChatsDrawer
           open={savedChatsOpen}
           chats={savedChats}

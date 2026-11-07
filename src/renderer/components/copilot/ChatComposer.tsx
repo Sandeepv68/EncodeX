@@ -20,12 +20,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import ChatInput from './ChatInput';
-import AiConnectionStatus from '../AiConnectionStatus';
 import type { CopilotOperationChoice } from '../../../shared/copilot';
 import { COPILOT_QUEUE_OPERATIONS, COPILOT_INTELLIGENCE_OPERATIONS } from '../../../shared/copilot';
 import { basename } from '../../utils/path-utils';
 import type { ChatComposerProps, ComposerAttachment } from './types';
 import {
+  ActionButtonWrap,
   ActionsRow,
   AdvancedPanel,
   AttachmentCard,
@@ -42,6 +42,7 @@ import {
   AttachmentRemoveButton,
   AttachmentRow,
   ChipProgress,
+  ComposerActionLabel,
   ComposerBar,
   ComposerStack,
   InputLayer,
@@ -201,6 +202,7 @@ export default function ChatComposer({
             onResetConversation={onResetConversation}
             showSaveAndReset={showSaveAndReset}
             onSaveAndResetConversation={onSaveAndResetConversation}
+            connection={connection}
           />
         </InputLayer>
       </ComposerStack>
@@ -217,6 +219,14 @@ export default function ChatComposer({
             name: 'arrow',
             options: { element: fileListArrow },
           },
+          {
+            name: 'preventOverflow',
+            options: { padding: 8 },
+          },
+          {
+            name: 'flip',
+            options: { padding: 8 },
+          },
         ]}
       >
         <ClickAwayListener onClickAway={closeFileList}>
@@ -232,80 +242,87 @@ export default function ChatComposer({
       </AttachmentFileListPopper>
       <ActionsRow>
         <LeftActions>
-          <Button
-            size="small"
-            startIcon={<FontAwesomeIcon icon={faFileImport} />}
-            onClick={onChooseFiles}
-            disabled={busy}
-            data-testid="copilot-choose-files"
-          >
-            {t('copilot.chooseFiles')}
-          </Button>
-          <Button
-            size="small"
-            startIcon={<FontAwesomeIcon icon={faFolderOpen} />}
-            onClick={onChooseFolder}
-            disabled={busy}
-            data-testid="copilot-choose-folder"
-          >
-            {t('copilot.chooseFolder')}
-          </Button>
-          <Button
-            size="small"
-            startIcon={<FontAwesomeIcon icon={faSliders} />}
-            onClick={(event) => setAdvancedAnchor(event.currentTarget)}
-            disabled={busy}
-            aria-haspopup="dialog"
-            aria-expanded={advancedAnchor ? 'true' : undefined}
-            data-testid="copilot-advanced"
-          >
-            {t('copilot.advanced')}
-          </Button>
-          {showSave && (
+          <Tooltip title={t('copilot.chooseFiles')} placement="top" arrow>
             <Button
               size="small"
-              startIcon={<FontAwesomeIcon icon={faFloppyDisk} />}
-              onClick={onSaveChat}
+              startIcon={<FontAwesomeIcon icon={faFileImport} />}
+              onClick={onChooseFiles}
               disabled={busy}
-              data-testid="copilot-save-chat"
+              aria-label={t('copilot.chooseFiles')}
+              data-testid="copilot-choose-files"
             >
-              {t('copilot.saveChat')}
+              <ComposerActionLabel>{t('copilot.chooseFiles')}</ComposerActionLabel>
             </Button>
+          </Tooltip>
+          <Tooltip title={t('copilot.chooseFolder')} placement="top" arrow>
+            <Button
+              size="small"
+              startIcon={<FontAwesomeIcon icon={faFolderOpen} />}
+              onClick={onChooseFolder}
+              disabled={busy}
+              aria-label={t('copilot.chooseFolder')}
+              data-testid="copilot-choose-folder"
+            >
+              <ComposerActionLabel>{t('copilot.chooseFolder')}</ComposerActionLabel>
+            </Button>
+          </Tooltip>
+          <Tooltip title={t('copilot.advanced')} placement="top" arrow>
+            <Button
+              size="small"
+              startIcon={<FontAwesomeIcon icon={faSliders} />}
+              onClick={(event) => setAdvancedAnchor(event.currentTarget)}
+              disabled={busy}
+              aria-label={t('copilot.advanced')}
+              aria-haspopup="dialog"
+              aria-expanded={advancedAnchor ? 'true' : undefined}
+              data-testid="copilot-advanced"
+            >
+              <ComposerActionLabel>{t('copilot.advanced')}</ComposerActionLabel>
+            </Button>
+          </Tooltip>
+          {showSave && (
+            <Tooltip title={t('copilot.saveChat')} placement="top" arrow>
+              <Button
+                size="small"
+                startIcon={<FontAwesomeIcon icon={faFloppyDisk} />}
+                onClick={onSaveChat}
+                disabled={busy}
+                aria-label={t('copilot.saveChat')}
+                data-testid="copilot-save-chat"
+              >
+                <ComposerActionLabel>{t('copilot.saveChat')}</ComposerActionLabel>
+              </Button>
+            </Tooltip>
           )}
           {onOpenSavedChats && (
-            <Button
-              size="small"
-              startIcon={<FontAwesomeIcon icon={faClockRotateLeft} />}
-              onClick={onOpenSavedChats}
-              disabled={busy}
-              data-testid="copilot-saved-chats"
-            >
-              {t('copilot.savedChats')}
-            </Button>
+            <Tooltip title={t('copilot.savedChats')} placement="top" arrow>
+              <Button
+                size="small"
+                startIcon={<FontAwesomeIcon icon={faClockRotateLeft} />}
+                onClick={onOpenSavedChats}
+                disabled={busy}
+                aria-label={t('copilot.savedChats')}
+                data-testid="copilot-saved-chats"
+              >
+                <ComposerActionLabel>{t('copilot.savedChats')}</ComposerActionLabel>
+              </Button>
+            </Tooltip>
           )}
         </LeftActions>
         <RightActions $plain>
-          {connection && (
-            <AiConnectionStatus
-              connected={connection.connected}
-              providerId={connection.providerId}
-              model={connection.model}
-              testId="copilot-ai-status"
-              elevated
-            />
-          )}
           <Tooltip title={t('copilot.ai.locationNote')} placement="top" arrow>
-            <span>
+            <ActionButtonWrap>
               <Button
                 size="small"
                 startIcon={<FontAwesomeIcon icon={faGear} />}
                 onClick={onOpenSettings}
                 disabled={busy}
+                aria-label={t('copilot.ai.configure')}
                 data-testid="copilot-ai-settings"
               >
-                {t('copilot.ai.configure')}
+                <ComposerActionLabel>{t('copilot.ai.configure')}</ComposerActionLabel>
               </Button>
-            </span>
+            </ActionButtonWrap>
           </Tooltip>
         </RightActions>
       </ActionsRow>

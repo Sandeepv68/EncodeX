@@ -17,7 +17,7 @@
  */
 
 import type { ReactNode } from 'react';
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef, lazy, Suspense } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useTheme, CircularProgress } from '@mui/material';
@@ -135,9 +135,19 @@ function AppLayout() {
   const { navigate } = useNavigationGuard();
   const { themeId, setTheme } = useColorMode();
   const location = useLocation();
+  const mainContentRef = useRef<HTMLElement>(null);
 
   useLanguageDirection();
   useDevScreenshot();
+
+  useLayoutEffect(() => {
+    // A layout effect runs after the DOM is committed, so the ref is attached
+    // by the time the body executes; the assertion only tells TypeScript what
+    // is already true.
+    const mainContent = mainContentRef.current!;
+    mainContent.scrollTop = 0;
+    mainContent.scrollLeft = 0;
+  }, [location.pathname]);
 
   useEffect(() => {
     let cleanup: (() => void) | undefined;
@@ -256,7 +266,7 @@ function AppLayout() {
           </PermanentDrawer>
         )}
         <ColumnLayout>
-          <MainContent $flush={location.pathname === '/copilot'}>
+          <MainContent ref={mainContentRef} $flush={location.pathname === '/copilot'}>
             {isMobile && (
               <MobileMenuButton onClick={() => setMobileOpen(true)} aria-label={t('app.menu')} data-testid="mobile-menu-button">
                 <FontAwesomeIcon icon={faBars} />

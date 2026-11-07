@@ -56,4 +56,7 @@ export const StatusCaption = styled(Box, {
   transition: theme.transitions.create(['max-width', 'opacity'], {
     duration: theme.transitions.duration.short,
   }),
+  [theme.breakpoints.down('md')]: {
+    display: 'none',
+  },
 }));

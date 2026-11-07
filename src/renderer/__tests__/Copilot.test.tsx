@@ -26,13 +26,18 @@ import { expectAppLog } from '../../test-utils/crash-tripwire';
 /** The most recent route the page navigated to, captured by {@link LocationProbe}. */
 let lastPath = '';
 
+/** The most recent location state, captured by {@link LocationProbe}. */
+let lastState: unknown = null;
+
 /**
  * Composes the current router location into a module-level variable so a test
  * can assert where the page navigated without rendering the whole route table.
  * @returns {null} Renders nothing.
  */
 function LocationProbe() {
-  lastPath = useLocation().pathname;
+  const location = useLocation();
+  lastPath = location.pathname;
+  lastState = location.state;
   return null;
 }
 
@@ -234,10 +239,11 @@ describe('Copilot page', () => {
     expect(getEditor()).toBeDefined();
   });
 
-  it('shows the disconnected AI status without fetching settings on mount', () => {
+  it('shows the disconnected AI status without fetching settings on mount', async () => {
     renderPage('Copilot');
     expect(window.electronAPI.aiGetSettings).not.toHaveBeenCalled();
-    const status = screen.getByTestId('copilot-ai-status');
+    fireEvent.click(screen.getByTestId('copilot-ai-status-button'));
+    const status = await screen.findByTestId('copilot-ai-status');
     expect(status).toHaveTextContent('copilot.ai.notConnected');
   });
 
@@ -303,6 +309,8 @@ describe('Copilot page', () => {
         },
       });
     });
+    const statusButton = await screen.findByTestId('copilot-ai-status-button');
+    fireEvent.click(statusButton);
     const status = await screen.findByTestId('copilot-ai-status');
     // The test i18n mock returns keys, so assert on the connected branch's key
     // (the interpolated provider/model live in the localized string).
@@ -640,6 +648,20 @@ describe('Copilot page', () => {
     fireEvent.click(screen.getByTestId('copilot-ai-settings'));
     await expectPath('/settings');
     expect(screen.queryByTestId('confirm-dialog')).not.toBeInTheDocument();
+  });
+
+  it('asks the Settings page to open and reveal the AI provider editor', async () => {
+    renderPage('Copilot', {
+      wrap: (children) => (
+        <NavigationGuardProvider>
+          <LocationProbe />
+          {children}
+        </NavigationGuardProvider>
+      ),
+    });
+    fireEvent.click(screen.getByTestId('copilot-ai-settings'));
+    await expectPath('/settings');
+    expect(lastState).toEqual({ openAiProvider: true });
   });
 
   it('asks before leaving the page while a chat is active', async () => {

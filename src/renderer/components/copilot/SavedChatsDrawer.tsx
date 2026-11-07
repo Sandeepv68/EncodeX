@@ -5,6 +5,8 @@
  * entry opens it, the trash button deletes it.
  */
 
+import { useEffect, useRef } from 'react';
+import type { KeyboardEvent } from 'react';
 import { IconButton, Tooltip, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments, faXmark } from '@fortawesome/free-solid-svg-icons';
@@ -14,6 +16,7 @@ import type { SavedChatsDrawerProps } from './types';
 import ProviderIcon from './ProviderIcon';
 import {
   DeleteChatButton,
+  DrawerBackdrop,
   DrawerHeader,
   DrawerList,
   DrawerPanel,
@@ -74,67 +77,107 @@ export function formatTimeAgo(timestamp: number, now: number, locale: string): s
 export default function SavedChatsDrawer({ open, chats, onClose, onOpen, onDelete }: SavedChatsDrawerProps) {
   const { t, i18n } = useTranslation();
   const now = Date.now();
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Move focus into the drawer when it opens and return it to the trigger when
+  // the drawer closes, so keyboard users are not stranded behind the overlay.
+  useEffect(() => {
+    if (!open) return undefined;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    closeButtonRef.current?.focus();
+    return () => {
+      previouslyFocused?.focus();
+    };
+  }, [open]);
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>): void => {
+    if (event.key === 'Escape' && open) {
+      event.stopPropagation();
+      onClose();
+    }
+  };
 
   return (
-    <DrawerShell $open={open}>
-      <DrawerPanel component="aside" aria-label={t('copilot.savedChatsTitle')} data-testid="saved-chats-drawer" $open={open}>
-        <DrawerHeader>
-          <DrawerTitle variant="subtitle1" component="h2">
-            {t('copilot.savedChatsTitle')}
-          </DrawerTitle>
-          <IconButton size="small" aria-label={t('copilot.savedChatsClose')} onClick={onClose}>
-            <FontAwesomeIcon icon={faXmark} />
-          </IconButton>
-        </DrawerHeader>
-        <DrawerList>
-          {chats.length === 0 ? (
-            <EmptyChatsText variant="body2" color="text.secondary" data-testid="saved-chats-empty">
-              {t('copilot.savedChatsEmpty')}
-            </EmptyChatsText>
-          ) : (
-            chats.map((chat) => {
-              const providerId = deriveCopilotChatProvider(chat.messages);
-              return (
-                <SavedChatItem key={chat.id} data-testid="saved-chat-item">
-                  <SavedChatOpen data-testid="saved-chat-open" onClick={() => onOpen(chat)}>
-                    <SavedChatBody>
-                      <SavedChatTitle component="span" variant="body2">
-                        {chat.title || t('copilot.savedChatUntitled')}
-                      </SavedChatTitle>
-                      <SavedChatMeta>
-                        <SavedChatCountChip
-                          component="span"
-                          size="small"
-                          variant="outlined"
-                          icon={<FontAwesomeIcon icon={faComments} />}
-                          label={chat.messages.length}
-                          data-testid="saved-chat-count"
-                        />
-                        <Typography component="span" variant="caption" color="text.secondary" noWrap>
-                          {formatTimeAgo(chat.savedAt, now, i18n.language)}
-                        </Typography>
-                      </SavedChatMeta>
-                    </SavedChatBody>
-                    <Tooltip
-                      title={providerId ? t(`settings.ai.providers.${providerId}`) : ''}
-                      disableHoverListener={!providerId}
-                      placement="left"
-                      arrow
+    <>
+      {open && <DrawerBackdrop open onClick={onClose} data-testid="saved-chats-backdrop" />}
+      <DrawerShell $open={open} inert={!open}>
+        <DrawerPanel
+          component="aside"
+          aria-label={t('copilot.savedChatsTitle')}
+          data-testid="saved-chats-drawer"
+          $open={open}
+          onKeyDown={handleKeyDown}
+        >
+          <DrawerHeader>
+            <DrawerTitle variant="subtitle1" component="h2">
+              {t('copilot.savedChatsTitle')}
+            </DrawerTitle>
+            <IconButton
+              ref={closeButtonRef}
+              size="small"
+              disableRipple
+              aria-label={t('copilot.savedChatsClose')}
+              onClick={onClose}
+              data-testid="saved-chats-close"
+            >
+              <FontAwesomeIcon icon={faXmark} />
+            </IconButton>
+          </DrawerHeader>
+          <DrawerList tabIndex={0}>
+            {chats.length === 0 ? (
+              <EmptyChatsText variant="body2" color="text.secondary" data-testid="saved-chats-empty">
+                {t('copilot.savedChatsEmpty')}
+              </EmptyChatsText>
+            ) : (
+              chats.map((chat) => {
+                const providerId = deriveCopilotChatProvider(chat.messages);
+                return (
+                  <SavedChatItem key={chat.id} data-testid="saved-chat-item">
+                    <SavedChatOpen data-testid="saved-chat-open" onClick={() => onOpen(chat)}>
+                      <SavedChatBody>
+                        <SavedChatTitle component="span" variant="body2">
+                          {chat.title || t('copilot.savedChatUntitled')}
+                        </SavedChatTitle>
+                        <SavedChatMeta>
+                          <SavedChatCountChip
+                            component="span"
+                            size="small"
+                            variant="outlined"
+                            icon={<FontAwesomeIcon icon={faComments} />}
+                            label={chat.messages.length}
+                            data-testid="saved-chat-count"
+                          />
+                          <Typography component="span" variant="caption" color="text.secondary" noWrap>
+                            {formatTimeAgo(chat.savedAt, now, i18n.language)}
+                          </Typography>
+                        </SavedChatMeta>
+                      </SavedChatBody>
+                      <Tooltip
+                        title={providerId ? t(`settings.ai.providers.${providerId}`) : ''}
+                        disableHoverListener={!providerId}
+                        placement="left"
+                        arrow
+                      >
+                        <SavedChatProvider component="span" data-testid="saved-chat-provider">
+                          <ProviderIcon providerId={providerId} size={24} />
+                        </SavedChatProvider>
+                      </Tooltip>
+                    </SavedChatOpen>
+                    <DeleteChatButton
+                      size="small"
+                      color="error"
+                      aria-label={t('copilot.savedChatDelete')}
+                      onClick={() => onDelete(chat.id)}
                     >
-                      <SavedChatProvider component="span" data-testid="saved-chat-provider">
-                        <ProviderIcon providerId={providerId} size={24} />
-                      </SavedChatProvider>
-                    </Tooltip>
-                  </SavedChatOpen>
-                  <DeleteChatButton size="small" color="error" aria-label={t('copilot.savedChatDelete')} onClick={() => onDelete(chat.id)}>
-                    <FontAwesomeIcon icon={faXmark} />
-                  </DeleteChatButton>
-                </SavedChatItem>
-              );
-            })
-          )}
-        </DrawerList>
-      </DrawerPanel>
-    </DrawerShell>
+                      <FontAwesomeIcon icon={faXmark} />
+                    </DeleteChatButton>
+                  </SavedChatItem>
+                );
+              })
+            )}
+          </DrawerList>
+        </DrawerPanel>
+      </DrawerShell>
+    </>
   );
 }

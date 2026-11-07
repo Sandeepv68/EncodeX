@@ -25,11 +25,18 @@ export const ConversationScroll = styled(Box, {
   shouldForwardProp: (prop) => prop !== '$empty',
 })<{ $empty?: boolean }>(({ theme, $empty }) => ({
   flex: $empty ? '0 0 auto' : 1,
+  minWidth: 0,
   minHeight: 0,
   overflowY: $empty ? 'visible' : 'auto',
-  paddingInline: theme.spacing(1),
-  [theme.breakpoints.up('sm')]: { paddingInline: theme.spacing(2) },
-  [theme.breakpoints.up('md')]: { paddingInline: theme.spacing(3) },
+  overscrollBehavior: 'contain',
+  scrollbarGutter: 'stable',
+  marginInline: theme.spacing(-1),
+  paddingInline: theme.spacing(2),
+  [theme.breakpoints.up('sm')]: {
+    marginInline: theme.spacing(-3),
+    paddingInline: theme.spacing(5),
+  },
+  [theme.breakpoints.up('md')]: { paddingInline: theme.spacing(6) },
 }));
 
 /** Inner column that stacks the message rows. */
