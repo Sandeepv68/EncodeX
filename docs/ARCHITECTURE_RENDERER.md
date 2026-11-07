@@ -4,7 +4,7 @@
 
 ### Render tree
 
-All thirteen pages are code-split with `React.lazy` and loaded under a per-page `ErrorBoundary`:
+All thirteen pages are code-split with a dynamic `import()` and loaded under a per-page `ErrorBoundary`. While a page chunk is in flight, the route renders that page's own loading skeleton:
 
 | Page            | Route          | Purpose                                                        |
 | --------------- | -------------- | -------------------------------------------------------------- |

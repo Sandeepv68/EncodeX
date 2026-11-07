@@ -4,11 +4,17 @@
  * Defines the top-level `App` component that wraps the whole UI in the color
  * mode context (see ColorModeContext.tsx) and the MUI `CssBaseline` reset. The
  * main layout lives in `AppLayout`, which wires up responsive navigation
- * (temporary drawer on mobile, permanent drawer on desktop), lazy-loads every
- * feature page, and renders the route table. Each lazy page is wrapped in its
- * own `ErrorBoundary` so a crash in one feature never tears down the rest of
- * the shell. Each route has its own `Suspense` fallback: Dashboard keeps the
- * startup spinner while every other page renders a layout-matched skeleton.
+ * (temporary drawer on mobile, permanent drawer on desktop), loads every
+ * feature page as its own chunk, and renders the route table. Each lazy page is
+ * wrapped in its own `ErrorBoundary` so a crash in one feature never tears
+ * down the rest of the shell. While a page's chunk is in flight, the route
+ * shows that page's own loading state: Dashboard keeps the startup spinner
+ * while every other page renders a layout-matched skeleton.
+ *
+ * The skeletons are rendered by {@link RouteLoader} rather than by a
+ * `Suspense` fallback: React keeps the previous page on screen while a
+ * transition is pending and never paints a fallback in that case, which is
+ * why the per-page skeletons used to be invisible.
  *
  * Side effects performed once at mount:
  *  - Subscribes to renderer log messages forwarded from the main process via
@@ -16,8 +22,8 @@
  *  - Applies the persisted "always on top" window setting to the native window.
  */
 
-import type { ReactNode } from 'react';
-import { useState, useEffect, useLayoutEffect, useRef, lazy, Suspense } from 'react';
+import type { ComponentType, ReactNode } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useTheme, CircularProgress } from '@mui/material';
@@ -58,6 +64,7 @@ import { useErrorStore } from './stores/errorStore';
 import { useLogStore } from './stores/logStore';
 import { useAuditStore } from './stores/auditStore';
 import { useSettingsStore } from './stores/settingsStore';
+import type { PageLoader, RouteLoaderProps } from './types';
 import { callBridgeVoid, fireAndForgetBridge } from './utils/bridge-call';
 import { useLanguageDirection } from './useLanguageDirection';
 import {
@@ -72,33 +79,114 @@ import {
   PageFallback,
 } from './styles/App.styles';
 
-/** Lazy-loaded Dashboard page, loaded on the '/' route. @const {React.ComponentType} */
-/** Lazy-loaded Dashboard page, loaded on the '/' route. @const {React.ComponentType} */
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-/** Lazy-loaded Convert page, loaded on the '/convert' route. @const {React.ComponentType} */
-const Convert = lazy(() => import('./pages/Convert'));
-/** Lazy-loaded MediaInfo page, loaded on the '/media-info' route. @const {React.ComponentType} */
-const MediaInfo = lazy(() => import('./pages/MediaInfo'));
-/** Lazy-loaded ImageCompress page, loaded on the '/image-compress' route. @const {React.ComponentType} */
-const ImageCompress = lazy(() => import('./pages/ImageCompress'));
-/** Lazy-loaded AudioExtract page, loaded on the '/audio-extract' route. @const {React.ComponentType} */
-const AudioExtract = lazy(() => import('./pages/AudioExtract'));
-/** Lazy-loaded VideoCut page, loaded on the '/video-cut' route. @const {React.ComponentType} */
-const VideoCut = lazy(() => import('./pages/VideoCut'));
-/** Lazy-loaded Remux page, loaded on the '/remux' route. @const {React.ComponentType} */
-const Remux = lazy(() => import('./pages/Remux'));
-/** Lazy-loaded Demux page, loaded on the '/demux' route. @const {React.ComponentType} */
-const Demux = lazy(() => import('./pages/Demux'));
-/** Lazy-loaded BatchQueue page, loaded on the '/batch' route. @const {React.ComponentType} */
-const BatchQueue = lazy(() => import('./pages/BatchQueue'));
-/** Lazy-loaded Copilot page, loaded on the '/copilot' route. @const {React.ComponentType} */
-const Copilot = lazy(() => import('./pages/Copilot'));
-/** Lazy-loaded Logs page, loaded on the '/logs' route. @const {React.ComponentType} */
-const Logs = lazy(() => import('./pages/Logs'));
-/** Lazy-loaded Settings page, loaded on the '/settings' route. @const {React.ComponentType} */
-const Settings = lazy(() => import('./pages/Settings'));
-/** Lazy-loaded About page, loaded on the '/about' route. @const {React.ComponentType} */
-const About = lazy(() => import('./pages/About'));
+/** Loads the Dashboard page chunk (the '/' route). @const {PageLoader} */
+const loadDashboard: PageLoader = () => import('./pages/Dashboard');
+/** Loads the Convert page chunk (the '/convert' route). @const {PageLoader} */
+const loadConvert: PageLoader = () => import('./pages/Convert');
+/** Loads the MediaInfo page chunk (the '/media-info' route). @const {PageLoader} */
+const loadMediaInfo: PageLoader = () => import('./pages/MediaInfo');
+/** Loads the ImageCompress page chunk (the '/image-compress' route). @const {PageLoader} */
+const loadImageCompress: PageLoader = () => import('./pages/ImageCompress');
+/** Loads the AudioExtract page chunk (the '/audio-extract' route). @const {PageLoader} */
+const loadAudioExtract: PageLoader = () => import('./pages/AudioExtract');
+/** Loads the VideoCut page chunk (the '/video-cut' route). @const {PageLoader} */
+const loadVideoCut: PageLoader = () => import('./pages/VideoCut');
+/** Loads the Remux page chunk (the '/remux' route). @const {PageLoader} */
+const loadRemux: PageLoader = () => import('./pages/Remux');
+/** Loads the Demux page chunk (the '/demux' route). @const {PageLoader} */
+const loadDemux: PageLoader = () => import('./pages/Demux');
+/** Loads the BatchQueue page chunk (the '/batch' route). @const {PageLoader} */
+const loadBatchQueue: PageLoader = () => import('./pages/BatchQueue');
+/** Loads the Copilot page chunk (the '/copilot' route). @const {PageLoader} */
+const loadCopilot: PageLoader = () => import('./pages/Copilot');
+/** Loads the Logs page chunk (the '/logs' route). @const {PageLoader} */
+const loadLogs: PageLoader = () => import('./pages/Logs');
+/** Loads the Settings page chunk (the '/settings' route). @const {PageLoader} */
+const loadSettings: PageLoader = () => import('./pages/Settings');
+/** Loads the About page chunk (the '/about' route). @const {PageLoader} */
+const loadAbout: PageLoader = () => import('./pages/About');
+
+/**
+ * Minimum time a page skeleton stays on screen.
+ *
+ * A page chunk is a local file, so it resolves in a few milliseconds. A
+ * skeleton that only lives that long reads as a one-frame glitch rather than
+ * as a loading state, so the chunk is held back for this long the first time
+ * a page is opened. Once the page is loaded, it renders synchronously and no
+ * skeleton is shown at all - reopening a page is instant.
+ * @const {number}
+ */
+const MIN_SKELETON_MS = 200;
+
+/**
+ * Page components that finished loading, keyed by their loader.
+ *
+ * The bundler caches the module itself, but the component is kept here too so
+ * a route that is opened a second time renders it synchronously: no skeleton,
+ * no delay, exactly like a statically imported page.
+ * @const {Map<PageLoader, React.ComponentType>}
+ */
+const loadedPages = new Map<PageLoader, ComponentType>();
+
+/**
+ * Renders a page once its chunk has loaded, showing the page's own skeleton
+ * in the meantime.
+ *
+ * The skeleton is rendered by this component rather than by a `Suspense`
+ * fallback on purpose: React keeps the previous page on screen while a
+ * transition is pending and never paints a fallback in that case, which is
+ * exactly why the per-page skeletons used to be invisible. Rendering the
+ * skeleton here makes it part of the route's own tree, so it is painted
+ * whenever the route is.
+ *
+ * The router reuses the route element when it swaps routes, so the loaded
+ * component is only used while it belongs to the current loader - otherwise
+ * the page of the previous route would stay on screen.
+ *
+ * A failed load is re-thrown during render so the route's `ErrorBoundary`
+ * reports it like any other page crash.
+ * @param {RouteLoaderProps} props - Component props.
+ * @returns {JSX.Element} The skeleton or the loaded page.
+ */
+function RouteLoader({ load, skeleton, minVisibleMs = MIN_SKELETON_MS }: RouteLoaderProps) {
+  const [loaded, setLoaded] = useState<{ load: PageLoader; Page: ComponentType } | null>(null);
+  const [failure, setFailure] = useState<{ load: PageLoader; error: unknown } | null>(null);
+  const Page = loadedPages.get(load) ?? (loaded && loaded.load === load ? loaded.Page : null);
+
+  useEffect(() => {
+    if (Page) return undefined;
+    let cancelled = false;
+    const startedAt = Date.now();
+    void load()
+      .then((module) => {
+        // The module is cached even when the route changed in the meantime: a
+        // page that was visited while the user moved on must not have to load
+        // its chunk again on the next visit.
+        loadedPages.set(load, module.default);
+        if (cancelled) return;
+        const remaining = Math.max(0, minVisibleMs - (Date.now() - startedAt));
+        const show = (): void => {
+          if (cancelled) return;
+          setLoaded({ load, Page: module.default });
+        };
+        if (remaining > 0) {
+          setTimeout(show, remaining);
+        } else {
+          show();
+        }
+      })
+      .catch((err: unknown) => {
+        if (!cancelled) setFailure({ load, error: err });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [load, Page, minVisibleMs]);
+
+  if (failure && failure.load === load) throw failure.error;
+  if (!Page) return <>{skeleton}</>;
+  return <Page />;
+}
 
 /**
  * Main application shell rendered inside the ColorModeProvider.
@@ -212,33 +300,39 @@ function AppLayout() {
   ]);
 
   /**
-   * Route table mapping URL paths to their lazy-loaded page elements and
-   * per-route loading fallbacks. Keys mirror the path definitions used by
-   * AppDrawer and pageIcons.tsx.
-   * @const {Array<{path: string, element: ReactNode, fallback: ReactNode}>}
+   * Route table mapping URL paths to their page elements. Every page is loaded
+   * as its own chunk and shows its own skeleton until that chunk arrives (see
+   * {@link RouteLoader}). Keys mirror the path definitions used by AppDrawer
+   * and pageIcons.tsx.
+   * @const {Array<{path: string, element: ReactNode}>}
    */
-  const routes: { path: string; element: ReactNode; fallback: ReactNode }[] = [
+  const routes: { path: string; element: ReactNode }[] = [
     {
       path: '/',
-      element: <Dashboard />,
-      fallback: (
-        <PageFallback>
-          <CircularProgress aria-label={t('app.loading')} />
-        </PageFallback>
+      element: (
+        <RouteLoader
+          load={loadDashboard}
+          skeleton={
+            <PageFallback>
+              <CircularProgress aria-label={t('app.loading')} />
+            </PageFallback>
+          }
+          minVisibleMs={0}
+        />
       ),
     },
-    { path: '/convert', element: <Convert />, fallback: <ConvertSkeleton /> },
-    { path: '/media-info', element: <MediaInfo />, fallback: <MediaInfoSkeleton /> },
-    { path: '/image-compress', element: <ImageCompress />, fallback: <ImageCompressSkeleton /> },
-    { path: '/audio-extract', element: <AudioExtract />, fallback: <AudioExtractSkeleton /> },
-    { path: '/video-cut', element: <VideoCut />, fallback: <VideoCutSkeleton /> },
-    { path: '/remux', element: <Remux />, fallback: <RemuxSkeleton /> },
-    { path: '/demux', element: <Demux />, fallback: <DemuxSkeleton /> },
-    { path: '/batch', element: <BatchQueue />, fallback: <BatchQueueSkeleton /> },
-    { path: '/copilot', element: <Copilot />, fallback: <CopilotSkeleton /> },
-    { path: '/logs', element: <Logs />, fallback: <LogsSkeleton /> },
-    { path: '/settings', element: <Settings />, fallback: <SettingsSkeleton /> },
-    { path: '/about', element: <About />, fallback: <AboutSkeleton /> },
+    { path: '/convert', element: <RouteLoader load={loadConvert} skeleton={<ConvertSkeleton />} /> },
+    { path: '/media-info', element: <RouteLoader load={loadMediaInfo} skeleton={<MediaInfoSkeleton />} /> },
+    { path: '/image-compress', element: <RouteLoader load={loadImageCompress} skeleton={<ImageCompressSkeleton />} /> },
+    { path: '/audio-extract', element: <RouteLoader load={loadAudioExtract} skeleton={<AudioExtractSkeleton />} /> },
+    { path: '/video-cut', element: <RouteLoader load={loadVideoCut} skeleton={<VideoCutSkeleton />} /> },
+    { path: '/remux', element: <RouteLoader load={loadRemux} skeleton={<RemuxSkeleton />} /> },
+    { path: '/demux', element: <RouteLoader load={loadDemux} skeleton={<DemuxSkeleton />} /> },
+    { path: '/batch', element: <RouteLoader load={loadBatchQueue} skeleton={<BatchQueueSkeleton />} /> },
+    { path: '/copilot', element: <RouteLoader load={loadCopilot} skeleton={<CopilotSkeleton />} /> },
+    { path: '/logs', element: <RouteLoader load={loadLogs} skeleton={<LogsSkeleton />} /> },
+    { path: '/settings', element: <RouteLoader load={loadSettings} skeleton={<SettingsSkeleton />} /> },
+    { path: '/about', element: <RouteLoader load={loadAbout} skeleton={<AboutSkeleton />} /> },
   ];
 
   const drawerContent = (
@@ -275,16 +369,8 @@ function AppLayout() {
             <ErrorBoundary>
               <RouteContent>
                 <Routes>
-                  {routes.map(({ path, element, fallback }) => (
-                    <Route
-                      key={path}
-                      path={path}
-                      element={
-                        <ErrorBoundary>
-                          <Suspense fallback={fallback}>{element}</Suspense>
-                        </ErrorBoundary>
-                      }
-                    />
+                  {routes.map(({ path, element }) => (
+                    <Route key={path} path={path} element={<ErrorBoundary>{element}</ErrorBoundary>} />
                   ))}
                 </Routes>
               </RouteContent>

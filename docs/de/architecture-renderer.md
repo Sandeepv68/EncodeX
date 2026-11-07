@@ -6,7 +6,7 @@
 
 ### Render-Baum
 
-Alle zehn Seiten sind mit `React.lazy` code-gesplittet und laden unter einer pro-Seite-`ErrorBoundary`:
+Alle zehn Seiten sind mit einem dynamischen `import()` code-gesplittet und laden unter einer pro-Seite-`ErrorBoundary`. Während das Chunk einer Seite geladen wird, zeigt die Route das Ladeskelett dieser Seite:
 
 | Seite           | Route          | Zweck                                                          |
 | --------------- | -------------- | -------------------------------------------------------------- |

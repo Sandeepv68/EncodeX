@@ -6,7 +6,7 @@
 
 ### Árbol de renderizado
 
-Las trece páginas se dividen con `React.lazy` y se cargan bajo un `ErrorBoundary` por página:
+Las trece páginas se dividen con una `import()` dinámica y se cargan bajo un `ErrorBoundary` por página. Mientras se carga el fragmento de una página, la ruta muestra el esqueleto de carga de esa misma página:
 
 | Página          | Ruta            | Propósito                                                        |
 | --------------- | -------------- | -------------------------------------------------------------- |

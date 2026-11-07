@@ -6,7 +6,7 @@
 
 ### Árvore de renderização
 
-As dez páginas são divididas com `React.lazy` e carregadas sob uma `ErrorBoundary` por página:
+As dez páginas são divididas com uma `import()` dinâmico e carregadas sob uma `ErrorBoundary` por página. Enquanto o chunk da página carrega, a rota mostra o esqueleto de carregamento dessa própria página:
 
 | Página          | Rota           | Objetivo                                                       |
 | --------------- | -------------- | -------------------------------------------------------------- |

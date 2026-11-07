@@ -14,7 +14,7 @@ renderer 从不启动进程，也从不直接访问文件系统。所有特权�
 - **对媒体后端的单一抽象** — `ITranscoder` 接口隐藏了转换究竟是由 `fluent-ffmpeg` 驱动、由原始的 FFmpeg CLI 子进程驱动，还是由 BMF 框架驱动。
 - **IPC 作为类型化契约** — 每个通道都是 `src/shared/ipc-channels.ts` 中的一个常量，renderer 只通过 preload 脚本暴露的 `window.electronAPI` 桥接与主进程通信。
 - **共享类型与常量** — 三个进程都会导入 `src/shared/`，使接口在构造上保持同步。
-- **UI 的渐进增强** — 页面通过 `React.lazy` 进行代码分割，状态保存在 Zustand store 中，长时间运行的任务通过 IPC 事件流式回传进度。
+- **UI 的渐进增强** — 页面通过动态 `import()` 进行代码分割，状态保存在 Zustand store 中，长时间运行的任务通过 IPC 事件流式回传进度。
 
 ## 深入解析
 

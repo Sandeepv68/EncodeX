@@ -14,7 +14,7 @@ O renderer nunca cria processos e nunca toca no sistema de arquivos diretamente.
 - **Uma única abstração sobre os backends de mídia** — a interface `ITranscoder` esconde se a conversão é dirigida pelo `fluent-ffmpeg`, por um processo filho do CLI FFmpeg puro ou pelo framework BMF.
 - **IPC como contrato tipado** — cada canal é uma constante em `src/shared/ipc-channels.ts`, e o renderer só fala com o processo principal através da ponte `window.electronAPI` exposta pelo script preload.
 - **Tipos e constantes compartilhados** — `src/shared/` é importado pelos três processos para que as interfaces permaneçam sincronizadas por construção.
-- **Aprimoramento progressivo da UI** — as páginas são divididas com `React.lazy`, o estado vive em stores Zustand, e tarefas longas transmitem o progresso de volta via eventos IPC.
+- **Aprimoramento progressivo da UI** — as páginas são divididas com uma `import()` dinâmico, o estado vive em stores Zustand, e tarefas longas transmitem o progresso de volta via eventos IPC.
 
 ## Aprofundamentos
 
