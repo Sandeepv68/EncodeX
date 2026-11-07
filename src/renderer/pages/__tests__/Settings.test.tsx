@@ -934,6 +934,26 @@ describe('Settings', () => {
     connectedModel: 'gpt-4o-mini',
   };
 
+  it('shows the local runtime glyph in the connection badge', async () => {
+    const connectedLocalView = {
+      providerId: 'local' as const,
+      model: 'llama3.2',
+      hasKey: false,
+      keyHint: '',
+      storedInsecurely: false,
+      encryptionAvailable: true,
+      connected: true,
+      connectedAt: 2,
+      connectedModel: 'llama3.2',
+    };
+    vi.mocked(window.electronAPI.aiGetSettings).mockResolvedValue(connectedLocalView);
+    useAiConnectionStore.getState().patch(connectedLocalView);
+    renderSettings();
+    const status = await screen.findByTestId('settings-ai-header-status');
+    expect(status.querySelector('[data-icon="server"]')).not.toBeNull();
+    expect(status.querySelector('[data-icon="robot"]')).toBeNull();
+  });
+
   it('shows a saved-key affordance and removes the stored key', async () => {
     vi.mocked(window.electronAPI.aiGetSettings).mockResolvedValue({
       providerId: 'openai',

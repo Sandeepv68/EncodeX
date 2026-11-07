@@ -97,9 +97,26 @@ export const PlanListItem = styled(ListItem)({
 /** Leading icon slot of an action row. */
 export const ActionListItemIcon = styled(ListItemIcon)(({ theme }) => ({
   minWidth: theme.typography.pxToRem(36),
-  [theme.breakpoints.up('sm')]: {
-    minWidth: theme.typography.pxToRem(44),
-  },
+  marginTop: 0,
+  marginRight: theme.spacing(1.5),
+  alignItems: 'center',
+}));
+
+/**
+ * Round badge that frames the provider logo of a planned action, so the mark
+ * reads as the same object as the connection badge in the composer.
+ */
+export const ActionProviderBadge = styled('span')(({ theme }) => ({
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: theme.typography.pxToRem(36),
+  height: theme.typography.pxToRem(36),
+  borderRadius: '50%',
+  border: `${theme.typography.pxToRem(1)} solid`,
+  borderColor: theme.palette.divider,
+  backgroundColor: theme.palette.background.paper,
+  flexShrink: 0,
 }));
 
 /** Leading icon slot of a rationale row. */

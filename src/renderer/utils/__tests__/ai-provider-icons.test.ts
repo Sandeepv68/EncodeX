@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { aiProviderLogo } from '../ai-provider-icons';
+import { faRobot, faServer, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
+import { aiProviderFallbackIcon, aiProviderLogo } from '../ai-provider-icons';
 import anthropicDark from '../../../../assets/ai_providers/anthropic_dark.svg';
 import anthropicLight from '../../../../assets/ai_providers/anthropic_light.svg';
 import geminiLogo from '../../../../assets/ai_providers/gemini.svg';
@@ -25,5 +26,20 @@ describe('aiProviderLogo', () => {
   it('returns null for providers without a bundled logo', () => {
     expect(aiProviderLogo('rules', 'light')).toBeNull();
     expect(aiProviderLogo('local', 'dark')).toBeNull();
+  });
+});
+
+describe('aiProviderFallbackIcon', () => {
+  it('uses a server glyph for the local runtime', () => {
+    expect(aiProviderFallbackIcon('local')).toBe(faServer);
+  });
+
+  it('uses sparkles for the built-in rules engine', () => {
+    expect(aiProviderFallbackIcon('rules')).toBe(faWandMagicSparkles);
+  });
+
+  it('falls back to a robot for an unknown or missing provider', () => {
+    expect(aiProviderFallbackIcon(null)).toBe(faRobot);
+    expect(aiProviderFallbackIcon(undefined)).toBe(faRobot);
   });
 });

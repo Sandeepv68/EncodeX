@@ -12,7 +12,7 @@ export const ProviderLogo = styled('img', {
   flexShrink: 0,
 }));
 
-/** Generic robot glyph shown when a provider has no bundled logo. */
+/** Stand-in glyph shown when a provider has no bundled logo. */
 export const ProviderGlyph = styled('span', {
   shouldForwardProp: (prop) => prop !== '$size',
 })<{ $size: number }>(({ theme, $size }) => ({

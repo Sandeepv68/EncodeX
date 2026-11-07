@@ -7,9 +7,8 @@
 
 import { useTheme } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRobot } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
-import { aiProviderLogo } from '../utils/ai-provider-icons';
+import { aiProviderFallbackIcon, aiProviderLogo } from '../utils/ai-provider-icons';
 import { ConnectionStatus } from '../styles/copilot/ChatComposer.styles';
 import type { AiConnectionStatusProps } from './types';
 import {
@@ -46,7 +45,7 @@ export default function AiConnectionStatus({
             <ProviderLogo src={logo} alt="" />
           ) : (
             <ProviderIconFallback>
-              <FontAwesomeIcon icon={faRobot} />
+              <FontAwesomeIcon icon={aiProviderFallbackIcon(providerId)} />
             </ProviderIconFallback>
           )}
           <StatusDot $connected={connected} aria-hidden="true" />
