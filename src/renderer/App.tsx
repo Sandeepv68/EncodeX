@@ -23,7 +23,7 @@
  */
 
 import type { ComponentType, ReactNode } from 'react';
-import { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, useReducer, useRef } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useTheme, CircularProgress } from '@mui/material';
@@ -149,9 +149,9 @@ const loadedPages = new Map<PageLoader, ComponentType>();
  * @returns {JSX.Element} The skeleton or the loaded page.
  */
 export function RouteLoader({ load, skeleton, minVisibleMs = MIN_SKELETON_MS }: RouteLoaderProps) {
-  const [loaded, setLoaded] = useState<{ load: PageLoader; Page: ComponentType } | null>(null);
-  const [failure, setFailure] = useState<{ load: PageLoader; error: unknown } | null>(null);
-  const Page = loadedPages.get(load) ?? (loaded && loaded.load === load ? loaded.Page : null);
+  const [, forceUpdate] = useReducer((tick: number) => tick + 1, 0);
+  const [failures, setFailures] = useState<Map<PageLoader, { error: unknown }>>(() => new Map());
+  const Page = loadedPages.get(load);
 
   useEffect(() => {
     if (Page) return undefined;
@@ -167,7 +167,7 @@ export function RouteLoader({ load, skeleton, minVisibleMs = MIN_SKELETON_MS }: 
         const remaining = Math.max(0, minVisibleMs - (Date.now() - startedAt));
         const show = (): void => {
           if (cancelled) return;
-          setLoaded({ load, Page: module.default });
+          forceUpdate();
         };
         if (remaining > 0) {
           setTimeout(show, remaining);
@@ -176,14 +176,16 @@ export function RouteLoader({ load, skeleton, minVisibleMs = MIN_SKELETON_MS }: 
         }
       })
       .catch((err: unknown) => {
-        if (!cancelled) setFailure({ load, error: err });
+        if (cancelled) return;
+        setFailures((previous) => new Map(previous).set(load, { error: err }));
       });
     return () => {
       cancelled = true;
     };
   }, [load, Page, minVisibleMs]);
 
-  if (failure && failure.load === load) throw failure.error;
+  const failure = failures.get(load);
+  if (failure !== undefined) throw failure.error;
   if (!Page) return <>{skeleton}</>;
   return <Page />;
 }
