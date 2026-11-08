@@ -148,7 +148,7 @@ const loadedPages = new Map<PageLoader, ComponentType>();
  * @param {RouteLoaderProps} props - Component props.
  * @returns {JSX.Element} The skeleton or the loaded page.
  */
-function RouteLoader({ load, skeleton, minVisibleMs = MIN_SKELETON_MS }: RouteLoaderProps) {
+export function RouteLoader({ load, skeleton, minVisibleMs = MIN_SKELETON_MS }: RouteLoaderProps) {
   const [loaded, setLoaded] = useState<{ load: PageLoader; Page: ComponentType } | null>(null);
   const [failure, setFailure] = useState<{ load: PageLoader; error: unknown } | null>(null);
   const Page = loadedPages.get(load) ?? (loaded && loaded.load === load ? loaded.Page : null);
