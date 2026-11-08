@@ -74,9 +74,20 @@ async function resetFocus(session: AppSession): Promise<void> {
   await session.page.waitForTimeout(100);
 }
 
+function sameStop(a: FocusStop, b: FocusStop): boolean {
+  return a.body === b.body && a.testid === b.testid && a.landmark === b.landmark && a.tag === b.tag;
+}
+
 /**
- * Tabs from the current focus target until `reached(stop)` returns true or the
- * press budget expires. Returns whether the target was hit and every stop.
+ * Tabs from the current focus target until `reached(stop)` returns true, the
+ * press budget expires, or the chain wraps back to its first stop. Returns
+ * whether the target was hit and every stop.
+ *
+ * Chromium moves focus to the document body after the last tabbable element,
+ * then resumes at the first stop on the next press. That wrap is normal browser
+ * behaviour, not a lost-focus bug, so the trailing body stop is dropped when the
+ * following press lands back on the first stop. A body stop anywhere else in the
+ * chain still fails the caller's `assertNoLostFocus`.
  */
 async function tabUntil(
   session: AppSession,
@@ -84,10 +95,16 @@ async function tabUntil(
   maxPresses: number,
 ): Promise<{ reached: boolean; stops: FocusStop[] }> {
   const stops: FocusStop[] = [];
+  let wrapped = false;
   for (let i = 0; i < maxPresses; i += 1) {
     const stop = await pressAndStop(session, 'Tab');
+    if (wrapped && stops.length > 0 && sameStop(stop, stops[0])) {
+      stops.pop();
+      return { reached: false, stops };
+    }
     stops.push(stop);
     if (reached(stop)) return { reached: true, stops };
+    wrapped = stop.body;
   }
   return { reached: false, stops };
 }
