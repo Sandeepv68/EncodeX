@@ -53,6 +53,19 @@ describe('resolveLLMOperationRouter', () => {
     expect(router as OperationRouter).toBeDefined();
   });
 
+  it('builds a router for a keyless local runtime', async () => {
+    settingsMock.readAiSettings.mockReturnValue({ providerId: 'local', model: '', key: null, baseUrl: 'http://localhost:11434' });
+    settingsMock.decryptApiKey.mockReturnValue(null);
+    connectorsMock.isRemoteProvider.mockReturnValue(false);
+    const router = await resolveLLMOperationRouter();
+    expect(connectorsMock.createConnectorFromSettings).toHaveBeenCalledWith(
+      expect.objectContaining({ providerId: 'local', baseUrl: 'http://localhost:11434' }),
+      '',
+    );
+    expect(llmMock.createLLMOperationRouter).toHaveBeenCalledWith({ id: 'openai' }, 'local');
+    expect(router).toBeTypeOf('function');
+  });
+
   it('resolves a model from the provider when the user never chose one', async () => {
     await resolveLLMOperationRouter();
     expect(modelMock.resolveProviderModel).toHaveBeenCalledWith(expect.objectContaining({ providerId: 'openai' }), 'sk-1');

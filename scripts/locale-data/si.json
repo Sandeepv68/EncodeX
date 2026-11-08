@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "වීඩියෝ ධාවන පථය",
   "videoTimeline.zoomIn": "විශාලනය",
-  "videoTimeline.zoomOut": "කුඩාකරණය"
+  "videoTimeline.zoomOut": "කුඩාකරණය",
+  "settings.ai.errors.noModel": "කිසිදු ආකෘතියක් නොමැත. උසස් යටතේ එකක් තෝරන්න, නැතහොත් ඔබේ ධාවන පරිසරයේ ආකෘතියක් ස්ථාපනය කර නැවත උත්සාහ කරන්න."
 }

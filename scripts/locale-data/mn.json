@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Видео дуу",
   "videoTimeline.zoomIn": "Томруулах",
-  "videoTimeline.zoomOut": "Жижиглэх"
+  "videoTimeline.zoomOut": "Жижиглэх",
+  "settings.ai.errors.noModel": "Ашиглах боломжтой загвар байхгүй байна. Дэвшилтэт хэсгээс нэгийг сонгох эсвэл ажиллах орчиндоо загвар суулгаад дахин оролдоно уу."
 }

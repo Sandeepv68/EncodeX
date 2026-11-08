@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "רצועת וידאו",
   "videoTimeline.zoomIn": "התקרבות",
-  "videoTimeline.zoomOut": "התרחקות"
+  "videoTimeline.zoomOut": "התרחקות",
+  "settings.ai.errors.noModel": "אין מודל זמין. בחרו מודל תחת מתקדם, או התקינו מודל בסביבת ההרצה שלכם, ואז נסו שוב."
 }

@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "वीडियो ट्रैक",
   "videoTimeline.zoomIn": "ज़ूम इन",
-  "videoTimeline.zoomOut": "ज़ूम आउट"
+  "videoTimeline.zoomOut": "ज़ूम आउट",
+  "settings.ai.errors.noModel": "कोई मॉडल उपलब्ध नहीं है। उन्नत के अंतर्गत एक चुनें, या अपने रनटाइम में मॉडल इंस्टॉल करें, फिर पुनः प्रयास करें।"
 }

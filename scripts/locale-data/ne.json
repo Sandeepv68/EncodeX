@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "भिडियो ट्र्याक",
   "videoTimeline.zoomIn": "ठूलो",
-  "videoTimeline.zoomOut": "सानो"
+  "videoTimeline.zoomOut": "सानो",
+  "settings.ai.errors.noModel": "कुनै मोडेल उपलब्ध छैन। उन्नत अन्तर्गत एउटा छान्नुहोस् वा तपाईंको रनटाइममा मोडेल स्थापना गर्नुहोस्, त्यसपछि फेरि प्रयास गर्नुहोस्।"
 }

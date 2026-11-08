@@ -1,17 +1,17 @@
 /**
  * @fileoverview Small AI-provider icon: the brand logo when one is bundled,
- * otherwise a generic robot glyph.
+ * otherwise the provider's stand-in glyph (a server for the local runtime).
  */
 
 import { useTheme } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRobot } from '@fortawesome/free-solid-svg-icons';
-import { aiProviderLogo } from '../../utils/ai-provider-icons';
+import { aiProviderFallbackIcon, aiProviderLogo } from '../../utils/ai-provider-icons';
 import type { ProviderIconProps } from './types';
 import { ProviderGlyph, ProviderLogo } from '../../styles/copilot/ProviderIcon.styles';
 
 /**
- * Renders the logo for a provider, or a robot glyph when none is available.
+ * Renders the logo for a provider, or the provider's stand-in glyph when no
+ * logo is available.
  * @param {ProviderIconProps} props - Component props.
  * @returns {JSX.Element} The icon.
  */
@@ -25,7 +25,7 @@ export default function ProviderIcon({ providerId, size = 16 }: ProviderIconProp
 
   return (
     <ProviderGlyph $size={size}>
-      <FontAwesomeIcon icon={faRobot} />
+      <FontAwesomeIcon icon={aiProviderFallbackIcon(providerId)} />
     </ProviderGlyph>
   );
 }

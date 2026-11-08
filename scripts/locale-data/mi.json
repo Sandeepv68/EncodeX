@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Rīpene ataata",
   "videoTimeline.zoomIn": "Whakanui",
-  "videoTimeline.zoomOut": "Whakamāmā"
+  "videoTimeline.zoomOut": "Whakamāmā",
+  "settings.ai.errors.noModel": "Kāore he tauira e wātea ana. Kōwhiria tētahi i raro i te Aro nui, whakaurua rānei he tauira ki tō wā whakahaere, kātahi ka whakamātau anō."
 }

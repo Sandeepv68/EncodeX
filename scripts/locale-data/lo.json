@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "ເພງວິດີໂອ",
   "videoTimeline.zoomIn": "ຂະຫຍາຍເຂົ້າ",
-  "videoTimeline.zoomOut": "ຂະຫຍາຍອອກ"
+  "videoTimeline.zoomOut": "ຂະຫຍາຍອອກ",
+  "settings.ai.errors.noModel": "ບໍ່ມີມອເດວທີ່ໃຊ້ໄດ້. ເລືອກອັນໜຶ່ງໃນຂັ້ນສູງ ຫຼື ຕິດຕັ້ງມອເດວໃນລະບົບທີ່ໃຊ້ງານ ແລ້ວລອງໃໝ່."
 }

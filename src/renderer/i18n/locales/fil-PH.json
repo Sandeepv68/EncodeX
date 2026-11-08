@@ -661,7 +661,8 @@
         "emptyResponse": "Kumonekta ang provider ngunit nagbalik ng walang laman na tugon. Suriin ang model id.",
         "noKey": "Walang available na API key para subukan. Maglagay muna ng key.",
         "offline": "Ang napiling provider ay tumatakbo offline at hindi nangangailangan ng pagsubok ng koneksyon.",
-        "unknown": "Nabigo ang pagsubok ng koneksyon. Suriin ang mga setting at subukan muli."
+        "unknown": "Nabigo ang pagsubok ng koneksyon. Suriin ang mga setting at subukan muli.",
+        "noModel": "Walang available na modelo. Pumili sa ilalim ng Makabago, o mag-install ng modelo sa iyong runtime, pagkatapos ay subukan muli."
       },
       "statusConnected": "Nakakonekta at na-verify.",
       "requiresNetwork": "Kailangan ng tagapagbigay na ito ng aktibong koneksyon sa network.",

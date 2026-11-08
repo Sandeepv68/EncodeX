@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "แทร็กวิดีโอ",
   "videoTimeline.zoomIn": "ซูมเข้า",
-  "videoTimeline.zoomOut": "ซูมออก"
+  "videoTimeline.zoomOut": "ซูมออก",
+  "settings.ai.errors.noModel": "ไม่มีโมเดลที่ใช้ได้ เลือกโมเดลในขั้นสูง หรือติดตั้งโมเดลในรันไทม์ของคุณ แล้วลองอีกครั้ง"
 }

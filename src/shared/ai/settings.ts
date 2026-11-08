@@ -260,8 +260,9 @@ export function keyHint(_key: string | null): string {
  * @returns {AiSettingsView} The sanitized view.
  */
 export function toAiSettingsView(settings: AiServerSettings, encryptionAvailable: boolean): AiSettingsView {
-  // The built-in rules engine needs no key, so it can be connected keylessly.
-  const hasCredentials = settings.key !== null || settings.providerId === 'rules';
+  // The built-in rules engine and a local runtime need no key, so they can be
+  // connected keylessly.
+  const hasCredentials = settings.key !== null || settings.providerId === 'rules' || settings.providerId === 'local';
   const connected = hasCredentials && settings.connectedAt !== undefined && settings.connectedProvider === settings.providerId;
   // The active connection is global: it reports whichever provider answered the
   // last test, even when a different provider is currently selected.

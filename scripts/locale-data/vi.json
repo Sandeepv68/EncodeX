@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Luồng video",
   "videoTimeline.zoomIn": "Phóng to",
-  "videoTimeline.zoomOut": "Thu nhỏ"
+  "videoTimeline.zoomOut": "Thu nhỏ",
+  "settings.ai.errors.noModel": "Không có mô hình nào khả dụng. Chọn một mô hình trong Nâng cao hoặc cài đặt mô hình trong môi trường chạy của bạn, rồi thử lại."
 }

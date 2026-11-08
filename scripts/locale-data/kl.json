@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Video-track",
   "videoTimeline.zoomIn": "Zoom in",
-  "videoTimeline.zoomOut": "Zoom out"
+  "videoTimeline.zoomOut": "Zoom out",
+  "settings.ai.errors.noModel": "Modelli piunngilaq. Qaffasissumik iluani ataaseq toqqaruk, imaluunniit runtime-imi modelli inissiikkuit, kingorna misilera."
 }

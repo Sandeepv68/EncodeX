@@ -17,7 +17,7 @@ import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';
 import { LOG_AI_CONNECT_TEST_FAILED, LOG_AI_MODEL_LIST_FAILED } from '../../shared/log-constants';
 import { formatError } from '../../shared/errors';
-import { isAiProviderId, resolveAiProviderSettings } from '../../shared/ai/settings';
+import { isAiProviderId, resolveAiProviderSettings, AI_PROVIDERS_REQUIRING_KEY } from '../../shared/ai/settings';
 import type { AiConnectTestResult, AiModelsListResult, AiSettingsUpdate, AiSettingsView } from '../../shared/ai/settings';
 import { classifyAiConnectError } from '../../shared/ai/connect-error';
 import {
@@ -93,14 +93,16 @@ export function registerAiSettingsIpc(): void {
       const view = recordAiConnection(userDataDir, { providerId, model: '' });
       return { ok: true, message: 'Built-in rules engine is ready.', model: '', latencyMs: 0, view };
     }
-    if (!isRemoteProvider(providerId)) {
+    if (!isRemoteProvider(providerId) && providerId !== 'local') {
       return { ok: false, reason: 'offline', message: 'The selected provider runs offline and needs no connection test.' };
     }
     // Resolve the candidate provider's own key/model/endpoint: it may differ
     // from the currently selected provider, whose config is the flat document.
     const resolved = resolveAiProviderSettings(stored, providerId);
-    const apiKey = typeof record.apiKey === 'string' && record.apiKey ? record.apiKey : decryptApiKey(resolved);
-    if (!apiKey) return { ok: false, reason: 'noKey', message: 'No API key is available to test.' };
+    const apiKey = (typeof record.apiKey === 'string' && record.apiKey ? record.apiKey : decryptApiKey(resolved)) ?? '';
+    if (!apiKey && AI_PROVIDERS_REQUIRING_KEY.has(providerId)) {
+      return { ok: false, reason: 'noKey', message: 'No API key is available to test.' };
+    }
     const merged = sanitizeAiSettings({
       ...resolved,
       providerId,
@@ -139,10 +141,10 @@ export function registerAiSettingsIpc(): void {
     const stored = readAiSettings(app.getPath('userData'));
     const record = candidate && typeof candidate === 'object' ? (candidate as Record<string, unknown>) : {};
     const providerId = isAiProviderId(record.providerId) ? record.providerId : stored.providerId;
-    if (!isRemoteProvider(providerId)) return { ok: false, models: [], reason: 'offline' };
+    if (!isRemoteProvider(providerId) && providerId !== 'local') return { ok: false, models: [], reason: 'offline' };
     const resolved = resolveAiProviderSettings(stored, providerId);
-    const apiKey = typeof record.apiKey === 'string' && record.apiKey ? record.apiKey : decryptApiKey(resolved);
-    if (!apiKey) return { ok: false, models: [], reason: 'noKey' };
+    const apiKey = (typeof record.apiKey === 'string' && record.apiKey ? record.apiKey : decryptApiKey(resolved)) ?? '';
+    if (!apiKey && AI_PROVIDERS_REQUIRING_KEY.has(providerId)) return { ok: false, models: [], reason: 'noKey' };
     const merged = sanitizeAiSettings({
       ...resolved,
       providerId,

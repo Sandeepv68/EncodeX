@@ -7,16 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Autocomplete, Button, IconButton, Tooltip, InputAdornment } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faWandMagicSparkles,
-  faArrowUpRightFromSquare,
-  faCheck,
-  faChevronDown,
-  faChevronUp,
-  faPaste,
-  faServer,
-  faGear,
-} from '@fortawesome/free-solid-svg-icons';
+import { faArrowUpRightFromSquare, faCheck, faChevronDown, faChevronUp, faPaste, faGear } from '@fortawesome/free-solid-svg-icons';
 import { useColorMode } from '../../ColorModeContext';
 import type { AiSettingsView } from '../../../shared/ai/settings';
 import {
@@ -29,7 +20,7 @@ import {
 } from '../../../shared/ai/settings';
 import type { AIProviderId } from '../../../shared/ai/types';
 import { bridgePromise } from '../../utils/bridge-call';
-import { aiProviderLogo } from '../../utils/ai-provider-icons';
+import { aiProviderFallbackIcon, aiProviderLogo } from '../../utils/ai-provider-icons';
 import { formatError } from '../../../shared/errors';
 import { SettingsLabel, McpField } from '../../styles/Settings.styles';
 import {
@@ -79,8 +70,7 @@ function ProviderIcon({ id }: { id: AIProviderId }) {
   if (logo) {
     return <ProviderLogo src={logo} alt="" aria-hidden="true" data-testid={`settings-ai-logo-${id}`} />;
   }
-  const icon = id === 'local' ? faServer : faWandMagicSparkles;
-  return <FontAwesomeIcon icon={icon} />;
+  return <FontAwesomeIcon icon={aiProviderFallbackIcon(id)} />;
 }
 
 /**
@@ -434,7 +424,7 @@ export default function AiProviderSettingsSection({ autoOpen = false }: { autoOp
   }, [online, providerId]);
 
   const loadModels = async (): Promise<void> => {
-    if (!configurable || !AI_PROVIDERS_REQUIRING_NETWORK.has(providerId)) {
+    if (!configurable) {
       setModelOptions([]);
       return;
     }

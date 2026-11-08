@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Videospoor",
   "videoTimeline.zoomIn": "Inzoem",
-  "videoTimeline.zoomOut": "Uitzoem"
+  "videoTimeline.zoomOut": "Uitzoem",
+  "settings.ai.errors.noModel": "Geen model beskikbaar nie. Kies een onder Gevorderd, of installeer 'n model in jou runtime en probeer dan weer."
 }

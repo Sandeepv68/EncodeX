@@ -661,7 +661,8 @@
         "emptyResponse": "O fornecedor ligou-se, mas devolveu uma resposta vazia. Verifique o id do modelo.",
         "noKey": "Não há nenhuma chave de API disponível para testar. Introduza primeiro uma chave.",
         "offline": "O fornecedor selecionado funciona offline e não precisa de teste de ligação.",
-        "unknown": "O teste de ligação falhou. Verifique as definições e tente novamente."
+        "unknown": "O teste de ligação falhou. Verifique as definições e tente novamente.",
+        "noModel": "Não há nenhum modelo disponível. Escolha um em Avançado ou instale um modelo no seu ambiente de execução e tente novamente."
       },
       "statusConnected": "Ligado e verificado.",
       "requiresNetwork": "Este fornecedor necessita de uma ligação de rede ativa.",

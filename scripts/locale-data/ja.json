@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "映像トラック",
   "videoTimeline.zoomIn": "拡大",
-  "videoTimeline.zoomOut": "縮小"
+  "videoTimeline.zoomOut": "縮小",
+  "settings.ai.errors.noModel": "利用できるモデルがありません。「詳細」でモデルを選択するか、ランタイムにモデルをインストールしてから、もう一度お試しください。"
 }

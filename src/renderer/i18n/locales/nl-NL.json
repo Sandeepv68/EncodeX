@@ -661,7 +661,8 @@
         "emptyResponse": "De provider maakte verbinding maar gaf een leeg antwoord terug. Controleer de model-id.",
         "noKey": "Er is geen API-sleutel beschikbaar om te testen. Voer eerst een sleutel in.",
         "offline": "De geselecteerde provider werkt offline en heeft geen verbindingstest nodig.",
-        "unknown": "De verbindingstest is mislukt. Controleer de instellingen en probeer het opnieuw."
+        "unknown": "De verbindingstest is mislukt. Controleer de instellingen en probeer het opnieuw.",
+        "noModel": "Er is geen model beschikbaar. Kies er een onder Geavanceerd of installeer een model in je runtime en probeer het opnieuw."
       },
       "statusConnected": "Verbonden en geverifieerd.",
       "requiresNetwork": "Deze aanbieder vereist een actieve netwerkverbinding.",

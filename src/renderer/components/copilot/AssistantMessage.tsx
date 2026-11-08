@@ -10,6 +10,7 @@ import type { AgentSkip } from '../../../shared/ai/agent';
 import { useTranslation } from 'react-i18next';
 import {
   ActionListItemIcon,
+  ActionProviderBadge,
   ApplyNoteText,
   ApplyQueueButton,
   AssistantAlert,
@@ -84,7 +85,9 @@ export default function AssistantMessage({
           {plan.actions.map((action: CopilotAction) => (
             <PlanListItem key={action.id} divider data-testid={`copilot-action-${action.id}`}>
               <ActionListItemIcon>
-                <ProviderIcon providerId={providerId} size={32} />
+                <ActionProviderBadge data-testid="copilot-action-provider-badge">
+                  <ProviderIcon providerId={providerId} size={20} />
+                </ActionProviderBadge>
               </ActionListItemIcon>
               <ListItemText
                 primary={action.input}

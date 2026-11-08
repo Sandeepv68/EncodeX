@@ -661,7 +661,8 @@
         "emptyResponse": "Der Anbieter hat sich verbunden, aber eine leere Antwort zurückgegeben. Prüfen Sie die Modell-ID.",
         "noKey": "Es ist kein API-Schlüssel zum Testen verfügbar. Geben Sie zuerst einen Schlüssel ein.",
         "offline": "Der ausgewählte Anbieter läuft offline und benötigt keinen Verbindungstest.",
-        "unknown": "Der Verbindungstest ist fehlgeschlagen. Prüfen Sie die Einstellungen und versuchen Sie es erneut."
+        "unknown": "Der Verbindungstest ist fehlgeschlagen. Prüfen Sie die Einstellungen und versuchen Sie es erneut.",
+        "noModel": "Es ist kein Modell verfügbar. Wählen Sie eines unter Erweitert oder installieren Sie ein Modell in Ihrer Laufzeitumgebung, und versuchen Sie es erneut."
       },
       "statusConnected": "Verbunden und verifiziert.",
       "requiresNetwork": "Dieser Anbieter benötigt eine aktive Netzwerkverbindung.",

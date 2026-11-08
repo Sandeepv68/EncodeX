@@ -6,10 +6,13 @@
  * provider buttons should render. The `_light` assets are white and the `_dark`
  * assets are black, so the contrast-based mapping renders the dark logo on the
  * light theme and the light logo on the dark theme. Providers without a bundled
- * logo (rules, local) return `null` and fall back to a FontAwesome icon.
+ * logo (rules, local) return `null` and fall back to the FontAwesome glyph
+ * {@link aiProviderFallbackIcon} resolves for them.
  */
 
 import type { PaletteMode } from '@mui/material';
+import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { faRobot, faServer, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 import type { AIProviderId } from '../../shared/ai/types';
 import anthropicDark from '../../../assets/ai_providers/anthropic_dark.svg';
 import anthropicLight from '../../../assets/ai_providers/anthropic_light.svg';
@@ -29,4 +32,19 @@ export function aiProviderLogo(id: AIProviderId, mode: PaletteMode): string | nu
   if (id === 'anthropic') return mode === 'dark' ? anthropicLight : anthropicDark;
   if (id === 'openai') return mode === 'dark' ? openAiLight : openAiDark;
   return null;
+}
+
+/**
+ * Resolves the stand-in glyph for a provider that has no bundled logo, so
+ * every place that shows a provider mark (the Settings provider list, the
+ * connection badge, the composer button and the plan rows) draws the same
+ * symbol for the same provider: a server for the local runtime, sparkles for
+ * the built-in rules engine, and a generic robot when the provider is unknown.
+ * @param {AIProviderId | null} [id] - The provider to resolve a glyph for.
+ * @returns {IconDefinition} The FontAwesome glyph.
+ */
+export function aiProviderFallbackIcon(id?: AIProviderId | null): IconDefinition {
+  if (id === 'local') return faServer;
+  if (id === 'rules') return faWandMagicSparkles;
+  return faRobot;
 }

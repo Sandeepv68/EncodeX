@@ -661,7 +661,8 @@
         "emptyResponse": "El proveedor se conectó, pero devolvió una respuesta vacía. Revisa el id del modelo.",
         "noKey": "No hay ninguna clave de API disponible para probar. Introduce una clave primero.",
         "offline": "El proveedor seleccionado funciona sin conexión y no necesita una prueba de conexión.",
-        "unknown": "La prueba de conexión falló. Revisa la configuración y vuelve a intentarlo."
+        "unknown": "La prueba de conexión falló. Revisa la configuración y vuelve a intentarlo.",
+        "noModel": "No hay ningún modelo disponible. Elige uno en Avanzado o instala un modelo en tu entorno de ejecución y vuelve a intentarlo."
       },
       "statusConnected": "Conectado y verificado.",
       "requiresNetwork": "Este proveedor necesita una conexión de red activa.",

@@ -31,7 +31,7 @@ export const ProviderLogo = styled('img')(({ theme }) => ({
   height: theme.typography.pxToRem(14),
 }));
 
-/** Fallback robot icon shown when no provider logo is available. @const ProviderIconFallback */
+/** Fallback glyph shown when no provider logo is available. @const ProviderIconFallback */
 export const ProviderIconFallback = styled('span')(({ theme }) => ({
   display: 'inline-flex',
   fontSize: theme.typography.pxToRem(12),

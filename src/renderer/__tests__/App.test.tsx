@@ -73,6 +73,16 @@ describe('App', () => {
     expect(await screen.findByText('convert.title', {}, { timeout: 20000 })).toBeInTheDocument();
   }, 30000);
 
+  it('paints the skeleton of the incoming page while its chunk loads', async () => {
+    renderApp();
+    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
+    // The About page has not been opened yet in this file, so its chunk is
+    // still in flight: the skeleton is what the user gets to see.
+    fireEvent.click(screen.getByTestId('nav-item-about'));
+    expect(screen.getByRole('status', { name: 'app.loading' })).toBeInTheDocument();
+    expect(await screen.findByText('about.title', {}, { timeout: 20000 })).toBeInTheDocument();
+  }, 30000);
+
   it('resets the main scroll position when the route changes', async () => {
     renderApp();
     await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });

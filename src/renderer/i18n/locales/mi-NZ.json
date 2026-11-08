@@ -661,7 +661,8 @@
         "emptyResponse": "I hono te kaiwhakarato engari i whakahokia he whakautu kau. Tirohia te ID tauira.",
         "noKey": "Kāore he kī API hei whakamātau. Whakauruhia he kī i te tuatahi.",
         "offline": "Ka rere tuimotu te kaiwhakarato i tīpakohia, ā, kāore e hiahiatia he whakamātautau hononga.",
-        "unknown": "I rahua te whakamātautau hononga. Tirohia ngā tautuhinga, kātahi anō whakamātau anō."
+        "unknown": "I rahua te whakamātautau hononga. Tirohia ngā tautuhinga, kātahi anō whakamātau anō.",
+        "noModel": "Kāore he tauira e wātea ana. Kōwhiria tētahi i raro i te Aro nui, whakaurua rānei he tauira ki tō wā whakahaere, kātahi ka whakamātau anō."
       },
       "statusConnected": "Kua hono, kua whakamanatia.",
       "requiresNetwork": "Me whai hononga whatunga hohe tēnei kaiwhakarato.",

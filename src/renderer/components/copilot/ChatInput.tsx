@@ -20,12 +20,12 @@ import { $getRoot, COMMAND_PRIORITY_LOW, INSERT_LINE_BREAK_COMMAND, KEY_ENTER_CO
 import type { EditorState } from 'lexical';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Popover, Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faRobot, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
 import type { ChatInputProps } from './types';
 import AiConnectionStatus from '../AiConnectionStatus';
-import { aiProviderLogo } from '../../utils/ai-provider-icons';
+import { aiProviderFallbackIcon, aiProviderLogo } from '../../utils/ai-provider-icons';
 import {
   ComposerDivider,
   ComposerPlanButton,
@@ -281,7 +281,7 @@ export default function ChatInput({
                     <ProviderLogoImage src={providerLogo} alt="" />
                   ) : (
                     <ProviderLogoFallback>
-                      <FontAwesomeIcon icon={faRobot} />
+                      <FontAwesomeIcon icon={aiProviderFallbackIcon(connection?.providerId)} />
                     </ProviderLogoFallback>
                   )}
                 </ProviderLogoButton>

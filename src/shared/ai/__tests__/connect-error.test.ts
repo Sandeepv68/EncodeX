@@ -183,6 +183,11 @@ describe('classifyAiConnectError', () => {
       const err = createError(ErrorCode.AI_NOT_CONFIGURED, 'No key stored.');
       expect(classifyAiConnectError(err, 'openai')).toEqual({ reason: 'unknown' });
     });
+
+    it('maps a missing model to noModel', () => {
+      const err = createError(ErrorCode.AI_NOT_CONFIGURED, 'No model is configured and the provider reported no usable model.');
+      expect(classifyAiConnectError(err, 'local')).toEqual({ reason: 'noModel' });
+    });
   });
 
   describe('Gemini gRPC status edge cases', () => {

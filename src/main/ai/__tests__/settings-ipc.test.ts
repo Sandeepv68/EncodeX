@@ -114,15 +114,24 @@ describe('registerAiSettingsIpc', () => {
     expect(settingsMock.applyAiSettingsUpdate).toHaveBeenCalledWith('/userData', { providerId: 'rules' });
   });
 
+  it('CONNECT_TEST tests a local runtime without requiring an API key', async () => {
+    connectorsMock.isRemoteProvider.mockReturnValue(false);
+    settingsMock.decryptApiKey.mockReturnValue(null);
+    const complete = vi.fn().mockResolvedValue({ model: 'llama3', text: 'OK' });
+    connectorsMock.createConnectorFromSettings.mockReturnValue({ complete });
+    await expect(invoke(IPC.AI_CONNECT_TEST, { providerId: 'local', baseUrl: 'http://localhost:11434' })).resolves.toMatchObject({
+      ok: true,
+      model: 'llama3',
+    });
+    expect(connectorsMock.createConnectorFromSettings).toHaveBeenCalledWith(
+      expect.objectContaining({ providerId: 'local', baseUrl: 'http://localhost:11434' }),
+      '',
+    );
+  });
+
   it('CONNECT_TEST records the built-in rules engine without a network call', async () => {
     connectorsMock.isRemoteProvider.mockReturnValue(false);
     await expect(invoke(IPC.AI_CONNECT_TEST, { providerId: 'rules' })).resolves.toMatchObject({ ok: true });
-    expect(connectorsMock.createConnectorFromSettings).not.toHaveBeenCalled();
-  });
-
-  it('CONNECT_TEST refuses an offline provider other than rules', async () => {
-    connectorsMock.isRemoteProvider.mockReturnValue(false);
-    await expect(invoke(IPC.AI_CONNECT_TEST, { providerId: 'local' })).resolves.toMatchObject({ ok: false, reason: 'offline' });
     expect(connectorsMock.createConnectorFromSettings).not.toHaveBeenCalled();
   });
 
@@ -303,6 +312,18 @@ describe('registerAiSettingsIpc', () => {
       reason: 'offline',
     });
     expect(modelsMock.listProviderModels).not.toHaveBeenCalled();
+  });
+
+  it('MODELS_LIST lists a local runtime without an API key', async () => {
+    connectorsMock.isRemoteProvider.mockReturnValue(false);
+    settingsMock.decryptApiKey.mockReturnValue(null);
+    modelsMock.listProviderModels.mockResolvedValue(['llama3']);
+    const result = await invoke(IPC.AI_MODELS_LIST, { providerId: 'local', baseUrl: 'http://localhost:11434' });
+    expect(modelsMock.listProviderModels).toHaveBeenCalledWith(
+      expect.objectContaining({ providerId: 'local', baseUrl: 'http://localhost:11434' }),
+      '',
+    );
+    expect(result).toEqual({ ok: true, models: ['llama3'] });
   });
 
   it('MODELS_LIST refuses when no API key is available', async () => {

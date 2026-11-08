@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Видеодорожка",
   "videoTimeline.zoomIn": "Увеличить",
-  "videoTimeline.zoomOut": "Уменьшить"
+  "videoTimeline.zoomOut": "Уменьшить",
+  "settings.ai.errors.noModel": "Нет доступной модели. Выберите модель в разделе «Дополнительно» или установите модель в своей среде выполнения, затем повторите попытку."
 }

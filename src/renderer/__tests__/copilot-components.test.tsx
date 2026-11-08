@@ -359,6 +359,14 @@ describe('AssistantMessage', () => {
     expect(screen.getAllByRole('list').length).toBeGreaterThan(0);
   });
 
+  it('frames the provider mark of a planned action in a round badge', () => {
+    renderMessage({ plan: PLAN, providerId: 'local' });
+    const badge = screen.getByTestId('copilot-action-provider-badge');
+    expect(badge).toBeInTheDocument();
+    expect(badge.querySelector('[data-icon="server"]')).not.toBeNull();
+    expect(badge.querySelector('[data-icon="robot"]')).toBeNull();
+  });
+
   it('omits the routed-as chip when no operation was resolved', () => {
     renderMessage({ plan: { ...PLAN, operation: null } });
     expect(screen.queryByTestId('copilot-routed-as')).toBeNull();

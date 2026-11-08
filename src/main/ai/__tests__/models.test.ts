@@ -30,8 +30,21 @@ describe('listProviderModels', () => {
   });
 
   it('returns empty list for unknown provider', async () => {
-    const res = await run({ ...baseSettings, providerId: 'local' as never } as AiServerSettings, 'key');
+    const res = await run({ ...baseSettings, providerId: 'unknown' as never } as AiServerSettings, 'key');
     expect(res).toEqual([]);
+  });
+
+  it('fetches models from a local runtime without an API key', async () => {
+    fetchImpl.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ data: [{ id: 'llama3:latest' }, { id: 'qwen2.5:7b' }] }),
+    });
+    const res = await run({ ...baseSettings, providerId: 'local', baseUrl: 'http://localhost:11434' } as AiServerSettings, '');
+    const [url, opts] = fetchImpl.mock.calls[0];
+    expect(url).toBe('http://localhost:11434/v1/models');
+    expect(opts?.headers).toEqual({});
+    expect(res).toContain('llama3:latest');
+    expect(res).toContain('qwen2.5:7b');
   });
 
   it('fetches OpenAI models and filters non-text models', async () => {

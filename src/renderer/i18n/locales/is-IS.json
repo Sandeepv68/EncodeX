@@ -661,7 +661,8 @@
         "emptyResponse": "Þjónustuaðilinn náði sambandi en skilaði tómu svari. Athugaðu auðkenni líkansins.",
         "noKey": "Enginn API-lykill er tiltækur til að prófa. Sláðu fyrst inn lykil.",
         "offline": "Valið þjónustuaðili keyrir án nettengingar og þarf ekki tengiprófun.",
-        "unknown": "Tengiprófið mistókst. Athugaðu stillingarnar og reyndu aftur."
+        "unknown": "Tengiprófið mistókst. Athugaðu stillingarnar og reyndu aftur.",
+        "noModel": "Ekkert líkan er tiltækt. Veldu eitt undir Ítarlegt eða settu líkan upp í keyrsluumhverfinu þínu og reyndu aftur."
       },
       "statusConnected": "Tengt og staðfest.",
       "requiresNetwork": "Þessi þjónustuaðili þarf virka nettengingu.",

@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Відеодоріжка",
   "videoTimeline.zoomIn": "Збільшити",
-  "videoTimeline.zoomOut": "Зменшити"
+  "videoTimeline.zoomOut": "Зменшити",
+  "settings.ai.errors.noModel": "Немає доступної моделі. Виберіть модель у розділі «Додатково» або встановіть модель у своєму середовищі виконання, потім спробуйте ще раз."
 }

@@ -661,7 +661,8 @@
         "emptyResponse": "Nhà cung cấp đã kết nối nhưng trả về phản hồi rỗng. Kiểm tra id mô hình.",
         "noKey": "Không có khóa API nào để kiểm tra. Hãy nhập khóa trước.",
         "offline": "Nhà cung cấp đã chọn chạy ngoại tuyến và không cần kiểm tra kết nối.",
-        "unknown": "Kiểm tra kết nối thất bại. Kiểm tra cài đặt và thử lại."
+        "unknown": "Kiểm tra kết nối thất bại. Kiểm tra cài đặt và thử lại.",
+        "noModel": "Không có mô hình nào khả dụng. Chọn một mô hình trong Nâng cao hoặc cài đặt mô hình trong môi trường chạy của bạn, rồi thử lại."
       },
       "statusConnected": "Đã kết nối và xác minh.",
       "requiresNetwork": "Nhà cung cấp này cần kết nối mạng đang hoạt động.",

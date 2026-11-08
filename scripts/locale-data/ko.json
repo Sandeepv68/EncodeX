@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "비디오 트랙",
   "videoTimeline.zoomIn": "확대",
-  "videoTimeline.zoomOut": "축소"
+  "videoTimeline.zoomOut": "축소",
+  "settings.ai.errors.noModel": "사용 가능한 모델이 없습니다. 고급에서 모델을 선택하거나 런타임에 모델을 설치한 후 다시 시도하세요."
 }

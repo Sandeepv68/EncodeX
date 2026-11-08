@@ -11,6 +11,7 @@
 
 import { app } from 'electron';
 import { createLLMOperationRouter } from '../../shared/ai/llm';
+import { AI_PROVIDERS_REQUIRING_KEY } from '../../shared/ai/settings';
 import { createConnectorFromSettings, isRemoteProvider } from './connectors';
 import { resolveProviderModel } from './model-resolution';
 import { decryptApiKey, effectiveModel, persistProviderModel, readAiSettings } from './settings';
@@ -30,9 +31,11 @@ export async function resolveLLMOperationRouter(): Promise<OperationRouter | nul
   try {
     const userDataDir = app.getPath('userData');
     const settings = readAiSettings(userDataDir);
-    if (!isRemoteProvider(settings.providerId)) return null;
-    const apiKey = decryptApiKey(settings);
-    if (!apiKey) return null;
+    // `local` is served by an on-device HTTP runtime, so it uses the connector
+    // path without a key. Everything else must be a keyed remote provider.
+    if (!isRemoteProvider(settings.providerId) && settings.providerId !== 'local') return null;
+    const apiKey = decryptApiKey(settings) ?? '';
+    if (!apiKey && AI_PROVIDERS_REQUIRING_KEY.has(settings.providerId)) return null;
     const configured = effectiveModel(settings);
     const model = configured || (await resolveProviderModel(settings, apiKey));
     if (!configured) persistProviderModel(userDataDir, settings.providerId, model);

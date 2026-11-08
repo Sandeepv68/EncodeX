@@ -17,6 +17,7 @@
 
 import type { ColorMode, ThemeId } from '../shared/theme/types';
 import type { NavigateOptions, To } from 'react-router-dom';
+import type { ComponentType, ReactNode } from 'react';
 
 export type { ColorMode, ThemeId };
 
@@ -84,3 +85,27 @@ export interface SettingsLocationState {
  * every log entry).
  */
 export type ConsoleMethod = ((...args: unknown[]) => void) & { __encodeXPatched?: boolean };
+
+/**
+ * A page module loader: the dynamic import that fetches a page's chunk.
+ * @typedef {function(): Promise<{ default: React.ComponentType }>} PageLoader
+ */
+export type PageLoader = () => Promise<{ default: ComponentType }>;
+
+/**
+ * Props for the route shell's page loader (`App.tsx`).
+ * @interface RouteLoaderProps
+ * @property {PageLoader} load - Loads the page module.
+ * @property {React.ReactNode} skeleton - The skeleton shown while the module
+ *   is in flight.
+ * @property {number} [minVisibleMs] - Minimum time the skeleton stays on
+ *   screen, in milliseconds.
+ */
+export interface RouteLoaderProps {
+  /** Loads the page module. */
+  load: PageLoader;
+  /** The skeleton shown while the module is in flight. */
+  skeleton: ReactNode;
+  /** Minimum time the skeleton stays on screen, in milliseconds. */
+  minVisibleMs?: number;
+}

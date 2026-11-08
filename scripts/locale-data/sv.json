@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Videospår",
   "videoTimeline.zoomIn": "Zooma in",
-  "videoTimeline.zoomOut": "Zooma ut"
+  "videoTimeline.zoomOut": "Zooma ut",
+  "settings.ai.errors.noModel": "Ingen modell är tillgänglig. Välj en under Avancerat eller installera en modell i din körtidsmiljö och försök igen."
 }

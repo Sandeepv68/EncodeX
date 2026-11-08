@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "视频轨道",
   "videoTimeline.zoomIn": "放大",
-  "videoTimeline.zoomOut": "缩小"
+  "videoTimeline.zoomOut": "缩小",
+  "settings.ai.errors.noModel": "没有可用的模型。请在“高级”中选择一个模型，或在运行时中安装模型后重试。"
 }

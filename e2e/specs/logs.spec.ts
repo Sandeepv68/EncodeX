@@ -73,8 +73,18 @@ describe.runIf(IS_E2E)('Logs page', () => {
     await emitLogMessage(page, { text: 'export me' });
     await expect.poll(() => page.getByText('export me').count()).toBeGreaterThan(0);
 
-    await page.locator('[data-testid="logs-download"]').click();
-    await expect.poll(() => page.locator('[role="alert"]').filter({ hasText: 'Logs downloaded' }).count()).toBeGreaterThan(0);
+    // The real blob download can keep Playwright's click pending for seconds on
+    // CI. The toast auto-hides after 4s, so awaiting the click first races that
+    // timer: the toast can appear and vanish before the poll ever starts. Poll
+    // for the toast while the click is still in flight instead.
+    await Promise.all([
+      page.locator('[data-testid="logs-download"]').click(),
+      expect
+        .poll(() => page.locator('[role="alert"]').filter({ hasText: 'Logs downloaded' }).count(), {
+          timeout: 15000,
+        })
+        .toBeGreaterThan(0),
+    ]);
   });
 
   it('filters entries by the search text', async () => {

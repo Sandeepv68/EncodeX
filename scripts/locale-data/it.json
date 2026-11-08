@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "Traccia video",
   "videoTimeline.zoomIn": "Ingrandisci",
-  "videoTimeline.zoomOut": "Riduci"
+  "videoTimeline.zoomOut": "Riduci",
+  "settings.ai.errors.noModel": "Nessun modello disponibile. Scegline uno in Avanzate o installa un modello nel tuo runtime, quindi riprova."
 }

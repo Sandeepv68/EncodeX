@@ -661,7 +661,8 @@
         "emptyResponse": "Leverandøren koblet til, men returnerte et tomt svar. Sjekk modell-ID-en.",
         "noKey": "Ingen API-nøkkel er tilgjengelig for test. Skriv inn en nøkkel først.",
         "offline": "Den valgte leverandøren kjører offline og trenger ingen tilkoblingstest.",
-        "unknown": "Tilkoblingstesten mislyktes. Sjekk innstillingene, og prøv igjen."
+        "unknown": "Tilkoblingstesten mislyktes. Sjekk innstillingene, og prøv igjen.",
+        "noModel": "Ingen modell er tilgjengelig. Velg en under Avansert, eller installer en modell i kjøretidsmiljøet ditt, og prøv igjen."
       },
       "statusConnected": "Tilkoblet og bekreftet.",
       "requiresNetwork": "Denne leverandøren trenger en aktiv nettverksforbindelse.",

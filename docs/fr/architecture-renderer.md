@@ -6,7 +6,7 @@
 
 ### Arbre de rendu
 
-Les treize pages sont découpées avec `React.lazy` et chargées sous une `ErrorBoundary` par page :
+Les treize pages sont découpées avec un `import()` dynamique et chargées sous une `ErrorBoundary` par page. Pendant le chargement du fragment d'une page, la route affiche le squelette de chargement de cette page :
 
 | Page            | Route          | Objectif                                                       |
 | --------------- | -------------- | -------------------------------------------------------------- |

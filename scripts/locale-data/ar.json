@@ -502,5 +502,6 @@
   "videoCut.placeholderStart": "00:00:00",
   "videoTimeline.videoTrack": "مسار الفيديو",
   "videoTimeline.zoomIn": "تكبير",
-  "videoTimeline.zoomOut": "تصغير"
+  "videoTimeline.zoomOut": "تصغير",
+  "settings.ai.errors.noModel": "لا يوجد نموذج متاح. اختر نموذجًا من «متقدم»، أو ثبّت نموذجًا في بيئة التشغيل لديك، ثم حاول مرة أخرى."
 }

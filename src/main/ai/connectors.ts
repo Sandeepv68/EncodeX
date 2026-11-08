@@ -25,8 +25,41 @@ export type { FetchLike };
 /** Default per-request timeout. @const {number} */
 const DEFAULT_TIMEOUT_MS = 30_000;
 
+/**
+ * Per-request timeout for local runtimes. The first request often has to load
+ * the model into memory, which can take well over the remote API timeout.
+ * @const {number}
+ */
+export const DEFAULT_LOCAL_TIMEOUT_MS = 120_000;
+
 /** Maximum provider error body kept for classification. @const {number} */
 const MAX_ERROR_BODY = 4000;
+
+/**
+ * Default local model runtime endpoint (Ollama's OpenAI-compatible API).
+ * @const {string}
+ */
+export const DEFAULT_LOCAL_BASE_URL = 'http://127.0.0.1:11434/v1';
+
+/**
+ * Normalizes the local runtime base URL. A bare host (the usual Ollama input,
+ * `http://localhost:11434`) gets the OpenAI-compatible `/v1` suffix; an
+ * explicit path is used as-is. An empty value falls back to the Ollama default.
+ * @param {string} [baseUrl] - The configured local runtime URL.
+ * @returns {string} The normalized base URL.
+ */
+export function normalizeLocalBaseUrl(baseUrl?: string): string {
+  const trimmed = (baseUrl ?? '').trim().replace(/\/+$/, '');
+  if (!trimmed) return DEFAULT_LOCAL_BASE_URL;
+  try {
+    const url = new URL(trimmed);
+    if (url.pathname === '' || url.pathname === '/') return `${trimmed}/v1`;
+  } catch {
+    // The settings sanitizer already gates the scheme; leave a malformed value
+    // for the request layer to surface as a classified failure.
+  }
+  return trimmed;
+}
 
 /**
  * Statuses that describe a temporary condition (provider overload, gateway
@@ -271,6 +304,7 @@ function requireModel(model: string | undefined, provider: string): string {
  * @param {string} options.apiKey - The API key.
  * @param {string} options.model - The model id.
  * @param {string} [options.baseUrl] - OpenAI-compatible base URL override.
+ * @param {number} [options.timeoutMs] - Per-request timeout override.
  * @param {FetchLike} [options.fetchImpl] - Injectable fetch.
  * @returns {AIConnector} The connector.
  */
@@ -278,6 +312,7 @@ export function createOpenAICompatibleConnector(options: {
   apiKey: string;
   model: string;
   baseUrl?: string;
+  timeoutMs?: number;
   fetchImpl?: FetchLike;
 }): AIConnector {
   const fetchImpl = options.fetchImpl ?? (globalThis.fetch as FetchLike);
@@ -285,6 +320,7 @@ export function createOpenAICompatibleConnector(options: {
   const baseUrl = (options.baseUrl || 'https://api.openai.com/v1').replace(/\/+$/, '');
   const id: ConnectorId = options.baseUrl ? 'openai-compatible' : 'openai';
   const provider = openAiProvider(baseUrl);
+  const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   return {
     id,
     async complete(request: ConnectorRequest): Promise<ConnectorResponse> {
@@ -294,8 +330,9 @@ export function createOpenAICompatibleConnector(options: {
         const messages = [...(system ? [{ role: 'system', content: system }] : []), { role: 'user', content: user }];
         const body: Record<string, unknown> = { model, messages, temperature: request.temperature ?? 0 };
         if (request.jsonMode) body.response_format = { type: 'json_object' };
-        const signal = request.signal ?? AbortSignal.timeout(DEFAULT_TIMEOUT_MS);
-        const data = await postJson(fetchImpl, `${baseUrl}/chat/completions`, { authorization: `Bearer ${options.apiKey}` }, body, signal);
+        const signal = request.signal ?? AbortSignal.timeout(timeoutMs);
+        const headers: Record<string, string> = options.apiKey ? { authorization: `Bearer ${options.apiKey}` } : {};
+        const data = await postJson(fetchImpl, `${baseUrl}/chat/completions`, headers, body, signal);
         const text = openAiText(data);
         if (!text) throw createError(ErrorCode.AI_RESPONSE_INVALID, 'Provider returned an empty completion.');
         captureGeneration(request, provider, model, startedAt, { text, ...usage(data, 'prompt_tokens', 'completion_tokens') });
@@ -422,6 +459,19 @@ export function createConnectorFromSettings(settings: AiServerSettings, apiKey: 
         apiKey,
         model,
         ...(settings.baseUrl ? { baseUrl: settings.baseUrl } : {}),
+        ...(fetchImpl ? { fetchImpl } : {}),
+      });
+    case 'local':
+      // A local runtime (Ollama, LM Studio, vLLM) speaks the OpenAI-compatible
+      // API. It is keyless, so the empty key is passed through and the
+      // connector omits the authorization header.
+      return createOpenAICompatibleConnector({
+        apiKey,
+        model,
+        baseUrl: normalizeLocalBaseUrl(settings.baseUrl),
+        // Loading a local model on the first request routinely exceeds the
+        // remote-provider timeout; give the runtime time to finish loading.
+        timeoutMs: DEFAULT_LOCAL_TIMEOUT_MS,
         ...(fetchImpl ? { fetchImpl } : {}),
       });
     default:
