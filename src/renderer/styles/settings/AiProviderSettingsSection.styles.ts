@@ -40,6 +40,10 @@ export const ProviderGrid = styled(Box)(({ theme }) => ({
   display: 'grid',
   gridTemplateColumns: `repeat(auto-fit, minmax(${theme.spacing(18)}, 1fr))`,
   gap: theme.spacing(1.5),
+  '& > span': {
+    display: 'flex',
+    minWidth: 0,
+  },
 }));
 
 export const ProviderButton = styled('button', {
@@ -50,6 +54,7 @@ export const ProviderButton = styled('button', {
   alignItems: 'center',
   justifyContent: 'center',
   gap: theme.spacing(1.5),
+  width: '100%',
   minHeight: theme.spacing(8),
   padding: theme.spacing(1.5, 2),
   border: `${theme.typography.pxToRem(2)} solid ${$selected ? theme.palette.primary.main : theme.palette.divider}`,
