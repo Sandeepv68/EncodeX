@@ -132,7 +132,7 @@
     "@opentelemetry/exporter-logs-otlp-http": "^0.300.0",
     "@opentelemetry/resources": "^3.0.0",
     "@opentelemetry/sdk-logs": "^3.0.0",
-    "@opentelemetry/sdk-node": "^0.300.0",
+    "@opentelemetry/sdk-node": "^0.301.0",
     "@sentry/electron": "^7.17.0",
     "@tanstack/react-virtual": "^3.14.22",
     "chalk": "4.1.2",
