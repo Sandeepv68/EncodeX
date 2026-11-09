@@ -121,7 +121,7 @@
     "@fortawesome/react-fontawesome": "^3.5.0",
     "@lexical/history": "^0.28.0",
     "@lexical/react": "^0.28.0",
-    "@lexical/rich-text": "^0.28.0",
+    "@lexical/rich-text": "^0.53.0",
     "@lexical/utils": "^0.28.0",
     "@modelcontextprotocol/ext-apps": "^2.0.4",
     "@modelcontextprotocol/node": "^2.1.2",
