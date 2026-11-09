@@ -86,6 +86,10 @@ export interface CodecContainerInfo {
  *   scale and rotation/mirror into the single `-vf` chain. Only honored in
  *   re-encode mode; ignored with a warning under `copy:true`. See
  *   src/shared/video-filters.ts for validation.
+ * @property {string[]} [audioFilters] - Ordered audio-filter expressions
+ *   (e.g. 'pan=mono|c0=c0', 'volume=0.5') emitted as a single `-af` chain.
+ *   Only honored in re-encode mode; used by channel-split demux targets that
+ *   turn each source channel into its own mono output.
  * @property {string} [pixelFormat] - Output pixel format (e.g. 'yuv420p').
  * @property {string} [startTime] - Trim start time (seconds or HH:MM:SS).
  * @property {string} [endTime] - Trim end time (seconds or HH:MM:SS).
@@ -135,6 +139,7 @@ export interface ConversionOptions {
   flipH?: boolean;
   flipV?: boolean;
   videoFilters?: string[];
+  audioFilters?: string[];
   pixelFormat?: string;
   startTime?: string;
   endTime?: string;
@@ -1265,6 +1270,9 @@ export interface DemuxMediaPreferences {
  * @property {string} [container] - Output container extension for re-encoded video.
  * @property {string[]} [videoFilters] - Video filter chain carried onto this
  *   target; set only for a re-encoded video target (absent for stream copies).
+ * @property {string[]} [audioFilters] - Audio filter chain carried onto this
+ *   target; set on a channel-split audio target (e.g. 'pan=mono|c0=c0') so it
+ *   writes one mono file per source channel.
  * @property {string} output - Absolute output path (baseName + kind_index + ext).
  */
 export interface DemuxTarget {
@@ -1275,6 +1283,7 @@ export interface DemuxTarget {
   codec?: string;
   container?: string;
   videoFilters?: string[];
+  audioFilters?: string[];
   output: string;
 }
 

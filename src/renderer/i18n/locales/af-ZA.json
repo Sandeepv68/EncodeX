@@ -1015,7 +1015,10 @@
     "currentStream": "Onttrek {{kind}}-stroom nr. {{index}}",
     "filtersTitle": "Videofilters",
     "filtersHint": "Pas FFmpeg-videofilters (knip, raamtempo, dekruis, ruisvermindering, kleur…) toe terwyl gekose videostrome herkodeer word. \"Kopieer\" is verliesvry, dus filters verskyn net wanneer 'n doelhouer die video herkodeer.",
-    "filtersIgnoredCopy": "Videofilters word geïgnoreer solank die videobestemming \"Kopieer\" is, omdat 'n stroomkopie nie kan herkodeer nie. Kies 'n doelhouer om hulle toe te pas."
+    "filtersIgnoredCopy": "Videofilters word geïgnoreer solank die videobestemming \"Kopieer\" is, omdat 'n stroomkopie nie kan herkodeer nie. Kies 'n doelhouer om hulle toe te pas.",
+    "splitChannels": "Verdeel kanale",
+    "splitChannelsHint": "Verdeel 'n klankspoor in een mono-lêer per kanaal. Kanaalverdeling herkodeer die klank: die gekose klankteiken-kodek word gebruik, of FLAC wanneer Kopieer gekies is.",
+    "splitChannelsStream": "Verdeel klankstroom #{{index}} in afsonderlike kanaallêers"
   },
   "copilot": {
     "saveChat": "Stoor gesprek",

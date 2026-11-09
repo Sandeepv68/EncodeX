@@ -1015,7 +1015,10 @@
     "currentStream": "正在擷取第 {{index}} 個 {{kind}} 串流",
     "filtersTitle": "影片篩選器",
     "filtersHint": "在重新編碼所選影片串流時套用 FFmpeg 影片篩選器（裁切、影格率、去交錯、降噪、色彩等）。「複製」為無損方式，因此只有在目標容器會重新編碼影片時，才會顯示篩選器。",
-    "filtersIgnoredCopy": "當影片輸出方式為「複製」時，影片篩選器會被忽略，因為串流複製無法重新編碼。請選擇目標容器以套用篩選器。"
+    "filtersIgnoredCopy": "當影片輸出方式為「複製」時，影片篩選器會被忽略，因為串流複製無法重新編碼。請選擇目標容器以套用篩選器。",
+    "splitChannels": "分離聲道",
+    "splitChannelsHint": "將音訊軌分割成每個聲道一個單聲道檔案。聲道分割會重新編碼音訊：使用所選的音訊目標編解碼器，若選擇複製則使用 FLAC。",
+    "splitChannelsStream": "將音訊串流 #{{index}} 分割成個別聲道檔案"
   },
   "copilot": {
     "saveChat": "儲存對話",

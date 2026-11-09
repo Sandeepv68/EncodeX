@@ -1015,7 +1015,10 @@
     "currentStream": "Mengekstrak strim {{kind}} #{{index}}",
     "filtersTitle": "Penapis video",
     "filtersHint": "Gunakan penapis video FFmpeg (pangkas, kadar bingkai, nyah-selang, pengurang hingar, warna…) semasa mengekod semula strim video terpilih. \"Salin\" adalah tanpa-rugi, jadi penapis hanya muncul apabila bekas sasaran mengekod semula video.",
-    "filtersIgnoredCopy": "Penapis video diabaikan selagi sasaran video ialah \"Salin\" kerana salinan strim tidak boleh mengekod semula. Pilih bekas sasaran untuk menggunakan penapis."
+    "filtersIgnoredCopy": "Penapis video diabaikan selagi sasaran video ialah \"Salin\" kerana salinan strim tidak boleh mengekod semula. Pilih bekas sasaran untuk menggunakan penapis.",
+    "splitChannels": "Pisahkan saluran",
+    "splitChannelsHint": "Pisahkan trek audio kepada satu fail mono bagi setiap saluran. Pemisahan saluran mengekod semula audio: kodek sasaran audio yang dipilih digunakan, atau FLAC apabila \"Salin\" dipilih.",
+    "splitChannelsStream": "Pisahkan strim audio #{{index}} kepada fail saluran berasingan"
   },
   "copilot": {
     "saveChat": "Simpan sembang",

@@ -1015,7 +1015,10 @@
     "currentStream": "Estrazione del flusso {{kind}} n. {{index}}",
     "filtersTitle": "Filtri video",
     "filtersHint": "Applica i filtri video FFmpeg (ritaglio, frequenza dei fotogrammi, deinterlacciamento, riduzione del rumore, colore…) mentre i flussi video selezionati vengono ricodificati. La copia è senza perdita, quindi i filtri compaiono solo quando un contenitore di destinazione ricodifica il video.",
-    "filtersIgnoredCopy": "I filtri video vengono ignorati finché la destinazione video è «Copia», perché una copia di flusso non può ricodificare. Scegli un contenitore di destinazione per applicarli."
+    "filtersIgnoredCopy": "I filtri video vengono ignorati finché la destinazione video è «Copia», perché una copia di flusso non può ricodificare. Scegli un contenitore di destinazione per applicarli.",
+    "splitChannels": "Dividi canali",
+    "splitChannelsHint": "Dividi una traccia audio in un file mono per canale. La divisione dei canali ricodifica l'audio: viene usato il codec di destinazione audio selezionato, oppure FLAC quando è selezionato Copia.",
+    "splitChannelsStream": "Dividi il flusso audio #{{index}} in file di canale separati"
   },
   "copilot": {
     "saveChat": "Salva chat",

@@ -1015,7 +1015,10 @@
     "currentStream": "Extraherar {{kind}}-ström nr {{index}}",
     "filtersTitle": "Videofilter",
     "filtersHint": "Tillämpar FFmpeg-videofilter (beskärning, bildfrekvens, deinterlacing, brusreducering, färg…) när valda videoströmmar omkodas. \"Kopiera\" är förlustfritt, så filter visas endast när en destinationscontainer omkodar videon.",
-    "filtersIgnoredCopy": "Videofiltren ignoreras så länge videodestinationen är \"Kopiera\", eftersom en strömkopia inte kan omkoda. Välj en destinationscontainer för att tillämpa dem."
+    "filtersIgnoredCopy": "Videofiltren ignoreras så länge videodestinationen är \"Kopiera\", eftersom en strömkopia inte kan omkoda. Välj en destinationscontainer för att tillämpa dem.",
+    "splitChannels": "Dela kanaler",
+    "splitChannelsHint": "Dela ett ljudspår i en mono-fil per kanal. Kanaldelning kodar om ljudet: den valda ljudmålkodeken används, eller FLAC när Kopiera är valt.",
+    "splitChannelsStream": "Dela ljudströmmen #{{index}} i separata kanalfiler"
   },
   "copilot": {
     "saveChat": "Spara chatt",

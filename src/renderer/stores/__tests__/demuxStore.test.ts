@@ -26,6 +26,7 @@ function resetStore(): void {
     input: '',
     streams: [],
     selectedIndices: [],
+    splitIndices: [],
     outputDir: '',
     targets: [],
     warnings: [],
@@ -79,6 +80,7 @@ describe('demuxStore', () => {
     expect(state.input).toBe('');
     expect(state.streams).toEqual([]);
     expect(state.selectedIndices).toEqual([]);
+    expect(state.splitIndices).toEqual([]);
     expect(state.outputDir).toBe('');
     expect(state.targets).toEqual([]);
     expect(state.warnings).toEqual([]);
@@ -132,6 +134,39 @@ describe('demuxStore', () => {
     useDemuxStore.getState().toggleStream(1);
     state = useDemuxStore.getState();
     expect(state.selectedIndices).toEqual([0, 1, 2, 3]);
+  });
+
+  it('toggleSplitChannel expands an audio stream into per-channel targets', async () => {
+    await useDemuxStore.getState().setInput('/in/movie.mkv');
+    useDemuxStore.getState().toggleSplitChannel(1);
+    let state = useDemuxStore.getState();
+    expect(state.splitIndices).toEqual([1]);
+    const splitTargets = state.targets.filter((t) => t.index === 1);
+    expect(splitTargets).toHaveLength(2);
+    expect(splitTargets[0]).toEqual(
+      expect.objectContaining({
+        copy: false,
+        codec: 'flac',
+        audioFilters: ['pan=mono|c0=c0'],
+        output: '/in/movie.audio_0_ch1.flac',
+      }),
+    );
+    expect(splitTargets[1]).toEqual(expect.objectContaining({ audioFilters: ['pan=mono|c0=c1'], output: '/in/movie.audio_0_ch2.flac' }));
+
+    useDemuxStore.getState().toggleSplitChannel(1);
+    state = useDemuxStore.getState();
+    expect(state.splitIndices).toEqual([]);
+    expect(state.targets.filter((t) => t.index === 1)).toHaveLength(1);
+  });
+
+  it('ignores channel splitting for non-audio and mono streams', async () => {
+    await useDemuxStore.getState().setInput('/in/movie.mkv');
+    useDemuxStore.getState().toggleSplitChannel(0);
+    expect(useDemuxStore.getState().splitIndices).toEqual([]);
+
+    useDemuxStore.setState({ streams: [{ index: 9, type: 'audio', codec: 'aac', channels: 1 }] });
+    useDemuxStore.getState().toggleSplitChannel(9);
+    expect(useDemuxStore.getState().splitIndices).toEqual([]);
   });
 
   it('setMedia converts audio when an audioCodec is set', async () => {
@@ -263,6 +298,28 @@ describe('demuxStore', () => {
       '/in/movie.mkv',
       '/in/movie.audio_0.mp3',
       expect.objectContaining({ copy: false, map: ['0:a:0'], audioCodec: 'mp3', video: false, audio: true }),
+      'FFMPEG',
+    );
+  });
+
+  it('startDemux passes channel split filters to convertFile', async () => {
+    await useDemuxStore.getState().setInput('/in/movie.mkv');
+    useDemuxStore.setState({ selectedIndices: [1] });
+    useDemuxStore.getState().toggleSplitChannel(1);
+    await useDemuxStore.getState().startDemux();
+    expect(convertFileMock).toHaveBeenCalledTimes(2);
+    expect(convertFileMock).toHaveBeenNthCalledWith(
+      1,
+      '/in/movie.mkv',
+      '/in/movie.audio_0_ch1.flac',
+      expect.objectContaining({
+        copy: false,
+        map: ['0:a:0'],
+        audioCodec: 'flac',
+        audioFilters: ['pan=mono|c0=c0'],
+        video: false,
+        audio: true,
+      }),
       'FFMPEG',
     );
   });

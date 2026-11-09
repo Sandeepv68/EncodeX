@@ -565,6 +565,15 @@ export function audioCodecToExtension(codec: string): string {
 }
 
 /**
+ * Default audio encoder used when an audio stream is split into per-channel
+ * targets and no explicit `media.audioCodec` is chosen. Channel splitting must
+ * re-encode (a stream copy cannot select a single channel), and FLAC keeps the
+ * split tracks lossless.
+ * @const {string} DEMUX_SPLIT_CHANNEL_CODEC
+ */
+const DEMUX_SPLIT_CHANNEL_CODEC = 'flac';
+
+/**
  * Builds the per-stream demux extraction targets. `selectedStreams` is a
  * filtered slice of the probed streams (all streams with `stream.selected` true);
  * per-kind ordinal indices are derived anew so `-map` specs stay valid regardless
@@ -572,10 +581,20 @@ export function audioCodecToExtension(codec: string): string {
  * matching targets drop `copy` and carry the target codec/container. A
  * `media.videoFilters` chain is carried onto video targets that re-encode; a
  * stream-copied video target ignores it (see {@link demuxWarnings}).
+ *
+ * An audio stream whose source index appears in `splitStreamIndices` and whose
+ * `channels` count is greater than one is expanded into one mono target per
+ * channel. Each target maps the same source stream and carries a
+ * `pan=mono|c0=c<channel>` audio filter, so startDemux writes one file per
+ * channel (named `<base>.audio_<ordinal>_ch<n>.<ext>`). The channel split always
+ * re-encodes, using `media.audioCodec` when set and {@link DEMUX_SPLIT_CHANNEL_CODEC}
+ * otherwise.
  * @param {string} input - Absolute path of the source file (embedded in output path).
  * @param {string} baseName - Output basename without extension (e.g. 'movie-video').
  * @param {MediaStreamInfo[]} selectedStreams - Probing streams selected for extraction.
  * @param {DemuxMediaPreferences} [media] - Optional per-kind conversion preferences.
+ * @param {ReadonlySet<number>} [splitStreamIndices] - Source indices of audio
+ *   streams to split into per-channel mono targets.
  * @returns {DemuxTarget[]} Extraction targets in input-stream order.
  */
 export function buildDemuxTargets(
@@ -583,6 +602,7 @@ export function buildDemuxTargets(
   baseName: string,
   selectedStreams: MediaStreamInfo[],
   media?: DemuxMediaPreferences,
+  splitStreamIndices?: ReadonlySet<number>,
 ): DemuxTarget[] {
   const kindCounts: Record<string, number> = { video: 0, audio: 0, subtitle: 0 };
   const targets: DemuxTarget[] = [];
@@ -593,6 +613,7 @@ export function buildDemuxTargets(
     const ordinal = kindCounts[kind]++;
     const map = `0:${kind[0]}:${ordinal}`;
     const prettyKind = kind === 'subtitle' ? 'subtitle' : kind;
+    const splitChannels = kind === 'audio' && splitStreamIndices?.has(stream.index) && (stream.channels ?? 0) > 1;
 
     let copy = true;
     let codec: string | undefined;
@@ -609,10 +630,17 @@ export function buildDemuxTargets(
         ext = containerExt;
         targetVideoFilters = videoFilters;
       }
-    } else if (kind === 'audio' && media?.audioCodec) {
-      codec = media.audioCodec.toLowerCase();
-      copy = false;
-      ext = audioCodecToExtension(codec) || 'mka';
+    } else if (kind === 'audio') {
+      const requestedCodec = media?.audioCodec?.toLowerCase();
+      if (splitChannels) {
+        codec = requestedCodec && requestedCodec !== 'copy' ? requestedCodec : DEMUX_SPLIT_CHANNEL_CODEC;
+        copy = false;
+        ext = audioCodecToExtension(codec) || 'mka';
+      } else if (requestedCodec) {
+        codec = requestedCodec;
+        copy = false;
+        ext = audioCodecToExtension(codec) || 'mka';
+      }
     } else if (kind === 'subtitle' && media?.subtitleCodec) {
       const targetCodec = media.subtitleCodec.toLowerCase();
       if (targetCodec !== 'copy' && !isBitmapSubtitleCodec(stream.codec)) {
@@ -620,6 +648,22 @@ export function buildDemuxTargets(
         copy = false;
         ext = targetCodec === 'webvtt' ? 'vtt' : targetCodec;
       }
+    }
+
+    if (splitChannels) {
+      const channels = stream.channels as number;
+      for (let channel = 0; channel < channels; channel += 1) {
+        targets.push({
+          index: stream.index,
+          kind,
+          map,
+          copy: false,
+          codec,
+          audioFilters: [`pan=mono|c0=c${channel}`],
+          output: `${baseName}.${prettyKind}_${ordinal}_ch${channel + 1}.${ext}`,
+        });
+      }
+      continue;
     }
 
     const name = kind === 'video' && kindCounts[kind] <= 1 ? `${baseName}.${prettyKind}` : `${baseName}.${prettyKind}_${ordinal}`;

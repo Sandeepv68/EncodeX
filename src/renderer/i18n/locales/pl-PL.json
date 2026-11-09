@@ -1015,7 +1015,10 @@
     "currentStream": "Wyodrębnianie strumienia {{kind}} nr {{index}}",
     "filtersTitle": "Filtry wideo",
     "filtersHint": "Stosuje filtry wideo FFmpeg (przycinanie, liczba klatek, deinterlacing, redukcja szumu, kolor…) podczas ponownego kodowania wybranych strumieni wideo. „Kopiuj” jest bezstratne, więc filtry pojawiają się tylko wtedy, gdy kontener docelowy przekodowuje wideo.",
-    "filtersIgnoredCopy": "Filtry wideo są ignorowane, dopóki przeznaczenie wideo to „Kopiuj”, ponieważ kopia strumienia nie może kodować ponownie. Wybierz kontener docelowy, aby je zastosować."
+    "filtersIgnoredCopy": "Filtry wideo są ignorowane, dopóki przeznaczenie wideo to „Kopiuj”, ponieważ kopia strumienia nie może kodować ponownie. Wybierz kontener docelowy, aby je zastosować.",
+    "splitChannels": "Podziel kanały",
+    "splitChannelsHint": "Podziel ścieżkę audio na jeden plik mono na kanał. Dzielenie kanałów ponownie koduje dźwięk: używany jest wybrany kodek docelowy audio lub FLAC, gdy wybrano Kopiuj.",
+    "splitChannelsStream": "Podziel strumień audio #{{index}} na osobne pliki kanałów"
   },
   "copilot": {
     "saveChat": "Zapisz czat",

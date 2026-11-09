@@ -35,6 +35,7 @@ export const TRANSCODER_LABELS: Record<TranscoderType, string> = {
  * @property {string} AUDIO_BITRATE - Flag for the audio bitrate (-b:a).
  * @property {string} QSCALE - Flag for the video quality scale (-qscale:v).
  * @property {string} VIDEO_FILTER - Flag introducing a video filter chain (-vf).
+ * @property {string} AUDIO_FILTER - Flag introducing an audio filter chain (-af).
  * @property {string} SCALE - Filter name prefix for scaling (scale=).
  * @property {string} PIX_FMT - Flag for the pixel format (-pix_fmt).
  * @property {string} COLOR_RANGE - Flag for the color range (-color_range).
@@ -78,6 +79,7 @@ export const FFMPEG_FLAGS = {
   AUDIO_BITRATE: '-b:a',
   QSCALE: '-qscale:v',
   VIDEO_FILTER: '-vf',
+  AUDIO_FILTER: '-af',
   SCALE: 'scale=',
   PIX_FMT: '-pix_fmt',
   COLOR_RANGE: '-color_range',

@@ -1015,7 +1015,10 @@
     "currentStream": "Kei te tango awa {{kind}} #{{index}}",
     "filtersTitle": "Ngā tātari ataata",
     "filtersHint": "Whakamahi i ngā tātari ataata FFmpeg (tapahi, reiti anga, whakaware-ā-rawhi, whakaiti haruru, tae…) i te wa o te whakawaehere anō i te awa ataata kua kōwhiria. He kore-ngaro te \"Tārua\", nō reira ka puta noa ngā tātari ina whakawaehere anō te ipu whāinga i te ataata.",
-    "filtersIgnoredCopy": "Ka warewarehia ngā tātari ataata i te mea he \"Tārua\" te whāinga ataata, nā te mea e kore e taea te tārua awa kia whakawaehere anō. Kōwhiria he ipu whāinga kia whakamahia ai ngā tātari."
+    "filtersIgnoredCopy": "Ka warewarehia ngā tātari ataata i te mea he \"Tārua\" te whāinga ataata, nā te mea e kore e taea te tārua awa kia whakawaehere anō. Kōwhiria he ipu whāinga kia whakamahia ai ngā tātari.",
+    "splitChannels": "Wāwāhi hongere",
+    "splitChannelsHint": "Wāwahia tētahi ara oro kia kotahi te kōnae mono mō ia hongere. Ka whakawaehere anō te wāwāhi hongere i te oro: ka whakamahia te codec o te ūnga oro i tīpakohia, ko FLAC rānei ina tīpakohia a Copy.",
+    "splitChannelsStream": "Wāwahia te awa oro #{{index}} kia ngā kōnae hongere motuhake"
   },
   "copilot": {
     "saveChat": "Tiaki kōrero",

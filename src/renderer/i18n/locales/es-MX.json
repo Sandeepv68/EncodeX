@@ -1015,7 +1015,10 @@
     "currentStream": "Extrayendo el flujo de {{kind}} n.º {{index}}",
     "filtersTitle": "Filtros de video",
     "filtersHint": "Aplica filtros de video de FFmpeg (recorte, tasa de cuadros, desinterlazado, reducción de ruido, color…) mientras se recodifican los flujos de video seleccionados. «Copiar» no tiene pérdidas, así que los filtros solo aparecen cuando un contenedor de destino recodifica el video.",
-    "filtersIgnoredCopy": "Los filtros de video se ignoran mientras el destino de video sea «Copiar», porque una copia de flujo no puede recodificar. Elige un contenedor de destino para aplicarlos."
+    "filtersIgnoredCopy": "Los filtros de video se ignoran mientras el destino de video sea «Copiar», porque una copia de flujo no puede recodificar. Elige un contenedor de destino para aplicarlos.",
+    "splitChannels": "Dividir canales",
+    "splitChannelsHint": "Divide un flujo de audio en un archivo mono por canal. La división de canales vuelve a codificar el audio: se usa el códec de destino de audio seleccionado, o FLAC cuando se elige Copiar.",
+    "splitChannelsStream": "Divide el flujo de audio #{{index}} en archivos de canal separados"
   },
   "copilot": {
     "saveChat": "Guardar chat",

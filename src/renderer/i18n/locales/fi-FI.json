@@ -1015,7 +1015,10 @@
     "currentStream": "Poimitaan {{kind}}-virtaa nro {{index}}",
     "filtersTitle": "Videosuodattimet",
     "filtersHint": "Soveltaa FFmpeg-videosuodattimia (rajaus, ruutunopeus, deinterlacing, kohinan vaimennus, väri…) valittujen videovirtojen uudelleenkoodauksen aikana. \"Kopioi\" on häviötön, joten suodattimet näkyvät vain, kun kohdesäilö koodaa videon uudelleen.",
-    "filtersIgnoredCopy": "Videosuodattimet ohitetaan, kun videon kohde on \"Kopioi\", koska virran kopiointi ei voi koodata uudelleen. Suodattimet otetaan käyttöön valitsemalla kohdesäilö."
+    "filtersIgnoredCopy": "Videosuodattimet ohitetaan, kun videon kohde on \"Kopioi\", koska virran kopiointi ei voi koodata uudelleen. Suodattimet otetaan käyttöön valitsemalla kohdesäilö.",
+    "splitChannels": "Jaa kanavat",
+    "splitChannelsHint": "Jaa ääniraita yhdeksi mono-tiedostoksi kanavaa kohden. Kanavien jakaminen koodaa äänen uudelleen: käytetään valittua äänikohteen koodekkia tai FLACia, kun Kopioi on valittuna.",
+    "splitChannelsStream": "Jaa äänivirta #{{index}} erillisiksi kanavatiedostoiksi"
   },
   "copilot": {
     "saveChat": "Tallenna keskustelu",

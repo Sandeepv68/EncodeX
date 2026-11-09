@@ -1015,7 +1015,10 @@
     "currentStream": "Extrahiere {{kind}}-Stream #{{index}}",
     "filtersTitle": "Videofilter",
     "filtersHint": "Wendet FFmpeg-Videofilter an (Zuschneiden, Bildrate, Deinterlacing, Entrauschen, Farbe …), während die ausgewählten Videostreams neu kodiert werden. Kopieren ist verlustfrei, daher erscheinen Filter nur, wenn ein Video-Zielcontainer das Video neu kodiert.",
-    "filtersIgnoredCopy": "Videofilter werden ignoriert, solange das Videoziel „Kopieren“ ist, da eine Stream-Kopie nicht neu kodieren kann. Wählen Sie einen Video-Zielcontainer, um sie anzuwenden."
+    "filtersIgnoredCopy": "Videofilter werden ignoriert, solange das Videoziel „Kopieren“ ist, da eine Stream-Kopie nicht neu kodieren kann. Wählen Sie einen Video-Zielcontainer, um sie anzuwenden.",
+    "splitChannels": "Kanäle aufteilen",
+    "splitChannelsHint": "Teilt eine Audiospur in eine Mono-Datei pro Kanal auf. Beim Aufteilen der Kanäle wird das Audio neu kodiert: Es wird der ausgewählte Audio-Ziel-Codec verwendet, oder FLAC, wenn „Kopieren“ ausgewählt ist.",
+    "splitChannelsStream": "Audiostream #{{index}} in separate Kanaldateien aufteilen"
   },
   "copilot": {
     "saveChat": "Chat speichern",

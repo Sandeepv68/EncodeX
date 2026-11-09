@@ -635,6 +635,7 @@ export interface RemuxState {
  * @property {string} input - Absolute path of the source media file.
  * @property {MediaStreamInfo[]} streams - Probed source streams.
  * @property {number[]} selectedIndices - Indices of streams selected for extraction.
+ * @property {number[]} splitIndices - Indices of audio streams split into per-channel outputs.
  * @property {string} outputDir - Directory where extracted streams are written.
  * @property {DemuxTarget[]} targets - Per-stream extraction targets.
  * @property {RemuxWarning[]} warnings - Live subtitle-conversion fallback warnings.
@@ -645,6 +646,7 @@ export interface RemuxState {
  * @property {string | null} current - Label of the stream currently being extracted.
  * @property {(file: string) => void} setInput - Probes the input and generates targets.
  * @property {(index: number) => void} toggleStream - Selects/deselects a stream.
+ * @property {(index: number) => void} toggleSplitChannel - Toggles per-channel splitting for an audio stream.
  * @property {(media: DemuxMediaPreferences) => void} setMedia - Sets conversion prefs and regenerates targets.
  * @property {(dir: string) => void} setOutputDir - Sets the output directory.
  * @property {(p: TaskProgress | null) => void} setProgress - Sets the aggregated demux progress (or null to clear).
@@ -658,6 +660,7 @@ export interface DemuxState {
   input: string;
   streams: MediaStreamInfo[];
   selectedIndices: number[];
+  splitIndices: number[];
   outputDir: string;
   targets: DemuxTarget[];
   warnings: RemuxWarning[];
@@ -668,6 +671,7 @@ export interface DemuxState {
   current: string | null;
   setInput: (file: string) => Promise<void>;
   toggleStream: (index: number) => void;
+  toggleSplitChannel: (index: number) => void;
   setMedia: (media: DemuxMediaPreferences) => void;
   setOutputDir: (dir: string) => void;
   setProgress: (p: TaskProgress | null) => void;

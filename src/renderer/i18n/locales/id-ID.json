@@ -1015,7 +1015,10 @@
     "currentStream": "Mengekstrak aliran {{kind}} #{{index}}",
     "filtersTitle": "Filter video",
     "filtersHint": "Menerapkan filter video FFmpeg (potong, laju bingkai, deinterlace, reduksi noise, warna…) selama penyandian ulang aliran video yang dipilih. \"Salin\" lossless, sehingga filter hanya muncul saat wadah tujuan menyandikan ulang video.",
-    "filtersIgnoredCopy": "Filter video diabaikan selama tujuan video adalah \"Salin\" karena salinan aliran tidak dapat disandikan ulang. Pilih wadah tujuan untuk menerapkan filter."
+    "filtersIgnoredCopy": "Filter video diabaikan selama tujuan video adalah \"Salin\" karena salinan aliran tidak dapat disandikan ulang. Pilih wadah tujuan untuk menerapkan filter.",
+    "splitChannels": "Pisahkan kanal",
+    "splitChannelsHint": "Pisahkan trek audio menjadi satu file mono per kanal. Pemisahan kanal akan menyandikan ulang audio: codec tujuan audio yang dipilih digunakan, atau FLAC saat \"Salin\" dipilih.",
+    "splitChannelsStream": "Pisahkan aliran audio #{{index}} menjadi file kanal terpisah"
   },
   "copilot": {
     "saveChat": "Simpan chat",

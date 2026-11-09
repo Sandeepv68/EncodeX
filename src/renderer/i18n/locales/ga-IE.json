@@ -1015,7 +1015,10 @@
     "currentStream": "Ag asbhaint sruth {{kind}} #{{index}}",
     "filtersTitle": "Scagairí físeáin",
     "filtersHint": "Cuireann scagairí físeáin FFmpeg i bhfeidhm (bearradh, ráta frámaí, neamhfhíodóireacht, laghdú torainn, dathanna…) le linn athionchódaithe na sruthanna físeáin roghnaithe. Tá \"Cóipeáil\" gan chailliúint, mar sin ní thaispeántar na scagairí ach amháin nuair a dhéanann coimeádán an cheannsceir físeán a athionchódú.",
-    "filtersIgnoredCopy": "Déantar neamhaird de scagairí físeáin a fhad agus is é \"Cóipeáil\" an ceann scríbe físeáin, toisc nach féidir cóip srutha a athionchódú. Roghnaigh coimeádán ceann scríbe chun scagairí a chur i bhfeidhm."
+    "filtersIgnoredCopy": "Déantar neamhaird de scagairí físeáin a fhad agus is é \"Cóipeáil\" an ceann scríbe físeáin, toisc nach féidir cóip srutha a athionchódú. Roghnaigh coimeádán ceann scríbe chun scagairí a chur i bhfeidhm.",
+    "splitChannels": "Roinn cainéil",
+    "splitChannelsHint": "Roinn rian fuaime ina chomhad mona amháin in aghaidh gach cainéil. Athionchódaíonn roinnt cainéal an fhuaim: úsáidtear an codec sprice fuaime roghnaithe, nó FLAC nuair a roghnaítear Cóipeáil.",
+    "splitChannelsStream": "Roinn sruth fuaime #{{index}} ina chomhaid chainéil ar leith"
   },
   "copilot": {
     "saveChat": "Sábháil comhrá",

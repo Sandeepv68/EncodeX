@@ -1015,7 +1015,10 @@
     "currentStream": "Extraction du flux {{kind}} n° {{index}}",
     "filtersTitle": "Filtres vidéo",
     "filtersHint": "Applique des filtres vidéo FFmpeg (recadrage, fréquence d'images, désentrelacement, réduction du bruit, couleur…) pendant le réencodage des flux vidéo sélectionnés. La copie est sans perte : les filtres n'apparaissent donc que lorsqu'un conteneur cible réencode la vidéo.",
-    "filtersIgnoredCopy": "Les filtres vidéo sont ignorés tant que la cible vidéo est « Copier », car une copie de flux ne peut pas réencoder. Choisissez un conteneur cible pour les appliquer."
+    "filtersIgnoredCopy": "Les filtres vidéo sont ignorés tant que la cible vidéo est « Copier », car une copie de flux ne peut pas réencoder. Choisissez un conteneur cible pour les appliquer.",
+    "splitChannels": "Diviser les canaux",
+    "splitChannelsHint": "Divise une piste audio en un fichier mono par canal. La division des canaux réencode l'audio : le codec cible audio sélectionné est utilisé, ou FLAC lorsque Copier est sélectionné.",
+    "splitChannelsStream": "Diviser le flux audio #{{index}} en fichiers de canaux séparés"
   },
   "copilot": {
     "saveChat": "Enregistrer la conversation",

@@ -28,6 +28,8 @@ export const LOG_AUDIO = 'audio:';
 export const LOG_AUDIO_BITRATE = 'Audio bitrate:';
 /** @const {string} Prefix when logging an audio codec value. */
 export const LOG_AUDIO_CODEC = 'Audio codec:';
+/** @const {string} Prefix when logging the merged audio filter chain (-af). */
+export const LOG_AUDIO_FILTERS = 'Audio filters:';
 /** @const {string} Logged when the player audio context is created. */
 export const LOG_AUDIO_CONTEXT_CREATED = 'Audio context created';
 /** @const {string} Logged when audio output is disabled and the output will have no audio stream. */
