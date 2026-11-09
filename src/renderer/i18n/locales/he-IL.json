@@ -577,7 +577,13 @@
       "lavender": "לבנדר",
       "rose": "ורד",
       "slate": "צפחה",
-      "dark": "כהה"
+      "dark": "כהה",
+      "oceanDark": "אוקיינוס (כהה)",
+      "sunsetDark": "שקיעה (כהה)",
+      "forestDark": "יער (כהה)",
+      "lavenderDark": "לבנדר (כהה)",
+      "roseDark": "ורד (כהה)",
+      "slateDark": "צפחה (כהה)"
     },
     "alwaysOnTop": "תמיד בראש",
     "alwaysOnTopHint": "שומר על חלון האפליקציה מעל כל החלונות האחרים.",

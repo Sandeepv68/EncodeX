@@ -577,7 +577,13 @@
       "lavender": "Hoa oải hương",
       "rose": "Hoa hồng",
       "slate": "Đá phiến",
-      "dark": "Tối"
+      "dark": "Tối",
+      "oceanDark": "Đại dương (Tối)",
+      "sunsetDark": "Hoàng hôn (Tối)",
+      "forestDark": "Rừng (Tối)",
+      "lavenderDark": "Hoa oải hương (Tối)",
+      "roseDark": "Hoa hồng (Tối)",
+      "slateDark": "Đá phiến (Tối)"
     },
     "alwaysOnTop": "Luôn ở trên cùng",
     "alwaysOnTopHint": "Giữ cửa sổ ứng dụng phía trên tất cả các cửa sổ khác.",

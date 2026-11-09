@@ -611,7 +611,13 @@
       "lavender": "ラベンダー",
       "rose": "ローズ",
       "slate": "スレート",
-      "dark": "ダーク"
+      "dark": "ダーク",
+      "oceanDark": "オーシャン (ダーク)",
+      "sunsetDark": "サンセット (ダーク)",
+      "forestDark": "フォレスト (ダーク)",
+      "lavenderDark": "ラベンダー (ダーク)",
+      "roseDark": "ローズ (ダーク)",
+      "slateDark": "スレート (ダーク)"
     },
     "ai": {
       "title": "AIプロバイダー",

@@ -611,7 +611,13 @@
       "lavender": "Lavendel",
       "rose": "Roos",
       "slate": "Leisteen",
-      "dark": "Donker"
+      "dark": "Donker",
+      "oceanDark": "Oceaan (Donker)",
+      "sunsetDark": "Zonsondergang (Donker)",
+      "forestDark": "Bos (Donker)",
+      "lavenderDark": "Lavendel (Donker)",
+      "roseDark": "Roos (Donker)",
+      "slateDark": "Leisteen (Donker)"
     },
     "ai": {
       "title": "AI-provider",

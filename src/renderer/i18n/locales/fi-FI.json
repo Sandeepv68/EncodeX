@@ -577,7 +577,13 @@
       "lavender": "Laventeli",
       "rose": "Ruusu",
       "slate": "Liitukivi",
-      "dark": "Tumma"
+      "dark": "Tumma",
+      "oceanDark": "Valtameri (Tumma)",
+      "sunsetDark": "Auringonlasku (Tumma)",
+      "forestDark": "Metsä (Tumma)",
+      "lavenderDark": "Laventeli (Tumma)",
+      "roseDark": "Ruusu (Tumma)",
+      "slateDark": "Liitukivi (Tumma)"
     },
     "alwaysOnTop": "Aina päällimmäisenä",
     "alwaysOnTopHint": "Pitää sovellusikkunan kaikkien muiden ikkunoiden yläpuolella.",

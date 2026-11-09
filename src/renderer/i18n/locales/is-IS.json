@@ -577,7 +577,13 @@
       "lavender": "Lavendill",
       "rose": "Rós",
       "slate": "Skífa",
-      "dark": "Dökkt"
+      "dark": "Dökkt",
+      "oceanDark": "Haf (Dökkt)",
+      "sunsetDark": "Sólsetur (Dökkt)",
+      "forestDark": "Skógur (Dökkt)",
+      "lavenderDark": "Lavendill (Dökkt)",
+      "roseDark": "Rós (Dökkt)",
+      "slateDark": "Skífa (Dökkt)"
     },
     "alwaysOnTop": "Alltaf ofan á",
     "alwaysOnTopHint": "Heldur app-glugganum fyrir ofan alla aðra glugga.",

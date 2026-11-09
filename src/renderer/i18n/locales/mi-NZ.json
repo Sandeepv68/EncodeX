@@ -577,7 +577,13 @@
       "lavender": "Rapine",
       "rose": "Rōhi",
       "slate": "Pōhatu",
-      "dark": "Pōuri"
+      "dark": "Pōuri",
+      "oceanDark": "Moana (Pōuri)",
+      "sunsetDark": "Tōna Atua Rā (Pōuri)",
+      "forestDark": "Ngahere (Pōuri)",
+      "lavenderDark": "Rapine (Pōuri)",
+      "roseDark": "Rōhi (Pōuri)",
+      "slateDark": "Pōhatu (Pōuri)"
     },
     "alwaysOnTop": "Kei Runga Ake Tonu",
     "alwaysOnTopHint": "Kia noho te matapihi o te taupānga ki runga ake o ngā matapihi katoa.",

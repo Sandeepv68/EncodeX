@@ -577,7 +577,13 @@
       "lavender": "Lavender",
       "rose": "Rosas",
       "slate": "Slat",
-      "dark": "Madilim"
+      "dark": "Madilim",
+      "oceanDark": "Karagatan (Madilim)",
+      "sunsetDark": "Paglubog ng araw (Madilim)",
+      "forestDark": "Kagubatan (Madilim)",
+      "lavenderDark": "Lavender (Madilim)",
+      "roseDark": "Rosas (Madilim)",
+      "slateDark": "Slat (Madilim)"
     },
     "alwaysOnTop": "Palaging nasa itaas",
     "alwaysOnTopHint": "Pinapanatili ang app window sa itaas ng lahat ng iba pang window.",

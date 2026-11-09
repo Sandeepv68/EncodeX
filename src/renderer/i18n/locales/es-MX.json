@@ -611,7 +611,13 @@
       "lavender": "Lavanda",
       "rose": "Rosa",
       "slate": "Pizarra",
-      "dark": "Oscuro"
+      "dark": "Oscuro",
+      "oceanDark": "Océano (Oscuro)",
+      "sunsetDark": "Atardecer (Oscuro)",
+      "forestDark": "Bosque (Oscuro)",
+      "lavenderDark": "Lavanda (Oscuro)",
+      "roseDark": "Rosa (Oscuro)",
+      "slateDark": "Pizarra (Oscuro)"
     },
     "ai": {
       "title": "Proveedor de IA",

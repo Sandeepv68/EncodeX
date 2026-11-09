@@ -577,7 +577,13 @@
       "lavender": "Labhandar",
       "rose": "Rós",
       "slate": "Sliosa",
-      "dark": "Dorcha"
+      "dark": "Dorcha",
+      "oceanDark": "Aigéan (Dorcha)",
+      "sunsetDark": "Luí Gréine (Dorcha)",
+      "forestDark": "Foraois (Dorcha)",
+      "lavenderDark": "Labhandar (Dorcha)",
+      "roseDark": "Rós (Dorcha)",
+      "slateDark": "Sliosa (Dorcha)"
     },
     "alwaysOnTop": "Ar Barr i gcónaí",
     "alwaysOnTopHint": "Coinníonn fuinneog an aip os cionn na bhfuinneoga eile go léir.",

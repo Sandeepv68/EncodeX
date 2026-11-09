@@ -4,7 +4,22 @@ import { mockApi } from '../mocks/control';
 
 const IS_E2E = process.env.E2E === 'true' || !!process.env.CI;
 
-const THEME_IDS = ['light', 'ocean', 'sunset', 'forest', 'lavender', 'rose', 'slate', 'dark'];
+const THEME_IDS = [
+  'light',
+  'ocean',
+  'sunset',
+  'forest',
+  'lavender',
+  'rose',
+  'slate',
+  'dark',
+  'ocean-dark',
+  'sunset-dark',
+  'forest-dark',
+  'lavender-dark',
+  'rose-dark',
+  'slate-dark',
+];
 
 async function gotoSettings(page: import('playwright').Page): Promise<void> {
   await page.locator('[data-testid="nav-item-settings"]').waitFor({ timeout: 15000 });

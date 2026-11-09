@@ -611,7 +611,13 @@
       "lavender": "Lavanda",
       "rose": "Rosa",
       "slate": "Ardesia",
-      "dark": "Scuro"
+      "dark": "Scuro",
+      "oceanDark": "Oceano (Scuro)",
+      "sunsetDark": "Tramonto (Scuro)",
+      "forestDark": "Foresta (Scuro)",
+      "lavenderDark": "Lavanda (Scuro)",
+      "roseDark": "Rosa (Scuro)",
+      "slateDark": "Ardesia (Scuro)"
     },
     "ai": {
       "title": "Provider IA",

@@ -577,7 +577,13 @@
       "lavender": "Lavendel",
       "rose": "Rose",
       "slate": "Skifer",
-      "dark": "Mørk"
+      "dark": "Mørk",
+      "oceanDark": "Hav (Mørk)",
+      "sunsetDark": "Solnedgang (Mørk)",
+      "forestDark": "Skov (Mørk)",
+      "lavenderDark": "Lavendel (Mørk)",
+      "roseDark": "Rose (Mørk)",
+      "slateDark": "Skifer (Mørk)"
     },
     "alwaysOnTop": "Altid øverst",
     "alwaysOnTopHint": "Holder app-vinduet over alle andre vinduer.",

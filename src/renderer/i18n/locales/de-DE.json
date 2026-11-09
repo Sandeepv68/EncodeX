@@ -611,7 +611,13 @@
       "lavender": "Lavendel",
       "rose": "Rosé",
       "slate": "Schiefer",
-      "dark": "Dunkel"
+      "dark": "Dunkel",
+      "oceanDark": "Ozean (Dunkel)",
+      "sunsetDark": "Sonnenuntergang (Dunkel)",
+      "forestDark": "Wald (Dunkel)",
+      "lavenderDark": "Lavendel (Dunkel)",
+      "roseDark": "Rosé (Dunkel)",
+      "slateDark": "Schiefer (Dunkel)"
     },
     "ai": {
       "title": "KI-Anbieter",

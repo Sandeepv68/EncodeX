@@ -611,7 +611,13 @@
       "lavender": "Lavender",
       "rose": "Mawar",
       "slate": "Batu tulis",
-      "dark": "Gelap"
+      "dark": "Gelap",
+      "oceanDark": "Samudra (Gelap)",
+      "sunsetDark": "Senja (Gelap)",
+      "forestDark": "Hutan (Gelap)",
+      "lavenderDark": "Lavender (Gelap)",
+      "roseDark": "Mawar (Gelap)",
+      "slateDark": "Batu tulis (Gelap)"
     },
     "ai": {
       "title": "Penyedia AI",

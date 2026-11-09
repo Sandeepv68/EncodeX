@@ -577,7 +577,13 @@
       "lavender": "लैभेन्डर",
       "rose": "गुलाफ",
       "slate": "स्लेट",
-      "dark": "गाढा"
+      "dark": "गाढा",
+      "oceanDark": "समुद्र (गाढा)",
+      "sunsetDark": "सूर्यास्त (गाढा)",
+      "forestDark": "जङ्गल (गाढा)",
+      "lavenderDark": "लैभेन्डर (गाढा)",
+      "roseDark": "गुलाफ (गाढा)",
+      "slateDark": "स्लेट (गाढा)"
     },
     "alwaysOnTop": "सधैं माथि",
     "alwaysOnTopHint": "एप विन्डोलाई अन्य सबै विन्डोहरूभन्दा माथि राख्छ।",

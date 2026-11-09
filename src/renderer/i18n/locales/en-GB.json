@@ -611,7 +611,13 @@
       "lavender": "Lavender",
       "rose": "Rose",
       "slate": "Slate",
-      "dark": "Dark"
+      "dark": "Dark",
+      "oceanDark": "Ocean (Dark)",
+      "sunsetDark": "Sunset (Dark)",
+      "forestDark": "Forest (Dark)",
+      "lavenderDark": "Lavender (Dark)",
+      "roseDark": "Rose (Dark)",
+      "slateDark": "Slate (Dark)"
     },
     "ai": {
       "title": "AI provider",

@@ -577,7 +577,13 @@
       "lavender": "Lavender",
       "rose": "Rose",
       "slate": "Slate",
-      "dark": "Tarraa"
+      "dark": "Tarraa",
+      "oceanDark": "Ikaasuaq (Tarraa)",
+      "sunsetDark": "Seqineq qajartorfiup (Tarraa)",
+      "forestDark": "Orpiit (Tarraa)",
+      "lavenderDark": "Lavender (Tarraa)",
+      "roseDark": "Rose (Tarraa)",
+      "slateDark": "Slate (Tarraa)"
     },
     "alwaysOnTop": "Sulleq qulaallugu",
     "alwaysOnTopHint": "App window-ip allat qaammaanni atugassaa.",

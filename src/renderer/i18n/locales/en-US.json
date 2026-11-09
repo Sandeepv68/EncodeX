@@ -835,7 +835,13 @@
       "lavender": "Lavender",
       "rose": "Rose",
       "slate": "Slate",
-      "dark": "Dark"
+      "dark": "Dark",
+      "oceanDark": "Ocean (Dark)",
+      "sunsetDark": "Sunset (Dark)",
+      "forestDark": "Forest (Dark)",
+      "lavenderDark": "Lavender (Dark)",
+      "roseDark": "Rose (Dark)",
+      "slateDark": "Slate (Dark)"
     },
     "alwaysOnTop": "Always on top",
     "alwaysOnTopHint": "Keeps the app window above all other windows.",

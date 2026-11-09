@@ -577,7 +577,13 @@
       "lavender": "Laventel",
       "rose": "Roos",
       "slate": "Leiklip",
-      "dark": "Donker"
+      "dark": "Donker",
+      "oceanDark": "Oseaan (Donker)",
+      "sunsetDark": "Sonsondergang (Donker)",
+      "forestDark": "Bos (Donker)",
+      "lavenderDark": "Laventel (Donker)",
+      "roseDark": "Roos (Donker)",
+      "slateDark": "Leiklip (Donker)"
     },
     "alwaysOnTop": "Altyd bo",
     "alwaysOnTopHint": "Hou die app-venster bo alle ander vensters.",

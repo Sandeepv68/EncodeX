@@ -611,7 +611,13 @@
       "lavender": "Lavendel",
       "rose": "Ros",
       "slate": "Skiffer",
-      "dark": "Mörk"
+      "dark": "Mörk",
+      "oceanDark": "Hav (Mörk)",
+      "sunsetDark": "Solnedgång (Mörk)",
+      "forestDark": "Skog (Mörk)",
+      "lavenderDark": "Lavendel (Mörk)",
+      "roseDark": "Ros (Mörk)",
+      "slateDark": "Skiffer (Mörk)"
     },
     "ai": {
       "title": "AI-leverantör",

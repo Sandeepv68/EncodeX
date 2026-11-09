@@ -577,7 +577,13 @@
       "lavender": "Lavender",
       "rose": "Mawar",
       "slate": "Batu Tulis",
-      "dark": "Gelap"
+      "dark": "Gelap",
+      "oceanDark": "Lautan (Gelap)",
+      "sunsetDark": "Senja (Gelap)",
+      "forestDark": "Hutan (Gelap)",
+      "lavenderDark": "Lavender (Gelap)",
+      "roseDark": "Mawar (Gelap)",
+      "slateDark": "Batu Tulis (Gelap)"
     },
     "alwaysOnTop": "Sentiasa di atas",
     "alwaysOnTopHint": "Mengekalkan tetingkap aplikasi di atas semua tetingkap lain.",

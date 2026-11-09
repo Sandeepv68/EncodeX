@@ -611,7 +611,13 @@
       "lavender": "लैवेंडर",
       "rose": "रोज़",
       "slate": "स्लेट",
-      "dark": "डार्क"
+      "dark": "डार्क",
+      "oceanDark": "ओशन (डार्क)",
+      "sunsetDark": "सनसेट (डार्क)",
+      "forestDark": "फॉरेस्ट (डार्क)",
+      "lavenderDark": "लैवेंडर (डार्क)",
+      "roseDark": "रोज़ (डार्क)",
+      "slateDark": "स्लेट (डार्क)"
     },
     "ai": {
       "title": "AI प्रदाता",

@@ -577,7 +577,13 @@
       "lavender": "薰衣草",
       "rose": "玫瑰",
       "slate": "石板",
-      "dark": "深色"
+      "dark": "深色",
+      "oceanDark": "海洋 (深色)",
+      "sunsetDark": "日落 (深色)",
+      "forestDark": "森林 (深色)",
+      "lavenderDark": "薰衣草 (深色)",
+      "roseDark": "玫瑰 (深色)",
+      "slateDark": "石板 (深色)"
     },
     "alwaysOnTop": "永遠在上方",
     "alwaysOnTopHint": "保持應用程式視窗位於所有其他視窗之上。",

@@ -115,6 +115,20 @@ describe('Settings', () => {
     expect(screen.getByRole('button', { name: 'settings.themes.dark' })).toBeInTheDocument();
   });
 
+  it('lists a dark variant for every accent theme', () => {
+    renderSettings();
+    for (const id of ['ocean', 'sunset', 'forest', 'lavender', 'rose', 'slate']) {
+      expect(screen.getByRole('button', { name: `settings.themes.${id}Dark` })).toBeInTheDocument();
+    }
+  });
+
+  it('switches to an accent dark variant and persists it', () => {
+    renderSettings();
+    fireEvent.click(screen.getByRole('button', { name: 'settings.themes.oceanDark' }));
+    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe('ocean-dark');
+    expect(screen.getByRole('button', { name: 'settings.themes.oceanDark' })).toHaveAttribute('aria-pressed', 'true');
+  });
+
   it('marks the active theme card as pressed', () => {
     renderSettings();
     expect(screen.getByRole('button', { name: 'settings.themes.light' })).toHaveAttribute('aria-pressed', 'true');

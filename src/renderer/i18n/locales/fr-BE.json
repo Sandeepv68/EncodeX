@@ -611,7 +611,13 @@
       "lavender": "Lavande",
       "rose": "Rose",
       "slate": "Ardoise",
-      "dark": "Sombre"
+      "dark": "Sombre",
+      "oceanDark": "Océan (Sombre)",
+      "sunsetDark": "Coucher de soleil (Sombre)",
+      "forestDark": "Forêt (Sombre)",
+      "lavenderDark": "Lavande (Sombre)",
+      "roseDark": "Rose (Sombre)",
+      "slateDark": "Ardoise (Sombre)"
     },
     "ai": {
       "title": "Fournisseur d’IA",

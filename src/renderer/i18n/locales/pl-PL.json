@@ -577,7 +577,13 @@
       "lavender": "Lawenda",
       "rose": "Róża",
       "slate": "Łupek",
-      "dark": "Ciemny"
+      "dark": "Ciemny",
+      "oceanDark": "Ocean (Ciemny)",
+      "sunsetDark": "Zachód słońca (Ciemny)",
+      "forestDark": "Las (Ciemny)",
+      "lavenderDark": "Lawenda (Ciemny)",
+      "roseDark": "Róża (Ciemny)",
+      "slateDark": "Łupek (Ciemny)"
     },
     "alwaysOnTop": "Zawsze na wierzchu",
     "alwaysOnTopHint": "Utrzymuje okno aplikacji nad wszystkimi innymi oknami.",
