@@ -352,6 +352,36 @@ describe('buildDemuxTargets', () => {
     expect(targets[0]).toEqual(expect.objectContaining({ copy: false, codec: 'mp3', output: 'movie.audio_0.mp3' }));
   });
 
+  it('splits a multi-channel audio stream into one mono target per channel', () => {
+    const targets = buildDemuxTargets('/in/movie.mp4', 'movie', [streams[2]], undefined, new Set([2]));
+    expect(targets).toHaveLength(6);
+    expect(targets[0]).toEqual(
+      expect.objectContaining({
+        index: 2,
+        kind: 'audio',
+        map: '0:a:0',
+        copy: false,
+        codec: 'flac',
+        audioFilters: ['pan=mono|c0=c0'],
+        output: 'movie.audio_0_ch1.flac',
+      }),
+    );
+    expect(targets[5]).toEqual(expect.objectContaining({ audioFilters: ['pan=mono|c0=c5'], output: 'movie.audio_0_ch6.flac' }));
+  });
+
+  it('uses the requested audio codec when splitting channels', () => {
+    const targets = buildDemuxTargets('/in/movie.mp4', 'movie', [streams[1]], { audioCodec: 'mp3' }, new Set([1]));
+    expect(targets).toHaveLength(2);
+    expect(targets[0]).toEqual(expect.objectContaining({ copy: false, codec: 'mp3', output: 'movie.audio_0_ch1.mp3' }));
+  });
+
+  it('keeps a single target when a split is requested for a mono stream', () => {
+    const mono: MediaStreamInfo = { index: 9, type: 'audio', codec: 'aac', channels: 1 };
+    const targets = buildDemuxTargets('/in/movie.mp4', 'movie', [mono], undefined, new Set([9]));
+    expect(targets).toHaveLength(1);
+    expect(targets[0]).toEqual(expect.objectContaining({ copy: true, output: 'movie.audio_0.m4a' }));
+  });
+
   it('re-encodes video to a requested container', () => {
     const targets = buildDemuxTargets('/in/movie.mp4', 'movie', [streams[0]], { videoContainer: 'webm' });
     expect(targets[0]).toEqual(

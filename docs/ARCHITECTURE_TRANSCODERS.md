@@ -69,7 +69,7 @@ The transcoder cores are the **last** line of defence. Remux and demux are copy-
 
 The shared functions stay pure so the same plan feeds the GUI store, both CLI subcommands, and both MCP tools. Policy that needs I/O or user consent (the CLI's hard rejection, the transcoder's log line) lives in the surface layer, which is why the CLI and MCP disagree deliberately about whether `demux` + copy-target + filters is an error or a warning.
 
-**Demux filters are video-only.** A chain requires a decoder, so `buildDemuxTargets` attaches it exclusively to a re-encoding `kind: 'video'` target; audio and subtitle targets never receive `videoFilters`. The Remux page shows a `filters_force_reencode` alert whenever the chain is non-empty, and the Demux page renders the Filters section only when `targets.some(t => t.kind === 'video' && !t.copy)`.
+**Video filter chains are video-only.** A chain requires a decoder, so `buildDemuxTargets` attaches `videoFilters` exclusively to a re-encoding `kind: 'video'` target. Audio targets may instead carry a separate `audioFilters` chain (used for per-channel demux splitting); subtitle targets carry neither. The Remux page shows a `filters_force_reencode` alert whenever the chain is non-empty, and the Demux page renders the Filters section only when `targets.some(t => t.kind === 'video' && !t.copy)`.
 
 ## 📦 Stream Composition (Remux) & Extraction (Demux)
 
@@ -116,7 +116,7 @@ FFmpeg cannot shift the audio of an input it is already reading without re-encod
 
 ### Demux flow
 
-Demux is the inverse: `buildDemuxTargets` (`src/shared/codec-containers.ts`) expands the checked streams into one target per stream, each with its own output path (source name + stream index + extension) and a per-kind target (`copy`, a video container, an audio codec, or a subtitle format). `attached_pic` streams are never treated as video. Bitmap subtitles (PGS/DVDSUB) have no plain-text encoder path without OCR, so they are forced to `copy` into `.mks` and reported with an explanatory warning. The GUI previews the resulting plan — one row per output file with its Copy/Convert action — before enqueuing; the CLI and MCP enqueue one job per target, creating the output directory up front and rejecting the whole request if any single target is invalid.
+Demux is the inverse: `buildDemuxTargets` (`src/shared/codec-containers.ts`) expands the checked streams into one target per stream — or one mono target per channel when the GUI's **Split channels** option is enabled for a multi-channel audio stream — each with its own output path (source name + stream index [+ channel] + extension) and a per-kind target (`copy`, a video container, an audio codec, or a subtitle format). `attached_pic` streams are never treated as video. Bitmap subtitles (PGS/DVDSUB) have no plain-text encoder path without OCR, so they are forced to `copy` into `.mks` and reported with an explanatory warning. The GUI previews the resulting plan — one row per output file with its Copy/Convert action — before enqueuing; the CLI and MCP enqueue one job per target, creating the output directory up front and rejecting the whole request if any single target is invalid.
 
 ### Backend coverage
 

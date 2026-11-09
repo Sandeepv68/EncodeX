@@ -5,8 +5,8 @@
  * the individual targets.
  *
  * State held:
- *  - input / streams / selectedIndices / outputDir / targets / warnings / media:
- *    the demux form fields
+ *  - input / streams / selectedIndices / splitIndices / outputDir / targets /
+ *    warnings / media: the demux form fields
  *  - isConverting / isPaused / progress / current: live operation state
  *
  * Consumers:
@@ -101,6 +101,7 @@ function joinPath(dir: string, name: string): string {
  * @property {string} input - Empty input path.
  * @property {MediaStreamInfo[]} streams - No probed streams.
  * @property {number[]} selectedIndices - No selected stream indices.
+ * @property {number[]} splitIndices - No audio streams split into channels.
  * @property {string} outputDir - Empty output directory.
  * @property {DemuxTarget[]} targets - No extraction targets.
  * @property {RemuxWarning[]} warnings - No subtitle-conversion warnings.
@@ -114,6 +115,7 @@ const INITIAL_STATE = {
   input: '',
   streams: [] as MediaStreamInfo[],
   selectedIndices: [] as number[],
+  splitIndices: [] as number[],
   outputDir: '',
   targets: [] as DemuxTarget[],
   warnings: [] as RemuxWarning[],
@@ -165,9 +167,10 @@ export const useDemuxStore = create<DemuxState>((set, get) => ({
       const info = await window.electronAPI.getMediaInfo(file, TRANSCODER_TYPES[0]);
       const streams = (info.streams ?? []).filter((s) => !s.disposition?.includes(ATTACHED_PIC_DISPOSITION));
       const selectedIndices = streams.map((s) => s.index);
+      const splitIndices: number[] = [];
       const outputDir = pathDirname(file);
-      const { targets, warnings } = buildTargets(file, streams, selectedIndices, get().media, outputDir);
-      set({ input: file, streams, selectedIndices, outputDir, targets, warnings });
+      const { targets, warnings } = buildTargets(file, streams, selectedIndices, get().media, outputDir, splitIndices);
+      set({ input: file, streams, selectedIndices, splitIndices, outputDir, targets, warnings });
     } catch (err: unknown) {
       log.error(LOG_FAILED_TO_GET_MEDIA_INFO, err);
       useErrorStore.getState().showError(err);
@@ -182,8 +185,40 @@ export const useDemuxStore = create<DemuxState>((set, get) => ({
     const selectedIndices = state.selectedIndices.includes(index)
       ? state.selectedIndices.filter((i) => i !== index)
       : [...state.selectedIndices, index].sort((a, b) => a - b);
-    const { targets, warnings } = buildTargets(state.input, state.streams, selectedIndices, state.media, state.outputDir);
+    const { targets, warnings } = buildTargets(
+      state.input,
+      state.streams,
+      selectedIndices,
+      state.media,
+      state.outputDir,
+      state.splitIndices,
+    );
     set({ selectedIndices, targets, warnings });
+  },
+  /**
+   * Toggles per-channel splitting for an audio stream and regenerates the
+   * targets. When enabled the stream expands into one mono output per channel
+   * (re-encoded with the selected audio codec, or FLAC when Copy is active);
+   * when disabled the stream returns to a single output. Non-audio streams and
+   * single-channel streams are ignored.
+   * @param {number} index - Source stream (ffprobe global) index to toggle.
+   */
+  toggleSplitChannel: (index) => {
+    const state = get();
+    const stream = state.streams.find((s) => s.index === index && s.type === 'audio');
+    if (!stream || (stream.channels ?? 0) < 2) return;
+    const splitIndices = state.splitIndices.includes(index)
+      ? state.splitIndices.filter((i) => i !== index)
+      : [...state.splitIndices, index].sort((a, b) => a - b);
+    const { targets, warnings } = buildTargets(
+      state.input,
+      state.streams,
+      state.selectedIndices,
+      state.media,
+      state.outputDir,
+      splitIndices,
+    );
+    set({ splitIndices, targets, warnings });
   },
   /**
    * Sets the per-kind conversion preferences and regenerates the targets.
@@ -192,7 +227,14 @@ export const useDemuxStore = create<DemuxState>((set, get) => ({
    */
   setMedia: (media) => {
     const state = get();
-    const { targets, warnings } = buildTargets(state.input, state.streams, state.selectedIndices, media, state.outputDir);
+    const { targets, warnings } = buildTargets(
+      state.input,
+      state.streams,
+      state.selectedIndices,
+      media,
+      state.outputDir,
+      state.splitIndices,
+    );
     set({ media, targets, warnings });
   },
   /**
@@ -201,7 +243,7 @@ export const useDemuxStore = create<DemuxState>((set, get) => ({
    */
   setOutputDir: (dir) => {
     const state = get();
-    const { targets, warnings } = buildTargets(state.input, state.streams, state.selectedIndices, state.media, dir);
+    const { targets, warnings } = buildTargets(state.input, state.streams, state.selectedIndices, state.media, dir, state.splitIndices);
     set({ outputDir: dir, targets, warnings });
   },
   /**
@@ -310,7 +352,16 @@ export const useDemuxStore = create<DemuxState>((set, get) => ({
    * Keeps the per-kind conversion preferences and run state untouched.
    */
   clearSelection: () => {
-    set({ input: '', streams: [], selectedIndices: [], outputDir: '', targets: [], warnings: [], current: null });
+    set({
+      input: '',
+      streams: [],
+      selectedIndices: [],
+      splitIndices: [],
+      outputDir: '',
+      targets: [],
+      warnings: [],
+      current: null,
+    });
   },
   /**
    * Sets the live aggregated demux progress (or null to clear it).
@@ -330,6 +381,7 @@ export const useDemuxStore = create<DemuxState>((set, get) => ({
  * @param {number[]} selectedIndices - Source stream indices selected for extraction.
  * @param {DemuxMediaPreferences} media - Per-kind conversion preferences.
  * @param {string} outputDir - Absolute output directory.
+ * @param {number[]} splitIndices - Source indices of audio streams split per channel.
  * @returns {DemuxTarget[]} Extraction targets for the selected streams.
  */
 function buildTargets(
@@ -338,10 +390,11 @@ function buildTargets(
   selectedIndices: number[],
   media: DemuxMediaPreferences,
   outputDir: string,
+  splitIndices: number[],
 ): { targets: DemuxTarget[]; warnings: RemuxWarning[] } {
   if (!input || streams.length === 0) return { targets: [], warnings: [] };
   const baseName = pathStem(input);
-  const fullTargets = buildDemuxTargets(input, baseName, streams, media);
+  const fullTargets = buildDemuxTargets(input, baseName, streams, media, new Set(splitIndices));
   const selected = new Set(selectedIndices);
   const targets = fullTargets.filter((t) => selected.has(t.index)).map((t) => ({ ...t, output: resolveTargetOutput(outputDir, t.output) }));
   const selectedStreams = streams.filter((s) => selected.has(s.index));
@@ -368,6 +421,7 @@ function optionsForTarget(target: DemuxTarget): Record<string, unknown> {
     opts.video = false;
     opts.audio = true;
     if (!target.copy && target.codec) opts.audioCodec = target.codec;
+    if (target.audioFilters?.length) opts.audioFilters = target.audioFilters;
   } else {
     opts.video = false;
     opts.audio = false;

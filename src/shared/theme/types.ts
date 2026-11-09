@@ -17,9 +17,25 @@ export type ColorMode = 'light' | 'dark';
 /**
  * Supported theme palettes. Each theme carries its own accent colors and
  * a light or dark color mode. The 'light' palette is the default fallback.
- * @typedef {'light' | 'ocean' | 'sunset' | 'forest' | 'lavender' | 'rose' | 'slate' | 'dark'} ThemeId
+ * The accent themes (ocean, sunset, forest, lavender, rose, slate) each have
+ * a matching `*-dark` variant, and 'dark' is the neutral dark palette.
+ * @typedef {'light' | 'ocean' | 'sunset' | 'forest' | 'lavender' | 'rose' | 'slate' | 'dark' | 'ocean-dark' | 'sunset-dark' | 'forest-dark' | 'lavender-dark' | 'rose-dark' | 'slate-dark'} ThemeId
  */
-export type ThemeId = 'light' | 'ocean' | 'sunset' | 'forest' | 'lavender' | 'rose' | 'slate' | 'dark';
+export type ThemeId =
+  | 'light'
+  | 'ocean'
+  | 'sunset'
+  | 'forest'
+  | 'lavender'
+  | 'rose'
+  | 'slate'
+  | 'dark'
+  | 'ocean-dark'
+  | 'sunset-dark'
+  | 'forest-dark'
+  | 'lavender-dark'
+  | 'rose-dark'
+  | 'slate-dark';
 
 /**
  * A theme palette definition. Light themes share the same color mode but use

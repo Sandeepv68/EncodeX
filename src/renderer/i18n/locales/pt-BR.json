@@ -611,7 +611,13 @@
       "lavender": "Lavanda",
       "rose": "Rosa",
       "slate": "Ardósia",
-      "dark": "Escuro"
+      "dark": "Escuro",
+      "oceanDark": "Oceano (Escuro)",
+      "sunsetDark": "Pôr do sol (Escuro)",
+      "forestDark": "Floresta (Escuro)",
+      "lavenderDark": "Lavanda (Escuro)",
+      "roseDark": "Rosa (Escuro)",
+      "slateDark": "Ardósia (Escuro)"
     },
     "ai": {
       "title": "Provedor de IA",
@@ -1009,7 +1015,10 @@
     "currentStream": "Extraindo o fluxo de {{kind}} nº {{index}}",
     "filtersTitle": "Filtros de vídeo",
     "filtersHint": "Aplica filtros de vídeo do FFmpeg (recorte, taxa de quadros, desentrelaçamento, redução de ruído, cor…) enquanto os fluxos de vídeo selecionados são recodificados. “Copiar” é sem perdas, então os filtros só aparecem quando um contêiner de destino recodifica o vídeo.",
-    "filtersIgnoredCopy": "Os filtros de vídeo são ignorados enquanto o destino de vídeo for “Copiar”, porque uma cópia de fluxo não pode recodificar. Escolha um contêiner de destino para aplicá-los."
+    "filtersIgnoredCopy": "Os filtros de vídeo são ignorados enquanto o destino de vídeo for “Copiar”, porque uma cópia de fluxo não pode recodificar. Escolha um contêiner de destino para aplicá-los.",
+    "splitChannels": "Dividir canais",
+    "splitChannelsHint": "Divide uma faixa de áudio em um arquivo mono por canal. A divisão de canais recodifica o áudio: o codec de destino de áudio selecionado é usado, ou FLAC quando Copiar está selecionado.",
+    "splitChannelsStream": "Divide o fluxo de áudio #{{index}} em arquivos de canal separados"
   },
   "copilot": {
     "saveChat": "Salvar conversa",

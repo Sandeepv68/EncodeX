@@ -611,7 +611,13 @@
       "lavender": "Lavendel",
       "rose": "Roos",
       "slate": "Leisteen",
-      "dark": "Donker"
+      "dark": "Donker",
+      "oceanDark": "Oceaan (Donker)",
+      "sunsetDark": "Zonsondergang (Donker)",
+      "forestDark": "Bos (Donker)",
+      "lavenderDark": "Lavendel (Donker)",
+      "roseDark": "Roos (Donker)",
+      "slateDark": "Leisteen (Donker)"
     },
     "ai": {
       "title": "AI-provider",
@@ -1009,7 +1015,10 @@
     "currentStream": "{{kind}}-stream #{{index}} extraheren",
     "filtersTitle": "Videofilters",
     "filtersHint": "Past FFmpeg-videofilters (bijsnijden, framerate, deinterlacing, ruisonderdrukking, kleur…) toe terwijl geselecteerde videostreams opnieuw worden gecodeerd. \"Kopiëren\" is verliesvrij, dus filters verschijnen alleen wanneer een doelcontainer de video opnieuw codeert.",
-    "filtersIgnoredCopy": "Videofilters worden genegeerd zolang de videobestemming \"Kopiëren\" is, omdat een streamkopie niet opnieuw kan coderen. Kies een doelcontainer om ze toe te passen."
+    "filtersIgnoredCopy": "Videofilters worden genegeerd zolang de videobestemming \"Kopiëren\" is, omdat een streamkopie niet opnieuw kan coderen. Kies een doelcontainer om ze toe te passen.",
+    "splitChannels": "Kanalen splitsen",
+    "splitChannelsHint": "Splits een audiotrack in één monobestand per kanaal. Bij het splitsen van kanalen wordt de audio opnieuw gecodeerd: de geselecteerde audio-doelcodec wordt gebruikt, of FLAC wanneer Kopiëren is geselecteerd.",
+    "splitChannelsStream": "Splits audiostream #{{index}} in afzonderlijke kanaalbestanden"
   },
   "copilot": {
     "saveChat": "Chat opslaan",

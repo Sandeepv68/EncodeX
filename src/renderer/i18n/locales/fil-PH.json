@@ -577,7 +577,13 @@
       "lavender": "Lavender",
       "rose": "Rosas",
       "slate": "Slat",
-      "dark": "Madilim"
+      "dark": "Madilim",
+      "oceanDark": "Karagatan (Madilim)",
+      "sunsetDark": "Paglubog ng araw (Madilim)",
+      "forestDark": "Kagubatan (Madilim)",
+      "lavenderDark": "Lavender (Madilim)",
+      "roseDark": "Rosas (Madilim)",
+      "slateDark": "Slat (Madilim)"
     },
     "alwaysOnTop": "Palaging nasa itaas",
     "alwaysOnTopHint": "Pinapanatili ang app window sa itaas ng lahat ng iba pang window.",
@@ -1009,7 +1015,10 @@
     "currentStream": "Kinukuha ang {{kind}} stream #{{index}}",
     "filtersTitle": "Mga video filter",
     "filtersHint": "Nag-aplay ng mga video filter ng FFmpeg (trim, frame rate, deinterlace, pagbawas ng ingay, kulay…) habang nagre-re-encode ng piniling mga video stream. Ang \"Kopyahin\" ay walang kabawasan, kaya ang mga filter ay lalabas lamang kapag ang destinasyong container ay nagre-re-encode ng video.",
-    "filtersIgnoredCopy": "Hindi papansinin ang mga video filter habang ang destinasyon ng video ay \"Kopyahin,\" dahil hindi maaaring mag-re-encode ang kopya ng stream. Pumili ng destinasyong container upang mailapat ang mga filter."
+    "filtersIgnoredCopy": "Hindi papansinin ang mga video filter habang ang destinasyon ng video ay \"Kopyahin,\" dahil hindi maaaring mag-re-encode ang kopya ng stream. Pumili ng destinasyong container upang mailapat ang mga filter.",
+    "splitChannels": "Hatiin ang mga channel",
+    "splitChannelsHint": "Hatiin ang audio track sa isang mono file bawat channel. Ang paghahati ng channel ay muling nag-e-encode ng audio: ginagamit ang napiling audio target codec, o FLAC kapag pinili ang Copy.",
+    "splitChannelsStream": "Hatiin ang audio stream #{{index}} sa magkakahiwalay na channel file"
   },
   "copilot": {
     "saveChat": "I-save ang chat",

@@ -577,7 +577,13 @@
       "lavender": "Hoa oải hương",
       "rose": "Hoa hồng",
       "slate": "Đá phiến",
-      "dark": "Tối"
+      "dark": "Tối",
+      "oceanDark": "Đại dương (Tối)",
+      "sunsetDark": "Hoàng hôn (Tối)",
+      "forestDark": "Rừng (Tối)",
+      "lavenderDark": "Hoa oải hương (Tối)",
+      "roseDark": "Hoa hồng (Tối)",
+      "slateDark": "Đá phiến (Tối)"
     },
     "alwaysOnTop": "Luôn ở trên cùng",
     "alwaysOnTopHint": "Giữ cửa sổ ứng dụng phía trên tất cả các cửa sổ khác.",
@@ -1009,7 +1015,10 @@
     "currentStream": "Đang trích xuất luồng {{kind}} số {{index}}",
     "filtersTitle": "Bộ lọc video",
     "filtersHint": "Áp dụng bộ lọc video FFmpeg (cắt, tần số khung hình, khử xen kẽ, giảm nhiễu, màu sắc…) trong khi mã hoá lại các luồng video đã chọn. “Sao chép” không tổn thất, nên bộ lọc chỉ hiện khi vùng chứa đích mã hoá lại video.",
-    "filtersIgnoredCopy": "Bộ lọc video bị bỏ qua khi đích video là “Sao chép”, vì bản sao luồng không thể mã hoá lại. Hãy chọn một vùng chứa đích để áp dụng."
+    "filtersIgnoredCopy": "Bộ lọc video bị bỏ qua khi đích video là “Sao chép”, vì bản sao luồng không thể mã hoá lại. Hãy chọn một vùng chứa đích để áp dụng.",
+    "splitChannels": "Tách kênh",
+    "splitChannelsHint": "Tách một bản âm thanh thành một tệp mono cho mỗi kênh. Việc tách kênh sẽ mã hóa lại âm thanh: sử dụng codec đích âm thanh đã chọn, hoặc FLAC khi chọn Sao chép.",
+    "splitChannelsStream": "Tách luồng âm thanh #{{index}} thành các tệp kênh riêng"
   },
   "copilot": {
     "saveChat": "Lưu cuộc trò chuyện",

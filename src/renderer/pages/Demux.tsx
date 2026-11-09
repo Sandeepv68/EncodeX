@@ -134,25 +134,32 @@ export default function DemuxPage() {
   const inputPreview = usePreviewThumbnail(store.input);
 
   /**
-   * Probed streams grouped by kind, each stream paired with the suggested
-   * output file name for the stream. The name resolves from the store's live
-   * targets (which already reflect the selected conversion prefs) so rows stay
-   * in sync with the extraction plan; unselected streams fall back to the
-   * extension their lossless copy would get.
-   * @type {Array<{kind: 'video' | 'audio' | 'subtitle'; rows: Array<{stream: MediaStreamInfo; output?: string}>}>}
+   * Probed streams grouped by kind, each stream paired with its suggested
+   * output file name(s). The names resolve from the store's live targets (which
+   * already reflect the selected conversion prefs) so rows stay in sync with the
+   * extraction plan; unselected streams fall back to the extension their
+   * lossless copy would get. A channel-split audio stream contributes one target
+   * per channel, so it is paired with every per-channel output name.
+   * @type {Array<{kind: 'video' | 'audio' | 'subtitle'; rows: Array<{stream: MediaStreamInfo; outputs: string[]}>}>}
    */
-  const groups: Array<{ kind: (typeof STREAM_KINDS)[number]; rows: Array<{ stream: MediaStreamInfo; output: string }> }> = useMemo(() => {
-    const targetsByIndex = new Map(store.targets.map((target) => [target.index, target.output]));
-    return STREAM_KINDS.map((kind) => ({
-      kind,
-      rows: store.streams
-        .filter((s) => s.type === kind)
-        .map((stream): { stream: MediaStreamInfo; output: string } => ({
-          stream,
-          output: targetsByIndex.get(stream.index) ?? suggestedExtensionForStream(stream),
-        })),
-    })).filter((group) => group.rows.length > 0);
-  }, [store.streams, store.targets]);
+  const groups: Array<{ kind: (typeof STREAM_KINDS)[number]; rows: Array<{ stream: MediaStreamInfo; outputs: string[] }> }> =
+    useMemo(() => {
+      const outputsByIndex = new Map<number, string[]>();
+      for (const target of store.targets) {
+        const outputs = outputsByIndex.get(target.index) ?? [];
+        outputs.push(target.output);
+        outputsByIndex.set(target.index, outputs);
+      }
+      return STREAM_KINDS.map((kind) => ({
+        kind,
+        rows: store.streams
+          .filter((s) => s.type === kind)
+          .map((stream): { stream: MediaStreamInfo; outputs: string[] } => ({
+            stream,
+            outputs: outputsByIndex.get(stream.index) ?? [suggestedExtensionForStream(stream)],
+          })),
+      })).filter((group) => group.rows.length > 0);
+    }, [store.streams, store.targets]);
 
   /**
    * Handles a newly selected or dropped video file by letting the store probe
@@ -308,6 +315,7 @@ export default function DemuxPage() {
                   <Box key={kind} data-testid={`demux-stream-group-${kind}`}>
                     <Typography variant="subtitle2" gutterBottom>
                       {t('demux.streamGroup', { kind: t(`mediaInfo.${kind}`) })}
+                      {kind === 'audio' && <InfoTooltip title={t('demux.splitChannelsHint')} />}
                     </Typography>
                     <StreamTable size="small" aria-label={t(`mediaInfo.${kind}`)}>
                       <TableHead>
@@ -315,6 +323,7 @@ export default function DemuxPage() {
                           <TableCell padding="checkbox">
                             <VisuallyHidden>{t('demux.extractStreams')}</VisuallyHidden>
                           </TableCell>
+                          {kind === 'audio' && <TableCell>{t('demux.splitChannels')}</TableCell>}
                           <TableCell>{t('remux.streamIndex')}</TableCell>
                           <TableCell>{t('mediaInfo.codec')}</TableCell>
                           <TableCell>{t('mediaInfo.language')}</TableCell>
@@ -323,8 +332,9 @@ export default function DemuxPage() {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {rows.map(({ stream, output }) => {
+                        {rows.map(({ stream, outputs }) => {
                           const selected = store.selectedIndices.includes(stream.index);
+                          const language = stream.language?.trim();
                           return (
                             <TableRow key={stream.index} data-testid="demux-stream-row">
                               <TableCell padding="checkbox">
@@ -336,14 +346,30 @@ export default function DemuxPage() {
                                   aria-label={t('demux.selectStream', { kind: t(`mediaInfo.${stream.type}`), index: stream.index })}
                                 />
                               </TableCell>
+                              {kind === 'audio' && (
+                                <TableCell padding="checkbox">
+                                  <Checkbox
+                                    size="small"
+                                    checked={store.splitIndices.includes(stream.index)}
+                                    onChange={() => store.toggleSplitChannel(stream.index)}
+                                    disabled={store.isConverting || (stream.channels ?? 0) < 2}
+                                    aria-label={t('demux.splitChannelsStream', { index: stream.index })}
+                                    data-testid={`demux-split-${stream.index}`}
+                                  />
+                                </TableCell>
+                              )}
                               <TableCell>{stream.index}</TableCell>
                               <TableCell>{stream.codec}</TableCell>
-                              <TableCell>{stream.language ?? '—'}</TableCell>
+                              <TableCell>{language && language.toLowerCase() !== 'und' ? language : '—'}</TableCell>
                               <TableCell>{stream.channels != null ? stream.channels : '—'}</TableCell>
                               <TableCell>
-                                <Typography variant="body2" data-testid={`demux-output-${stream.index}`}>
-                                  {output}
-                                </Typography>
+                                <Stack spacing={0.5}>
+                                  {outputs.map((output) => (
+                                    <Typography key={output} variant="body2" data-testid={`demux-output-${stream.index}`}>
+                                      {output}
+                                    </Typography>
+                                  ))}
+                                </Stack>
                               </TableCell>
                             </TableRow>
                           );
@@ -483,7 +509,7 @@ export default function DemuxPage() {
             </FieldLabel>
             <Stack spacing={1} data-testid="demux-summary">
               {store.targets.map((target) => (
-                <TargetRow key={target.index} data-testid="demux-target">
+                <TargetRow key={target.output} data-testid="demux-target">
                   <FlexibleText variant="body2" noWrap>
                     {fileName(target.output)}
                   </FlexibleText>

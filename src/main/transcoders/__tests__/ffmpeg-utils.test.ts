@@ -211,6 +211,16 @@ describe('buildFfmpegArgs', () => {
     expect(args[chainIndex + 1]).toBe('scale=1280x720,transpose=1,fps=30');
   });
 
+  it('emits a single -af flag for audio filters', () => {
+    const args = buildFfmpegArgs('in.mkv', 'out.flac', {
+      audioFilters: ['pan=mono|c0=c0'],
+      audioCodec: 'flac',
+      video: false,
+      audio: true,
+    });
+    expect(args).toEqual(['-i', 'in.mkv', '-acodec', 'flac', '-af', 'pan=mono|c0=c0', '-vn', '-y', 'out.flac']);
+  });
+
   it('emits -map specs for primary and additional inputs before copying', () => {
     const args = buildFfmpegArgs('in.mkv', 'out.mkv', {
       copy: true,

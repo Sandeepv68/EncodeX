@@ -158,6 +158,7 @@ export function demuxTargetOptions(target: DemuxTarget): ConversionOptions {
   } else if (target.kind === 'audio') {
     options.video = false;
     options.audio = true;
+    if (target.audioFilters?.length) options.audioFilters = target.audioFilters;
   } else {
     options.video = false;
     options.audio = false;

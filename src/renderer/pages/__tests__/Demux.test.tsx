@@ -22,6 +22,7 @@ function resetStore(): void {
     input: '',
     streams: [],
     selectedIndices: [],
+    splitIndices: [],
     outputDir: '',
     targets: [],
     warnings: [],
@@ -110,6 +111,59 @@ describe('Demux', () => {
     expect(targets.map((t) => t.output)).toEqual(['/in/video.video.mp4', '/in/video.audio_0.m4a', '/in/video.subtitle_0.srt']);
     expect(screen.getByTestId('demux-output-0')).toHaveTextContent('video.video.mp4');
     expect(screen.getByTestId('demux-output-1')).toHaveTextContent('video.audio_0.m4a');
+  });
+
+  it('shows a dash when the stream language is undetermined', async () => {
+    selectFileMock.mockResolvedValue('/in/video.mkv');
+    getMediaInfoMock.mockResolvedValue({
+      file: '/in/video.mkv',
+      format: 'matroska',
+      size: 1024,
+      duration: 60,
+      bitrate: '1000k',
+      streams: [{ index: 0, type: 'audio', codec: 'aac', channels: 2, language: 'und' }],
+    });
+    renderPage();
+    fireEvent.click(screen.getByText('demux.dropLabel'));
+    await waitFor(() => expect(getMediaInfoMock).toHaveBeenCalledOnce());
+
+    const audioGroup = within(screen.getByTestId('demux-stream-group-audio'));
+    expect(audioGroup.getByText('—')).toBeInTheDocument();
+  });
+
+  it('splits an audio stream into per-channel outputs when requested', async () => {
+    selectFileMock.mockResolvedValue('/in/video.mkv');
+    getMediaInfoMock.mockResolvedValue({
+      file: '/in/video.mkv',
+      format: 'matroska',
+      size: 1024,
+      duration: 60,
+      bitrate: '1000k',
+      streams: [
+        { index: 0, type: 'video', codec: 'h264', width: 1920, height: 1080 },
+        { index: 1, type: 'audio', codec: 'aac', channels: 2 },
+      ],
+    });
+    renderPage();
+    fireEvent.click(screen.getByText('demux.dropLabel'));
+    await waitFor(() => expect(getMediaInfoMock).toHaveBeenCalledOnce());
+
+    const audioGroup = within(screen.getByTestId('demux-stream-group-audio'));
+    fireEvent.click(audioGroup.getAllByRole('checkbox')[1]);
+    expect(useDemuxStore.getState().splitIndices).toEqual([1]);
+
+    const audioTargets = useDemuxStore.getState().targets.filter((t) => t.index === 1);
+    expect(audioTargets).toHaveLength(2);
+    expect(audioTargets[0]).toMatchObject({
+      copy: false,
+      codec: 'flac',
+      audioFilters: ['pan=mono|c0=c0'],
+      output: '/in/video.audio_0_ch1.flac',
+    });
+    expect(audioTargets[1]).toMatchObject({ audioFilters: ['pan=mono|c0=c1'] });
+    const outputs = screen.getAllByTestId('demux-output-1');
+    expect(outputs).toHaveLength(2);
+    expect(outputs[0]).toHaveTextContent('video.audio_0_ch1.flac');
   });
 
   it('keeps a stream selected state in sync when removing it', async () => {

@@ -577,7 +577,13 @@
       "lavender": "薰衣草",
       "rose": "玫瑰",
       "slate": "石板",
-      "dark": "深色"
+      "dark": "深色",
+      "oceanDark": "海洋 (深色)",
+      "sunsetDark": "日落 (深色)",
+      "forestDark": "森林 (深色)",
+      "lavenderDark": "薰衣草 (深色)",
+      "roseDark": "玫瑰 (深色)",
+      "slateDark": "石板 (深色)"
     },
     "alwaysOnTop": "始终置顶",
     "alwaysOnTopHint": "保持应用窗口位于所有其他窗口之上。",
@@ -1009,7 +1015,10 @@
     "currentStream": "正在提取第 {{index}} 个 {{kind}} 流",
     "filtersTitle": "视频滤镜",
     "filtersHint": "在重新编码选中的视频流时应用 FFmpeg 视频滤镜（裁剪、帧率、去隔行、降噪、色彩等）。“复制”为无损方式，因此只有当输出容器会重新编码视频时，才会显示滤镜选项。",
-    "filtersIgnoredCopy": "当视频输出方式为“复制”时，视频滤镜会被忽略，因为流复制无法重新编码。请选择输出容器以应用滤镜。"
+    "filtersIgnoredCopy": "当视频输出方式为“复制”时，视频滤镜会被忽略，因为流复制无法重新编码。请选择输出容器以应用滤镜。",
+    "splitChannels": "拆分声道",
+    "splitChannelsHint": "将音频轨道拆分为每个声道一个单声道文件。声道拆分会对音频重新编码：使用所选的音频目标编解码器，若选择复制则使用 FLAC。",
+    "splitChannelsStream": "将音频流 #{{index}} 拆分为单独的声道文件"
   },
   "copilot": {
     "saveChat": "保存对话",

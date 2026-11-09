@@ -611,7 +611,13 @@
       "lavender": "Lavender",
       "rose": "Rose",
       "slate": "Slate",
-      "dark": "Dark"
+      "dark": "Dark",
+      "oceanDark": "Ocean (Dark)",
+      "sunsetDark": "Sunset (Dark)",
+      "forestDark": "Forest (Dark)",
+      "lavenderDark": "Lavender (Dark)",
+      "roseDark": "Rose (Dark)",
+      "slateDark": "Slate (Dark)"
     },
     "ai": {
       "title": "AI provider",
@@ -1009,7 +1015,10 @@
     "currentStream": "Extracting {{kind}} stream #{{index}}",
     "filtersTitle": "Video Filters",
     "filtersHint": "Applies FFmpeg video filters (crop, frame rate, deinterlace, denoise, color...) while the selected video streams are re-encoded. Copy is lossless, so filters only appear when a video target container re-encodes the video.",
-    "filtersIgnoredCopy": "Video filters are ignored while the video target is Copy, because a stream copy cannot re-encode. Choose a video target container to apply them."
+    "filtersIgnoredCopy": "Video filters are ignored while the video target is Copy, because a stream copy cannot re-encode. Choose a video target container to apply them.",
+    "splitChannels": "Split channels",
+    "splitChannelsHint": "Split an audio track into one mono file per channel. Channel splitting re-encodes the audio: the selected audio target codec is used, or FLAC when Copy is selected.",
+    "splitChannelsStream": "Split audio stream #{{index}} into separate channel files"
   },
   "copilot": {
     "saveChat": "Save chat",

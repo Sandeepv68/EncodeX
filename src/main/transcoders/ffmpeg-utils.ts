@@ -21,6 +21,7 @@ import {
   LOG_AUDIO_BITRATE,
   LOG_AUDIO_CODEC,
   LOG_AUDIO_DISABLED_OUTPUT_WILL_HAVE_NO_AUDIO_STREAM,
+  LOG_AUDIO_FILTERS,
   LOG_CHAPTERS_FILE,
   LOG_COPY_CHAPTERS,
   LOG_DISPOSITION_KEYED,
@@ -208,7 +209,8 @@ export function shouldCopySourceChapters(options: ConversionOptions): boolean {
  *    output - see {@link shouldCopySourceChapters} for why a trimmed output
  *    must drop it. Otherwise, in
  *    order: video codec (`-vcodec`), audio codec (`-acodec`), video bitrate
- *    (`-b:v`), audio bitrate (`-b:a`), quality scale (`-qscale:v`), a single
+ *    (`-b:v`), audio bitrate (`-b:a`), an audio filter chain (`-af`) when
+ *    `options.audioFilters` is set, quality scale (`-qscale:v`), a single
  *    video filter chain (`-vf scale=...,transpose=...,hflip,vflip`), and pixel
  *    format (`-pix_fmt`).
  * 5. Audio disable (`-an`) when `options.audio === false`.
@@ -321,6 +323,11 @@ export function buildFfmpegArgs(input: string, output: string, options: Conversi
     if (options.audioBitrate) {
       args.push(FFMPEG_FLAGS.AUDIO_BITRATE, options.audioBitrate);
       log.debug(LOG_AUDIO_BITRATE, options.audioBitrate);
+    }
+    if (options.audioFilters?.length) {
+      const audioFilterChain = options.audioFilters.join(',');
+      args.push(FFMPEG_FLAGS.AUDIO_FILTER, audioFilterChain);
+      log.debug(LOG_AUDIO_FILTERS, audioFilterChain);
     }
     if (options.qscale !== undefined) {
       args.push(FFMPEG_FLAGS.QSCALE, String(options.qscale));

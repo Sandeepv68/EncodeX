@@ -5,9 +5,10 @@
  * MUI theme (see theme.ts). It defines:
  *  - `ThemeDefinition`, the shape of one selectable theme palette.
  *  - `THEMES`, the registry of all built-in palettes (light, ocean, sunset,
- *    forest, lavender, rose, slate, dark). Light themes all share the 'light'
- *    color mode but differ in their accent colors, text colors, borders, and
- *    subtle background tints; the 'dark' theme is the sole 'dark' mode entry.
+ *    forest, lavender, rose, slate, dark, plus a dark variant of every accent
+ *    theme). Light themes all share the 'light' color mode but differ in their
+ *    accent colors, text colors, borders, and subtle background tints; the
+ *    'dark' theme and the `*-dark` accent variants use the 'dark' color mode.
  *  - `getTheme()` / `isThemeId()` helpers to look palettes up by id and to
  *    validate unknown ids (e.g. values read back from localStorage).
  *  - `COLORS`, the semantic colors shared across every theme (info/error/
@@ -27,7 +28,8 @@ export type { ThemeDefinition } from './types';
 /**
  * Registry of all built-in theme palettes. Seven light themes (light, ocean,
  * sunset, forest, lavender, rose, slate) share the 'light' color mode with
- * distinct accent/border/tint colors, plus one dark theme ('dark').
+ * distinct accent/border/tint colors, plus a neutral dark theme ('dark') and a
+ * matching `*-dark` variant for each accent theme.
  * @const {readonly ThemeDefinition[]} THEMES
  */
 export const THEMES: readonly ThemeDefinition[] = [
@@ -190,6 +192,126 @@ export const THEMES: readonly ThemeDefinition[] = [
     focusRing: 'rgba(12,129,118,0.25)',
     surfaceSubtle: 'rgba(255, 255, 255, 0.04)',
     menu: { surface: '#262626' },
+  },
+  {
+    id: 'ocean-dark',
+    labelKey: 'settings.themes.oceanDark',
+    mode: 'dark',
+    primary: '#4dabf7',
+    secondary: '#74c0fc',
+    background: { default: '#0b1118', paper: '#141c24', drawer: '#0e151c' },
+    text: { primary: '#e6f0fa', secondary: '#9fb3c8' },
+    border: '#24303d',
+    tint: { primary15: 'rgba(77,171,247,0.15)', primary25: 'rgba(77,171,247,0.25)' },
+    input: {
+      surface: '#171f27',
+      surfaceHover: '#1d2833',
+      border: '#2c3a47',
+      borderFocus: '#4dabf7',
+    },
+    focusRing: 'rgba(77,171,247,0.25)',
+    surfaceSubtle: 'rgba(77,171,247,0.08)',
+    menu: { surface: '#1a232c' },
+  },
+  {
+    id: 'sunset-dark',
+    labelKey: 'settings.themes.sunsetDark',
+    mode: 'dark',
+    primary: '#ffb74d',
+    secondary: '#ff8a65',
+    background: { default: '#140f0a', paper: '#211812', drawer: '#17110c' },
+    text: { primary: '#f8ede3', secondary: '#c4ac97' },
+    border: '#3a2a1e',
+    tint: { primary15: 'rgba(255,183,77,0.15)', primary25: 'rgba(255,183,77,0.25)' },
+    input: {
+      surface: '#241a13',
+      surfaceHover: '#2d2118',
+      border: '#40301f',
+      borderFocus: '#ffb74d',
+    },
+    focusRing: 'rgba(255,183,77,0.25)',
+    surfaceSubtle: 'rgba(255,183,77,0.08)',
+    menu: { surface: '#261c14' },
+  },
+  {
+    id: 'forest-dark',
+    labelKey: 'settings.themes.forestDark',
+    mode: 'dark',
+    primary: '#81c784',
+    secondary: '#a5d6a7',
+    background: { default: '#0a120c', paper: '#131c15', drawer: '#0d150f' },
+    text: { primary: '#e4f0e5', secondary: '#a2b8a5' },
+    border: '#223228',
+    tint: { primary15: 'rgba(129,199,132,0.15)', primary25: 'rgba(129,199,132,0.25)' },
+    input: {
+      surface: '#17211a',
+      surfaceHover: '#1d2a20',
+      border: '#2b3d30',
+      borderFocus: '#81c784',
+    },
+    focusRing: 'rgba(129,199,132,0.25)',
+    surfaceSubtle: 'rgba(129,199,132,0.08)',
+    menu: { surface: '#1a241c' },
+  },
+  {
+    id: 'lavender-dark',
+    labelKey: 'settings.themes.lavenderDark',
+    mode: 'dark',
+    primary: '#ce93d8',
+    secondary: '#e1bee7',
+    background: { default: '#100c16', paper: '#1a1422', drawer: '#130e1a' },
+    text: { primary: '#f0e8f7', secondary: '#b6a6c4' },
+    border: '#2f263b',
+    tint: { primary15: 'rgba(206,147,216,0.15)', primary25: 'rgba(206,147,216,0.25)' },
+    input: {
+      surface: '#20182a',
+      surfaceHover: '#281f34',
+      border: '#3a2f49',
+      borderFocus: '#ce93d8',
+    },
+    focusRing: 'rgba(206,147,216,0.25)',
+    surfaceSubtle: 'rgba(206,147,216,0.08)',
+    menu: { surface: '#231b2e' },
+  },
+  {
+    id: 'rose-dark',
+    labelKey: 'settings.themes.roseDark',
+    mode: 'dark',
+    primary: '#f48fb1',
+    secondary: '#f8bbd0',
+    background: { default: '#150b10', paper: '#21131a', drawer: '#180d13' },
+    text: { primary: '#fae8ef', secondary: '#c8a8b5' },
+    border: '#3a2330',
+    tint: { primary15: 'rgba(244,143,177,0.15)', primary25: 'rgba(244,143,177,0.25)' },
+    input: {
+      surface: '#271620',
+      surfaceHover: '#301c28',
+      border: '#422a38',
+      borderFocus: '#f48fb1',
+    },
+    focusRing: 'rgba(244,143,177,0.25)',
+    surfaceSubtle: 'rgba(244,143,177,0.08)',
+    menu: { surface: '#2a1822' },
+  },
+  {
+    id: 'slate-dark',
+    labelKey: 'settings.themes.slateDark',
+    mode: 'dark',
+    primary: '#90a4ae',
+    secondary: '#b0bec5',
+    background: { default: '#0d1012', paper: '#171b1e', drawer: '#101416' },
+    text: { primary: '#e7ecee', secondary: '#a4b0b6' },
+    border: '#283034',
+    tint: { primary15: 'rgba(144,164,174,0.15)', primary25: 'rgba(144,164,174,0.25)' },
+    input: {
+      surface: '#1b2024',
+      surfaceHover: '#222a2e',
+      border: '#323d43',
+      borderFocus: '#90a4ae',
+    },
+    focusRing: 'rgba(144,164,174,0.25)',
+    surfaceSubtle: 'rgba(144,164,174,0.08)',
+    menu: { surface: '#1e2428' },
   },
 ];
 
