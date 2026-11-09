@@ -159,6 +159,14 @@ describe('demuxStore', () => {
     expect(state.targets.filter((t) => t.index === 1)).toHaveLength(1);
   });
 
+  it('keeps split indices sorted when several audio streams are split', async () => {
+    await useDemuxStore.getState().setInput('/in/movie.mkv');
+    useDemuxStore.getState().toggleSplitChannel(2);
+    useDemuxStore.getState().toggleSplitChannel(1);
+    expect(useDemuxStore.getState().splitIndices).toEqual([1, 2]);
+    expect(useDemuxStore.getState().targets.filter((t) => t.index === 2)).toHaveLength(6);
+  });
+
   it('ignores channel splitting for non-audio and mono streams', async () => {
     await useDemuxStore.getState().setInput('/in/movie.mkv');
     useDemuxStore.getState().toggleSplitChannel(0);
