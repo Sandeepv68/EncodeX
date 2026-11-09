@@ -59,9 +59,9 @@
       "remux": "Remux te kōnae",
       "copilot": "Pātai ki a Copilot"
     },
-    "enableMcp": "Enable MCP server",
-    "mcpEnabled": "MCP server enabled",
-    "connectAiProviders": "Connect your AI providers"
+    "enableMcp": "Whakatūngia te Tūmau MCP",
+    "mcpEnabled": "Kua whakatūngia te Tūmau MCP",
+    "connectAiProviders": "Hono ki o ngā kaiwhakarato AI"
   },
   "closeConfirm": {
     "title": "Katia te EncodeX?",

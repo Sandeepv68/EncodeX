@@ -59,9 +59,9 @@
       "remux": "Herverpak 'n lêer",
       "copilot": "Vra Copilot"
     },
-    "enableMcp": "Enable MCP server",
-    "mcpEnabled": "MCP server enabled",
-    "connectAiProviders": "Connect your AI providers"
+    "enableMcp": "Aktiveer MCP-bediener",
+    "mcpEnabled": "MCP-bediener is geaktiveer",
+    "connectAiProviders": "Koppel jou AI-verskaffers"
   },
   "closeConfirm": {
     "title": "Maak EncodeX toe?",

@@ -59,9 +59,9 @@
       "remux": "Remuxa un file",
       "copilot": "Chiedi a Copiloto"
     },
-    "enableMcp": "Enable MCP server",
-    "mcpEnabled": "MCP server enabled",
-    "connectAiProviders": "Connect your AI providers"
+    "enableMcp": "Abilita Server MCP",
+    "mcpEnabled": "Server MCP abilitato",
+    "connectAiProviders": "Connetti i tuoi provider IA"
   },
   "closeConfirm": {
     "title": "Chiudere EncodeX?",

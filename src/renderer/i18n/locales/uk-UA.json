@@ -59,9 +59,9 @@
       "remux": "Remux файлу",
       "copilot": "Запитати Копілота"
     },
-    "enableMcp": "Enable MCP server",
-    "mcpEnabled": "MCP server enabled",
-    "connectAiProviders": "Connect your AI providers"
+    "enableMcp": "Увімкнути сервер MCP",
+    "mcpEnabled": "Сервер MCP увімкнено",
+    "connectAiProviders": "Підключити ваших ШІ-провайдерів"
   },
   "closeConfirm": {
     "title": "Закрити EncodeX?",

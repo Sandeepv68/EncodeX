@@ -59,9 +59,9 @@
       "remux": "Remux ໄຟລ໌",
       "copilot": "ຖາມ Copilot"
     },
-    "enableMcp": "Enable MCP server",
-    "mcpEnabled": "MCP server enabled",
-    "connectAiProviders": "Connect your AI providers"
+    "enableMcp": "ເປີດເຊີບເວີ MCP",
+    "mcpEnabled": "ເປີດເຊີບເວີ MCP ແລ້ວ",
+    "connectAiProviders": "ເຊື່ອມຕໍ່ຜູ້ໃຫ້ບໍລິການ AI ຂອງເຈົ້າ"
   },
   "closeConfirm": {
     "title": "ປິດ EncodeX?",

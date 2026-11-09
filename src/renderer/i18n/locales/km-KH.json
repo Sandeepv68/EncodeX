@@ -59,9 +59,9 @@
       "remux": "Remux ឯកសារ",
       "copilot": "សួរ Copilot"
     },
-    "enableMcp": "Enable MCP server",
-    "mcpEnabled": "MCP server enabled",
-    "connectAiProviders": "Connect your AI providers"
+    "enableMcp": "បើកម៉ាស៊ីនបម្រើ MCP",
+    "mcpEnabled": "ម៉ាស៊ីនបម្រើ MCP ត្រូវបានបើក",
+    "connectAiProviders": "ភ្ជាប់អ្នកផ្តល់ AI របស់អ្នក"
   },
   "closeConfirm": {
     "title": "បិទ EncodeX?",

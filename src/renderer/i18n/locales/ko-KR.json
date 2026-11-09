@@ -59,9 +59,9 @@
       "remux": "파일 리먹싱",
       "copilot": "코파일롯에 묻기"
     },
-    "enableMcp": "Enable MCP server",
-    "mcpEnabled": "MCP server enabled",
-    "connectAiProviders": "Connect your AI providers"
+    "enableMcp": "MCP 서버 사용",
+    "mcpEnabled": "MCP 서버가 사용 중입니다",
+    "connectAiProviders": "AI 공급자 연결"
   },
   "closeConfirm": {
     "title": "EncodeX를 닫을까요?",

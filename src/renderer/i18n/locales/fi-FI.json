@@ -59,9 +59,9 @@
       "remux": "Pakkaa tiedosto uudelleen",
       "copilot": "Kysy Copilotilta"
     },
-    "enableMcp": "Enable MCP server",
-    "mcpEnabled": "MCP server enabled",
-    "connectAiProviders": "Connect your AI providers"
+    "enableMcp": "Ota MCP-palvelin käyttöön",
+    "mcpEnabled": "MCP-palvelin on käytössä",
+    "connectAiProviders": "Yhdistä tekoälyn tarjoajat"
   },
   "closeConfirm": {
     "title": "Sulje EncodeX?",

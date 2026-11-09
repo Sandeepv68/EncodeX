@@ -59,9 +59,9 @@
       "remux": "I-remux ang file",
       "copilot": "Magtanong sa Copilot"
     },
-    "enableMcp": "Enable MCP server",
-    "mcpEnabled": "MCP server enabled",
-    "connectAiProviders": "Connect your AI providers"
+    "enableMcp": "I-enable ang MCP server",
+    "mcpEnabled": "Naka-enable ang MCP server",
+    "connectAiProviders": "Kumonekta ang iyong mga AI provider"
   },
   "closeConfirm": {
     "title": "Isara ang EncodeX?",

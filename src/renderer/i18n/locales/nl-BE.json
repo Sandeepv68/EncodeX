@@ -59,9 +59,9 @@
       "remux": "Bestand remuxen",
       "copilot": "Vraag Copilot"
     },
-    "enableMcp": "Enable MCP server",
-    "mcpEnabled": "MCP server enabled",
-    "connectAiProviders": "Connect your AI providers"
+    "enableMcp": "MCP-server inschakelen",
+    "mcpEnabled": "MCP-server ingeschakeld",
+    "connectAiProviders": "Je AI-providers verbinden"
   },
   "closeConfirm": {
     "title": "EncodeX sluiten?",

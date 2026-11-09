@@ -161,23 +161,29 @@ const COGNATE_IDENTICAL: Record<string, Set<string>> = {
 };
 
 /**
- * The Copilot UI and AI-provider settings keys that must carry a real,
- * non-English translation in every non-English locale (plan stage 3d). Key
- * *existence* is already guaranteed by parity in `assertLocaleIntegrity`; this
- * set drives the stricter "was actually translated" check. Product names and
- * true cognates are exempted via `ALWAYS_IDENTICAL` / `COGNATE_IDENTICAL`.
+ * The keys that must carry a real, non-English translation in every
+ * non-English locale (plan stage 3d). Key *existence* is already guaranteed by
+ * parity in `assertLocaleIntegrity`; this set drives the stricter "was actually
+ * translated" check. Product names and true cognates are exempted via
+ * `ALWAYS_IDENTICAL` / `COGNATE_IDENTICAL`.
+ *
+ * `gettingStarted.*` joined the set when the Dashboard card gained the MCP and
+ * AI-provider setup actions: `sync:locales` copies the English string into
+ * every locale, so without this guard a new Getting Started key would silently
+ * ship as an English placeholder in all 47 non-English locales.
  */
 export const NON_ENGLISH_REQUIRED = new Set(
-  [...baseLocale.keys].filter((key) => key.startsWith('copilot.') || key.startsWith('settings.ai.')),
+  [...baseLocale.keys].filter((key) => key.startsWith('copilot.') || key.startsWith('settings.ai.') || key.startsWith('gettingStarted.')),
 );
 
 /** English source values, keyed by dotted key, for identity comparison. */
 const enValues = new Map(baseLocale.entries.map((e) => [e.key, e.value]));
 
 /**
- * Returns the `copilot.*` / `settings.ai.errors.*` keys whose value is still
- * byte-identical to the English source in `entries`, excluding product terms
- * and true cognates. Empty means every required key carries a real translation.
+ * Returns the `copilot.*` / `settings.ai.*` / `gettingStarted.*` keys whose
+ * value is still byte-identical to the English source in `entries`, excluding
+ * product terms and true cognates. Empty means every required key carries a
+ * real translation.
  */
 export function untranslatedRequiredKeys(localeCode: string, entries: FlatEntry[]): string[] {
   const problems: string[] = [];

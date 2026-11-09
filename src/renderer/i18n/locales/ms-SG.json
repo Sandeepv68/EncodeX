@@ -59,9 +59,9 @@
       "remux": "Remux fail",
       "copilot": "Tanya Copilot"
     },
-    "enableMcp": "Enable MCP server",
-    "mcpEnabled": "MCP server enabled",
-    "connectAiProviders": "Connect your AI providers"
+    "enableMcp": "Dayakan Pelayan MCP",
+    "mcpEnabled": "Pelayan MCP telah diaktifkan",
+    "connectAiProviders": "Sambung pembekal AI anda"
   },
   "closeConfirm": {
     "title": "Tutup EncodeX?",

@@ -59,9 +59,9 @@
       "remux": "Remux en fil",
       "copilot": "Spør Copilot"
     },
-    "enableMcp": "Enable MCP server",
-    "mcpEnabled": "MCP server enabled",
-    "connectAiProviders": "Connect your AI providers"
+    "enableMcp": "Aktiver MCP-serveren",
+    "mcpEnabled": "MCP-serveren er aktivert",
+    "connectAiProviders": "Koble til KI-leverandørene dine"
   },
   "closeConfirm": {
     "title": "Lukke EncodeX?",

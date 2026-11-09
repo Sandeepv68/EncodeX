@@ -59,9 +59,9 @@
       "remux": "Endurpakka skrá",
       "copilot": "Spyrja Copilot"
     },
-    "enableMcp": "Enable MCP server",
-    "mcpEnabled": "MCP server enabled",
-    "connectAiProviders": "Connect your AI providers"
+    "enableMcp": "Virkja MCP-þjóninn",
+    "mcpEnabled": "MCP-þjónninn er virkur",
+    "connectAiProviders": "Tengja við AI-þjónustuaðilum þínum"
   },
   "closeConfirm": {
     "title": "Loka EncodeX?",

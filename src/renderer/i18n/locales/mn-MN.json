@@ -59,9 +59,9 @@
       "remux": "Файлыг remux хийх",
       "copilot": "Copilot-оос асуух"
     },
-    "enableMcp": "Enable MCP server",
-    "mcpEnabled": "MCP server enabled",
-    "connectAiProviders": "Connect your AI providers"
+    "enableMcp": "MCP серверийг нээх",
+    "mcpEnabled": "MCP сервер нээгдлээ",
+    "connectAiProviders": "AI үйлчилгээ үзүүлэгчүүдийг холбох"
   },
   "closeConfirm": {
     "title": "EncodeX-г хаах уу?",

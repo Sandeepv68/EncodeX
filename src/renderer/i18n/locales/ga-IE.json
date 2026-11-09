@@ -59,9 +59,9 @@
       "remux": "Comhad a athmhodhnú",
       "copilot": "Fiafraigh de Copilot"
     },
-    "enableMcp": "Enable MCP server",
-    "mcpEnabled": "MCP server enabled",
-    "connectAiProviders": "Connect your AI providers"
+    "enableMcp": "Cumasaigh an freastalaí MCP",
+    "mcpEnabled": "Tá an freastalaí MCP cumasaithe",
+    "connectAiProviders": "Ceangail le do sholáthraithe AI"
   },
   "closeConfirm": {
     "title": "Dún EncodeX?",
