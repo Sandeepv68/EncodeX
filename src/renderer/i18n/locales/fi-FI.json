@@ -58,7 +58,10 @@
       "trim": "Leikkaa katkelma",
       "remux": "Pakkaa tiedosto uudelleen",
       "copilot": "Kysy Copilotilta"
-    }
+    },
+    "enableMcp": "Ota MCP-palvelin käyttöön",
+    "mcpEnabled": "MCP-palvelin on käytössä",
+    "connectAiProviders": "Yhdistä tekoälyn tarjoajat"
   },
   "closeConfirm": {
     "title": "Sulje EncodeX?",

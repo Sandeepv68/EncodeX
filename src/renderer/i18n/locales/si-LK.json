@@ -58,7 +58,10 @@
       "trim": "ක්ලිප් එකක් විසන්ධි කරන්න",
       "remux": "ගොනුවක් remux කරන්න",
       "copilot": "Copilot වෙතින් අසන්න"
-    }
+    },
+    "enableMcp": "MCP සේවාදායකය සක්‍රිය කරන්න",
+    "mcpEnabled": "MCP සේවාදායකය සක්‍රියයි",
+    "connectAiProviders": "ඔබගේ AI සපයන්නා සම්බන්ධ කරන්න"
   },
   "closeConfirm": {
     "title": "EncodeX වසන්නද?",

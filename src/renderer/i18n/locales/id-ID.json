@@ -58,7 +58,10 @@
       "trim": "Potong klip",
       "remux": "Remux file",
       "copilot": "Tanya Copilot"
-    }
+    },
+    "enableMcp": "Aktifkan Server MCP",
+    "mcpEnabled": "Server MCP diaktifkan",
+    "connectAiProviders": "Hubungkan penyedia AI Anda"
   },
   "closeConfirm": {
     "title": "Tutup EncodeX?",

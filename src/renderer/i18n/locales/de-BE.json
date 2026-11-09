@@ -58,7 +58,10 @@
       "trim": "Clip kürzen",
       "remux": "Datei remuxen",
       "copilot": "Copilot fragen"
-    }
+    },
+    "enableMcp": "MCP-Server aktivieren",
+    "mcpEnabled": "MCP-Server aktiviert",
+    "connectAiProviders": "Deine KI-Anbieter verbinden"
   },
   "closeConfirm": {
     "title": "EncodeX schließen?",

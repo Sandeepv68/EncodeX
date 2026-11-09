@@ -58,7 +58,10 @@
       "trim": "חיתוך קטע",
       "remux": "ארוז מחדש קובץ",
       "copilot": "שאל את קופילוט"
-    }
+    },
+    "enableMcp": "הפעל שרת MCP",
+    "mcpEnabled": "שרת MCP מופעל",
+    "connectAiProviders": "חבר את ספקי הבינה המלאכותית שלך"
   },
   "closeConfirm": {
     "title": "לסגור את EncodeX?",

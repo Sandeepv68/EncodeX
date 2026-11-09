@@ -58,7 +58,10 @@
       "trim": "Potong klip",
       "remux": "Remux fail",
       "copilot": "Tanya Copilot"
-    }
+    },
+    "enableMcp": "Dayakan Pelayan MCP",
+    "mcpEnabled": "Pelayan MCP telah diaktifkan",
+    "connectAiProviders": "Sambung pembekal AI anda"
   },
   "closeConfirm": {
     "title": "Tutup EncodeX?",

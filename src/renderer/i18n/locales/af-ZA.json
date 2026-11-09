@@ -58,7 +58,10 @@
       "trim": "Snoei 'n snit",
       "remux": "Herverpak 'n lêer",
       "copilot": "Vra Copilot"
-    }
+    },
+    "enableMcp": "Aktiveer MCP-bediener",
+    "mcpEnabled": "MCP-bediener is geaktiveer",
+    "connectAiProviders": "Koppel jou AI-verskaffers"
   },
   "closeConfirm": {
     "title": "Maak EncodeX toe?",

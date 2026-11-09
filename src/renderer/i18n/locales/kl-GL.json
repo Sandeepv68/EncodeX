@@ -58,7 +58,10 @@
       "trim": "Kaaserisamik savallugit",
       "remux": "Fiilimik remux-iuk",
       "copilot": "Copilot-imut ajugaqarit"
-    }
+    },
+    "enableMcp": "MCP-server taakkujerpoq",
+    "mcpEnabled": "MCP-server taakkuartoq",
+    "connectAiProviders": "AI-nik inissimasutit attaveqaruk"
   },
   "closeConfirm": {
     "title": "EncodeX qummassava?",

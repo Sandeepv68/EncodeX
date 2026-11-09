@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "eventCount": 121,
+  "eventCount": 123,
   "events": [
     {
       "name": "always_on_top_toggled",
@@ -383,12 +383,22 @@
       "tier": null
     },
     {
+      "name": "onboarding_ai_providers_opened",
+      "group": "onboarding",
+      "tier": null
+    },
+    {
       "name": "onboarding_dismissed",
       "group": "onboarding",
       "tier": null
     },
     {
       "name": "onboarding_goal_selected",
+      "group": "onboarding",
+      "tier": null
+    },
+    {
+      "name": "onboarding_mcp_enabled",
       "group": "onboarding",
       "tier": null
     },

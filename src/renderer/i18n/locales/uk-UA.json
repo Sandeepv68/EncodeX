@@ -58,7 +58,10 @@
       "trim": "Обрізати кліп",
       "remux": "Remux файлу",
       "copilot": "Запитати Копілота"
-    }
+    },
+    "enableMcp": "Увімкнути сервер MCP",
+    "mcpEnabled": "Сервер MCP увімкнено",
+    "connectAiProviders": "Підключити ваших ШІ-провайдерів"
   },
   "closeConfirm": {
     "title": "Закрити EncodeX?",

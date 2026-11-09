@@ -58,7 +58,10 @@
       "trim": "裁剪片段",
       "remux": "重新封装文件",
       "copilot": "询问 Copilot"
-    }
+    },
+    "enableMcp": "启用 MCP 服务器",
+    "mcpEnabled": "MCP 服务器已启用",
+    "connectAiProviders": "连接你的 AI 提供商"
   },
   "closeConfirm": {
     "title": "关闭 EncodeX？",

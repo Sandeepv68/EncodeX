@@ -58,7 +58,10 @@
       "trim": "Trim et klipp",
       "remux": "Remux en fil",
       "copilot": "Spør Copilot"
-    }
+    },
+    "enableMcp": "Aktiver MCP-serveren",
+    "mcpEnabled": "MCP-serveren er aktivert",
+    "connectAiProviders": "Koble til KI-leverandørene dine"
   },
   "closeConfirm": {
     "title": "Lukke EncodeX?",

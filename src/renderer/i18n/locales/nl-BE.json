@@ -58,7 +58,10 @@
       "trim": "Clip bijsnijden",
       "remux": "Bestand remuxen",
       "copilot": "Vraag Copilot"
-    }
+    },
+    "enableMcp": "MCP-server inschakelen",
+    "mcpEnabled": "MCP-server ingeschakeld",
+    "connectAiProviders": "Je AI-providers verbinden"
   },
   "closeConfirm": {
     "title": "EncodeX sluiten?",

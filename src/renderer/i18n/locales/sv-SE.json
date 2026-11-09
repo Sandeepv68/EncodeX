@@ -58,7 +58,10 @@
       "trim": "Trimma ett klipp",
       "remux": "Remuxa en fil",
       "copilot": "Fråga Copilot"
-    }
+    },
+    "enableMcp": "Aktivera MCP-servern",
+    "mcpEnabled": "MCP-servern är aktiverad",
+    "connectAiProviders": "Anslut dina AI-leverantörer"
   },
   "closeConfirm": {
     "title": "Stänga EncodeX?",

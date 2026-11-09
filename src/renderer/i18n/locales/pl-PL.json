@@ -58,7 +58,10 @@
       "trim": "Przytnij klip",
       "remux": "Remuxuj plik",
       "copilot": "Zapytaj Copilot"
-    }
+    },
+    "enableMcp": "Włącz serwer MCP",
+    "mcpEnabled": "Serwer MCP włączony",
+    "connectAiProviders": "Połącz swoich dostawców AI"
   },
   "closeConfirm": {
     "title": "Zamknąć EncodeX?",

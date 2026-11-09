@@ -58,7 +58,10 @@
       "trim": "Klip et klip",
       "remux": "Remux en fil",
       "copilot": "Spørg Copilot"
-    }
+    },
+    "enableMcp": "Aktivér MCP-server",
+    "mcpEnabled": "MCP-server er aktiveret",
+    "connectAiProviders": "Forbind dine AI-udbydere"
   },
   "closeConfirm": {
     "title": "Luk EncodeX?",

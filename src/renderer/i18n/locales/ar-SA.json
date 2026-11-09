@@ -58,7 +58,10 @@
       "trim": "قص مقطع",
       "remux": "إعادة تغليف ملف",
       "copilot": "اسأل كوبيلوت"
-    }
+    },
+    "enableMcp": "تمكين خادم MCP",
+    "mcpEnabled": "تم تفعيل خادم MCP",
+    "connectAiProviders": "اتصل بمزوّد الذكاء الاصطناعي"
   },
   "closeConfirm": {
     "title": "إغلاق EncodeX؟",

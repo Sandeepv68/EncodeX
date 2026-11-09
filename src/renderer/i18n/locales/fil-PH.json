@@ -58,7 +58,10 @@
       "trim": "I-trim ang isang clip",
       "remux": "I-remux ang file",
       "copilot": "Magtanong sa Copilot"
-    }
+    },
+    "enableMcp": "I-enable ang MCP server",
+    "mcpEnabled": "Naka-enable ang MCP server",
+    "connectAiProviders": "Kumonekta ang iyong mga AI provider"
   },
   "closeConfirm": {
     "title": "Isara ang EncodeX?",

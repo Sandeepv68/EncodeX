@@ -244,6 +244,16 @@ describe('Settings', () => {
     expect(screen.queryByTestId('settings-mcp-token')).not.toBeInTheDocument();
   });
 
+  it('leaves the MCP server off on a first load, before the user opts in', async () => {
+    // A fresh install has no `mcp-settings.json`, so the main process reports
+    // the disabled default and the switch must render off.
+    vi.mocked(window.electronAPI.mcpGetSettings).mockResolvedValue({ enabled: false, port: 8765, token: '' });
+    useSettingsStore.setState({ mcpEnabled: false, mcpPort: 8765, mcpToken: '' });
+    renderSettings();
+    await waitFor(() => expect(mcpSwitch()).not.toBeChecked());
+    expect(screen.queryByTestId('settings-mcp-port')).not.toBeInTheDocument();
+  });
+
   it('hides the AI use-case link until the MCP server is enabled', () => {
     renderSettings();
     expect(screen.queryByTestId('settings-mcp-ai-use-cases-link')).not.toBeInTheDocument();

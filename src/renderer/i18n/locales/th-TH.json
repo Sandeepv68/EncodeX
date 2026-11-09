@@ -58,7 +58,10 @@
       "trim": "ตัดคลิป",
       "remux": "รีมักซ์ไฟล์",
       "copilot": "ถาม คอปิล็อต"
-    }
+    },
+    "enableMcp": "เปิดใช้งานเซิร์ฟเวอร์ MCP",
+    "mcpEnabled": "เปิดใช้งานเซิร์ฟเวอร์ MCP แล้ว",
+    "connectAiProviders": "เชื่อมต่อผู้ให้บริการ AI ของคุณ"
   },
   "closeConfirm": {
     "title": "ปิด EncodeX?",

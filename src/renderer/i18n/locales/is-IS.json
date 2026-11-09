@@ -58,7 +58,10 @@
       "trim": "Klippa bút",
       "remux": "Endurpakka skrá",
       "copilot": "Spyrja Copilot"
-    }
+    },
+    "enableMcp": "Virkja MCP-þjóninn",
+    "mcpEnabled": "MCP-þjónninn er virkur",
+    "connectAiProviders": "Tengja við AI-þjónustuaðilum þínum"
   },
   "closeConfirm": {
     "title": "Loka EncodeX?",
