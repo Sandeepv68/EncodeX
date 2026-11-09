@@ -56,7 +56,7 @@ jobs:
       - name: Blocking audit gate (new high/critical fails)
         run: npm run audit:gate
       - name: Check GitHub Actions workflow lint
-        uses: reviewdog/action-actionlint@48e36f54d8da326b83ab061aee2cc5e01b5ca46f # v1
+        uses: reviewdog/action-actionlint@7abf25e1607ec65838b73d0484ff31f8e9499d80 # v1
         with:
           actionlint_flags: -color
 
