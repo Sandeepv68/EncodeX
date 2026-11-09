@@ -58,7 +58,10 @@
       "trim": "Клип тайрах",
       "remux": "Файлыг remux хийх",
       "copilot": "Copilot-оос асуух"
-    }
+    },
+    "enableMcp": "Enable MCP server",
+    "mcpEnabled": "MCP server enabled",
+    "connectAiProviders": "Connect your AI providers"
   },
   "closeConfirm": {
     "title": "EncodeX-г хаах уу?",

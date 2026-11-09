@@ -494,6 +494,15 @@ export const useSettingsStore = create<SettingsState>((set) => ({
 }));
 
 /**
+ * Set once the renderer pushes an MCP settings change of its own. The
+ * startup hydration below then leaves the store alone, so a late-arriving
+ * read cannot undo a change the user just made (e.g. enabling the MCP
+ * server from the Dashboard's Getting Started card).
+ * @type {boolean}
+ */
+let mcpLocallyUpdated = false;
+
+/**
  * Merges a partial embedded MCP server patch into the current snapshot, sends
  * the whole candidate to the main process via
  * window.electronAPI.mcpSetSettings (which persists it and live-reconciles the
@@ -510,6 +519,7 @@ function applyMcpSettings(patch: Partial<McpSettings>): void {
     token: current.mcpToken,
     ...patch,
   };
+  mcpLocallyUpdated = true;
   window.electronAPI
     ?.mcpSetSettings(candidate)
     .then((result) => useSettingsStore.setState({ mcpEnabled: result.enabled, mcpPort: result.port, mcpToken: result.token }))
@@ -541,16 +551,18 @@ if (typeof window !== 'undefined' && window.electronAPI?.analyticsGetState) {
 /**
  * Hydrates the embedded MCP server settings from the main process, which owns
  * the persisted `mcp-settings.json` file. Runs once at module load; failures
- * leave the disabled-by-default snapshot in place.
+ * leave the disabled-by-default snapshot in place. A local change made before
+ * the read settles wins, so hydration never undoes the user's own action.
  */
 if (typeof window !== 'undefined' && window.electronAPI?.mcpGetSettings) {
   bridgePromise(() => window.electronAPI.mcpGetSettings())
-    .then((settings) =>
+    .then((settings) => {
+      if (mcpLocallyUpdated) return;
       useSettingsStore.setState({
         mcpEnabled: settings?.enabled === true,
         mcpPort: clampMcpPort(settings?.port),
         mcpToken: typeof settings?.token === 'string' ? settings.token : '',
-      }),
-    )
+      });
+    })
     .catch((err) => log.warn('Failed to hydrate MCP settings:', err));
 }

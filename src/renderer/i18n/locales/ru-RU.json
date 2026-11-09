@@ -58,7 +58,10 @@
       "trim": "Обрезать клип",
       "remux": "Remux файла",
       "copilot": "Спросить Копилота"
-    }
+    },
+    "enableMcp": "Enable MCP server",
+    "mcpEnabled": "MCP server enabled",
+    "connectAiProviders": "Connect your AI providers"
   },
   "closeConfirm": {
     "title": "Закрыть EncodeX?",

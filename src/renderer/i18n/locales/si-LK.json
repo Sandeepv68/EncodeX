@@ -58,7 +58,10 @@
       "trim": "ක්ලිප් එකක් විසන්ධි කරන්න",
       "remux": "ගොනුවක් remux කරන්න",
       "copilot": "Copilot වෙතින් අසන්න"
-    }
+    },
+    "enableMcp": "Enable MCP server",
+    "mcpEnabled": "MCP server enabled",
+    "connectAiProviders": "Connect your AI providers"
   },
   "closeConfirm": {
     "title": "EncodeX වසන්නද?",

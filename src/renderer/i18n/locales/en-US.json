@@ -105,6 +105,9 @@
     "title": "Getting started",
     "body": "Pick where you'd like to begin — you can do everything from here later.",
     "dismiss": "Dismiss",
+    "enableMcp": "Enable MCP server",
+    "mcpEnabled": "MCP server enabled",
+    "connectAiProviders": "Connect your AI providers",
     "goals": {
       "convert": "Convert a video",
       "compress": "Compress a file",

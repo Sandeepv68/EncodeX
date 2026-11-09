@@ -58,7 +58,10 @@
       "trim": "क्लिप ट्रिम करें",
       "remux": "फ़ाइल रीमक्स करें",
       "copilot": "कॉपिलॉट से पूछें"
-    }
+    },
+    "enableMcp": "Enable MCP server",
+    "mcpEnabled": "MCP server enabled",
+    "connectAiProviders": "Connect your AI providers"
   },
   "closeConfirm": {
     "title": "EncodeX बंद करें?",

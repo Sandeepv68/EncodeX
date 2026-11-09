@@ -58,7 +58,10 @@
       "trim": "قص مقطع",
       "remux": "إعادة تغليف ملف",
       "copilot": "اسأل كوبيلوت"
-    }
+    },
+    "enableMcp": "Enable MCP server",
+    "mcpEnabled": "MCP server enabled",
+    "connectAiProviders": "Connect your AI providers"
   },
   "closeConfirm": {
     "title": "إغلاق EncodeX؟",

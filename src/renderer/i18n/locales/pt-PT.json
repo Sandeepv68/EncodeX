@@ -58,7 +58,10 @@
       "trim": "Cortar um clipe",
       "remux": "Remux de um ficheiro",
       "copilot": "Pergunte ao Copiloto"
-    }
+    },
+    "enableMcp": "Enable MCP server",
+    "mcpEnabled": "MCP server enabled",
+    "connectAiProviders": "Connect your AI providers"
   },
   "closeConfirm": {
     "title": "Fechar o EncodeX?",

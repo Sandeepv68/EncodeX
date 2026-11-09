@@ -58,7 +58,10 @@
       "trim": "Bearr bunteascán",
       "remux": "Comhad a athmhodhnú",
       "copilot": "Fiafraigh de Copilot"
-    }
+    },
+    "enableMcp": "Enable MCP server",
+    "mcpEnabled": "MCP server enabled",
+    "connectAiProviders": "Connect your AI providers"
   },
   "closeConfirm": {
     "title": "Dún EncodeX?",

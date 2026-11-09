@@ -215,6 +215,8 @@ export type AnalyticsEventName =
   | 'terms_rejected'
   | 'onboarding_started'
   | 'onboarding_goal_selected'
+  | 'onboarding_mcp_enabled'
+  | 'onboarding_ai_providers_opened'
   | 'onboarding_dismissed'
   | 'dashboard_card_clicked'
   | 'dashboard_shortcut_used'
@@ -352,6 +354,8 @@ export interface AnalyticsEventPayloadMap {
   terms_rejected: Record<string, never>;
   onboarding_started: { version: string };
   onboarding_goal_selected: { goal: OnboardingGoal };
+  onboarding_mcp_enabled: Record<string, never>;
+  onboarding_ai_providers_opened: Record<string, never>;
   onboarding_dismissed: { version: string };
   dashboard_card_clicked: { route: string };
   dashboard_shortcut_used: { shortcutId: string };

@@ -58,7 +58,10 @@
       "trim": "ตัดคลิป",
       "remux": "รีมักซ์ไฟล์",
       "copilot": "ถาม คอปิล็อต"
-    }
+    },
+    "enableMcp": "Enable MCP server",
+    "mcpEnabled": "MCP server enabled",
+    "connectAiProviders": "Connect your AI providers"
   },
   "closeConfirm": {
     "title": "ปิด EncodeX?",

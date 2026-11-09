@@ -58,7 +58,10 @@
       "trim": "Whakatote tētahi topenga",
       "remux": "Remux te kōnae",
       "copilot": "Pātai ki a Copilot"
-    }
+    },
+    "enableMcp": "Enable MCP server",
+    "mcpEnabled": "MCP server enabled",
+    "connectAiProviders": "Connect your AI providers"
   },
   "closeConfirm": {
     "title": "Katia te EncodeX?",

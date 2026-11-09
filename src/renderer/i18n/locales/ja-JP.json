@@ -58,7 +58,10 @@
       "trim": "クリップをトリミング",
       "remux": "ファイルをリマックス",
       "copilot": "コパイロットに相談"
-    }
+    },
+    "enableMcp": "Enable MCP server",
+    "mcpEnabled": "MCP server enabled",
+    "connectAiProviders": "Connect your AI providers"
   },
   "closeConfirm": {
     "title": "EncodeX を閉じますか?",

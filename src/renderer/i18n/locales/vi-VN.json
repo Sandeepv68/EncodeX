@@ -58,7 +58,10 @@
       "trim": "Cắt clip",
       "remux": "Remux một tệp",
       "copilot": "Hỏi Copilot"
-    }
+    },
+    "enableMcp": "Enable MCP server",
+    "mcpEnabled": "MCP server enabled",
+    "connectAiProviders": "Connect your AI providers"
   },
   "closeConfirm": {
     "title": "Đóng EncodeX?",

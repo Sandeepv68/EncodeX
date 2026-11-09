@@ -15,6 +15,14 @@
  *    navigates to the matching tool route.
  *  - The dismiss (X) button sets the flag and hides the card without recording
  *    a goal, so "solved it myself" users are never pushed again.
+ *  - Two setup actions join the goals in the same row: "Enable MCP server"
+ *    turns on the embedded MCP server (off by default — this is the explicit
+ *    opt-in) and "Connect your AI providers" jumps to the Settings page with
+ *    the AI-provider editor open. Neither resolves the onboarding flag, so the
+ *    user can still pick a goal afterwards.
+ *  - Every action on the card is the same button, in a single row that grows
+ *    with the card. The row scrolls horizontally rather than wrapping when the
+ *    window is too narrow to fit the whole set.
  *
  * All copy uses i18n keys under `gettingStarted.*`, which fall back to en-US
  * until translated in the other 55 locale files.
@@ -32,13 +40,16 @@ import {
   GettingStartedHint,
   GettingStartedTitle,
   GettingStartedBody,
-  GoalRow,
-  GoalChip,
+  ActionRow,
+  ActionButton,
   DismissButton,
 } from '../styles/GettingStartedCard.styles';
+import { useSettingsStore } from '../stores/settingsStore';
+import { useToastStore } from '../stores/toastStore';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
 import type { GoalSpec } from './types';
+import type { SettingsLocationState } from '../types';
 import pkg from '../../../package.json';
 
 /**
@@ -70,6 +81,7 @@ const GOALS: GoalSpec[] = [
 export default function GettingStartedCard(): ReactElement | null {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const setMcpEnabled = useSettingsStore((s) => s.setMcpEnabled);
 
   /** Whether the card is resolved (hide render). @type {boolean} */
   const [completed, setCompleted] = useState<boolean>(() => {
@@ -127,6 +139,29 @@ export default function GettingStartedCard(): ReactElement | null {
     resolve();
   }
 
+  /**
+   * Turns on the embedded MCP server from the onboarding card. The server is
+   * disabled by default, so this is the explicit opt-in action; the store
+   * persists the flag and the main process starts the loopback server.
+   * @returns {void}
+   */
+  function handleEnableMcp(): void {
+    setMcpEnabled(true);
+    useToastStore.getState().success(t('gettingStarted.mcpEnabled'));
+    recordAnalyticsEvent(createAnalyticsEvent('onboarding_mcp_enabled', {}));
+  }
+
+  /**
+   * Sends the user to the Settings page with the AI-provider editor opened, so
+   * they can pick a provider and paste their API key. The card stays visible:
+   * the provider may not be connected yet, so onboarding is not resolved here.
+   * @returns {void}
+   */
+  function handleConnectAiProviders(): void {
+    recordAnalyticsEvent(createAnalyticsEvent('onboarding_ai_providers_opened', {}));
+    navigate('/settings', { state: { openAiProvider: true } satisfies SettingsLocationState });
+  }
+
   return (
     <GettingStartedRoot data-testid="getting-started-card">
       <GettingStartedHeader>
@@ -141,17 +176,25 @@ export default function GettingStartedCard(): ReactElement | null {
           <FontAwesomeIcon icon={faXmark} />
         </DismissButton>
       </GettingStartedHeader>
-      <GoalRow>
+      <ActionRow>
         {GOALS.map((spec) => (
-          <GoalChip
+          <ActionButton
             key={spec.goal}
-            clickable
-            label={t(`gettingStarted.goals.${spec.i18nKey}`)}
+            size="small"
+            variant="outlined"
             onClick={() => handleGoal(spec)}
             data-testid={`getting-started-goal-${spec.goal}`}
-          />
+          >
+            {t(`gettingStarted.goals.${spec.i18nKey}`)}
+          </ActionButton>
         ))}
-      </GoalRow>
+        <ActionButton size="small" variant="outlined" onClick={handleEnableMcp} data-testid="getting-started-enable-mcp">
+          {t('gettingStarted.enableMcp')}
+        </ActionButton>
+        <ActionButton size="small" variant="outlined" onClick={handleConnectAiProviders} data-testid="getting-started-connect-ai-providers">
+          {t('gettingStarted.connectAiProviders')}
+        </ActionButton>
+      </ActionRow>
     </GettingStartedRoot>
   );
 }
