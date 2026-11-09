@@ -158,7 +158,7 @@
     "stylis-plugin-rtl": "^2.1.1",
     "vitepress-plugin-mermaid": "^2.0.17",
     "zod": "^4.6.5",
-    "zustand": "^5.0.0"
+    "zustand": "^5.0.16"
   },
   "devDependencies": {
     "@codecov/vite-plugin": "^2.0.1",
