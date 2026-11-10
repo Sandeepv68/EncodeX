@@ -525,7 +525,9 @@
     "updateDownloaded": "Шинэчлэлт v{{version}} татагдлаа",
     "viewUpdate": "Харах",
     "remuxed": "Remux дууслаа",
-    "demuxed": "Стримүүдийг амжилттай гаргалаа"
+    "demuxed": "Стримүүдийг амжилттай гаргалаа",
+    "remuxQueued": "Remux Mux дараалд нэмэгдлээ",
+    "demuxQueued": "Стримүүдийг Mux дараалд нэмэгдлээ"
   },
   "profiles": {
     "searchPlaceholder": "Профайлаар хайх...",
@@ -1267,6 +1269,39 @@
       "hardwareNone": "Зөвхөн програм хангамж",
       "encoderVideo": "Видео",
       "encoderAudio": "Аудио"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Багц дараалал",
+    "tabMux": "Mux дараалал",
+    "empty": "Mux дараалал хоосон.",
+    "emptyHint": "Remux, Demux ажлуулууд өөрийн хуудсууднаас нэмэгдэнэ.",
+    "openRemux": "Remux-ийг нээх",
+    "openDemux": "Demux-ийг нээх",
+    "start": "Эхлэх",
+    "pause": "Түр зогсоох",
+    "resume": "Үргэлжлүүлэх",
+    "cancelAll": "Бүгдийг цуцлах",
+    "clearCompleted": "Дууссаныг хоослох",
+    "concurrency": "Зэрэгцээ ажлууд",
+    "stats": "{{queued}} дараалалд, {{running}} ажиллаж, {{done}} дууссан, {{failed}} бүтэлгүйтсэн",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "{{count}} гаралт",
+    "outputDir": "Гаралтын хавтас",
+    "noOutputs": "Гаралт байхгүй",
+    "detailsTargets": "Гаралт",
+    "detailsCreatedAt": "Нэмсэн",
+    "viewQueue": "Дарааллыг харах",
+    "addToQueue": "Дарааллд нэмэх",
+    "dragHandle": "Дараалал өөрчлөхийн тулд чирнэ үү",
+    "paused": "Түр зогссон",
+    "filters": {
+      "all": "Бүгд",
+      "queued": "Дараалалд",
+      "running": "Ажиллаж",
+      "done": "Дууссан",
+      "failed": "Бүтэлгүйтсэн"
     }
   }
 }

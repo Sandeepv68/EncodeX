@@ -259,7 +259,26 @@ vi.mock('../../queue/job-queue', () => {
 
 vi.mock('../../queue/persistence', () => ({
   FileQueuePersistence: class {},
+  FileMuxQueuePersistence: class {},
 }));
+
+vi.mock('../../queue/mux-queue', () => {
+  const { EventEmitter } = require('events') as typeof import('events');
+  class MuxQueue extends EventEmitter {
+    addJob = async () => 'mux-swept';
+    cancelJob = () => undefined;
+    cancelAll = () => undefined;
+    getJobs = () => [] as unknown[];
+    getState = () => ({ paused: false, concurrency: 1 });
+    clearCompleted = () => 0;
+    setConcurrency = () => undefined;
+    moveJobTo = () => false;
+    pause = () => undefined;
+    resume = () => undefined;
+    start = () => undefined;
+  }
+  return { MuxQueue };
+});
 
 vi.mock('../../power-actions', () => ({
   performPowerAction: () => undefined,

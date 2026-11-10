@@ -14,6 +14,7 @@ import type {
   ImageFileInfo,
   LogEntry,
   MediaInfo,
+  MuxQueueJob,
   PlayerFrame,
   QueueJob,
   ThumbnailStrip,
@@ -72,6 +73,8 @@ export const mockApi = {
   resolveConvert: (page: Page) => invoke(page, 'resolveConvert', []),
   rejectConvert: (page: Page) => invoke(page, 'rejectConvert', []),
   setQueueJobs: (page: Page, v: QueueJob[]) => invoke(page, 'setQueueJobs', [v]),
+  setMuxQueueJobs: (page: Page, v: MuxQueueJob[]) => invoke(page, 'setMuxQueueJobs', [v]),
+  setMuxQueueState: (page: Page, v: Partial<{ paused: boolean; concurrency: number }>) => invoke(page, 'setMuxQueueState', [v]),
   setQueueState: (page: Page, v: Partial<{ paused: boolean; concurrency: number }>) => invoke(page, 'setQueueState', [v]),
   setPlayerFrame: (page: Page, v: PlayerFrame | null) => invoke(page, 'setPlayerFrame', [v]),
   setWaveform: (page: Page, v: WaveformData | null) => invoke(page, 'setWaveform', [v]),
@@ -112,6 +115,27 @@ export function emitQueueStatusChange(page: Page, job: QueueJob) {
 /** Emits a queue progress event for a job. */
 export function emitQueueProgress(page: Page, job: QueueJob, progress: Partial<ConversionProgress>) {
   return mockApi.emit(page, 'queue-progress', {
+    job,
+    progress: {
+      percent: 0,
+      time: '00:00:00',
+      fps: 0,
+      speed: '1.0x',
+      eta: '00:00:00',
+      bitrate: '0k',
+      ...progress,
+    },
+  });
+}
+
+/** Emits a mux queue status-change event for a job. */
+export function emitMuxQueueStatusChange(page: Page, job: MuxQueueJob) {
+  return mockApi.emit(page, 'mux-queue-status-change', job);
+}
+
+/** Emits a mux queue progress event for a job. */
+export function emitMuxQueueProgress(page: Page, job: MuxQueueJob, progress: Partial<ConversionProgress>) {
+  return mockApi.emit(page, 'mux-queue-progress', {
     job,
     progress: {
       percent: 0,

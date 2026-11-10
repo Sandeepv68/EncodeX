@@ -525,7 +525,9 @@
     "updateDownloaded": "Aggiornamento v{{version}} scaricato",
     "viewUpdate": "Visualizza",
     "remuxed": "Remux completato",
-    "demuxed": "Flussi estratti correttamente"
+    "demuxed": "Flussi estratti correttamente",
+    "remuxQueued": "Remux aggiunto alla coda Mux",
+    "demuxQueued": "Flussi aggiunti alla coda Mux"
   },
   "profiles": {
     "searchPlaceholder": "Cerca profili...",
@@ -1267,6 +1269,39 @@
       "hardwareNone": "Solo software",
       "encoderVideo": "Video",
       "encoderAudio": "Audio"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Coda batch",
+    "tabMux": "Coda Mux",
+    "empty": "La coda Mux è vuota.",
+    "emptyHint": "I processi di remux e demux vengono aggiunti dalle rispettive pagine.",
+    "openRemux": "Apri Remux",
+    "openDemux": "Apri Demux",
+    "start": "Avvia",
+    "pause": "Pausa",
+    "resume": "Riprendi",
+    "cancelAll": "Annulla tutto",
+    "clearCompleted": "Cancella completati",
+    "concurrency": "Operazioni in parallelo",
+    "stats": "{{queued}} in coda, {{running}} in esecuzione, {{done}} completati, {{failed}} non riusciti",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "{{count}} output",
+    "outputDir": "Cartella di output",
+    "noOutputs": "Nessun output",
+    "detailsTargets": "Output",
+    "detailsCreatedAt": "Aggiunto",
+    "viewQueue": "Visualizza la coda",
+    "addToQueue": "Aggiungi alla coda",
+    "dragHandle": "Trascina per riordinare",
+    "paused": "In pausa",
+    "filters": {
+      "all": "Tutti",
+      "queued": "In coda",
+      "running": "In esecuzione",
+      "done": "Completati",
+      "failed": "Non riusciti"
     }
   }
 }

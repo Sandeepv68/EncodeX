@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor, act, within } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import BatchQueue from '../BatchQueue';
 import { useQueueStore } from '../../stores/queueStore';
 import { useToastStore } from '../../stores/toastStore';
@@ -44,8 +45,21 @@ function job(overrides: Partial<QueueJob> = {}): QueueJob {
   };
 }
 
-function renderPage() {
-  return render(<BatchQueue />);
+/**
+ * Renders the page inside a memory router.
+ *
+ * The page reads its active tab from the `?tab=` query parameter, so it needs
+ * a router context; the default entry has no query parameter, which puts the
+ * page on the general queue tab.
+ * @param {string} [entry] - Optional router entry (e.g. '/batch?tab=mux').
+ * @returns {ReturnType<typeof render>} The render result.
+ */
+function renderPage(entry = '/batch') {
+  return render(
+    <MemoryRouter initialEntries={[entry]}>
+      <BatchQueue />
+    </MemoryRouter>,
+  );
 }
 
 /**
@@ -1286,5 +1300,38 @@ describe('BatchQueue', () => {
     await waitFor(() =>
       expect(queueUpdateOptionsMock).toHaveBeenCalledWith('job-1', expect.any(Object), '/new-out/video_encodex_converted.mp4'),
     );
+  });
+
+  it('shows the general queue by default and switches to the mux tab', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1' })]);
+    await act(async () => {
+      renderPage();
+    });
+    expect(screen.getByTestId('batch-queue-tab-general')).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByText(/video\.mp4/)).toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('batch-queue-tab-mux'));
+    });
+    expect(screen.getByTestId('batch-queue-tab-mux')).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByTestId('mux-queue-empty')).toBeInTheDocument();
+  });
+
+  it('opens the mux tab from a ?tab=mux deep link', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1' })]);
+    await act(async () => {
+      renderPage('/batch?tab=mux');
+    });
+    expect(screen.getByTestId('batch-queue-tab-mux')).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByTestId('mux-queue-empty')).toBeInTheDocument();
+    expect(screen.queryByText(/video\.mp4/)).not.toBeInTheDocument();
+  });
+
+  it('falls back to the general tab for an unknown tab value', async () => {
+    queueListMock.mockResolvedValue([]);
+    await act(async () => {
+      renderPage('/batch?tab=bogus');
+    });
+    expect(screen.getByTestId('batch-queue-tab-general')).toHaveAttribute('aria-selected', 'true');
   });
 });

@@ -525,7 +525,9 @@
     "updateDownloaded": "Update v{{version}} gedownload",
     "viewUpdate": "Bekijk",
     "remuxed": "Remux voltooid",
-    "demuxed": "Streams succesvol geëxtraheerd"
+    "demuxed": "Streams succesvol geëxtraheerd",
+    "remuxQueued": "Remux toegevoegd aan de Mux-wachtrij",
+    "demuxQueued": "Streams toegevoegd aan de Mux-wachtrij"
   },
   "profiles": {
     "searchPlaceholder": "Profielen zoeken...",
@@ -1267,6 +1269,39 @@
       "hardwareNone": "Alleen software",
       "encoderVideo": "Video",
       "encoderAudio": "Audio"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Batchwachtrij",
+    "tabMux": "Mux-wachtrij",
+    "empty": "De Mux-wachtrij is leeg.",
+    "emptyHint": "Remux- en demuxtaken worden vanaf hun eigen pagina’s toegevoegd.",
+    "openRemux": "Remux openen",
+    "openDemux": "Demux openen",
+    "start": "Starten",
+    "pause": "Pauzeren",
+    "resume": "Hervatten",
+    "cancelAll": "Alles annuleren",
+    "clearCompleted": "Voltooide wissen",
+    "concurrency": "Parallelle taken",
+    "stats": "{{queued}} in wachtrij, {{running}} actief, {{done}} klaar, {{failed}} mislukt",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "{{count}} uitvoer",
+    "outputDir": "Uitvoermap",
+    "noOutputs": "Geen uitvoer",
+    "detailsTargets": "Uitvoer",
+    "detailsCreatedAt": "Toegevoegd",
+    "viewQueue": "Wachtrij bekijken",
+    "addToQueue": "Aan wachtrij toevoegen",
+    "dragHandle": "Sleep om te herschikken",
+    "paused": "Gepauzeerd",
+    "filters": {
+      "all": "Alle",
+      "queued": "In wachtrij",
+      "running": "Actief",
+      "done": "Klaar",
+      "failed": "Mislukt"
     }
   }
 }

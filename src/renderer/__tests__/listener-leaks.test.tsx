@@ -182,7 +182,15 @@ describe('useHotkeys', () => {
 
 describe('BatchQueue', () => {
   it('releases its window drag listeners across 100 mounts', () => {
-    expectNoLeakAcross('BatchQueue', 100, () => render(<BatchQueue />));
+    // The page reads its active tab from the router's query string, so it
+    // needs a router context - the same one the app provides.
+    expectNoLeakAcross('BatchQueue', 100, () =>
+      render(
+        <MemoryRouter initialEntries={['/batch']}>
+          <BatchQueue />
+        </MemoryRouter>,
+      ),
+    );
   }, 180_000);
 });
 

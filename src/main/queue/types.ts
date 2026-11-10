@@ -5,7 +5,7 @@
  * queue-export and queue-import IPC channels.
  */
 
-import type { ConversionOptions, QueueJob, TranscoderType } from '../../shared/types';
+import type { ConversionOptions, MuxQueueSnapshot, QueueJob, TranscoderType } from '../../shared/types';
 import type { ITranscoder } from '../transcoders/types';
 
 /**
@@ -30,6 +30,32 @@ export interface JobQueueOptions {
 }
 
 /**
+ * Construction options for a {@link MuxQueue}.
+ * Mirrors {@link JobQueueOptions} but persists through the mux-specific
+ * snapshot contract.
+ * @interface MuxQueueOptions
+ */
+export interface MuxQueueOptions {
+  concurrency?: number;
+  persistence?: MuxQueuePersistence;
+  persistDelayMs?: number;
+  transcoderFactory?: (type: TranscoderType) => ITranscoder;
+}
+
+/**
+ * Minimal adapter the mux queue uses to persist and restore its state.
+ * @interface MuxQueuePersistence
+ */
+export interface MuxQueuePersistence {
+  /** Loads a previously saved mux snapshot, or null when none/invalid exists. */
+  load(): MuxQueueSnapshot | null;
+  /** Persists the given snapshot (replacing any previous state). */
+  save(snapshot: MuxQueueSnapshot): void;
+  /** Deletes any persisted mux snapshot. */
+  clear(): void;
+}
+
+/**
  * A serializable snapshot of the queue that can be restored after a restart.
  * @interface QueueSnapshot
  * @property {number} version - Snapshot format version ({@link QUEUE_STATE_VERSION}).
@@ -42,6 +68,20 @@ export interface QueueSnapshot {
   concurrency: number;
   jobs: QueueJob[];
 }
+
+/**
+ * The JSON shape shared by both persisted queue snapshots: the batch queue's
+ * `QueueSnapshot` and the mux queue's `MuxQueueSnapshot`.
+ * @typedef {Object} JsonSnapshot
+ * @property {number} version - Snapshot format version.
+ * @property {number} concurrency - The concurrency cap in effect when saved.
+ * @property {TJob[]} jobs - All known jobs.
+ */
+export type JsonSnapshot<TJob> = {
+  version: number;
+  concurrency: number;
+  jobs: TJob[];
+};
 
 /**
  * Minimal adapter the queue uses to persist and restore its state.

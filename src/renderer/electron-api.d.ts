@@ -14,6 +14,8 @@ import {
   ConversionProgress,
   MediaInfo,
   QueueJob,
+  MuxQueueAddPayload,
+  MuxQueueJob,
   PlayerFrame,
   PlayerAudioChunk,
   LogEntry,
@@ -310,6 +312,80 @@ export interface ElectronAPI {
    * @returns {Promise<void>} Resolves once processing is kicked off.
    */
   queueStart(): Promise<void>;
+  /**
+   * Adds a remux or demux job to the dedicated mux queue over the
+   * `IPC.MUX_QUEUE_ADD` ('mux-queue-add') channel. The job stays QUEUED until
+   * the user starts the mux queue.
+   * @param {MuxQueueAddPayload} payload - The remux or demux job description.
+   * @returns {Promise<string>} The unique id assigned to the queued job.
+   * @throws {Error} Rejects with a formatted AppError if the job is invalid.
+   */
+  muxQueueAdd(payload: MuxQueueAddPayload): Promise<string>;
+  /**
+   * Cancels a running mux job and removes it from the mux queue over the
+   * `IPC.MUX_QUEUE_REMOVE` ('mux-queue-remove') channel.
+   * @param {string} id - Id of the job to cancel and remove.
+   * @returns {Promise<void>} Resolves once the removal request is handled.
+   */
+  muxQueueRemove(id: string): Promise<void>;
+  /**
+   * Returns the current list of mux queue jobs over the `IPC.MUX_QUEUE_LIST`
+   * ('mux-queue-list') channel.
+   * @returns {Promise<MuxQueueJob[]>} The full array of mux queue jobs.
+   */
+  muxQueueList(): Promise<MuxQueueJob[]>;
+  /**
+   * Reads the mux queue's runtime state over the `IPC.MUX_QUEUE_GET_STATE`
+   * ('mux-queue-get-state') channel.
+   * @returns {Promise<{paused: boolean; concurrency: number}>} The paused flag
+   *   and the parallel-job cap.
+   */
+  muxQueueGetState(): Promise<{ paused: boolean; concurrency: number }>;
+  /**
+   * Starts processing the queued mux jobs over the `IPC.MUX_QUEUE_START`
+   * ('mux-queue-start') channel.
+   * @returns {Promise<void>} Resolves once processing is kicked off.
+   */
+  muxQueueStart(): Promise<void>;
+  /**
+   * Pauses the mux queue over the `IPC.MUX_QUEUE_PAUSE` ('mux-queue-pause')
+   * channel.
+   * @returns {Promise<void>} Resolves once the queue is paused.
+   */
+  muxQueuePause(): Promise<void>;
+  /**
+   * Resumes a paused mux queue over the `IPC.MUX_QUEUE_RESUME`
+   * ('mux-queue-resume') channel.
+   * @returns {Promise<void>} Resolves once the queue is resumed.
+   */
+  muxQueueResume(): Promise<void>;
+  /**
+   * Cancels every job in the mux queue over the `IPC.MUX_QUEUE_CANCEL_ALL`
+   * ('mux-queue-cancel-all') channel.
+   * @returns {Promise<void>} Resolves once all jobs have been cancelled.
+   */
+  muxQueueCancelAll(): Promise<void>;
+  /**
+   * Removes every completed and failed job from the mux queue over the
+   * `IPC.MUX_QUEUE_CLEAR_COMPLETED` ('mux-queue-clear-completed') channel.
+   * @returns {Promise<number>} The number of jobs removed.
+   */
+  muxQueueClearCompleted(): Promise<number>;
+  /**
+   * Sets how many mux jobs run in parallel over the
+   * `IPC.MUX_QUEUE_SET_CONCURRENCY` ('mux-queue-set-concurrency') channel.
+   * @param {number} concurrency - The concurrency cap.
+   * @returns {Promise<void>} Resolves once the cap is applied.
+   */
+  muxQueueSetConcurrency(concurrency: number): Promise<void>;
+  /**
+   * Reorders a QUEUED mux job over the `IPC.MUX_QUEUE_MOVE_TO`
+   * ('mux-queue-move-to') channel.
+   * @param {string} id - Id of the QUEUED job to move.
+   * @param {number} toPosition - Target index within the QUEUED subsequence.
+   * @returns {Promise<boolean>} True when the job was moved.
+   */
+  muxQueueMoveTo(id: string, toPosition: number): Promise<boolean>;
   /**
    * Exports the current batch queue to a JSON file over the
    * `IPC.QUEUE_EXPORT` ('queue-export') channel, using a native save dialog.
@@ -627,6 +703,52 @@ export interface ElectronAPI {
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
   onQueueMoved(cb: (data: { id: string; toPosition: number }) => void): () => void;
+  /**
+   * Subscribes to job-added events from the mux queue, pushed from the main
+   * process over `IPC.MUX_QUEUE_ADDED` ('mux-queue-added').
+   * @param {(job: MuxQueueJob) => void} cb - Callback invoked with the new job.
+   * @returns {() => void} An unsubscribe function that removes the listener.
+   */
+  onMuxQueueAdded(cb: (job: MuxQueueJob) => void): () => void;
+  /**
+   * Subscribes to job-removed events from the mux queue, pushed from the main
+   * process over `IPC.MUX_QUEUE_REMOVED` ('mux-queue-removed').
+   * @param {(id: string) => void} cb - Callback invoked with the removed job id.
+   * @returns {() => void} An unsubscribe function that removes the listener.
+   */
+  onMuxQueueRemoved(cb: (id: string) => void): () => void;
+  /**
+   * Subscribes to mux queue job status transitions, pushed from the main
+   * process over `IPC.MUX_QUEUE_STATUS_CHANGE` ('mux-queue-status-change').
+   * @param {(job: MuxQueueJob) => void} cb - Callback invoked with the job in
+   *   its new status.
+   * @returns {() => void} An unsubscribe function that removes the listener.
+   */
+  onMuxQueueStatusChange(cb: (job: MuxQueueJob) => void): () => void;
+  /**
+   * Subscribes to per-job progress events from the mux queue, pushed from the
+   * main process over `IPC.MUX_QUEUE_PROGRESS` ('mux-queue-progress').
+   * @param {(data: { job: MuxQueueJob; progress: ConversionProgress }) => void} cb -
+   *   Callback receiving the mux job and its aggregated progress.
+   * @returns {() => void} An unsubscribe function that removes the listener.
+   */
+  onMuxQueueProgress(cb: (data: { job: MuxQueueJob; progress: ConversionProgress }) => void): () => void;
+  /**
+   * Subscribes to the notification that the whole mux queue has been
+   * cancelled, pushed from the main process over `IPC.MUX_QUEUE_CANCELLED`
+   * ('mux-queue-cancelled').
+   * @param {() => void} cb - Callback invoked once when the queue is cancelled.
+   * @returns {() => void} An unsubscribe function that removes the listener.
+   */
+  onMuxQueueCancelled(cb: () => void): () => void;
+  /**
+   * Subscribes to the notification that a QUEUED mux job was reordered, pushed
+   * from the main process over `IPC.MUX_QUEUE_MOVED` ('mux-queue-moved').
+   * @param {(data: { id: string; toPosition: number }) => void} cb - Callback
+   *   receiving the moved job id and its new index.
+   * @returns {() => void} An unsubscribe function that removes the listener.
+   */
+  onMuxQueueMoved(cb: (data: { id: string; toPosition: number }) => void): () => void;
   /**
    * Subscribes to decoded video frames emitted by the native player, pushed
    * from the main process over `IPC.PLAYER_FRAME` ('player-frame'). Frames

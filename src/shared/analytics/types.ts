@@ -289,6 +289,11 @@ export type AnalyticsEventName =
   | 'batch_import'
   | 'batch_condense_toggled'
   | 'batch_filter_changed'
+  | 'mux_queue_job_added'
+  | 'mux_queue_started'
+  | 'mux_queue_completed'
+  | 'mux_queue_failed'
+  | 'mux_queue_cancelled'
   | 'media_info_probed'
   | 'logs_filter_changed'
   | 'logs_search_changed'
@@ -489,6 +494,12 @@ export interface AnalyticsEventPayloadMap {
   batch_import: { count: number };
   batch_condense_toggled: { condensed: boolean };
   batch_filter_changed: { filter: 'all' | 'queued' | 'running' | 'done' | 'failed' };
+
+  mux_queue_job_added: { kind: 'remux' | 'demux'; targetCountBucket: string; transcoder: string };
+  mux_queue_started: { jobCount: number; kindMix: string };
+  mux_queue_completed: { completed: number; failed: number };
+  mux_queue_failed: { kind: 'remux' | 'demux'; code?: string };
+  mux_queue_cancelled: { count: number };
 
   media_info_probed: { kind: 'video' | 'image'; streamCountBucket: string; hasExif: boolean };
   logs_filter_changed: { level: string };

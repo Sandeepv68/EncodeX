@@ -525,7 +525,9 @@
     "updateDownloaded": "ດາວໂຫລດອັບເດດ v{{version}} ແລ້ວ",
     "viewUpdate": "ເບິ່ງ",
     "remuxed": "Remux ສຳເລັດ",
-    "demuxed": "ດຶງສະຣີມສຳເລັດ"
+    "demuxed": "ດຶງສະຣີມສຳເລັດ",
+    "remuxQueued": "ເພີ່ມ Remux ໃສ່ຄິວ Mux ແລ້ວ",
+    "demuxQueued": "ເພີ່ມສະຕຣີມໃສ່ຄິວ Mux ແລ້ວ"
   },
   "profiles": {
     "searchPlaceholder": "ຊອກຫາໂປຣໄຟລ໌...",
@@ -1267,6 +1269,39 @@
       "hardwareNone": "ຊັອຟແວະລຸ່ນ",
       "encoderVideo": "ວິດີໂອ",
       "encoderAudio": "ສຽງ"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "ຄິວງານຫຼາຍອັນ",
+    "tabMux": "ຄິວ Mux",
+    "empty": "ຄິວ Mux ຫວ່າງ.",
+    "emptyHint": "ວຽກ Remux ແລະ Demux ຖືກເພີ່ມຈາກໜ້າຂອງຕົວຂອງ.",
+    "openRemux": "ເປີດ Remux",
+    "openDemux": "ເປີດ Demux",
+    "start": "ເລີ່ມ",
+    "pause": "ຢຸດຊົ່ວຄາວ",
+    "resume": "ສືບຕໍ່",
+    "cancelAll": "ຍົກເລີກທັງໝົດ",
+    "clearCompleted": "ລຶບອັນທີ່ສຳເລັດ",
+    "concurrency": "ວຽກພ້ອມກັນ",
+    "stats": "{{queued}} ໃນຄິວ, {{running}} ກຳລັງແລ່ນ, {{done}} ສຳເລັດ, {{failed}} ລົ້ມເຫຼວ",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "ຜົນສົ່ງອອກ {{count}}",
+    "outputDir": "ໂຟນເດີຜົນຮັບ",
+    "noOutputs": "ບໍ່ມີຜົນສົ່ງອອກ",
+    "detailsTargets": "ຜົນສົ່ງອອກ",
+    "detailsCreatedAt": "ເພີ່ມເມື່ອ",
+    "viewQueue": "ເບິ່ງຄິວ",
+    "addToQueue": "ເພີ່ມໃສ່ຄິວ",
+    "dragHandle": "ລາກເພື່ອຈັດລຳດັບ",
+    "paused": "ຖືກຢຸດຊົ່ວຄາວ",
+    "filters": {
+      "all": "ທັງໝົດ",
+      "queued": "ໃນຄິວ",
+      "running": "ກຳລັງແລ່ນ",
+      "done": "ສຳເລັດ",
+      "failed": "ລົ້ມເຫຼວ"
     }
   }
 }

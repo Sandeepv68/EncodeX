@@ -15,6 +15,7 @@ const pauseConversionMock = vi.mocked(window.electronAPI.pauseConversion);
 const resumeConversionMock = vi.mocked(window.electronAPI.resumeConversion);
 const cancelConversionMock = vi.mocked(window.electronAPI.cancelConversion);
 const revealFileMock = vi.mocked(window.electronAPI.revealFile);
+const muxQueueAddMock = vi.mocked(window.electronAPI.muxQueueAdd);
 const progressHandlers = vi.mocked(window.electronAPI.onConversionProgress).mock.calls.map((c) => c[0]);
 
 function resetStore(): void {
@@ -54,6 +55,7 @@ describe('Demux', () => {
     resumeConversionMock.mockReset();
     cancelConversionMock.mockReset();
     revealFileMock.mockReset();
+    muxQueueAddMock.mockReset();
   });
 
   it('previews a still frame of the selected video', async () => {
@@ -253,6 +255,59 @@ describe('Demux', () => {
     await waitFor(() => expect(selectDirectoryMock).toHaveBeenCalledOnce());
     await waitFor(() => expect(useDemuxStore.getState().outputDir).toBe('/out'));
     expect(useDemuxStore.getState().targets[0].output).toBe('/out/video.video.mp4');
+  });
+
+  it('does not enqueue twice when the add button is double-clicked', async () => {
+    let resolveAdd: (value: string) => void = () => {};
+    muxQueueAddMock.mockReturnValue(new Promise<string>((resolve) => (resolveAdd = resolve)));
+    renderPage();
+    selectFileMock.mockResolvedValue('/in/video.mkv');
+    getMediaInfoMock.mockResolvedValue({
+      file: '/in/video.mkv',
+      format: 'matroska',
+      size: 1024,
+      duration: 60,
+      bitrate: '1000k',
+      streams: [{ index: 0, type: 'video', codec: 'h264', width: 1920, height: 1080 }],
+    });
+    fireEvent.click(screen.getByText('demux.dropLabel'));
+    await waitFor(() => expect(getMediaInfoMock).toHaveBeenCalledOnce());
+
+    const addToQueue = screen.getByTestId('demux-add-to-queue');
+    fireEvent.click(addToQueue);
+    await waitFor(() => expect(addToQueue).toBeDisabled());
+    fireEvent.click(addToQueue);
+    expect(muxQueueAddMock).toHaveBeenCalledTimes(1);
+
+    resolveAdd('mux-1');
+    await waitFor(() => expect(addToQueue).toBeEnabled());
+  });
+
+  it('adds the selected streams to the mux queue without extracting them', async () => {
+    muxQueueAddMock.mockResolvedValue('mux-1');
+    renderPage();
+    selectFileMock.mockResolvedValue('/in/video.mkv');
+    getMediaInfoMock.mockResolvedValue({
+      file: '/in/video.mkv',
+      format: 'matroska',
+      size: 1024,
+      duration: 60,
+      bitrate: '1000k',
+      streams: [
+        { index: 0, type: 'video', codec: 'h264', width: 1920, height: 1080 },
+        { index: 1, type: 'audio', codec: 'aac', channels: 2 },
+      ],
+    });
+    fireEvent.click(screen.getByText('demux.dropLabel'));
+    await waitFor(() => expect(getMediaInfoMock).toHaveBeenCalledOnce());
+
+    const addToQueue = screen.getByTestId('demux-add-to-queue');
+    expect(addToQueue).toBeEnabled();
+    fireEvent.click(addToQueue);
+
+    await waitFor(() => expect(muxQueueAddMock).toHaveBeenCalledOnce());
+    expect(muxQueueAddMock).toHaveBeenCalledWith(expect.objectContaining({ kind: 'demux', input: '/in/video.mkv' }));
+    expect(convertFileMock).not.toHaveBeenCalled();
   });
 
   it('demuxes every selected stream sequentially and shows the reveal action', async () => {

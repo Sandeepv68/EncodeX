@@ -525,7 +525,9 @@
     "updateDownloaded": "已下載更新 v{{version}}",
     "viewUpdate": "檢視",
     "remuxed": "重新封裝已完成",
-    "demuxed": "已成功擷取各個串流"
+    "demuxed": "已成功擷取各個串流",
+    "remuxQueued": "重新封裝已加入 Mux 佇列",
+    "demuxQueued": "各個串流已加入 Mux 佇列"
   },
   "profiles": {
     "searchPlaceholder": "搜尋設定檔...",
@@ -1267,6 +1269,39 @@
       "hardwareNone": "僅軟體",
       "encoderVideo": "影片",
       "encoderAudio": "音訊"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "批次佇列",
+    "tabMux": "Mux 佇列",
+    "empty": "Mux 佇列是空的。",
+    "emptyHint": "重新封裝和解封裝工作從各自的頁面新增。",
+    "openRemux": "開啟重新封裝",
+    "openDemux": "開啟解封裝",
+    "start": "開始",
+    "pause": "暫停",
+    "resume": "繼續",
+    "cancelAll": "全部取消",
+    "clearCompleted": "清除已完成",
+    "concurrency": "平行工作",
+    "stats": "{{queued}} 佇列中，{{running}} 執行中，{{done}} 已完成，{{failed}} 已失敗",
+    "kindRemux": "重新封裝",
+    "kindDemux": "解封裝",
+    "targets": "{{count}} 個輸出",
+    "outputDir": "輸出資料夾",
+    "noOutputs": "無輸出",
+    "detailsTargets": "輸出",
+    "detailsCreatedAt": "新增時間",
+    "viewQueue": "檢視佇列",
+    "addToQueue": "加入佇列",
+    "dragHandle": "拖曳以重新排序",
+    "paused": "已暫停",
+    "filters": {
+      "all": "全部",
+      "queued": "佇列中",
+      "running": "執行中",
+      "done": "已完成",
+      "failed": "已失敗"
     }
   }
 }

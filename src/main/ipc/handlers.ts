@@ -18,6 +18,7 @@ import { createSender } from './send';
 import { registerDialogHandlers } from './dialogs';
 import { registerConversionHandlers } from './conversion';
 import { registerQueueHandlers } from './queue';
+import { registerMuxQueueHandlers } from './mux-queue';
 import { registerSystemHandlers } from './system';
 import { registerPlayerHandlers } from './player';
 import { registerWindowHandlers } from './window';
@@ -56,6 +57,7 @@ export function registerIpcHandlers(win: BrowserWindow): void {
   registerMcpUiIpc();
   registerConversionHandlers(win, send);
   registerQueueHandlers(win, send);
+  registerMuxQueueHandlers(win, send);
   registerSystemHandlers(win);
   registerPlayerHandlers(win, send);
   registerWindowHandlers(win);

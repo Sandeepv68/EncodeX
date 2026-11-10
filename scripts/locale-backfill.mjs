@@ -137,6 +137,8 @@ function auditTables(tables, enFlat) {
     'about.copyright',
     'batchQueue.operationDemux',
     'batchQueue.operationRemux',
+    'muxQueue.kindRemux',
+    'muxQueue.kindDemux',
     'shortcuts.sections.demux',
     'shortcuts.sections.logs',
     'shortcuts.sections.remux',

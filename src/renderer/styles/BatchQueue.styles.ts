@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Typography, Stack, Box, Chip, TextField, Alert, IconButton } from '@mui/material';
+import { Typography, Stack, Box, Chip, TextField, Alert, IconButton, Tabs } from '@mui/material';
 import type { ElementType } from 'react';
 import { OVERLAY_COLORS, SHADOWS } from '../../shared/theme/colors';
 
@@ -121,3 +121,35 @@ export const CondenseButton = styled(IconButton)({
 export const ClearAllBox = styled(Box)({
   marginInlineStart: 'auto',
 });
+
+/** Vertical stack used by the mux queue's empty state, left-aligned. @const EmptyStack */
+export const EmptyStack = styled(Stack)({
+  alignItems: 'flex-start',
+});
+
+/**
+ * Tab bar that switches between the general queue and the mux queue.
+ *
+ * The selected tab is drawn in the theme's primary text colour rather than
+ * MUI's default primary tint: the theme's `primary.main` on the page background
+ * sits just under the 4.5:1 contrast ratio axe requires, so the default
+ * selected-tab colour fails the accessibility gate. The selection stays obvious
+ * through MUI's primary indicator bar and the bold weight.
+ * @const QueueTabs
+ */
+export const QueueTabs = styled(Tabs)(({ theme }) => ({
+  marginBottom: 0,
+  // The tabs use MUI's `inherit` text colour so the theme's own colours apply
+  // instead of the primary tint (which sits just under the 4.5:1 contrast
+  // ratio axe requires). MUI's inherit variant dims unselected tabs with
+  // `opacity: 0.6`, so the opacity is restored here too; `&&&` outranks the
+  // library's own `.MuiTab-textColorInherit` rules whatever the injection order.
+  '&&& .MuiTab-root': {
+    opacity: 1,
+    color: theme.palette.text.secondary,
+  },
+  '&&& .MuiTab-root.Mui-selected': {
+    color: theme.palette.text.primary,
+    fontWeight: theme.typography.fontWeightBold,
+  },
+}));

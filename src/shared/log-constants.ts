@@ -1075,3 +1075,83 @@ export const LOG_IPC_AI_LIST_MODELS = 'aiListModels:';
 export const LOG_AI_CONNECT_TEST_FAILED = 'AI connect test failed:';
 /** @const {string} Prefix when the provider model list cannot be fetched. */
 export const LOG_AI_MODEL_LIST_FAILED = 'AI model list failed:';
+/** @const {string} Logged when a remux/demux job is added to the mux queue. */
+export const LOG_MUX_QUEUE_JOB_ADDED = 'Mux queue job added:';
+/** @const {string} Logged when a remux/demux job is removed from the mux queue. */
+export const LOG_MUX_QUEUE_JOB_REMOVED = 'Mux queue job removed:';
+/** @const {string} Logged when a mux queue job changes status. */
+export const LOG_MUX_QUEUE_JOB_STATUS_CHANGE = 'Mux queue job status change:';
+/** @const {string} Logged when a mux queue job completes successfully. */
+export const LOG_MUX_QUEUE_JOB_COMPLETED = 'Mux queue job completed:';
+/** @const {string} Logged when a mux queue job fails. */
+export const LOG_MUX_QUEUE_JOB_FAILED = 'Mux queue job failed:';
+/** @const {string} Logged when the mux queue starts processing jobs. */
+export const LOG_MUX_QUEUE_START = 'muxQueue start:';
+/** @const {string} Logged when the mux queue is paused. */
+export const LOG_MUX_QUEUE_PAUSE = 'muxQueue pause:';
+/** @const {string} Logged when the mux queue is resumed. */
+export const LOG_MUX_QUEUE_RESUME = 'muxQueue resume:';
+/** @const {string} Logged when the mux queue concurrency cap changes. */
+export const LOG_MUX_QUEUE_SET_CONCURRENCY = 'muxQueue setConcurrency:';
+/** @const {string} Logged when a mux queue job is reordered. */
+export const LOG_MUX_QUEUE_MOVE_TO = 'muxQueue moveJobTo:';
+/** @const {string} Logged when a mux queue job reorder is skipped. */
+export const LOG_MUX_QUEUE_MOVE_SKIPPED = 'muxQueue moveJobTo skipped: not queued:';
+/** @const {string} Logged when a mux queue job reorder target is not finite. */
+export const LOG_MUX_QUEUE_MOVE_REJECTED_NON_FINITE = 'muxQueue moveJobTo rejected: non-finite target index:';
+/** @const {string} Logged when the mux queue is cleared by cancel-all. */
+export const LOG_MUX_QUEUE_CANCELLED = 'Mux queue cancelled';
+/** @const {string} Logged when the mux queue drains after real completions. */
+export const LOG_MUX_QUEUE_DRAINED = 'Mux queue drained';
+/** @const {string} Logged when completed mux queue jobs are removed. */
+export const LOG_MUX_QUEUE_CLEAR_COMPLETED = 'muxQueue clearCompleted:';
+/** @const {string} Logged when the mux queue state is restored from disk. */
+export const LOG_MUX_QUEUE_STATE_RESTORED = 'Restored mux queue state:';
+/** @const {string} Logged when the mux queue state is written to disk. */
+export const LOG_MUX_QUEUE_STATE_SAVED = 'Saved mux queue state:';
+/** @const {string} Logged when the mux queue state is cleared from disk. */
+export const LOG_MUX_QUEUE_STATE_CLEARED = 'Cleared mux queue state';
+/** @const {string} Logged with the number of jobs currently in the mux queue. */
+export const LOG_MUX_QUEUE_SIZE = 'Mux queue size:';
+/** @const {string} Logged when a mux runner starts a target. */
+export const LOG_MUX_RUNNER_TARGET_STARTED = 'Mux runner target started:';
+/** @const {string} Logged when a mux runner completes a target. */
+export const LOG_MUX_RUNNER_TARGET_COMPLETED = 'Mux runner target completed:';
+/** @const {string} Logged when a mux runner target fails. */
+export const LOG_MUX_RUNNER_TARGET_FAILED = 'Mux runner target failed:';
+/** @const {string} Logged when the renderer requests a mux queue add. */
+export const LOG_IPC_MUX_QUEUE_ADD = 'muxQueueAdd called';
+/** @const {string} Logged when the renderer requests a mux queue remove. */
+export const LOG_IPC_MUX_QUEUE_REMOVE = 'muxQueueRemove called';
+/** @const {string} Logged when the renderer requests the mux queue listing. */
+export const LOG_IPC_MUX_QUEUE_LIST = 'muxQueueList called';
+/** @const {string} Logged when the renderer requests the mux queue state. */
+export const LOG_IPC_MUX_QUEUE_GET_STATE = 'muxQueueGetState called';
+/** @const {string} Logged when the renderer requests the mux queue to start. */
+export const LOG_IPC_MUX_QUEUE_START_CALLED = 'muxQueueStart called';
+/** @const {string} Logged when the renderer requests the mux queue to pause. */
+export const LOG_IPC_MUX_QUEUE_PAUSE_CALLED = 'muxQueuePause called';
+/** @const {string} Logged when the renderer requests the mux queue to resume. */
+export const LOG_IPC_MUX_QUEUE_RESUME_CALLED = 'muxQueueResume called';
+/** @const {string} Logged when the renderer requests a mux queue cancel-all. */
+export const LOG_IPC_MUX_QUEUE_CANCEL_ALL_CALLED = 'muxQueueCancelAll called';
+/** @const {string} Logged when the renderer requests completed mux jobs be cleared. */
+export const LOG_IPC_MUX_QUEUE_CLEAR_COMPLETED_CALLED = 'muxQueueClearCompleted called';
+/** @const {string} Logged when the renderer requests a mux concurrency change. */
+export const LOG_IPC_MUX_QUEUE_SET_CONCURRENCY = 'muxQueueSetConcurrency called';
+/** @const {string} Logged when the renderer requests a mux queue reorder. */
+export const LOG_IPC_MUX_QUEUE_MOVE_TO = 'muxQueueMoveTo called';
+/** @const {string} Logged when a remux is added to the mux queue. */
+export const LOG_REMUX_ENQUEUE = 'enqueueRemux:';
+/** @const {string} Logged when a demux is added to the mux queue. */
+export const LOG_DEMUX_ENQUEUE = 'enqueueDemux:';
+/** @const {string} Logged when the preload forwards a mux queue job-added event. */
+export const LOG_ON_MUX_QUEUE_ADDED = 'onMuxQueueAdded:';
+/** @const {string} Logged when the preload forwards a mux queue job-removed event. */
+export const LOG_ON_MUX_QUEUE_REMOVED = 'onMuxQueueRemoved:';
+/** @const {string} Logged when the preload forwards a mux queue status change. */
+export const LOG_ON_MUX_QUEUE_STATUS_CHANGE = 'onMuxQueueStatusChange:';
+/** @const {string} Logged when the preload forwards a mux queue cancelled event. */
+export const LOG_ON_MUX_QUEUE_CANCELLED = 'onMuxQueueCancelled';
+/** @const {string} Logged when the preload forwards a mux queue reorder event. */
+export const LOG_ON_MUX_QUEUE_MOVED = 'onMuxQueueMoved:';

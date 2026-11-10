@@ -11,6 +11,7 @@ const convertFileMock = vi.mocked(window.electronAPI.convertFile);
 const pauseConversionMock = vi.mocked(window.electronAPI.pauseConversion);
 const resumeConversionMock = vi.mocked(window.electronAPI.resumeConversion);
 const cancelConversionMock = vi.mocked(window.electronAPI.cancelConversion);
+const muxQueueAddMock = vi.mocked(window.electronAPI.muxQueueAdd);
 const progressHandler = vi.mocked(window.electronAPI.onConversionProgress).mock.calls[0]?.[0];
 
 function resetStore(): void {
@@ -359,6 +360,54 @@ describe('remuxStore', () => {
     expect(useToastStore.getState().toasts).toHaveLength(1);
   });
 
+  it('enqueueRemux adds the remux to the mux queue instead of converting', async () => {
+    muxQueueAddMock.mockResolvedValue('mux-1');
+    useRemuxStore.setState({
+      input: 'in.mkv',
+      container: 'mp4',
+      output: '/out/out.mp4',
+      streams: SAMPLE_STREAMS,
+      selectedMaps: ['0:v:0', '0:a:0', '0:s:0'],
+    });
+    await useRemuxStore.getState().enqueueRemux();
+    expect(muxQueueAddMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        kind: 'remux',
+        input: 'in.mkv',
+        output: '/out/out.mp4',
+        targets: [expect.objectContaining({ output: '/out/out.mp4', options: expect.objectContaining({ copy: true }) })],
+      }),
+    );
+    expect(convertFileMock).not.toHaveBeenCalled();
+    expect(useToastStore.getState().toasts).toHaveLength(1);
+  });
+
+  it('enqueueRemux rejects a missing input or output', async () => {
+    expectAppLog('warn', 'renderer/stores/remuxStore');
+    await useRemuxStore.getState().enqueueRemux();
+    expect(useErrorStore.getState().currentError?.code).toBe(ErrorCode.INPUT_NOT_SPECIFIED);
+    expect(muxQueueAddMock).not.toHaveBeenCalled();
+
+    useRemuxStore.setState({ input: 'in.mkv' });
+    await useRemuxStore.getState().enqueueRemux();
+    expect(useErrorStore.getState().currentError?.code).toBe(ErrorCode.OUTPUT_NOT_SPECIFIED);
+    expect(muxQueueAddMock).not.toHaveBeenCalled();
+  });
+
+  it('enqueueRemux surfaces a failed enqueue through the error store', async () => {
+    muxQueueAddMock.mockRejectedValue(new Error('queue rejected'));
+    useRemuxStore.setState({
+      input: 'in.mkv',
+      container: 'mkv',
+      output: '/out/out.mkv',
+      streams: SAMPLE_STREAMS,
+      selectedMaps: ['0:v:0'],
+    });
+    await useRemuxStore.getState().enqueueRemux();
+    expect(useErrorStore.getState().currentError).not.toBeNull();
+    expect(useToastStore.getState().toasts).toHaveLength(0);
+  });
+
   it('startRemux passes added inputs and audio sync into the plan', async () => {
     useRemuxStore.setState({
       input: 'in.mkv',
@@ -412,6 +461,20 @@ describe('remuxStore', () => {
     await useRemuxStore.getState().startRemux();
     expect(useErrorStore.getState().currentError?.code).toBe(ErrorCode.INCOMPATIBLE_CONTAINER);
     expect(convertFileMock).not.toHaveBeenCalled();
+  });
+
+  it('enqueueRemux rejects a hard container incompatibility without queueing', async () => {
+    muxQueueAddMock.mockResolvedValue('mux-1');
+    useRemuxStore.setState({
+      input: 'in.mkv',
+      container: 'mp4',
+      output: '/out/out.mp4',
+      streams: [{ index: 0, type: 'video', codec: 'theora' }],
+      selectedMaps: ['0:v:0'],
+    });
+    await useRemuxStore.getState().enqueueRemux();
+    expect(useErrorStore.getState().currentError?.code).toBe(ErrorCode.INCOMPATIBLE_CONTAINER);
+    expect(muxQueueAddMock).not.toHaveBeenCalled();
   });
 
   it('startRemux stores non-blocking warnings from the plan', async () => {

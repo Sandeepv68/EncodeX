@@ -24,6 +24,7 @@ import { ipcMain, BrowserWindow, app, dialog } from 'electron';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { JobQueue } from '../queue/job-queue';
 import { FileQueuePersistence } from '../queue/persistence';
+import { muxOutputClaims } from '../queue/output-claims';
 import { buildQueueExport, parseQueueExport } from '../queue/queue-transfer';
 import { performPowerAction } from '../power-actions';
 import { Logger } from '../../shared/logger';
@@ -63,12 +64,13 @@ import {
 const log = new Logger('main/ipc/queue');
 
 /**
- * The queue persistence adapter created by the most recent
- * {@link registerQueueHandlers} call. Holds the `queue-state.json` snapshot so
- * it can be cleared when the application quits.
- * @type {FileQueuePersistence | null}
+ * Snapshot-clearing callbacks registered by each queue handler set. The batch
+ * queue registers `queue-state.json`; the mux queue registers
+ * `mux-queue-state.json`. A Set keeps the `will-quit` listener registered at
+ * most once while still clearing every snapshot.
+ * @type {Set<() => void>}
  */
-let persistedQueue: FileQueuePersistence | null = null;
+const queueSnapshotCleanups = new Set<() => void>();
 
 /**
  * True once the app-level `will-quit` listener that clears the persisted
@@ -109,18 +111,32 @@ function clearWhenDoneTimer(): void {
 }
 
 /**
- * Registers an app `will-quit` listener that deletes the persisted queue
- * snapshot. Attached at most once per process: on a confirmed app close the
- * `queue-state.json` file is dropped, so the next launch starts with an empty
- * queue - matching the renderer's localStorage cleanup on window close.
+ * Registers an app `will-quit` listener that deletes every persisted queue
+ * snapshot. Attached at most once per process: on a confirmed app close both
+ * `queue-state.json` and `mux-queue-state.json` are dropped, so the next
+ * launch starts with empty queues - matching the renderer's localStorage
+ * cleanup on window close.
  * @returns {void}
  */
 function registerWillQuitQueueClear(): void {
   if (willQuitHandlerRegistered) return;
   willQuitHandlerRegistered = true;
   app.on('will-quit', () => {
-    persistedQueue?.clear();
+    for (const clear of queueSnapshotCleanups) {
+      clear();
+    }
   });
+}
+
+/**
+ * Registers a snapshot-clearing callback for the `will-quit` path. Called by
+ * both queue handler sets so neither queue has to own the app-level listener.
+ * @param {() => void} clear - Deletes the queue's persisted snapshot.
+ * @returns {void}
+ */
+export function registerQueueSnapshotClear(clear: () => void): void {
+  queueSnapshotCleanups.add(clear);
+  registerWillQuitQueueClear();
 }
 
 /**
@@ -147,8 +163,7 @@ function normalizePath(path: string): string {
 export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void {
   /** The queue persistence adapter; the will-quit clear targets its snapshot. */
   const persistence = new FileQueuePersistence(app.getPath('userData'));
-  persistedQueue = persistence;
-  registerWillQuitQueueClear();
+  registerQueueSnapshotClear(() => persistence.clear());
 
   /** The job queue backing these handlers; one instance per registration call. */
   const jobQueue = new JobQueue({ persistence });
@@ -180,6 +195,9 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
     async (_event, input: string, output: string, options: ConversionOptions, transcoder: TranscoderType, overwrite?: boolean) => {
       log.info(LOG_IPC_QUEUE_ADD, input, LOG_ARROW, output, LOG_TRANSCODER, transcoder, 'overwrite:', overwrite === true);
       if (overwrite !== true && existsSync(output)) {
+        throw outputExistsError(output);
+      }
+      if (muxOutputClaims.isClaimed(output)) {
         throw outputExistsError(output);
       }
       return jobQueue.addJob(input, output, options, transcoder);

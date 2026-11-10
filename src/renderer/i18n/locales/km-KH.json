@@ -525,7 +525,9 @@
     "updateDownloaded": "បានទាញយកការអាប់ដេត v{{version}}",
     "viewUpdate": "មើល",
     "remuxed": "Remux បានបញ្ចប់",
-    "demuxed": "បានស្រង់ស្ទ្រីមដោយជោគជ័យ"
+    "demuxed": "បានស្រង់ស្ទ្រីមដោយជោគជ័យ",
+    "remuxQueued": "Remux ត្រូវបានបន្ថែមទៅជួរដេក Mux",
+    "demuxQueued": "ស្ទ្រីមត្រូវបានបន្ថែមទៅជួរដេក Mux"
   },
   "profiles": {
     "searchPlaceholder": "ស្វែងរកជម្រើស...",
@@ -1267,6 +1269,39 @@
       "hardwareNone": "ស្ហែតវែអរតែប៉ុណ្ណោះ",
       "encoderVideo": "វីដេអូ",
       "encoderAudio": "សំឡេង"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "ជួរដេកដំណើរការដុំ",
+    "tabMux": "ជួរដេក Mux",
+    "empty": "ជួរដេក Mux ទទេ។",
+    "emptyHint": "ការងារ Remux និង Demux ត្រូវបានបញ្ចូលពីទំព័ររបស់ពួកគេផ្ទាល់ៗ។",
+    "openRemux": "បើក Remux",
+    "openDemux": "បើក Demux",
+    "start": "ចាប់ផ្តើម",
+    "pause": "ផ្អាក",
+    "resume": "បន្ត",
+    "cancelAll": "បោះបង់ទាំងអស់",
+    "clearCompleted": "សម្អាតដែលបានបញ្ចប់",
+    "concurrency": "កិច្ចការស្របគ្នា",
+    "stats": "{{queued}} ក្នុងជួរ, {{running}} កំពុងដំណើរការ, {{done}} បានបញ្ចប់, {{failed}} បរាជ័យ",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "ទិន្នផល {{count}}",
+    "outputDir": "ថតលទ្ធផល",
+    "noOutputs": "គ្មានទិន្នផល",
+    "detailsTargets": "ទិន្នផល",
+    "detailsCreatedAt": "បានបន្ថែម",
+    "viewQueue": "មើលជួរដេក",
+    "addToQueue": "បន្ថែមទៅជួរដេក",
+    "dragHandle": "អូសដើម្បីរៀបចំឡើងវិញ",
+    "paused": "បានផ្អាក",
+    "filters": {
+      "all": "ទាំងអស់",
+      "queued": "ក្នុងជួរ",
+      "running": "កំពុងដំណើរការ",
+      "done": "បានបញ្ចប់",
+      "failed": "បរាជ័យ"
     }
   }
 }

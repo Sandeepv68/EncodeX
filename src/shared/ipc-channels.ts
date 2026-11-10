@@ -45,6 +45,25 @@
  * @property {string} QUEUE_RESUME - Resume a paused queue and start queued jobs.
  * @property {string} QUEUE_EXPORT - Export the queue to a JSON file.
  * @property {string} QUEUE_IMPORT - Import a JSON queue file.
+ * @property {string} MUX_QUEUE_ADD - Add a remux or demux job to the mux queue.
+ *   Payload: `MuxQueueAddPayload`.
+ * @property {string} MUX_QUEUE_REMOVE - Remove a job from the mux queue.
+ * @property {string} MUX_QUEUE_LIST - List all mux queue jobs.
+ * @property {string} MUX_QUEUE_GET_STATE - Read the mux queue's paused flag and concurrency.
+ * @property {string} MUX_QUEUE_START - Start processing the mux queue's queued jobs.
+ * @property {string} MUX_QUEUE_PAUSE - Pause the mux queue and all active mux jobs.
+ * @property {string} MUX_QUEUE_RESUME - Resume a paused mux queue.
+ * @property {string} MUX_QUEUE_CANCEL_ALL - Cancel every queued and running mux job.
+ * @property {string} MUX_QUEUE_CLEAR_COMPLETED - Remove every done and errored mux job.
+ * @property {string} MUX_QUEUE_SET_CONCURRENCY - Set how many mux jobs run in parallel.
+ * @property {string} MUX_QUEUE_MOVE_TO - Reorder a queued mux job to a target position.
+ * @property {string} MUX_QUEUE_ADDED - Notify that a job was added to the mux queue.
+ * @property {string} MUX_QUEUE_REMOVED - Notify that a job was removed from the mux queue.
+ * @property {string} MUX_QUEUE_STATUS_CHANGE - Notify of a mux queue job status change.
+ * @property {string} MUX_QUEUE_PROGRESS - Push per-job mux queue progress updates.
+ * @property {string} MUX_QUEUE_CANCELLED - Notify that the mux queue was cancelled.
+ * @property {string} MUX_QUEUE_MOVED - Notify that a queued mux job was reordered.
+ *   Payload: `{ id, toPosition }`.
  * @property {string} REVEAL_FILE - Reveal a file in the OS file manager.
  * @property {string} SET_LAUNCH_AT_LOGIN - Set whether the app launches at OS startup.
  * @property {string} PLAYER_OPEN - Open a video in the player.
@@ -138,6 +157,17 @@ export const IPC = {
   QUEUE_RESUME: 'queue-resume',
   QUEUE_EXPORT: 'queue-export',
   QUEUE_IMPORT: 'queue-import',
+  MUX_QUEUE_ADD: 'mux-queue-add',
+  MUX_QUEUE_REMOVE: 'mux-queue-remove',
+  MUX_QUEUE_LIST: 'mux-queue-list',
+  MUX_QUEUE_GET_STATE: 'mux-queue-get-state',
+  MUX_QUEUE_START: 'mux-queue-start',
+  MUX_QUEUE_PAUSE: 'mux-queue-pause',
+  MUX_QUEUE_RESUME: 'mux-queue-resume',
+  MUX_QUEUE_CANCEL_ALL: 'mux-queue-cancel-all',
+  MUX_QUEUE_CLEAR_COMPLETED: 'mux-queue-clear-completed',
+  MUX_QUEUE_SET_CONCURRENCY: 'mux-queue-set-concurrency',
+  MUX_QUEUE_MOVE_TO: 'mux-queue-move-to',
   REVEAL_FILE: 'queue-reveal',
   SET_LAUNCH_AT_LOGIN: 'set-launch-at-login',
   PLAYER_OPEN: 'player-open',
@@ -165,6 +195,12 @@ export const IPC = {
   QUEUE_PROGRESS: 'queue-progress',
   QUEUE_CANCELLED: 'queue-cancelled',
   QUEUE_MOVED: 'queue-moved',
+  MUX_QUEUE_ADDED: 'mux-queue-added',
+  MUX_QUEUE_REMOVED: 'mux-queue-removed',
+  MUX_QUEUE_STATUS_CHANGE: 'mux-queue-status-change',
+  MUX_QUEUE_PROGRESS: 'mux-queue-progress',
+  MUX_QUEUE_CANCELLED: 'mux-queue-cancelled',
+  MUX_QUEUE_MOVED: 'mux-queue-moved',
   PLAYER_FRAME: 'player-frame',
   LOG_MESSAGE: 'log-message',
   AUDIT_ENTRY: 'audit-entry',

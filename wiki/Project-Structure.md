@@ -49,6 +49,7 @@ src/
 │   │   ├── conversion.ts              # convert / cancel / pause / resume
 │   │   ├── copilot.ts                 # copilot-plan handler
 │   │   ├── queue.ts                   # queue CRUD + cancel-all + move/update/export/import
+│   │   ├── mux-queue.ts               # mux-queue CRUD + cancel-all + move (remux/demux queue)
 │   │   ├── player.ts                  # player open / seek / close / get-frame
 │   │   ├── timeline.ts                # extract-waveform / extract-thumbnails
 │   │   ├── image.ts                   # image info / preview / file info
@@ -94,7 +95,11 @@ src/
 │   │   └── types.ts                   # Decoded frame/audio structures + config types
 │   ├── queue/
 │   │   ├── job-queue.ts               # Concurrency-capped batch queue (1-4 parallel jobs) with EventEmitter
-│   │   ├── persistence.ts             # Durable queue snapshot (queue-state.json) save/restore
+│   │   ├── mux-queue.ts               # Concurrency-capped remux/demux queue with EventEmitter
+│   │   ├── mux-job-runner.ts          # Sequential target runner for one mux job (progress aggregation)
+│   │   ├── output-claims.ts           # Cross-queue output-path claims (batch <-> mux collision guard)
+│   │   ├── queue-utils.ts             # Shared clamp/ordering helpers for both queue engines
+│   │   ├── persistence.ts             # Durable queue snapshots (queue-state.json, mux-queue-state.json) save/restore
 │   │   ├── queue-transfer.ts          # Queue export/import (JSON) + validation
 │   │   └── types.ts                   # Queue snapshot, persistence and export shapes
 │   ├── timeline/
@@ -168,20 +173,20 @@ src/
 │   │   └── types.ts                    # Analytics renderer provider contracts
 │   ├── dev/
 │   │   └── useDevScreenshot.ts        # Dev-only window screenshot capture
-│   ├── components/                    # Shared UI components (62 modules: 48 top-level + copilot/ and settings/ subfolders) <!-- drift:renderer-components=62 --> <!-- drift:renderer-components-top=47 -->
+│   ├── components/                    # Shared UI components (62 modules: 48 top-level + copilot/ and settings/ subfolders) <!-- drift:renderer-components=66 --> <!-- drift:renderer-components-top=51 -->
 │   │   └── types.ts                   # Shared component prop shapes
 │   ├── constants/
 │   │   ├── shortcuts.ts               # 71 keyboard shortcuts registry (11 sections) + tooltip hints <!-- drift:shortcuts=71 --> <!-- drift:shortcut-sections=11 -->
 │   │   └── types.ts                   # Shortcut and hotkey contracts
-│   ├── hooks/                         # useConversion, useErrorHandler, useFormErrors, useMediaTask, useCapabilities, useHotkeys, useFieldId
+│   ├── hooks/                         # useConversion, useErrorHandler, useFormErrors, useMediaTask, useCapabilities, useHotkeys, useFieldId, useMuxQueueStatus
 │   │   └── types.ts                   # Codec option + progress subset types
 │   ├── i18n/                          # i18next config, RTL provider, 56 locales (36 base language subtags) <!-- drift:locales=56 --> <!-- drift:locale-subtags=36 -->
 │   │   └── types.ts                   # Locale metadata + flag component types
 │   ├── pages/                         # 13 code-split page components (Convert, Remux, Demux, Copilot, BatchQueue, Dashboard, MediaInfo, ImageCompress, AudioExtract, VideoCut, Settings, Logs, About) <!-- drift:renderer-pages=13 -->
 │   │   └── types.ts                   # Page-level prop and view-model types
-│   ├── stores/                        # 20 Zustand stores (queue, conversion, settings, profile, terms, batchConfig, audioExtract, videoCut, logs, errors, toasts, update, task, dismissedAlerts, aiSettings, aiConnection, audit, copilotChats, remux, demux) <!-- drift:renderer-stores=20 -->
+│   ├── stores/                        # 21 Zustand stores (queue, muxQueue, conversion, settings, profile, terms, batchConfig, audioExtract, videoCut, logs, errors, toasts, update, task, dismissedAlerts, aiSettings, aiConnection, audit, copilotChats, remux, demux) <!-- drift:renderer-stores=21 -->
 │   │   └── types.ts                   # Zustand store state shapes + actions
-│   ├── styles/                        # Extracted MUI style constants per component (72 modules + Copilot/Settings subfolders) <!-- drift:renderer-styles=72 -->
+│   ├── styles/                        # Extracted MUI style constants per component (72 modules + Copilot/Settings subfolders) <!-- drift:renderer-styles=73 -->
 │   ├── utils/                         # formatters, preview cache helpers, easter egg dates, batch options
 │   │   └── types.ts                   # Shared renderer utility types
 │   └── types.ts                       # Color mode / theme context types
@@ -195,7 +200,7 @@ src/
     ├── types.ts                       # Domain interfaces (ConversionOptions, MediaInfo, ...)
     ├── terms.ts                       # Versioned Terms & Conditions (TERMS_VERSION)
     ├── logger.ts                      # Timestamped logger (main/renderer)
-    ├── log-constants.ts               # Shared log message constants (527 exported) <!-- drift:log-constants=530 -->
+    ├── log-constants.ts               # Shared log message constants (527 exported) <!-- drift:log-constants=570 -->
     ├── validation.ts                  # Time/scale/bitrate/range validation helpers
     ├── math.ts                        # Math helpers (clamp, round, percent)
     ├── progress.ts                    # Progress/ETA computation helpers
@@ -211,6 +216,7 @@ src/
     ├── copilot.ts                     # Copilot plan request/result contracts
     ├── video-filters.ts               # Curated video filter presets + chain normalization
     ├── remux-utils.ts                 # Remux/demux argument builders and validation
+    ├── demux-utils.ts                 # Demux target -> ConversionOptions builders
     ├── audit.ts                       # Mutating-operation audit entry contract + guard
     ├── ai/                            # Copilot/AI contracts and planners (analyze, recommend, workflow, STT, translation, …)
     │   ├── index.ts                   # Barrel export for the AI planner modules
@@ -282,7 +288,7 @@ e2e/                                  # Playwright-based end-to-end tests
 │   ├── vscode-client.spec.ts          # VS Code MCP client configuration
 │   └── vscode-ui.spec.ts              # VS Code UI integration
 ├── quarantine/                        # Quarantined spec bodies (see quarantine.json)
-└── specs/                             # 31 E2E spec files (39 e2e files total) <!-- drift:e2e-specs=33 -->
+└── specs/                             # 31 E2E spec files (39 e2e files total) <!-- drift:e2e-specs=34 -->
     ├── shell.spec.ts
     ├── convert.spec.ts
     ├── batch.spec.ts

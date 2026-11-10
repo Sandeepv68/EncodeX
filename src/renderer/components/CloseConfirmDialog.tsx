@@ -22,6 +22,7 @@ import { useConversionStore } from '../stores/conversionStore';
 import { useAudioExtractStore } from '../stores/audioExtractStore';
 import { useVideoCutStore, isVideoCutDirty } from '../stores/videoCutStore';
 import { useQueueStore } from '../stores/queueStore';
+import { useMuxQueueStore } from '../stores/muxQueueStore';
 import { useTaskStore } from '../stores/taskStore';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
@@ -42,6 +43,7 @@ import { createAnalyticsEvent } from '../../shared/analytics/events';
  *  - Video Cut: `isCutting` or `isVideoCutDirty(...)` (draft differs from
  *    defaults, including a persisted draft restored on startup).
  *  - Batch Queue: any job still queued or running.
+ *  - Mux Queue: any remux/demux job still queued or running.
  *
  * A paused conversion still counts because it is only recoverable while the
  * app stays open. A completed extraction/cut keeps its configured form, so it
@@ -58,7 +60,8 @@ export function hasPendingWork(): boolean {
   if (isVideoCutDirty(useVideoCutStore.getState())) return true;
   if (useTaskStore.getState().isConverting) return true;
   if (useTaskStore.getState().hasPendingWork) return true;
-  return useQueueStore.getState().jobs.some((job) => job.status === QUEUE_STATUS.QUEUED || job.status === QUEUE_STATUS.RUNNING);
+  if (useQueueStore.getState().jobs.some((job) => job.status === QUEUE_STATUS.QUEUED || job.status === QUEUE_STATUS.RUNNING)) return true;
+  return useMuxQueueStore.getState().jobs.some((job) => job.status === QUEUE_STATUS.QUEUED || job.status === QUEUE_STATUS.RUNNING);
 }
 
 /**

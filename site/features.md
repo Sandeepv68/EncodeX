@@ -83,6 +83,8 @@ Have 50 videos to convert? Don't do them one by one. Drag them all into the queu
 
 Need a different container, not a different encoding? **Remux** copies the existing streams into a new container (for example MP4 to MKV), and can add subtitles, extra audio tracks, cover art, or chapters. **Demux** goes the other way: it pulls individual video, audio, or subtitle streams out of a file, with optional conversion for each one.
 
+Set up a remux or demux and **Add to Queue** instead of starting it right away. Your job waits in the **Mux Queue** tab next to the batch queue, where you can see the progress of every remux and demux at once, reorder them, and start them together when you're ready. The Remux and Demux pages always show you what's already queued, so you can queue a second variant of the same file without losing the first one.
+
 ## Ask Copilot
 
 The built-in **Copilot** page takes a plain-language request and turns it into EncodeX jobs. It can queue conversions, remux, demux, extract audio, compress images, and cut videos, and it can analyze, summarize, or translate media. It works offline by default with a built-in rules router. You can optionally connect OpenAI, Anthropic, Gemini, or a local model.

@@ -274,6 +274,62 @@ const api = {
   },
   queueExport: () => Promise.resolve(state.queueJobs.length),
   queueImport: () => Promise.resolve(0),
+
+  // --- Mux queue (remux / demux) ----------------------------------------------
+  muxQueueAdd: (payload) => {
+    const id = 'mock-mux-' + state.muxQueueAddIdCounter++;
+    const job = {
+      id,
+      kind: payload && payload.kind ? payload.kind : 'remux',
+      input: payload ? payload.input : '',
+      output: payload ? payload.output : '',
+      targets: payload && payload.targets ? payload.targets : [],
+      transcoder: (payload && payload.transcoder) || 'FFMPEG',
+      status: 'queued',
+      progress: 0,
+      createdAt: Date.now(),
+    };
+    state.muxQueueJobs.push(job);
+    emit('mux-queue-added', job);
+    return Promise.resolve(id);
+  },
+  muxQueueRemove: (id) => {
+    state.muxQueueJobs = state.muxQueueJobs.filter((j) => j.id !== id);
+    emit('mux-queue-removed', id);
+    return Promise.resolve();
+  },
+  muxQueueList: () => Promise.resolve(JSON.parse(JSON.stringify(state.muxQueueJobs))),
+  muxQueueGetState: () => Promise.resolve({ ...state.muxQueueState }),
+  muxQueueStart: () => {
+    state.muxQueueState.paused = false;
+    return Promise.resolve();
+  },
+  muxQueuePause: () => {
+    state.muxQueueState.paused = true;
+    return Promise.resolve();
+  },
+  muxQueueResume: () => {
+    state.muxQueueState.paused = false;
+    return Promise.resolve();
+  },
+  muxQueueCancelAll: () => {
+    state.muxQueueJobs = [];
+    emit('mux-queue-cancelled', {});
+    return Promise.resolve();
+  },
+  muxQueueClearCompleted: () => {
+    const before = state.muxQueueJobs.length;
+    state.muxQueueJobs = state.muxQueueJobs.filter((j) => j.status !== 'done' && j.status !== 'error');
+    return Promise.resolve(before - state.muxQueueJobs.length);
+  },
+  muxQueueSetConcurrency: (concurrency) => {
+    state.muxQueueState.concurrency = concurrency;
+    return Promise.resolve();
+  },
+  muxQueueMoveTo: (id, toPosition) => {
+    emit('mux-queue-moved', { id, toPosition });
+    return Promise.resolve(true);
+  },
   revealFile: (filePath) => {
     state.revealCalls.push(filePath);
     return Promise.resolve();
@@ -464,6 +520,12 @@ const api = {
   onQueueProgress: (cb) => subscribe('queue-progress', cb),
   onQueueCancelled: (cb) => subscribe('queue-cancelled', cb),
   onQueueMoved: (cb) => subscribe('queue-moved', cb),
+  onMuxQueueAdded: (cb) => subscribe('mux-queue-added', cb),
+  onMuxQueueRemoved: (cb) => subscribe('mux-queue-removed', cb),
+  onMuxQueueStatusChange: (cb) => subscribe('mux-queue-status-change', cb),
+  onMuxQueueProgress: (cb) => subscribe('mux-queue-progress', cb),
+  onMuxQueueCancelled: (cb) => subscribe('mux-queue-cancelled', cb),
+  onMuxQueueMoved: (cb) => subscribe('mux-queue-moved', cb),
   onPlayerFrame: (cb) => subscribe('player-frame', cb),
   onPlayerAudio: (cb) => subscribe('player-audio', cb),
   onLogMessage: (cb) => subscribe('log-message', cb),
@@ -552,6 +614,12 @@ const api = {
     },
     setQueueJobs: (v) => {
       state.queueJobs = JSON.parse(JSON.stringify(v));
+    },
+    setMuxQueueJobs: (v) => {
+      state.muxQueueJobs = JSON.parse(JSON.stringify(v));
+    },
+    setMuxQueueState: (v) => {
+      Object.assign(state.muxQueueState, v);
     },
     setQueueState: (v) => {
       Object.assign(state.queueState, v);

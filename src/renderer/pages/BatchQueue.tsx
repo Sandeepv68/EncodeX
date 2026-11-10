@@ -19,12 +19,13 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import { bridgePromise, fireAndForgetBridge } from '../utils/bridge-call';
 import { Logger } from '../../shared/logger';
 
 /** Logger instance used by this module. @const {Logger} */
 const log = new Logger('renderer/BatchQueue');
-import { Box, Stack, Typography, Collapse, IconButton, Tooltip } from '@mui/material';
+import { Box, Stack, Typography, Collapse, IconButton, Tooltip, Tab } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListOl, faLayerGroup, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { DndContext, DragOverlay, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
@@ -32,12 +33,14 @@ import type { DragEndEvent, DragStartEvent, Modifier } from '@dnd-kit/core';
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import BatchControls from '../components/BatchControls';
 import BatchEncodingPanel from '../components/BatchEncodingPanel';
+import MuxQueuePanel from '../components/MuxQueuePanel';
 import QueueJobCard, { QueueJobCardContent } from '../components/QueueJobCard';
 import QueueDropArea from '../components/QueueDropArea';
 import QueueAddReviewDialog from '../components/QueueAddReviewDialog';
 import QueueJobOptionsDialog from '../components/QueueJobOptionsDialog';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { useHotkeys } from '../hooks/useHotkeys';
+import { useMuxQueueStatus } from '../hooks/useMuxQueueStatus';
 import { useQueueStore } from '../stores/queueStore';
 import { useToastStore } from '../stores/toastStore';
 import { useProfileStore } from '../stores/profileStore';
@@ -68,6 +71,7 @@ import {
   CondenseIcon,
   CondenseButton,
   ClearAllBox,
+  QueueTabs,
 } from '../styles/BatchQueue.styles';
 import { TitleIcon } from '../styles/PageContainer.styles';
 import { pageIcons } from '../pageIcons';
@@ -120,6 +124,8 @@ const restrictToVerticalAxis: Modifier = ({ transform }) => ({ ...transform, x: 
 export default function BatchQueue() {
   const { t } = useTranslation();
   const { jobs, progress, addJob, removeJob, updateJob, updateProgress, clearJobs } = useQueueStore();
+  const muxStatus = useMuxQueueStatus();
+  const [searchParams, setSearchParams] = useSearchParams();
   const queueConcurrency = useSettingsStore((s) => s.queueConcurrency);
   const whenDone = useSettingsStore((s) => s.whenDone);
   const setWhenDone = useSettingsStore((s) => s.setWhenDone);
@@ -173,6 +179,38 @@ export default function BatchQueue() {
    * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
    */
   const [search, setSearch] = useState('');
+  /**
+   * The tab shown by the page: 'general' for the batch conversion queue,
+   * 'mux' for the dedicated remux/demux queue. Read from the `?tab=` query
+   * parameter so the tab can be deep-linked (e.g. `/batch?tab=mux`); an
+   * unknown or missing value falls back to 'general'.
+   * @type {'general' | 'mux'}
+   */
+  const tab = searchParams.get('tab') === 'mux' ? 'mux' : 'general';
+
+  /**
+   * Switches the active tab, writing the choice into the `?tab=` query
+   * parameter so the view is linkable and survives a reload.
+   * @param {'general' | 'mux'} next - The tab to switch to.
+   * @returns {void}
+   */
+  const handleTabChange = useCallback(
+    (next: 'general' | 'mux') => {
+      setSearchParams(
+        (previous) => {
+          const params = new URLSearchParams(previous);
+          if (next === 'mux') {
+            params.set('tab', 'mux');
+          } else {
+            params.delete('tab');
+          }
+          return params;
+        },
+        { replace: true },
+      );
+    },
+    [setSearchParams],
+  );
 
   /**
    * Ref to the queue search input, so the page's "focus search" shortcut (F)
@@ -1288,222 +1326,239 @@ export default function BatchQueue() {
         </Tooltip>
       </PageTitle>
 
-      <Stack spacing={2}>
-        <AnimatedSection id="batch-controls-section" $hidden={condensed} $gone={sectionsGone} aria-hidden={condensed}>
-          <Collapse in={!condensed} onEntering={() => setSectionsGone(false)} onExited={() => setSectionsGone(true)}>
-            <BatchControls
-              operation={operation}
-              onOperationChange={handleOperationChange}
-              transcoderRef={transcoderRef}
-              suffixRef={suffixRef}
-              onAddFiles={handleAddFiles}
-              onAddFolder={handleAddFolder}
-              onCancelAll={handleCancelAll}
-              onClearCompleted={handleClearCompleted}
-              hasCompleted={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.DONE || job.status === QUEUE_STATUS.ERROR)}
-              concurrency={queueConcurrency}
-              onConcurrencyChange={handleConcurrencyChange}
-              paused={paused}
-              onPause={handlePause}
-              onResume={handleResume}
-              hasRunning={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.RUNNING)}
-              hasQueued={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED)}
-              onStart={handleStart}
-              hasActive={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED || job.status === QUEUE_STATUS.RUNNING)}
-              outputDir={outputDir}
-              onOutputDirChange={setOutputDir}
-              onBrowseDir={handleBrowseDir}
-              overwrite={overwrite}
-              onOverwriteChange={setOverwrite}
-              whenDone={whenDone}
-              onWhenDoneChange={setWhenDone}
-              onExport={handleExport}
-              onImport={handleImport}
-              hardwareAccelAlert={settingsHardwareAcceleration}
-            />
-          </Collapse>
-        </AnimatedSection>
+      <QueueTabs
+        value={tab}
+        onChange={(_event, next: 'general' | 'mux') => handleTabChange(next)}
+        aria-label={t('batchQueue.title')}
+        textColor="inherit"
+        data-testid="batch-queue-tabs"
+      >
+        <Tab value="general" label={`${t('muxQueue.tabGeneral')} (${jobs.length})`} data-testid="batch-queue-tab-general" />
+        <Tab value="mux" label={`${t('muxQueue.tabMux')} (${muxStatus.total})`} data-testid="batch-queue-tab-mux" />
+      </QueueTabs>
 
-        <AnimatedSection id="encoding-options-section" $hidden={condensed} $gone={sectionsGone} aria-hidden={condensed}>
-          <Collapse in={!condensed} onEntering={() => setSectionsGone(false)} onExited={() => setSectionsGone(true)}>
-            <BatchEncodingPanel
-              operation={operation}
-              videoCodec={videoCodec}
-              audioCodec={audioCodec}
-              container={container}
-              videoBitrate={videoBitrate}
-              audioBitrate={audioBitrate}
-              quality={quality}
-              scale={scale}
-              rotate={rotate}
-              flipH={flipH}
-              flipV={flipV}
-              pixelFormat={pixelFormat}
-              videoFilters={videoFilters}
-              optionsLocked={batchStarted}
-              optionsEditable={!batchStarted && jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED)}
-              onVideoCodecChange={handleVideoCodecChange}
-              onAudioCodecChange={handleAudioCodecChange}
-              onContainerChange={setContainer}
-              onVideoBitrateChange={setVideoBitrate}
-              onAudioBitrateChange={setAudioBitrate}
-              onQualityChange={setQuality}
-              onScaleChange={setScale}
-              onRotateChange={setRotate}
-              onFlipHChange={setFlipH}
-              onFlipVChange={setFlipV}
-              onPixelFormatChange={setPixelFormat}
-              onVideoFiltersChange={setVideoFilters}
-              onApplyProfile={handleApplyBatchProfile}
-            />
-          </Collapse>
-        </AnimatedSection>
-
-        {jobs.length > 0 && (
-          <FilterRow>
-            {['all', QUEUE_STATUS.QUEUED, QUEUE_STATUS.RUNNING, QUEUE_STATUS.DONE, QUEUE_STATUS.ERROR].map((value) => {
-              const count = value === 'all' ? jobs.length : jobs.filter((job: QueueJob) => job.status === value).length;
-              const labelKey = value === 'all' ? 'all' : value === QUEUE_STATUS.ERROR ? 'failed' : value;
-              const label = t(`batchQueue.filters.${labelKey}`);
-              return (
-                <FilterChip
-                  key={value}
-                  size="small"
-                  label={`${label} (${count})`}
-                  color={filter === value ? 'primary' : 'default'}
-                  aria-pressed={filter === value}
-                  onClick={() => {
-                    setFilter(value);
-                    recordAnalyticsEvent(
-                      createAnalyticsEvent('batch_filter_changed', {
-                        filter: (value === QUEUE_STATUS.ERROR ? 'failed' : value) as 'all' | 'queued' | 'running' | 'done' | 'failed',
-                      }),
-                    );
-                  }}
+      {tab === 'mux' ? (
+        <MuxQueuePanel />
+      ) : (
+        <>
+          <Stack spacing={2}>
+            <AnimatedSection id="batch-controls-section" $hidden={condensed} $gone={sectionsGone} aria-hidden={condensed}>
+              <Collapse in={!condensed} onEntering={() => setSectionsGone(false)} onExited={() => setSectionsGone(true)}>
+                <BatchControls
+                  operation={operation}
+                  onOperationChange={handleOperationChange}
+                  transcoderRef={transcoderRef}
+                  suffixRef={suffixRef}
+                  onAddFiles={handleAddFiles}
+                  onAddFolder={handleAddFolder}
+                  onCancelAll={handleCancelAll}
+                  onClearCompleted={handleClearCompleted}
+                  hasCompleted={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.DONE || job.status === QUEUE_STATUS.ERROR)}
+                  concurrency={queueConcurrency}
+                  onConcurrencyChange={handleConcurrencyChange}
+                  paused={paused}
+                  onPause={handlePause}
+                  onResume={handleResume}
+                  hasRunning={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.RUNNING)}
+                  hasQueued={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED)}
+                  onStart={handleStart}
+                  hasActive={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED || job.status === QUEUE_STATUS.RUNNING)}
+                  outputDir={outputDir}
+                  onOutputDirChange={setOutputDir}
+                  onBrowseDir={handleBrowseDir}
+                  overwrite={overwrite}
+                  onOverwriteChange={setOverwrite}
+                  whenDone={whenDone}
+                  onWhenDoneChange={setWhenDone}
+                  onExport={handleExport}
+                  onImport={handleImport}
+                  hardwareAccelAlert={settingsHardwareAcceleration}
                 />
-              );
-            })}
-            <SearchField
-              size="small"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder={t('batchQueue.search')}
-              slotProps={{ htmlInput: { 'aria-label': t('batchQueue.search'), ref: searchRef } }}
-            />
-            {remainingSeconds !== null && (
-              <FilterEta variant="body2" color="text.secondary">
-                {t('batchQueue.etaEstimate', { eta: formatDurationCompact(remainingSeconds) })}
-              </FilterEta>
-            )}
-            {allDone && (
-              <ClearAllBox>
-                <Tooltip title={t('batchQueue.clearAll')}>
-                  <IconButton size="small" color="error" aria-label={t('batchQueue.clearAll')} onClick={handleClearCompleted}>
-                    <FontAwesomeIcon icon={faTrashCan} />
-                  </IconButton>
-                </Tooltip>
-              </ClearAllBox>
-            )}
-          </FilterRow>
-        )}
-        {jobs.length === 0 ? (
-          <EmptyText color="text.secondary">{t('batchQueue.empty')}</EmptyText>
-        ) : visibleJobs.length === 0 ? (
-          <EmptyText color="text.secondary">{t('batchQueue.noResults')}</EmptyText>
-        ) : (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            modifiers={[restrictToVerticalAxis]}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-            onDragCancel={() => setActiveDragId(null)}
-          >
-            <SortableContext items={visibleJobs.map((job: QueueJob) => job.id)} strategy={verticalListSortingStrategy}>
-              <QueueDropArea>
-                <Stack spacing={2}>
-                  {visibleJobs.map((job: QueueJob) => (
-                    <QueueJobCard
-                      key={job.id}
-                      job={job}
-                      progress={progress[job.id]}
-                      onRemove={(id) => {
-                        const removed = jobs.find((j: QueueJob) => j.id === id);
-                        fireAndForgetBridge(() => window.electronAPI.queueRemove(id), 'queueRemove');
-                        if (removed) {
-                          recordAnalyticsEvent(createAnalyticsEvent('batch_job_removed', { status: removed.status }));
-                        }
+              </Collapse>
+            </AnimatedSection>
+
+            <AnimatedSection id="encoding-options-section" $hidden={condensed} $gone={sectionsGone} aria-hidden={condensed}>
+              <Collapse in={!condensed} onEntering={() => setSectionsGone(false)} onExited={() => setSectionsGone(true)}>
+                <BatchEncodingPanel
+                  operation={operation}
+                  videoCodec={videoCodec}
+                  audioCodec={audioCodec}
+                  container={container}
+                  videoBitrate={videoBitrate}
+                  audioBitrate={audioBitrate}
+                  quality={quality}
+                  scale={scale}
+                  rotate={rotate}
+                  flipH={flipH}
+                  flipV={flipV}
+                  pixelFormat={pixelFormat}
+                  videoFilters={videoFilters}
+                  optionsLocked={batchStarted}
+                  optionsEditable={!batchStarted && jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED)}
+                  onVideoCodecChange={handleVideoCodecChange}
+                  onAudioCodecChange={handleAudioCodecChange}
+                  onContainerChange={setContainer}
+                  onVideoBitrateChange={setVideoBitrate}
+                  onAudioBitrateChange={setAudioBitrate}
+                  onQualityChange={setQuality}
+                  onScaleChange={setScale}
+                  onRotateChange={setRotate}
+                  onFlipHChange={setFlipH}
+                  onFlipVChange={setFlipV}
+                  onPixelFormatChange={setPixelFormat}
+                  onVideoFiltersChange={setVideoFilters}
+                  onApplyProfile={handleApplyBatchProfile}
+                />
+              </Collapse>
+            </AnimatedSection>
+
+            {jobs.length > 0 && (
+              <FilterRow>
+                {['all', QUEUE_STATUS.QUEUED, QUEUE_STATUS.RUNNING, QUEUE_STATUS.DONE, QUEUE_STATUS.ERROR].map((value) => {
+                  const count = value === 'all' ? jobs.length : jobs.filter((job: QueueJob) => job.status === value).length;
+                  const labelKey = value === 'all' ? 'all' : value === QUEUE_STATUS.ERROR ? 'failed' : value;
+                  const label = t(`batchQueue.filters.${labelKey}`);
+                  return (
+                    <FilterChip
+                      key={value}
+                      size="small"
+                      label={`${label} (${count})`}
+                      color={filter === value ? 'primary' : 'default'}
+                      aria-pressed={filter === value}
+                      onClick={() => {
+                        setFilter(value);
+                        recordAnalyticsEvent(
+                          createAnalyticsEvent('batch_filter_changed', {
+                            filter: (value === QUEUE_STATUS.ERROR ? 'failed' : value) as 'all' | 'queued' | 'running' | 'done' | 'failed',
+                          }),
+                        );
                       }}
-                      onRetry={handleRetry}
-                      onEditOptions={handleEditOptions}
-                      editLocked={batchStarted}
-                      customized={customizedIds.has(job.id)}
                     />
-                  ))}
-                </Stack>
-              </QueueDropArea>
-            </SortableContext>
-            <DragOverlay
-              dropAnimation={{
-                duration: 200,
-                easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
-              }}
-            >
-              {activeJob && (
-                <JobCard $status={activeJob.status} $dragOverlay variant="outlined">
-                  <QueueJobCardContent job={activeJob} onRemove={() => {}} dragOverlay />
-                </JobCard>
-              )}
-            </DragOverlay>
-          </DndContext>
-        )}
-      </Stack>
+                  );
+                })}
+                <SearchField
+                  size="small"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder={t('batchQueue.search')}
+                  slotProps={{ htmlInput: { 'aria-label': t('batchQueue.search'), ref: searchRef } }}
+                />
+                {remainingSeconds !== null && (
+                  <FilterEta variant="body2" color="text.secondary">
+                    {t('batchQueue.etaEstimate', { eta: formatDurationCompact(remainingSeconds) })}
+                  </FilterEta>
+                )}
+                {allDone && (
+                  <ClearAllBox>
+                    <Tooltip title={t('batchQueue.clearAll')}>
+                      <IconButton size="small" color="error" aria-label={t('batchQueue.clearAll')} onClick={handleClearCompleted}>
+                        <FontAwesomeIcon icon={faTrashCan} />
+                      </IconButton>
+                    </Tooltip>
+                  </ClearAllBox>
+                )}
+              </FilterRow>
+            )}
+            {jobs.length === 0 ? (
+              <EmptyText color="text.secondary">{t('batchQueue.empty')}</EmptyText>
+            ) : visibleJobs.length === 0 ? (
+              <EmptyText color="text.secondary">{t('batchQueue.noResults')}</EmptyText>
+            ) : (
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                modifiers={[restrictToVerticalAxis]}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+                onDragCancel={() => setActiveDragId(null)}
+              >
+                <SortableContext items={visibleJobs.map((job: QueueJob) => job.id)} strategy={verticalListSortingStrategy}>
+                  <QueueDropArea>
+                    <Stack spacing={2}>
+                      {visibleJobs.map((job: QueueJob) => (
+                        <QueueJobCard
+                          key={job.id}
+                          job={job}
+                          progress={progress[job.id]}
+                          onRemove={(id) => {
+                            const removed = jobs.find((j: QueueJob) => j.id === id);
+                            fireAndForgetBridge(() => window.electronAPI.queueRemove(id), 'queueRemove');
+                            if (removed) {
+                              recordAnalyticsEvent(createAnalyticsEvent('batch_job_removed', { status: removed.status }));
+                            }
+                          }}
+                          onRetry={handleRetry}
+                          onEditOptions={handleEditOptions}
+                          editLocked={batchStarted}
+                          customized={customizedIds.has(job.id)}
+                        />
+                      ))}
+                    </Stack>
+                  </QueueDropArea>
+                </SortableContext>
+                <DragOverlay
+                  dropAnimation={{
+                    duration: 200,
+                    easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
+                  }}
+                >
+                  {activeJob && (
+                    <JobCard $status={activeJob.status} $dragOverlay variant="outlined">
+                      <QueueJobCardContent job={activeJob} onRemove={() => {}} dragOverlay />
+                    </JobCard>
+                  )}
+                </DragOverlay>
+              </DndContext>
+            )}
+          </Stack>
 
-      {dragging && (
-        <DropOverlay>
-          <Typography variant="h6">{t('batchQueue.dropHint')}</Typography>
-        </DropOverlay>
+          {dragging && (
+            <DropOverlay>
+              <Typography variant="h6">{t('batchQueue.dropHint')}</Typography>
+            </DropOverlay>
+          )}
+
+          <QueueAddReviewDialog
+            open={reviewFiles !== null}
+            files={reviewFiles ?? []}
+            defaultOperation={operation}
+            onConfirm={handleReviewConfirm}
+            onCancel={handleReviewCancel}
+          />
+
+          <ConfirmDialog
+            open={cancelConfirmOpen}
+            title={t('batchQueue.cancelAllTitle')}
+            message={t('batchQueue.cancelAllMessage')}
+            confirmLabel={t('batchQueue.confirmCancelAll')}
+            cancelLabel={t('batchQueue.dialogCancel')}
+            onClose={() => setCancelConfirmOpen(false)}
+            onConfirm={handleCancelAllConfirm}
+          />
+
+          <QueueJobOptionsDialog
+            key={editJob?.id ?? 'none'}
+            open={editJob !== null}
+            job={editJob}
+            defaults={{
+              videoCodec,
+              audioCodec,
+              container,
+              videoBitrate,
+              audioBitrate,
+              quality,
+              scale,
+              rotate,
+              flipH,
+              flipV,
+              pixelFormat,
+              videoFilters,
+            }}
+            onSave={handleEditSave}
+            onClose={() => setEditJob(null)}
+          />
+        </>
       )}
-
-      <QueueAddReviewDialog
-        open={reviewFiles !== null}
-        files={reviewFiles ?? []}
-        defaultOperation={operation}
-        onConfirm={handleReviewConfirm}
-        onCancel={handleReviewCancel}
-      />
-
-      <ConfirmDialog
-        open={cancelConfirmOpen}
-        title={t('batchQueue.cancelAllTitle')}
-        message={t('batchQueue.cancelAllMessage')}
-        confirmLabel={t('batchQueue.confirmCancelAll')}
-        cancelLabel={t('batchQueue.dialogCancel')}
-        onClose={() => setCancelConfirmOpen(false)}
-        onConfirm={handleCancelAllConfirm}
-      />
-
-      <QueueJobOptionsDialog
-        key={editJob?.id ?? 'none'}
-        open={editJob !== null}
-        job={editJob}
-        defaults={{
-          videoCodec,
-          audioCodec,
-          container,
-          videoBitrate,
-          audioBitrate,
-          quality,
-          scale,
-          rotate,
-          flipH,
-          flipV,
-          pixelFormat,
-          videoFilters,
-        }}
-        onSave={handleEditSave}
-        onClose={() => setEditJob(null)}
-      />
     </Box>
   );
 }

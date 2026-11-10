@@ -525,7 +525,9 @@
     "updateDownloaded": "යාවත්කාලීනය v{{version}} බාගත විය",
     "viewUpdate": "බලන්න",
     "remuxed": "Remux අවසන්",
-    "demuxed": "ස්ට්‍රීම් සාර්ථකව උපුටා ගන්නා ලදී"
+    "demuxed": "ස්ට්‍රීම් සාර්ථකව උපුටා ගන්නා ලදී",
+    "remuxQueued": "Remux Mux කණ්ඩායමට එකතු කරන ලදී",
+    "demuxQueued": "ස්ට්‍රීම් Mux කණ්ඩායමට එකතු කරන ලදී"
   },
   "profiles": {
     "searchPlaceholder": "පැතිකඩ සොයන්න...",
@@ -1267,6 +1269,39 @@
       "hardwareNone": "මෘදුකාංගය පමණක්",
       "encoderVideo": "වීඩියෝ",
       "encoderAudio": "ශබ්ද"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "කණ්ඩායම් පෝලිම",
+    "tabMux": "Mux කණ්ඩායම",
+    "empty": "Mux කණ්ඩායම හිසිය.",
+    "emptyHint": "Remux සහ Demux කාර්ය එකිනෙකගේ පිටු වාරයන් එකතු වේ.",
+    "openRemux": "Remux විවෘත කරන්න",
+    "openDemux": "Demux විවෘත කරන්න",
+    "start": "ආරම්භ කරන්න",
+    "pause": "විරාමය",
+    "resume": "නැවත ආරම්භ කරන්න",
+    "cancelAll": "සියල්ල අවලංගු කරන්න",
+    "clearCompleted": "නිම වූ ඒවා හිස් කරන්න",
+    "concurrency": "සමාන්තර කාර්යයන්",
+    "stats": "{{queued}} පෝලිමේ, {{running}} ක්‍රියාත්මක, {{done}} නිම, {{failed}} අසාර්ථක",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "ප්‍රතිදාන {{count}}",
+    "outputDir": "ප්රතිදාන ෆෝල්ඩරය",
+    "noOutputs": "ප්‍රතිදානයක් නැත",
+    "detailsTargets": "ප්‍රතිදානය",
+    "detailsCreatedAt": "එකතු කළේ",
+    "viewQueue": "කණ්ඩායම බලන්න",
+    "addToQueue": "කණ්ඩායමට එකතු කරන්න",
+    "dragHandle": "නැවත ඇණවුම් කිරීමට ඇදගෙන යන්න",
+    "paused": "විරාමය",
+    "filters": {
+      "all": "සියල්ල",
+      "queued": "පෝලිමේ",
+      "running": "ක්‍රියාත්මක",
+      "done": "නිම",
+      "failed": "අසාර්ථක"
     }
   }
 }

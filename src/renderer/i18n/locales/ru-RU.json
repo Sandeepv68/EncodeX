@@ -525,7 +525,9 @@
     "updateDownloaded": "Обновление v{{version}} загружено",
     "viewUpdate": "Просмотр",
     "remuxed": "Ремукс завершён",
-    "demuxed": "Потоки успешно извлечены"
+    "demuxed": "Потоки успешно извлечены",
+    "remuxQueued": "Ремукс добавлен в очередь Mux",
+    "demuxQueued": "Потоки добавлены в очередь Mux"
   },
   "profiles": {
     "searchPlaceholder": "Поиск профилей...",
@@ -1267,6 +1269,39 @@
       "hardwareNone": "Только программное",
       "encoderVideo": "Видео",
       "encoderAudio": "Аудио"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Пакетная очередь",
+    "tabMux": "Очередь Mux",
+    "empty": "Очередь Mux пуста.",
+    "emptyHint": "Задания ремукса и демукса добавляются с их собственных страниц.",
+    "openRemux": "Открыть Ремукс",
+    "openDemux": "Открыть Демукс",
+    "start": "Запустить",
+    "pause": "Пауза",
+    "resume": "Продолжить",
+    "cancelAll": "Отменить всё",
+    "clearCompleted": "Очистить завершённые",
+    "concurrency": "Параллельные задачи",
+    "stats": "В очереди: {{queued}}, выполняется: {{running}}, готово: {{done}}, ошибок: {{failed}}",
+    "kindRemux": "Ремукс",
+    "kindDemux": "Демукс",
+    "targets": "Выходных файлов: {{count}}",
+    "outputDir": "Папка вывода",
+    "noOutputs": "Нет выходных файлов",
+    "detailsTargets": "Выход",
+    "detailsCreatedAt": "Добавлено",
+    "viewQueue": "Показать очередь",
+    "addToQueue": "Добавить в очередь",
+    "dragHandle": "Перетащите, чтобы изменить порядок",
+    "paused": "Приостановлено",
+    "filters": {
+      "all": "Все",
+      "queued": "В очереди",
+      "running": "Выполняется",
+      "done": "Готово",
+      "failed": "Ошибки"
     }
   }
 }

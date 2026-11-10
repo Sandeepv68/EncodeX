@@ -78,3 +78,26 @@ export type TaskRunStoreState = {
   resume: () => Promise<void>;
   cancel: () => Promise<void>;
 };
+
+/**
+ * The derived counters describing the dedicated remux/demux mux queue.
+ * @interface MuxQueueStatus
+ * @property {number} total - Every job in the queue.
+ * @property {number} queued - Jobs waiting to start.
+ * @property {number} running - Jobs currently running.
+ * @property {number} done - Jobs that finished successfully.
+ * @property {number} failed - Jobs that failed.
+ * @property {number} active - Queued plus running jobs.
+ * @property {boolean} empty - True when the queue holds no jobs.
+ * @property {boolean} paused - True while the queue is paused.
+ */
+export interface MuxQueueStatus {
+  total: number;
+  queued: number;
+  running: number;
+  done: number;
+  failed: number;
+  active: number;
+  empty: boolean;
+  paused: boolean;
+}

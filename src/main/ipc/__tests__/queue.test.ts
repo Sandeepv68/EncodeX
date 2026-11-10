@@ -124,7 +124,8 @@ vi.mock('../../queue/job-queue', () => {
   };
 });
 
-const { registerQueueHandlers } = await import('../queue');
+const { registerQueueHandlers, registerQueueSnapshotClear } = await import('../queue');
+const { muxOutputClaims } = await import('../../queue/output-claims');
 
 describe('registerQueueHandlers', () => {
   const send = vi.fn();
@@ -155,6 +156,18 @@ describe('registerQueueHandlers', () => {
     });
     expect(jobQueue.addJob).not.toHaveBeenCalled();
     existsSyncMock.mockReturnValue(false);
+  });
+
+  it('QUEUE_ADD rejects an output the mux queue already claims', async () => {
+    muxOutputClaims.claim('C:/out/claimed-by-mux.mkv', 'mux-1');
+    try {
+      await expect(getHandlers()[IPC.QUEUE_ADD]({}, 'in.mp4', 'C:/out/claimed-by-mux.mkv', {}, 'FFMPEG', true)).rejects.toMatchObject({
+        code: 'OUTPUT_EXISTS',
+      });
+      expect(jobQueue.addJob).not.toHaveBeenCalled();
+    } finally {
+      muxOutputClaims.releaseAll('mux-1');
+    }
   });
 
   it('QUEUE_ADD allows enqueueing an existing output when overwrite is enabled', async () => {
@@ -375,6 +388,14 @@ describe('registerQueueHandlers', () => {
     const quitHandler = appEventHandlers['will-quit'];
     quitHandler();
     expect(unlinkSyncMock).toHaveBeenCalledWith(expect.stringMatching(/queue-state\.json$/));
+  });
+
+  it('clears every registered queue snapshot on quit', () => {
+    const muxClear = vi.fn();
+    registerQueueSnapshotClear(muxClear);
+    appEventHandlers['will-quit']();
+    expect(unlinkSyncMock).toHaveBeenCalledWith(expect.stringMatching(/queue-state\.json$/));
+    expect(muxClear).toHaveBeenCalled();
   });
 
   it('QUEUE_SET_WHEN_DONE records the config and runs the action after the delay on drain', async () => {

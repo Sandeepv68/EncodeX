@@ -525,7 +525,9 @@
     "updateDownloaded": "Päivitys v{{version}} ladattu",
     "viewUpdate": "Näytä",
     "remuxed": "Remux valmis",
-    "demuxed": "Virrat poimittiin onnistuneesti"
+    "demuxed": "Virrat poimittiin onnistuneesti",
+    "remuxQueued": "Remux lisätty Mux-jonoon",
+    "demuxQueued": "Virrat lisätty Mux-jonoon"
   },
   "profiles": {
     "searchPlaceholder": "Hae profiileja...",
@@ -1267,6 +1269,39 @@
       "hardwareNone": "Vain ohjelmisto",
       "encoderVideo": "Video",
       "encoderAudio": "Ääni"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Eräjono",
+    "tabMux": "Mux-jono",
+    "empty": "Mux-jono on tyhjä.",
+    "emptyHint": "Remux- ja demux-tehtävät lisätään omilta sivuiltaan.",
+    "openRemux": "Avaa Remux",
+    "openDemux": "Avaa Demux",
+    "start": "Käynnistä",
+    "pause": "Keskeytä",
+    "resume": "Jatka",
+    "cancelAll": "Peruuta kaikki",
+    "clearCompleted": "Tyhjennä valmiit",
+    "concurrency": "Samanaikaiset työt",
+    "stats": "{{queued}} jonossa, {{running}} käynnissä, {{done}} valmis, {{failed}} epäonnistunut",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "{{count}} tuloste(ta)",
+    "outputDir": "Tulostuskansio",
+    "noOutputs": "Ei tuloksia",
+    "detailsTargets": "Tuloste",
+    "detailsCreatedAt": "Lisätty",
+    "viewQueue": "Näytä jono",
+    "addToQueue": "Lisää jonoon",
+    "dragHandle": "Vedä järjestääksesi uudelleen",
+    "paused": "Tauolla",
+    "filters": {
+      "all": "Kaikki",
+      "queued": "Jonossa",
+      "running": "Käynnissä",
+      "done": "Valmis",
+      "failed": "Epäonnistunut"
     }
   }
 }

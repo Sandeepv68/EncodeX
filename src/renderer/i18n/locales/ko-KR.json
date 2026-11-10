@@ -525,7 +525,9 @@
     "updateDownloaded": "업데이트 v{{version}} 다운로드 완료",
     "viewUpdate": "보기",
     "remuxed": "리멀텍스가 완료되었습니다",
-    "demuxed": "스트림을 성공적으로 추출했습니다"
+    "demuxed": "스트림을 성공적으로 추출했습니다",
+    "remuxQueued": "리멀텍스를 Mux 큐에 추가했습니다",
+    "demuxQueued": "스트림을 Mux 큐에 추가했습니다"
   },
   "profiles": {
     "searchPlaceholder": "프로필 검색...",
@@ -1267,6 +1269,39 @@
       "hardwareNone": "소프트웨어 전용",
       "encoderVideo": "비디오",
       "encoderAudio": "오디오"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "배치 큐",
+    "tabMux": "Mux 큐",
+    "empty": "Mux 큐가 비어 있습니다.",
+    "emptyHint": "리멀텍스와 디멀텍스 작업은 각자의 페이지에서 추가합니다.",
+    "openRemux": "리멀텍스 열기",
+    "openDemux": "디멀텍스 열기",
+    "start": "시작",
+    "pause": "일시 정지",
+    "resume": "재개",
+    "cancelAll": "모두 취소",
+    "clearCompleted": "완료 지우기",
+    "concurrency": "병렬 작업",
+    "stats": "{{queued}} 대기 중, {{running}} 실행 중, {{done}} 완료, {{failed}} 실패",
+    "kindRemux": "리멀텍스",
+    "kindDemux": "디멀텍스",
+    "targets": "출력 {{count}}개",
+    "outputDir": "출력 폴더",
+    "noOutputs": "출력 없음",
+    "detailsTargets": "출력",
+    "detailsCreatedAt": "추가됨",
+    "viewQueue": "큐 보기",
+    "addToQueue": "큐에 추가",
+    "dragHandle": "드래그하여 재정렬",
+    "paused": "일시정지됨",
+    "filters": {
+      "all": "전체",
+      "queued": "대기 중",
+      "running": "실행 중",
+      "done": "완료",
+      "failed": "실패"
     }
   }
 }

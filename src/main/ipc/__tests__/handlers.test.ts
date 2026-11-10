@@ -7,6 +7,7 @@ const {
   registerCapabilityHandlersMock,
   registerConversionHandlersMock,
   registerQueueHandlersMock,
+  registerMuxQueueHandlersMock,
   registerPlayerHandlersMock,
   registerWindowHandlersMock,
   registerSystemHandlersMock,
@@ -20,6 +21,7 @@ const {
   registerCapabilityHandlersMock: vi.fn(),
   registerConversionHandlersMock: vi.fn(),
   registerQueueHandlersMock: vi.fn(),
+  registerMuxQueueHandlersMock: vi.fn(),
   registerPlayerHandlersMock: vi.fn(),
   registerWindowHandlersMock: vi.fn(),
   registerSystemHandlersMock: vi.fn(),
@@ -34,6 +36,7 @@ vi.mock('../dialogs', () => ({ registerDialogHandlers: registerDialogHandlersMoc
 vi.mock('../capabilities', () => ({ registerCapabilityHandlers: registerCapabilityHandlersMock }));
 vi.mock('../conversion', () => ({ registerConversionHandlers: registerConversionHandlersMock }));
 vi.mock('../queue', () => ({ registerQueueHandlers: registerQueueHandlersMock }));
+vi.mock('../mux-queue', () => ({ registerMuxQueueHandlers: registerMuxQueueHandlersMock }));
 vi.mock('../player', () => ({ registerPlayerHandlers: registerPlayerHandlersMock }));
 vi.mock('../window', () => ({ registerWindowHandlers: registerWindowHandlersMock }));
 vi.mock('../system', () => ({ registerSystemHandlers: registerSystemHandlersMock }));
@@ -61,6 +64,7 @@ describe('registerIpcHandlers', () => {
     expect(registerCapabilityHandlersMock).toHaveBeenCalledWith();
     expect(registerConversionHandlersMock).toHaveBeenCalledWith(win, sendSpy);
     expect(registerQueueHandlersMock).toHaveBeenCalledWith(win, sendSpy);
+    expect(registerMuxQueueHandlersMock).toHaveBeenCalledWith(win, sendSpy);
     expect(registerPlayerHandlersMock).toHaveBeenCalledWith(win, sendSpy);
     expect(registerWindowHandlersMock).toHaveBeenCalledWith(win);
     expect(registerSystemHandlersMock).toHaveBeenCalledWith(win);

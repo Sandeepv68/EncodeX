@@ -525,7 +525,9 @@
     "updateDownloaded": "Oppdatering v{{version}} lastet ned",
     "viewUpdate": "Vis",
     "remuxed": "Remux fullført",
-    "demuxed": "Strømmene ble hentet ut"
+    "demuxed": "Strømmene ble hentet ut",
+    "remuxQueued": "Remux lagt til i Mux-køen",
+    "demuxQueued": "Strømmene ble lagt til i Mux-køen"
   },
   "profiles": {
     "searchPlaceholder": "Søk i profiler...",
@@ -1267,6 +1269,39 @@
       "hardwareNone": "Bare programvare",
       "encoderVideo": "Video",
       "encoderAudio": "Lyd"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Batchkø",
+    "tabMux": "Mux-kø",
+    "empty": "Mux-køen er tom.",
+    "emptyHint": "Remux- og demux-jobber legges til fra sidene sine.",
+    "openRemux": "Åpne Remux",
+    "openDemux": "Åpne Demux",
+    "start": "Start",
+    "pause": "Pause",
+    "resume": "Fortsett",
+    "cancelAll": "Avbryt alle",
+    "clearCompleted": "Fjern fullførte",
+    "concurrency": "Parallelle jobber",
+    "stats": "{{queued}} i kø, {{running}} kjører, {{done}} ferdige, {{failed}} mislyktes",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "{{count}} utdata",
+    "outputDir": "Utdatamappe",
+    "noOutputs": "Ingen utdata",
+    "detailsTargets": "Utdata",
+    "detailsCreatedAt": "Lagt til",
+    "viewQueue": "Vis kø",
+    "addToQueue": "Legg til i køen",
+    "dragHandle": "Dra for å endre rekkefølge",
+    "paused": "Pauset",
+    "filters": {
+      "all": "Alle",
+      "queued": "I kø",
+      "running": "Kjører",
+      "done": "Ferdig",
+      "failed": "Mislyktes"
     }
   }
 }

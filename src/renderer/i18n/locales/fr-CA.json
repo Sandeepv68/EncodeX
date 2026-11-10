@@ -525,7 +525,9 @@
     "updateDownloaded": "Mise à jour v{{version}} téléchargée",
     "viewUpdate": "Voir",
     "remuxed": "Remux terminé",
-    "demuxed": "Flux extraits avec succès"
+    "demuxed": "Flux extraits avec succès",
+    "remuxQueued": "Remux ajouté à la file d'attente Mux",
+    "demuxQueued": "Flux ajoutés à la file d'attente Mux"
   },
   "profiles": {
     "searchPlaceholder": "Rechercher des profils...",
@@ -1267,6 +1269,39 @@
       "hardwareNone": "Logiciel uniquement",
       "encoderVideo": "Vidéo",
       "encoderAudio": "Audio"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "File d'Attente",
+    "tabMux": "File d'attente Mux",
+    "empty": "La file d'attente Mux est vide.",
+    "emptyHint": "Les tâches de remux et de demux sont ajoutées depuis leurs propres pages.",
+    "openRemux": "Ouvrir Remux",
+    "openDemux": "Ouvrir Demux",
+    "start": "Démarrer",
+    "pause": "Pause",
+    "resume": "Reprendre",
+    "cancelAll": "Tout Annuler",
+    "clearCompleted": "Effacer les terminés",
+    "concurrency": "Tâches en parallèle",
+    "stats": "{{queued}} en file, {{running}} en cours, {{done}} terminés, {{failed}} en échec",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "{{count}} sortie(s)",
+    "outputDir": "Dossier de sortie",
+    "noOutputs": "Aucune sortie",
+    "detailsTargets": "Sortie",
+    "detailsCreatedAt": "Ajouté",
+    "viewQueue": "Voir la file d'attente",
+    "addToQueue": "Ajouter à la file d'attente",
+    "dragHandle": "Glisser pour réordonner",
+    "paused": "En pause",
+    "filters": {
+      "all": "Tous",
+      "queued": "En file",
+      "running": "En cours",
+      "done": "Terminés",
+      "failed": "En échec"
     }
   }
 }

@@ -34,7 +34,7 @@
 import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
-import type { ConversionProgress, MediaStreamInfo, RemuxInput } from '../../shared/types';
+import type { ConversionOptions, ConversionProgress, MediaStreamInfo, RemuxInput } from '../../shared/types';
 import { toTaskProgress } from '../../shared/progress';
 import { callBridgeVoid } from '../utils/bridge-call';
 import { ErrorCode } from '../../shared/errors';
@@ -42,6 +42,7 @@ import { withExtension, remuxWarnings } from '../../shared/codec-containers';
 import { buildAndValidateRemuxPlan, buildPrimaryStreamMaps } from '../../shared/remux-utils';
 import { useErrorStore } from './errorStore';
 import { useToastStore } from './toastStore';
+import { navigateToMuxQueue } from '../utils/mux-queue-navigation';
 import type { RemuxState, TaskProgress } from './types';
 import i18n from '../i18n/config';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
@@ -53,6 +54,7 @@ import {
   LOG_FAILED_TO_GET_MEDIA_INFO,
   LOG_PAUSE_CONVERSION_CALLED,
   LOG_REMUX_COMPLETE,
+  LOG_REMUX_ENQUEUE,
   LOG_REMUX_FAILED,
   LOG_RESUME_CONVERSION_CALLED,
   LOG_SET_INPUT,
@@ -136,6 +138,36 @@ function computeWarnings(state: RemuxState): ReturnType<typeof remuxWarnings> {
   const additionalInputs = [...state.addedSubtitles, ...state.addedAudio];
   if (state.thumbnail) additionalInputs.push(state.thumbnail);
   return remuxWarnings(state.streams, additionalInputs, state.chaptersFile ?? undefined, state.container, state.videoFilters);
+}
+
+/**
+ * Builds the conversion options for the current remux form.
+ *
+ * Shared by the direct run (`startRemux`) and the enqueue path
+ * (`enqueueRemux`) so the two can never drift: both validate the same way and
+ * produce the same FFmpeg invocation.
+ * @param {RemuxState} state - Current store state snapshot.
+ * @returns {ConversionOptions} The options for the remux invocation.
+ * @throws {Error} INCOMPATIBLE_CONTAINER when a selected stream cannot be
+ *   stored in the chosen container.
+ */
+function buildRemuxOptions(state: RemuxState): ConversionOptions {
+  const additionalInputs = [...state.addedSubtitles, ...state.addedAudio];
+  if (state.thumbnail) additionalInputs.push(state.thumbnail);
+  const plan = buildAndValidateRemuxPlan(
+    {
+      input: state.input,
+      container: state.container,
+      maps: state.selectedMaps,
+      additionalInputs,
+      chaptersFile: state.chaptersFile ?? undefined,
+      copyChapters: state.copyChapters,
+      audioSyncSeconds: state.audioSyncSeconds ?? undefined,
+      videoFilters: state.videoFilters,
+    },
+    state.streams,
+  );
+  return plan.options;
 }
 
 /**
@@ -369,31 +401,14 @@ export const useRemuxStore = create<RemuxState>((set, get) => ({
     log.info(LOG_START_REMUX, input, LOG_ARROW, output, 'container', container);
     useErrorStore.getState().clearError();
 
-    const additionalInputs = [...state.addedSubtitles, ...state.addedAudio];
-    if (state.thumbnail) additionalInputs.push(state.thumbnail);
-
     let options;
     try {
-      const plan = buildAndValidateRemuxPlan(
-        {
-          input,
-          container,
-          maps: state.selectedMaps,
-          additionalInputs,
-          chaptersFile: state.chaptersFile ?? undefined,
-          copyChapters: state.copyChapters,
-          audioSyncSeconds: state.audioSyncSeconds ?? undefined,
-          videoFilters: state.videoFilters,
-        },
-        state.streams,
-      );
-      options = plan.options;
-      set({ warnings: plan.warnings as ReturnType<typeof remuxWarnings> });
+      options = buildRemuxOptions(state);
+      set({ warnings: computeWarnings(state) });
     } catch (err: unknown) {
       useErrorStore.getState().showError(err);
       return;
     }
-
     set({ isConverting: true, isPaused: false, progress: null });
     const remuxStartedAt = Date.now();
     recordAnalyticsEvent(
@@ -439,6 +454,54 @@ export const useRemuxStore = create<RemuxState>((set, get) => ({
       set({ progress: null });
     } finally {
       set({ isConverting: false });
+    }
+  },
+  /**
+   * Validates the current remux form and adds it to the dedicated mux queue.
+   *
+   * The job is queued, not started: it stays QUEUED until the user starts the
+   * mux queue. The form is left untouched so the user can enqueue a variant or
+   * verify the settings. A success toast offers a shortcut to the queue.
+   * @returns {Promise<void>} Resolves once the job was enqueued (or rejected).
+   */
+  enqueueRemux: async () => {
+    const state = get();
+    const { input, output } = state;
+    if (!input) {
+      log.warn(LOG_START_REMUX_NO_INPUT_FILE);
+      useErrorStore.getState().showErrorMessage(ErrorCode.INPUT_NOT_SPECIFIED);
+      return;
+    }
+    if (!output) {
+      log.warn(LOG_START_REMUX_NO_OUTPUT_FILE);
+      useErrorStore.getState().showErrorMessage(ErrorCode.OUTPUT_NOT_SPECIFIED);
+      return;
+    }
+    let options: ConversionOptions;
+    try {
+      options = buildRemuxOptions(state);
+      set({ warnings: computeWarnings(state) });
+    } catch (err: unknown) {
+      useErrorStore.getState().showError(err);
+      return;
+    }
+    useErrorStore.getState().clearError();
+    log.info(LOG_REMUX_ENQUEUE, input, LOG_ARROW, output);
+    try {
+      await window.electronAPI.muxQueueAdd({
+        kind: 'remux',
+        input,
+        output,
+        targets: [{ output, options, label: output }],
+        transcoder: TRANSCODER_TYPES[0],
+      });
+      useToastStore.getState().success(i18n.t('toast.remuxQueued'), undefined, undefined, {
+        label: i18n.t('muxQueue.viewQueue'),
+        onClick: () => navigateToMuxQueue(),
+      });
+    } catch (err: unknown) {
+      log.error(LOG_REMUX_FAILED, err);
+      useErrorStore.getState().showError(err);
     }
   },
   /**

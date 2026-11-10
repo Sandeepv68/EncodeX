@@ -525,7 +525,9 @@
     "updateDownloaded": "Update v{{version}} heruntergeladen",
     "viewUpdate": "Ansehen",
     "remuxed": "Remux abgeschlossen",
-    "demuxed": "Streams erfolgreich extrahiert"
+    "demuxed": "Streams erfolgreich extrahiert",
+    "remuxQueued": "Remux zur Mux-Warteschlange hinzugefügt",
+    "demuxQueued": "Streams zur Mux-Warteschlange hinzugefügt"
   },
   "profiles": {
     "searchPlaceholder": "Profile suchen...",
@@ -1267,6 +1269,39 @@
       "hardwareNone": "Nur Software",
       "encoderVideo": "Video",
       "encoderAudio": "Audio"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Stapelwarteschlange",
+    "tabMux": "Mux-Warteschlange",
+    "empty": "Die Mux-Warteschlange ist leer.",
+    "emptyHint": "Remux- und Demux-Aufträge werden auf ihren eigenen Seiten hinzugefügt.",
+    "openRemux": "Remux öffnen",
+    "openDemux": "Demux öffnen",
+    "start": "Starten",
+    "pause": "Pausieren",
+    "resume": "Fortsetzen",
+    "cancelAll": "Alle abbrechen",
+    "clearCompleted": "Abgeschlossene löschen",
+    "concurrency": "Parallele Aufgaben",
+    "stats": "{{queued}} in Warteschlange, {{running}} laufen, {{done}} fertig, {{failed}} fehlgeschlagen",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "{{count}} Ausgabe(n)",
+    "outputDir": "Ausgabeordner",
+    "noOutputs": "Keine Ausgaben",
+    "detailsTargets": "Ausgabe",
+    "detailsCreatedAt": "Hinzugefügt",
+    "viewQueue": "Warteschlange ansehen",
+    "addToQueue": "Zur Warteschlange hinzufügen",
+    "dragHandle": "Zum Neuanordnen ziehen",
+    "paused": "Pausiert",
+    "filters": {
+      "all": "Alle",
+      "queued": "In Warteschlange",
+      "running": "Laufen",
+      "done": "Fertig",
+      "failed": "Fehlgeschlagen"
     }
   }
 }

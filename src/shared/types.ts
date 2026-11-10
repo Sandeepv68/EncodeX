@@ -425,6 +425,91 @@ export interface QueueJob {
 }
 
 /**
+ * The operation kind of a mux queue job.
+ * @typedef {'remux' | 'demux'} MuxQueueKind
+ */
+export type MuxQueueKind = 'remux' | 'demux';
+
+/**
+ * One FFmpeg invocation inside a mux queue job. A remux job has exactly one
+ * target; a demux job has one target per selected stream or split channel.
+ * @interface MuxQueueTarget
+ * @property {string} output - Absolute output path for this target.
+ * @property {ConversionOptions} options - Fully built options for the invocation.
+ * @property {string} [label] - Short UI label (e.g. "video:0", "audio:1", "mkv").
+ * @property {number} [sourceIndex] - Source stream index for demux targets.
+ */
+export interface MuxQueueTarget {
+  output: string;
+  options: ConversionOptions;
+  label?: string;
+  sourceIndex?: number;
+}
+
+/**
+ * A remux or demux job in the dedicated mux queue.
+ * @interface MuxQueueJob
+ * @property {string} id - Unique job identifier.
+ * @property {MuxQueueKind} kind - Whether this is a remux or demux job.
+ * @property {string} input - Absolute path of the source file.
+ * @property {string} output - Remux output file, or demux output directory.
+ * @property {MuxQueueTarget[]} targets - One entry per FFmpeg invocation.
+ * @property {TranscoderType} transcoder - Backend used to run the job.
+ * @property {QUEUE_STATUS} status - Current job lifecycle status.
+ * @property {number} progress - Aggregate progress percentage (0-100).
+ * @property {string} [error] - Error message if the job failed.
+ * @property {number} [priority] - Scheduling priority; higher starts first.
+ * @property {boolean} [paused] - True while the queue is paused.
+ * @property {number} createdAt - Epoch milliseconds when the job was created.
+ */
+export interface MuxQueueJob {
+  id: string;
+  kind: MuxQueueKind;
+  input: string;
+  output: string;
+  targets: MuxQueueTarget[];
+  transcoder: TranscoderType;
+  status: (typeof QUEUE_STATUS)[keyof typeof QUEUE_STATUS];
+  progress: number;
+  error?: string;
+  priority?: number;
+  paused?: boolean;
+  createdAt: number;
+}
+
+/**
+ * Payload accepted by the mux queue add IPC channel.
+ * @interface MuxQueueAddPayload
+ * @property {MuxQueueKind} kind - Operation kind.
+ * @property {string} input - Absolute path of the source file.
+ * @property {string} output - Remux output file, or demux output directory.
+ * @property {MuxQueueTarget[]} targets - One entry per FFmpeg invocation.
+ * @property {TranscoderType} [transcoder] - Backend; defaults to FFMPEG.
+ * @property {boolean} [overwrite] - Allow replacing existing output files.
+ */
+export interface MuxQueueAddPayload {
+  kind: MuxQueueKind;
+  input: string;
+  output: string;
+  targets: MuxQueueTarget[];
+  transcoder?: TranscoderType;
+  overwrite?: boolean;
+}
+
+/**
+ * Serializable snapshot of the mux queue.
+ * @interface MuxQueueSnapshot
+ * @property {number} version - Snapshot format version.
+ * @property {number} concurrency - Concurrency cap in effect when saved.
+ * @property {MuxQueueJob[]} jobs - All known jobs; RUNNING entries restore as QUEUED.
+ */
+export interface MuxQueueSnapshot {
+  version: number;
+  concurrency: number;
+  jobs: MuxQueueJob[];
+}
+
+/**
  * Real-time progress information during media conversion.
  * @interface ConversionProgress
  * @property {number} percent - Progress percentage (0-100).

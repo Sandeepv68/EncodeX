@@ -203,3 +203,16 @@ export interface WaveformBarGeometry {
   width: number;
   height: number;
 }
+
+/**
+ * The minimum job shape the queue reorder helpers need.
+ * Both the batch queue and the mux queue use the same `QUEUE_STATUS` values
+ * and the same "only QUEUED jobs move" rule, so both share one implementation.
+ * @interface ReorderableJob
+ * @property {string} id - The job id.
+ * @property {string} status - The job's queue status.
+ */
+export interface ReorderableJob {
+  id: string;
+  status: string;
+}

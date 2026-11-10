@@ -59,6 +59,7 @@ import FilePathField from '../components/FilePathField';
 import ConfirmDialog from '../components/ConfirmDialog';
 import InfoTooltip from '../components/InfoTooltip';
 import MediaPreview from '../components/MediaPreview';
+import MuxQueueStatusIndicator from '../components/MuxQueueStatusIndicator';
 import { VideoFiltersSection } from '../components/VideoFiltersSection';
 import { pageIcons } from '../pageIcons';
 import { ErrorBoundary } from '../components/ErrorBoundary';
@@ -160,6 +161,12 @@ export default function RemuxPage() {
   const store = useRemuxStore();
   const { errors, setErrors, clearFieldError, setFieldError } = useFormErrors();
   const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
+  /**
+   * True while an enqueue request is in flight. The "Add to Queue" button is
+   * disabled during it so a double click cannot enqueue the same remux twice.
+   * @type {boolean}
+   */
+  const [enqueuePending, setEnqueuePending] = useState(false);
 
   /**
    * Data URL of the chosen cover-art image, or null while none is picked or the
@@ -380,6 +387,26 @@ export default function RemuxPage() {
     }
     log.info(LOG_START_CONVERSION, store.input, LOG_ARROW, store.output, 'container', store.container);
     await store.startRemux();
+  };
+
+  /**
+   * Validates the form and adds the remux to the dedicated mux queue.
+   *
+   * The job is queued, not started: the mux queue runs it when the user
+   * presses Start there (or when a running queue frees a slot).
+   * @returns {Promise<void>} Resolves once the job was enqueued or rejected.
+   */
+  const handleEnqueue = async () => {
+    if (!validate()) {
+      log.warn(LOG_VALIDATION_FAILED);
+      return;
+    }
+    setEnqueuePending(true);
+    try {
+      await store.enqueueRemux();
+    } finally {
+      setEnqueuePending(false);
+    }
   };
 
   /**
@@ -876,10 +903,18 @@ export default function RemuxPage() {
       />
 
       <ActionRow direction="row" spacing={1} useFlexGap>
+        <Button
+          variant="contained"
+          onClick={handleEnqueue}
+          disabled={!store.input || !store.output || store.isConverting || enqueuePending}
+          data-testid="remux-add-to-queue"
+        >
+          {t('muxQueue.addToQueue')}
+        </Button>
         <Tooltip title={shortcutHint(t, 'remux.start', SHORTCUT_BY_ID['remux.start'].keys)} arrow>
           <span>
             <Button
-              variant="contained"
+              variant="outlined"
               startIcon={<FontAwesomeIcon icon={faClone} />}
               onClick={handleStart}
               disabled={!store.input || !store.output || store.isConverting}
@@ -910,6 +945,8 @@ export default function RemuxPage() {
           </Button>
         )}
       </ActionRow>
+
+      <MuxQueueStatusIndicator />
 
       {run.progress && (
         <ErrorBoundary fallback={null}>

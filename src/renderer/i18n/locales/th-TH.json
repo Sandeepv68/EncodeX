@@ -525,7 +525,9 @@
     "updateDownloaded": "ดาวน์โหลดอัปเดต v{{version}} แล้ว",
     "viewUpdate": "ดู",
     "remuxed": "เปลี่ยนคอนเทนเนอร์เสร็จแล้ว",
-    "demuxed": "ดึงสตรีมออกสำเร็จแล้ว"
+    "demuxed": "ดึงสตรีมออกสำเร็จแล้ว",
+    "remuxQueued": "เพิ่ม Remux ไปยังคิว Mux แล้ว",
+    "demuxQueued": "เพิ่มสตรีมไปยังคิว Mux แล้ว"
   },
   "profiles": {
     "searchPlaceholder": "ค้นหาโปรไฟล์...",
@@ -1267,6 +1269,39 @@
       "hardwareNone": "ซอฟต์แวร์เท่านั้น",
       "encoderVideo": "วิดีโอ",
       "encoderAudio": "เสียง"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "คิวงาน",
+    "tabMux": "คิว Mux",
+    "empty": "คิว Mux ว่างเปล่า",
+    "emptyHint": "งาน remux และ demux จะเพิ่มจากหน้าของแต่ละงาน",
+    "openRemux": "เปิด Remux",
+    "openDemux": "เปิด Demux",
+    "start": "เริ่ม",
+    "pause": "หยุดชั่วคราว",
+    "resume": "ดำเนินการต่อ",
+    "cancelAll": "ยกเลิกทั้งหมด",
+    "clearCompleted": "ล้างรายการที่เสร็จแล้ว",
+    "concurrency": "งานแบบขนาน",
+    "stats": "รอคิว {{queued}} กำลังทำงาน {{running}} เสร็จ {{done}} ล้มเหลว {{failed}}",
+    "kindRemux": "เปลี่ยนคอนเทนเนอร์",
+    "kindDemux": "แยกสตรีม",
+    "targets": "เอาต์พุต {{count}} รายการ",
+    "outputDir": "โฟลเดอร์ผลลัพธ์",
+    "noOutputs": "ไม่มีเอาต์พุต",
+    "detailsTargets": "เอาต์พุต",
+    "detailsCreatedAt": "เพิ่มเมื่อ",
+    "viewQueue": "ดูคิว",
+    "addToQueue": "เพิ่มลงคิว",
+    "dragHandle": "ลากเพื่อจัดเรียงใหม่",
+    "paused": "หยุดชั่วคราว",
+    "filters": {
+      "all": "ทั้งหมด",
+      "queued": "รอคิว",
+      "running": "กำลังทำงาน",
+      "done": "เสร็จแล้ว",
+      "failed": "ล้มเหลว"
     }
   }
 }

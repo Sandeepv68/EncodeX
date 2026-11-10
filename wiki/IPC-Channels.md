@@ -1,6 +1,6 @@
 # 🔌 IPC Channels
 
-All channel names are centralized in `src/shared/ipc-channels.ts` (85 channels). <!-- drift:ipc-channels=89 --> The preload script (`src/preload/index.ts`) exposes everything through `window.electronAPI`.
+All channel names are centralized in `src/shared/ipc-channels.ts` (85 channels). <!-- drift:ipc-channels=106 --> The preload script (`src/preload/index.ts`) exposes everything through `window.electronAPI`.
 
 ## 📥 Requests (invoke from renderer)
 
@@ -39,6 +39,17 @@ All channel names are centralized in `src/shared/ipc-channels.ts` (85 channels).
 | `queue-resume`        | —                                        | `void`                        |
 | `queue-export`        | —                                        | `number` (count exported)     |
 | `queue-import`        | —                                        | `number` (count imported)     |
+| `mux-queue-add`       | `MuxQueueAddPayload`                     | `string` (job id)             |
+| `mux-queue-remove`    | `id`                                     | `void`                        |
+| `mux-queue-list`      | —                                        | `MuxQueueJob[]`               |
+| `mux-queue-get-state` | —                                        | `{ paused, concurrency }`     |
+| `mux-queue-start`     | —                                        | `void`                        |
+| `mux-queue-pause`     | —                                        | `void`                        |
+| `mux-queue-resume`    | —                                        | `void`                        |
+| `mux-queue-cancel-all` | —                                       | `void`                        |
+| `mux-queue-clear-completed` | —                                   | `number` (count removed)      |
+| `mux-queue-set-concurrency` | `concurrency`                       | `void`                        |
+| `mux-queue-move-to`   | `id, toPosition`                         | `boolean`                     |
 | `queue-reveal`        | `filePath`                               | `void`                        |
 | `set-launch-at-login` | `enabled`                                | `void`                        |
 | `player-open`         | `filePath`                               | `number` (generation token)   |
@@ -91,6 +102,12 @@ All channel names are centralized in `src/shared/ipc-channels.ts` (85 channels).
 | `queue-progress`           | `{ job, progress }`           |
 | `queue-cancelled`          | —                             |
 | `queue-moved`              | `{ id, toPosition }`          |
+| `mux-queue-added`          | `MuxQueueJob`                 |
+| `mux-queue-removed`        | `string` (job id)             |
+| `mux-queue-status-change`  | `MuxQueueJob`                 |
+| `mux-queue-progress`       | `{ job, progress }`           |
+| `mux-queue-cancelled`      | —                             |
+| `mux-queue-moved`          | `{ id, toPosition }`          |
 | `player-frame`             | `PlayerFrame`                 |
 | `player-audio`             | `PlayerAudioChunk`            |
 | `player-error`             | `string`                      |
@@ -130,6 +147,10 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `queueSetWhenDone(config)` / `queueMoveTo(id, pos)` / `queueUpdateOptions(id, opts)`
 - `queueStart()` / `queuePause()` / `queueResume()`
 - `queueExport()` / `queueImport()`
+- `muxQueueAdd(payload)` / `muxQueueRemove(id)` / `muxQueueList()` / `muxQueueCancelAll()`
+- `muxQueueGetState()` / `muxQueueClearCompleted()` / `muxQueueSetConcurrency(n)`
+- `muxQueueStart()` / `muxQueuePause()` / `muxQueueResume()`
+- `muxQueueMoveTo(id, pos)` — reorder a queued remux/demux job
 - `revealFile(filePath)` — open in system file manager (channel `queue-reveal`)
 - `setLaunchAtLogin(enabled)` — toggle launch at login
 - `playerOpen(filePath)` / `playerSeek(time)` / `playerClose()` / `playerGetFrame()`
@@ -151,6 +172,7 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `onWindowMaximizedChange(cb)`
 - `onConversionProgress(cb)`
 - `onQueueAdded(cb)` / `onQueueRemoved(cb)` / `onQueueStatusChange(cb)` / `onQueueProgress(cb)` / `onQueueCancelled(cb)` / `onQueueMoved(cb)`
+- `onMuxQueueAdded(cb)` / `onMuxQueueRemoved(cb)` / `onMuxQueueStatusChange(cb)` / `onMuxQueueProgress(cb)` / `onMuxQueueCancelled(cb)` / `onMuxQueueMoved(cb)`
 - `onPlayerFrame(cb)` / `onPlayerAudio(cb)` / `onPlayerError(cb)`
 - `onLogMessage(cb)`
 - `onUpdateAvailable(cb)` / `onUpdateNotAvailable(cb)` / `onUpdateProgress(cb)` / `onUpdateDownloaded(cb)` / `onUpdateError(cb)`

@@ -525,7 +525,9 @@
     "updateDownloaded": "העדכון v{{version}} הורד",
     "viewUpdate": "צפייה",
     "remuxed": "האריזה המחדש הושלמה",
-    "demuxed": "הזרמים חולצו בהצלחה"
+    "demuxed": "הזרמים חולצו בהצלחה",
+    "remuxQueued": "האריזה מחדש נוספה לתור ה-Mux",
+    "demuxQueued": "הזרמים נוספו לתור ה-Mux"
   },
   "profiles": {
     "searchPlaceholder": "חיפוש פרופילים...",
@@ -1267,6 +1269,39 @@
       "hardwareNone": "תוכנה בלבד",
       "encoderVideo": "וידאו",
       "encoderAudio": "שמע"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "תור אצווה",
+    "tabMux": "תור Mux",
+    "empty": "תור ה-Mux ריק.",
+    "emptyHint": "משימות Remux ו-Demux מתווספות מעמודיהן.",
+    "openRemux": "פתח אריזה מחדש",
+    "openDemux": "פתח פיצול זרמים",
+    "start": "התחל",
+    "pause": "השהיה",
+    "resume": "המשך",
+    "cancelAll": "בטל הכל",
+    "clearCompleted": "נקה הושלמו",
+    "concurrency": "משימות מקבילות",
+    "stats": "{{queued}} בהמתנה, {{running}} בפעולה, {{done}} הושלמו, {{failed}} נכשלו",
+    "kindRemux": "אריזה מחדש",
+    "kindDemux": "פיצול זרמים",
+    "targets": "{{count}} פלטים",
+    "outputDir": "תיקיית פלט",
+    "noOutputs": "אין פלטים",
+    "detailsTargets": "פלט",
+    "detailsCreatedAt": "נוסף",
+    "viewQueue": "הצג תור",
+    "addToQueue": "הוסף לתור",
+    "dragHandle": "גרור כדי לסדר מחדש",
+    "paused": "מושהה",
+    "filters": {
+      "all": "הכל",
+      "queued": "בהמתנה",
+      "running": "בפעולה",
+      "done": "הושלמו",
+      "failed": "נכשלו"
     }
   }
 }

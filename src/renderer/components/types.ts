@@ -17,6 +17,7 @@ import type {
   EncoderType,
   MediaInfo,
   MediaStreamInfo,
+  MuxQueueJob,
   QueueJob,
   ThumbnailStrip,
   TranscoderType,
@@ -582,6 +583,23 @@ export interface QueueJobCardProps {
   editLocked?: boolean;
   customized?: boolean;
   dragOverlay?: boolean;
+}
+
+/**
+ * Props for a single job card in the mux queue.
+ * @interface MuxQueueJobCardProps
+ * @property {MuxQueueJob} job - The mux queue job to display.
+ * @property {ConversionProgress | null | undefined} [progress] - Latest live
+ *   progress snapshot (time/speed/eta captions) for the running job.
+ * @property {(id: string) => void} onRemove - Fired with the job id on remove.
+ * @property {(job: MuxQueueJob) => void} [onRetry] - Fired with the failed job
+ *   when the retry action is used.
+ */
+export interface MuxQueueJobCardProps {
+  job: MuxQueueJob;
+  progress?: ConversionProgress | null;
+  onRemove: (id: string) => void;
+  onRetry?: (job: MuxQueueJob) => void;
 }
 
 /**

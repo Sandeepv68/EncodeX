@@ -578,6 +578,33 @@ export const DEFAULT_QUEUE_CONCURRENCY = 1;
 export const MAX_QUEUE_CONCURRENCY = 4;
 
 /**
+ * Default concurrency for the dedicated remux/demux queue. Kept at one because
+ * demux jobs may write many files sequentially and compete for the same disk.
+ * @const {number} DEFAULT_MUX_QUEUE_CONCURRENCY
+ */
+export const DEFAULT_MUX_QUEUE_CONCURRENCY = 1;
+
+/**
+ * Maximum number of FFmpeg invocations allowed in one mux queue job. A demux
+ * job can expand each selected stream into one or more channel targets, so the
+ * cap bounds both snapshot size and accidental runaway jobs.
+ * @const {number} MAX_MUX_QUEUE_TARGETS
+ */
+export const MAX_MUX_QUEUE_TARGETS = 100;
+
+/**
+ * File name of the mux queue snapshot inside the user-data directory.
+ * @const {string} MUX_QUEUE_STATE_FILENAME
+ */
+export const MUX_QUEUE_STATE_FILENAME = 'mux-queue-state.json';
+
+/**
+ * Version of the serialized mux queue snapshot format.
+ * @const {number} MUX_QUEUE_STATE_VERSION
+ */
+export const MUX_QUEUE_STATE_VERSION = 1;
+
+/**
  * localStorage key used to persist the last-used batch encoding configuration
  * (operation, codecs, container, bitrates, quality, scale, pixel format) so
  * re-entering the Batch Queue page restores the previous session's settings.
