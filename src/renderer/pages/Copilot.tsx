@@ -40,6 +40,7 @@ import ChatComposer from '../components/copilot/ChatComposer';
 import type { ComposerAttachment } from '../components/copilot/types';
 import { activeConnectionOf, useAiConnectionStore } from '../stores/aiConnectionStore';
 import { basename } from '../utils/path-utils';
+import { buildMuxQueuePayloads, isMuxQueueOperation } from '../utils/copilot-mux-queue';
 import { VisuallyHidden } from '../styles/a11y.styles';
 import type { SettingsLocationState } from '../types';
 import { CopilotAlert, CopilotAlertWrapper, CopilotConversationColumn, CopilotPage } from '../styles/Copilot.styles';
@@ -396,8 +397,12 @@ export default function Copilot() {
   };
 
   /**
-   * Enqueues every planned action into the Batch Queue through the existing
-   * bridge, then navigates there when the whole plan was accepted.
+   * Enqueues every planned action, then navigates to the queue that took them.
+   *
+   * Remux and demux actions go to the dedicated mux queue; every other
+   * operation goes to the Batch Queue. The two queues are separate engines
+   * with separate persistence, so the plan is split rather than forced into
+   * one of them.
    * @param {CopilotPlan} planToEnqueue - The plan to commit.
    * @returns {Promise<void>} Resolves after the enqueues settle.
    */
@@ -407,7 +412,20 @@ export default function Copilot() {
     setNotice(null);
     setBusy(true);
     let added = 0;
+    let muxAdded = 0;
+
+    for (const payload of buildMuxQueuePayloads(planToEnqueue.actions)) {
+      try {
+        await bridgePromise(() => window.electronAPI.muxQueueAdd(payload));
+        added += 1;
+        muxAdded += 1;
+      } catch {
+        // The queue reports its own failures per job; count and continue.
+      }
+    }
+
     for (const action of planToEnqueue.actions) {
+      if (isMuxQueueOperation(action.operation)) continue;
       try {
         await bridgePromise(() =>
           window.electronAPI.queueAdd(action.input, action.output ?? '', action.options, TRANSCODER_TYPES[0], false),
@@ -417,12 +435,13 @@ export default function Copilot() {
         // The queue reports its own failures per job; count and continue.
       }
     }
+
     setBusy(false);
     if (added > 0) {
       useToastStore.getState().success(t('copilot.addedToQueue', { count: added }));
     }
     if (added === planToEnqueue.actions.length && planToEnqueue.actions.length > 0) {
-      navigateWithoutGuard('/batch');
+      navigateWithoutGuard(muxAdded > 0 ? '/batch?tab=mux' : '/batch');
     } else if (added > 0) {
       setGlobalError(t('copilot.partiallyAdded'));
     } else {

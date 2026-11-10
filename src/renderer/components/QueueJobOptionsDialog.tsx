@@ -29,7 +29,7 @@ import { getAudioCodecContainers, getVideoCodecContainer } from '../../shared/co
 import type { QueueJob } from '../../shared/types';
 import type { QueueJobOptionsDialogProps } from './types';
 import type { BatchEncodingValues } from '../utils/batch-options';
-import { buildBatchOptions, inferJobOperation, recomputeJobOutput } from '../utils/batch-options';
+import { buildBatchOptions, isMuxStyleJob, inferJobOperation, recomputeJobOutput } from '../utils/batch-options';
 import { basename } from '../utils/path-utils';
 
 /**
@@ -148,10 +148,19 @@ export default function QueueJobOptionsDialog({ open, job, defaults, onSave, onC
    * Builds the job's options from the current field values and the
    * hardware-acceleration settings, recomputes the output path, and forwards
    * everything to the parent for the actual `queueUpdateOptions` call.
+   *
+   * A job that carries a per-stream map (a remux or a single-stream demux
+   * extraction) cannot be expressed by the batch encoding panel, so its options
+   * are forwarded untouched. Rebuilding them from the panel's fields would drop
+   * the map and silently turn a stream copy into a re-encode.
    * @returns {void}
    */
   const handleSave = () => {
     const { hardwareAcceleration, hwaccelMode } = useSettingsStore.getState();
+    if (isMuxStyleJob(job.options)) {
+      onSave(job, { ...job.options }, job.output);
+      return;
+    }
     const options = buildBatchOptions(operation, values, { hardwareAcceleration, hwaccelMode });
     const output = recomputeJobOutput(job, values.container);
     onSave(job, options, output);

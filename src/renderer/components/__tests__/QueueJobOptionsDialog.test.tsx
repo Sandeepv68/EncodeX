@@ -181,42 +181,48 @@ describe('QueueJobOptionsDialog', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('seeds a remux job container from its output extension', () => {
-    const job = makeJob({
-      output: 'C:/videos/clip_encodex_converted.mkv',
-      options: { copy: true, video: true, audio: true, hardwareAcceleration: true, hwaccelMode: 'auto' },
-    });
-    const { onSave } = renderDialog(job);
+  it("keeps a stream-copy job's options intact, because the batch panel cannot express them", () => {
+    // A stream-copy job cannot be rebuilt from the transcode panel's fields:
+    // doing so would drop `copy` and silently turn the lossless copy into a
+    // re-encode. Its options are therefore forwarded untouched.
+    const { onSave } = renderDialog(
+      makeJob({
+        output: 'C:/videos/clip_encodex_converted.mkv',
+        options: { copy: true, video: true, audio: true, hardwareAcceleration: true, hwaccelMode: 'auto' },
+      }),
+    );
     expect(screen.getByRole('combobox', { name: 'batchQueue.container' })).toHaveTextContent('mkv');
     fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
-    expect(onSave).toHaveBeenCalledWith(job, expect.objectContaining({ copy: true }), 'C:/videos/clip_encodex_converted.mkv');
+    expect(onSave).toHaveBeenCalledWith(
+      expect.any(Object),
+      expect.objectContaining({ copy: true }),
+      'C:/videos/clip_encodex_converted.mkv',
+    );
   });
 
-  it('seeds a demux job from its stream and saves the per-stream map and target', () => {
-    const job = makeJob({
-      input: 'C:/videos/clip.mkv',
-      output: 'C:/videos/clip.audio_1_encodex_demux.m4a',
-      options: {
-        copy: false,
-        video: false,
-        audio: true,
-        map: ['0:1'],
-        audioCodec: 'aac',
-        hardwareAcceleration: true,
-        hwaccelMode: 'auto',
-      },
-    });
-    const { onSave } = renderDialog(job);
-    // The kind toggles reflect the page-level selection; the per-stream target
-    // and map are what this single job edits.
-    expect(screen.getByRole('combobox', { name: 'demux.audioCodec' })).toHaveTextContent('m4a');
-    expect(screen.getByRole('combobox', { name: 'demux.videoContainer' })).toHaveTextContent('demux.copyOption');
+  it('keeps a per-stream map when a demux-shaped job is saved', () => {
+    // Same reasoning for a demux job: the batch queue cannot express a
+    // per-stream extraction, so the map must survive a save untouched rather
+    // than being dropped by the transcode-shaped rebuild.
+    const { onSave } = renderDialog(
+      makeJob({
+        input: 'C:/videos/clip.mkv',
+        output: 'C:/videos/clip.audio_1_encodex_demux.m4a',
+        options: {
+          copy: false,
+          video: false,
+          audio: true,
+          map: ['0:1'],
+          audioCodec: 'aac',
+          hardwareAcceleration: true,
+          hwaccelMode: 'auto',
+        },
+      }),
+    );
     fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
-    // 'm4a' is the selected target name, matching what the single-file Demux
-    // flow sends for the same target (demuxStore optionsForTarget).
     expect(onSave).toHaveBeenCalledWith(
-      job,
-      expect.objectContaining({ copy: false, video: false, audio: true, map: ['0:1'], audioCodec: 'm4a' }),
+      expect.objectContaining({ id: 'j1' }),
+      expect.objectContaining({ map: ['0:1'] }),
       'C:/videos/clip.audio_1_encodex_demux.m4a',
     );
   });

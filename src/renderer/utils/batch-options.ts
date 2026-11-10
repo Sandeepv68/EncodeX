@@ -137,6 +137,22 @@ export function inferJobOperation(options: ConversionOptions): string {
 }
 
 /**
+ * True when a job's options mark it as a mux-style job: a stream copy
+ * (`copy: true`) or a per-stream map.
+ *
+ * Such a job cannot be expressed by the batch queue's encoding panel, so its
+ * options must survive an edit untouched: rebuilding them from the panel's
+ * fields would drop the copy flag or the map and silently turn a lossless
+ * stream copy into a re-encode.
+ * @param {ConversionOptions} options - The job's current options.
+ * @returns {boolean} True when the job is a stream copy or a mapped extraction.
+ */
+export function isMuxStyleJob(options: ConversionOptions): boolean {
+  if (options.copy === true) return true;
+  return Array.isArray(options.map) && options.map.length > 0;
+}
+
+/**
  * Swaps a queued job's output extension to `container` when that container is
  * compatible with the job's codecs. The current output extension is preserved
  * when the requested container is empty, incompatible with the job's codec, or
