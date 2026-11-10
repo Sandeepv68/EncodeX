@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Энэ ажлыг цаашид засах боломжгүй.",
     "condense": "Хумих",
     "expand": "Дэлгэх",
-    "clearAll": "Бүгдийг арилгах",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Стримүүдийг хуулж оруулах контейнер. \"Автомат\" нь эх файл бүрийн өргөтгөлийг хадгална."
+    "clearAll": "Бүгдийг арилгах"
   },
   "progress": {
     "title": "Хөрвүүлэлтийн явц",

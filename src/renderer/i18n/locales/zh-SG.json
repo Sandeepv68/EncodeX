@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "此任务不再可编辑。",
     "condense": "收起",
     "expand": "展开",
-    "clearAll": "清除全部",
-    "operationRemux": "封装",
-    "operationDemux": "解复用",
-    "remuxContainerHint": "流复制到的容器。“自动”将保留每个源文件的扩展名。"
+    "clearAll": "清除全部"
   },
   "progress": {
     "title": "转换进度",

@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Kāore e taea te whakatika i tēnei mahi.",
     "condense": "Whakaiti",
     "expand": "Whakanui",
-    "clearAll": "Whakangaroa katoa",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Te ipu ka tāruatia ngā awa ki roto. \"Aunoa\" ka pupuri i te taapiri o ia kōnae taketake."
+    "clearAll": "Whakangaroa katoa"
   },
   "progress": {
     "title": "Te ahunga whakamua o te hurihanga",

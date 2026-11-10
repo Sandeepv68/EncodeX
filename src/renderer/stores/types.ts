@@ -759,14 +759,6 @@ export interface AiSettingsState extends AiSettingsSnapshot {
  * @property {string} pixelFormat - Output pixel format.
  * @property {string[]} videoFilters - Ordered video-filter chain entries
  *   (transcode only).
- * @property {Array<'video'|'audio'|'subtitle'>} demuxKinds - Stream kinds the
- *   'demux' operation extracts from each file.
- * @property {string} demuxVideoContainer - 'demux' video conversion target
- *   container extension ('' = lossless stream copy).
- * @property {string} demuxAudioCodec - 'demux' audio conversion encoder ('' =
- *   lossless stream copy).
- * @property {string} demuxSubtitleFormat - 'demux' subtitle conversion format
- *   ('' = lossless stream copy).
  * @property {string} outputDir - Optional output folder for new jobs; '' means
  *   outputs are written next to their source files.
  * @property {boolean} overwrite - Whether new jobs may replace existing output
@@ -786,10 +778,6 @@ export interface BatchConfig {
   flipV: boolean;
   pixelFormat: string;
   videoFilters: string[];
-  demuxKinds: Array<'video' | 'audio' | 'subtitle'>;
-  demuxVideoContainer: string;
-  demuxAudioCodec: string;
-  demuxSubtitleFormat: string;
   outputDir: string;
   overwrite: boolean;
 }

@@ -61,26 +61,6 @@ describe('inferJobOperation', () => {
   it('falls back to the first batch operation for options without markers', () => {
     expect(inferJobOperation({})).toBe('transcode');
   });
-
-  it('infers remux from a stream copy with explicit kept maps', () => {
-    expect(inferJobOperation({ copy: true, video: true, audio: true, map: ['0:v:0'] })).toBe('remux');
-  });
-
-  it('infers remux from a stream copy without a map', () => {
-    expect(inferJobOperation({ copy: true })).toBe('remux');
-  });
-
-  it('infers demux from a mapped video-only stream copy', () => {
-    expect(inferJobOperation({ copy: true, video: true, audio: false, map: ['0:v:0'] })).toBe('demux');
-  });
-
-  it('infers demux from a mapped audio extract that re-encodes over an audio codec', () => {
-    expect(inferJobOperation({ copy: false, video: false, audio: true, audioCodec: 'mp3', map: ['0:a:0'] })).toBe('demux');
-  });
-
-  it('infers demux from a mapped subtitle extract', () => {
-    expect(inferJobOperation({ copy: true, video: false, audio: false, map: ['0:s:0'] })).toBe('demux');
-  });
 });
 
 describe('buildBatchOptions', () => {
@@ -210,111 +190,6 @@ describe('buildBatchOptions', () => {
   });
 });
 
-describe('buildBatchOptions — remux', () => {
-  it('forces a stream copy, maps the selected edges, and drops encoders', () => {
-    const values: BatchEncodingValues = { ...VALUES, selectedMaps: ['0:v:0', '0:a:1'] };
-    expect(buildBatchOptions('remux', values, HW)).toEqual({
-      copy: true,
-      video: true,
-      audio: true,
-      map: ['0:v:0', '0:a:1'],
-      hardwareAcceleration: true,
-      hwaccelMode: 'auto',
-    });
-  });
-
-  it('maps all streams when no edge selection is provided', () => {
-    expect(buildBatchOptions('remux', VALUES, HW)).toEqual({
-      copy: true,
-      map: undefined,
-      video: undefined,
-      audio: undefined,
-      hardwareAcceleration: true,
-      hwaccelMode: 'auto',
-    });
-  });
-});
-
-describe('buildBatchOptions — demux', () => {
-  it('stream-copies a video stream when no conversion container is set', () => {
-    const values: BatchEncodingValues = { ...VALUES, demuxKind: 'video', demuxMap: '0:v:0' };
-    expect(buildBatchOptions('demux', values, HW)).toEqual({
-      copy: true,
-      video: true,
-      audio: false,
-      map: ['0:v:0'],
-      videoCodec: undefined,
-      hardwareAcceleration: true,
-      hwaccelMode: 'auto',
-    });
-  });
-
-  it('re-encodes a video stream into the configured container', () => {
-    const values: BatchEncodingValues = { ...VALUES, demuxKind: 'video', demuxMap: '0:v:0', demuxVideoContainer: 'webm' };
-    expect(buildBatchOptions('demux', values, HW)).toEqual({
-      copy: false,
-      video: true,
-      audio: false,
-      map: ['0:v:0'],
-      videoCodec: 'libvpx-vp9',
-      hardwareAcceleration: true,
-      hwaccelMode: 'auto',
-    });
-  });
-
-  it('stream-copies an audio stream when no conversion codec is set', () => {
-    const values: BatchEncodingValues = { ...VALUES, demuxKind: 'audio', demuxMap: '0:a:1' };
-    expect(buildBatchOptions('demux', values, HW)).toEqual({
-      copy: true,
-      video: false,
-      audio: true,
-      map: ['0:a:1'],
-      audioCodec: undefined,
-      hardwareAcceleration: true,
-      hwaccelMode: 'auto',
-    });
-  });
-
-  it('re-encodes an audio stream to mp3 when an audio codec is set', () => {
-    const values: BatchEncodingValues = { ...VALUES, demuxKind: 'audio', demuxMap: '0:a:1', demuxAudioCodec: 'mp3' };
-    expect(buildBatchOptions('demux', values, HW)).toEqual({
-      copy: false,
-      video: false,
-      audio: true,
-      map: ['0:a:1'],
-      audioCodec: 'mp3',
-      hardwareAcceleration: true,
-      hwaccelMode: 'auto',
-    });
-  });
-
-  it('stream-copies a subtitle stream when no conversion format is set', () => {
-    const values: BatchEncodingValues = { ...VALUES, demuxKind: 'subtitle', demuxMap: '0:s:2' };
-    expect(buildBatchOptions('demux', values, HW)).toEqual({
-      copy: true,
-      video: false,
-      audio: false,
-      map: ['0:s:2'],
-      subtitleCodec: undefined,
-      hardwareAcceleration: true,
-      hwaccelMode: 'auto',
-    });
-  });
-
-  it('converts a subtitle stream to srt when a subtitle format is set', () => {
-    const values: BatchEncodingValues = { ...VALUES, demuxKind: 'subtitle', demuxMap: '0:s:2', demuxSubtitleFormat: 'srt' };
-    expect(buildBatchOptions('demux', values, HW)).toEqual({
-      copy: false,
-      video: false,
-      audio: false,
-      map: ['0:s:2'],
-      subtitleCodec: 'srt',
-      hardwareAcceleration: true,
-      hwaccelMode: 'auto',
-    });
-  });
-});
-
 describe('recomputeJobOutput', () => {
   it('keeps the current output when the container is empty', () => {
     expect(recomputeJobOutput(makeJob(), '')).toBe('/in/video_encodex_converted.mp4');
@@ -358,19 +233,6 @@ describe('recomputeJobOutput', () => {
   it('handles Windows-style output paths and leading-dot containers', () => {
     const job = makeJob({ output: 'C:\\in\\video_encodex_converted.mp4', options: { videoCodec: 'libx264' } });
     expect(recomputeJobOutput(job, '.mkv')).toBe('C:\\in\\video_encodex_converted.mkv');
-  });
-
-  it('swaps the extension for remux jobs without codec validation', () => {
-    const job = makeJob({ output: '/in/movie_encodex_remux.mkv', options: { copy: true, video: true, audio: true, map: ['0:v:0'] } });
-    expect(recomputeJobOutput(job, 'ts')).toBe('/in/movie_encodex_remux.ts');
-  });
-
-  it('keeps the per-stream output for demux jobs', () => {
-    const job = makeJob({
-      output: '/in/movie.audio_1_encodex_demux.srt',
-      options: { copy: false, video: false, audio: true, audioCodec: 'mp3', map: ['0:a:1'] },
-    });
-    expect(recomputeJobOutput(job, 'mkv')).toBe('/in/movie.audio_1_encodex_demux.srt');
   });
 });
 
@@ -457,43 +319,5 @@ describe('buildOutputPath', () => {
     expect(buildOutputPath({ ...base, file: '/in/video.mp4', operation: 'transcode', sourceExt: 'mp4', suffix: '_v2' })).toBe(
       '/in/video_v2.mp4',
     );
-  });
-
-  it('uses the container extension for remux outputs', () => {
-    expect(buildOutputPath({ ...base, container: 'mkv', file: '/in/movie.mp4', operation: 'remux', sourceExt: 'mp4' })).toBe(
-      '/in/movie_encodex_converted.mkv',
-    );
-  });
-
-  it('falls back to the source extension for remux outputs without a container', () => {
-    expect(buildOutputPath({ ...base, container: '', file: '/in/movie.mkv', operation: 'remux', sourceExt: 'mkv' })).toBe(
-      '/in/movie_encodex_converted.mkv',
-    );
-  });
-
-  it('uses the conversion-target extension for demux outputs', () => {
-    expect(
-      buildOutputPath({ ...base, container: 'srt', file: '/in/movie.mkv', operation: 'demux', sourceExt: 'mkv', suffix: '_encodex_demux' }),
-    ).toBe('/in/movie_encodex_demux.srt');
-  });
-
-  it('falls back to the source extension for demux outputs without a target', () => {
-    expect(
-      buildOutputPath({ ...base, container: '', file: '/in/movie.mkv', operation: 'demux', sourceExt: 'mkv', suffix: '_encodex_demux' }),
-    ).toBe('/in/movie_encodex_demux.mkv');
-  });
-
-  it('inserts the per-stream name marker for demux outputs', () => {
-    expect(
-      buildOutputPath({
-        ...base,
-        container: 'srt',
-        file: '/in/movie.mkv',
-        operation: 'demux',
-        sourceExt: 'mkv',
-        suffix: '_encodex_demux',
-        streamName: 'audio_1',
-      }),
-    ).toBe('/in/movie.audio_1_encodex_demux.srt');
   });
 });

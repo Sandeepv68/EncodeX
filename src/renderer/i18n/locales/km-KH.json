@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "កិច្ចការនេះមិនអាចកែសម្រួលបានទៀតទេ។",
     "condense": "បង្រួម",
     "expand": "ពង្រីក",
-    "clearAll": "សម្អាតទាំងអស់",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "កុងតឺន័រដែលស្ទ្រីមត្រូវបានចម្លងទៅក្នុង។ «ស្វ័យប្រវត្តិ» រក្សាផ្នែកបន្ថែមនៃឯកសារប្រភពនីមួយៗ។"
+    "clearAll": "សម្អាតទាំងអស់"
   },
   "progress": {
     "title": "វឌ្ឍនភាពបម្លែង",

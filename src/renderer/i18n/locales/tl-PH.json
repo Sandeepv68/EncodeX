@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Hindi na ma-edit ang trabahong ito.",
     "condense": "Paliitin",
     "expand": "Palakihin",
-    "clearAll": "I-clear lahat",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Ang container na kinokopyahan ng mga stream. Pinapanatili ng \"Awtomatiko\" ang extension ng bawat file na pinagmulan."
+    "clearAll": "I-clear lahat"
   },
   "progress": {
     "title": "Pag-unlad ng conversion",

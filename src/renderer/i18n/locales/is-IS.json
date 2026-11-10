@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Ekki er lengur hægt að breyta þessu verki.",
     "condense": "Þjappa",
     "expand": "Stækka",
-    "clearAll": "Hreinsa allt",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Gáman sem straumarnir eru afritaðir í. \"Sjálfkrafa\" heldurfram Endingu hvers upprunnafiles."
+    "clearAll": "Hreinsa allt"
   },
   "progress": {
     "title": "Framvinda umbreytingar",

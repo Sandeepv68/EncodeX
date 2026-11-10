@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "このジョブは編集できなくなりました。",
     "condense": "折りたたむ",
     "expand": "展開する",
-    "clearAll": "すべてクリア",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "ストリームのコピー先コンテナー。「自動」では元のファイル拡張子をそのまま使います。"
+    "clearAll": "すべてクリア"
   },
   "progress": {
     "title": "変換の進行状況",

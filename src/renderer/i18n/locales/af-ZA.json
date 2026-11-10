@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Hierdie taak kan nie meer geredigeer word nie.",
     "condense": "Vou in",
     "expand": "Brei uit",
-    "clearAll": "Maak alles skoon",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Die houer waarheen strome gekopieer word. \"Outomaties\" behou die uitbreiding van elke bronlêer."
+    "clearAll": "Maak alles skoon"
   },
   "progress": {
     "title": "Omskakelingsvordering",

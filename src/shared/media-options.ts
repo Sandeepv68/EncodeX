@@ -256,8 +256,6 @@ export const BATCH_OPERATIONS = [
   { value: 'transcode', label: 'Transcode' },
   { value: 'extract_audio', label: 'Extract Audio' },
   { value: 'compress_image', label: 'Compress Image' },
-  { value: 'remux', label: 'Remux' },
-  { value: 'demux', label: 'Demux' },
 ] as const;
 
 /**

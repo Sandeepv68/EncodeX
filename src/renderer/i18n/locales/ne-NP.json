@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "यो काम अब सम्पादनयोग्य छैन।",
     "condense": "साँघुरो बनाउनुहोस्",
     "expand": "फराकिलो बनाउनुहोस्",
-    "clearAll": "सबै मेटाउनुहोस्",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "स्ट्रिमहरू प्रतिलिपि गरिने कन्टेनर। \"स्वतः\" ले प्रत्येक स्रोत फाइलको विस्तार कायम राख्छ।"
+    "clearAll": "सबै मेटाउनुहोस्"
   },
   "progress": {
     "title": "रूपान्तरण प्रगति",

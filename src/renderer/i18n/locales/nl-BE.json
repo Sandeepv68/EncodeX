@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Deze taak kan niet meer worden bewerkt.",
     "condense": "Samenvouwen",
     "expand": "Uitvouwen",
-    "clearAll": "Alles wissen",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "De container waarop de streams worden gekopieerd. \"Automatisch\" behoudt de extensie van elk bronbestand."
+    "clearAll": "Alles wissen"
   },
   "progress": {
     "title": "Conversievoortgang",

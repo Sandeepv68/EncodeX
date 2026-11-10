@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "To zadanie nie może być już edytowane.",
     "condense": "Zwiń",
     "expand": "Rozwiń",
-    "clearAll": "Wyczyść wszystko",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Kontener, do którego kopiowane są strumienie. „Automatyczny” zachowuje rozszerzenie każdego pliku źródłowego."
+    "clearAll": "Wyczyść wszystko"
   },
   "progress": {
     "title": "Postęp konwersji",

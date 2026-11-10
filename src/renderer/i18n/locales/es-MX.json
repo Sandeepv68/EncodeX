@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Esta tarea ya no se puede editar.",
     "condense": "Contraer",
     "expand": "Expandir",
-    "clearAll": "Limpiar todo",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "El contenedor al que se copian los flujos. «Automático» conserva la extensión de cada archivo de origen."
+    "clearAll": "Limpiar todo"
   },
   "progress": {
     "title": "Progreso de la conversión",

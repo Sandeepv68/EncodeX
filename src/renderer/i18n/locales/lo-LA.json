@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "ບໍ່ສາມາດແກ້ໄຂວຽກນີ້ໄດ້ອີກຕໍ່ໄປ.",
     "condense": "ຫຍໍ້",
     "expand": "ຂະຫຍາຍ",
-    "clearAll": "ລ້າງທັງໝົດ",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "ຄອນເທນເນີທີ່ສະຣີມຖືກສຳເນົາໄປໃສ່. \"ອັດຕະໂນມັດ\" ຮັກສານາມສະກຸນຂອງໄຟລ໌ຕົ້ນສະບັບແຕ່ລະອັນ."
+    "clearAll": "ລ້າງທັງໝົດ"
   },
   "progress": {
     "title": "ຄວາມຄືບໜ້າການແປງ",

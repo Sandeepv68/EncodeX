@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Kerja ini tidak boleh diedit lagi.",
     "condense": "Ciutkan",
     "expand": "Kembangkan",
-    "clearAll": "Padam Semua",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Bekas tempat strim disalin masuk ke. \"Auto\" mengekalkan sambungan setiap fail sumber."
+    "clearAll": "Padam Semua"
   },
   "progress": {
     "title": "Kemajuan penukaran",

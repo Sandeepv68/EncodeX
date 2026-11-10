@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Tätä tehtävää ei voi enää muokata.",
     "condense": "Tiivistä",
     "expand": "Laajenna",
-    "clearAll": "Tyhjennä kaikki",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Säilö, johon virrat kopioidaan. \"Automaattinen\" säilyttää kunkin lähdetiedoston päätteen."
+    "clearAll": "Tyhjennä kaikki"
   },
   "progress": {
     "title": "Muunnoksen edistyminen",

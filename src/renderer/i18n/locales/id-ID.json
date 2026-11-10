@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Pekerjaan ini tidak dapat diedit lagi.",
     "condense": "Ciutkan",
     "expand": "Kembangkan",
-    "clearAll": "Hapus Semua",
-    "operationRemux": "Remuks",
-    "operationDemux": "Demuks",
-    "remuxContainerHint": "Wadah tempat salinan aliran. \"Otomatis\" mempertahankan ekstensi setiap file sumber."
+    "clearAll": "Hapus Semua"
   },
   "progress": {
     "title": "Progres konversi",

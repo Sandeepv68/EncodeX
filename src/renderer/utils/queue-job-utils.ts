@@ -1,8 +1,7 @@
 import { QUEUE_STATUS } from '../../shared/media-options';
 import { MEDIA_INPUT_EXTENSIONS, isImageFile } from '../../shared/file-extensions';
-import { buildDemuxTargets } from '../../shared/codec-containers';
-import type { QueueJob, MediaStreamInfo } from '../../shared/types';
-import { basename, normalizePath, stem as getSourceStem } from './path-utils';
+import type { QueueJob } from '../../shared/types';
+import { basename, normalizePath } from './path-utils';
 import { buildBatchOptions, buildOutputPath } from './batch-options';
 import type { EnqueueDraft, EnqueuePlan, PlanEnqueuesContext, StatusChipColor } from './types';
 
@@ -51,32 +50,15 @@ function getSourceExtension(file: string): string {
 }
 
 /**
- * ffprobe disposition marking cover-art (attached picture) streams, excluded
- * from batch demux extraction.
- * @const {string} ATTACHED_PIC_DISPOSITION
- */
-const ATTACHED_PIC_DISPOSITION = 'attached_pic';
-
-/**
- * Stream kinds a 'demux' batch extracts by default (all of them).
- * @const {Array<'video'|'audio'|'subtitle'>} DEFAULT_DEMUX_KINDS
- */
-export const DEFAULT_DEMUX_KINDS: Array<'video' | 'audio' | 'subtitle'> = ['video', 'audio', 'subtitle'];
-
-/**
  * Validates and de-duplicates a batch of file selections and builds the ready
- * enqueue drafts. 'transcode' / 'compress_image' / 'extract_audio' / 'remux'
- * produce one draft per accepted file; 'demux' probes each file (via the
- * optional `probe` context field) and produces ONE draft per extracted stream,
- * each carrying its own `-map` and output so the queue runner needs no changes.
- * Files whose extension does not fit their operation (images for
- * compress-image, non-images otherwise), files outside the supported
- * media-extension set, files that fail to probe or expose no stream of the
- * selected kinds, files whose input+output pair is already queued, and files
- * whose computed output path is already claimed by another queued job or an
- * earlier selection in this batch are skipped and reported by name. For demux a
- * file is reported once even when only some of its stream targets collide. The
- * caller keeps all side effects (IPC calls, toasts, notifications).
+ * enqueue drafts. Each supported operation ('transcode' / 'compress_image' /
+ * 'extract_audio') produces one draft per accepted file. Files whose extension
+ * does not fit their operation (images for compress-image, non-images
+ * otherwise), files outside the supported media-extension set, files whose
+ * input+output pair is already queued, and files whose computed output path is
+ * already claimed by another queued job or an earlier selection in this batch
+ * are skipped and reported by name. The caller keeps all side effects (IPC
+ * calls, toasts, notifications).
  * @param {PlanEnqueuesContext} ctx - Selection and encoding-context inputs.
  * @returns {Promise<EnqueuePlan>} The validated drafts and skipped basenames.
  */
@@ -92,65 +74,6 @@ export async function planEnqueues(ctx: PlanEnqueuesContext): Promise<EnqueuePla
     const isMedia = MEDIA_INPUT_EXTENSIONS.includes(sourceExt as (typeof MEDIA_INPUT_EXTENSIONS)[number]);
     if (expectsImage !== isImageFile(file) || !isMedia) {
       skippedNames.push(basename(file));
-      continue;
-    }
-    const stem = getSourceStem(file);
-    if (operation === 'demux') {
-      if (!ctx.probe) {
-        skippedNames.push(basename(file));
-        continue;
-      }
-      let streams: MediaStreamInfo[];
-      try {
-        streams = (await ctx.probe(file)).filter((s) => !s.disposition?.includes(ATTACHED_PIC_DISPOSITION));
-      } catch {
-        skippedNames.push(basename(file));
-        continue;
-      }
-      const kinds = ctx.enc.demuxKinds && ctx.enc.demuxKinds.length > 0 ? ctx.enc.demuxKinds : DEFAULT_DEMUX_KINDS;
-      const selected = streams.filter((s) => s.type && kinds.includes(s.type));
-      if (selected.length === 0) {
-        skippedNames.push(basename(file));
-        continue;
-      }
-      const targets = buildDemuxTargets(file, stem, selected, {
-        videoContainer: ctx.enc.demuxVideoContainer,
-        audioCodec: ctx.enc.demuxAudioCodec,
-        subtitleCodec: ctx.enc.demuxSubtitleFormat,
-      });
-      let anySkipped = false;
-      for (const target of targets) {
-        const ext = target.output.slice(target.output.lastIndexOf('.') + 1).toLowerCase();
-        const withoutExt = target.output.slice(0, target.output.lastIndexOf('.'));
-        const prefix = `${stem}.`;
-        const streamName = withoutExt.startsWith(prefix) ? withoutExt.slice(prefix.length) : withoutExt;
-        const outFile = buildOutputPath({
-          file,
-          operation,
-          sourceExt,
-          container: ext,
-          audioCodec: ctx.enc.audioCodec,
-          videoCodec: ctx.enc.videoCodec,
-          outputDir: ctx.outputDir,
-          suffix: ctx.suffix,
-          streamName,
-        });
-        const key = `${normalized}|${normalizePath(outFile)}`;
-        if (existingKeys.has(key) || existingOutputs.has(normalizePath(outFile))) {
-          anySkipped = true;
-          continue;
-        }
-        existingKeys.add(key);
-        existingOutputs.add(normalizePath(outFile));
-        enqueues.push({
-          file,
-          output: outFile,
-          options: buildBatchOptions('demux', { ...ctx.enc, demuxKind: target.kind, demuxMap: target.map }, ctx.hw),
-          transcoder: ctx.transcoder,
-          overwrite: ctx.overwrite,
-        });
-      }
-      if (anySkipped) skippedNames.push(basename(file));
       continue;
     }
     const outFile = buildOutputPath({

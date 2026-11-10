@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "此工作已無法編輯。",
     "condense": "收起",
     "expand": "展開",
-    "clearAll": "全部清除",
-    "operationRemux": "重新封裝",
-    "operationDemux": "解封裝",
-    "remuxContainerHint": "串流要複製到的容器。「自動」會保留每個來源檔案的副檔名。"
+    "clearAll": "全部清除"
   },
   "progress": {
     "title": "轉換進度",

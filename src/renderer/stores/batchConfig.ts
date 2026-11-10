@@ -3,8 +3,7 @@
  * Reads and writes the last-used batch queue encoding configuration to
  * localStorage under 'encodex-batch-config' (BATCH_CONFIG_STORAGE_KEY) so
  * re-entering the Batch Queue page restores the previous session's operation,
- * codecs, container, bitrates, quality, scale, pixel format, video filters and
- * demux extraction settings.
+ * codecs, container, bitrates, quality, scale, pixel format and video filters.
  * Follows the
  * settingsStore read/persist pattern: reads validate against known option
  * lists and fall back to defaults; writes are best-effort and logged on
@@ -18,7 +17,6 @@ import { LOG_FAILED_TO_PERSIST_BATCH_CONFIG, LOG_FAILED_TO_READ_STORED_BATCH_CON
 import { AUDIO_CODECS, BATCH_OPERATIONS, VIDEO_CODECS } from '../../shared/media-options';
 import { ROTATION_VALUES } from '../../shared/transcoder-constants';
 import { validateVideoFilters } from '../../shared/video-filters';
-import { DEFAULT_DEMUX_KINDS } from '../utils/queue-job-utils';
 import type { BatchConfig } from './types';
 
 export type { BatchConfig };
@@ -42,10 +40,6 @@ export const DEFAULT_BATCH_CONFIG: BatchConfig = {
   flipV: false,
   pixelFormat: 'yuv420p',
   videoFilters: [],
-  demuxKinds: [...DEFAULT_DEMUX_KINDS],
-  demuxVideoContainer: '',
-  demuxAudioCodec: '',
-  demuxSubtitleFormat: '',
   outputDir: '',
   overwrite: false,
 };
@@ -72,10 +66,6 @@ export function readStoredBatchConfig(): BatchConfig {
   const isBoolean = (value: unknown): value is boolean => typeof value === 'boolean';
   const isStringArray = (value: unknown): value is string[] =>
     Array.isArray(value) && value.every((entry) => typeof entry === 'string' && validateVideoFilters([entry]).length === 0);
-  const isDemuxKinds = (value: unknown): value is Array<'video' | 'audio' | 'subtitle'> =>
-    Array.isArray(value) &&
-    value.every((entry) => (DEFAULT_DEMUX_KINDS as readonly string[]).includes(entry)) &&
-    new Set(value).size === value.length;
   const parsed = loadJson<Partial<BatchConfig>>(BATCH_CONFIG_STORAGE_KEY, {}, (err) =>
     log.warn(LOG_FAILED_TO_READ_STORED_BATCH_CONFIG, err),
   );
@@ -96,10 +86,6 @@ export function readStoredBatchConfig(): BatchConfig {
     flipV: isBoolean(parsed.flipV) ? parsed.flipV : DEFAULT_BATCH_CONFIG.flipV,
     pixelFormat: isString(parsed.pixelFormat) ? parsed.pixelFormat : DEFAULT_BATCH_CONFIG.pixelFormat,
     videoFilters: isStringArray(parsed.videoFilters) ? parsed.videoFilters : DEFAULT_BATCH_CONFIG.videoFilters,
-    demuxKinds: isDemuxKinds(parsed.demuxKinds) ? parsed.demuxKinds : [...DEFAULT_BATCH_CONFIG.demuxKinds],
-    demuxVideoContainer: isString(parsed.demuxVideoContainer) ? parsed.demuxVideoContainer : DEFAULT_BATCH_CONFIG.demuxVideoContainer,
-    demuxAudioCodec: isString(parsed.demuxAudioCodec) ? parsed.demuxAudioCodec : DEFAULT_BATCH_CONFIG.demuxAudioCodec,
-    demuxSubtitleFormat: isString(parsed.demuxSubtitleFormat) ? parsed.demuxSubtitleFormat : DEFAULT_BATCH_CONFIG.demuxSubtitleFormat,
     outputDir: isString(parsed.outputDir) ? parsed.outputDir : DEFAULT_BATCH_CONFIG.outputDir,
     overwrite: isBoolean(parsed.overwrite) ? parsed.overwrite : DEFAULT_BATCH_CONFIG.overwrite,
   };

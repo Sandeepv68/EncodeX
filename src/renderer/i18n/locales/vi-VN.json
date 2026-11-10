@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Không còn có thể sửa công việc này.",
     "condense": "Thu gọn",
     "expand": "Mở rộng",
-    "clearAll": "Xóa tất cả",
-    "operationRemux": "Đóng gói lại",
-    "operationDemux": "Tách luồng",
-    "remuxContainerHint": "Vùng chứa mà các luồng được sao chép vào. “Tự động” giữ nguyên phần mở rộng của từng tệp nguồn."
+    "clearAll": "Xóa tất cả"
   },
   "progress": {
     "title": "Tiến trình chuyển đổi",

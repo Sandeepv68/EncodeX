@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Dieser Auftrag kann nicht mehr bearbeitet werden.",
     "condense": "Einklappen",
     "expand": "Ausklappen",
-    "clearAll": "Alle löschen",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Der Container, in den die Streams kopiert werden. „Automatisch“ übernimmt die Dateiendung der jeweiligen Quelldatei."
+    "clearAll": "Alle löschen"
   },
   "progress": {
     "title": "Konvertierungsfortschritt",

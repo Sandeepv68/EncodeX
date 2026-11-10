@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "لم يعد من الممكن تحرير هذه المهمة.",
     "condense": "طي",
     "expand": "توسيع",
-    "clearAll": "مسح الكل",
-    "operationRemux": "إعادة التغليف",
-    "operationDemux": "فك التدفقات",
-    "remuxContainerHint": "الحاوية التي تُنسخ إليها التدفقات. «تلقائي» يُبقي امتداد كل ملف مصدر."
+    "clearAll": "مسح الكل"
   },
   "progress": {
     "title": "تقدم التحويل",

@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "לא ניתן עוד לערוך משימה זו.",
     "condense": "כווץ",
     "expand": "הרחב",
-    "clearAll": "נקה הכל",
-    "operationRemux": "אריזה מחדש",
-    "operationDemux": "פיצול זרמים",
-    "remuxContainerHint": "המיכל שאליו מועתקים הזרמים. \"אוטומטי\" שומר על סיומת כל קובץ מקור."
+    "clearAll": "נקה הכל"
   },
   "progress": {
     "title": "התקדמות ההמרה",

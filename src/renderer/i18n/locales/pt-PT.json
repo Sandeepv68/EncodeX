@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Esta tarefa já não pode ser editada.",
     "condense": "Recolher",
     "expand": "Expandir",
-    "clearAll": "Limpar tudo",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "O contentor para onde os fluxos são copiados. «Automático» mantém a extensão de cada ficheiro de origem."
+    "clearAll": "Limpar tudo"
   },
   "progress": {
     "title": "Progresso da conversão",

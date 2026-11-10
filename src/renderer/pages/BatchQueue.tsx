@@ -349,35 +349,6 @@ export default function BatchQueue() {
   const [videoFilters, setVideoFilters] = useState(initialConfig.videoFilters);
 
   /**
-   * Stream kinds extracted by demux jobs, one output file per stream.
-   * @type {[Array<'video'|'audio'|'subtitle'>, React.Dispatch<React.SetStateAction<Array<'video'|'audio'|'subtitle'>>>]}
-   */
-  const [demuxKinds, setDemuxKinds] = useState<Array<'video' | 'audio' | 'subtitle'>>(
-    initialConfig.demuxKinds ?? ['video', 'audio', 'subtitle'],
-  );
-
-  /**
-   * Conversion target for the demux video kind: a container extension to
-   * re-encode into, or '' to keep the lossless stream copy.
-   * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
-   */
-  const [demuxVideoContainer, setDemuxVideoContainer] = useState(initialConfig.demuxVideoContainer ?? '');
-
-  /**
-   * Conversion target for the demux audio kind: an encoder/format to re-encode
-   * into, or '' to keep the lossless stream copy.
-   * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
-   */
-  const [demuxAudioCodec, setDemuxAudioCodec] = useState(initialConfig.demuxAudioCodec ?? '');
-
-  /**
-   * Conversion target for the demux subtitle kind: a subtitle format to convert
-   * to, or '' to keep the lossless stream copy.
-   * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
-   */
-  const [demuxSubtitleFormat, setDemuxSubtitleFormat] = useState(initialConfig.demuxSubtitleFormat ?? '');
-
-  /**
    * True while any job is RUNNING. Options editing (global propagation and the
    * per-job dialog) is disabled once a batch has started, because the running
    * jobs are already executing with the options they were given.
@@ -497,10 +468,6 @@ export default function BatchQueue() {
       flipV,
       pixelFormat,
       videoFilters,
-      demuxKinds,
-      demuxVideoContainer,
-      demuxAudioCodec,
-      demuxSubtitleFormat,
       outputDir,
       overwrite,
     });
@@ -518,10 +485,6 @@ export default function BatchQueue() {
     flipV,
     pixelFormat,
     videoFilters,
-    demuxKinds,
-    demuxVideoContainer,
-    demuxAudioCodec,
-    demuxSubtitleFormat,
     outputDir,
     overwrite,
   ]);
@@ -568,10 +531,6 @@ export default function BatchQueue() {
           flipV,
           pixelFormat,
           videoFilters,
-          demuxKinds,
-          demuxVideoContainer,
-          demuxAudioCodec,
-          demuxSubtitleFormat,
         },
         { hardwareAcceleration, hwaccelMode },
       );
@@ -603,10 +562,6 @@ export default function BatchQueue() {
     flipV,
     pixelFormat,
     videoFilters,
-    demuxKinds,
-    demuxVideoContainer,
-    demuxAudioCodec,
-    demuxSubtitleFormat,
     outputDir,
     batchStarted,
   ]);
@@ -811,16 +766,11 @@ export default function BatchQueue() {
         flipV,
         pixelFormat,
         videoFilters,
-        demuxKinds,
-        demuxVideoContainer,
-        demuxAudioCodec,
-        demuxSubtitleFormat,
       },
       hw: { hardwareAcceleration, hwaccelMode },
       suffix: suffixRef.current,
       transcoder: transcoderRef.current,
       overwrite,
-      probe: async (file) => (await window.electronAPI.getMediaInfo(file, TRANSCODER_TYPES[0])).streams ?? [],
     });
     let added = 0;
     const enqueues = plan.enqueues.map((draft) =>
@@ -1390,10 +1340,6 @@ export default function BatchQueue() {
               flipV={flipV}
               pixelFormat={pixelFormat}
               videoFilters={videoFilters}
-              demuxKinds={demuxKinds}
-              demuxVideoContainer={demuxVideoContainer}
-              demuxAudioCodec={demuxAudioCodec}
-              demuxSubtitleFormat={demuxSubtitleFormat}
               optionsLocked={batchStarted}
               optionsEditable={!batchStarted && jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED)}
               onVideoCodecChange={handleVideoCodecChange}
@@ -1408,10 +1354,6 @@ export default function BatchQueue() {
               onFlipVChange={setFlipV}
               onPixelFormatChange={setPixelFormat}
               onVideoFiltersChange={setVideoFilters}
-              onDemuxKindsChange={setDemuxKinds}
-              onDemuxVideoContainerChange={setDemuxVideoContainer}
-              onDemuxAudioCodecChange={setDemuxAudioCodec}
-              onDemuxSubtitleFormatChange={setDemuxSubtitleFormat}
               onApplyProfile={handleApplyBatchProfile}
             />
           </Collapse>
@@ -1558,10 +1500,6 @@ export default function BatchQueue() {
           flipV,
           pixelFormat,
           videoFilters,
-          demuxKinds,
-          demuxVideoContainer,
-          demuxAudioCodec,
-          demuxSubtitleFormat,
         }}
         onSave={handleEditSave}
         onClose={() => setEditJob(null)}

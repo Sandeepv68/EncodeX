@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Questo lavoro non può più essere modificato.",
     "condense": "Comprimi",
     "expand": "Espandi",
-    "clearAll": "Pulisci tutto",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Il contenitore in cui vengono copiati i flussi. «Automatico» mantiene l'estensione di ciascun file di origine."
+    "clearAll": "Pulisci tutto"
   },
   "progress": {
     "title": "Avanzamento conversione",

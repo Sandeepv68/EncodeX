@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Det här jobbet kan inte längre redigeras.",
     "condense": "Komprimera",
     "expand": "Expandera",
-    "clearAll": "Rensa allt",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Containern som strömmarna kopieras till. \"Automatiskt\" behåller varje källfils filändelse."
+    "clearAll": "Rensa allt"
   },
   "progress": {
     "title": "Konverteringsförlopp",

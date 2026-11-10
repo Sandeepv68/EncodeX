@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "이 작업은 더 이상 편집할 수 없습니다.",
     "condense": "접기",
     "expand": "펼치기",
-    "clearAll": "모두 지우기",
-    "operationRemux": "리멀텍스",
-    "operationDemux": "디멀텍스",
-    "remuxContainerHint": "스트림이 복사될 컨테이너입니다. “자동”은 각 원본 파일의 확장자를 그대로 유지합니다."
+    "clearAll": "모두 지우기"
   },
   "progress": {
     "title": "변환 진행률",

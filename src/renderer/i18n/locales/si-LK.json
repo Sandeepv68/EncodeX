@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "මෙම කාර්යය තවදුරටත් සංස්කරණය කළ නොහැක.",
     "condense": "හකුළන්න",
     "expand": "විහිදුවන්න",
-    "clearAll": "සියල්ල ඉවත් කරන්න",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "ස්ට්‍රීම් පිටපත් වන බහාලුම. \"ස්වයංක්‍රීය\" මඟින් සෑම මූලාශ්‍ර ගොනුවකම දිගුව රඳවා ගනී."
+    "clearAll": "සියල්ල ඉවත් කරන්න"
   },
   "progress": {
     "title": "පරිවර්තන ප්රගතිය",

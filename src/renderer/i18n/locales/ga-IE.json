@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Ní féidir an post seo a chur in eagar níos mó.",
     "condense": "Crap",
     "expand": "Leathnaigh",
-    "clearAll": "Glan Uile",
-    "operationRemux": "Athchumhdach",
-    "operationDemux": "Démhcseáil",
-    "remuxContainerHint": "An coimeádán a chóipeáiltear na sruthanna chuige. Coinníonn \"Uathoibríoch\" síneadh gach físe foinseach."
+    "clearAll": "Glan Uile"
   },
   "progress": {
     "title": "Dul chun cinn an chomhshó",

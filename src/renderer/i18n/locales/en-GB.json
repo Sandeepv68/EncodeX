@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "This job is no longer editable.",
     "condense": "Condense",
     "expand": "Expand",
-    "clearAll": "Clear All",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "The container the streams are copied into. Auto keeps each file's source extension."
+    "clearAll": "Clear All"
   },
   "progress": {
     "title": "Conversion progress",

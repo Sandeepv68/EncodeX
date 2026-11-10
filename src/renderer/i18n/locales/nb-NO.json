@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Denne jobben kan ikke lenger redigeres.",
     "condense": "Kollaps",
     "expand": "Utvid",
-    "clearAll": "Rydde alle",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Containeren strømmene kopieres til. \"Automatisk\" beholder filutvidelsen til hver kildefil."
+    "clearAll": "Rydde alle"
   },
   "progress": {
     "title": "Konverteringsfremdrift",

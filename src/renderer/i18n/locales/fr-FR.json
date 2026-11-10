@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Cette tâche ne peut plus être modifiée.",
     "condense": "Réduire",
     "expand": "Agrandir",
-    "clearAll": "Tout effacer",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Le conteneur dans lequel les flux sont copiés. « Auto » conserve l'extension de chaque fichier source."
+    "clearAll": "Tout effacer"
   },
   "progress": {
     "title": "Progression de la conversion",

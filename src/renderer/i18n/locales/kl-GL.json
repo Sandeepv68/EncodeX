@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Una sulineq allanngortinneqarsinnaanngilaq.",
     "condense": "Mikissusaruk",
     "expand": "Annertusaruk",
-    "clearAll": "Eradluutit tamarmik",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Containeri, stream-it koppi iffaat. \"Automatik\" kingunnaq aatsitassap file-ia atorsimavaa."
+    "clearAll": "Eradluutit tamarmik"
   },
   "progress": {
     "title": "Allanngortitsineq ingerlanera",

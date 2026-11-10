@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Dette job kan ikke længere redigeres.",
     "condense": "Kollaps",
     "expand": "Udvid",
-    "clearAll": "Ryd alle",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Den container, strømmene kopieres til. \"Automatisk\" bevarer hver kildefils udvidelse."
+    "clearAll": "Ryd alle"
   },
   "progress": {
     "title": "Konverteringsforløb",
