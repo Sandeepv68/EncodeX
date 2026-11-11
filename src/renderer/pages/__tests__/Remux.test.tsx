@@ -5,6 +5,7 @@ import { useErrorStore } from '../../stores/errorStore';
 import { useToastStore } from '../../stores/toastStore';
 import { useRemuxStore } from '../../stores/remuxStore';
 import { clearPreviewCache } from '../../utils/preview-cache';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 const selectFileMock = vi.mocked(window.electronAPI.selectFile);
 const selectFilesMock = vi.mocked(window.electronAPI.selectFiles);
@@ -219,6 +220,21 @@ describe('Remux', () => {
     renderPage();
     expect(screen.getByTestId('mux-queue-status')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'muxQueue.viewQueue' })).toBeInTheDocument();
+  });
+
+  it('does not enqueue a remux that fails validation', async () => {
+    expectAppLog('warn', 'renderer/pages/Remux');
+    renderPage();
+    // A whitespace-only output keeps the button enabled but fails validation,
+    // so the enqueue must stop before anything reaches the queue.
+    await act(async () => {
+      useRemuxStore.setState({ input: '/in/video.mkv', output: '   ' });
+    });
+    const button = screen.getByTestId('remux-add-to-queue');
+    await waitFor(() => expect(button).toBeEnabled());
+    fireEvent.click(button);
+    expect(await screen.findByText('validation.outputRequired')).toBeInTheDocument();
+    expect(muxQueueAddMock).not.toHaveBeenCalled();
   });
 
   it('adds the remux to the mux queue without starting a conversion', async () => {

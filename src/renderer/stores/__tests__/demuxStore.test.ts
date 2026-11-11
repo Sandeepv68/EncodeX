@@ -295,6 +295,17 @@ describe('demuxStore', () => {
     expect(useToastStore.getState().toasts).toHaveLength(1);
   });
 
+  it('enqueueDemux offers a toast action that opens the mux queue tab', async () => {
+    muxQueueAddMock.mockResolvedValue('mux-1');
+    await useDemuxStore.getState().setInput('/in/movie.mkv');
+    await useDemuxStore.getState().enqueueDemux();
+    const toast = useToastStore.getState().toasts[0];
+    expect(toast.action?.label).toBe('View queue');
+    toast.action?.onClick?.();
+    expect(window.location.hash).toBe('#/batch?tab=mux');
+    window.location.hash = '';
+  });
+
   it('enqueueDemux maps a single target to one mux queue target', async () => {
     muxQueueAddMock.mockResolvedValue('mux-1');
     await useDemuxStore.getState().setInput('/in/movie.mkv');

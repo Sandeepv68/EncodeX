@@ -8,9 +8,10 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, useLocation } from 'react-router-dom';
 import MuxQueuePanel from '../MuxQueuePanel';
 import { useMuxQueueStore } from '../../stores/muxQueueStore';
+import { useToastStore } from '../../stores/toastStore';
 import { QUEUE_STATUS } from '../../../shared/media-options';
 import type { MuxQueueJob } from '../../../shared/types';
 
@@ -22,6 +23,8 @@ import type { MuxQueueJob } from '../../../shared/types';
 const { dndHandlers } = vi.hoisted(() => ({
   dndHandlers: {
     onDragEnd: null as ((event: { active: { id: string }; over: { id: string } | null }) => void) | null,
+    onDragStart: null as ((event: { active: { id: string } }) => void) | null,
+    onDragCancel: null as (() => void) | null,
   },
 }));
 
@@ -29,8 +32,20 @@ vi.mock('@dnd-kit/core', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@dnd-kit/core')>();
   return {
     ...actual,
-    DndContext: ({ children, onDragEnd }: { children: React.ReactNode; onDragEnd?: (event: never) => void }) => {
+    DndContext: ({
+      children,
+      onDragEnd,
+      onDragStart,
+      onDragCancel,
+    }: {
+      children: React.ReactNode;
+      onDragEnd?: (event: never) => void;
+      onDragStart?: (event: never) => void;
+      onDragCancel?: () => void;
+    }) => {
       dndHandlers.onDragEnd = onDragEnd as typeof dndHandlers.onDragEnd;
+      dndHandlers.onDragStart = onDragStart as typeof dndHandlers.onDragStart;
+      dndHandlers.onDragCancel = onDragCancel ?? null;
       return <>{children}</>;
     },
   };
@@ -63,8 +78,18 @@ function renderPanel() {
   return render(
     <MemoryRouter>
       <MuxQueuePanel />
+      <LocationProbe />
     </MemoryRouter>,
   );
+}
+
+/**
+ * Reports the router's current path so a navigation assertion can read it.
+ * @returns {JSX.Element} The probe element.
+ */
+function LocationProbe() {
+  const location = useLocation();
+  return <span data-testid="location">{location.pathname}</span>;
 }
 
 describe('MuxQueuePanel', () => {
@@ -169,9 +194,61 @@ describe('MuxQueuePanel', () => {
     expect(muxQueueMoveToMock).not.toHaveBeenCalled();
   });
 
+  it('tracks a drag from start to cancel without committing a move', () => {
+    useMuxQueueStore.setState({ jobs: [makeJob('a'), makeJob('b')] });
+    renderPanel();
+
+    act(() => {
+      dndHandlers.onDragStart?.({ active: { id: 'a' } });
+    });
+    act(() => {
+      dndHandlers.onDragCancel?.();
+    });
+
+    expect(muxQueueMoveToMock).not.toHaveBeenCalled();
+    expect(useMuxQueueStore.getState().jobs.map((job) => job.id)).toEqual(['a', 'b']);
+  });
+
   it('offers no drag handle for a running job', () => {
     useMuxQueueStore.setState({ jobs: [makeJob('a', QUEUE_STATUS.RUNNING)] });
     renderPanel();
     expect(screen.queryByRole('button', { name: 'muxQueue.dragHandle' })).not.toBeInTheDocument();
+  });
+
+  it('filters the job list by status', () => {
+    useMuxQueueStore.setState({ jobs: [makeJob('a'), makeJob('b', QUEUE_STATUS.DONE)] });
+    renderPanel();
+    fireEvent.click(screen.getByRole('button', { name: 'muxQueue.filters.done (1)' }));
+    expect(screen.queryByTestId('mux-queue-job-card-a')).not.toBeInTheDocument();
+    expect(screen.getByTestId('mux-queue-job-card-b')).toBeInTheDocument();
+  });
+
+  it('links the empty state to the remux and demux pages', () => {
+    renderPanel();
+    fireEvent.click(screen.getByRole('button', { name: 'muxQueue.openRemux' }));
+    expect(screen.getByTestId('location').textContent).toBe('/remux');
+    fireEvent.click(screen.getByRole('button', { name: 'muxQueue.openDemux' }));
+    expect(screen.getByTestId('location').textContent).toBe('/demux');
+  });
+
+  it('retries a failed job by re-adding it', async () => {
+    const job = makeJob('a', QUEUE_STATUS.ERROR);
+    useMuxQueueStore.setState({ jobs: [job] });
+    renderPanel();
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.retry' }));
+    await waitFor(() => expect(window.electronAPI.muxQueueRemove).toHaveBeenCalledWith('a'));
+    await waitFor(() =>
+      expect(window.electronAPI.muxQueueAdd).toHaveBeenCalledWith(
+        expect.objectContaining({ kind: 'remux', input: job.input, overwrite: true }),
+      ),
+    );
+  });
+
+  it('reports a failed retry through the error store', async () => {
+    vi.mocked(window.electronAPI.muxQueueAdd).mockRejectedValue(new Error('boom'));
+    useMuxQueueStore.setState({ jobs: [makeJob('a', QUEUE_STATUS.ERROR)] });
+    renderPanel();
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.retry' }));
+    await waitFor(() => expect(useToastStore.getState().toasts.some((toast) => toast.type === 'error')).toBe(true));
   });
 });

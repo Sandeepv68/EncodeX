@@ -284,7 +284,7 @@ export default function MuxQueuePanel() {
                 </Stack>
               </SortableContext>
               <DragOverlay dropAnimation={{ duration: 200, easing: 'cubic-bezier(0.25, 1, 0.5, 1)' }}>
-                {activeJob ? <MuxQueueJobCard job={activeJob} onRemove={() => undefined} /> : null}
+                {activeJob ? <MuxQueueJobCard job={activeJob} onRemove={() => {}} /> : null}
               </DragOverlay>
             </DndContext>
           )}

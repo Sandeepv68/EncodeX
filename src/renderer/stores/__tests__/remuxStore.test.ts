@@ -382,6 +382,23 @@ describe('remuxStore', () => {
     expect(useToastStore.getState().toasts).toHaveLength(1);
   });
 
+  it('enqueueRemux offers a toast action that opens the mux queue tab', async () => {
+    muxQueueAddMock.mockResolvedValue('mux-1');
+    useRemuxStore.setState({
+      input: 'in.mkv',
+      container: 'mp4',
+      output: '/out/out.mp4',
+      streams: SAMPLE_STREAMS,
+      selectedMaps: ['0:v:0'],
+    });
+    await useRemuxStore.getState().enqueueRemux();
+    const toast = useToastStore.getState().toasts[0];
+    expect(toast.action?.label).toBe('View queue');
+    toast.action?.onClick?.();
+    expect(window.location.hash).toBe('#/batch?tab=mux');
+    window.location.hash = '';
+  });
+
   it('enqueueRemux rejects a missing input or output', async () => {
     expectAppLog('warn', 'renderer/stores/remuxStore');
     await useRemuxStore.getState().enqueueRemux();

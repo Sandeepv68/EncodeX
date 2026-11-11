@@ -20,6 +20,5 @@ export const MUX_QUEUE_HASH_ROUTE = '#/batch?tab=mux';
  * @returns {void}
  */
 export function navigateToMuxQueue(): void {
-  if (typeof window === 'undefined') return;
   window.location.hash = MUX_QUEUE_HASH_ROUTE;
 }

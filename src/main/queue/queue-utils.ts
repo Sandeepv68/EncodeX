@@ -10,7 +10,6 @@
 
 import { MAX_QUEUE_CONCURRENCY } from '../../shared/constants';
 import { QUEUE_STATUS } from '../../shared/media-options';
-import type { MuxQueueJob, QueueJob } from '../../shared/types';
 
 /**
  * Clamps a caller-supplied concurrency cap into the legal integer range.
@@ -80,34 +79,10 @@ export function moveQueuedJob<T extends { id: string; status: string }>(queue: T
 /**
  * Normalizes a file path for duplicate comparison: lowercases and unifies
  * Windows backslashes with POSIX forward slashes.
- *
- * A non-string input normalizes to the empty string instead of throwing: the
- * value can come from a hostile renderer or a hand-edited snapshot, and a
- * comparison must not be the thing that crashes the queue.
  * @param {unknown} value - The file path to normalize.
- * @returns {string} The normalized path, or '' for a non-string input.
+ * @returns {string} The normalized path.
  */
 export function normalizeOutputPath(value: unknown): string {
   if (typeof value !== 'string') return '';
   return value.replace(/\\/g, '/').toLowerCase();
-}
-
-/**
- * Collects every output path claimed by the given jobs.
- * @param {Array<QueueJob | MuxQueueJob>} jobs - The jobs to inspect.
- * @returns {Set<string>} Normalized output paths claimed by the jobs.
- */
-export function collectOutputPaths(jobs: Array<QueueJob | MuxQueueJob>): Set<string> {
-  const paths = new Set<string>();
-  for (const job of jobs) {
-    const targets = (job as MuxQueueJob).targets;
-    if (Array.isArray(targets)) {
-      for (const target of targets) {
-        paths.add(normalizeOutputPath(target.output));
-      }
-      continue;
-    }
-    paths.add(normalizeOutputPath((job as QueueJob).output));
-  }
-  return paths;
 }

@@ -216,6 +216,170 @@ describe('MuxQueue lifecycle', () => {
     expect(queue.hasOutputPath('C:/out/other.mkv')).toBe(false);
   });
 
+  it('reports its concurrency cap and rejects an illegal one', () => {
+    const queue = makeQueue({ concurrency: 2 });
+    expect(queue.getConcurrency()).toBe(2);
+    queue.setConcurrency(9);
+    expect(queue.getConcurrency()).toBe(4);
+    queue.setConcurrency(Number.NaN);
+    expect(queue.getConcurrency()).toBe(4);
+  });
+
+  it('reports its paused flag', () => {
+    const queue = makeQueue();
+    expect(queue.isPaused()).toBe(false);
+    queue.pause();
+    expect(queue.isPaused()).toBe(true);
+    queue.resume();
+    expect(queue.isPaused()).toBe(false);
+  });
+
+  it('reports its state', () => {
+    const queue = makeQueue({ concurrency: 3 });
+    expect(queue.getState()).toEqual({ paused: false, concurrency: 3 });
+  });
+
+  it('pauses a running job and resumes it', async () => {
+    const queue = makeQueue();
+    queue.addJob(payload());
+    queue.start();
+    expect(queue.getJobs()[0].status).toBe(QUEUE_STATUS.RUNNING);
+
+    queue.pause();
+    expect(queue.getJobs()[0].paused).toBe(true);
+
+    queue.resume();
+    expect(queue.getJobs()[0].paused).toBe(false);
+    expect(queue.getJobs()[0].status).toBe(QUEUE_STATUS.RUNNING);
+  });
+
+  it('cancels a running job and releases its slot', async () => {
+    const queue = makeQueue();
+    queue.addJob(payload());
+    queue.addJob(payload({ input: 'C:/in/b.mp4', output: 'C:/out/b.mkv', targets: [{ output: 'C:/out/b.mkv', options: {} }] }));
+    queue.start();
+    expect(FakeTranscoder.instances).toHaveLength(1);
+
+    queue.cancelJob(queue.getJobs()[0].id);
+    expect(FakeTranscoder.instances[0].cancelled).toBe(true);
+    expect(queue.getJobs()).toHaveLength(1);
+  });
+
+  it('restores the concurrency cap from a snapshot and clamps it', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'encodex-mux-queue-state-'));
+    try {
+      const persistence = new FileMuxQueuePersistence(dir);
+      persistence.save({ version: MUX_QUEUE_STATE_VERSION, concurrency: 99, jobs: [] });
+      const queue = new MuxQueue({ persistence, transcoderFactory: () => new FakeTranscoder() });
+      expect(queue.getConcurrency()).toBe(4);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('rejects a job with an invalid number of targets', () => {
+    const queue = makeQueue();
+    expect(() => queue.addJob(payload({ targets: [] }))).toThrow();
+  });
+
+  it('persists its state after a debounce and writes it again on flush', async () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'encodex-mux-queue-save-'));
+    try {
+      const persistence = new FileMuxQueuePersistence(dir);
+      const queue = new MuxQueue({ persistence, persistDelayMs: 1, transcoderFactory: () => new FakeTranscoder() });
+      queue.addJob(payload());
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      expect(persistence.load()?.jobs).toHaveLength(1);
+
+      queue.flushState();
+      expect(persistence.load()?.jobs).toHaveLength(1);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('reschedules the debounced save when a second change arrives first', async () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'encodex-mux-queue-debounce-'));
+    try {
+      const persistence = new FileMuxQueuePersistence(dir);
+      const queue = new MuxQueue({ persistence, persistDelayMs: 40, transcoderFactory: () => new FakeTranscoder() });
+      queue.addJob(payload());
+      // The second addition must cancel the pending timer and start a fresh
+      // one, so nothing is written before the rescheduled deadline passes.
+      queue.addJob(payload({ input: 'C:/in/b.mp4', output: 'C:/out/b.mkv', targets: [{ output: 'C:/out/b.mkv', options: {} }] }));
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      expect(persistence.load()).toBeNull();
+
+      await new Promise((resolve) => setTimeout(resolve, 60));
+      expect(persistence.load()?.jobs).toHaveLength(2);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('drops a pending debounced save when the queue is cancelled', async () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'encodex-mux-queue-cancel-debounce-'));
+    try {
+      const persistence = new FileMuxQueuePersistence(dir);
+      const queue = new MuxQueue({ persistence, persistDelayMs: 40, transcoderFactory: () => new FakeTranscoder() });
+      queue.addJob(payload());
+      // The save is still pending, so cancelling must drop the timer entirely
+      // rather than let a late write resurrect the cleared state.
+      queue.cancelAll();
+      expect(persistence.load()).toBeNull();
+
+      await new Promise((resolve) => setTimeout(resolve, 80));
+      expect(persistence.load()).toBeNull();
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('refills a running queue when the concurrency cap rises', () => {
+    const queue = makeQueue({ concurrency: 1 });
+    queue.addJob(payload());
+    queue.addJob(payload({ input: 'C:/in/b.mp4', output: 'C:/out/b.mkv', targets: [{ output: 'C:/out/b.mkv', options: {} }] }));
+    queue.start();
+    expect(FakeTranscoder.instances).toHaveLength(1);
+
+    queue.setConcurrency(2);
+    expect(FakeTranscoder.instances).toHaveLength(2);
+  });
+
+  it('reports the kind mix of the queue it starts', () => {
+    const remux = makeQueue();
+    remux.addJob(payload());
+    remux.start();
+    expect(FakeTranscoder.instances).toHaveLength(1);
+
+    const demux = makeQueue();
+    demux.addJob(
+      payload({
+        kind: 'demux',
+        output: 'C:/out',
+        targets: [{ output: 'C:/out/a.mkv', options: {} }],
+      }),
+    );
+    demux.start();
+    expect(FakeTranscoder.instances.length).toBeGreaterThan(1);
+  });
+
+  it('clears its persisted state when the queue is cancelled', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'encodex-mux-queue-clear-'));
+    try {
+      const persistence = new FileMuxQueuePersistence(dir);
+      const queue = new MuxQueue({ persistence, persistDelayMs: 1, transcoderFactory: () => new FakeTranscoder() });
+      queue.addJob(payload());
+      queue.flushState();
+      expect(persistence.load()).not.toBeNull();
+
+      queue.cancelAll();
+      expect(persistence.load()).toBeNull();
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it('rejects a target output the batch queue already claims', () => {
     batchOutputClaims.claim('C:/out/shared.mkv', 'batch-1');
     try {

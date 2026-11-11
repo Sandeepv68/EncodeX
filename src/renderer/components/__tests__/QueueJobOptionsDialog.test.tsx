@@ -176,6 +176,95 @@ describe('QueueJobOptionsDialog', () => {
     );
   });
 
+  it('clears an incompatible container when the video codec changes', async () => {
+    // The codec selects probe the encoder capabilities asynchronously, so the
+    // mount has to settle inside act() before the dropdowns can be opened.
+    await act(async () => {
+      renderDialog(makeJob());
+    });
+    // The .mp4 output seeds the container as 'mp4', and VP8 can only be muxed
+    // into webm/mkv/avi, so choosing it must reset the container to auto.
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'convert.videoCodec' }));
+    fireEvent.click(screen.getByText('VP8 (libvpx)'));
+    expect(screen.getByRole('combobox', { name: 'batchQueue.container' })).toHaveTextContent('batchQueue.containerAuto');
+  });
+
+  it('clears an incompatible container when the audio codec changes', async () => {
+    await act(async () => {
+      renderDialog(makeJob());
+    });
+    // MP2 can only be muxed into .mp2, so choosing it must clear the seeded
+    // 'mp4' container back to auto.
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'convert.audioCodec' }));
+    fireEvent.click(screen.getByText('MP2 (libtwolame)'));
+    expect(screen.getByRole('combobox', { name: 'batchQueue.container' })).toHaveTextContent('batchQueue.containerAuto');
+  });
+
+  it('applies the bitrate, scale, rotation, mirror and filter edits', () => {
+    const { onSave } = renderDialog(makeJob());
+    fireEvent.mouseDown(screen.getByLabelText('convert.videoBitrate'));
+    fireEvent.click(screen.getByRole('option', { name: '4000k' }));
+    fireEvent.mouseDown(screen.getByLabelText('convert.audioBitrate'));
+    fireEvent.click(screen.getByRole('option', { name: '320k' }));
+    fireEvent.mouseDown(screen.getByLabelText('convert.scale'));
+    fireEvent.click(screen.getByRole('option', { name: '1280x720' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
+    expect(onSave).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'j1' }),
+      expect.objectContaining({ videoBitrate: '4000k', audioBitrate: '320k', scale: '1280x720' }),
+      expect.any(String),
+    );
+  });
+
+  it('applies edits to the scale, rotation, mirrors, pixel format, and filters', async () => {
+    const { onSave } = renderDialog(makeJob());
+    // The codec selects probe the encoder capabilities asynchronously, so the
+    // mount has to settle inside act() before the dropdowns can be opened.
+    await act(async () => {});
+    // Every control must move to a different value than the seeded one, or the
+    // selects swallow the change.
+    fireEvent.mouseDown(screen.getByLabelText('convert.scale'));
+    fireEvent.click(screen.getByRole('option', { name: '1920x1080' }));
+    fireEvent.change(screen.getByTestId('batch-rotation').querySelector('input')!, { target: { value: '90' } });
+    fireEvent.click(screen.getByRole('switch', { name: 'convert.flipHorizontal' }));
+    fireEvent.click(screen.getByRole('switch', { name: 'convert.flipVertical' }));
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'convert.pixelFormat' }));
+    fireEvent.click(screen.getByRole('option', { name: 'yuv422p' }));
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Add preset filter...' }));
+    fireEvent.click(screen.getByRole('option', { name: 'Crop' }));
+    fireEvent.click(screen.getByTestId('filters-add-preset'));
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
+    expect(onSave).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'j1' }),
+      expect.objectContaining({
+        scale: '1920x1080',
+        rotate: '90',
+        flipH: undefined,
+        flipV: true,
+        pixelFormat: 'yuv422p',
+        videoFilters: ['crop=in_w:in_h'],
+      }),
+      'C:/videos/clip_encodex_converted.mp4',
+    );
+  });
+
+  it('applies a quality edit to a compress_image job', () => {
+    const { onSave } = renderDialog(
+      makeJob({
+        input: 'C:/imgs/photo.png',
+        output: 'C:/imgs/photo_encodex_converted.webp',
+        options: { qscale: 20, hardwareAcceleration: false, hwaccelMode: 'auto' },
+      }),
+    );
+    fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '80' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
+    expect(onSave).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'j1' }),
+      expect.objectContaining({ qscale: 80 }),
+      'C:/imgs/photo_encodex_converted.webp',
+    );
+  });
+
   it('renders nothing when no job is provided', () => {
     const { container } = renderDialog(null);
     expect(container).toBeEmptyDOMElement();

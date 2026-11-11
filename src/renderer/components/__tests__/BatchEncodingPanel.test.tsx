@@ -139,6 +139,39 @@ describe('BatchEncodingPanel', () => {
     expect(props.onContainerChange).toHaveBeenCalledWith('mkv');
   });
 
+  it('fires onVideoBitrateChange when a video bitrate is chosen', () => {
+    const { props } = renderPanel();
+    fireEvent.mouseDown(screen.getByLabelText('convert.videoBitrate'));
+    fireEvent.click(screen.getByRole('option', { name: '4000k' }));
+    expect(props.onVideoBitrateChange).toHaveBeenCalledWith('4000k');
+  });
+
+  it('fires onAudioBitrateChange when an audio bitrate is chosen', () => {
+    const { props } = renderPanel();
+    fireEvent.mouseDown(screen.getByLabelText('convert.audioBitrate'));
+    fireEvent.click(screen.getByRole('option', { name: '320k' }));
+    expect(props.onAudioBitrateChange).toHaveBeenCalledWith('320k');
+  });
+
+  it('fires onScaleChange when a scale is chosen', () => {
+    const { props } = renderPanel();
+    fireEvent.mouseDown(screen.getByLabelText('convert.scale'));
+    fireEvent.click(screen.getByRole('option', { name: '1280x720' }));
+    expect(props.onScaleChange).toHaveBeenCalledWith('1280x720');
+  });
+
+  it('opens the profile editor from the profile selector', async () => {
+    renderPanel();
+    // The "create custom profile" card lives in the selector's dropdown and
+    // opens the editor on mousedown, because MUI's autocomplete swallows the
+    // click that follows it.
+    const [profileSelector] = screen.getAllByRole('combobox');
+    fireEvent.mouseDown(profileSelector);
+    const createNew = await screen.findByText('profiles.createCustom');
+    fireEvent.mouseDown(createNew);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+
   it('fires onVideoCodecChange when a video codec is chosen', () => {
     const { props } = renderPanel();
     fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);

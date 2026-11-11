@@ -49,6 +49,11 @@ describe('MuxQueueStatusIndicator', () => {
     expect(screen.getByTestId('mux-queue-status')).toHaveTextContent('muxQueue.stats');
   });
 
+  it('reports queued jobs', () => {
+    useMuxQueueStore.setState({ jobs: [makeJob('a', QUEUE_STATUS.QUEUED)] });
+    render(<MuxQueueStatusIndicator />);
+    expect(screen.getByTestId('mux-queue-status')).toHaveTextContent('muxQueue.stats');
+  });
   it('offers a link to the mux queue tab', () => {
     render(<MuxQueueStatusIndicator />);
     expect(screen.getByRole('button', { name: 'muxQueue.viewQueue' })).toBeInTheDocument();

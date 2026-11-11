@@ -200,4 +200,78 @@ describe('MuxJobRunner', () => {
     runner.resume();
     expect(FakeTranscoder.instances[0].resumed).toBe(true);
   });
+
+  it('fails the job when the transcoder cannot be created', async () => {
+    const muxJob = job([target('C:/out/a.mkv', 'video:0')]);
+    const runner = new MuxJobRunner(muxJob, () => {
+      throw new Error('no transcoder');
+    });
+    const failed = vi.fn();
+    runner.on('error', failed);
+    runner.start();
+
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(failed).toHaveBeenCalledTimes(1);
+    expect(failed.mock.calls[0][0].message).toContain('video:0');
+  });
+
+  it('fails the job when the transcoder throws while starting', async () => {
+    const muxJob = job([target('C:/out/a.mkv', 'audio:1')]);
+    const runner = new MuxJobRunner(muxJob, () => {
+      const failing = new FakeTranscoder();
+      failing.convert = () => {
+        throw new Error('spawn failed');
+      };
+      return failing;
+    });
+    const failed = vi.fn();
+    runner.on('error', failed);
+    runner.start();
+
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(failed).toHaveBeenCalledTimes(1);
+    expect(failed.mock.calls[0][0].message).toContain('audio:1');
+  });
+
+  it('ignores a late event from a target that already settled', async () => {
+    FakeTranscoder.instances = [];
+    const muxJob = job([target('C:/out/a.mkv')]);
+    const runner = new MuxJobRunner(muxJob, () => new FakeTranscoder());
+    const failed = vi.fn();
+    runner.on('error', failed);
+    runner.start();
+
+    await Promise.resolve();
+    // The target ends, then reports an error anyway: the error must be ignored.
+    FakeTranscoder.instances[0].emitter.emit('end');
+    FakeTranscoder.instances[0].emitter.emit('error', new Error('late failure'));
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(failed).not.toHaveBeenCalled();
+  });
+
+  it('stops the target loop when the runner is cancelled between targets', async () => {
+    FakeTranscoder.instances = [];
+    const muxJob = job([target('C:/out/a.mkv'), target('C:/out/b.m4a')]);
+    const runner = new MuxJobRunner(muxJob, () => new FakeTranscoder());
+    const failed = vi.fn();
+    runner.on('error', failed);
+    runner.start();
+
+    await Promise.resolve();
+    runner.cancel();
+    FakeTranscoder.instances[0].emitter.emit('end');
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(failed).toHaveBeenCalledTimes(1);
+    expect(failed.mock.calls[0][0].code).toBe(ErrorCode.CANCELLED);
+    expect(FakeTranscoder.instances).toHaveLength(1);
+  });
+
+  it('reports the completed percentage', () => {
+    expect(MuxJobRunner.completedPercent()).toBe(100);
+  });
 });

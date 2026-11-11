@@ -16,6 +16,7 @@ import {
   isMuxQueueMovedEvent,
   isMuxQueueProgressEvent,
   isMuxQueueSnapshot,
+  isMuxQueueTarget,
 } from '../mux-queue-guards';
 import { QUEUE_STATUS } from '../media-options';
 
@@ -123,6 +124,28 @@ describe('mux queue targets and payloads', () => {
     expect(hasValidMuxTargets([target({ options: null })])).toBe(false);
     expect(hasValidMuxTargets([target({ label: 4 })])).toBe(false);
   });
+
+  it('rejects a target with a malformed label or source index', () => {
+    expect(isMuxQueueTarget({ output: 'a.mkv', options: {}, label: 4 })).toBe(false);
+    expect(isMuxQueueTarget({ output: 'a.mkv', options: {}, sourceIndex: 'x' })).toBe(false);
+    expect(isMuxQueueTarget({ output: 'a.mkv', options: {}, label: 'ok', sourceIndex: 2 })).toBe(true);
+  });
+
+  it('rejects options whose string fields carry the wrong type', () => {
+    expect(isConversionOptionsLike({ videoCodec: 4 })).toBe(false);
+    expect(isConversionOptionsLike({ audioCodec: {} })).toBe(false);
+    expect(isConversionOptionsLike({ scale: true })).toBe(false);
+  });
+
+  it('rejects additional inputs with malformed fields', () => {
+    expect(isConversionOptionsLike({ additionalInputs: [{ path: 'a.srt', map: ['0'] }] })).toBe(true);
+    expect(isConversionOptionsLike({ additionalInputs: [{ path: 4, map: ['0'] }] })).toBe(false);
+    expect(isConversionOptionsLike({ additionalInputs: [{ path: 'a.srt', map: [1] }] })).toBe(false);
+    expect(isConversionOptionsLike({ additionalInputs: [{ path: 'a.srt', map: ['0'], codec: 4 }] })).toBe(false);
+    expect(isConversionOptionsLike({ additionalInputs: [{ path: 'a.srt', map: ['0'], disposition: 4 }] })).toBe(false);
+    expect(isConversionOptionsLike({ additionalInputs: [{ path: 'a.srt', map: ['0'], attachment: 'yes' }] })).toBe(false);
+    expect(isConversionOptionsLike({ additionalInputs: [{ path: 'a.srt', map: ['0'], syncOffsetSeconds: 'x' }] })).toBe(false);
+  });
 });
 
 describe('mux queue jobs and snapshots', () => {
@@ -133,11 +156,22 @@ describe('mux queue jobs and snapshots', () => {
     expect(isMuxQueueJob(job({ transcoder: 'NOPE' }))).toBe(false);
     expect(isMuxQueueJob(job({ targets: [] }))).toBe(false);
     expect(isMuxQueueJob(null)).toBe(false);
+    expect(isMuxQueueJob(job({ id: '' }))).toBe(false);
+    expect(isMuxQueueJob(job({ kind: 'convert' }))).toBe(false);
+    expect(isMuxQueueJob(job({ input: '' }))).toBe(false);
+    expect(isMuxQueueJob(job({ output: '' }))).toBe(false);
+    expect(isMuxQueueJob(job({ error: 4 }))).toBe(false);
+    expect(isMuxQueueJob(job({ priority: 'high' }))).toBe(false);
+    expect(isMuxQueueJob(job({ paused: 'yes' }))).toBe(false);
+    expect(isMuxQueueJob(job({ createdAt: 'now' }))).toBe(false);
   });
 
   it('accepts a valid snapshot and rejects wrong versions or partial jobs', () => {
     expect(isMuxQueueSnapshot(snapshot())).toBe(true);
     expect(isMuxQueueSnapshot(snapshot({ version: MUX_QUEUE_STATE_VERSION + 1 }))).toBe(false);
+    expect(isMuxQueueSnapshot(null)).toBe(false);
+    expect(isMuxQueueSnapshot(snapshot({ concurrency: 'many' }))).toBe(false);
+    expect(isMuxQueueSnapshot(snapshot({ jobs: 'nope' }))).toBe(false);
     expect(isMuxQueueSnapshot(snapshot({ concurrency: Number.NaN }))).toBe(false);
     expect(isMuxQueueSnapshot(snapshot({ jobs: [job(), null] }))).toBe(false);
     expect(isMuxQueueSnapshot(snapshot({ jobs: 'not-an-array' }))).toBe(false);
@@ -152,5 +186,6 @@ describe('mux queue push events', () => {
     expect(isMuxQueueMovedEvent({ id: 'mux-1', toPosition: 2 })).toBe(true);
     expect(isMuxQueueMovedEvent({ id: 'mux-1', toPosition: Number.NaN })).toBe(false);
     expect(isMuxQueueMovedEvent(null)).toBe(false);
+    expect(isMuxQueueProgressEvent(null)).toBe(false);
   });
 });

@@ -1208,6 +1208,42 @@ describe('BatchQueue', () => {
     expect(screen.getByRole('button', { name: 'batchQueue.editOptions' })).toBeDisabled();
   });
 
+  it('closes the per-job dialog without saving when cancelled', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', options: { videoCodec: 'libx264', audioCodec: 'aac' } })]);
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.editOptions' }));
+    expect(await screen.findByText('Edit options for video.mp4')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.dialogCancel' }));
+    await waitFor(() => expect(screen.queryByText('Edit options for video.mp4')).not.toBeInTheDocument());
+    expect(queueUpdateOptionsMock).not.toHaveBeenCalled();
+  });
+
+  it('cancels a keyboard drag without committing a reorder', async () => {
+    queueListMock.mockResolvedValue([
+      job({ id: 'job-1' }),
+      job({ id: 'job-2', input: '/in/two.mp4', output: '/out/two_encodex_converted.mp4' }),
+    ]);
+    renderPage();
+    const handles = await screen.findAllByRole('button', { name: 'batchQueue.dragHandle' });
+    expect(handles).toHaveLength(2);
+    expect(screen.getAllByText(/video\.mp4/)).toHaveLength(1);
+
+    // Enter starts a keyboard drag: the job lifts out of the list and its
+    // floating copy appears in the drag overlay above it.
+    await act(async () => {
+      fireEvent.keyDown(handles[0], { key: 'Enter', code: 'Enter' });
+    });
+    await waitFor(() => expect(screen.getAllByText(/video\.mp4/)).toHaveLength(2));
+
+    // Escape cancels the drag instead of dropping it, so no reorder is issued.
+    await act(async () => {
+      fireEvent.keyDown(handles[0], { key: 'Escape', code: 'Escape' });
+    });
+    await waitFor(() => expect(screen.getAllByText(/video\.mp4/)).toHaveLength(1));
+    expect(window.electronAPI.queueMoveTo).not.toHaveBeenCalled();
+  });
+
   it('renders a title-level toggle that condenses the page to the queue', async () => {
     queueListMock.mockResolvedValue([]);
     await act(async () => {
@@ -1331,6 +1367,17 @@ describe('BatchQueue', () => {
     queueListMock.mockResolvedValue([]);
     await act(async () => {
       renderPage('/batch?tab=bogus');
+    });
+    expect(screen.getByTestId('batch-queue-tab-general')).toHaveAttribute('aria-selected', 'true');
+  });
+
+  it('switches back to the general tab from the mux tab', async () => {
+    queueListMock.mockResolvedValue([]);
+    await act(async () => {
+      renderPage('/batch?tab=mux');
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('batch-queue-tab-general'));
     });
     expect(screen.getByTestId('batch-queue-tab-general')).toHaveAttribute('aria-selected', 'true');
   });

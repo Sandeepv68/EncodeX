@@ -13,6 +13,7 @@ import MuxQueueSync from '../MuxQueueSync';
 import { useMuxQueueStore } from '../../stores/muxQueueStore';
 import { QUEUE_STATUS } from '../../../shared/media-options';
 import type { MuxQueueJob } from '../../../shared/types';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 type Handler = (payload?: unknown) => void;
 
@@ -93,5 +94,68 @@ describe('MuxQueueSync', () => {
     await waitFor(() => expect(useMuxQueueStore.getState().jobs).toHaveLength(1));
     unmount();
     expect(unsubscribed).toEqual(expect.arrayContaining(['added', 'removed', 'statusChange', 'progress', 'cancelled', 'moved']));
+  });
+
+  it('mirrors a reorder event into the store', async () => {
+    const { rerender } = render(<MuxQueueSync />);
+    await waitFor(() => expect(useMuxQueueStore.getState().jobs).toHaveLength(1));
+    useMuxQueueStore.setState({ jobs: [makeJob('a'), makeJob('b')] });
+    handlers.moved?.({ id: 'a', toPosition: 1 });
+    expect(useMuxQueueStore.getState().jobs.map((entry) => entry.id)).toEqual(['b', 'a']);
+    rerender(<MuxQueueSync />);
+  });
+
+  it('keeps the order when a reorder event names an unknown job', async () => {
+    render(<MuxQueueSync />);
+    await waitFor(() => expect(useMuxQueueStore.getState().jobs).toHaveLength(1));
+    useMuxQueueStore.setState({ jobs: [makeJob('a'), makeJob('b')] });
+    handlers.moved?.({ id: 'missing', toPosition: 0 });
+    expect(useMuxQueueStore.getState().jobs.map((entry) => entry.id)).toEqual(['a', 'b']);
+  });
+
+  it('survives a bridge whose list and state calls reject', async () => {
+    expectAppLog('warn', 'renderer/MuxQueueSync');
+    vi.mocked(window.electronAPI.muxQueueList).mockRejectedValue(new Error('list failed'));
+    vi.mocked(window.electronAPI.muxQueueGetState).mockRejectedValue(new Error('state failed'));
+    expect(() => render(<MuxQueueSync />)).not.toThrow();
+    await waitFor(() => expect(useMuxQueueStore.getState().jobs).toEqual([]));
+  });
+
+  it('survives a bridge without the mux queue methods', async () => {
+    expectAppLog('warn', 'renderer/MuxQueueSync');
+    const api = window.electronAPI as unknown as Record<string, unknown>;
+    const methods = [
+      'muxQueueList',
+      'muxQueueGetState',
+      'onMuxQueueAdded',
+      'onMuxQueueRemoved',
+      'onMuxQueueStatusChange',
+      'onMuxQueueProgress',
+      'onMuxQueueCancelled',
+      'onMuxQueueMoved',
+    ];
+    const saved = Object.fromEntries(methods.map((name) => [name, api[name]]));
+    for (const name of methods) delete api[name];
+    try {
+      expect(() => render(<MuxQueueSync />)).not.toThrow();
+      await waitFor(() => expect(useMuxQueueStore.getState().jobs).toEqual([]));
+    } finally {
+      Object.assign(api, saved);
+    }
+  });
+
+  it('survives a bridge whose subscription throws', async () => {
+    expectAppLog('warn', 'renderer/MuxQueueSync');
+    const api = window.electronAPI as unknown as Record<string, unknown>;
+    const saved = api.onMuxQueueAdded;
+    api.onMuxQueueAdded = () => {
+      throw new Error('hostile bridge');
+    };
+    try {
+      expect(() => render(<MuxQueueSync />)).not.toThrow();
+      await waitFor(() => expect(useMuxQueueStore.getState().jobs).toHaveLength(1));
+    } finally {
+      api.onMuxQueueAdded = saved;
+    }
   });
 });

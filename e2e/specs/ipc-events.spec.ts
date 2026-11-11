@@ -69,6 +69,12 @@ const EXPECTED_PUSH_CONSTANTS = [
   'AUDIT_ENTRY',
   'CONVERSION_PROGRESS',
   'LOG_MESSAGE',
+  'MUX_QUEUE_ADDED',
+  'MUX_QUEUE_CANCELLED',
+  'MUX_QUEUE_MOVED',
+  'MUX_QUEUE_PROGRESS',
+  'MUX_QUEUE_REMOVED',
+  'MUX_QUEUE_STATUS_CHANGE',
   'PLAYER_AUDIO',
   'PLAYER_ERROR',
   'PLAYER_FRAME',
@@ -349,14 +355,14 @@ function discoverPushChannels(exclude: ReadonlySet<string> = new Set()): string[
  * way that reading `cb();` out of a bundled handler body is not, and pinned by
  * {@link EXPECTED_COMMAND_CONSTANTS} so a channel gaining or losing a payload fails here.
  *
- * Two of the three are inert for this harness - a queue refresh and an updater status. The third,
- * `window-close-requested`, is a **command**, and including it in a payload sweep tests the wrong
- * thing: `CloseConfirmDialog`'s handler calls `windowCloseConfirmed()` when it has no pending work,
- * and main then closes the window. Firing it at 100 Hz closes the app *by design*, which is correct
- * behaviour being reported as a dozen cells of harness noise. It gets its own test instead, which
- * asserts the documented behaviour instead of working around it.
+ * Three of the four are inert for this harness - queue and mux-queue refreshes and an updater
+ * status. The fourth, `window-close-requested`, is a **command**, and including it in a payload
+ * sweep tests the wrong thing: `CloseConfirmDialog`'s handler calls `windowCloseConfirmed()` when
+ * it has no pending work, and main then closes the window. Firing it at 100 Hz closes the app *by
+ * design*, which is correct behaviour being reported as a dozen cells of harness noise. It gets
+ * its own test instead, which asserts the documented behaviour instead of working around it.
  */
-const EXPECTED_COMMAND_CONSTANTS = ['QUEUE_CANCELLED', 'UPDATE_NOT_AVAILABLE', 'WINDOW_CLOSE_REQUESTED'] as const;
+const EXPECTED_COMMAND_CONSTANTS = ['MUX_QUEUE_CANCELLED', 'QUEUE_CANCELLED', 'UPDATE_NOT_AVAILABLE', 'WINDOW_CLOSE_REQUESTED'] as const;
 
 const COMMAND_CONSTANTS: ReadonlySet<string> = new Set(EXPECTED_COMMAND_CONSTANTS);
 
@@ -820,16 +826,16 @@ describe.runIf(IS_REAL)('IPC event-channel abuse (Tier B, real main + real prelo
   it(
     'fires the no-payload channels and asserts their documented effect',
     async () => {
-      // The three channels excluded from the payload sweep, tested for what they actually do
+      // The four channels excluded from the payload sweep, tested for what they actually do
       // instead of being worked around.
       //
-      // `queue-cancelled` and `update-not-available` are notifications: firing them must leave the
-      // app alive and answering. `window-close-requested` is a command - `CloseConfirmDialog` calls
-      // `windowCloseConfirmed()` when nothing is pending, and main closes the window - so its
-      // assertion is that the window goes away *cleanly*, with no unhandled fault, which the
-      // global tripwire checks.
+      // `mux-queue-cancelled`, `queue-cancelled` and `update-not-available` are notifications:
+      // firing them must leave the app alive and answering. `window-close-requested` is a command -
+      // `CloseConfirmDialog` calls `windowCloseConfirmed()` when nothing is pending, and main closes
+      // the window - so its assertion is that the window goes away *cleanly*, with no unhandled
+      // fault, which the global tripwire checks.
       const inert = commandChannels.filter((channel) => channel !== 'window-close-requested');
-      expect(inert, 'expected the queue and updater notifications among the no-payload channels').toHaveLength(2);
+      expect(inert, 'expected the queue and updater notifications among the no-payload channels').toHaveLength(3);
 
       session = await ensureLiveSession(session, SESSION_OPTIONS);
       await ensureTermsAccepted(session.page);

@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { DndContext } from '@dnd-kit/core';
 import MuxQueueJobCard from '../MuxQueueJobCard';
 import { QUEUE_STATUS } from '../../../shared/media-options';
@@ -96,5 +96,30 @@ describe('MuxQueueJobCard', () => {
     unmount();
     renderCard(makeJob({ status: QUEUE_STATUS.RUNNING }));
     expect(screen.queryByRole('button', { name: 'muxQueue.dragHandle' })).not.toBeInTheDocument();
+  });
+
+  it('reveals the first output in the file manager', async () => {
+    renderCard(makeJob());
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.revealInFolder' }));
+    await waitFor(() => expect(window.electronAPI.revealFile).toHaveBeenCalledWith('C:/out/movie.mkv'));
+  });
+
+  it('copies the first output path to the clipboard', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.assign(navigator, { clipboard: { writeText } });
+    renderCard(makeJob());
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.copyPath' }));
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith('C:/out/movie.mkv'));
+  });
+
+  it('retries a failed job', () => {
+    const onRetry = vi.fn();
+    render(
+      <DndContext>
+        <MuxQueueJobCard job={makeJob({ status: QUEUE_STATUS.ERROR })} onRemove={() => undefined} onRetry={onRetry} />
+      </DndContext>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.retry' }));
+    expect(onRetry).toHaveBeenCalledTimes(1);
   });
 });
