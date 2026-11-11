@@ -1,6 +1,6 @@
 # 🧪 Testing
 
-<!-- drift: test-files=355 renderer-component-tests=50 -->
+<!-- drift: test-files=357 renderer-component-tests=50 -->
 
 ## 📋 Commands
 
@@ -37,7 +37,7 @@ Coverage reports are generated in `coverage/`:
 
 ## ✅ Test Suite
 
-The suite is run by Vitest 4: 355 test/spec files under `src/`, 39 under `e2e/`, and 11 performance suites under `perf/`. Coverage uses the v8 provider. Passing counts depend on the platform and installed media binaries, so this documentation does not pin a claimed total.
+The suite is run by Vitest 4: 357 test/spec files under `src/`, 39 under `e2e/`, and 11 performance suites under `perf/`. Coverage uses the v8 provider. Passing counts depend on the platform and installed media binaries, so this documentation does not pin a claimed total.
 
 | Area                     | Files (tests)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | What's Covered                                                                                                                       |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
@@ -66,7 +66,7 @@ The test environment (`src/test-setup.ts`) provides:
 
 ## 🌐 E2E Tests
 
-End-to-end tests live in `e2e/` and run through Vitest (node environment, 60s timeouts), using Playwright's Electron automation to drive the packaged app. Write specs live under `e2e/specs/`, the MCP specs under `e2e/mcp/`, and the CLI spec at `e2e/cli.spec.ts`; 355 test/spec files run in total. They are gated behind the `E2E` env var or CI:
+End-to-end tests live in `e2e/` and run through Vitest (node environment, 60s timeouts), using Playwright's Electron automation to drive the packaged app. Write specs live under `e2e/specs/`, the MCP specs under `e2e/mcp/`, and the CLI spec at `e2e/cli.spec.ts`; 357 test/spec files run in total. They are gated behind the `E2E` env var or CI:
 
 | File              | What's Covered                                                                              |
 | ----------------- | ------------------------------------------------------------------------------------------- |

@@ -44,7 +44,7 @@ Coverage reports are generated in `coverage/`:
 
 ## ✅ Test Suite
 
-The suite is run by Vitest 4 across **355 test/spec files** in `src/`. <!-- drift:test-files=355 --> Coverage uses the v8 provider.
+The suite is run by Vitest 4 across **357 test/spec files** in `src/`. <!-- drift:test-files=357 --> Coverage uses the v8 provider.
 
 | Area | What's Covered |
 | ---- | -------------- |

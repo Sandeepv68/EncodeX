@@ -1,8 +1,8 @@
 # टेस्टिंग
 
-<!-- drift: test-files=355 renderer-component-tests=50 -->
+<!-- drift: test-files=357 renderer-component-tests=50 -->
 
-EncodeX एक विस्तृत टेस्ट सुइट बनाए रखता है: `src/` के भीतर 355 test/spec files, `e2e/` में 355 test/spec files, और `perf/` में 11 performance suites। Unit और integration tests Vitest से चलते हैं, जबकि end-to-end specs Playwright के Electron automation के माध्यम से पैकेज्ड ऐप चलाते हैं। CI प्रत्येक push और pull request पर full matrix (lint + typecheck + unit + E2E) चलाता है।
+EncodeX एक विस्तृत टेस्ट सुइट बनाए रखता है: `src/` के भीतर 357 test/spec files, `e2e/` में 355 test/spec files, और `perf/` में 11 performance suites। Unit और integration tests Vitest से चलते हैं, जबकि end-to-end specs Playwright के Electron automation के माध्यम से पैकेज्ड ऐप चलाते हैं। CI प्रत्येक push और pull request पर full matrix (lint + typecheck + unit + E2E) चलाता है।
 
 ## Test commands
 
@@ -35,7 +35,7 @@ Tests electron APIs के खिलाफ assertions करने के लि
 
 ## End-to-end (Playwright)
 
-E2E specs `e2e/` में रहते हैं और Vitest के node environment (60 सेकंड timeouts) में चलते हैं। ये Playwright की Electron automation से पैकेज्ड ऐप को drive करते हैं। Write specs `e2e/specs/` में, MCP specs `e2e/mcp/` में और CLI spec `e2e/cli.spec.ts` में हैं; कुल 355 test/spec files चलती हैं। ये `E2E` env var या CI से gated हैं।
+E2E specs `e2e/` में रहते हैं और Vitest के node environment (60 सेकंड timeouts) में चलते हैं। ये Playwright की Electron automation से पैकेज्ड ऐप को drive करते हैं। Write specs `e2e/specs/` में, MCP specs `e2e/mcp/` में और CLI spec `e2e/cli.spec.ts` में हैं; कुल 357 test/spec files चलती हैं। ये `E2E` env var या CI से gated हैं।
 
 App को mocked preload (`e2e/mocks/preload.js`) और in-memory main-store shim (`e2e/mocks/main-store.js`) के साथ boot करने वाले flows deterministic और hermetic रहते हैं:
 
