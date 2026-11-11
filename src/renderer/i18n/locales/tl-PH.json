@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Hindi na ma-edit ang trabahong ito.",
     "condense": "Paliitin",
     "expand": "Palakihin",
-    "clearAll": "I-clear lahat",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Ang container na kinokopyahan ng mga stream. Pinapanatili ng \"Awtomatiko\" ang extension ng bawat file na pinagmulan."
+    "clearAll": "I-clear lahat"
   },
   "progress": {
     "title": "Pag-unlad ng conversion",
@@ -528,7 +525,9 @@
     "updateDownloaded": "Na-download ang update na v{{version}}",
     "viewUpdate": "Tingnan",
     "remuxed": "Nakumpleto ang remux",
-    "demuxed": "Matagumpay na nakuha ang mga stream"
+    "demuxed": "Matagumpay na nakuha ang mga stream",
+    "remuxQueued": "Naidagdag ang Remux sa Pila ng Mux",
+    "demuxQueued": "Naidagdag ang mga stream sa Pila ng Mux"
   },
   "profiles": {
     "searchPlaceholder": "Maghanap ng mga profile...",
@@ -1270,6 +1269,39 @@
       "hardwareNone": "Software lamang",
       "encoderVideo": "Video",
       "encoderAudio": "Audio"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Pila ng Batch",
+    "tabMux": "Pila ng Mux",
+    "empty": "Walang laman ang pile ng Mux.",
+    "emptyHint": "Idinadagdag ang mga trabaho ng remux at demux mula sa kanilang mga pahina.",
+    "openRemux": "Buksan ang Remux",
+    "openDemux": "Buksan ang Demux",
+    "start": "Simulan",
+    "pause": "I-pause",
+    "resume": "Ipagpatuloy",
+    "cancelAll": "Kanselahin Lahat",
+    "clearCompleted": "I-clear ang natapos",
+    "concurrency": "Mga parallel job",
+    "stats": "{{queued}} naka-queue, {{running}} tumatakbo, {{done}} tapos, {{failed}} nabigo",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "{{count}} output",
+    "outputDir": "Folder ng output",
+    "noOutputs": "Walang output",
+    "detailsTargets": "Output",
+    "detailsCreatedAt": "Idinagdag",
+    "viewQueue": "Tingnan ang queue",
+    "addToQueue": "Magdagdag sa queue",
+    "dragHandle": "I-drag para i-reorder",
+    "paused": "Naka-pause",
+    "filters": {
+      "all": "Lahat",
+      "queued": "Naka-queue",
+      "running": "Tumatakbo",
+      "done": "Tapos",
+      "failed": "Nabigo"
     }
   }
 }

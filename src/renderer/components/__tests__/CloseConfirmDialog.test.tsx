@@ -6,8 +6,9 @@ import { useAudioExtractStore } from '../../stores/audioExtractStore';
 import { useVideoCutStore, isVideoCutDirty } from '../../stores/videoCutStore';
 import { useTaskStore } from '../../stores/taskStore';
 import { useQueueStore } from '../../stores/queueStore';
+import { useMuxQueueStore } from '../../stores/muxQueueStore';
 import { QUEUE_STATUS } from '../../../shared/media-options';
-import type { QueueJob } from '../../../shared/types';
+import type { MuxQueueJob, QueueJob } from '../../../shared/types';
 
 const onCloseRequestedMock = vi.mocked(window.electronAPI.onWindowCloseRequested);
 const windowCloseConfirmedMock = vi.mocked(window.electronAPI.windowCloseConfirmed);
@@ -18,6 +19,20 @@ function makeJob(status: QueueJob['status']): QueueJob {
     input: 'in.mp4',
     output: 'out.mp4',
     options: {},
+    transcoder: 'FFMPEG',
+    status,
+    progress: 0,
+    createdAt: 0,
+  };
+}
+
+function makeMuxJob(status: MuxQueueJob['status']): MuxQueueJob {
+  return {
+    id: 'mux-1',
+    kind: 'remux',
+    input: 'in.mp4',
+    output: 'out.mkv',
+    targets: [{ output: 'out.mkv', options: {} }],
     transcoder: 'FFMPEG',
     status,
     progress: 0,
@@ -56,6 +71,7 @@ describe('CloseConfirmDialog', () => {
     });
     useTaskStore.setState({ isConverting: false, hasPendingWork: false });
     useQueueStore.setState({ jobs: [] });
+    useMuxQueueStore.setState({ jobs: [] });
   });
 
   it('subscribes to close requests on mount and unsubscribes on unmount', () => {
@@ -146,6 +162,22 @@ describe('CloseConfirmDialog', () => {
     triggerCloseRequested();
     expect(windowCloseConfirmedMock).not.toHaveBeenCalled();
     expect(screen.getByText('Close EncodeX?')).toBeInTheDocument();
+  });
+
+  it.each([[QUEUE_STATUS.QUEUED], [QUEUE_STATUS.RUNNING]])('opens the dialog when the mux queue has a %s job', (status) => {
+    useMuxQueueStore.setState({ jobs: [makeMuxJob(status)] });
+    render(<CloseConfirmDialog />);
+    triggerCloseRequested();
+
+    expect(windowCloseConfirmedMock).not.toHaveBeenCalled();
+    expect(screen.getByText('Close EncodeX?')).toBeInTheDocument();
+  });
+
+  it('closes immediately when only completed mux jobs remain', () => {
+    useMuxQueueStore.setState({ jobs: [makeMuxJob(QUEUE_STATUS.DONE)] });
+    render(<CloseConfirmDialog />);
+    triggerCloseRequested();
+    expect(windowCloseConfirmedMock).toHaveBeenCalledTimes(1);
   });
 
   it('closes immediately when only completed queue jobs remain', () => {

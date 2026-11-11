@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "eventCount": 123,
+  "eventCount": 128,
   "events": [
     {
       "name": "always_on_top_toggled",
@@ -380,6 +380,31 @@
     {
       "name": "media_playback_toggled",
       "group": "cut",
+      "tier": null
+    },
+    {
+      "name": "mux_queue_cancelled",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "mux_queue_completed",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "mux_queue_failed",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "mux_queue_job_added",
+      "group": "queue",
+      "tier": null
+    },
+    {
+      "name": "mux_queue_started",
+      "group": "queue",
       "tier": null
     },
     {

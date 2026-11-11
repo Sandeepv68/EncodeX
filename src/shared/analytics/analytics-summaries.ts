@@ -69,6 +69,20 @@ export function remuxAnalyticsSummary(options: ConversionOptions, context: Remux
 }
 
 /**
+ * Collapses a target count into a coarse analytics bucket so no exact count is
+ * sent (privacy guard D10).
+ * @param {number} count - Number of targets in the job.
+ * @returns {string} A bucketed label.
+ */
+export function targetCountBucket(count: number): string {
+  if (count <= 0) return 'none';
+  if (count === 1) return '1';
+  if (count <= 4) return '2-4';
+  if (count <= 8) return '5-8';
+  return '9+';
+}
+
+/**
  * Derives the categorical demux summary from a set of extraction targets:
  * per-kind stream counts, the target total, and the kinds that are re-encoded
  * rather than stream-copied.

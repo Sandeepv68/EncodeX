@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Ekki er lengur hægt að breyta þessu verki.",
     "condense": "Þjappa",
     "expand": "Stækka",
-    "clearAll": "Hreinsa allt",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Gáman sem straumarnir eru afritaðir í. \"Sjálfkrafa\" heldurfram Endingu hvers upprunnafiles."
+    "clearAll": "Hreinsa allt"
   },
   "progress": {
     "title": "Framvinda umbreytingar",
@@ -528,7 +525,9 @@
     "updateDownloaded": "Uppfærsla v{{version}} sótt",
     "viewUpdate": "Skoða",
     "remuxed": "Remux lokið",
-    "demuxed": "Straumarnir voru dregnir úr"
+    "demuxed": "Straumarnir voru dregnir úr",
+    "remuxQueued": "Remux bætt við Mux-runubrautina",
+    "demuxQueued": "Straumarnir voru dregnir úr og bætt við Mux-runubrautina"
   },
   "profiles": {
     "searchPlaceholder": "Leita að sniðum...",
@@ -1270,6 +1269,39 @@
       "hardwareNone": "Aðeins hugbúnaður",
       "encoderVideo": "Myndskeið",
       "encoderAudio": "Hljóð"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Runubraut",
+    "tabMux": "Mux-runubraut",
+    "empty": "Mux-runubrautin er tóm.",
+    "emptyHint": "Remux- og demux-verkefni eru bætt við á eigin síðum sínum.",
+    "openRemux": "Opna Remux",
+    "openDemux": "Opna Demux",
+    "start": "Byrja",
+    "pause": "Gera hlé",
+    "resume": "Halda áfram",
+    "cancelAll": "Hætta við allt",
+    "clearCompleted": "Hreinsa lokið",
+    "concurrency": "Samhliða verk",
+    "stats": "{{queued}} í bið, {{running}} í vinnslu, {{done}} lokið, {{failed}} mistókst",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "{{count}} úttak",
+    "outputDir": "Úttaksmappa",
+    "noOutputs": "Engin úttak",
+    "detailsTargets": "Úttak",
+    "detailsCreatedAt": "Bætt við",
+    "viewQueue": "Skoða runubraut",
+    "addToQueue": "Bæta við biðröð",
+    "dragHandle": "Dragðu til að endurraða",
+    "paused": "Í bið",
+    "filters": {
+      "all": "Allt",
+      "queued": "Í bið",
+      "running": "Í vinnslu",
+      "done": "Lokið",
+      "failed": "Mistókst"
     }
   }
 }

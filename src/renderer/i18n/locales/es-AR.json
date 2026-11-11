@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Esta tarea ya no se puede editar.",
     "condense": "Contraer",
     "expand": "Expandir",
-    "clearAll": "Limpiar todo",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "El contenedor al que se copian los flujos. «Automático» conserva la extensión de cada archivo de origen."
+    "clearAll": "Limpiar todo"
   },
   "progress": {
     "title": "Progreso de la conversión",
@@ -528,7 +525,9 @@
     "updateDownloaded": "Actualización v{{version}} descargada",
     "viewUpdate": "Ver",
     "remuxed": "Remux completado",
-    "demuxed": "Flujos extraídos correctamente"
+    "demuxed": "Flujos extraídos correctamente",
+    "remuxQueued": "Remux añadido a la cola Mux",
+    "demuxQueued": "Flujos añadidos a la cola Mux"
   },
   "profiles": {
     "searchPlaceholder": "Buscar perfiles...",
@@ -1270,6 +1269,39 @@
       "hardwareNone": "Solo software",
       "encoderVideo": "Vídeo",
       "encoderAudio": "Audio"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Cola de Lotes",
+    "tabMux": "Cola Mux",
+    "empty": "La cola Mux está vacía.",
+    "emptyHint": "Los trabajos de remux y demux se añaden desde sus propias páginas.",
+    "openRemux": "Abrir Remux",
+    "openDemux": "Abrir Demux",
+    "start": "Iniciar",
+    "pause": "Pausar",
+    "resume": "Reanudar",
+    "cancelAll": "Cancelar Todo",
+    "clearCompleted": "Limpiar completados",
+    "concurrency": "Trabajos en paralelo",
+    "stats": "{{queued}} en cola, {{running}} en ejecución, {{done}} completados, {{failed}} con error",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "{{count}} salida(s)",
+    "outputDir": "Carpeta de salida",
+    "noOutputs": "Sin salidas",
+    "detailsTargets": "Salida",
+    "detailsCreatedAt": "Agregado",
+    "viewQueue": "Ver la cola",
+    "addToQueue": "Añadir a la cola",
+    "dragHandle": "Arrastrar para reordenar",
+    "paused": "En pausa",
+    "filters": {
+      "all": "Todos",
+      "queued": "En cola",
+      "running": "En ejecución",
+      "done": "Completados",
+      "failed": "Con error"
     }
   }
 }

@@ -5,7 +5,7 @@
  * the string helpers, and the timeline geometry helpers.
  */
 
-import type { ConversionOptions, HwAccelMode, MediaStreamInfo, QueueJob } from '../../shared/types';
+import type { ConversionOptions, HwAccelMode, QueueJob } from '../../shared/types';
 
 /* ------------------------------------------------------------------ *
  * batch-options
@@ -30,29 +30,6 @@ export interface BatchEncodingValues {
   flipV: boolean;
   pixelFormat: string;
   videoFilters: string[];
-  /**
-   * Remux: explicit stream-edge selection of the source file as `-map` specs
-   * (e.g. ['0:v:0', '0:a:1']). Empty or absent selects every stream.
-   */
-  selectedMaps?: string[];
-  /**
-   * Demux: stream kind extracted by THIS per-stream job ('video' | 'audio' |
-   * 'subtitle').
-   */
-  demuxKind?: 'video' | 'audio' | 'subtitle';
-  /**
-   * Demux: stream kinds a batch extracts from each file ('video' | 'audio' |
-   * 'subtitle'). Empty or absent extracts every kind.
-   */
-  demuxKinds?: Array<'video' | 'audio' | 'subtitle'>;
-  /** Demux: `-map` spec of the single stream THIS job extracts (e.g. '0:a:1'). */
-  demuxMap?: string;
-  /** Demux: video re-encode container (extension); empty = lossless stream copy. */
-  demuxVideoContainer?: string;
-  /** Demux: audio encoder for converted audio streams; empty = stream copy. */
-  demuxAudioCodec?: string;
-  /** Demux: subtitle format for converted subtitle streams; empty = stream copy. */
-  demuxSubtitleFormat?: string;
 }
 
 /**
@@ -163,9 +140,6 @@ export interface EnqueuePlan {
  * @property {string} suffix - Name suffix inserted before the extension.
  * @property {string} transcoder - Transcoder value for every job.
  * @property {boolean} overwrite - Overwrite flag for every job.
- * @property {(file: string) => Promise<MediaStreamInfo[]>} [probe] - Optional
- *   stream prober used by 'demux' (and only 'demux') to split each file into
- *   one job per extracted stream. Absent = the operation is skipped.
  */
 export interface PlanEnqueuesContext {
   selections: Array<{ file: string; operation: string }>;
@@ -176,7 +150,6 @@ export interface PlanEnqueuesContext {
   suffix: string;
   transcoder: string;
   overwrite: boolean;
-  probe?: (file: string) => Promise<MediaStreamInfo[]>;
 }
 
 /* ------------------------------------------------------------------ *
@@ -229,4 +202,17 @@ export interface WaveformBarGeometry {
   top: number;
   width: number;
   height: number;
+}
+
+/**
+ * The minimum job shape the queue reorder helpers need.
+ * Both the batch queue and the mux queue use the same `QUEUE_STATUS` values
+ * and the same "only QUEUED jobs move" rule, so both share one implementation.
+ * @interface ReorderableJob
+ * @property {string} id - The job id.
+ * @property {string} status - The job's queue status.
+ */
+export interface ReorderableJob {
+  id: string;
+  status: string;
 }

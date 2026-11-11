@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor, act, within } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import BatchQueue from '../BatchQueue';
 import { useQueueStore } from '../../stores/queueStore';
 import { useToastStore } from '../../stores/toastStore';
@@ -44,8 +45,21 @@ function job(overrides: Partial<QueueJob> = {}): QueueJob {
   };
 }
 
-function renderPage() {
-  return render(<BatchQueue />);
+/**
+ * Renders the page inside a memory router.
+ *
+ * The page reads its active tab from the `?tab=` query parameter, so it needs
+ * a router context; the default entry has no query parameter, which puts the
+ * page on the general queue tab.
+ * @param {string} [entry] - Optional router entry (e.g. '/batch?tab=mux').
+ * @returns {ReturnType<typeof render>} The render result.
+ */
+function renderPage(entry = '/batch') {
+  return render(
+    <MemoryRouter initialEntries={[entry]}>
+      <BatchQueue />
+    </MemoryRouter>,
+  );
 }
 
 /**
@@ -276,104 +290,6 @@ describe('BatchQueue', () => {
         false,
       ),
     );
-  });
-
-  it('adds files with the remux operation stream-copying into the source container', async () => {
-    queueListMock.mockResolvedValue([]);
-    selectFilesMock.mockResolvedValue(['/in/video.mkv']);
-    renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
-    fireEvent.click(screen.getByText('batchQueue.operationRemux'));
-    openAddFiles();
-    fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
-    await waitFor(() =>
-      expect(queueAddMock).toHaveBeenCalledWith(
-        '/in/video.mkv',
-        '/in/video_encodex_converted.mkv',
-        { copy: true, video: undefined, audio: undefined, map: undefined, hardwareAcceleration: true, hwaccelMode: 'auto' },
-        'FFMPEG',
-        false,
-      ),
-    );
-  });
-
-  it('adds one job per extracted stream for the demux operation', async () => {
-    queueListMock.mockResolvedValue([]);
-    selectFilesMock.mockResolvedValue(['/in/movie.mkv']);
-    vi.mocked(window.electronAPI.getMediaInfo).mockResolvedValue({
-      file: '/in/movie.mkv',
-      format: 'matroska',
-      size: 100,
-      duration: 60,
-      bitrate: '1000k',
-      streams: [
-        { index: 0, type: 'video', codec: 'h264', width: 1920, height: 1080 },
-        { index: 1, type: 'audio', codec: 'aac', sampleRate: 48000, channels: 2 },
-        { index: 2, type: 'subtitle', codec: 'subrip' },
-      ],
-    });
-    renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
-    fireEvent.click(screen.getByText('batchQueue.operationDemux'));
-    openAddFiles();
-    fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
-    await waitFor(() => expect(queueAddMock).toHaveBeenCalledTimes(3));
-    expect(queueAddMock).toHaveBeenCalledWith(
-      '/in/movie.mkv',
-      '/in/movie.video_encodex_converted.mp4',
-      expect.objectContaining({ copy: true, video: true, audio: false, map: ['0:v:0'] }),
-      'FFMPEG',
-      false,
-    );
-    expect(queueAddMock).toHaveBeenCalledWith(
-      '/in/movie.mkv',
-      '/in/movie.audio_0_encodex_converted.m4a',
-      expect.objectContaining({ copy: true, video: false, audio: true, map: ['0:a:0'] }),
-      'FFMPEG',
-      false,
-    );
-    expect(queueAddMock).toHaveBeenCalledWith(
-      '/in/movie.mkv',
-      '/in/movie.subtitle_0_encodex_converted.srt',
-      expect.objectContaining({ copy: true, video: false, audio: false, map: ['0:s:0'] }),
-      'FFMPEG',
-      false,
-    );
-  });
-
-  it('applies the demux stream-kind selection and conversion target to new jobs', async () => {
-    queueListMock.mockResolvedValue([]);
-    selectFilesMock.mockResolvedValue(['/in/movie.mkv']);
-    vi.mocked(window.electronAPI.getMediaInfo).mockResolvedValue({
-      file: '/in/movie.mkv',
-      format: 'matroska',
-      size: 100,
-      duration: 60,
-      bitrate: '1000k',
-      streams: [
-        { index: 0, type: 'video', codec: 'h264', width: 1920, height: 1080 },
-        { index: 1, type: 'audio', codec: 'aac', sampleRate: 48000, channels: 2 },
-      ],
-    });
-    renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
-    fireEvent.click(screen.getByText('batchQueue.operationDemux'));
-    // Extract only the audio kind, re-encoding it to MP3.
-    fireEvent.click(screen.getByRole('switch', { name: 'Video' }));
-    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'demux.audioCodec' }));
-    fireEvent.click(screen.getByText('mp3'));
-    openAddFiles();
-    fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
-    await waitFor(() =>
-      expect(queueAddMock).toHaveBeenCalledWith(
-        '/in/movie.mkv',
-        '/in/movie.audio_0_encodex_converted.mp3',
-        expect.objectContaining({ copy: false, video: false, audio: true, map: ['0:a:0'], audioCodec: 'mp3' }),
-        'FFMPEG',
-        false,
-      ),
-    );
-    expect(queueAddMock).toHaveBeenCalledTimes(1);
   });
 
   it('adds files with the compress image operation dropping the audio codec', async () => {
@@ -1292,6 +1208,42 @@ describe('BatchQueue', () => {
     expect(screen.getByRole('button', { name: 'batchQueue.editOptions' })).toBeDisabled();
   });
 
+  it('closes the per-job dialog without saving when cancelled', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', options: { videoCodec: 'libx264', audioCodec: 'aac' } })]);
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.editOptions' }));
+    expect(await screen.findByText('Edit options for video.mp4')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.dialogCancel' }));
+    await waitFor(() => expect(screen.queryByText('Edit options for video.mp4')).not.toBeInTheDocument());
+    expect(queueUpdateOptionsMock).not.toHaveBeenCalled();
+  });
+
+  it('cancels a keyboard drag without committing a reorder', async () => {
+    queueListMock.mockResolvedValue([
+      job({ id: 'job-1' }),
+      job({ id: 'job-2', input: '/in/two.mp4', output: '/out/two_encodex_converted.mp4' }),
+    ]);
+    renderPage();
+    const handles = await screen.findAllByRole('button', { name: 'batchQueue.dragHandle' });
+    expect(handles).toHaveLength(2);
+    expect(screen.getAllByText(/video\.mp4/)).toHaveLength(1);
+
+    // Enter starts a keyboard drag: the job lifts out of the list and its
+    // floating copy appears in the drag overlay above it.
+    await act(async () => {
+      fireEvent.keyDown(handles[0], { key: 'Enter', code: 'Enter' });
+    });
+    await waitFor(() => expect(screen.getAllByText(/video\.mp4/)).toHaveLength(2));
+
+    // Escape cancels the drag instead of dropping it, so no reorder is issued.
+    await act(async () => {
+      fireEvent.keyDown(handles[0], { key: 'Escape', code: 'Escape' });
+    });
+    await waitFor(() => expect(screen.getAllByText(/video\.mp4/)).toHaveLength(1));
+    expect(window.electronAPI.queueMoveTo).not.toHaveBeenCalled();
+  });
+
   it('renders a title-level toggle that condenses the page to the queue', async () => {
     queueListMock.mockResolvedValue([]);
     await act(async () => {
@@ -1384,5 +1336,49 @@ describe('BatchQueue', () => {
     await waitFor(() =>
       expect(queueUpdateOptionsMock).toHaveBeenCalledWith('job-1', expect.any(Object), '/new-out/video_encodex_converted.mp4'),
     );
+  });
+
+  it('shows the general queue by default and switches to the mux tab', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1' })]);
+    await act(async () => {
+      renderPage();
+    });
+    expect(screen.getByTestId('batch-queue-tab-general')).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByText(/video\.mp4/)).toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('batch-queue-tab-mux'));
+    });
+    expect(screen.getByTestId('batch-queue-tab-mux')).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByTestId('mux-queue-empty')).toBeInTheDocument();
+  });
+
+  it('opens the mux tab from a ?tab=mux deep link', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1' })]);
+    await act(async () => {
+      renderPage('/batch?tab=mux');
+    });
+    expect(screen.getByTestId('batch-queue-tab-mux')).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByTestId('mux-queue-empty')).toBeInTheDocument();
+    expect(screen.queryByText(/video\.mp4/)).not.toBeInTheDocument();
+  });
+
+  it('falls back to the general tab for an unknown tab value', async () => {
+    queueListMock.mockResolvedValue([]);
+    await act(async () => {
+      renderPage('/batch?tab=bogus');
+    });
+    expect(screen.getByTestId('batch-queue-tab-general')).toHaveAttribute('aria-selected', 'true');
+  });
+
+  it('switches back to the general tab from the mux tab', async () => {
+    queueListMock.mockResolvedValue([]);
+    await act(async () => {
+      renderPage('/batch?tab=mux');
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('batch-queue-tab-general'));
+    });
+    expect(screen.getByTestId('batch-queue-tab-general')).toHaveAttribute('aria-selected', 'true');
   });
 });

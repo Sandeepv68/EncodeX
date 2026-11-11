@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Це завдання більше не можна змінити.",
     "condense": "Згорнути",
     "expand": "Розгорнути",
-    "clearAll": "Очистити все",
-    "operationRemux": "Ремукс",
-    "operationDemux": "Демукс",
-    "remuxContainerHint": "Контейнер, до якого копіюються потоки. «Авто» зберігає розширення кожного вихідного файлу."
+    "clearAll": "Очистити все"
   },
   "progress": {
     "title": "Хід конвертації",
@@ -528,7 +525,9 @@
     "updateDownloaded": "Оновлення v{{version}} завантажено",
     "viewUpdate": "Переглянути",
     "remuxed": "Ремукс завершено",
-    "demuxed": "Потоки успішно видобуто"
+    "demuxed": "Потоки успішно видобуто",
+    "remuxQueued": "Ремукс додано до черги Mux",
+    "demuxQueued": "Потоки додано до черги Mux"
   },
   "profiles": {
     "searchPlaceholder": "Пошук профілів...",
@@ -1270,6 +1269,39 @@
       "hardwareNone": "Лише програмне",
       "encoderVideo": "Відео",
       "encoderAudio": "Аудіо"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Пакетна черга",
+    "tabMux": "Черга Mux",
+    "empty": "Черга Mux порожня.",
+    "emptyHint": "Завдання ремукса та демукса додаються зі своїх сторінок.",
+    "openRemux": "Відкрити Ремукс",
+    "openDemux": "Відкрити Демукс",
+    "start": "Запустити",
+    "pause": "Пауза",
+    "resume": "Продовжити",
+    "cancelAll": "Скасувати все",
+    "clearCompleted": "Очистити завершені",
+    "concurrency": "Паралельні завдання",
+    "stats": "{{queued}} у черзі, {{running}} виконуються, {{done}} завершено, {{failed}} з помилками",
+    "kindRemux": "Ремукс",
+    "kindDemux": "Демукс",
+    "targets": "Вихідних файлів: {{count}}",
+    "outputDir": "Папка виводу",
+    "noOutputs": "Немає вихідних файлів",
+    "detailsTargets": "Вихідний файл",
+    "detailsCreatedAt": "Додано",
+    "viewQueue": "Переглянути чергу",
+    "addToQueue": "Додати до черги",
+    "dragHandle": "Перетягніть, щоб перевпорядкувати",
+    "paused": "Призупинено",
+    "filters": {
+      "all": "Усі",
+      "queued": "У черзі",
+      "running": "Виконуються",
+      "done": "Завершено",
+      "failed": "З помилками"
     }
   }
 }

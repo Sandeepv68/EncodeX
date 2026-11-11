@@ -36,7 +36,8 @@
 import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
-import type { ConversionProgress, MediaStreamInfo } from '../../shared/types';
+import type { ConversionOptions, ConversionProgress, MediaStreamInfo } from '../../shared/types';
+import { optionsForDemuxTarget, demuxTargetLabel } from '../../shared/demux-utils';
 import { toTaskProgress } from '../../shared/progress';
 import { callBridgeVoid } from '../utils/bridge-call';
 import { ErrorCode } from '../../shared/errors';
@@ -49,6 +50,7 @@ import {
 } from '../../shared/codec-containers';
 import { useErrorStore } from './errorStore';
 import { useToastStore } from './toastStore';
+import { navigateToMuxQueue } from '../utils/mux-queue-navigation';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
 import { demuxAnalyticsSummary } from '../../shared/analytics/analytics-summaries';
@@ -60,6 +62,7 @@ import {
   LOG_CANCEL_CONVERSION_CALLED,
   LOG_DEMUX_COMPLETE,
   LOG_DEMUX_CONVERT_KIND,
+  LOG_DEMUX_ENQUEUE,
   LOG_DEMUX_FAILED,
   LOG_DEMUX_STREAM,
   LOG_FAILED_TO_GET_MEDIA_INFO,
@@ -318,6 +321,50 @@ export const useDemuxStore = create<DemuxState>((set, get) => ({
     }
   },
   /**
+   * Validates the current demux form and adds it to the dedicated mux queue.
+   *
+   * The whole extraction is one queue job: the mux queue runs its targets
+   * sequentially, so a multi-stream demux behaves exactly like the direct
+   * runner. The job is queued, not started; the form is left untouched so the
+   * user can adjust the selection afterwards.
+   * @returns {Promise<void>} Resolves once the job was enqueued (or rejected).
+   */
+  enqueueDemux: async () => {
+    const { input, targets, outputDir } = get();
+    if (!input) {
+      log.warn(LOG_START_CONVERSION_NO_INPUT_FILE);
+      useErrorStore.getState().showErrorMessage(ErrorCode.INPUT_NOT_SPECIFIED);
+      return;
+    }
+    if (targets.length === 0) {
+      useErrorStore.getState().showErrorMessage(ErrorCode.STREAM_NOT_FOUND);
+      return;
+    }
+    useErrorStore.getState().clearError();
+    log.info(LOG_DEMUX_ENQUEUE, input, LOG_ARROW, targets.length, 'targets');
+    try {
+      await window.electronAPI.muxQueueAdd({
+        kind: 'demux',
+        input,
+        output: outputDir,
+        targets: targets.map((target) => ({
+          output: target.output,
+          options: optionsForTarget(target),
+          label: demuxTargetLabel(target),
+          sourceIndex: target.index,
+        })),
+        transcoder: TRANSCODER_TYPES[0],
+      });
+      useToastStore.getState().success(i18n.t('toast.demuxQueued'), undefined, undefined, {
+        label: i18n.t('muxQueue.viewQueue'),
+        onClick: () => navigateToMuxQueue(),
+      });
+    } catch (err: unknown) {
+      log.error(LOG_DEMUX_FAILED, err);
+      useErrorStore.getState().showError(err);
+    }
+  },
+  /**
    * Pauses the running demux via window.electronAPI.pauseConversion().
    * @returns {Promise<void>} Resolves once the main process confirms the pause.
    */
@@ -408,26 +455,10 @@ function buildTargets(
  * mapped stream kind is written, and the video filter chain when the target
  * re-encodes video.
  * @param {DemuxTarget} target - The extraction target.
- * @returns {Record<string, unknown>} Ready-to-run conversion options.
+ * @returns {ConversionOptions} Ready-to-run conversion options.
  */
-function optionsForTarget(target: DemuxTarget): Record<string, unknown> {
-  const opts: Record<string, unknown> = { copy: target.copy, map: [target.map] };
-  if (target.kind === 'video') {
-    opts.video = true;
-    opts.audio = false;
-    if (!target.copy && target.codec) opts.videoCodec = target.codec;
-    if (target.videoFilters?.length) opts.videoFilters = target.videoFilters;
-  } else if (target.kind === 'audio') {
-    opts.video = false;
-    opts.audio = true;
-    if (!target.copy && target.codec) opts.audioCodec = target.codec;
-    if (target.audioFilters?.length) opts.audioFilters = target.audioFilters;
-  } else {
-    opts.video = false;
-    opts.audio = false;
-    if (!target.copy && target.codec) opts.subtitleCodec = target.codec;
-  }
-  return opts;
+function optionsForTarget(target: DemuxTarget): ConversionOptions {
+  return optionsForDemuxTarget(target);
 }
 
 /**

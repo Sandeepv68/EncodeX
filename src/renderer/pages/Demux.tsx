@@ -47,6 +47,7 @@ import FilePathField from '../components/FilePathField';
 import ConfirmDialog from '../components/ConfirmDialog';
 import InfoTooltip from '../components/InfoTooltip';
 import MediaPreview from '../components/MediaPreview';
+import MuxQueueStatusIndicator from '../components/MuxQueueStatusIndicator';
 import { VideoFiltersSection } from '../components/VideoFiltersSection';
 import { pageIcons } from '../pageIcons';
 import { ErrorBoundary } from '../components/ErrorBoundary';
@@ -122,6 +123,13 @@ export default function DemuxPage() {
   const { t } = useTranslation();
   const store = useDemuxStore();
   const [cancelConfirmOpen, setCancelConfirmOpen] = useState(false);
+  /**
+   * True while an enqueue request is in flight. The "Add to Queue" button is
+   * disabled during it so a double click cannot enqueue the same extraction
+   * twice.
+   * @type {boolean}
+   */
+  const [enqueuePending, setEnqueuePending] = useState(false);
 
   const run = useTaskRunControls(useDemuxStore);
 
@@ -240,6 +248,23 @@ export default function DemuxPage() {
   const handleStart = async () => {
     log.info(LOG_START_CONVERSION, store.input, LOG_ARROW, store.targets.length, 'targets');
     await store.startDemux();
+  };
+
+  /**
+   * Adds the selected streams to the dedicated mux queue.
+   *
+   * The extraction is queued, not started: the mux queue runs its targets
+   * sequentially once the user starts the queue.
+   * @returns {Promise<void>} Resolves once the job was enqueued or rejected.
+   */
+  const handleEnqueue = async () => {
+    log.info(LOG_START_CONVERSION, store.input, LOG_ARROW, store.targets.length, 'targets', 'enqueue');
+    setEnqueuePending(true);
+    try {
+      await store.enqueueDemux();
+    } finally {
+      setEnqueuePending(false);
+    }
   };
 
   /**
@@ -522,10 +547,18 @@ export default function DemuxPage() {
           </FieldBox>
 
           <ActionRow direction="row" spacing={1} useFlexGap>
+            <Button
+              variant="contained"
+              onClick={handleEnqueue}
+              disabled={!store.input || store.targets.length === 0 || store.isConverting || enqueuePending}
+              data-testid="demux-add-to-queue"
+            >
+              {t('muxQueue.addToQueue')}
+            </Button>
             <Tooltip title={shortcutHint(t, 'demux.start', SHORTCUT_BY_ID['demux.start'].keys)} arrow>
               <span>
                 <Button
-                  variant="contained"
+                  variant="outlined"
                   startIcon={<FontAwesomeIcon icon={faScissors} />}
                   onClick={handleStart}
                   disabled={!store.input || store.targets.length === 0 || store.isConverting}
@@ -556,6 +589,8 @@ export default function DemuxPage() {
               </Button>
             )}
           </ActionRow>
+
+          <MuxQueueStatusIndicator />
 
           {run.progress && (
             <ErrorBoundary fallback={null}>

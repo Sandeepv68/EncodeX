@@ -5,11 +5,13 @@ import { useErrorStore } from '../../stores/errorStore';
 import { useToastStore } from '../../stores/toastStore';
 import { useRemuxStore } from '../../stores/remuxStore';
 import { clearPreviewCache } from '../../utils/preview-cache';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 const selectFileMock = vi.mocked(window.electronAPI.selectFile);
 const selectFilesMock = vi.mocked(window.electronAPI.selectFiles);
 const selectOutputMock = vi.mocked(window.electronAPI.selectOutput);
 const convertFileMock = vi.mocked(window.electronAPI.convertFile);
+const muxQueueAddMock = vi.mocked(window.electronAPI.muxQueueAdd);
 const getMediaInfoMock = vi.mocked(window.electronAPI.getMediaInfo);
 const getVideoPreviewMock = vi.mocked(window.electronAPI.getVideoPreview);
 const pauseConversionMock = vi.mocked(window.electronAPI.pauseConversion);
@@ -60,6 +62,7 @@ describe('Remux', () => {
     pauseConversionMock.mockReset();
     resumeConversionMock.mockReset();
     cancelConversionMock.mockReset();
+    muxQueueAddMock.mockReset();
   });
 
   it('renders the title, fields, and start button', () => {
@@ -182,6 +185,88 @@ describe('Remux', () => {
     fireEvent.change(sync, { target: { value: '' } });
     expect(useRemuxStore.getState().audioSyncSeconds).toBeNull();
     expect(screen.getByText('remux.audioSyncLossless')).toBeInTheDocument();
+  });
+
+  it('does not enqueue twice when the add button is double-clicked', async () => {
+    let resolveAdd: (value: string) => void = () => {};
+    muxQueueAddMock.mockReturnValue(new Promise<string>((resolve) => (resolveAdd = resolve)));
+    renderPage();
+    selectFileMock.mockResolvedValue('/in/video.mkv');
+    getMediaInfoMock.mockResolvedValue({
+      file: '/in/video.mkv',
+      format: 'matroska',
+      size: 1024,
+      duration: 60,
+      bitrate: '1000k',
+      streams: [{ index: 0, type: 'video', codec: 'h264', width: 1920, height: 1080 }],
+    });
+    fireEvent.click(screen.getByText('remux.dropLabel'));
+    await waitFor(() => expect(getMediaInfoMock).toHaveBeenCalledOnce());
+    fireEvent.change(screen.getByPlaceholderText('remux.placeholderOutput'), { target: { value: '/out/out.mkv' } });
+
+    const addToQueue = screen.getByTestId('remux-add-to-queue');
+    fireEvent.click(addToQueue);
+    // The button is disabled while the enqueue IPC is in flight, so a second
+    // click cannot queue the same remux twice.
+    await waitFor(() => expect(addToQueue).toBeDisabled());
+    fireEvent.click(addToQueue);
+    expect(muxQueueAddMock).toHaveBeenCalledTimes(1);
+
+    resolveAdd('mux-1');
+    await waitFor(() => expect(addToQueue).toBeEnabled());
+  });
+
+  it('shows the mux queue status and links to the queue tab', async () => {
+    renderPage();
+    expect(screen.getByTestId('mux-queue-status')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'muxQueue.viewQueue' })).toBeInTheDocument();
+  });
+
+  it('does not enqueue a remux that fails validation', async () => {
+    expectAppLog('warn', 'renderer/pages/Remux');
+    renderPage();
+    // A whitespace-only output keeps the button enabled but fails validation,
+    // so the enqueue must stop before anything reaches the queue.
+    await act(async () => {
+      useRemuxStore.setState({ input: '/in/video.mkv', output: '   ' });
+    });
+    const button = screen.getByTestId('remux-add-to-queue');
+    await waitFor(() => expect(button).toBeEnabled());
+    fireEvent.click(button);
+    expect(await screen.findByText('validation.outputRequired')).toBeInTheDocument();
+    expect(muxQueueAddMock).not.toHaveBeenCalled();
+  });
+
+  it('adds the remux to the mux queue without starting a conversion', async () => {
+    muxQueueAddMock.mockResolvedValue('mux-1');
+    renderPage();
+    selectFileMock.mockResolvedValue('/in/video.mkv');
+    getMediaInfoMock.mockResolvedValue({
+      file: '/in/video.mkv',
+      format: 'matroska',
+      size: 1024,
+      duration: 60,
+      bitrate: '1000k',
+      streams: [{ index: 0, type: 'video', codec: 'h264', width: 1920, height: 1080 }],
+    });
+    fireEvent.click(screen.getByText('remux.dropLabel'));
+    await waitFor(() => expect(getMediaInfoMock).toHaveBeenCalledOnce());
+    fireEvent.change(screen.getByPlaceholderText('remux.placeholderOutput'), { target: { value: '/out/out.mkv' } });
+
+    const addToQueue = screen.getByTestId('remux-add-to-queue');
+    expect(addToQueue).toBeEnabled();
+    fireEvent.click(addToQueue);
+
+    await waitFor(() => expect(muxQueueAddMock).toHaveBeenCalledOnce());
+    expect(muxQueueAddMock).toHaveBeenCalledWith(
+      expect.objectContaining({ kind: 'remux', input: '/in/video.mkv', output: '/out/out.mkv' }),
+    );
+    expect(convertFileMock).not.toHaveBeenCalled();
+  });
+
+  it('shows the mux queue status and links to the queue tab', async () => {
+    renderPage();
+    expect(screen.getByTestId('mux-queue-status')).toBeInTheDocument();
   });
 
   it('remuxes when both input and output are provided', async () => {

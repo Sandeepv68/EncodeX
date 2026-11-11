@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Det här jobbet kan inte längre redigeras.",
     "condense": "Komprimera",
     "expand": "Expandera",
-    "clearAll": "Rensa allt",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Containern som strömmarna kopieras till. \"Automatiskt\" behåller varje källfils filändelse."
+    "clearAll": "Rensa allt"
   },
   "progress": {
     "title": "Konverteringsförlopp",
@@ -528,7 +525,9 @@
     "updateDownloaded": "Uppdatering v{{version}} nedladdad",
     "viewUpdate": "Visa",
     "remuxed": "Remuxen är klar",
-    "demuxed": "Strömmarna har extraherats"
+    "demuxed": "Strömmarna har extraherats",
+    "remuxQueued": "Remux lades till i Mux-kön",
+    "demuxQueued": "Strömmarna lades till i Mux-kön"
   },
   "profiles": {
     "searchPlaceholder": "Sök profiler...",
@@ -1270,6 +1269,39 @@
       "hardwareNone": "Endast mjukvara",
       "encoderVideo": "Video",
       "encoderAudio": "Ljud"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Batchkö",
+    "tabMux": "Mux-kö",
+    "empty": "Mux-kön är tom.",
+    "emptyHint": "Remux- och demuxjobb läggs till från sina egna sidor.",
+    "openRemux": "Öppna Remux",
+    "openDemux": "Öppna Demux",
+    "start": "Starta",
+    "pause": "Pausa",
+    "resume": "Återuppta",
+    "cancelAll": "Avbryt alla",
+    "clearCompleted": "Rensa slutförda",
+    "concurrency": "Parallella jobb",
+    "stats": "{{queued}} i kö, {{running}} körs, {{done}} klara, {{failed}} misslyckade",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "{{count}} utdata",
+    "outputDir": "Utdatamapp",
+    "noOutputs": "Inga utdata",
+    "detailsTargets": "Utdata",
+    "detailsCreatedAt": "Tillagd",
+    "viewQueue": "Visa kön",
+    "addToQueue": "Lägg till i kön",
+    "dragHandle": "Dra för att sortera om",
+    "paused": "Pausad",
+    "filters": {
+      "all": "Alla",
+      "queued": "I kö",
+      "running": "Körs",
+      "done": "Klara",
+      "failed": "Misslyckade"
     }
   }
 }

@@ -415,6 +415,101 @@ describe('Copilot page', () => {
     );
   });
 
+  it('sends a remux plan to the mux queue rather than the batch queue', async () => {
+    const remuxPlan: CopilotPlan = {
+      goal: 'remux to mkv',
+      operation: 'remux',
+      actions: [
+        {
+          id: 'remux_0',
+          operation: 'remux',
+          input: '/in/one.mp4',
+          output: '/in/one.mkv',
+          confidence: 0.9,
+          rationale: ['Stream copy into a new container.'],
+          estimatedSavings: 0,
+          options: { copy: true, video: true, audio: true, map: ['0:v:0', '0:a:0'] },
+        },
+      ],
+      results: [],
+      skips: [],
+      rationale: ['Planned 1 remux.'],
+      notes: [],
+      plan: { valid: true, order: ['remux_0'], steps: [], issues: [], summary: '1 step' },
+      providerId: 'rules',
+      isEstimated: true,
+    };
+    vi.mocked(window.electronAPI.copilotPlan).mockResolvedValue(remuxPlan);
+    renderPage('Copilot');
+    await typeMessage('remux to mkv');
+    await chooseFolder();
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await screen.findByTestId('copilot-plan-summary');
+
+    fireEvent.click(screen.getByTestId('copilot-add-to-queue'));
+    await waitFor(() => expect(window.electronAPI.muxQueueAdd).toHaveBeenCalledOnce());
+    expect(window.electronAPI.muxQueueAdd).toHaveBeenCalledWith(
+      expect.objectContaining({
+        kind: 'remux',
+        input: '/in/one.mp4',
+        output: '/in/one.mkv',
+        targets: [expect.objectContaining({ output: '/in/one.mkv' })],
+      }),
+    );
+    expect(window.electronAPI.queueAdd).not.toHaveBeenCalled();
+  });
+
+  it('sends a demux plan to the mux queue as one job with one target per stream', async () => {
+    const demuxPlan: CopilotPlan = {
+      goal: 'extract the streams',
+      operation: 'demux',
+      actions: [
+        {
+          id: 'demux_0',
+          operation: 'demux',
+          input: '/in/one.mkv',
+          output: '/in/one.video.mp4',
+          confidence: 0.9,
+          rationale: ['Extract the video stream.'],
+          estimatedSavings: 0,
+          options: { copy: true, video: true, audio: false, map: ['0:v:0'] },
+        },
+        {
+          id: 'demux_1',
+          operation: 'demux',
+          input: '/in/one.mkv',
+          output: '/in/one.audio.m4a',
+          confidence: 0.9,
+          rationale: ['Extract the audio stream.'],
+          estimatedSavings: 0,
+          options: { copy: true, video: false, audio: true, map: ['0:a:0'] },
+        },
+      ],
+      results: [],
+      skips: [],
+      rationale: ['Planned 2 demux targets.'],
+      notes: [],
+      plan: { valid: true, order: ['demux_0', 'demux_1'], steps: [], issues: [], summary: '2 steps' },
+      providerId: 'rules',
+      isEstimated: true,
+    };
+    vi.mocked(window.electronAPI.copilotPlan).mockResolvedValue(demuxPlan);
+    renderPage('Copilot');
+    await typeMessage('extract the streams');
+    await chooseFolder();
+    fireEvent.click(screen.getByTestId('copilot-plan'));
+    await screen.findByTestId('copilot-plan-summary');
+
+    fireEvent.click(screen.getByTestId('copilot-add-to-queue'));
+    await waitFor(() => expect(window.electronAPI.muxQueueAdd).toHaveBeenCalledOnce());
+    const payload = vi.mocked(window.electronAPI.muxQueueAdd).mock.calls[0][0];
+    expect(payload.kind).toBe('demux');
+    expect(payload.input).toBe('/in/one.mkv');
+    expect(payload.targets).toHaveLength(2);
+    expect(payload.targets.map((target) => target.output)).toEqual(['/in/one.video.mp4', '/in/one.audio.m4a']);
+    expect(window.electronAPI.queueAdd).not.toHaveBeenCalled();
+  });
+
   it('survives a malformed plan payload with an inline error', async () => {
     vi.mocked(window.electronAPI.copilotPlan).mockResolvedValue({ actions: 'nope', skips: [] } as never);
     renderPage('Copilot');

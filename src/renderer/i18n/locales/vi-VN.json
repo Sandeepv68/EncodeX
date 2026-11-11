@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Không còn có thể sửa công việc này.",
     "condense": "Thu gọn",
     "expand": "Mở rộng",
-    "clearAll": "Xóa tất cả",
-    "operationRemux": "Đóng gói lại",
-    "operationDemux": "Tách luồng",
-    "remuxContainerHint": "Vùng chứa mà các luồng được sao chép vào. “Tự động” giữ nguyên phần mở rộng của từng tệp nguồn."
+    "clearAll": "Xóa tất cả"
   },
   "progress": {
     "title": "Tiến trình chuyển đổi",
@@ -528,7 +525,9 @@
     "updateDownloaded": "Đã tải xuống bản cập nhật v{{version}}",
     "viewUpdate": "Xem",
     "remuxed": "Đã đóng gói lại xong",
-    "demuxed": "Đã trích xuất các luồng thành công"
+    "demuxed": "Đã trích xuất các luồng thành công",
+    "remuxQueued": "Đã thêm Đóng gói lại vào Hàng đợi Mux",
+    "demuxQueued": "Đã thêm các luồng vào Hàng đợi Mux"
   },
   "profiles": {
     "searchPlaceholder": "Tìm kiếm hồ sơ...",
@@ -1270,6 +1269,39 @@
       "hardwareNone": "Chỉ dùng phần mềm",
       "encoderVideo": "Video",
       "encoderAudio": "Âm thanh"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Hàng đợi hàng loạt",
+    "tabMux": "Hàng đợi Mux",
+    "empty": "Hàng đợi Mux trống.",
+    "emptyHint": "Công việc remux và demux được thêm từ trang của chúng.",
+    "openRemux": "Mở Đóng gói lại",
+    "openDemux": "Mở Tách luồng",
+    "start": "Bắt đầu",
+    "pause": "Tạm dừng",
+    "resume": "Tiếp tục",
+    "cancelAll": "Hủy tất cả",
+    "clearCompleted": "Xóa các mục đã hoàn thành",
+    "concurrency": "Tác vụ song song",
+    "stats": "{{queued}} trong hàng đợi, {{running}} đang chạy, {{done}} hoàn thành, {{failed}} thất bại",
+    "kindRemux": "Đóng gói lại",
+    "kindDemux": "Tách luồng",
+    "targets": "{{count}} đầu ra",
+    "outputDir": "Thư mục đầu ra",
+    "noOutputs": "Không có đầu ra",
+    "detailsTargets": "Đầu ra",
+    "detailsCreatedAt": "Đã thêm",
+    "viewQueue": "Xem hàng đợi",
+    "addToQueue": "Thêm vào hàng đợi",
+    "dragHandle": "Kéo để sắp xếp lại",
+    "paused": "Đã tạm dừng",
+    "filters": {
+      "all": "Tất cả",
+      "queued": "Trong hàng đợi",
+      "running": "Đang chạy",
+      "done": "Hoàn thành",
+      "failed": "Thất bại"
     }
   }
 }

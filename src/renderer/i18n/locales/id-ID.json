@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Pekerjaan ini tidak dapat diedit lagi.",
     "condense": "Ciutkan",
     "expand": "Kembangkan",
-    "clearAll": "Hapus Semua",
-    "operationRemux": "Remuks",
-    "operationDemux": "Demuks",
-    "remuxContainerHint": "Wadah tempat salinan aliran. \"Otomatis\" mempertahankan ekstensi setiap file sumber."
+    "clearAll": "Hapus Semua"
   },
   "progress": {
     "title": "Progres konversi",
@@ -528,7 +525,9 @@
     "updateDownloaded": "Pembaruan v{{version}} diunduh",
     "viewUpdate": "Lihat",
     "remuxed": "Remuks selesai",
-    "demuxed": "Aliran berhasil diekstrak"
+    "demuxed": "Aliran berhasil diekstrak",
+    "remuxQueued": "Remuks ditambahkan ke Antrean Mux",
+    "demuxQueued": "Aliran ditambahkan ke Antrean Mux"
   },
   "profiles": {
     "searchPlaceholder": "Cari profil...",
@@ -1270,6 +1269,39 @@
       "hardwareNone": "Hanya perangkat lunak",
       "encoderVideo": "Video",
       "encoderAudio": "Audio"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Antrean Batch",
+    "tabMux": "Antrean Mux",
+    "empty": "Antrean Mux kosong.",
+    "emptyHint": "Tugas remux dan demux ditambahkan dari halaman masing-masing.",
+    "openRemux": "Buka Remuks",
+    "openDemux": "Buka Demuks",
+    "start": "Mulai",
+    "pause": "Jeda",
+    "resume": "Lanjutkan",
+    "cancelAll": "Batalkan Semua",
+    "clearCompleted": "Bersihkan selesai",
+    "concurrency": "Tugas paralel",
+    "stats": "{{queued}} antre, {{running}} berjalan, {{done}} selesai, {{failed}} gagal",
+    "kindRemux": "Remuks",
+    "kindDemux": "Demuks",
+    "targets": "{{count}} keluaran",
+    "outputDir": "Folder keluaran",
+    "noOutputs": "Tidak ada keluaran",
+    "detailsTargets": "Keluaran",
+    "detailsCreatedAt": "Ditambahkan",
+    "viewQueue": "Lihat antrean",
+    "addToQueue": "Tambahkan ke antrean",
+    "dragHandle": "Seret untuk mengurutkan ulang",
+    "paused": "Dijeda",
+    "filters": {
+      "all": "Semua",
+      "queued": "Antre",
+      "running": "Berjalan",
+      "done": "Selesai",
+      "failed": "Gagal"
     }
   }
 }

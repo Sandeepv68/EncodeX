@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "لم يعد من الممكن تحرير هذه المهمة.",
     "condense": "طي",
     "expand": "توسيع",
-    "clearAll": "مسح الكل",
-    "operationRemux": "إعادة التغليف",
-    "operationDemux": "فك التدفقات",
-    "remuxContainerHint": "الحاوية التي تُنسخ إليها التدفقات. «تلقائي» يُبقي امتداد كل ملف مصدر."
+    "clearAll": "مسح الكل"
   },
   "progress": {
     "title": "تقدم التحويل",
@@ -528,7 +525,9 @@
     "updateDownloaded": "تم تنزيل التحديث v{{version}}",
     "viewUpdate": "عرض",
     "remuxed": "اكتملت إعادة التغليف",
-    "demuxed": "تم استخراج التدفقات بنجاح"
+    "demuxed": "تم استخراج التدفقات بنجاح",
+    "remuxQueued": "تمت إضافة إعادة التغليف إلى قائمة انتظار Mux",
+    "demuxQueued": "تمت إضافة التدفقات إلى قائمة انتظار Mux"
   },
   "profiles": {
     "searchPlaceholder": "البحث عن ملفات تعريف...",
@@ -1270,6 +1269,39 @@
       "hardwareNone": "برمجي فقط",
       "encoderVideo": "فيديو",
       "encoderAudio": "صوت"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "قائمة الدفعات",
+    "tabMux": "قائمة انتظار Mux",
+    "empty": "قائمة انتظار Mux فارغة.",
+    "emptyHint": "تُضاف مهام إعادة التغليف وفك التدفقات من صفحاتها الخاصة.",
+    "openRemux": "فتح إعادة التغليف",
+    "openDemux": "فتح فك التدفقات",
+    "start": "ابدأ",
+    "pause": "إيقاف مؤقت",
+    "resume": "استئناف",
+    "cancelAll": "إلغاء الكل",
+    "clearCompleted": "مسح المكتملة",
+    "concurrency": "مهام متوازية",
+    "stats": "{{queued}} في الانتظار، {{running}} قيد التشغيل، {{done}} مكتمل، {{failed}} فشل",
+    "kindRemux": "إعادة التغليف",
+    "kindDemux": "فك التدفقات",
+    "targets": "{{count}} مخرج",
+    "outputDir": "مجلد الإخراج",
+    "noOutputs": "لا توجد مخرجات",
+    "detailsTargets": "الإخراج",
+    "detailsCreatedAt": "أُضيف",
+    "viewQueue": "عرض قائمة الانتظار",
+    "addToQueue": "إضافة إلى قائمة الانتظار",
+    "dragHandle": "اسحب لإعادة الترتيب",
+    "paused": "إيقاف مؤقت",
+    "filters": {
+      "all": "الكل",
+      "queued": "في الانتظار",
+      "running": "قيد التشغيل",
+      "done": "مكتمل",
+      "failed": "فشل"
     }
   }
 }

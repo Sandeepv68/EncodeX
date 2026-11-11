@@ -19,10 +19,6 @@ function renderPanel(props: Partial<ComponentProps<typeof BatchEncodingPanel>> =
     flipV: false,
     pixelFormat: 'yuv420p',
     videoFilters: [],
-    demuxKinds: ['video', 'audio', 'subtitle'],
-    demuxVideoContainer: '',
-    demuxAudioCodec: '',
-    demuxSubtitleFormat: '',
     onVideoCodecChange: vi.fn(),
     onAudioCodecChange: vi.fn(),
     onContainerChange: vi.fn(),
@@ -35,10 +31,6 @@ function renderPanel(props: Partial<ComponentProps<typeof BatchEncodingPanel>> =
     onFlipVChange: vi.fn(),
     onPixelFormatChange: vi.fn(),
     onVideoFiltersChange: vi.fn(),
-    onDemuxKindsChange: vi.fn(),
-    onDemuxVideoContainerChange: vi.fn(),
-    onDemuxAudioCodecChange: vi.fn(),
-    onDemuxSubtitleFormatChange: vi.fn(),
     ...props,
   };
   const utils = render(<BatchEncodingPanel {...all} />);
@@ -131,11 +123,6 @@ describe('BatchEncodingPanel', () => {
     expect(screen.getByRole('combobox', { name: 'imageCompress.scale' })).toHaveTextContent('status.none');
   });
 
-  it('shows the placeholder in the remux container select while it is empty', () => {
-    renderPanel({ operation: 'remux', container: '' });
-    expect(screen.getByRole('combobox', { name: 'batchQueue.container' })).toHaveTextContent('batchQueue.containerAuto');
-  });
-
   it('lists the container options compatible with the selected video codec', () => {
     renderPanel();
     fireEvent.mouseDown(screen.getAllByRole('combobox')[3]);
@@ -150,6 +137,39 @@ describe('BatchEncodingPanel', () => {
     fireEvent.mouseDown(screen.getAllByRole('combobox')[3]);
     fireEvent.click(screen.getByText('mkv'));
     expect(props.onContainerChange).toHaveBeenCalledWith('mkv');
+  });
+
+  it('fires onVideoBitrateChange when a video bitrate is chosen', () => {
+    const { props } = renderPanel();
+    fireEvent.mouseDown(screen.getByLabelText('convert.videoBitrate'));
+    fireEvent.click(screen.getByRole('option', { name: '4000k' }));
+    expect(props.onVideoBitrateChange).toHaveBeenCalledWith('4000k');
+  });
+
+  it('fires onAudioBitrateChange when an audio bitrate is chosen', () => {
+    const { props } = renderPanel();
+    fireEvent.mouseDown(screen.getByLabelText('convert.audioBitrate'));
+    fireEvent.click(screen.getByRole('option', { name: '320k' }));
+    expect(props.onAudioBitrateChange).toHaveBeenCalledWith('320k');
+  });
+
+  it('fires onScaleChange when a scale is chosen', () => {
+    const { props } = renderPanel();
+    fireEvent.mouseDown(screen.getByLabelText('convert.scale'));
+    fireEvent.click(screen.getByRole('option', { name: '1280x720' }));
+    expect(props.onScaleChange).toHaveBeenCalledWith('1280x720');
+  });
+
+  it('opens the profile editor from the profile selector', async () => {
+    renderPanel();
+    // The "create custom profile" card lives in the selector's dropdown and
+    // opens the editor on mousedown, because MUI's autocomplete swallows the
+    // click that follows it.
+    const [profileSelector] = screen.getAllByRole('combobox');
+    fireEvent.mouseDown(profileSelector);
+    const createNew = await screen.findByText('profiles.createCustom');
+    fireEvent.mouseDown(createNew);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
   it('fires onVideoCodecChange when a video codec is chosen', () => {
@@ -269,63 +289,5 @@ describe('BatchEncodingPanel', () => {
     renderPanel({ optionsLocked: true, videoFilters: ['hflip'] });
     expect(screen.getByRole('combobox', { name: 'Add preset filter...' })).toHaveAttribute('aria-disabled', 'true');
     expect(screen.getByTestId('filters-add-custom')).toBeDisabled();
-  });
-
-  it('renders only the container select for the remux operation', () => {
-    renderPanel({ operation: 'remux' });
-    expect(screen.getByRole('combobox', { name: 'batchQueue.container' })).toBeInTheDocument();
-    expect(screen.queryByRole('combobox', { name: 'convert.videoCodec' })).not.toBeInTheDocument();
-    expect(screen.queryByRole('combobox', { name: 'convert.audioCodec' })).not.toBeInTheDocument();
-    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'batchQueue.container' }));
-    expectMenuOption('batchQueue.containerAuto');
-    expectMenuOption('mkv');
-    expectMenuOption('mp4');
-  });
-
-  it('fires onContainerChange when a remux container is chosen', () => {
-    const { props } = renderPanel({ operation: 'remux' });
-    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'batchQueue.container' }));
-    fireEvent.click(screen.getByText('mov'));
-    expect(props.onContainerChange).toHaveBeenCalledWith('mov');
-  });
-
-  it('renders the stream-kind toggles and per-kind targets for the demux operation', () => {
-    renderPanel({ operation: 'demux' });
-    expect(screen.getByRole('switch', { name: 'Video' })).toBeChecked();
-    expect(screen.getByRole('switch', { name: 'Audio' })).toBeChecked();
-    expect(screen.getByRole('switch', { name: 'Subtitle' })).toBeChecked();
-    expect(screen.getByRole('combobox', { name: 'demux.videoContainer' })).toBeInTheDocument();
-    expect(screen.getByRole('combobox', { name: 'demux.audioCodec' })).toBeInTheDocument();
-    expect(screen.getByRole('combobox', { name: 'demux.subtitleFormat' })).toBeInTheDocument();
-    expect(screen.queryByRole('combobox', { name: 'convert.videoCodec' })).not.toBeInTheDocument();
-    expect(screen.queryByRole('combobox', { name: 'batchQueue.container' })).not.toBeInTheDocument();
-  });
-
-  it('fires onDemuxKindsChange when a stream kind is toggled', () => {
-    const { props } = renderPanel({ operation: 'demux', demuxKinds: ['video'] });
-    fireEvent.click(screen.getByRole('switch', { name: 'Audio' }));
-    expect(props.onDemuxKindsChange).toHaveBeenCalledWith(['video', 'audio']);
-    fireEvent.click(screen.getByRole('switch', { name: 'Video' }));
-    expect(props.onDemuxKindsChange).toHaveBeenCalledWith([]);
-  });
-
-  it('maps the copy target to an empty value and back', () => {
-    const { props, rerender } = renderPanel({ operation: 'demux', demuxVideoContainer: 'mp4' });
-    expect(screen.getByRole('combobox', { name: 'demux.videoContainer' })).toHaveTextContent('mp4');
-    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'demux.videoContainer' }));
-    fireEvent.click(screen.getAllByRole('option', { name: 'demux.copyOption' })[0]);
-    expect(props.onDemuxVideoContainerChange).toHaveBeenCalledWith('');
-    rerender(<BatchEncodingPanel {...props} demuxVideoContainer="" />);
-    expect(screen.getByRole('combobox', { name: 'demux.videoContainer' })).toHaveTextContent('demux.copyOption');
-  });
-
-  it('fires the demux conversion-target change callbacks', () => {
-    const { props } = renderPanel({ operation: 'demux', demuxKinds: ['subtitle'] });
-    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'demux.subtitleFormat' }));
-    fireEvent.click(screen.getByText('srt'));
-    expect(props.onDemuxSubtitleFormatChange).toHaveBeenCalledWith('srt');
-    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'demux.audioCodec' }));
-    fireEvent.click(screen.getByText('flac'));
-    expect(props.onDemuxAudioCodecChange).toHaveBeenCalledWith('flac');
   });
 });

@@ -40,11 +40,3 @@ export const MirrorToggle = styled(Box)({
   display: 'flex',
   alignItems: 'center',
 });
-
-/** Row holding the demux stream-kind switches. @const DemuxKindRow */
-export const DemuxKindRow = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  gap: theme.spacing(2),
-  alignItems: 'center',
-  flexWrap: 'wrap',
-}));

@@ -25,11 +25,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import BatchEncodingPanel from './BatchEncodingPanel';
 import { useSettingsStore } from '../stores/settingsStore';
 import { IMAGE_FORMATS } from '../../shared/media-options';
-import { DEFAULT_VIDEO_ENCODERS, getAudioCodecContainers, getVideoCodecContainer } from '../../shared/codec-containers';
+import { getAudioCodecContainers, getVideoCodecContainer } from '../../shared/codec-containers';
 import type { QueueJob } from '../../shared/types';
 import type { QueueJobOptionsDialogProps } from './types';
 import type { BatchEncodingValues } from '../utils/batch-options';
-import { buildBatchOptions, inferJobOperation, recomputeJobOutput } from '../utils/batch-options';
+import { buildBatchOptions, isMuxStyleJob, inferJobOperation, recomputeJobOutput } from '../utils/batch-options';
 import { basename } from '../utils/path-utils';
 
 /**
@@ -51,30 +51,18 @@ function seedEncodingValues(job: QueueJob, defaults: BatchEncodingValues): Batch
   let container = defaults.container;
   const ext = basename(job.output).split('.').pop()?.toLowerCase();
   if (ext) {
-    // Remux jobs may carry any generic video container, so the dropdown reflects
-    // the job's actual output extension. Other operations require codec
-    // compatibility before the extension is offered.
+    // Other operations require codec compatibility before the extension is
+    // offered, so the dropdown reflects the job's actual output.
     const compatible =
-      operation === 'remux'
-        ? true
-        : operation === 'compress_image'
-          ? IMAGE_FORMATS.some((f) => f.value === ext)
-          : options.videoCodec
-            ? getVideoCodecContainer(options.videoCodec).containers.includes(ext)
-            : options.audioCodec
-              ? getAudioCodecContainers(options.audioCodec).includes(ext)
-              : false;
+      operation === 'compress_image'
+        ? IMAGE_FORMATS.some((f) => f.value === ext)
+        : options.videoCodec
+          ? getVideoCodecContainer(options.videoCodec).containers.includes(ext)
+          : options.audioCodec
+            ? getAudioCodecContainers(options.audioCodec).includes(ext)
+            : false;
     if (compatible) container = ext;
   }
-
-  const demuxKind =
-    operation === 'demux'
-      ? options.video === true
-        ? 'video'
-        : options.audio === true || options.audioCodec
-          ? 'audio'
-          : 'subtitle'
-      : undefined;
 
   return {
     videoCodec,
@@ -89,34 +77,6 @@ function seedEncodingValues(job: QueueJob, defaults: BatchEncodingValues): Batch
     flipV: options.flipV ?? defaults.flipV,
     pixelFormat: options.pixelFormat ?? defaults.pixelFormat,
     videoFilters: options.videoFilters ?? defaults.videoFilters,
-    demuxKinds: defaults.demuxKinds ?? ['video', 'audio', 'subtitle'],
-    // The stream this single job extracts: its content kind and its map index.
-    demuxKind,
-    demuxMap: operation === 'demux' ? options.map?.[0] : undefined,
-    demuxVideoContainer:
-      operation === 'demux' && demuxKind === 'video'
-        ? options.videoCodec
-          ? ['mkv', 'mp4'].includes(ext ?? '')
-            ? (ext ?? '')
-            : (Object.entries(DEFAULT_VIDEO_ENCODERS).find(([, encoder]) => encoder === options.videoCodec)?.[0] ?? '')
-          : ''
-        : '',
-    demuxAudioCodec:
-      operation === 'demux' && demuxKind === 'audio'
-        ? options.audioCodec
-          ? ext && ['mp3', 'm4a', 'flac', 'wav'].includes(ext)
-            ? ext
-            : options.audioCodec
-          : ''
-        : '',
-    demuxSubtitleFormat:
-      operation === 'demux' && demuxKind === 'subtitle'
-        ? options.subtitleCodec
-          ? ext && ['srt', 'ass'].includes(ext)
-            ? ext
-            : options.subtitleCodec
-          : ''
-        : '',
   };
 }
 
@@ -188,10 +148,19 @@ export default function QueueJobOptionsDialog({ open, job, defaults, onSave, onC
    * Builds the job's options from the current field values and the
    * hardware-acceleration settings, recomputes the output path, and forwards
    * everything to the parent for the actual `queueUpdateOptions` call.
+   *
+   * A job that carries a per-stream map (a remux or a single-stream demux
+   * extraction) cannot be expressed by the batch encoding panel, so its options
+   * are forwarded untouched. Rebuilding them from the panel's fields would drop
+   * the map and silently turn a stream copy into a re-encode.
    * @returns {void}
    */
   const handleSave = () => {
     const { hardwareAcceleration, hwaccelMode } = useSettingsStore.getState();
+    if (isMuxStyleJob(job.options)) {
+      onSave(job, { ...job.options }, job.output);
+      return;
+    }
     const options = buildBatchOptions(operation, values, { hardwareAcceleration, hwaccelMode });
     const output = recomputeJobOutput(job, values.container);
     onSave(job, options, output);
@@ -227,14 +196,6 @@ export default function QueueJobOptionsDialog({ open, job, defaults, onSave, onC
           onFlipVChange={(value) => setValues((prev) => ({ ...prev, flipV: value }))}
           onPixelFormatChange={(value) => setValues((prev) => ({ ...prev, pixelFormat: value }))}
           onVideoFiltersChange={(value) => setValues((prev) => ({ ...prev, videoFilters: value }))}
-          demuxKinds={values.demuxKinds ?? []}
-          demuxVideoContainer={values.demuxVideoContainer ?? ''}
-          demuxAudioCodec={values.demuxAudioCodec ?? ''}
-          demuxSubtitleFormat={values.demuxSubtitleFormat ?? ''}
-          onDemuxKindsChange={(kinds) => setValues((prev) => ({ ...prev, demuxKinds: kinds }))}
-          onDemuxVideoContainerChange={(value) => setValues((prev) => ({ ...prev, demuxVideoContainer: value }))}
-          onDemuxAudioCodecChange={(value) => setValues((prev) => ({ ...prev, demuxAudioCodec: value }))}
-          onDemuxSubtitleFormatChange={(value) => setValues((prev) => ({ ...prev, demuxSubtitleFormat: value }))}
         />
       </DialogContent>
       <DialogActions>

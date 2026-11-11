@@ -35,6 +35,7 @@ import type {
   MediaStreamInfo,
   ProfileCategory,
   QueueJob,
+  MuxQueueJob,
   RemuxInput,
   ThumbnailStrip,
   UpdateInfo,
@@ -227,6 +228,42 @@ export interface QueueState {
   updateJob: (job: QueueJob) => void;
   updateProgress: (id: string, data: ConversionProgress) => void;
   clearJobs: () => void;
+}
+
+/**
+ * State of the dedicated remux/demux mux queue store.
+ * Mirrors {@link QueueState} and adds the queue's paused flag and concurrency
+ * cap so the Remux/Demux pages can show queue status without being on the
+ * queue page.
+ * @interface MuxQueueState
+ * @property {MuxQueueJob[]} jobs - The list of mux queue jobs.
+ * @property {Record<string, ConversionProgress>} progress - Live progress
+ *   snapshots keyed by job id.
+ * @property {boolean} paused - True while the mux queue is paused.
+ * @property {number} concurrency - The mux queue's parallel-job cap.
+ * @property {(jobs: MuxQueueJob[]) => void} setJobs - Replaces the entire job list.
+ * @property {(job: MuxQueueJob) => void} addJob - Appends a job to the queue.
+ * @property {(id: string) => void} removeJob - Removes the job with the given id.
+ * @property {(job: MuxQueueJob) => void} updateJob - Replaces the job matching job.id.
+ * @property {(id: string, data: ConversionProgress) => void} updateProgress -
+ *   Stores the latest progress snapshot for the job with the given id.
+ * @property {() => void} clearJobs - Removes all jobs from the queue.
+ * @property {(paused: boolean) => void} setPaused - Records the paused flag.
+ * @property {(concurrency: number) => void} setConcurrency - Records the cap.
+ */
+export interface MuxQueueState {
+  jobs: MuxQueueJob[];
+  progress: Record<string, ConversionProgress>;
+  paused: boolean;
+  concurrency: number;
+  setJobs: (jobs: MuxQueueJob[]) => void;
+  addJob: (job: MuxQueueJob) => void;
+  removeJob: (id: string) => void;
+  updateJob: (job: MuxQueueJob) => void;
+  updateProgress: (id: string, data: ConversionProgress) => void;
+  clearJobs: () => void;
+  setPaused: (paused: boolean) => void;
+  setConcurrency: (concurrency: number) => void;
 }
 
 /**
@@ -620,6 +657,7 @@ export interface RemuxState {
   setOutput: (output: string) => void;
   setProgress: (p: TaskProgress | null) => void;
   startRemux: () => Promise<void>;
+  enqueueRemux: () => Promise<void>;
   pause: () => Promise<void>;
   resume: () => Promise<void>;
   cancel: () => Promise<void>;
@@ -676,6 +714,7 @@ export interface DemuxState {
   setOutputDir: (dir: string) => void;
   setProgress: (p: TaskProgress | null) => void;
   startDemux: () => Promise<void>;
+  enqueueDemux: () => Promise<void>;
   pause: () => Promise<void>;
   resume: () => Promise<void>;
   cancel: () => Promise<void>;
@@ -759,14 +798,6 @@ export interface AiSettingsState extends AiSettingsSnapshot {
  * @property {string} pixelFormat - Output pixel format.
  * @property {string[]} videoFilters - Ordered video-filter chain entries
  *   (transcode only).
- * @property {Array<'video'|'audio'|'subtitle'>} demuxKinds - Stream kinds the
- *   'demux' operation extracts from each file.
- * @property {string} demuxVideoContainer - 'demux' video conversion target
- *   container extension ('' = lossless stream copy).
- * @property {string} demuxAudioCodec - 'demux' audio conversion encoder ('' =
- *   lossless stream copy).
- * @property {string} demuxSubtitleFormat - 'demux' subtitle conversion format
- *   ('' = lossless stream copy).
  * @property {string} outputDir - Optional output folder for new jobs; '' means
  *   outputs are written next to their source files.
  * @property {boolean} overwrite - Whether new jobs may replace existing output
@@ -786,10 +817,6 @@ export interface BatchConfig {
   flipV: boolean;
   pixelFormat: string;
   videoFilters: string[];
-  demuxKinds: Array<'video' | 'audio' | 'subtitle'>;
-  demuxVideoContainer: string;
-  demuxAudioCodec: string;
-  demuxSubtitleFormat: string;
   outputDir: string;
   overwrite: boolean;
 }

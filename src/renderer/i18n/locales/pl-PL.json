@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "To zadanie nie może być już edytowane.",
     "condense": "Zwiń",
     "expand": "Rozwiń",
-    "clearAll": "Wyczyść wszystko",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Kontener, do którego kopiowane są strumienie. „Automatyczny” zachowuje rozszerzenie każdego pliku źródłowego."
+    "clearAll": "Wyczyść wszystko"
   },
   "progress": {
     "title": "Postęp konwersji",
@@ -528,7 +525,9 @@
     "updateDownloaded": "Pobrano aktualizację v{{version}}",
     "viewUpdate": "Zobacz",
     "remuxed": "Remux zakończony",
-    "demuxed": "Strumienie wyodrębnione pomyślnie"
+    "demuxed": "Strumienie wyodrębnione pomyślnie",
+    "remuxQueued": "Remux dodany do kolejki Mux",
+    "demuxQueued": "Strumienie dodane do kolejki Mux"
   },
   "profiles": {
     "searchPlaceholder": "Szukaj profili...",
@@ -1270,6 +1269,39 @@
       "hardwareNone": "Tylko oprogramowanie",
       "encoderVideo": "Wideo",
       "encoderAudio": "Audio"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Kolejka wsadowa",
+    "tabMux": "Kolejka Mux",
+    "empty": "Kolejka Mux jest pusta.",
+    "emptyHint": "Zadania remux i demux są dodawane z ich własnych stron.",
+    "openRemux": "Otwórz Remux",
+    "openDemux": "Otwórz Demux",
+    "start": "Uruchom",
+    "pause": "Pauza",
+    "resume": "Wznów",
+    "cancelAll": "Anuluj wszystko",
+    "clearCompleted": "Wyczyść ukończone",
+    "concurrency": "Równoległe zadania",
+    "stats": "{{queued}} w kolejce, {{running}} w trakcie, {{done}} ukończonych, {{failed}} nieudanych",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "{{count}} wyjść",
+    "outputDir": "Folder wyjściowy",
+    "noOutputs": "Brak wyjść",
+    "detailsTargets": "Wyjście",
+    "detailsCreatedAt": "Dodano",
+    "viewQueue": "Zobacz kolejkę",
+    "addToQueue": "Dodaj do kolejki",
+    "dragHandle": "Przeciągnij, aby zmienić kolejność",
+    "paused": "Wstrzymano",
+    "filters": {
+      "all": "Wszystkie",
+      "queued": "W kolejce",
+      "running": "W trakcie",
+      "done": "Ukończone",
+      "failed": "Nieudane"
     }
   }
 }

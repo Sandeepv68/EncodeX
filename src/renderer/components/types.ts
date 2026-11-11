@@ -17,6 +17,7 @@ import type {
   EncoderType,
   MediaInfo,
   MediaStreamInfo,
+  MuxQueueJob,
   QueueJob,
   ThumbnailStrip,
   TranscoderType,
@@ -210,22 +211,6 @@ export interface BufferedFrame {
  * @property {(value: string) => void} onPixelFormatChange - Fired on pixel format change.
  * @property {(value: string[]) => void} onVideoFiltersChange - Fired when the
  *   ordered video-filter chain is replaced.
- * @property {Array<'video'|'audio'|'subtitle'>} demuxKinds - Stream kinds the
- *   'demux' operation extracts from each file.
- * @property {string} demuxVideoContainer - 'demux' video conversion target
- *   container extension ('' = lossless stream copy).
- * @property {string} demuxAudioCodec - 'demux' audio conversion encoder ('' =
- *   lossless stream copy).
- * @property {string} demuxSubtitleFormat - 'demux' subtitle conversion format
- *   ('' = lossless stream copy).
- * @property {(kinds: Array<'video'|'audio'|'subtitle'>) => void} onDemuxKindsChange
- *   - Fired when the set of extracted stream kinds changes.
- * @property {(value: string) => void} onDemuxVideoContainerChange - Fired on
- *   the demux video conversion-target change.
- * @property {(value: string) => void} onDemuxAudioCodecChange - Fired on the
- *   demux audio conversion-target change.
- * @property {(value: string) => void} onDemuxSubtitleFormatChange - Fired on
- *   the demux subtitle conversion-target change.
  */
 export interface BatchEncodingPanelProps {
   operation: string;
@@ -241,10 +226,6 @@ export interface BatchEncodingPanelProps {
   flipV: boolean;
   pixelFormat: string;
   videoFilters: string[];
-  demuxKinds: Array<'video' | 'audio' | 'subtitle'>;
-  demuxVideoContainer: string;
-  demuxAudioCodec: string;
-  demuxSubtitleFormat: string;
   optionsLocked?: boolean;
   optionsEditable?: boolean;
   onVideoCodecChange: (value: string) => void;
@@ -259,10 +240,6 @@ export interface BatchEncodingPanelProps {
   onFlipVChange: (value: boolean) => void;
   onPixelFormatChange: (value: string) => void;
   onVideoFiltersChange: (value: string[]) => void;
-  onDemuxKindsChange: (kinds: Array<'video' | 'audio' | 'subtitle'>) => void;
-  onDemuxVideoContainerChange: (value: string) => void;
-  onDemuxAudioCodecChange: (value: string) => void;
-  onDemuxSubtitleFormatChange: (value: string) => void;
   onApplyProfile?: (profile: ConversionProfile) => void;
 }
 
@@ -606,6 +583,23 @@ export interface QueueJobCardProps {
   editLocked?: boolean;
   customized?: boolean;
   dragOverlay?: boolean;
+}
+
+/**
+ * Props for a single job card in the mux queue.
+ * @interface MuxQueueJobCardProps
+ * @property {MuxQueueJob} job - The mux queue job to display.
+ * @property {ConversionProgress | null | undefined} [progress] - Latest live
+ *   progress snapshot (time/speed/eta captions) for the running job.
+ * @property {(id: string) => void} onRemove - Fired with the job id on remove.
+ * @property {(job: MuxQueueJob) => void} [onRetry] - Fired with the failed job
+ *   when the retry action is used.
+ */
+export interface MuxQueueJobCardProps {
+  job: MuxQueueJob;
+  progress?: ConversionProgress | null;
+  onRemove: (id: string) => void;
+  onRetry?: (job: MuxQueueJob) => void;
 }
 
 /**

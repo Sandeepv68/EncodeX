@@ -49,6 +49,7 @@ import {
 } from './components/PageSkeletons';
 import ErrorSnackbar from './components/ErrorSnackbar';
 import ToastContainer from './components/ToastContainer';
+import MuxQueueSync from './components/MuxQueueSync';
 import CloseConfirmDialog from './components/CloseConfirmDialog';
 import Footer from './components/Footer';
 import AppDrawer from './components/AppDrawer';
@@ -383,6 +384,7 @@ function AppLayout() {
       </AppBody>
       <ErrorSnackbar error={currentError} onClose={clearError} />
       <ToastContainer />
+      <MuxQueueSync />
       <CloseConfirmDialog />
       <UpdateDialog />
       <ShortcutsHelpDialog open={helpOpen} onClose={() => setHelpOpen(false)} />

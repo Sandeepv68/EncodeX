@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Una sulineq allanngortinneqarsinnaanngilaq.",
     "condense": "Mikissusaruk",
     "expand": "Annertusaruk",
-    "clearAll": "Eradluutit tamarmik",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Containeri, stream-it koppi iffaat. \"Automatik\" kingunnaq aatsitassap file-ia atorsimavaa."
+    "clearAll": "Eradluutit tamarmik"
   },
   "progress": {
     "title": "Allanngortitsineq ingerlanera",
@@ -528,7 +525,9 @@
     "updateDownloaded": "Uppdateriaq v{{version}} niissutigineqarpoq",
     "viewUpdate": "Takuss",
     "remuxed": "Remux naammassineqarpoq",
-    "demuxed": "Stream-it annerani immikkut annilerneqarsimapput"
+    "demuxed": "Stream-it annerani immikkut annilerneqarsimapput",
+    "remuxQueued": "Remux Mux Ilerleqmut ilanngunneqarpoq",
+    "demuxQueued": "Stream-it Mux Ilerleqmut ilanngunneqarput"
   },
   "profiles": {
     "searchPlaceholder": "Ugisinnaanut misissuisoq...",
@@ -1270,6 +1269,39 @@
       "hardwareNone": "Software-kiisun",
       "encoderVideo": "Video",
       "encoderAudio": "Audio"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Ilerleq",
+    "tabMux": "Mux Ilerleq",
+    "empty": "Mux Ilerleqi tammaqartoq.",
+    "emptyHint": "Remux- aamma Demux-sulik suliassuutait nangneqsarpassunek naggumissut.",
+    "openRemux": "Allanngornerit Remux",
+    "openDemux": "Allanngornerit Demux",
+    "start": "Aallartit",
+    "pause": "Unartak",
+    "resume": "Saqqummersaruk",
+    "cancelAll": "Tamaasa piumasuunngikkit",
+    "clearCompleted": "Naammassineqartut piiaruk",
+    "concurrency": "Concurrency",
+    "stats": "{{queued}} ikiuttat, {{running}} inissisimanitut, {{done}} naammassineqartoq, {{failed}} kinguneqanngitsut",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "{{count}} anineqassaaq",
+    "outputDir": "Anniaat mappi",
+    "noOutputs": "Anineqassaaq aammaqartoq",
+    "detailsTargets": "Anineqassaaq",
+    "detailsCreatedAt": "Ilanngussaneqarpoq",
+    "viewQueue": "Takussa Ilerleq",
+    "addToQueue": "Ilerleqmut ilannguk",
+    "dragHandle": "Drag-immik allanngortit",
+    "paused": "Unartoq",
+    "filters": {
+      "all": "Tamarmik",
+      "queued": "Ikiuttat",
+      "running": "Inissisimanitut",
+      "done": "Naammassineqartoq",
+      "failed": "Kinguneqanngitsut"
     }
   }
 }

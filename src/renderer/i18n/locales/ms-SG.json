@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Kerja ini tidak boleh diedit lagi.",
     "condense": "Ciutkan",
     "expand": "Kembangkan",
-    "clearAll": "Padam Semua",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Bekas tempat strim disalin masuk ke. \"Auto\" mengekalkan sambungan setiap fail sumber."
+    "clearAll": "Padam Semua"
   },
   "progress": {
     "title": "Kemajuan penukaran",
@@ -528,7 +525,9 @@
     "updateDownloaded": "Kemas kini v{{version}} dimuat turun",
     "viewUpdate": "Lihat",
     "remuxed": "Remux selesai",
-    "demuxed": "Strim berjaya diekstrak"
+    "demuxed": "Strim berjaya diekstrak",
+    "remuxQueued": "Remux ditambah ke Baris Giliran Mux",
+    "demuxQueued": "Aliran ditambah ke Baris Giliran Mux"
   },
   "profiles": {
     "searchPlaceholder": "Cari profil...",
@@ -1270,6 +1269,39 @@
       "hardwareNone": "Perisian sahaja",
       "encoderVideo": "Video",
       "encoderAudio": "Audio"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Baris Giliran Kelompok",
+    "tabMux": "Baris Giliran Mux",
+    "empty": "Baris giliran Mux kosong.",
+    "emptyHint": "Tugas remux dan demux ditambah dari halaman masing-masing.",
+    "openRemux": "Buka Remux",
+    "openDemux": "Buka Demux",
+    "start": "Mulakan",
+    "pause": "Jeda",
+    "resume": "Sambung",
+    "cancelAll": "Batal Semua",
+    "clearCompleted": "Kosongkan selesai",
+    "concurrency": "Tugas selari",
+    "stats": "{{queued}} beratur, {{running}} berjalan, {{done}} selesai, {{failed}} gagal",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "{{count}} output",
+    "outputDir": "Folder output",
+    "noOutputs": "Tiada output",
+    "detailsTargets": "Output",
+    "detailsCreatedAt": "Ditambah",
+    "viewQueue": "Lihat baris giliran",
+    "addToQueue": "Tambah ke baris giliran",
+    "dragHandle": "Seret untuk menyusun semula",
+    "paused": "Dijeda",
+    "filters": {
+      "all": "Semua",
+      "queued": "Beratur",
+      "running": "Berjalan",
+      "done": "Selesai",
+      "failed": "Gagal"
     }
   }
 }

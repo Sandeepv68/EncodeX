@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Hierdie taak kan nie meer geredigeer word nie.",
     "condense": "Vou in",
     "expand": "Brei uit",
-    "clearAll": "Maak alles skoon",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Die houer waarheen strome gekopieer word. \"Outomaties\" behou die uitbreiding van elke bronlêer."
+    "clearAll": "Maak alles skoon"
   },
   "progress": {
     "title": "Omskakelingsvordering",
@@ -528,7 +525,9 @@
     "updateDownloaded": "Opdatering v{{version}} afgelaai",
     "viewUpdate": "Bekyk",
     "remuxed": "Remux voltooi",
-    "demuxed": "Strome suksesvol onttrek"
+    "demuxed": "Strome suksesvol onttrek",
+    "remuxQueued": "Remux by die Mux-waglys gevoeg",
+    "demuxQueued": "Strome by die Mux-waglys gevoeg"
   },
   "profiles": {
     "searchPlaceholder": "Soek profiele...",
@@ -1270,6 +1269,39 @@
       "hardwareNone": "Slegs sagteware",
       "encoderVideo": "Video",
       "encoderAudio": "Oudio"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Groepwaglys",
+    "tabMux": "Mux-waglys",
+    "empty": "Die Mux-waglys is leeg.",
+    "emptyHint": "Remux- en demux-take word vanaf hul eie bladsye by.",
+    "openRemux": "Maak Remux oop",
+    "openDemux": "Maak Demux oop",
+    "start": "Begin",
+    "pause": "Rus",
+    "resume": "Hervat",
+    "cancelAll": "Kanselleer Alles",
+    "clearCompleted": "Maak voltooide skoon",
+    "concurrency": "Parallelle take",
+    "stats": "{{queued}} in wag, {{running}} loop, {{done}} klaar, {{failed}} misluk",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "{{count}} uitset(te)",
+    "outputDir": "Uitvoergids",
+    "noOutputs": "Geen uitsette nie",
+    "detailsTargets": "Uitset",
+    "detailsCreatedAt": "Bygevoeg",
+    "viewQueue": "Bekyk waglys",
+    "addToQueue": "Voeg by die waglys",
+    "dragHandle": "Sleep om te herrangskik",
+    "paused": "Gepouseer",
+    "filters": {
+      "all": "Alles",
+      "queued": "In wag",
+      "running": "Loop",
+      "done": "Klaar",
+      "failed": "Misluk"
     }
   }
 }

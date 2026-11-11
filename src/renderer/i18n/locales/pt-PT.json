@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Esta tarefa já não pode ser editada.",
     "condense": "Recolher",
     "expand": "Expandir",
-    "clearAll": "Limpar tudo",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "O contentor para onde os fluxos são copiados. «Automático» mantém a extensão de cada ficheiro de origem."
+    "clearAll": "Limpar tudo"
   },
   "progress": {
     "title": "Progresso da conversão",
@@ -528,7 +525,9 @@
     "updateDownloaded": "Atualização v{{version}} transferida",
     "viewUpdate": "Ver",
     "remuxed": "Remux concluído",
-    "demuxed": "Fluxos extraídos com sucesso"
+    "demuxed": "Fluxos extraídos com sucesso",
+    "remuxQueued": "Remux adicionado à Fila Mux",
+    "demuxQueued": "Fluxos adicionados à Fila Mux"
   },
   "profiles": {
     "searchPlaceholder": "Pesquisar perfis...",
@@ -1270,6 +1269,39 @@
       "hardwareNone": "Apenas software",
       "encoderVideo": "Vídeo",
       "encoderAudio": "Áudio"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Fila em Lote",
+    "tabMux": "Fila Mux",
+    "empty": "A fila Mux está vazia.",
+    "emptyHint": "As tarefas de remux e demux são adicionadas nas respetivas páginas.",
+    "openRemux": "Abrir Remux",
+    "openDemux": "Abrir Demux",
+    "start": "Iniciar",
+    "pause": "Pausa",
+    "resume": "Retomar",
+    "cancelAll": "Cancelar Tudo",
+    "clearCompleted": "Limpar concluídos",
+    "concurrency": "Tarefas em paralelo",
+    "stats": "{{queued}} em fila, {{running}} em execução, {{done}} concluídos, {{failed}} com falha",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "{{count}} saída(s)",
+    "outputDir": "Pasta de saída",
+    "noOutputs": "Sem saídas",
+    "detailsTargets": "Saída",
+    "detailsCreatedAt": "Adicionado",
+    "viewQueue": "Ver fila",
+    "addToQueue": "Adicionar à fila",
+    "dragHandle": "Arraste para reordenar",
+    "paused": "Em pausa",
+    "filters": {
+      "all": "Todos",
+      "queued": "Em fila",
+      "running": "Em execução",
+      "done": "Concluídos",
+      "failed": "Com falha"
     }
   }
 }

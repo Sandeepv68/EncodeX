@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "このジョブは編集できなくなりました。",
     "condense": "折りたたむ",
     "expand": "展開する",
-    "clearAll": "すべてクリア",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "ストリームのコピー先コンテナー。「自動」では元のファイル拡張子をそのまま使います。"
+    "clearAll": "すべてクリア"
   },
   "progress": {
     "title": "変換の進行状況",
@@ -528,7 +525,9 @@
     "updateDownloaded": "更新 v{{version}} をダウンロードしました",
     "viewUpdate": "表示",
     "remuxed": "Remux が完了しました",
-    "demuxed": "ストリームを抽出しました"
+    "demuxed": "ストリームを抽出しました",
+    "remuxQueued": "Remux を Mux キューに追加しました",
+    "demuxQueued": "ストリームを Mux キューに追加しました"
   },
   "profiles": {
     "searchPlaceholder": "プロファイルを検索...",
@@ -1270,6 +1269,39 @@
       "hardwareNone": "ソフトウェアのみ",
       "encoderVideo": "動画",
       "encoderAudio": "音声"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "バッチキュー",
+    "tabMux": "Mux キュー",
+    "empty": "Mux キューは空です。",
+    "emptyHint": "リマックスとデマックスのジョブは、それぞれのページから追加されます。",
+    "openRemux": "Remux を開く",
+    "openDemux": "Demux を開く",
+    "start": "開始",
+    "pause": "一時停止",
+    "resume": "再開",
+    "cancelAll": "すべてキャンセル",
+    "clearCompleted": "完了をクリア",
+    "concurrency": "並行ジョブ",
+    "stats": "{{queued}} 待機中、{{running}} 実行中、{{done}} 完了、{{failed}} 失敗",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "出力 {{count}} 件",
+    "outputDir": "出力フォルダ",
+    "noOutputs": "出力なし",
+    "detailsTargets": "出力",
+    "detailsCreatedAt": "追加日時",
+    "viewQueue": "キューを表示",
+    "addToQueue": "キューに追加",
+    "dragHandle": "ドラッグして並べ替え",
+    "paused": "一時停止中",
+    "filters": {
+      "all": "すべて",
+      "queued": "待機中",
+      "running": "実行中",
+      "done": "完了",
+      "failed": "失敗"
     }
   }
 }

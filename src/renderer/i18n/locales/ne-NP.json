@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "यो काम अब सम्पादनयोग्य छैन।",
     "condense": "साँघुरो बनाउनुहोस्",
     "expand": "फराकिलो बनाउनुहोस्",
-    "clearAll": "सबै मेटाउनुहोस्",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "स्ट्रिमहरू प्रतिलिपि गरिने कन्टेनर। \"स्वतः\" ले प्रत्येक स्रोत फाइलको विस्तार कायम राख्छ।"
+    "clearAll": "सबै मेटाउनुहोस्"
   },
   "progress": {
     "title": "रूपान्तरण प्रगति",
@@ -528,7 +525,9 @@
     "updateDownloaded": "अपडेट v{{version}} डाउनलोड भयो",
     "viewUpdate": "हेर्नुहोस्",
     "remuxed": "Remux पूरा भयो",
-    "demuxed": "स्ट्रिमहरू सफलतापूर्वक निकालियो"
+    "demuxed": "स्ट्रिमहरू सफलतापूर्वक निकालियो",
+    "remuxQueued": "रिमक्स मक्स कतारमा थपियो",
+    "demuxQueued": "स्ट्रिमहरू मक्स कतारमा थपिए"
   },
   "profiles": {
     "searchPlaceholder": "प्रोफाइलहरू खोज्नुहोस्...",
@@ -1270,6 +1269,39 @@
       "hardwareNone": "सफ्टवेयर मात्र",
       "encoderVideo": "भिडियो",
       "encoderAudio": "अडियो"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "ब्याच कतार",
+    "tabMux": "मक्स कतार",
+    "empty": "मक्स कतार खाली छ।",
+    "emptyHint": "रिमक्स र डीमक्स कामहरू आफ्नै पृष्ठहरूबाट थपिन्छन्।",
+    "openRemux": "रिमक्स खोल्नुहोस्",
+    "openDemux": "डीमक्स खोल्नुहोस्",
+    "start": "सुरु गर्नुहोस्",
+    "pause": "रोक्नुहोस्",
+    "resume": "जारी राख्नुहोस्",
+    "cancelAll": "सबै रद्द गर्नुहोस्",
+    "clearCompleted": "सम्पन्न खाली गर्नुहोस्",
+    "concurrency": "समानान्तर कामहरू",
+    "stats": "{{queued}} कतारमा, {{running}} चल्दै, {{done}} सम्पन्न, {{failed}} असफल",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "{{count}} आउटपुट",
+    "outputDir": "आउटपुट फोल्डर",
+    "noOutputs": "कुनै आउटपुट छैन",
+    "detailsTargets": "आउटपुट",
+    "detailsCreatedAt": "थपिएको",
+    "viewQueue": "कतार हेर्नुहोस्",
+    "addToQueue": "कतारमा थप्नुहोस्",
+    "dragHandle": "पुनः क्रमबद्ध गर्न तान्नुहोस्",
+    "paused": "रोकिएको",
+    "filters": {
+      "all": "सबै",
+      "queued": "कतारमा",
+      "running": "चल्दै",
+      "done": "सम्पन्न",
+      "failed": "असफल"
     }
   }
 }

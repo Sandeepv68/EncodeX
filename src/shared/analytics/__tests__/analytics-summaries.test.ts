@@ -6,7 +6,7 @@
 
 import { describe, it, expect } from 'vitest';
 import * as path from 'path';
-import { demuxAnalyticsSummary, remuxAnalyticsSummary } from '../analytics-summaries';
+import { demuxAnalyticsSummary, remuxAnalyticsSummary, targetCountBucket } from '../analytics-summaries';
 import type { DemuxTarget } from '../../codec-containers';
 import type { ConversionOptions } from '../../types';
 
@@ -121,5 +121,15 @@ describe('demuxAnalyticsSummary', () => {
 
   it('returns an empty summary for no targets', () => {
     expect(demuxAnalyticsSummary([])).toEqual({ kindCounts: {}, streamCount: 0, convertedKinds: [] });
+  });
+});
+
+describe('targetCountBucket', () => {
+  it('buckets a target count so no exact number is reported', () => {
+    expect(targetCountBucket(0)).toBe('none');
+    expect(targetCountBucket(1)).toBe('1');
+    expect(targetCountBucket(3)).toBe('2-4');
+    expect(targetCountBucket(7)).toBe('5-8');
+    expect(targetCountBucket(20)).toBe('9+');
   });
 });

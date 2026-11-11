@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Kāore e taea te whakatika i tēnei mahi.",
     "condense": "Whakaiti",
     "expand": "Whakanui",
-    "clearAll": "Whakangaroa katoa",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Te ipu ka tāruatia ngā awa ki roto. \"Aunoa\" ka pupuri i te taapiri o ia kōnae taketake."
+    "clearAll": "Whakangaroa katoa"
   },
   "progress": {
     "title": "Te ahunga whakamua o te hurihanga",
@@ -528,7 +525,9 @@
     "updateDownloaded": "Kua tangohia te whakahoutanga v{{version}}",
     "viewUpdate": "Tirohia",
     "remuxed": "Kua oti te Remux",
-    "demuxed": "Kua oti te tango awa"
+    "demuxed": "Kua oti te tango awa",
+    "remuxQueued": "Kua whakaputa te Remux ki te rārangi Mux",
+    "demuxQueued": "Kua whakaputa ngā te streaming ki te rārangi Mux"
   },
   "profiles": {
     "searchPlaceholder": "Tuhia haupae...",
@@ -1270,6 +1269,39 @@
       "hardwareNone": "Peke ngā kōrero",
       "encoderVideo": "Pakiwaituhi",
       "encoderAudio": "Whakaororongo"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Rārangi Tukinotanga",
+    "tabMux": "Rārangi Mux",
+    "empty": "Kua puta te rārangi Mux.",
+    "emptyHint": "Ka whakaputa ngā mahi remux, demux i ō rātou ao.",
+    "openRemux": "Whakatuwhera Remux",
+    "openDemux": "Whakatuwhera Demux",
+    "start": "Tīmata",
+    "pause": "Tārea",
+    "resume": "Haere tonu",
+    "cancelAll": "Whakakore Katoa",
+    "clearCompleted": "Mukua ngā Mea Oti",
+    "concurrency": "Ngā Mahi Whakarara",
+    "stats": "{{queued}} i te rārangi, {{running}} e rere ana, {{done}} oti, {{failed}} i rahua",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "{{count}} putanga",
+    "outputDir": "Kōpaki whakaputa",
+    "noOutputs": "Kā puta",
+    "detailsTargets": "Putanga",
+    "detailsCreatedAt": "I tāpiri",
+    "viewQueue": "Tirohia te rārangi",
+    "addToQueue": "Tāpiri ki te rārangi",
+    "dragHandle": "Tōia hei whakarārangi anō",
+    "paused": "Kua tārewa",
+    "filters": {
+      "all": "Katoa",
+      "queued": "I te rārangi",
+      "running": "E rere ana",
+      "done": "Oti",
+      "failed": "Rahua"
     }
   }
 }

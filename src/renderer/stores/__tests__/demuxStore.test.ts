@@ -19,6 +19,7 @@ const convertFileMock = vi.mocked(window.electronAPI.convertFile);
 const pauseConversionMock = vi.mocked(window.electronAPI.pauseConversion);
 const resumeConversionMock = vi.mocked(window.electronAPI.resumeConversion);
 const cancelConversionMock = vi.mocked(window.electronAPI.cancelConversion);
+const muxQueueAddMock = vi.mocked(window.electronAPI.muxQueueAdd);
 const progressHandler = vi.mocked(window.electronAPI.onConversionProgress).mock.calls[0]?.[0];
 
 function resetStore(): void {
@@ -275,6 +276,84 @@ describe('demuxStore', () => {
     await useDemuxStore.getState().startDemux();
     expect(convertFileMock).not.toHaveBeenCalled();
     expect(useErrorStore.getState().currentError?.code).toBe(ErrorCode.STREAM_NOT_FOUND);
+  });
+
+  it('enqueueDemux adds every target to the mux queue as one job', async () => {
+    muxQueueAddMock.mockResolvedValue('mux-1');
+    await useDemuxStore.getState().setInput('/in/movie.mkv');
+    await useDemuxStore.getState().enqueueDemux();
+    expect(muxQueueAddMock).toHaveBeenCalledTimes(1);
+    const payload = muxQueueAddMock.mock.calls[0][0];
+    expect(payload.kind).toBe('demux');
+    expect(payload.input).toBe('/in/movie.mkv');
+    expect(payload.targets).toHaveLength(4);
+    expect(payload.targets[0]).toMatchObject({
+      output: '/in/movie.video.mp4',
+      options: expect.objectContaining({ copy: true, map: ['0:v:0'] }),
+    });
+    expect(convertFileMock).not.toHaveBeenCalled();
+    expect(useToastStore.getState().toasts).toHaveLength(1);
+  });
+
+  it('enqueueDemux offers a toast action that opens the mux queue tab', async () => {
+    muxQueueAddMock.mockResolvedValue('mux-1');
+    await useDemuxStore.getState().setInput('/in/movie.mkv');
+    await useDemuxStore.getState().enqueueDemux();
+    const toast = useToastStore.getState().toasts[0];
+    expect(toast.action?.label).toBe('View queue');
+    toast.action?.onClick?.();
+    expect(window.location.hash).toBe('#/batch?tab=mux');
+    window.location.hash = '';
+  });
+
+  it('enqueueDemux maps a single target to one mux queue target', async () => {
+    muxQueueAddMock.mockResolvedValue('mux-1');
+    await useDemuxStore.getState().setInput('/in/movie.mkv');
+    useDemuxStore.setState({ selectedIndices: [0] });
+    useDemuxStore.getState().setMedia({});
+    await useDemuxStore.getState().enqueueDemux();
+
+    const payload = muxQueueAddMock.mock.calls[0][0];
+    expect(payload.targets).toHaveLength(1);
+    expect(payload.targets[0].output).toContain('movie.video');
+    expect(payload.targets[0].label).toBe('video:0');
+    expect(payload.targets[0].options).toMatchObject({ copy: true, map: ['0:v:0'] });
+  });
+
+  it('enqueueDemux maps every split channel to its own mux queue target', async () => {
+    muxQueueAddMock.mockResolvedValue('mux-1');
+    await useDemuxStore.getState().setInput('/in/movie.mkv');
+    useDemuxStore.getState().toggleSplitChannel(1);
+    await useDemuxStore.getState().enqueueDemux();
+
+    const payload = muxQueueAddMock.mock.calls[0][0];
+    const splitTargets = payload.targets.filter((target) => target.label === 'audio:1');
+    expect(splitTargets).toHaveLength(2);
+    expect(new Set(splitTargets.map((target) => target.output)).size).toBe(2);
+    for (const target of splitTargets) {
+      expect(target.options.map).toEqual(['0:a:0']);
+    }
+  });
+
+  it('enqueueDemux rejects a missing input or an empty target list', async () => {
+    expectAppLog('warn', 'renderer/stores/demuxStore');
+    await useDemuxStore.getState().enqueueDemux();
+    expect(useErrorStore.getState().currentError?.code).toBe(ErrorCode.INPUT_NOT_SPECIFIED);
+    expect(muxQueueAddMock).not.toHaveBeenCalled();
+
+    await useDemuxStore.getState().setInput('/in/movie.mkv');
+    useDemuxStore.setState({ targets: [] });
+    await useDemuxStore.getState().enqueueDemux();
+    expect(useErrorStore.getState().currentError?.code).toBe(ErrorCode.STREAM_NOT_FOUND);
+    expect(muxQueueAddMock).not.toHaveBeenCalled();
+  });
+
+  it('enqueueDemux surfaces a failed enqueue through the error store', async () => {
+    muxQueueAddMock.mockRejectedValue(new Error('queue rejected'));
+    await useDemuxStore.getState().setInput('/in/movie.mkv');
+    await useDemuxStore.getState().enqueueDemux();
+    expect(useErrorStore.getState().currentError).not.toBeNull();
+    expect(useToastStore.getState().toasts).toHaveLength(0);
   });
 
   it('startDemux runs each target sequentially', async () => {

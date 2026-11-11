@@ -69,10 +69,13 @@ import {
   isUpdateInfo,
   isUpdateProgress,
 } from '../shared/ipc-guards';
+import { isMuxQueueJob, isMuxQueueMovedEvent, isMuxQueueProgressEvent } from '../shared/mux-queue-guards';
 import {
   ConversionOptions,
   ConversionProgress,
   QueueJob,
+  MuxQueueAddPayload,
+  MuxQueueJob,
   PlayerFrame,
   PlayerAudioChunk,
   MediaInfo,
@@ -114,6 +117,22 @@ import {
   LOG_ON_QUEUE_MOVED,
   LOG_ON_QUEUE_REMOVED,
   LOG_ON_QUEUE_STATUS_CHANGE,
+  LOG_ON_MUX_QUEUE_ADDED,
+  LOG_ON_MUX_QUEUE_CANCELLED,
+  LOG_ON_MUX_QUEUE_MOVED,
+  LOG_ON_MUX_QUEUE_REMOVED,
+  LOG_ON_MUX_QUEUE_STATUS_CHANGE,
+  LOG_IPC_MUX_QUEUE_ADD,
+  LOG_IPC_MUX_QUEUE_CANCEL_ALL_CALLED,
+  LOG_IPC_MUX_QUEUE_CLEAR_COMPLETED_CALLED,
+  LOG_IPC_MUX_QUEUE_GET_STATE,
+  LOG_IPC_MUX_QUEUE_LIST,
+  LOG_IPC_MUX_QUEUE_MOVE_TO,
+  LOG_IPC_MUX_QUEUE_PAUSE_CALLED,
+  LOG_IPC_MUX_QUEUE_REMOVE,
+  LOG_IPC_MUX_QUEUE_RESUME_CALLED,
+  LOG_IPC_MUX_QUEUE_SET_CONCURRENCY,
+  LOG_IPC_MUX_QUEUE_START_CALLED,
   LOG_ON_WINDOW_MAXIMIZED_CHANGE,
   LOG_PAUSE_CONVERSION_CALLED,
   LOG_PLAYER_CLOSE_CALLED,
@@ -686,6 +705,119 @@ const api = {
   queueStart: () => {
     log.info(LOG_QUEUE_START_CALLED);
     return ipcRenderer.invoke(IPC.QUEUE_START) as Promise<void>;
+  },
+  /**
+   * Adds a remux or demux job to the dedicated mux queue managed in the main
+   * process. The job stays QUEUED until the user starts the mux queue.
+   * Logs the request at info level, then invokes the main process over the
+   * `IPC.MUX_QUEUE_ADD` ('mux-queue-add') channel.
+   *
+   * @param {MuxQueueAddPayload} payload - The remux or demux job description.
+   * @returns {Promise<string>} Resolves with the unique id assigned to the job.
+   * @throws {Error} Rejects with a formatted AppError if the job could not be added.
+   */
+  muxQueueAdd: (payload: MuxQueueAddPayload) => {
+    log.info(LOG_IPC_MUX_QUEUE_ADD, payload?.kind);
+    return ipcRenderer.invoke(IPC.MUX_QUEUE_ADD, payload) as Promise<string>;
+  },
+  /**
+   * Cancels a running mux job and removes it from the mux queue.
+   * Logs the call at info level, then invokes the main process over the
+   * `IPC.MUX_QUEUE_REMOVE` ('mux-queue-remove') channel.
+   *
+   * @param {string} id - Id of the job to cancel and remove.
+   * @returns {Promise<void>} Resolves once the removal request has been handled.
+   */
+  muxQueueRemove: (id: string) => {
+    log.info(LOG_IPC_MUX_QUEUE_REMOVE, id);
+    return ipcRenderer.invoke(IPC.MUX_QUEUE_REMOVE, id) as Promise<void>;
+  },
+  /**
+   * Returns the current list of jobs in the mux queue.
+   *
+   * @returns {Promise<MuxQueueJob[]>} Resolves with the full array of mux jobs.
+   */
+  muxQueueList: () => {
+    log.debug(LOG_IPC_MUX_QUEUE_LIST);
+    return ipcRenderer.invoke(IPC.MUX_QUEUE_LIST) as Promise<MuxQueueJob[]>;
+  },
+  /**
+   * Reads the mux queue's runtime state (paused flag and concurrency cap).
+   *
+   * @returns {Promise<{paused: boolean, concurrency: number}>} Resolves with
+   *   whether the queue is paused and the parallel-job cap.
+   */
+  muxQueueGetState: () => {
+    log.debug(LOG_IPC_MUX_QUEUE_GET_STATE);
+    return ipcRenderer.invoke(IPC.MUX_QUEUE_GET_STATE) as Promise<{ paused: boolean; concurrency: number }>;
+  },
+  /**
+   * Starts processing the queued mux jobs.
+   *
+   * @returns {Promise<void>} Resolves once processing is kicked off.
+   */
+  muxQueueStart: () => {
+    log.info(LOG_IPC_MUX_QUEUE_START_CALLED);
+    return ipcRenderer.invoke(IPC.MUX_QUEUE_START) as Promise<void>;
+  },
+  /**
+   * Pauses the mux queue: the main process suspends every active mux job and
+   * blocks queued jobs until `muxQueueResume` is called.
+   *
+   * @returns {Promise<void>} Resolves once the queue is paused.
+   */
+  muxQueuePause: () => {
+    log.info(LOG_IPC_MUX_QUEUE_PAUSE_CALLED);
+    return ipcRenderer.invoke(IPC.MUX_QUEUE_PAUSE) as Promise<void>;
+  },
+  /**
+   * Resumes a paused mux queue.
+   *
+   * @returns {Promise<void>} Resolves once the queue is resumed.
+   */
+  muxQueueResume: () => {
+    log.info(LOG_IPC_MUX_QUEUE_RESUME_CALLED);
+    return ipcRenderer.invoke(IPC.MUX_QUEUE_RESUME) as Promise<void>;
+  },
+  /**
+   * Cancels every job in the mux queue.
+   *
+   * @returns {Promise<void>} Resolves once all jobs have been cancelled.
+   */
+  muxQueueCancelAll: () => {
+    log.info(LOG_IPC_MUX_QUEUE_CANCEL_ALL_CALLED);
+    return ipcRenderer.invoke(IPC.MUX_QUEUE_CANCEL_ALL) as Promise<void>;
+  },
+  /**
+   * Removes every completed and failed job from the mux queue.
+   *
+   * @returns {Promise<number>} Resolves with the number of jobs removed.
+   */
+  muxQueueClearCompleted: () => {
+    log.info(LOG_IPC_MUX_QUEUE_CLEAR_COMPLETED_CALLED);
+    return ipcRenderer.invoke(IPC.MUX_QUEUE_CLEAR_COMPLETED) as Promise<number>;
+  },
+  /**
+   * Sets how many mux jobs run in parallel.
+   *
+   * @param {number} concurrency - The concurrency cap.
+   * @returns {Promise<void>} Resolves once the cap is applied.
+   */
+  muxQueueSetConcurrency: (concurrency: number) => {
+    log.info(LOG_IPC_MUX_QUEUE_SET_CONCURRENCY, concurrency);
+    return ipcRenderer.invoke(IPC.MUX_QUEUE_SET_CONCURRENCY, concurrency) as Promise<void>;
+  },
+  /**
+   * Reorders a QUEUED mux job to a target position within the QUEUED
+   * subsequence.
+   *
+   * @param {string} id - Id of the QUEUED job to move.
+   * @param {number} toPosition - Target index within the QUEUED subsequence.
+   * @returns {Promise<boolean>} Resolves true when the job was moved.
+   */
+  muxQueueMoveTo: (id: string, toPosition: number) => {
+    log.info(LOG_IPC_MUX_QUEUE_MOVE_TO, id, toPosition);
+    return ipcRenderer.invoke(IPC.MUX_QUEUE_MOVE_TO, id, toPosition) as Promise<boolean>;
   },
   /**
    * Exports the current batch queue to a JSON file chosen with a native save
@@ -1319,6 +1451,147 @@ const api = {
     };
     ipcRenderer.on(IPC.QUEUE_MOVED, handler);
     return () => ipcRenderer.removeListener(IPC.QUEUE_MOVED, handler);
+  },
+  /**
+   * Subscribes to job-added events from the mux queue, pushed over
+   * `IPC.MUX_QUEUE_ADDED` ('mux-queue-added').
+   *
+   * @param {(job: MuxQueueJob) => void} cb - Callback invoked with the newly added job.
+   * @returns {() => void} An unsubscribe function that removes the listener.
+   */
+  onMuxQueueAdded: (cb: (job: MuxQueueJob) => void) => {
+    const handler = (_event: IpcRendererEvent, job: unknown) => {
+      if (!isMuxQueueJob(job)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.MUX_QUEUE_ADDED,
+          observed: typeof job,
+        });
+        return;
+      }
+      log.info(LOG_ON_MUX_QUEUE_ADDED, job.id);
+      cb(job);
+    };
+    ipcRenderer.on(IPC.MUX_QUEUE_ADDED, handler);
+    return () => ipcRenderer.removeListener(IPC.MUX_QUEUE_ADDED, handler);
+  },
+  /**
+   * Subscribes to job-removed events from the mux queue, pushed over
+   * `IPC.MUX_QUEUE_REMOVED` ('mux-queue-removed').
+   *
+   * @param {(id: string) => void} cb - Callback invoked with the id of the removed job.
+   * @returns {() => void} An unsubscribe function that removes the listener.
+   */
+  onMuxQueueRemoved: (cb: (id: string) => void) => {
+    const handler = (_event: IpcRendererEvent, id: unknown) => {
+      if (!isString(id)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.MUX_QUEUE_REMOVED,
+          observed: typeof id,
+        });
+        return;
+      }
+      log.info(LOG_ON_MUX_QUEUE_REMOVED, id);
+      cb(id);
+    };
+    ipcRenderer.on(IPC.MUX_QUEUE_REMOVED, handler);
+    return () => ipcRenderer.removeListener(IPC.MUX_QUEUE_REMOVED, handler);
+  },
+  /**
+   * Subscribes to mux queue job status transitions, pushed over
+   * `IPC.MUX_QUEUE_STATUS_CHANGE` ('mux-queue-status-change').
+   *
+   * @param {(job: MuxQueueJob) => void} cb - Callback invoked with the job in its new status.
+   * @returns {() => void} An unsubscribe function that removes the listener.
+   */
+  onMuxQueueStatusChange: (cb: (job: MuxQueueJob) => void) => {
+    const handler = (_event: IpcRendererEvent, job: unknown) => {
+      if (!isMuxQueueJob(job)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.MUX_QUEUE_STATUS_CHANGE,
+          observed: typeof job,
+        });
+        return;
+      }
+      log.debug(LOG_ON_MUX_QUEUE_STATUS_CHANGE, job.id, job.status);
+      cb(job);
+    };
+    ipcRenderer.on(IPC.MUX_QUEUE_STATUS_CHANGE, handler);
+    return () => ipcRenderer.removeListener(IPC.MUX_QUEUE_STATUS_CHANGE, handler);
+  },
+  /**
+   * Subscribes to per-job progress events from the mux queue, pushed over
+   * `IPC.MUX_QUEUE_PROGRESS` ('mux-queue-progress').
+   *
+   * @param {(data: { job: MuxQueueJob; progress: ConversionProgress }) => void} cb - Callback
+   *   receiving the mux job and its aggregated progress snapshot.
+   * @returns {() => void} An unsubscribe function that removes the listener.
+   */
+  onMuxQueueProgress: (cb: (data: { job: MuxQueueJob; progress: ConversionProgress }) => void) => {
+    const handler = (_event: IpcRendererEvent, data: unknown) => {
+      if (!isMuxQueueProgressEvent(data)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.MUX_QUEUE_PROGRESS,
+          observed: typeof data,
+        });
+        return;
+      }
+      cb(data);
+    };
+    ipcRenderer.on(IPC.MUX_QUEUE_PROGRESS, handler);
+    return () => ipcRenderer.removeListener(IPC.MUX_QUEUE_PROGRESS, handler);
+  },
+  /**
+   * Subscribes to the notification that the whole mux queue has been cancelled,
+   * pushed over `IPC.MUX_QUEUE_CANCELLED` ('mux-queue-cancelled').
+   *
+   * @param {() => void} cb - Callback invoked once when the mux queue is cancelled.
+   * @returns {() => void} An unsubscribe function that removes the listener.
+   */
+  onMuxQueueCancelled: (cb: () => void) => {
+    const handler = (_event: IpcRendererEvent) => {
+      log.info(LOG_ON_MUX_QUEUE_CANCELLED);
+      cb();
+    };
+    ipcRenderer.on(IPC.MUX_QUEUE_CANCELLED, handler);
+    return () => ipcRenderer.removeListener(IPC.MUX_QUEUE_CANCELLED, handler);
+  },
+  /**
+   * Subscribes to the notification that a QUEUED mux job was reordered, pushed
+   * over `IPC.MUX_QUEUE_MOVED` ('mux-queue-moved').
+   *
+   * @param {(data: { id: string; toPosition: number }) => void} cb - Callback
+   *   receiving the moved job id and its new index within the QUEUED subsequence.
+   * @returns {() => void} An unsubscribe function that removes the listener.
+   */
+  onMuxQueueMoved: (cb: (data: { id: string; toPosition: number }) => void) => {
+    const handler = (_event: IpcRendererEvent, data: unknown) => {
+      if (!isMuxQueueMovedEvent(data)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.MUX_QUEUE_MOVED,
+          observed: typeof data,
+        });
+        return;
+      }
+      log.debug(LOG_ON_MUX_QUEUE_MOVED, data.id, data.toPosition);
+      cb(data);
+    };
+    ipcRenderer.on(IPC.MUX_QUEUE_MOVED, handler);
+    return () => ipcRenderer.removeListener(IPC.MUX_QUEUE_MOVED, handler);
   },
   /**
    * Subscribes to decoded video frames emitted by the native player, pushed over

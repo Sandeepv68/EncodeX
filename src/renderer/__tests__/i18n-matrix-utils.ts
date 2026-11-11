@@ -108,6 +108,10 @@ const ALWAYS_IDENTICAL = new Set([
   'settings.ai.baseUrlPlaceholder',
   // CRF is the FFmpeg quality-mode acronym; only the numeric value changes.
   'copilot.target.crf',
+  // The mux queue's job-kind chips name the two operations; every locale
+  // keeps the product terms.
+  'muxQueue.kindRemux',
+  'muxQueue.kindDemux',
 ]);
 
 /**
@@ -158,6 +162,11 @@ const COGNATE_IDENTICAL: Record<string, Set<string>> = {
     'pl-PL',
   ]),
   'copilot.target.container': new Set(['da-DK', 'de-BE', 'de-DE', 'nb-NO', 'nl-BE', 'nl-NL', 'sv-SE']),
+  // The mux queue reuses each locale's own batch-queue wording, so a handful of
+  // its keys are true cognates of the English source.
+  'muxQueue.start': new Set(['da-DK', 'nb-NO']),
+  'muxQueue.pause': new Set(['fr-BE', 'fr-CA', 'fr-FR', 'nb-NO']),
+  'muxQueue.detailsTargets': new Set(['da-DK', 'fil-PH', 'it-IT', 'ms-MY', 'ms-SG', 'tl-PH']),
 };
 
 /**
@@ -171,9 +180,16 @@ const COGNATE_IDENTICAL: Record<string, Set<string>> = {
  * AI-provider setup actions: `sync:locales` copies the English string into
  * every locale, so without this guard a new Getting Started key would silently
  * ship as an English placeholder in all 47 non-English locales.
+ *
+ * `muxQueue.*` joined the set for the same reason, when the remux/demux queue
+ * shipped: its keys are the ones an English placeholder is most likely to slip
+ * through, since they are added to every locale at once.
  */
 export const NON_ENGLISH_REQUIRED = new Set(
-  [...baseLocale.keys].filter((key) => key.startsWith('copilot.') || key.startsWith('settings.ai.') || key.startsWith('gettingStarted.')),
+  [...baseLocale.keys].filter(
+    (key) =>
+      key.startsWith('copilot.') || key.startsWith('settings.ai.') || key.startsWith('gettingStarted.') || key.startsWith('muxQueue.'),
+  ),
 );
 
 /** English source values, keyed by dotted key, for identity comparison. */

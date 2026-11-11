@@ -1,5 +1,5 @@
-import type { QueueJob } from '../../shared/types';
 import { QUEUE_STATUS } from '../../shared/media-options';
+import type { ReorderableJob } from './types';
 
 /**
  * @fileoverview Pure helpers for computing batch queue reorder targets.
@@ -9,6 +9,10 @@ import { QUEUE_STATUS } from '../../shared/media-options';
  * derive the target queued-subsequence position from the visible reorder so
  * the renderer can issue a single `queueMoveTo(id, toPosition)` call. All
  * functions are pure and side-effect free.
+ *
+ * They are generic over the job shape so the batch queue and the mux queue
+ * share one implementation: both queues use the same `QUEUE_STATUS` values and
+ * the same "only QUEUED jobs move" rule.
  */
 
 /**
@@ -28,7 +32,7 @@ import { QUEUE_STATUS } from '../../shared/media-options';
  * @returns {number} The moved job's index within the QUEUED subsequence of the
  *   reordered queue (0-based).
  */
-export function computeQueuedTargetPosition(jobs: QueueJob[], movedId: string, newVisibleIds: string[]): number {
+export function computeQueuedTargetPosition<T extends ReorderableJob>(jobs: T[], movedId: string, newVisibleIds: string[]): number {
   const visibleSet = new Set(newVisibleIds);
   const statusById = new Map(jobs.map((job) => [job.id, job.status]));
   let beforeCount = 0;
@@ -56,7 +60,7 @@ export function computeQueuedTargetPosition(jobs: QueueJob[], movedId: string, n
  * @param {number} toPosition - Its new index within the QUEUED subsequence.
  * @returns {QueueJob[]} A new array with the reorder applied.
  */
-export function reorderJob(jobs: QueueJob[], id: string, toPosition: number): QueueJob[] {
+export function reorderJob<T extends ReorderableJob>(jobs: T[], id: string, toPosition: number): T[] {
   // Mirrors `JobQueue.moveJobTo`, which refuses a non-finite target outright.
   // `Math.floor(NaN)` is `NaN`, and `Math.max(0, Math.min(NaN, n))` propagates
   // it instead of clamping, so `ordered.splice(NaN, 0, moved)` would drop the

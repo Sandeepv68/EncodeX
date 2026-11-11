@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "This job is no longer editable.",
     "condense": "Condense",
     "expand": "Expand",
-    "clearAll": "Clear All",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "The container the streams are copied into. Auto keeps each file's source extension."
+    "clearAll": "Clear All"
   },
   "progress": {
     "title": "Conversion progress",
@@ -528,7 +525,9 @@
     "updateDownloaded": "Update v{{version}} downloaded",
     "viewUpdate": "View",
     "remuxed": "Remux complete",
-    "demuxed": "Streams extracted successfully"
+    "demuxed": "Streams extracted successfully",
+    "remuxQueued": "Remux added to the mux queue",
+    "demuxQueued": "Streams added to the mux queue"
   },
   "profiles": {
     "searchPlaceholder": "Search profiles...",
@@ -1270,6 +1269,39 @@
       "hardwareNone": "Software only",
       "encoderVideo": "Video",
       "encoderAudio": "Audio"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "General Queue",
+    "tabMux": "Mux Queue",
+    "empty": "The mux queue is empty.",
+    "emptyHint": "Remux and demux jobs are added from their own pages.",
+    "openRemux": "Open Remux",
+    "openDemux": "Open Demux",
+    "start": "Start",
+    "pause": "Pause",
+    "resume": "Resume",
+    "cancelAll": "Cancel all",
+    "clearCompleted": "Clear completed",
+    "concurrency": "Parallel jobs",
+    "stats": "{{queued}} queued, {{running}} running, {{done}} done, {{failed}} failed",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "{{count}} output(s)",
+    "outputDir": "Output folder",
+    "noOutputs": "No outputs",
+    "detailsTargets": "Output",
+    "detailsCreatedAt": "Added",
+    "viewQueue": "View queue",
+    "addToQueue": "Add to Queue",
+    "dragHandle": "Drag to reorder",
+    "paused": "Paused",
+    "filters": {
+      "all": "All",
+      "queued": "Queued",
+      "running": "Running",
+      "done": "Done",
+      "failed": "Failed"
     }
   }
 }

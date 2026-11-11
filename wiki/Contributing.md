@@ -44,7 +44,7 @@ npm run doc:drift:strict    # also fail on documents without markers
 npm run doc:drift:test      # unit tests for the checker
 
 # Tests
-npm test                    # unit suite (330 test files in src/) <!-- drift:test-files=343 -->
+npm test                    # unit suite (357 test files in src/) <!-- drift:test-files=357 -->
 npm run test:integration    # integration tests
 npm run test:e2e:ci         # e2e suite (needs npm run build first)
 

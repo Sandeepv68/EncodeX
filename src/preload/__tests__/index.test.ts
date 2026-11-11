@@ -70,6 +70,19 @@ describe('preload', () => {
     createdAt: 0,
   } as const;
 
+  /** A complete `MuxQueueJob`, as `main` actually sends it. */
+  const MUX_QUEUE_JOB_FIXTURE = {
+    id: 'mux-1',
+    kind: 'remux',
+    input: 'in.mp4',
+    output: 'out.mkv',
+    targets: [{ output: 'out.mkv', options: {} }],
+    transcoder: 'FFMPEG',
+    status: 'queued',
+    progress: 0,
+    createdAt: 0,
+  } as const;
+
   beforeEach(() => {
     vi.clearAllMocks();
     // The drop-logging throttle is module-global by design - it has to outlive a single handler to
@@ -126,6 +139,21 @@ describe('preload', () => {
     ['queueStart', IPC.QUEUE_START, []],
     ['queueExport', IPC.QUEUE_EXPORT, []],
     ['queueImport', IPC.QUEUE_IMPORT, []],
+    [
+      'muxQueueAdd',
+      IPC.MUX_QUEUE_ADD,
+      [{ kind: 'remux', input: 'in.mp4', output: 'out.mkv', targets: [{ output: 'out.mkv', options: {} }] }],
+    ],
+    ['muxQueueRemove', IPC.MUX_QUEUE_REMOVE, ['mux-1']],
+    ['muxQueueList', IPC.MUX_QUEUE_LIST, []],
+    ['muxQueueGetState', IPC.MUX_QUEUE_GET_STATE, []],
+    ['muxQueueStart', IPC.MUX_QUEUE_START, []],
+    ['muxQueuePause', IPC.MUX_QUEUE_PAUSE, []],
+    ['muxQueueResume', IPC.MUX_QUEUE_RESUME, []],
+    ['muxQueueCancelAll', IPC.MUX_QUEUE_CANCEL_ALL, []],
+    ['muxQueueClearCompleted', IPC.MUX_QUEUE_CLEAR_COMPLETED, []],
+    ['muxQueueSetConcurrency', IPC.MUX_QUEUE_SET_CONCURRENCY, [2]],
+    ['muxQueueMoveTo', IPC.MUX_QUEUE_MOVE_TO, ['mux-1', 1]],
     ['revealFile', IPC.REVEAL_FILE, ['/out/clip.mp4']],
     ['playerOpen', IPC.PLAYER_OPEN, ['v.mp4']],
     ['playerSeek', IPC.PLAYER_SEEK, ['00:00:01']],
@@ -158,6 +186,16 @@ describe('preload', () => {
     ['onQueueProgress', IPC.QUEUE_PROGRESS, { job: { ...QUEUE_JOB_FIXTURE }, progress: { ...CONVERSION_PROGRESS_FIXTURE, percent: 20 } }],
     ['onQueueCancelled', IPC.QUEUE_CANCELLED, undefined],
     ['onQueueMoved', IPC.QUEUE_MOVED, { id: 'id-1', toPosition: 2 }],
+    ['onMuxQueueAdded', IPC.MUX_QUEUE_ADDED, { ...MUX_QUEUE_JOB_FIXTURE }],
+    ['onMuxQueueRemoved', IPC.MUX_QUEUE_REMOVED, 'mux-1'],
+    ['onMuxQueueStatusChange', IPC.MUX_QUEUE_STATUS_CHANGE, { ...MUX_QUEUE_JOB_FIXTURE, status: 'running' }],
+    [
+      'onMuxQueueProgress',
+      IPC.MUX_QUEUE_PROGRESS,
+      { job: { ...MUX_QUEUE_JOB_FIXTURE }, progress: { ...CONVERSION_PROGRESS_FIXTURE, percent: 20 } },
+    ],
+    ['onMuxQueueCancelled', IPC.MUX_QUEUE_CANCELLED, undefined],
+    ['onMuxQueueMoved', IPC.MUX_QUEUE_MOVED, { id: 'mux-1', toPosition: 1 }],
     ['onPlayerFrame', IPC.PLAYER_FRAME, { data: new ArrayBuffer(0), width: 1, height: 1, pts: 0, generation: 0 }],
     ['onPlayerAudio', IPC.PLAYER_AUDIO, { data: new ArrayBuffer(0), sampleRate: 48000, channels: 2, generation: 0 }],
     ['onPlayerError', IPC.PLAYER_ERROR, 'decoder crashed'],
@@ -204,6 +242,12 @@ describe('preload', () => {
     ['onQueueProgress', IPC.QUEUE_PROGRESS, null],
     ['onQueueMoved', IPC.QUEUE_MOVED, { id: 'id-1', toPosition: '2' }],
     ['onQueueRemoved', IPC.QUEUE_REMOVED, { id: 'id-1' }],
+    ['onMuxQueueAdded', IPC.MUX_QUEUE_ADDED, null],
+    ['onMuxQueueAdded', IPC.MUX_QUEUE_ADDED, { id: 'mux-1' }],
+    ['onMuxQueueRemoved', IPC.MUX_QUEUE_REMOVED, { id: 'mux-1' }],
+    ['onMuxQueueStatusChange', IPC.MUX_QUEUE_STATUS_CHANGE, { ...MUX_QUEUE_JOB_FIXTURE, targets: [] }],
+    ['onMuxQueueProgress', IPC.MUX_QUEUE_PROGRESS, { job: null, progress: { ...CONVERSION_PROGRESS_FIXTURE } }],
+    ['onMuxQueueMoved', IPC.MUX_QUEUE_MOVED, { id: 'mux-1', toPosition: '1' }],
     // A payload array is an object, so an `isRecord`-style check that forgets the array case would
     // let `[...]` through and fail later on a `.id` read.
     ['onLogMessage', IPC.LOG_MESSAGE, [{ timestamp: 't', level: 'INFO', text: 'x', source: 'main' }]],

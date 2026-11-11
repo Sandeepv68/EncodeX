@@ -176,47 +176,142 @@ describe('QueueJobOptionsDialog', () => {
     );
   });
 
+  it('clears an incompatible container when the video codec changes', async () => {
+    // The codec selects probe the encoder capabilities asynchronously, so the
+    // mount has to settle inside act() before the dropdowns can be opened.
+    await act(async () => {
+      renderDialog(makeJob());
+    });
+    // The .mp4 output seeds the container as 'mp4', and VP8 can only be muxed
+    // into webm/mkv/avi, so choosing it must reset the container to auto.
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'convert.videoCodec' }));
+    fireEvent.click(screen.getByText('VP8 (libvpx)'));
+    expect(screen.getByRole('combobox', { name: 'batchQueue.container' })).toHaveTextContent('batchQueue.containerAuto');
+  });
+
+  it('clears an incompatible container when the audio codec changes', async () => {
+    await act(async () => {
+      renderDialog(makeJob());
+    });
+    // MP2 can only be muxed into .mp2, so choosing it must clear the seeded
+    // 'mp4' container back to auto.
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'convert.audioCodec' }));
+    fireEvent.click(screen.getByText('MP2 (libtwolame)'));
+    expect(screen.getByRole('combobox', { name: 'batchQueue.container' })).toHaveTextContent('batchQueue.containerAuto');
+  });
+
+  it('applies the bitrate, scale, rotation, mirror and filter edits', () => {
+    const { onSave } = renderDialog(makeJob());
+    fireEvent.mouseDown(screen.getByLabelText('convert.videoBitrate'));
+    fireEvent.click(screen.getByRole('option', { name: '4000k' }));
+    fireEvent.mouseDown(screen.getByLabelText('convert.audioBitrate'));
+    fireEvent.click(screen.getByRole('option', { name: '320k' }));
+    fireEvent.mouseDown(screen.getByLabelText('convert.scale'));
+    fireEvent.click(screen.getByRole('option', { name: '1280x720' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
+    expect(onSave).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'j1' }),
+      expect.objectContaining({ videoBitrate: '4000k', audioBitrate: '320k', scale: '1280x720' }),
+      expect.any(String),
+    );
+  });
+
+  it('applies edits to the scale, rotation, mirrors, pixel format, and filters', async () => {
+    const { onSave } = renderDialog(makeJob());
+    // The codec selects probe the encoder capabilities asynchronously, so the
+    // mount has to settle inside act() before the dropdowns can be opened.
+    await act(async () => {});
+    // Every control must move to a different value than the seeded one, or the
+    // selects swallow the change.
+    fireEvent.mouseDown(screen.getByLabelText('convert.scale'));
+    fireEvent.click(screen.getByRole('option', { name: '1920x1080' }));
+    fireEvent.change(screen.getByTestId('batch-rotation').querySelector('input')!, { target: { value: '90' } });
+    fireEvent.click(screen.getByRole('switch', { name: 'convert.flipHorizontal' }));
+    fireEvent.click(screen.getByRole('switch', { name: 'convert.flipVertical' }));
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'convert.pixelFormat' }));
+    fireEvent.click(screen.getByRole('option', { name: 'yuv422p' }));
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Add preset filter...' }));
+    fireEvent.click(screen.getByRole('option', { name: 'Crop' }));
+    fireEvent.click(screen.getByTestId('filters-add-preset'));
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
+    expect(onSave).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'j1' }),
+      expect.objectContaining({
+        scale: '1920x1080',
+        rotate: '90',
+        flipH: undefined,
+        flipV: true,
+        pixelFormat: 'yuv422p',
+        videoFilters: ['crop=in_w:in_h'],
+      }),
+      'C:/videos/clip_encodex_converted.mp4',
+    );
+  });
+
+  it('applies a quality edit to a compress_image job', () => {
+    const { onSave } = renderDialog(
+      makeJob({
+        input: 'C:/imgs/photo.png',
+        output: 'C:/imgs/photo_encodex_converted.webp',
+        options: { qscale: 20, hardwareAcceleration: false, hwaccelMode: 'auto' },
+      }),
+    );
+    fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '80' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
+    expect(onSave).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'j1' }),
+      expect.objectContaining({ qscale: 80 }),
+      'C:/imgs/photo_encodex_converted.webp',
+    );
+  });
+
   it('renders nothing when no job is provided', () => {
     const { container } = renderDialog(null);
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('seeds a remux job container from its output extension', () => {
-    const job = makeJob({
-      output: 'C:/videos/clip_encodex_converted.mkv',
-      options: { copy: true, video: true, audio: true, hardwareAcceleration: true, hwaccelMode: 'auto' },
-    });
-    const { onSave } = renderDialog(job);
+  it("keeps a stream-copy job's options intact, because the batch panel cannot express them", () => {
+    // A stream-copy job cannot be rebuilt from the transcode panel's fields:
+    // doing so would drop `copy` and silently turn the lossless copy into a
+    // re-encode. Its options are therefore forwarded untouched.
+    const { onSave } = renderDialog(
+      makeJob({
+        output: 'C:/videos/clip_encodex_converted.mkv',
+        options: { copy: true, video: true, audio: true, hardwareAcceleration: true, hwaccelMode: 'auto' },
+      }),
+    );
     expect(screen.getByRole('combobox', { name: 'batchQueue.container' })).toHaveTextContent('mkv');
     fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
-    expect(onSave).toHaveBeenCalledWith(job, expect.objectContaining({ copy: true }), 'C:/videos/clip_encodex_converted.mkv');
+    expect(onSave).toHaveBeenCalledWith(
+      expect.any(Object),
+      expect.objectContaining({ copy: true }),
+      'C:/videos/clip_encodex_converted.mkv',
+    );
   });
 
-  it('seeds a demux job from its stream and saves the per-stream map and target', () => {
-    const job = makeJob({
-      input: 'C:/videos/clip.mkv',
-      output: 'C:/videos/clip.audio_1_encodex_demux.m4a',
-      options: {
-        copy: false,
-        video: false,
-        audio: true,
-        map: ['0:1'],
-        audioCodec: 'aac',
-        hardwareAcceleration: true,
-        hwaccelMode: 'auto',
-      },
-    });
-    const { onSave } = renderDialog(job);
-    // The kind toggles reflect the page-level selection; the per-stream target
-    // and map are what this single job edits.
-    expect(screen.getByRole('combobox', { name: 'demux.audioCodec' })).toHaveTextContent('m4a');
-    expect(screen.getByRole('combobox', { name: 'demux.videoContainer' })).toHaveTextContent('demux.copyOption');
+  it('keeps a per-stream map when a demux-shaped job is saved', () => {
+    // Same reasoning for a demux job: the batch queue cannot express a
+    // per-stream extraction, so the map must survive a save untouched rather
+    // than being dropped by the transcode-shaped rebuild.
+    const { onSave } = renderDialog(
+      makeJob({
+        input: 'C:/videos/clip.mkv',
+        output: 'C:/videos/clip.audio_1_encodex_demux.m4a',
+        options: {
+          copy: false,
+          video: false,
+          audio: true,
+          map: ['0:1'],
+          audioCodec: 'aac',
+          hardwareAcceleration: true,
+          hwaccelMode: 'auto',
+        },
+      }),
+    );
     fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
-    // 'm4a' is the selected target name, matching what the single-file Demux
-    // flow sends for the same target (demuxStore optionsForTarget).
     expect(onSave).toHaveBeenCalledWith(
-      job,
-      expect.objectContaining({ copy: false, video: false, audio: true, map: ['0:1'], audioCodec: 'm4a' }),
+      expect.objectContaining({ id: 'j1' }),
+      expect.objectContaining({ map: ['0:1'] }),
       'C:/videos/clip.audio_1_encodex_demux.m4a',
     );
   });

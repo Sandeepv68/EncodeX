@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Dette job kan ikke længere redigeres.",
     "condense": "Kollaps",
     "expand": "Udvid",
-    "clearAll": "Ryd alle",
-    "operationRemux": "Remux",
-    "operationDemux": "Demux",
-    "remuxContainerHint": "Den container, strømmene kopieres til. \"Automatisk\" bevarer hver kildefils udvidelse."
+    "clearAll": "Ryd alle"
   },
   "progress": {
     "title": "Konverteringsforløb",
@@ -528,7 +525,9 @@
     "updateDownloaded": "Opdatering v{{version}} downloadet",
     "viewUpdate": "Vis",
     "remuxed": "Remux fuldført",
-    "demuxed": "Streams udtrukket"
+    "demuxed": "Streams udtrukket",
+    "remuxQueued": "Remux føjet til Mux-køen",
+    "demuxQueued": "Streams føjet til Mux-køen"
   },
   "profiles": {
     "searchPlaceholder": "Søg i profiler...",
@@ -1270,6 +1269,39 @@
       "hardwareNone": "Kun software",
       "encoderVideo": "Video",
       "encoderAudio": "Lyd"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Batchkø",
+    "tabMux": "Mux-kø",
+    "empty": "Mux-køen er tom.",
+    "emptyHint": "Remux- og demux-opgaver tilføjes fra deres egne sider.",
+    "openRemux": "Åbn Remux",
+    "openDemux": "Åbn Demux",
+    "start": "Start",
+    "pause": "Sæt på pause",
+    "resume": "Fortsæt",
+    "cancelAll": "Annuller alle",
+    "clearCompleted": "Ryd fuldførte",
+    "concurrency": "Samtidige job",
+    "stats": "{{queued}} i kø, {{running}} kører, {{done}} færdig, {{failed}} mislykkedes",
+    "kindRemux": "Remux",
+    "kindDemux": "Demux",
+    "targets": "{{count}} output",
+    "outputDir": "Output-mappe",
+    "noOutputs": "Ingen output",
+    "detailsTargets": "Output",
+    "detailsCreatedAt": "Tilføjet",
+    "viewQueue": "Vis kø",
+    "addToQueue": "Tilføj til køen",
+    "dragHandle": "Træk for at omarrangere",
+    "paused": "Sat på pause",
+    "filters": {
+      "all": "Alle",
+      "queued": "I kø",
+      "running": "Kører",
+      "done": "Færdig",
+      "failed": "Mislykkedes"
     }
   }
 }

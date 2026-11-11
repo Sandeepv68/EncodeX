@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "Ní féidir an post seo a chur in eagar níos mó.",
     "condense": "Crap",
     "expand": "Leathnaigh",
-    "clearAll": "Glan Uile",
-    "operationRemux": "Athchumhdach",
-    "operationDemux": "Démhcseáil",
-    "remuxContainerHint": "An coimeádán a chóipeáiltear na sruthanna chuige. Coinníonn \"Uathoibríoch\" síneadh gach físe foinseach."
+    "clearAll": "Glan Uile"
   },
   "progress": {
     "title": "Dul chun cinn an chomhshó",
@@ -528,7 +525,9 @@
     "updateDownloaded": "Nuashonrú v{{version}} íoslódáilte",
     "viewUpdate": "Féach",
     "remuxed": "Críochnaíodh an t-athchumhdach",
-    "demuxed": "Asbhaineadh na sruthanna go rathúil"
+    "demuxed": "Asbhaineadh na sruthanna go rathúil",
+    "remuxQueued": "Cuireadh an t-athchumhdach leis an scuaine Mux",
+    "demuxQueued": "Cuireadh na sruthanna leis an scuaine Mux"
   },
   "profiles": {
     "searchPlaceholder": "Cuardaigh próifílí...",
@@ -1270,6 +1269,39 @@
       "hardwareNone": "Bogearadh amháin",
       "encoderVideo": "Fideo",
       "encoderAudio": "Fuaim"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "Scuaine Bhaisc",
+    "tabMux": "Scuaine Mux",
+    "empty": "Tá an scuaine Mux folamh.",
+    "emptyHint": "Cuirtear ájobs remux agus demux ó pháistí a féin.",
+    "openRemux": "Oscail Athchumhdach",
+    "openDemux": "Oscail Démhcseáil",
+    "start": "Tosaigh",
+    "pause": "Sos",
+    "resume": "Atosaigh",
+    "cancelAll": "Cealaigh Uile",
+    "clearCompleted": "Glan Críochnaithe",
+    "concurrency": "Poist Chomhthráthacha",
+    "stats": "{{queued}} sa scuaine, {{running}} ag rith, {{done}} déanta, {{failed}} ar theip",
+    "kindRemux": "Athchumhdach",
+    "kindDemux": "Démhcseáil",
+    "targets": "{{count}} ascal amach",
+    "outputDir": "Fillteán aschuir",
+    "noOutputs": "Níl ascal amach ar bith",
+    "detailsTargets": "Aschur",
+    "detailsCreatedAt": "Curtha Leis",
+    "viewQueue": "Féach ar an scuaine",
+    "addToQueue": "Cuir leis an scuaine",
+    "dragHandle": "Tarraing chun athordú",
+    "paused": "Ar sos",
+    "filters": {
+      "all": "Uile",
+      "queued": "Sa scuaine",
+      "running": "Ag rith",
+      "done": "Déanta",
+      "failed": "Ar theip"
     }
   }
 }

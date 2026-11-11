@@ -21,7 +21,8 @@ import { createAnalyticsEvent } from '../../shared/analytics/events';
 import type { ITranscoder } from '../transcoders/types';
 import { QUEUE_STATUS } from '../../shared/media-options';
 import { COMPLETED_PROGRESS } from '../../shared/transcoder-constants';
-import { MAX_QUEUE_CONCURRENCY } from '../../shared/constants';
+import { clampConcurrency } from './queue-utils';
+import { batchOutputClaims } from './output-claims';
 import { QUEUE_STATE_VERSION } from './persistence';
 import type { QueuePersistence } from './persistence';
 import type { JobQueueOptions } from './types';
@@ -65,30 +66,6 @@ const log = new Logger('main/queue/job-queue');
  * @const {number} DEFAULT_PERSIST_DELAY_MS
  */
 const DEFAULT_PERSIST_DELAY_MS = 500;
-
-/**
- * Clamps a caller-supplied concurrency cap into the legal integer range.
- *
- * Every value that reaches this function arrives over IPC from the renderer or
- * out of a JSON snapshot, and `structuredClone` carries `NaN` across the
- * boundary while `1e999` parses to `Infinity`. Those are not theoretical:
- * `Math.min(Math.max(NaN, 1), 4)` is `NaN`, and a queue whose cap is `NaN`
- * satisfies `activeJobs.size < NaN` never - so `processNext` starts nothing,
- * forever, with no error anywhere. The machine silently stops, which is worse
- * than throwing because nothing reports it.
- *
- * Non-finite input is rejected rather than "fixed": an unrecognisable request
- * must not change the state the queue is already in. Everything else is
- * truncated (a cap of 2.5 would otherwise behave as 3, because `size < 2.5`
- * admits three jobs) and clamped to `1..MAX_QUEUE_CONCURRENCY`.
- * @param {unknown} value - The raw value received from the caller.
- * @param {number} fallback - Value to use when `value` is not finite.
- * @returns {number} An integer in `1..MAX_QUEUE_CONCURRENCY`.
- */
-function clampConcurrency(value: unknown, fallback: number): number {
-  if (typeof value !== 'number' || !Number.isFinite(value)) return fallback;
-  return Math.min(Math.max(Math.trunc(value), 1), MAX_QUEUE_CONCURRENCY);
-}
 
 /**
  * A concurrency-capped queue of media conversion jobs executed through the
@@ -199,6 +176,7 @@ export class JobQueue extends EventEmitter {
       }
       job.paused = false;
       this.queue.push(job);
+      batchOutputClaims.claim(job.output, job.id);
     }
     log.info(LOG_QUEUE_STATE_RESTORED, this.queue.length, 'jobs');
   }
@@ -361,6 +339,7 @@ export class JobQueue extends EventEmitter {
       createdAt: Date.now(),
     };
     this.queue.push(job);
+    batchOutputClaims.claim(output, id);
     log.debug(LOG_QUEUE_SIZE, this.queue.length);
     this.emit('added', job);
     this.schedulePersist();
@@ -392,7 +371,11 @@ export class JobQueue extends EventEmitter {
    */
   removeJob(id: string): void {
     log.info(LOG_REMOVE_JOB, id);
+    const removed = this.queue.find((job: QueueJob) => job.id === id);
     this.queue = this.queue.filter((j) => j.id !== id);
+    if (removed) {
+      batchOutputClaims.release(removed.output, id);
+    }
     log.debug(LOG_QUEUE_SIZE, this.queue.length);
     this.emit('removed', id);
     this.schedulePersist();
@@ -444,6 +427,9 @@ export class JobQueue extends EventEmitter {
     log.info(LOG_CANCEL_ALL_CLEARING, this.queue.length, 'jobs');
     for (const transcoder of this.activeJobs.values()) {
       transcoder.cancel();
+    }
+    for (const job of this.queue) {
+      batchOutputClaims.release(job.output, job.id);
     }
     this.activeJobs.clear();
     this.queue = [];
@@ -547,6 +533,12 @@ export class JobQueue extends EventEmitter {
     }
     job.options = { ...options };
     if (output) {
+      // The output claim follows the job: the old path is released and the
+      // new one claimed, so the cross-queue check sees the current target.
+      if (output !== job.output) {
+        batchOutputClaims.release(job.output, id);
+        batchOutputClaims.claim(output, id);
+      }
       job.output = output;
     }
     this.schedulePersist();

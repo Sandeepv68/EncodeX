@@ -450,10 +450,7 @@
     "optionsUpdateFailed": "此任务不再可编辑。",
     "condense": "收起",
     "expand": "展开",
-    "clearAll": "清除全部",
-    "operationRemux": "封装",
-    "operationDemux": "解复用",
-    "remuxContainerHint": "流复制到的容器。“自动”将保留每个源文件的扩展名。"
+    "clearAll": "清除全部"
   },
   "progress": {
     "title": "转换进度",
@@ -528,7 +525,9 @@
     "updateDownloaded": "更新 v{{version}} 已下载",
     "viewUpdate": "查看",
     "remuxed": "封装已完成",
-    "demuxed": "已成功提取各个流"
+    "demuxed": "已成功提取各个流",
+    "remuxQueued": "封装已加入 Mux 队列",
+    "demuxQueued": "各个流已加入 Mux 队列"
   },
   "profiles": {
     "searchPlaceholder": "搜索配置文件...",
@@ -1270,6 +1269,39 @@
       "hardwareNone": "仅软件",
       "encoderVideo": "视频",
       "encoderAudio": "音频"
+    }
+  },
+  "muxQueue": {
+    "tabGeneral": "批量队列",
+    "tabMux": "Mux 队列",
+    "empty": "Mux 队列为空。",
+    "emptyHint": "封装和解复用任务从各自的页面添加。",
+    "openRemux": "打开封装",
+    "openDemux": "打开解复用",
+    "start": "开始",
+    "pause": "暂停",
+    "resume": "继续",
+    "cancelAll": "全部取消",
+    "clearCompleted": "清除已完成",
+    "concurrency": "并行任务",
+    "stats": "{{queued}} 排队中，{{running}} 运行中，{{done}} 已完成，{{failed}} 已失败",
+    "kindRemux": "封装",
+    "kindDemux": "解复用",
+    "targets": "{{count}} 个输出",
+    "outputDir": "输出文件夹",
+    "noOutputs": "无输出",
+    "detailsTargets": "输出",
+    "detailsCreatedAt": "添加时间",
+    "viewQueue": "查看队列",
+    "addToQueue": "加入队列",
+    "dragHandle": "拖动以重新排序",
+    "paused": "已暂停",
+    "filters": {
+      "all": "全部",
+      "queued": "排队中",
+      "running": "运行中",
+      "done": "已完成",
+      "failed": "已失败"
     }
   }
 }
