@@ -11,6 +11,7 @@ import { useVideoCutStore } from '../stores/videoCutStore';
 import { useTermsStore } from '../stores/termsStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import { DRAWER_CONDENSED_STORAGE_KEY, DEFAULT_DRAWER_CONDENSED } from '../../shared/constants';
+import { stubScrollIntoView } from '../../test-utils/page-render';
 import type { LogEntry } from '../../shared/types';
 import type { AuditEntry } from '../../shared/audit';
 
@@ -74,6 +75,20 @@ describe('App', () => {
       expect(window.electronAPI.logsGetHistory).toHaveBeenCalled();
       expect(window.electronAPI.onLogMessage).toHaveBeenCalled();
     } finally {
+      window.history.replaceState({}, '', '/');
+    }
+  });
+
+  it('hides the mobile menu button in the detached Logs window', async () => {
+    vi.stubGlobal('matchMedia', createMatchMedia(true));
+    const restoreScrollIntoView = stubScrollIntoView();
+    window.history.replaceState({}, '', '/?detached=1');
+    try {
+      renderApp(['/logs']);
+      await screen.findByPlaceholderText('logs.searchPlaceholder', {}, { timeout: 10000 });
+      expect(screen.queryByTestId('mobile-menu-button')).not.toBeInTheDocument();
+    } finally {
+      restoreScrollIntoView();
       window.history.replaceState({}, '', '/');
     }
   });

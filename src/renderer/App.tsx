@@ -376,7 +376,7 @@ function AppLayout() {
         )}
         <ColumnLayout>
           <MainContent ref={mainContentRef} $flush={location.pathname === '/copilot'}>
-            {isMobile && (
+            {isMobile && !detached && (
               <MobileMenuButton onClick={() => setMobileOpen(true)} aria-label={t('app.menu')} data-testid="mobile-menu-button">
                 <FontAwesomeIcon icon={faBars} />
               </MobileMenuButton>
