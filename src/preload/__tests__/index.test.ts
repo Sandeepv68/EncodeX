@@ -289,6 +289,41 @@ describe('preload', () => {
     expect(ipcRendererMock.send).toHaveBeenCalledWith(channel, flag);
   });
 
+  it('reports the detached Logs window state from the pushed window id', () => {
+    const seen: boolean[] = [];
+    (api.onLogsWindowState as (cb: (open: boolean) => void) => () => void)((open) => seen.push(open));
+    const handler = ipcRendererMock.on.mock.calls.find(([c]) => c === IPC.LOGS_WINDOW_STATE)?.[1] as (
+      event: unknown,
+      data: unknown,
+    ) => void;
+    expect(handler).toBeDefined();
+
+    handler({}, 7);
+    handler({}, null);
+
+    expect(seen).toEqual([true, false]);
+  });
+
+  it.each([
+    ['a boolean', true],
+    ['a string', 'hostile'],
+    ['zero', 0],
+    ['a negative id', -1],
+    ['not-a-number', Number.NaN],
+    ['an object', { open: true }],
+  ])('drops %s on the logs-window-state channel instead of forwarding it', (_label, payload) => {
+    const cb = vi.fn();
+    (api.onLogsWindowState as (cb: (open: boolean) => void) => () => void)(cb);
+    const handler = ipcRendererMock.on.mock.calls.find(([c]) => c === IPC.LOGS_WINDOW_STATE)?.[1] as (
+      event: unknown,
+      data: unknown,
+    ) => void;
+    expect(handler).toBeDefined();
+
+    expect(() => handler({}, payload)).not.toThrow();
+    expect(cb, 'an unrecognised payload must not reach the consumer').not.toHaveBeenCalled();
+  });
+
   it('queueSetWhenDone returns a promise for a cyclic config instead of throwing synchronously', async () => {
     // Found by `e2e/specs/ipc-abuse.spec.ts`. The log line used `JSON.stringify(config)`, and
     // structured clone *preserves* cycles, so a cyclic object genuinely reaches the preload and

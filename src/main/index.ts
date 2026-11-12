@@ -32,6 +32,9 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { format as formatArgs } from 'util';
 import { registerIpcHandlers } from './ipc/handlers';
+import { resolvePreloadPath, resolveRendererEntryPath } from './paths';
+import { logHub } from './logs/log-hub';
+import { subscribeWindowToLogHub, unsubscribeWindowFromLogHub } from './logs/logs-window';
 import { isDevMode } from './ipc/dev';
 import { runCli, mapCliErrorToExitCode, cliErrorMessage } from './cli/cli';
 import { cliConfig, error as printCliError } from './cli/cli-ui';
@@ -269,34 +272,6 @@ void bootstrapMonitoring().finally(() => {
   void bootstrapAnalytics();
 });
 registerProcessCrashHandlers();
-
-/**
- * Resolves the preload script path.
- *
- * In e2e test mode (`ENCODEX_TEST_MODE=1`) the mock preload
- * (e2e/mocks/preload.js) is loaded instead of the real bridge so specs can
- * drive `window.electronAPI` deterministically. The branch is inert outside of
- * e2e runs.
- *
- * When `ENCODEX_HOSTILE_MODE` is set, e2e/mocks/hostile-preload.js is used
- * instead. It proxies the *real* IPC channels - so main stays real and recovery
- * is a genuine round-trip - but injects a chosen failure into every
- * `electronAPI` method (Phase 3.4). Checked before test mode because it is the
- * more specific override, and it must keep `ENCODEX_TEST_MODE` unset so the
- * host-side IPC handlers are the real ones rather than the Tier A stub store.
- *
- * @returns {string} Absolute path of the preload script to use.
- */
-function resolvePreloadPath(): string {
-  const hostileMode = process.env.ENCODEX_HOSTILE_MODE;
-  if (hostileMode) {
-    return path.join(__dirname, '..', '..', 'e2e', 'mocks', 'hostile-preload.js');
-  }
-  if (process.env.ENCODEX_TEST_MODE === '1') {
-    return path.join(__dirname, '..', '..', 'e2e', 'mocks', 'preload.js');
-  }
-  return path.join(__dirname, '..', 'preload', 'index.js');
-}
 
 /**
  * Determines whether the app should start in CLI mode based on process args.
@@ -574,6 +549,11 @@ if (process.argv.includes('--mcp')) {
     });
 
     registerIpcHandlers(mainWindow);
+    // The main window shows the log, so it subscribes to the hub: every entry
+    // the main process publishes - and every entry the renderer mirrors back -
+    // is delivered to it over IPC.LOG_MESSAGE.
+    const createdWindow = mainWindow;
+    const logSubscription = subscribeWindowToLogHub(createdWindow);
     // The in-app MCP App views call tools through the in-process client, which
     // talks to the same session server (and the same job manager) the embedded
     // HTTP server exposes: a view that cancels a job cancels the job the app's
@@ -581,7 +561,6 @@ if (process.argv.includes('--mcp')) {
     setLocalMcpClientProvider(() => getLocalMcpClient(() => createSessionMcpServer()));
     registerMonitoringIpcBridge({ userDataDir: app.getPath('userData'), consentEnabled: monitoringConsentAtBoot });
     registerAnalyticsIpcBridge({ userDataDir: app.getPath('userData'), consentEnabled: analyticsConsentAtBoot });
-    patchConsole(mainWindow);
 
     /**
      * Reports unexpected renderer deaths (crashes, OOM kills) through the
@@ -624,11 +603,12 @@ if (process.argv.includes('--mcp')) {
       mainWindow.webContents.openDevTools();
     } else {
       log.info(LOG_LOADING_PRODUCTION_RENDERER);
-      mainWindow.loadFile(path.join(__dirname, '..', 'renderer', 'index.html'));
+      mainWindow.loadFile(resolveRendererEntryPath());
     }
 
     mainWindow.on('closed', () => {
       log.info(LOG_MAIN_WINDOW_CLOSED);
+      unsubscribeWindowFromLogHub(logSubscription);
       mainWindow = null;
     });
   }
@@ -652,6 +632,10 @@ if (process.argv.includes('--mcp')) {
       createSplashWindow();
       createWindow();
     });
+    // The console is global, so it is patched once for the whole process: the
+    // main window and a detached Logs window are both subscribers of the hub,
+    // and a second patch would publish every message twice.
+    patchConsole();
     registerMcpSettingsIpc({
       userDataDir: app.getPath('userData'),
       apply: applyMcpSettings,
@@ -724,16 +708,18 @@ function recordAppInstalledOnce(userDataDir: string): void {
  * Overrides `console.log`, `console.warn`, and `console.error` in the main
  * process so that main-process messages are also forwarded to the renderer.
  *
- * Each patched method first calls the original console method, then, if the
- * window is still alive, sends an `IPC.LOG_MESSAGE` payload with a timestamp,
- * severity level, joined message text, and `source: 'main'` over the window's
- * webContents. Non-string arguments are JSON-stringified.
+ * Each patched method first calls the original console method, then publishes
+ * an `IPC.LOG_MESSAGE` payload with a timestamp, severity level, joined message
+ * text, and `source: 'main'` into the log hub, which distributes it to every
+ * window that shows the log. Non-string arguments are JSON-stringified.
  *
- * @param {BrowserWindow} win - The main window whose webContents receives the
- *   forwarded log messages.
+ * The patch is installed once per process: the console object is global, so
+ * patching it again when a window is recreated would wrap every call twice and
+ * publish every message twice.
+ *
  * @returns {void}
  */
-function patchConsole(win: BrowserWindow) {
+function patchConsole() {
   const levels: Array<{ method: 'log' | 'warn' | 'error'; level: 'INFO' | 'WARN' | 'ERROR' }> = [
     { method: 'log', level: 'INFO' },
     { method: 'warn', level: 'WARN' },
@@ -743,10 +729,8 @@ function patchConsole(win: BrowserWindow) {
     const original = console[method];
     console[method] = (...args: unknown[]) => {
       original.apply(console, args);
-      if (!win.isDestroyed()) {
-        const text = args.map((a) => (typeof a === 'string' ? a : JSON.stringify(a))).join(' ');
-        win.webContents.send(IPC.LOG_MESSAGE, { timestamp: new Date().toISOString(), level, text, source: 'main' });
-      }
+      const text = args.map((a) => (typeof a === 'string' ? a : JSON.stringify(a))).join(' ');
+      logHub.publish({ timestamp: new Date().toISOString(), level, text, source: 'main' });
     };
   }
 }

@@ -495,7 +495,8 @@
     "auditClear": "Cancella il registro di controllo",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
-    "auditStatusFailed": "Non riuscito"
+    "auditStatusFailed": "Non riuscito",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

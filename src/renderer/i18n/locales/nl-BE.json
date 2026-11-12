@@ -495,7 +495,8 @@
     "auditClear": "Auditlogboek wissen",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
-    "auditStatusFailed": "Mislukt"
+    "auditStatusFailed": "Mislukt",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

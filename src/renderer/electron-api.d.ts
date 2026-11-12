@@ -778,6 +778,28 @@ export interface ElectronAPI {
    */
   onLogMessage(cb: (entry: LogEntry) => void): () => void;
   /**
+   * Asks the main process to open the Logs page in a separate window.
+   * Fire-and-forget: returns void.
+   */
+  openLogsWindow(): void;
+  /**
+   * Subscribes to logs-window open/close state changes pushed from main.
+   * @param {(open: boolean) => void} cb
+   * @returns {() => void} unsubscribe
+   */
+  onLogsWindowState(cb: (open: boolean) => void): () => void;
+  /**
+   * Fetches the log history the main process has buffered.
+   * @returns {Promise<LogEntry[]>} The buffered entries, oldest first.
+   */
+  logsGetHistory(): Promise<LogEntry[]>;
+  /**
+   * Publishes renderer-produced log entries into the main-process log hub.
+   * @param {LogEntry[]} entries - The entries to publish.
+   * @returns {void}
+   */
+  logsPublishEntries(entries: LogEntry[]): void;
+  /**
    * Subscribes to the mutating-operation audit stream, pushed from the main
    * process over `IPC.AUDIT_ENTRY` ('audit-entry'). Each record names the tool
    * that ran, its safety tier, an argument digest, and the result.

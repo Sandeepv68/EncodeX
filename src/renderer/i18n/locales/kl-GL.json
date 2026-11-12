@@ -495,7 +495,8 @@
     "auditClear": "Pisortutit piiaruk",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
-    "auditStatusFailed": "Illituarneq"
+    "auditStatusFailed": "Illituarneq",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

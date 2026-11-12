@@ -495,7 +495,8 @@
     "auditClear": "監査証跡を消去",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "成功",
-    "auditStatusFailed": "失敗"
+    "auditStatusFailed": "失敗",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

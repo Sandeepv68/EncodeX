@@ -495,7 +495,8 @@
     "auditClear": "Kosongkan jejak audit",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "Berjaya",
-    "auditStatusFailed": "Gagal"
+    "auditStatusFailed": "Gagal",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

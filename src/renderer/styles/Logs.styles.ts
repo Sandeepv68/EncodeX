@@ -1,5 +1,5 @@
-import { styled } from '@mui/material/styles';
-import { Box, Typography, Select, Paper, TextField } from '@mui/material';
+import { alpha, styled } from '@mui/material/styles';
+import { Box, Typography, Select, Paper, TextField, IconButton } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { COLORS, SHADOWS } from '../../shared/theme/colors';
 import type { ElementType } from 'react';
@@ -16,7 +16,15 @@ export const LogsHeader = styled(Paper)(({ theme }) => ({
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
 }));
 
-export const FilterSelect = styled(Select)(({ theme }) => ({ minWidth: theme.typography.pxToRem(100) }));
+export const FilterSelect = styled(Select)(({ theme }) => ({
+  minWidth: theme.typography.pxToRem(100),
+  height: theme.typography.pxToRem(28),
+}));
+export const LogActionButton = styled(IconButton)(({ theme }) => ({
+  width: theme.typography.pxToRem(28),
+  height: theme.typography.pxToRem(28),
+  padding: 0,
+}));
 
 /**
  * Free-text search input in the logs header. It grows into the free space
@@ -44,7 +52,11 @@ export const SearchIcon = styled(FontAwesomeIcon)(({ theme }) => ({
 }));
 
 /** Entry counter caption, pushed to the far right of the header row. */
-export const EntryCount = styled(Typography)({ marginInlineStart: 'auto' });
+export const EntryCount = styled(Typography)(({ theme }) => ({
+  marginInlineStart: 'auto',
+  fontWeight: 600,
+  textShadow: `0 ${theme.typography.pxToRem(1)} ${theme.typography.pxToRem(2)} ${alpha(theme.palette.common.black, theme.palette.mode === 'dark' ? 0.4 : 0.15)}`,
+}));
 
 export const LogsBody = styled(Box)(({ theme }) => ({
   flex: 1,
@@ -76,6 +88,18 @@ export const TimestampSpan = styled('span')({ color: COLORS.log.muted });
 export const LevelSpan = styled('span', {
   shouldForwardProp: (prop) => prop !== '$color',
 })<{ $color: string }>(({ $color }) => ({ color: $color }));
+export const LevelBadge = styled('span', {
+  shouldForwardProp: (prop) => prop !== '$color',
+})<{ $color: string }>(({ theme, $color }) => ({
+  display: 'inline-block',
+  padding: `0 ${theme.spacing(1)}`,
+  borderRadius: theme.shape.borderRadius,
+  color: theme.palette.common.white,
+  backgroundColor: $color,
+  fontSize: theme.typography.pxToRem(11),
+  fontWeight: 700,
+  lineHeight: 1.6,
+}));
 
 export const SourceSpan = styled('span')({ color: COLORS.log.muted });
 

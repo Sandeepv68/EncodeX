@@ -94,6 +94,11 @@
  * @property {string} PLAYER_FRAME - Push a decoded frame to the renderer player.
  * @property {string} LOG_MESSAGE - Forward a log entry to the renderer.
  * @property {string} AUDIT_ENTRY - Forward a mutating-operation audit record to the renderer.
+ * @property {string} LOGS_WINDOW_OPEN - Ask the main process to open the detached Logs window.
+ * @property {string} LOGS_WINDOW_STATE - Push the open/closed state of the detached Logs window.
+ *   Payload: the id of the open window, or `null` when none is open.
+ * @property {string} LOGS_HISTORY - Request the buffered log history from the main process.
+ * @property {string} LOGS_PUBLISH - Publish a renderer log entry to the main process log hub.
  * @property {string} CHECK_FOR_UPDATES - Start an update check.
  * @property {string} DOWNLOAD_UPDATE - Download the matched update asset.
  * @property {string} INSTALL_UPDATE - Launch the downloaded installer and quit.
@@ -204,6 +209,10 @@ export const IPC = {
   PLAYER_FRAME: 'player-frame',
   LOG_MESSAGE: 'log-message',
   AUDIT_ENTRY: 'audit-entry',
+  LOGS_WINDOW_OPEN: 'logs-window-open',
+  LOGS_WINDOW_STATE: 'logs-window-state',
+  LOGS_HISTORY: 'logs-history',
+  LOGS_PUBLISH: 'logs-publish',
 
   CHECK_FOR_UPDATES: 'check-for-updates',
   DOWNLOAD_UPDATE: 'download-update',

@@ -495,7 +495,8 @@
     "auditClear": "Tøm revisjonsloggen",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
-    "auditStatusFailed": "Mislyktes"
+    "auditStatusFailed": "Mislyktes",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

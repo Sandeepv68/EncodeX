@@ -495,7 +495,8 @@
     "auditClear": "Rensa revisionsloggen",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
-    "auditStatusFailed": "Misslyckades"
+    "auditStatusFailed": "Misslyckades",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

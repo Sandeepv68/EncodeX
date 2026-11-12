@@ -1155,3 +1155,9 @@ export const LOG_ON_MUX_QUEUE_STATUS_CHANGE = 'onMuxQueueStatusChange:';
 export const LOG_ON_MUX_QUEUE_CANCELLED = 'onMuxQueueCancelled';
 /** @const {string} Logged when the preload forwards a mux queue reorder event. */
 export const LOG_ON_MUX_QUEUE_MOVED = 'onMuxQueueMoved:';
+/** @const {string} Logged when the renderer asks main to open the detached Logs window. */
+export const LOG_LOGS_WINDOW_OPEN = 'logsWindowOpen:';
+/** @const {string} Logged when the renderer requests the buffered log history. */
+export const LOG_LOGS_GET_HISTORY = 'logsGetHistory:';
+/** @const {string} Logged when the renderer publishes log entries to the main-process hub. */
+export const LOG_LOGS_PUBLISH = 'logsPublishEntries:';

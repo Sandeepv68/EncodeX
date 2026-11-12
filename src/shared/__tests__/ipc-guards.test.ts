@@ -87,6 +87,12 @@ describe('payload guards', () => {
     expect(isLogEntry(null)).toBe(false);
   });
 
+  it('isLogEntry accepts a sequence number and rejects one of the wrong type', () => {
+    expect(isLogEntry({ timestamp: 't', level: 'INFO', text: 'hi', source: 'renderer', seq: 7 })).toBe(true);
+    expect(isLogEntry({ timestamp: 't', level: 'INFO', text: 'hi', source: 'renderer', seq: 'seven' })).toBe(false);
+    expect(isLogEntry({ timestamp: 't', level: 'INFO', text: 'hi', source: 'renderer', seq: Number.NaN })).toBe(false);
+  });
+
   it('isAuditEntry checks the rendered fields', () => {
     expect(isAuditEntry({ id: '1', timestamp: 't', tool: 'convert_media', tier: 2, argsDigest: 'abcd', result: 'ok' })).toBe(true);
     expect(isAuditEntry({ id: '1', timestamp: 't', tool: 'convert_media', tier: 2, argsDigest: 'abcd', result: 'nope' })).toBe(false);

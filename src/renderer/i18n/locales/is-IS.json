@@ -495,7 +495,8 @@
     "auditClear": "Hreinsa ferilskrána",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
-    "auditStatusFailed": "Mistókst"
+    "auditStatusFailed": "Mistókst",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

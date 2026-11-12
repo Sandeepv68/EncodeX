@@ -495,7 +495,8 @@
     "auditClear": "Hapus jejak audit",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "Berhasil",
-    "auditStatusFailed": "Gagal"
+    "auditStatusFailed": "Gagal",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

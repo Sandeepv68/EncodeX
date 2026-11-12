@@ -63,6 +63,7 @@ import { SHORTCUTS } from './constants/shortcuts';
 import { THEMES } from '../shared/theme/colors';
 import { useErrorStore } from './stores/errorStore';
 import { useLogStore } from './stores/logStore';
+import { isDetachedMode, subscribeDetachedLogFeed } from './logs/detached';
 import { useAuditStore } from './stores/auditStore';
 import { useSettingsStore } from './stores/settingsStore';
 import type { PageLoader, RouteLoaderProps } from './types';
@@ -228,6 +229,10 @@ function AppLayout() {
   const location = useLocation();
   const mainContentRef = useRef<HTMLElement>(null);
 
+  // The detached Logs window renders the same route table but without the app
+  // chrome: it is a second window onto the log, not a second copy of the app.
+  const detached = isDetachedMode();
+
   useLanguageDirection();
   useDevScreenshot();
 
@@ -246,6 +251,13 @@ function AppLayout() {
     // synchronous throw from `contextBridge` would otherwise propagate out of the effect and take the
     // tree down - losing the log stream that would have explained why.
     callBridgeVoid(() => {
+      // The detached Logs window reads the shared log stream from the main process instead of
+      // collecting them locally: it is a second renderer process, so its own console output is
+      // not the log the user wants to see there.
+      if (isDetachedMode()) {
+        cleanup = subscribeDetachedLogFeed();
+        return;
+      }
       cleanup = window.electronAPI?.onLogMessage((entry) => {
         useLogStore.getState().addEntry(entry);
       });
@@ -351,9 +363,9 @@ function AppLayout() {
 
   return (
     <AppRoot>
-      <TitleBar />
+      {detached ? null : <TitleBar />}
       <AppBody>
-        {isMobile ? (
+        {detached ? null : isMobile ? (
           <TemporaryDrawer variant="temporary" open={mobileOpen} onClose={() => setMobileOpen(false)}>
             {drawerContent}
           </TemporaryDrawer>
@@ -379,7 +391,7 @@ function AppLayout() {
               </RouteContent>
             </ErrorBoundary>
           </MainContent>
-          <Footer />
+          {detached ? null : <Footer />}
         </ColumnLayout>
       </AppBody>
       <ErrorSnackbar error={currentError} onClose={clearError} />

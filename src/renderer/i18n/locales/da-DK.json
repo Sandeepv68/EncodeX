@@ -495,7 +495,8 @@
     "auditClear": "Ryd revisionen",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
-    "auditStatusFailed": "Mislykkedes"
+    "auditStatusFailed": "Mislykkedes",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

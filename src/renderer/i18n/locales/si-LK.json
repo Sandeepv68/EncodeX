@@ -495,7 +495,8 @@
     "auditClear": "අධික්ෂණ පෙරළිය හිස් කරන්න",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "සාර්ථක",
-    "auditStatusFailed": "අසාර්ථක"
+    "auditStatusFailed": "අසාර්ථක",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

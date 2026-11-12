@@ -495,7 +495,8 @@
     "auditClear": "감사 추적 지우기",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "성공",
-    "auditStatusFailed": "실패"
+    "auditStatusFailed": "실패",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

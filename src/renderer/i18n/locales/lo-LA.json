@@ -495,7 +495,8 @@
     "auditClear": "ລ້າງບົນທຶກການຕົກຈັດຕິດຕາມ",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "ສຳເລັດ",
-    "auditStatusFailed": "ລົ້ມເຫລວ"
+    "auditStatusFailed": "ລົ້ມເຫລວ",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

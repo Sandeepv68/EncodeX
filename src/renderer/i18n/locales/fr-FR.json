@@ -495,7 +495,8 @@
     "auditClear": "Effacer le journal d'audit",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
-    "auditStatusFailed": "Échec"
+    "auditStatusFailed": "Échec",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

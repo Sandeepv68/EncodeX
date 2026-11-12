@@ -187,6 +187,9 @@ import {
   LOG_IPC_AI_SET_SETTINGS,
   LOG_IPC_AI_CONNECT_TEST,
   LOG_IPC_AI_LIST_MODELS,
+  LOG_LOGS_WINDOW_OPEN,
+  LOG_LOGS_GET_HISTORY,
+  LOG_LOGS_PUBLISH,
 } from '../shared/log-constants';
 
 /**
@@ -1701,6 +1704,75 @@ const api = {
     };
     ipcRenderer.on(IPC.LOG_MESSAGE, handler);
     return () => ipcRenderer.removeListener(IPC.LOG_MESSAGE, handler);
+  },
+
+  /**
+   * Asks the main process to open the Logs page in a separate window.
+   * Fire-and-forget: logs the call and sends `IPC.LOGS_WINDOW_OPEN`.
+   * @returns {void}
+   */
+  openLogsWindow: () => {
+    log.debug(LOG_LOGS_WINDOW_OPEN);
+    ipcRenderer.send(IPC.LOGS_WINDOW_OPEN);
+  },
+
+  /**
+   * Fetches the log history the main process has buffered.
+   *
+   * The main-process log hub keeps the entries it has distributed, so a
+   * window that opens later can show what it missed. The entries carry the
+   * hub's monotonic `seq`, which lets the caller order them and drop the ones
+   * it already applied.
+   *
+   * @returns {Promise<LogEntry[]>} The buffered entries, oldest first.
+   */
+  logsGetHistory: () => {
+    log.debug(LOG_LOGS_GET_HISTORY);
+    return ipcRenderer.invoke(IPC.LOGS_HISTORY) as Promise<LogEntry[]>;
+  },
+
+  /**
+   * Publishes renderer-produced log entries into the main-process log hub.
+   *
+   * Fire-and-forget: the entries are sent as one batch over
+   * `IPC.LOGS_PUBLISH`, so a burst of console output costs one IPC message
+   * rather than one per entry. The main process assigns the sequence numbers
+   * and distributes them to the windows that show the log.
+   *
+   * @param {LogEntry[]} entries - The entries to publish.
+   * @returns {void}
+   */
+  logsPublishEntries: (entries: LogEntry[]) => {
+    const batch = Array.isArray(entries) ? entries : [];
+    log.debug(LOG_LOGS_PUBLISH, batch.length);
+    ipcRenderer.send(IPC.LOGS_PUBLISH, batch);
+  },
+
+  /**
+   * Subscribes to logs-window open/close state changes pushed over
+   * `IPC.LOGS_WINDOW_STATE`.
+   *
+   * The payload is the id of the open detached window, or `null` when none is
+   * open. A payload that is neither is not a state this main process could
+   * have sent, so it is dropped rather than turned into a state of its own:
+   * the drawer would then hide a navigation entry that is still there.
+   *
+   * @param {(open: boolean) => void} cb - Called with `true` while a detached
+   *   Logs window is open.
+   * @returns {() => void} unsubscribe
+   */
+  onLogsWindowState: (cb: (open: boolean) => void) => {
+    const handler = (_event: IpcRendererEvent, payload: unknown) => {
+      if (payload === null) {
+        cb(false);
+        return;
+      }
+      if (typeof payload === 'number' && Number.isInteger(payload) && payload > 0) {
+        cb(true);
+      }
+    };
+    ipcRenderer.on(IPC.LOGS_WINDOW_STATE, handler);
+    return () => ipcRenderer.removeListener(IPC.LOGS_WINDOW_STATE, handler);
   },
 
   /**

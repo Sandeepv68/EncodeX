@@ -17,8 +17,9 @@
 import { useRef, useEffect, useLayoutEffect, useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconButton, InputAdornment, Tooltip, Typography, MenuItem } from '@mui/material';
-import { faEraser, faDownload, faMagnifyingGlass, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faEraser, faDownload, faMagnifyingGlass, faXmark, faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
 import { useLogStore } from '../stores/logStore';
+import { callBridgeVoid } from '../utils/bridge-call';
 import { useAuditStore } from '../stores/auditStore';
 import { useToastStore } from '../stores/toastStore';
 import { useHotkeys } from '../hooks/useHotkeys';
@@ -30,6 +31,8 @@ import {
   SearchField,
   SearchIcon,
   EntryCount,
+  LogActionButton,
+  LevelBadge,
   LogsBody,
   NoEntriesText,
   LogEntryRow,
@@ -179,7 +182,7 @@ export default function Logs() {
    * scrollbar still spans the whole list while only ~viewport rows are real.
    * @type {{start: number, count: number}}
    */
-  const [window, setWindow] = useState({ start: 0, count: 0 });
+  const [viewport, setViewport] = useState({ start: 0, count: 0 });
 
   /**
    * Recomputed the window from the body's current geometry. Clamped so a
@@ -196,7 +199,7 @@ export default function Logs() {
     const scrollTop = body.scrollTop || 0;
     const count = Math.max(Math.ceil(clientHeight / LOG_ROW_HEIGHT) + LOG_WINDOW_OVERSCAN, LOG_WINDOW_OVERSCAN * 2 + 1);
     const start = Math.min(Math.max(0, Math.floor(scrollTop / LOG_ROW_HEIGHT) - LOG_WINDOW_OVERSCAN), Math.max(0, total - count));
-    setWindow((prev) => (prev.start === start && prev.count === count ? prev : { start, count }));
+    setViewport((prev) => (prev.start === start && prev.count === count ? prev : { start, count }));
   }, []);
 
   /**
@@ -238,6 +241,18 @@ export default function Logs() {
   const handleClear = () => {
     clear();
     recordAnalyticsEvent(createAnalyticsEvent('logs_cleared', {}));
+  };
+
+  /**
+   * Asks the main process to open the Logs page in its own window.
+   *
+   * The bridge call is contained: a bridge that throws must not take the
+   * Logs page down with it, because the button is still there and the user
+   * can try again.
+   * @returns {void}
+   */
+  const handleOpenInNewWindow = () => {
+    callBridgeVoid(() => window.electronAPI?.openLogsWindow?.(), 'openLogsWindow');
   };
 
   /**
@@ -325,12 +340,23 @@ export default function Logs() {
           }}
           data-testid="logs-filter"
           slotProps={{ input: { 'aria-label': t('logs.filter') } }}
+          renderValue={(v) => <LevelBadge $color={LEVEL_COLORS[String(v)] || COLORS.log.muted}>{String(v)}</LevelBadge>}
         >
-          <MenuItem value="ALL">{t('logs.levelAll')}</MenuItem>
-          <MenuItem value="DEBUG">{t('logs.levelDebug')}</MenuItem>
-          <MenuItem value="INFO">{t('logs.levelInfo')}</MenuItem>
-          <MenuItem value="WARN">{t('logs.levelWarn')}</MenuItem>
-          <MenuItem value="ERROR">{t('logs.levelError')}</MenuItem>
+          <MenuItem value="ALL">
+            <LevelBadge $color={COLORS.log.muted}>{t('logs.levelAll')}</LevelBadge>
+          </MenuItem>
+          <MenuItem value="DEBUG">
+            <LevelBadge $color={LEVEL_COLORS.DEBUG}>{t('logs.levelDebug')}</LevelBadge>
+          </MenuItem>
+          <MenuItem value="INFO">
+            <LevelBadge $color={LEVEL_COLORS.INFO}>{t('logs.levelInfo')}</LevelBadge>
+          </MenuItem>
+          <MenuItem value="WARN">
+            <LevelBadge $color={LEVEL_COLORS.WARN}>{t('logs.levelWarn')}</LevelBadge>
+          </MenuItem>
+          <MenuItem value="ERROR">
+            <LevelBadge $color={LEVEL_COLORS.ERROR}>{t('logs.levelError')}</LevelBadge>
+          </MenuItem>
         </FilterSelect>
         <SearchField
           size="small"
@@ -368,14 +394,19 @@ export default function Logs() {
           }}
         />
         <Tooltip title={t('logs.clear')}>
-          <IconButton size="small" onClick={handleClear} aria-label={t('logs.clear')} data-testid="logs-clear">
+          <LogActionButton onClick={handleClear} aria-label={t('logs.clear')} data-testid="logs-clear">
             <LogActionIcon icon={faEraser} />
-          </IconButton>
+          </LogActionButton>
         </Tooltip>
         <Tooltip title={t('logs.download')}>
-          <IconButton size="small" onClick={downloadLogs} aria-label={t('logs.download')} data-testid="logs-download">
+          <LogActionButton onClick={downloadLogs} aria-label={t('logs.download')} data-testid="logs-download">
             <LogActionIcon icon={faDownload} />
-          </IconButton>
+          </LogActionButton>
+        </Tooltip>
+        <Tooltip title={t('logs.openInNewWindow')}>
+          <LogActionButton onClick={handleOpenInNewWindow} aria-label={t('logs.openInNewWindow')} data-testid="logs-open-window">
+            <LogActionIcon icon={faUpRightFromSquare} />
+          </LogActionButton>
         </Tooltip>
         <EntryCount variant="caption" color="text.secondary">
           {filter === 'ALL' && !query
@@ -414,9 +445,9 @@ export default function Logs() {
       )}
       <LogsBody ref={bodyRef} onScroll={handleScroll} data-testid="logs-body" tabIndex={0}>
         {filtered.length === 0 && <NoEntriesText variant="body2">{query ? t('logs.noMatches') : t('logs.noEntries')}</NoEntriesText>}
-        {window.start > 0 && <LogsSpacer aria-hidden="true" $height={window.start * LOG_ROW_HEIGHT} />}
-        {filtered.slice(window.start, window.start + window.count).map((entry, localIndex) => {
-          const i = window.start + localIndex;
+        {viewport.start > 0 && <LogsSpacer aria-hidden="true" $height={viewport.start * LOG_ROW_HEIGHT} />}
+        {filtered.slice(viewport.start, viewport.start + viewport.count).map((entry, localIndex) => {
+          const i = viewport.start + localIndex;
           return (
             <LogEntryRow key={i} data-testid="log-entry-row">
               <TimestampSpan>{entry.timestamp.slice(11, 23)}</TimestampSpan>{' '}
@@ -425,8 +456,8 @@ export default function Logs() {
             </LogEntryRow>
           );
         })}
-        {window.start + window.count < filtered.length && (
-          <LogsSpacer aria-hidden="true" $height={(filtered.length - window.start - window.count) * LOG_ROW_HEIGHT} />
+        {viewport.start + viewport.count < filtered.length && (
+          <LogsSpacer aria-hidden="true" $height={(filtered.length - viewport.start - viewport.count) * LOG_ROW_HEIGHT} />
         )}
         <div ref={bottomRef} />
       </LogsBody>

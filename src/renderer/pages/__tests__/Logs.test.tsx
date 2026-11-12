@@ -105,6 +105,12 @@ describe('Logs', () => {
     expect(screen.getByRole('button', { name: 'logs.download' })).toBeInTheDocument();
   });
 
+  it('asks the main process to open a detached Logs window', () => {
+    render(<Logs />);
+    fireEvent.click(screen.getByRole('button', { name: 'logs.openInNewWindow' }));
+    expect(window.electronAPI.openLogsWindow).toHaveBeenCalled();
+  });
+
   it('labels the filter select for screen readers', () => {
     render(<Logs />);
     expect(screen.getByRole('combobox', { name: 'logs.filter' })).toBeInTheDocument();

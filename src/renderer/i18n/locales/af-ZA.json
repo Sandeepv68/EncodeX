@@ -495,7 +495,8 @@
     "auditClear": "Maak oudit skoon",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
-    "auditStatusFailed": "Misluk"
+    "auditStatusFailed": "Misluk",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

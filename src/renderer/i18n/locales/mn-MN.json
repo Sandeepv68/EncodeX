@@ -495,7 +495,8 @@
     "auditClear": "Аудит мөрийг цэвэрлэх",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "Амжилттай",
-    "auditStatusFailed": "Амжилтгүй"
+    "auditStatusFailed": "Амжилтгүй",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

@@ -35,6 +35,7 @@ import i18n from './i18n/config';
 import { DirectionProvider } from './i18n/DirectionProvider';
 import { useLanguageDirection } from './useLanguageDirection';
 import { useLogStore } from './stores/logStore';
+import { isDetachedMode, mirrorLogEntry } from './logs/detached';
 import { setupSessionCleanup } from './sessionCleanup';
 import { withBridgeTimeout } from './utils/bridge-call';
 import { LOG_MOUNTING_REACT_APP } from '../shared/log-constants';
@@ -58,6 +59,13 @@ const levels: Array<{ method: 'log' | 'warn' | 'error'; level: 'INFO' | 'WARN' |
  * Patches the console methods listed above so every call still hits the
  * original implementation and is also appended to the log store with a
  * timestamp, level, serialized text, and 'renderer' as the source.
+ *
+ * The entry is also mirrored to the main process, which publishes it into the
+ * shared log hub. That is what lets a detached Logs window show the same
+ * entries as the in-app one.
+ *
+ * The detached window itself records nothing: it reads the shared stream
+ * instead, and mirroring its own output back would show every entry twice.
  * @constant
  */
 for (const { method, level } of levels) {
@@ -67,13 +75,18 @@ for (const { method, level } of levels) {
   }
   const patched = ((...args: unknown[]) => {
     original.apply(console, args);
+    if (isDetachedMode()) {
+      return;
+    }
     const text = args.map((a) => (typeof a === 'string' ? a : JSON.stringify(a))).join(' ');
-    useLogStore.getState().addEntry({
+    const entry = {
       timestamp: new Date().toISOString(),
       level: level as 'DEBUG' | 'INFO' | 'WARN' | 'ERROR',
       text,
-      source: 'renderer',
-    });
+      source: 'renderer' as const,
+    };
+    useLogStore.getState().addEntry(entry);
+    mirrorLogEntry(entry);
   }) as ConsoleMethod;
   patched.__encodeXPatched = true;
   console[method] = patched;
@@ -108,8 +121,14 @@ log.info(LOG_MOUNTING_REACT_APP);
  * unloads, keeping only the persisted preferences (theme, language,
  * always-on-top, hardware acceleration). The returned cleanup is intentionally
  * not stored: the listener lives for the whole renderer lifetime.
+ *
+ * The detached Logs window is skipped: it shares the app's localStorage with
+ * the main window, so wiping it on close would destroy the main window's
+ * in-progress work.
  */
-setupSessionCleanup();
+if (!isDetachedMode()) {
+  setupSessionCleanup();
+}
 log.info(LOG_MOUNTING_REACT_APP);
 
 /**

@@ -495,7 +495,8 @@
     "auditClear": "សម្អាតកំណត់ត្រានស្វែងរកប្រតិបត្តិកិច្ច",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "បានជោគជ័យ",
-    "auditStatusFailed": "បរាជ័យ"
+    "auditStatusFailed": "បរាជ័យ",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

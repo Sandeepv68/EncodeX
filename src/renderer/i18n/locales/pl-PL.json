@@ -495,7 +495,8 @@
     "auditClear": "Wyczyść dziennik audytu",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
-    "auditStatusFailed": "Niepowodzenie"
+    "auditStatusFailed": "Niepowodzenie",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

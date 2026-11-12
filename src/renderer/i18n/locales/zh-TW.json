@@ -495,7 +495,8 @@
     "auditClear": "清除稽核記錄",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "成功",
-    "auditStatusFailed": "失敗"
+    "auditStatusFailed": "失敗",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

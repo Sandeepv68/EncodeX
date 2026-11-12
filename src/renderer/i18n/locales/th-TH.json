@@ -495,7 +495,8 @@
     "auditClear": "ล้างบันทึกการตรวจสอบ",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "สำเร็จ",
-    "auditStatusFailed": "ล้มเหลว"
+    "auditStatusFailed": "ล้มเหลว",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

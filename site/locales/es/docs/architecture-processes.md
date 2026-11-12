@@ -1,6 +1,6 @@
 # Procesos, sistema de compilación y arranque
 
-<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 log-constants=570 -->
+<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 log-constants=573 -->
 
 ## Modelo de procesos
 

@@ -495,7 +495,8 @@
     "auditClear": "I-clear ang audit trail",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
-    "auditStatusFailed": "Nabigo"
+    "auditStatusFailed": "Nabigo",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

@@ -495,7 +495,8 @@
     "auditClear": "مسح سجل التدقيق",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "تم",
-    "auditStatusFailed": "فشل"
+    "auditStatusFailed": "فشل",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

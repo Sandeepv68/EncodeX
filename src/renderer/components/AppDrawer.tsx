@@ -44,6 +44,7 @@ import NavJobPopover from './NavJobPopover';
 import { recordAnalyticsEvent, setAnalyticsContext } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
 import { basenameOrEmpty as basenameOf } from '../utils/path-utils';
+import { callBridgeVoid } from '../utils/bridge-call';
 import { isJobActive } from '../utils/queue-job-utils';
 import type { AppDrawerProps, NavBlipId, NavJobPopoverContent } from './types';
 import {
@@ -136,6 +137,14 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
   const queueConcurrency = useSettingsStore((s) => s.queueConcurrency);
 
   const [popoverBlip, setPopoverBlip] = useState<NavBlipId>(null);
+  const [logsWindowOpen, setLogsWindowOpen] = useState(false);
+  useEffect(() => {
+    let cleanup: (() => void) | undefined;
+    callBridgeVoid(() => {
+      cleanup = window.electronAPI?.onLogsWindowState?.(setLogsWindowOpen);
+    }, 'onLogsWindowState');
+    return () => cleanup?.();
+  }, []);
   const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null);
   const closeTimer = useRef<number | null>(null);
 
@@ -297,7 +306,7 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
     <>
       <DrawerNav component="nav" aria-label={t('app.navigation')}>
         <NavList>
-          {NAV_ITEMS.map((item, index) => {
+          {NAV_ITEMS.filter((item) => !(logsWindowOpen && item.to === '/logs')).map((item, index) => {
             const label = t(`nav.${navKeyMap[item.to]}`);
             // The job popover already names the page it is anchored to and pins to
             // the same edge of the drawer, so the row tooltip stands down while

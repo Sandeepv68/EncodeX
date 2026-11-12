@@ -495,7 +495,8 @@
     "auditClear": "ऑडिट ट्रेल साफ़ करें",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "सफल",
-    "auditStatusFailed": "विफल"
+    "auditStatusFailed": "विफल",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

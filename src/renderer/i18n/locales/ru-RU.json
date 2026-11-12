@@ -495,7 +495,8 @@
     "auditClear": "Очистить журнал аудита",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "ОК",
-    "auditStatusFailed": "Ошибка"
+    "auditStatusFailed": "Ошибка",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

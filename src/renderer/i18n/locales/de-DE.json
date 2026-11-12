@@ -495,7 +495,8 @@
     "auditClear": "Audit-Protokoll leeren",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
-    "auditStatusFailed": "Fehlgeschlagen"
+    "auditStatusFailed": "Fehlgeschlagen",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

@@ -495,7 +495,8 @@
     "auditClear": "נקה יומן הביקורת",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "הצליח",
-    "auditStatusFailed": "נכשל"
+    "auditStatusFailed": "נכשל",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

@@ -530,6 +530,10 @@ const api = {
   onPlayerAudio: (cb) => subscribe('player-audio', cb),
   onLogMessage: (cb) => subscribe('log-message', cb),
   onAuditEntry: (cb) => subscribe('audit-entry', cb),
+  openLogsWindow: () => {},
+  onLogsWindowState: (cb) => subscribe('logs-window-state', cb),
+  logsGetHistory: () => Promise.resolve([]),
+  logsPublishEntries: () => {},
 
   // --- Update manager ----------------------------------------------------------
   checkForUpdates: () => Promise.resolve(),

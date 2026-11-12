@@ -495,7 +495,8 @@
     "auditClear": "Xóa nhật ký kiểm tra",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "Thành công",
-    "auditStatusFailed": "Thất bại"
+    "auditStatusFailed": "Thất bại",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

@@ -495,7 +495,8 @@
     "auditClear": "Whakapūtia te tohu arotake",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "I angia",
-    "auditStatusFailed": "I rahua"
+    "auditStatusFailed": "I rahua",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

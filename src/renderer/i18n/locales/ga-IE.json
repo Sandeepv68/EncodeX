@@ -495,7 +495,8 @@
     "auditClear": "Glan an léiriú",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "Ceart go leor",
-    "auditStatusFailed": "Theip ar fail"
+    "auditStatusFailed": "Theip ar fail",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

@@ -147,6 +147,20 @@ describe('AppDrawer', () => {
     expect(screen.getByText('nav.settings')).toBeInTheDocument();
   });
 
+  it('hides the Logs nav item while the detached Logs window is open', () => {
+    let notify: ((open: boolean) => void) | undefined;
+    window.electronAPI.onLogsWindowState = vi.fn((cb: (open: boolean) => void) => {
+      notify = cb;
+      return () => {};
+    });
+    renderDrawer();
+    expect(screen.getByText('nav.logs')).toBeInTheDocument();
+    act(() => notify?.(true));
+    expect(screen.queryByText('nav.logs')).not.toBeInTheDocument();
+    act(() => notify?.(false));
+    expect(screen.getByText('nav.logs')).toBeInTheDocument();
+  });
+
   it('navigates to the clicked route', () => {
     renderDrawer();
     expect(screen.getByTestId('location')).toHaveTextContent('/convert');

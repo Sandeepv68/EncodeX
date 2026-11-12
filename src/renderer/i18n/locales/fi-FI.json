@@ -495,7 +495,8 @@
     "auditClear": "Tyhjennä tarkastusloki",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
-    "auditStatusFailed": "Epäonnistui"
+    "auditStatusFailed": "Epäonnistui",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

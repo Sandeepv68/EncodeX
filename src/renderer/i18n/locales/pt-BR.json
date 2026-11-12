@@ -495,7 +495,8 @@
     "auditClear": "Limpar trilha de auditoria",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
-    "auditStatusFailed": "Falhou"
+    "auditStatusFailed": "Falhou",
+    "openInNewWindow": "Open in new window"
   },
   "footer": {
     "version": "v{{version}}",

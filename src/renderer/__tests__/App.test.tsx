@@ -66,6 +66,18 @@ describe('App', () => {
     expect(screen.getByText('footer.poweredBy')).toBeInTheDocument();
   });
 
+  it('drops the app chrome in the detached Logs window and reads the shared stream', async () => {
+    window.history.replaceState({}, '', '/?detached=1');
+    try {
+      renderApp(['/logs']);
+      expect(screen.queryByText(/footer.version/)).not.toBeInTheDocument();
+      expect(window.electronAPI.logsGetHistory).toHaveBeenCalled();
+      expect(window.electronAPI.onLogMessage).toHaveBeenCalled();
+    } finally {
+      window.history.replaceState({}, '', '/');
+    }
+  });
+
   it('navigates to the convert page via the drawer', async () => {
     renderApp();
     await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
