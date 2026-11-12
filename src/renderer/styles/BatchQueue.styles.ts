@@ -1,4 +1,4 @@
-import { styled } from '@mui/material/styles';
+import { alpha, styled } from '@mui/material/styles';
 import { Typography, Stack, Box, Chip, TextField, Alert, IconButton, Tabs } from '@mui/material';
 import type { ElementType } from 'react';
 import { OVERLAY_COLORS, SHADOWS } from '../../shared/theme/colors';
@@ -138,18 +138,38 @@ export const EmptyStack = styled(Stack)({
  * @const QueueTabs
  */
 export const QueueTabs = styled(Tabs)(({ theme }) => ({
-  marginBottom: 0,
+  marginBottom: theme.spacing(2),
   // The tabs use MUI's `inherit` text colour so the theme's own colours apply
   // instead of the primary tint (which sits just under the 4.5:1 contrast
   // ratio axe requires). MUI's inherit variant dims unselected tabs with
   // `opacity: 0.6`, so the opacity is restored here too; `&&&` outranks the
   // library's own `.MuiTab-textColorInherit` rules whatever the injection order.
   '&&& .MuiTab-root': {
+    minWidth: theme.typography.pxToRem(140),
+    whiteSpace: 'nowrap',
     opacity: 1,
     color: theme.palette.text.secondary,
+    textTransform: 'none',
   },
   '&&& .MuiTab-root.Mui-selected': {
     color: theme.palette.text.primary,
     fontWeight: theme.typography.fontWeightBold,
   },
+}));
+
+/** Row wrapper keeping a tab's label text and count chip on one line. @const TabLabelRow */
+export const TabLabelRow = styled('span')({
+  display: 'inline-flex',
+  alignItems: 'center',
+});
+
+/** Count badge shown next to a queue tab's label. @const TabCountChip */
+export const TabCountChip = styled(Chip)(({ theme }) => ({
+  borderRadius: theme.typography.pxToRem(8),
+  fontWeight: 600,
+  height: theme.spacing(2.5),
+  marginInlineStart: theme.spacing(0.75),
+  color: theme.palette.text.secondary,
+  backgroundColor: alpha(theme.palette.text.secondary, 0.12),
+  '& .MuiChip-label': { paddingInline: theme.spacing(1) },
 }));
