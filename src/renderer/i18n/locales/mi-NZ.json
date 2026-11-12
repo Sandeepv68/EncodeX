@@ -496,7 +496,7 @@
     "auditTier": "T{{tier}}",
     "auditStatusOk": "I angia",
     "auditStatusFailed": "I rahua",
-    "openInNewWindow": "Open in new window"
+    "openInNewWindow": "Whakatuwheratia ki tētahi matapihi hou"
   },
   "footer": {
     "version": "v{{version}}",

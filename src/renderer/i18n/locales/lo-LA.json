@@ -496,7 +496,7 @@
     "auditTier": "T{{tier}}",
     "auditStatusOk": "ສຳເລັດ",
     "auditStatusFailed": "ລົ້ມເຫລວ",
-    "openInNewWindow": "Open in new window"
+    "openInNewWindow": "ເປີດໃນໜ້າຕ່າງໃໝ່"
   },
   "footer": {
     "version": "v{{version}}",

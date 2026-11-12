@@ -193,6 +193,7 @@
   "logs.levelError": "ข้อผิดพลาด",
   "logs.levelInfo": "ข้อมูล",
   "logs.levelWarn": "คำเตือน",
+  "logs.openInNewWindow": "เปิดในหน้าต่างใหม่",
   "mcpViews.batch.dashboard": "ชุดงาน",
   "mcpViews.batch.needsReapproval": "ชุดงานนี้มีการเปลี่ยนแปลงและต้องได้รับอนุมัติใหม่",
   "mcpViews.batch.run": "เรียกใช้ชุดงาน",

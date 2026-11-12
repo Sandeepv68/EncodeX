@@ -193,6 +193,7 @@
   "logs.levelError": "FOUT",
   "logs.levelInfo": "INFO",
   "logs.levelWarn": "WAARSCHUWING",
+  "logs.openInNewWindow": "Openen in nieuw venster",
   "mcpViews.batch.dashboard": "Batch",
   "mcpViews.batch.needsReapproval": "Deze batch is gewijzigd en vereist opnieuw akkoord.",
   "mcpViews.batch.run": "Batch uitvoeren",

@@ -496,7 +496,7 @@
     "auditTier": "T{{tier}}",
     "auditStatusOk": "성공",
     "auditStatusFailed": "실패",
-    "openInNewWindow": "Open in new window"
+    "openInNewWindow": "새 창에서 열기"
   },
   "footer": {
     "version": "v{{version}}",

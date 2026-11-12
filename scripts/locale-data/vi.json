@@ -193,6 +193,7 @@
   "logs.levelError": "LỖI",
   "logs.levelInfo": "THÔNG TIN",
   "logs.levelWarn": "CẢNH BÁO",
+  "logs.openInNewWindow": "Mở trong cửa sổ mới",
   "mcpViews.batch.dashboard": "Lô",
   "mcpViews.batch.needsReapproval": "Lô này đã thay đổi và cần được phê duyệt lại.",
   "mcpViews.batch.run": "Chạy lô",

@@ -193,6 +193,7 @@
   "logs.levelError": "EARRÁID",
   "logs.levelInfo": "EOLAS",
   "logs.levelWarn": "RABHADH",
+  "logs.openInNewWindow": "Oscail i bhfuinneog nua",
   "mcpViews.batch.dashboard": "Baisc",
   "mcpViews.batch.needsReapproval": "D'athraigh an baisc seo agus tá deimhniú nua uaidh.",
   "mcpViews.batch.run": "Rith an baisc",

@@ -193,6 +193,7 @@
   "logs.levelError": "ERROR",
   "logs.levelInfo": "INFO",
   "logs.levelWarn": "WARN",
+  "logs.openInNewWindow": "Whakatuwheratia ki tētahi matapihi hou",
   "mcpViews.batch.dashboard": "Rōpū",
   "mcpViews.batch.needsReapproval": "I rangi i tēnei rōpū, me whakamana anō.",
   "mcpViews.batch.run": "Whakahaere rōpū",

@@ -193,6 +193,7 @@
   "logs.levelError": "ERROR",
   "logs.levelInfo": "INFO",
   "logs.levelWarn": "WARN",
+  "logs.openInNewWindow": "Шинэ цонхонд нээх",
   "mcpViews.batch.dashboard": "Багц",
   "mcpViews.batch.needsReapproval": "Энэ багц өөрчлөгдсөн тул дахин зөвшөөрөл хэрэгтэй.",
   "mcpViews.batch.run": "Багцыг ажиллуулах",

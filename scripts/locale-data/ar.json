@@ -193,6 +193,7 @@
   "logs.levelError": "خطأ",
   "logs.levelInfo": "معلومة",
   "logs.levelWarn": "تحذير",
+  "logs.openInNewWindow": "فتح في نافذة جديدة",
   "mcpViews.batch.dashboard": "الدفعة",
   "mcpViews.batch.needsReapproval": "تغيّرت هذه الدفعة وتحتاج إلى موافقة جديدة.",
   "mcpViews.batch.run": "تشغيل الدفعة",

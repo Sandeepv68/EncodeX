@@ -193,6 +193,7 @@
   "logs.levelError": "ERRORE",
   "logs.levelInfo": "INFO",
   "logs.levelWarn": "AVVISO",
+  "logs.openInNewWindow": "Apri in una nuova finestra",
   "mcpViews.batch.dashboard": "Batch",
   "mcpViews.batch.needsReapproval": "Questo batch è cambiato e richiede una nuova approvazione.",
   "mcpViews.batch.run": "Esegui batch",

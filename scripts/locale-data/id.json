@@ -193,6 +193,7 @@
   "logs.levelError": "GALAT",
   "logs.levelInfo": "INFO",
   "logs.levelWarn": "PERINGATAN",
+  "logs.openInNewWindow": "Buka di jendela baru",
   "mcpViews.batch.dashboard": "Batch",
   "mcpViews.batch.needsReapproval": "Batch ini berubah dan perlu persetujuan ulang.",
   "mcpViews.batch.run": "Jalankan batch",

@@ -496,7 +496,7 @@
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
     "auditStatusFailed": "Illituarneq",
-    "openInNewWindow": "Open in new window"
+    "openInNewWindow": "Window nutaami ammasuk"
   },
   "footer": {
     "version": "v{{version}}",

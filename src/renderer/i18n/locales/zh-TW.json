@@ -496,7 +496,7 @@
     "auditTier": "T{{tier}}",
     "auditStatusOk": "成功",
     "auditStatusFailed": "失敗",
-    "openInNewWindow": "Open in new window"
+    "openInNewWindow": "在新視窗中開啟"
   },
   "footer": {
     "version": "v{{version}}",

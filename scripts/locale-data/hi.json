@@ -193,6 +193,7 @@
   "logs.levelError": "त्रुटि",
   "logs.levelInfo": "जानकारी",
   "logs.levelWarn": "चेतावनी",
+  "logs.openInNewWindow": "नई विंडो में खोलें",
   "mcpViews.batch.dashboard": "बैच",
   "mcpViews.batch.needsReapproval": "यह बैच बदल गया है और इसे पुनः अनुमोदन चाहिए।",
   "mcpViews.batch.run": "बैच चलाएँ",

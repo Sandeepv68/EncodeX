@@ -496,7 +496,7 @@
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
     "auditStatusFailed": "Epäonnistui",
-    "openInNewWindow": "Open in new window"
+    "openInNewWindow": "Avaa uudessa ikkunassa"
   },
   "footer": {
     "version": "v{{version}}",

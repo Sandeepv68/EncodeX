@@ -496,7 +496,7 @@
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
     "auditStatusFailed": "Nabigo",
-    "openInNewWindow": "Open in new window"
+    "openInNewWindow": "Buksan sa bagong window"
   },
   "footer": {
     "version": "v{{version}}",

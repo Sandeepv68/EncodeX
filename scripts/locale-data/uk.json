@@ -193,6 +193,7 @@
   "logs.levelError": "ПОМИЛКА",
   "logs.levelInfo": "ІНФО",
   "logs.levelWarn": "ПОПЕРЕДЖЕННЯ",
+  "logs.openInNewWindow": "Відкрити в новому вікні",
   "mcpViews.batch.dashboard": "Пакет",
   "mcpViews.batch.needsReapproval": "Цей пакет змінився та потребує повторного схвалення.",
   "mcpViews.batch.run": "Запустити пакет",

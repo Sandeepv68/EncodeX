@@ -496,7 +496,7 @@
     "auditTier": "T{{tier}}",
     "auditStatusOk": "Ceart go leor",
     "auditStatusFailed": "Theip ar fail",
-    "openInNewWindow": "Open in new window"
+    "openInNewWindow": "Oscail i bhfuinneog nua"
   },
   "footer": {
     "version": "v{{version}}",

@@ -496,7 +496,7 @@
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
     "auditStatusFailed": "Fehlgeschlagen",
-    "openInNewWindow": "Open in new window"
+    "openInNewWindow": "In neuem Fenster öffnen"
   },
   "footer": {
     "version": "v{{version}}",

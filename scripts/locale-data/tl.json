@@ -193,6 +193,7 @@
   "logs.levelError": "ERROR",
   "logs.levelInfo": "INFO",
   "logs.levelWarn": "BABALA",
+  "logs.openInNewWindow": "Buksan sa bagong window",
   "mcpViews.batch.dashboard": "Batch",
   "mcpViews.batch.needsReapproval": "Nagbago ang batch na ito at nangangailangan ng muling pag-apruba.",
   "mcpViews.batch.run": "Patakbuhin ang batch",

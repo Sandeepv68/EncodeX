@@ -193,6 +193,7 @@
   "logs.levelError": "錯誤",
   "logs.levelInfo": "資訊",
   "logs.levelWarn": "警告",
+  "logs.openInNewWindow": "在新視窗中開啟",
   "mcpViews.batch.dashboard": "批次",
   "mcpViews.batch.needsReapproval": "此批次已變更，需要重新核准。",
   "mcpViews.batch.run": "執行批次",
