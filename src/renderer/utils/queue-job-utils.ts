@@ -10,10 +10,13 @@ export type { EnqueueDraft, EnqueuePlan, PlanEnqueuesContext, StatusChipColor };
 /**
  * Returns true while a queue job still represents outstanding work (waiting or
  * running). Completed (DONE) and failed (ERROR) jobs are excluded.
- * @param {QueueJob} job - The queue job to classify.
+ *
+ * Works for both queue flavours: the batch queue's jobs and the mux queue's
+ * remux/demux jobs share the same status vocabulary.
+ * @param {{status: string}} job - The queue job to classify.
  * @returns {boolean} True for QUEUED or RUNNING jobs.
  */
-export function isJobActive(job: QueueJob): boolean {
+export function isJobActive(job: { status: string }): boolean {
   return job.status === QUEUE_STATUS.QUEUED || job.status === QUEUE_STATUS.RUNNING;
 }
 
