@@ -496,7 +496,8 @@
     "auditTier": "T{{tier}}",
     "auditStatusOk": "成功",
     "auditStatusFailed": "失败",
-    "openInNewWindow": "在新窗口中打开"
+    "openInNewWindow": "在新窗口中打开",
+    "viewLogs": "查看日志"
   },
   "footer": {
     "version": "v{{version}}",

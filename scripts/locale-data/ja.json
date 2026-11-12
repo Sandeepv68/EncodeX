@@ -194,6 +194,7 @@
   "logs.levelInfo": "情報",
   "logs.levelWarn": "警告",
   "logs.openInNewWindow": "新しいウィンドウで開く",
+  "logs.viewLogs": "ログを表示",
   "mcpViews.batch.dashboard": "バッチ",
   "mcpViews.batch.needsReapproval": "このバッチは変更されたため、再承認が必要です。",
   "mcpViews.batch.run": "バッチを実行",

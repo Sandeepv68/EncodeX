@@ -496,7 +496,8 @@
     "auditTier": "T{{tier}}",
     "auditStatusOk": "បានជោគជ័យ",
     "auditStatusFailed": "បរាជ័យ",
-    "openInNewWindow": "បើកក្នុងវិនដូថ្មី"
+    "openInNewWindow": "បើកក្នុងវិនដូថ្មី",
+    "viewLogs": "មើលកំណត់ហេតុ"
   },
   "footer": {
     "version": "v{{version}}",

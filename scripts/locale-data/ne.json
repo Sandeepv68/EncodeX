@@ -194,6 +194,7 @@
   "logs.levelInfo": "INFO",
   "logs.levelWarn": "WARN",
   "logs.openInNewWindow": "नयाँ सञ्झ्यालमा खोल्नुहोस्",
+  "logs.viewLogs": "लगहरू हेर्नुहोस्",
   "mcpViews.batch.dashboard": "ब्याच",
   "mcpViews.batch.needsReapproval": "यो ब्याच परिवर्तन भएको छ र पुनः स्वीकृति चाहिन्छ।",
   "mcpViews.batch.run": "ब्याच सञ्चालन गर्नुहोस्",

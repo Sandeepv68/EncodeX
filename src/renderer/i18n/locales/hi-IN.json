@@ -496,7 +496,8 @@
     "auditTier": "T{{tier}}",
     "auditStatusOk": "सफल",
     "auditStatusFailed": "विफल",
-    "openInNewWindow": "नई विंडो में खोलें"
+    "openInNewWindow": "नई विंडो में खोलें",
+    "viewLogs": "लॉग्स देखें"
   },
   "footer": {
     "version": "v{{version}}",

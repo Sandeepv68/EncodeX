@@ -32,6 +32,7 @@ import AudioStreamInfo from '../components/AudioStreamInfo';
 import InfoTooltip from '../components/InfoTooltip';
 import { pageIcons } from '../pageIcons';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import ViewLogsButton from '../components/ViewLogsButton';
 import { Logger } from '../../shared/logger';
 import { useFormErrors } from '../hooks/useFormErrors';
 import { useHotkeys } from '../hooks/useHotkeys';
@@ -369,6 +370,7 @@ export default function AudioExtract() {
             {t('audioExtract.cancel')}
           </Button>
         )}
+        <ViewLogsButton />
       </ActionRow>
 
       {store.progress && (

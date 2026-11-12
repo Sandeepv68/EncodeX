@@ -56,6 +56,8 @@ import { formatSize } from '../utils/formatters';
 import type { ImageFileInfo } from '../../shared/types';
 import { ToggleSpacer, SelectedImageName, AspectRatioRow } from '../styles/ImageCompress.styles';
 import MediaPreview from '../components/MediaPreview';
+import ViewLogsButton from '../components/ViewLogsButton';
+import { ActionRow } from '../styles/AudioExtract.styles';
 import { useFieldId } from '../hooks/useFieldId';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
@@ -526,19 +528,22 @@ export default function ImageCompress() {
         </FieldBox>
       </Stack>
 
-      <Tooltip title={shortcutHint(t, 'imageCompress.compress', SHORTCUT_BY_ID['imageCompress.compress'].keys)} arrow>
-        <span>
-          <Button
-            variant="contained"
-            startIcon={<FontAwesomeIcon icon={faCompress} />}
-            onClick={handleConvert}
-            disabled={!input || !output || isConverting}
-            data-testid="image-compress-compress"
-          >
-            {isConverting ? t('imageCompress.compressing') : t('imageCompress.compress')}
-          </Button>
-        </span>
-      </Tooltip>
+      <ActionRow direction="row" spacing={1} useFlexGap>
+        <Tooltip title={shortcutHint(t, 'imageCompress.compress', SHORTCUT_BY_ID['imageCompress.compress'].keys)} arrow>
+          <span>
+            <Button
+              variant="contained"
+              startIcon={<FontAwesomeIcon icon={faCompress} />}
+              onClick={handleConvert}
+              disabled={!input || !output || isConverting}
+              data-testid="image-compress-compress"
+            >
+              {isConverting ? t('imageCompress.compressing') : t('imageCompress.compress')}
+            </Button>
+          </span>
+        </Tooltip>
+        <ViewLogsButton />
+      </ActionRow>
       {progress && (
         <ErrorBoundary fallback={null}>
           <ProgressBar percent={progress.percent} />

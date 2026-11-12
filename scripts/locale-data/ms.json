@@ -194,6 +194,7 @@
   "logs.levelInfo": "INFO",
   "logs.levelWarn": "WARN",
   "logs.openInNewWindow": "Buka dalam tetingkap baharu",
+  "logs.viewLogs": "Lihat log",
   "mcpViews.batch.dashboard": "Kelompok",
   "mcpViews.batch.needsReapproval": "Kelompok ini telah berubah dan memerlukan kelulusan baharu.",
   "mcpViews.batch.run": "Jalankan kelompok",

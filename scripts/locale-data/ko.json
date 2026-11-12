@@ -194,6 +194,7 @@
   "logs.levelInfo": "정보",
   "logs.levelWarn": "경고",
   "logs.openInNewWindow": "새 창에서 열기",
+  "logs.viewLogs": "로그 보기",
   "mcpViews.batch.dashboard": "배치",
   "mcpViews.batch.needsReapproval": "이 배치는 변경되어 다시 승인이 필요합니다.",
   "mcpViews.batch.run": "배치 실행",

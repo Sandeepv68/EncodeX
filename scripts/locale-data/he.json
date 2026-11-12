@@ -194,6 +194,7 @@
   "logs.levelInfo": "מידע",
   "logs.levelWarn": "אזהרה",
   "logs.openInNewWindow": "פתח בחלון חדש",
+  "logs.viewLogs": "הצג יומנים",
   "mcpViews.batch.dashboard": "אצווה",
   "mcpViews.batch.needsReapproval": "האצווה השתנתה ודורשת אישור מחדש.",
   "mcpViews.batch.run": "הרצת אצווה",

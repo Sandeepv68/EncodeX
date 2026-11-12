@@ -496,7 +496,8 @@
     "auditTier": "T{{tier}}",
     "auditStatusOk": "Berjaya",
     "auditStatusFailed": "Gagal",
-    "openInNewWindow": "Buka dalam tetingkap baharu"
+    "openInNewWindow": "Buka dalam tetingkap baharu",
+    "viewLogs": "Lihat log"
   },
   "footer": {
     "version": "v{{version}}",

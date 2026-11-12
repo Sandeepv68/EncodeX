@@ -772,6 +772,7 @@
     "clear": "Clear",
     "download": "Download as TXT",
     "openInNewWindow": "Open in new window",
+    "viewLogs": "View logs",
     "filter": "Filter by level",
     "search": "Search logs",
     "searchPlaceholder": "Search logs...",

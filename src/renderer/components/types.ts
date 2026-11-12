@@ -502,6 +502,16 @@ export interface InfoTooltipProps {
 }
 
 /**
+ * Props for the reusable detached-logs action button.
+ * @interface ViewLogsButtonProps
+ * @property {boolean} [iconOnly] - Renders a compact icon button instead of a
+ *   labelled action button.
+ */
+export interface ViewLogsButtonProps {
+  iconOnly?: boolean;
+}
+
+/**
  * Imperative handle exposed by the media player.
  * @interface MediaPlayerHandle
  */

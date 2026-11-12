@@ -496,7 +496,8 @@
     "auditTier": "T{{tier}}",
     "auditStatusOk": "Correcto",
     "auditStatusFailed": "Fallido",
-    "openInNewWindow": "Abrir en una ventana nueva"
+    "openInNewWindow": "Abrir en una ventana nueva",
+    "viewLogs": "Ver registros"
   },
   "footer": {
     "version": "v{{version}}",

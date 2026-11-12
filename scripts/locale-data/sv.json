@@ -194,6 +194,7 @@
   "logs.levelInfo": "INFO",
   "logs.levelWarn": "VARNING",
   "logs.openInNewWindow": "Öppna i nytt fönster",
+  "logs.viewLogs": "Visa loggar",
   "mcpViews.batch.dashboard": "Batch",
   "mcpViews.batch.needsReapproval": "Den här batchen har ändrats och kräver ny godkännande.",
   "mcpViews.batch.run": "Kör batch",

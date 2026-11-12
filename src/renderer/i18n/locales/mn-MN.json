@@ -496,7 +496,8 @@
     "auditTier": "T{{tier}}",
     "auditStatusOk": "Амжилттай",
     "auditStatusFailed": "Амжилтгүй",
-    "openInNewWindow": "Шинэ цонхонд нээх"
+    "openInNewWindow": "Шинэ цонхонд нээх",
+    "viewLogs": "Лог харах"
   },
   "footer": {
     "version": "v{{version}}",

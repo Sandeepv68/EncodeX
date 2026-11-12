@@ -47,6 +47,7 @@ import type { MediaPlayerHandle } from '../components/types';
 import VideoTimeline from '../components/VideoTimeline';
 import ProgressBar from '../components/ProgressBar';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import ViewLogsButton from '../components/ViewLogsButton';
 import { Logger } from '../../shared/logger';
 import { useErrorStore } from '../stores/errorStore';
 import { useToastStore } from '../stores/toastStore';
@@ -920,6 +921,7 @@ export default function VideoCut() {
                 {t('videoCut.cancelJob')}
               </Button>
             )}
+            <ViewLogsButton />
           </ActionRow>
 
           {progress && isConverting && (

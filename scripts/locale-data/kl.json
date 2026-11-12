@@ -194,6 +194,7 @@
   "logs.levelInfo": "INFO",
   "logs.levelWarn": "NALLIAAVIT",
   "logs.openInNewWindow": "Window nutaami ammasuk",
+  "logs.viewLogs": "Allaaserisat takukkit",
   "mcpViews.batch.dashboard": "Batch",
   "mcpViews.batch.needsReapproval": "Ima batch-uni allattuqlunga, taamaattumik nutaaq uppernneq tunngat.",
   "mcpViews.batch.run": "Batch malorto",

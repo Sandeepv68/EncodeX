@@ -194,6 +194,7 @@
   "logs.levelInfo": "INFO",
   "logs.levelWarn": "WARN",
   "logs.openInNewWindow": "បើកក្នុងវិនដូថ្មី",
+  "logs.viewLogs": "មើលកំណត់ហេតុ",
   "mcpViews.batch.dashboard": "បាច់ជាប់",
   "mcpViews.batch.needsReapproval": "បាច់ជាប់នេះបានផ្លាស់ប្តូរ ហើយត្រូវការអនុម័តឡើងវិញ។",
   "mcpViews.batch.run": "ដំណើរការបាច់ជាប់",

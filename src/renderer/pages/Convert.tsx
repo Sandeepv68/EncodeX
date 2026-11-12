@@ -74,6 +74,7 @@ import { useSettingsStore } from '../stores/settingsStore';
 import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
 import { useFieldId } from '../hooks/useFieldId';
 import { VideoFiltersSection } from '../components/VideoFiltersSection';
+import ViewLogsButton from '../components/ViewLogsButton';
 import { ENCODER_TYPES } from '../../shared/hwaccel-settings';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
@@ -970,6 +971,7 @@ export default function Convert() {
             {t('convert.cancelJob')}
           </Button>
         )}
+        <ViewLogsButton />
       </ActionStack>
 
       {progress && (

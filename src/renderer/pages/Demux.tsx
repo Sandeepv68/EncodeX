@@ -51,6 +51,7 @@ import MuxQueueStatusIndicator from '../components/MuxQueueStatusIndicator';
 import { VideoFiltersSection } from '../components/VideoFiltersSection';
 import { pageIcons } from '../pageIcons';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import ViewLogsButton from '../components/ViewLogsButton';
 import { Logger } from '../../shared/logger';
 import { useTaskRunControls } from '../hooks/useMediaTask';
 import { useHotkeys } from '../hooks/useHotkeys';
@@ -588,6 +589,7 @@ export default function DemuxPage() {
                 {t('demux.cancel')}
               </Button>
             )}
+            <ViewLogsButton />
           </ActionRow>
 
           <MuxQueueStatusIndicator />

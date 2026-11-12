@@ -39,6 +39,7 @@ import QueueDropArea from '../components/QueueDropArea';
 import QueueAddReviewDialog from '../components/QueueAddReviewDialog';
 import QueueJobOptionsDialog from '../components/QueueJobOptionsDialog';
 import ConfirmDialog from '../components/ConfirmDialog';
+import ViewLogsButton from '../components/ViewLogsButton';
 import { useHotkeys } from '../hooks/useHotkeys';
 import { useMuxQueueStatus } from '../hooks/useMuxQueueStatus';
 import { useQueueStore } from '../stores/queueStore';
@@ -1324,6 +1325,7 @@ export default function BatchQueue() {
             </CondenseIcon>
           </CondenseButton>
         </Tooltip>
+        <ViewLogsButton iconOnly />
       </PageTitle>
 
       <QueueTabs

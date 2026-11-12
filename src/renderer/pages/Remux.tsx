@@ -63,6 +63,7 @@ import MuxQueueStatusIndicator from '../components/MuxQueueStatusIndicator';
 import { VideoFiltersSection } from '../components/VideoFiltersSection';
 import { pageIcons } from '../pageIcons';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import ViewLogsButton from '../components/ViewLogsButton';
 import { Logger } from '../../shared/logger';
 import { useFormErrors } from '../hooks/useFormErrors';
 import { useTaskRunControls } from '../hooks/useMediaTask';
@@ -944,6 +945,7 @@ export default function RemuxPage() {
             {t('remux.cancel')}
           </Button>
         )}
+        <ViewLogsButton />
       </ActionRow>
 
       <MuxQueueStatusIndicator />

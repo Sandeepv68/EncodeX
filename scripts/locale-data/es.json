@@ -194,6 +194,7 @@
   "logs.levelInfo": "INFO",
   "logs.levelWarn": "ADVERTENCIA",
   "logs.openInNewWindow": "Abrir en una ventana nueva",
+  "logs.viewLogs": "Ver registros",
   "mcpViews.batch.dashboard": "Lote",
   "mcpViews.batch.needsReapproval": "Este lote cambió y necesita una nueva aprobación.",
   "mcpViews.batch.run": "Ejecutar lote",

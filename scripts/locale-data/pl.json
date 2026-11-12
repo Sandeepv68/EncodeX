@@ -194,6 +194,7 @@
   "logs.levelInfo": "INFO",
   "logs.levelWarn": "OSTRZEŻENIE",
   "logs.openInNewWindow": "Otwórz w nowym oknie",
+  "logs.viewLogs": "Zobacz dzienniki",
   "mcpViews.batch.dashboard": "Partia",
   "mcpViews.batch.needsReapproval": "Ta partia uległa zmianie i wymaga ponownej akceptacji.",
   "mcpViews.batch.run": "Uruchom partię",

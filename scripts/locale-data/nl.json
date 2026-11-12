@@ -194,6 +194,7 @@
   "logs.levelInfo": "INFO",
   "logs.levelWarn": "WAARSCHUWING",
   "logs.openInNewWindow": "Openen in nieuw venster",
+  "logs.viewLogs": "Logboeken bekijken",
   "mcpViews.batch.dashboard": "Batch",
   "mcpViews.batch.needsReapproval": "Deze batch is gewijzigd en vereist opnieuw akkoord.",
   "mcpViews.batch.run": "Batch uitvoeren",
