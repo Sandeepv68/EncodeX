@@ -98,6 +98,26 @@ export function broadcastLogsWindowState(open: boolean): void {
 }
 
 /**
+ * Tells every window that the shared log history was cleared.
+ *
+ * A window cannot clear another renderer's in-memory store, so the window that
+ * requested the clear asks the main process to do it. The main process empties
+ * the hub first and then sends this event, so every Logs view drops the same
+ * entries and later entries start from an empty history.
+ *
+ * The event carries no payload: there is nothing to validate, and the only
+ * entries in flight are those the hub published after the clear.
+ *
+ * @returns {void}
+ */
+export function broadcastLogsCleared(): void {
+  for (const win of BrowserWindow.getAllWindows()) {
+    if (win.isDestroyed() || win.webContents.isDestroyed()) continue;
+    win.webContents.send(IPC.LOGS_CLEARED);
+  }
+}
+
+/**
  * True when a detached Logs window is currently open.
  *
  * @returns {boolean} True when the window exists and is alive.

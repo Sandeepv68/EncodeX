@@ -83,6 +83,7 @@ describe('Logs', () => {
     expect(screen.getByText(/to be cleared/)).toBeInTheDocument();
     fireEvent.click(document.querySelector('[data-icon="eraser"]')!);
     expect(useLogStore.getState().entries).toHaveLength(0);
+    expect(window.electronAPI.logsClear).toHaveBeenCalledOnce();
     expect(screen.getByText('logs.noEntries')).toBeInTheDocument();
   });
 
@@ -109,6 +110,16 @@ describe('Logs', () => {
     render(<Logs />);
     fireEvent.click(screen.getByRole('button', { name: 'logs.openInNewWindow' }));
     expect(window.electronAPI.openLogsWindow).toHaveBeenCalled();
+  });
+
+  it('hides the open-in-new-window action in the detached window', () => {
+    window.history.replaceState({}, '', '/?detached=1');
+    try {
+      render(<Logs />);
+      expect(screen.queryByRole('button', { name: 'logs.openInNewWindow' })).not.toBeInTheDocument();
+    } finally {
+      window.history.replaceState({}, '', '/');
+    }
   });
 
   it('labels the filter select for screen readers', () => {

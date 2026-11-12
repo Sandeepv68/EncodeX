@@ -10,8 +10,10 @@
  * entries to a timestamped `.txt` file. The visible list is memoized from the
  * store entries, the active filter and the active search query.
  *
- * No direct IPC calls are made from this page; clearing and exporting operate on
- * the store and the browser Blob/download APIs respectively.
+ * Clearing asks the main process to empty the shared history as well, so a
+ * detached Logs window drops the same entries; exporting uses the browser
+ * Blob/download APIs. Without the bridge (a plain browser) clearing still
+ * works locally.
  */
 
 import { useRef, useEffect, useLayoutEffect, useMemo, useState, useCallback } from 'react';
@@ -19,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { IconButton, InputAdornment, Tooltip, Typography, MenuItem } from '@mui/material';
 import { faEraser, faDownload, faMagnifyingGlass, faXmark, faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
 import { useLogStore } from '../stores/logStore';
+import { isDetachedMode } from '../logs/detached';
 import { callBridgeVoid } from '../utils/bridge-call';
 import { useAuditStore } from '../stores/auditStore';
 import { useToastStore } from '../stores/toastStore';
@@ -123,6 +126,7 @@ export default function Logs() {
   const clear = useLogStore((s) => s.clear);
   const auditEntries = useAuditStore((s) => s.entries);
   const clearAudit = useAuditStore((s) => s.clear);
+  const detached = isDetachedMode();
 
   /**
    * The most recent audit records, newest first, capped at
@@ -235,11 +239,17 @@ export default function Logs() {
   const handleScroll = () => recompute(filtered.length);
 
   /**
-   * Clears all buffered log entries and records the action for analytics.
+   * Clears the shared log history and records the action for analytics.
+   *
+   * The local store is emptied first so the page responds immediately. The
+   * main-process hub is cleared as well, otherwise its buffered history and
+   * the detached window's feed would put the old entries back. A bridge that
+   * is unavailable (a plain browser) still leaves the local clear working.
    * @returns {void}
    */
   const handleClear = () => {
     clear();
+    callBridgeVoid(() => window.electronAPI?.logsClear?.(), 'logsClear');
     recordAnalyticsEvent(createAnalyticsEvent('logs_cleared', {}));
   };
 
@@ -403,11 +413,13 @@ export default function Logs() {
             <LogActionIcon icon={faDownload} />
           </LogActionButton>
         </Tooltip>
-        <Tooltip title={t('logs.openInNewWindow')}>
-          <LogActionButton onClick={handleOpenInNewWindow} aria-label={t('logs.openInNewWindow')} data-testid="logs-open-window">
-            <LogActionIcon icon={faUpRightFromSquare} />
-          </LogActionButton>
-        </Tooltip>
+        {detached ? null : (
+          <Tooltip title={t('logs.openInNewWindow')}>
+            <LogActionButton onClick={handleOpenInNewWindow} aria-label={t('logs.openInNewWindow')} data-testid="logs-open-window">
+              <LogActionIcon icon={faUpRightFromSquare} />
+            </LogActionButton>
+          </Tooltip>
+        )}
         <EntryCount variant="caption" color="text.secondary">
           {filter === 'ALL' && !query
             ? t('logs.entryCount', { count: entries.length })

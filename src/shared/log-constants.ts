@@ -1161,3 +1161,5 @@ export const LOG_LOGS_WINDOW_OPEN = 'logsWindowOpen:';
 export const LOG_LOGS_GET_HISTORY = 'logsGetHistory:';
 /** @const {string} Logged when the renderer publishes log entries to the main-process hub. */
 export const LOG_LOGS_PUBLISH = 'logsPublishEntries:';
+/** @const {string} Logged when the renderer asks main to clear the shared log history. */
+export const LOG_LOGS_CLEAR = 'logsClear:';

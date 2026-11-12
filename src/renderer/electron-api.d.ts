@@ -800,6 +800,17 @@ export interface ElectronAPI {
    */
   logsPublishEntries(entries: LogEntry[]): void;
   /**
+   * Clears the shared log history in the main process and notifies every Logs
+   * window, so all views drop the same entries.
+   */
+  logsClear(): void;
+  /**
+   * Subscribes to shared-log clear events pushed from main.
+   * @param {() => void} cb - Called after the shared log was cleared.
+   * @returns {() => void} unsubscribe
+   */
+  onLogsCleared(cb: () => void): () => void;
+  /**
    * Subscribes to the mutating-operation audit stream, pushed from the main
    * process over `IPC.AUDIT_ENTRY` ('audit-entry'). Each record names the tool
    * that ran, its safety tier, an argument digest, and the result.

@@ -99,6 +99,8 @@
  *   Payload: the id of the open window, or `null` when none is open.
  * @property {string} LOGS_HISTORY - Request the buffered log history from the main process.
  * @property {string} LOGS_PUBLISH - Publish a renderer log entry to the main process log hub.
+ * @property {string} LOGS_CLEAR - Ask the main process to clear the shared log history.
+ * @property {string} LOGS_CLEARED - Notify every window that the shared log history was cleared.
  * @property {string} CHECK_FOR_UPDATES - Start an update check.
  * @property {string} DOWNLOAD_UPDATE - Download the matched update asset.
  * @property {string} INSTALL_UPDATE - Launch the downloaded installer and quit.
@@ -213,6 +215,8 @@ export const IPC = {
   LOGS_WINDOW_STATE: 'logs-window-state',
   LOGS_HISTORY: 'logs-history',
   LOGS_PUBLISH: 'logs-publish',
+  LOGS_CLEAR: 'logs-clear',
+  LOGS_CLEARED: 'logs-cleared',
 
   CHECK_FOR_UPDATES: 'check-for-updates',
   DOWNLOAD_UPDATE: 'download-update',

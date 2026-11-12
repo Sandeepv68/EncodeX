@@ -9,8 +9,9 @@
  *  - {@link isDetachedMode} tells a renderer whether it is the detached one.
  *  - {@link mirrorLogEntry} forwards a locally produced entry to the main
  *    process, which publishes it into the shared log hub.
- *  - {@link subscribeDetachedLogFeed} seeds the detached window's store from
- *    the hub's history and keeps it up to date with the live stream.
+ *  - {@link subscribeSharedLogFeed} seeds a window's store from the hub's
+ *    history and keeps it up to date with the live stream. Both the in-app and
+ *    the detached Logs page use it, so they show the same ordered entries.
  *
  * Mirroring is skipped in the detached window itself: that window's own
  * console output would otherwise travel to the main process and be echoed back
@@ -108,6 +109,23 @@ export function mirrorLogEntry(entry: LogEntry): void {
 }
 
 /**
+ * Drops console entries that have not been mirrored yet.
+ *
+ * A clear must not be undone by the batch timer: an entry produced a few
+ * milliseconds before the user pressed clear would otherwise be published
+ * after the hub was emptied and appear as if it had survived.
+ *
+ * @returns {void}
+ */
+function discardPendingMirroredEntries(): void {
+  pendingEntries = [];
+  if (flushTimer !== undefined) {
+    clearTimeout(flushTimer);
+    flushTimer = undefined;
+  }
+}
+
+/**
  * Orders two entries by their hub sequence number.
  *
  * The hub stamps every entry it distributes with a monotonic sequence number,
@@ -124,8 +142,13 @@ function compareBySeq(a: LogEntry, b: LogEntry): number {
 }
 
 /**
- * Seeds the detached window's log store with the shared history and keeps it
- * up to date with the live stream.
+ * Seeds a Logs window's store with the shared history and keeps it up to date
+ * with the live stream.
+ *
+ * Both the in-app and the detached Logs page use this feed. Reading one hub
+ * through the same history-plus-live path is what keeps the two views in
+ * step; collecting entries directly in the in-app window made it miss history
+ * the detached window received.
  *
  * The live subscription is registered *before* the history is fetched, so the
  * two together cover every entry: the history carries what was published
@@ -135,9 +158,16 @@ function compareBySeq(a: LogEntry, b: LogEntry): number {
  *
  * @returns {() => void} A function that stops the live subscription.
  */
-export function subscribeDetachedLogFeed(): () => void {
+export function subscribeSharedLogFeed(): () => void {
   /** The entries seen so far, keyed by their hub sequence number. @type {Map<number, LogEntry>} */
   const bySeq = new Map<number, LogEntry>();
+
+  /**
+   * Incremented on every clear, so a history request started before the clear
+   * cannot write the old entries back when its response lands afterwards.
+   * @type {number}
+   */
+  let generation = 0;
 
   /**
    * Writes the merged entries into the store.
@@ -158,18 +188,42 @@ export function subscribeDetachedLogFeed(): () => void {
     flush();
   };
 
+  /**
+   * Drops the cached entries after the shared history was cleared.
+   *
+   * The local store is cleared as well, and both the cache and the generation
+   * reset are needed: the cache would otherwise repopulate the store on the
+   * next live entry, and an in-flight history response would seed it with the
+   * entries the user just cleared.
+   *
+   * @returns {void}
+   */
+  const handleCleared = (): void => {
+    generation += 1;
+    bySeq.clear();
+    discardPendingMirroredEntries();
+    flush();
+  };
+
   let unsubscribe: (() => void) | undefined;
+  let unsubscribeCleared: (() => void) | undefined;
   callBridgeVoid(() => {
     unsubscribe = window.electronAPI?.onLogMessage?.(record);
+    unsubscribeCleared = window.electronAPI?.onLogsCleared?.(handleCleared);
   }, 'onLogMessage');
 
+  const requestGeneration = generation;
   void bridgePromise(() => window.electronAPI!.logsGetHistory!())
     .then((history) => {
+      if (requestGeneration !== generation) return;
       for (const entry of history ?? []) record(entry);
     })
     .catch(() => {
       /* The history is a best-effort seed; the live stream still works. */
     });
 
-  return () => unsubscribe?.();
+  return () => {
+    unsubscribe?.();
+    unsubscribeCleared?.();
+  };
 }

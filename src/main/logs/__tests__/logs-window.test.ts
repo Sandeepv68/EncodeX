@@ -136,6 +136,15 @@ describe('logs-window', () => {
     expect(win.webContents.send).toHaveBeenCalledWith('logs-window-state', null);
   });
 
+  it('broadcasts a clear to every window', async () => {
+    const { openLogsWindow, broadcastLogsCleared } = await importModule();
+    openLogsWindow();
+    const win = getWindowInstances()[0];
+    win.webContents.send.mockClear();
+    broadcastLogsCleared();
+    expect(win.webContents.send).toHaveBeenCalledWith('logs-cleared');
+  });
+
   it('subscribes an ordinary window to the hub and removes it again', async () => {
     const { subscribeWindowToLogHub, unsubscribeWindowFromLogHub } = await importModule();
     const win = {

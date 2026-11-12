@@ -100,6 +100,8 @@ describe('preload', () => {
     expect(api).toBeDefined();
     expect(api.convertFile).toBeTypeOf('function');
     expect(api.onLogMessage).toBeTypeOf('function');
+    expect(api.onLogsCleared).toBeTypeOf('function');
+    expect(api.logsClear).toBeTypeOf('function');
   });
 
   it('getPathForFile resolves a dropped file path via webUtils', () => {
@@ -207,6 +209,7 @@ describe('preload', () => {
     ],
     ['onWindowMaximizedChange', IPC.WINDOW_MAXIMIZED_CHANGED, true],
     ['onWindowCloseRequested', IPC.WINDOW_CLOSE_REQUESTED, undefined],
+    ['onLogsCleared', IPC.LOGS_CLEARED, undefined],
   ])('%s subscribes and unsubscribes on the %s channel', (method, channel, payload) => {
     const cb = vi.fn();
     const unsubscribe = (api[method] as (cb: (data: unknown) => void) => () => void)(cb);
@@ -276,6 +279,7 @@ describe('preload', () => {
     ['windowClose', IPC.WINDOW_CLOSE],
     ['windowCloseConfirmed', IPC.WINDOW_CONFIRM_CLOSE],
     ['rejectTerms', IPC.TERMS_REJECT],
+    ['logsClear', IPC.LOGS_CLEAR],
   ])('%s sends the %s channel', (method, channel) => {
     (api[method] as () => void)();
     expect(ipcRendererMock.send).toHaveBeenCalledWith(channel);

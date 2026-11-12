@@ -47,6 +47,28 @@ describe('detached log bridge', () => {
     window.history.replaceState({}, '', '/');
   });
 
+  it('discards mirrored entries that were still pending when the log was cleared', async () => {
+    const publish = vi.fn();
+    let cleared: (() => void) | undefined;
+    window.electronAPI.logsPublishEntries = publish;
+    window.electronAPI.onLogMessage = vi.fn(() => () => {});
+    window.electronAPI.onLogsCleared = vi.fn((cb: () => void) => {
+      cleared = cb;
+      return () => {};
+    });
+    window.electronAPI.logsGetHistory = vi.fn().mockResolvedValue([]);
+    const { mirrorLogEntry, subscribeSharedLogFeed } = await import('../detached');
+    const stop = subscribeSharedLogFeed();
+    await vi.waitFor(() => expect(window.electronAPI.logsGetHistory).toHaveBeenCalled());
+
+    mirrorLogEntry(makeEntry('pending', 1));
+    cleared?.();
+    vi.advanceTimersByTime(500);
+
+    expect(publish).not.toHaveBeenCalled();
+    stop();
+  });
+
   it('seeds the detached store from the history and merges the live stream', async () => {
     let live: ((entry: LogEntry) => void) | undefined;
     window.electronAPI.onLogMessage = vi.fn((cb: (entry: LogEntry) => void) => {
@@ -54,8 +76,8 @@ describe('detached log bridge', () => {
       return () => {};
     });
     window.electronAPI.logsGetHistory = vi.fn().mockResolvedValue([makeEntry('history', 1)]);
-    const { subscribeDetachedLogFeed } = await import('../detached');
-    const stop = subscribeDetachedLogFeed();
+    const { subscribeSharedLogFeed } = await import('../detached');
+    const stop = subscribeSharedLogFeed();
     await vi.waitFor(() => expect(useLogStore.getState().entries).toHaveLength(1));
     expect(useLogStore.getState().entries[0].text).toBe('history');
     live?.(makeEntry('live', 2));
@@ -70,8 +92,8 @@ describe('detached log bridge', () => {
       return () => {};
     });
     window.electronAPI.logsGetHistory = vi.fn().mockResolvedValue([makeEntry('shared', 7)]);
-    const { subscribeDetachedLogFeed } = await import('../detached');
-    subscribeDetachedLogFeed();
+    const { subscribeSharedLogFeed } = await import('../detached');
+    subscribeSharedLogFeed();
     live?.(makeEntry('shared', 7));
     await vi.waitFor(() => expect(useLogStore.getState().entries).toHaveLength(1));
   });
@@ -83,8 +105,8 @@ describe('detached log bridge', () => {
       return () => {};
     });
     window.electronAPI.logsGetHistory = vi.fn().mockResolvedValue([]);
-    const { subscribeDetachedLogFeed } = await import('../detached');
-    subscribeDetachedLogFeed();
+    const { subscribeSharedLogFeed } = await import('../detached');
+    subscribeSharedLogFeed();
     live?.({ timestamp: '2026-01-01T00:00:00.000Z', level: 'INFO', source: 'main', text: 'no seq' });
     await vi.waitFor(() => expect(useLogStore.getState().entries).toHaveLength(0));
   });
@@ -96,8 +118,8 @@ describe('detached log bridge', () => {
       return () => {};
     });
     window.electronAPI.logsGetHistory = vi.fn().mockRejectedValue(new Error('no history'));
-    const { subscribeDetachedLogFeed } = await import('../detached');
-    subscribeDetachedLogFeed();
+    const { subscribeSharedLogFeed } = await import('../detached');
+    subscribeSharedLogFeed();
     await vi.waitFor(() => expect(window.electronAPI.logsGetHistory).toHaveBeenCalled());
     live?.(makeEntry('live only', 3));
     await vi.waitFor(() => expect(useLogStore.getState().entries.map((e) => e.text)).toEqual(['live only']));
@@ -110,12 +132,62 @@ describe('detached log bridge', () => {
       return () => {};
     });
     window.electronAPI.logsGetHistory = vi.fn().mockResolvedValue([makeEntry('third', 3), makeEntry('first', 1)]);
-    const { subscribeDetachedLogFeed } = await import('../detached');
-    subscribeDetachedLogFeed();
+    const { subscribeSharedLogFeed } = await import('../detached');
+    subscribeSharedLogFeed();
     await vi.waitFor(() => expect(useLogStore.getState().entries).toHaveLength(2));
     expect(useLogStore.getState().entries.map((e) => e.text)).toEqual(['first', 'third']);
     live?.(makeEntry('second', 2));
     await vi.waitFor(() => expect(useLogStore.getState().entries.map((e) => e.text)).toEqual(['first', 'second', 'third']));
+  });
+
+  it('drops the cached entries when the shared log is cleared', async () => {
+    let live: ((entry: LogEntry) => void) | undefined;
+    let cleared: (() => void) | undefined;
+    window.electronAPI.onLogMessage = vi.fn((cb: (entry: LogEntry) => void) => {
+      live = cb;
+      return () => {};
+    });
+    window.electronAPI.onLogsCleared = vi.fn((cb: () => void) => {
+      cleared = cb;
+      return () => {};
+    });
+    window.electronAPI.logsGetHistory = vi.fn().mockResolvedValue([makeEntry('history', 1)]);
+    const { subscribeSharedLogFeed } = await import('../detached');
+    const stop = subscribeSharedLogFeed();
+    await vi.waitFor(() => expect(useLogStore.getState().entries).toHaveLength(1));
+
+    cleared?.();
+    expect(useLogStore.getState().entries).toHaveLength(0);
+
+    live?.(makeEntry('after clear', 2));
+    expect(useLogStore.getState().entries.map((e) => e.text)).toEqual(['after clear']);
+    stop();
+  });
+
+  it('ignores a history response that was already in flight when the log was cleared', async () => {
+    let resolveHistory: ((entries: LogEntry[]) => void) | undefined;
+    let cleared: (() => void) | undefined;
+    window.electronAPI.onLogMessage = vi.fn(() => () => {});
+    window.electronAPI.onLogsCleared = vi.fn((cb: () => void) => {
+      cleared = cb;
+      return () => {};
+    });
+    window.electronAPI.logsGetHistory = vi.fn(
+      () =>
+        new Promise<LogEntry[]>((resolve) => {
+          resolveHistory = resolve;
+        }),
+    );
+    const { subscribeSharedLogFeed } = await import('../detached');
+    const stop = subscribeSharedLogFeed();
+    await vi.waitFor(() => expect(resolveHistory).toBeTypeOf('function'));
+
+    cleared?.();
+    resolveHistory?.([makeEntry('stale history', 1)]);
+    await Promise.resolve();
+
+    expect(useLogStore.getState().entries).toHaveLength(0);
+    stop();
   });
 
   it('reports no detached mode when there is no window', async () => {

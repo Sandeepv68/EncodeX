@@ -62,8 +62,7 @@ import { useDevScreenshot } from './dev/useDevScreenshot';
 import { SHORTCUTS } from './constants/shortcuts';
 import { THEMES } from '../shared/theme/colors';
 import { useErrorStore } from './stores/errorStore';
-import { useLogStore } from './stores/logStore';
-import { isDetachedMode, subscribeDetachedLogFeed } from './logs/detached';
+import { isDetachedMode, subscribeSharedLogFeed } from './logs/detached';
 import { useAuditStore } from './stores/auditStore';
 import { useSettingsStore } from './stores/settingsStore';
 import type { PageLoader, RouteLoaderProps } from './types';
@@ -251,16 +250,10 @@ function AppLayout() {
     // synchronous throw from `contextBridge` would otherwise propagate out of the effect and take the
     // tree down - losing the log stream that would have explained why.
     callBridgeVoid(() => {
-      // The detached Logs window reads the shared log stream from the main process instead of
-      // collecting them locally: it is a second renderer process, so its own console output is
-      // not the log the user wants to see there.
-      if (isDetachedMode()) {
-        cleanup = subscribeDetachedLogFeed();
-        return;
-      }
-      cleanup = window.electronAPI?.onLogMessage((entry) => {
-        useLogStore.getState().addEntry(entry);
-      });
+      // Both windows read the shared stream from the main process. The in-app view used to
+      // collect entries locally instead, which meant it never had the hub's history and the two
+      // views could disagree about what had been logged.
+      cleanup = subscribeSharedLogFeed();
     }, 'onLogMessage subscription');
     return () => cleanup?.();
   }, []);

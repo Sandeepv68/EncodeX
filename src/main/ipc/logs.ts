@@ -1,7 +1,7 @@
 /**
  * @fileoverview IPC handlers for the detached Logs window.
  *
- * Three channels are served here:
+ * Four channels are served here:
  *
  *  - `IPC.LOGS_WINDOW_OPEN` (fire-and-forget): the renderer asks the main
  *    process to open the detached Logs window. The window itself is created by
@@ -11,6 +11,8 @@
  *    show renderer-side entries it would otherwise never see.
  *  - `IPC.LOGS_HISTORY` (request): the detached window asks for the buffered
  *    history it missed while it was not open.
+ *  - `IPC.LOGS_CLEAR` (fire-and-forget): a Logs view asks the main process to
+ *    clear the shared history, and every window is told to clear its store.
  *
  * The handlers are registered from `registerIpcHandlers()` so the channel
  * contract test sees them in the same place as every other handler.
@@ -23,7 +25,7 @@ import type { IpcMainEvent } from 'electron';
 import { IPC } from '../../shared/ipc-channels';
 import { isLogEntry } from '../../shared/ipc-guards';
 import { logHub } from '../logs/log-hub';
-import { openLogsWindow } from '../logs/logs-window';
+import { broadcastLogsCleared, openLogsWindow } from '../logs/logs-window';
 
 /**
  * True once the handlers have been registered.
@@ -63,15 +65,19 @@ export function registerLogsHandlers(): void {
    * than forwarded, because the hub would hand them straight to a window's
    * log view.
    *
+   * The sender is not excluded from the broadcast: every Logs view, including
+   * the one that produced the entry, reads the shared stream. Staying on that
+   * single path is what keeps the in-app and detached views identical and
+   * gives every entry the same hub sequence number.
+   *
    * @param {unknown} payload - The batch of entries published by the renderer.
-   * @param {IpcMainEvent} event - The event that carried the batch.
    * @returns {void}
    */
-  ipcMain.on(IPC.LOGS_PUBLISH, (event: IpcMainEvent, payload: unknown) => {
+  ipcMain.on(IPC.LOGS_PUBLISH, (_event: IpcMainEvent, payload: unknown) => {
     if (!Array.isArray(payload)) return;
     for (const candidate of payload) {
       if (!isLogEntry(candidate)) continue;
-      logHub.publish(candidate, event.sender.id);
+      logHub.publish(candidate);
     }
   });
 
@@ -81,4 +87,19 @@ export function registerLogsHandlers(): void {
    * @returns {import('../../shared/types').LogEntry[]} The buffered entries, oldest first.
    */
   ipcMain.handle(IPC.LOGS_HISTORY, () => logHub.snapshot());
+
+  /**
+   * Clears the shared log history and announces it to every window.
+   *
+   * Clearing only the requesting renderer's store would leave the hub's
+   * history intact, so the next live entry (or the next history fetch) would
+   * put the old entries straight back. Emptying the hub first makes the clear
+   * durable for every Logs view.
+   *
+   * @returns {void}
+   */
+  ipcMain.on(IPC.LOGS_CLEAR, () => {
+    logHub.clear();
+    broadcastLogsCleared();
+  });
 }

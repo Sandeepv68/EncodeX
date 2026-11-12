@@ -85,6 +85,19 @@ export class LogHub {
   }
 
   /**
+   * Empties the buffered history.
+   *
+   * The sequence counter keeps advancing: entries published after a clear must
+   * still sort after the ones that were dropped, and a consumer that held an
+   * old `seq` must not mistake a reused number for an entry it already has.
+   *
+   * @returns {void}
+   */
+  clear(): void {
+    this.entries = [];
+  }
+
+  /**
    * Registers a window to receive published entries.
    *
    * The subscription gets its own identity, so two windows never collide even

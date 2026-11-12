@@ -34,7 +34,6 @@ import App from './App';
 import i18n from './i18n/config';
 import { DirectionProvider } from './i18n/DirectionProvider';
 import { useLanguageDirection } from './useLanguageDirection';
-import { useLogStore } from './stores/logStore';
 import { isDetachedMode, mirrorLogEntry } from './logs/detached';
 import { setupSessionCleanup } from './sessionCleanup';
 import { withBridgeTimeout } from './utils/bridge-call';
@@ -57,12 +56,14 @@ const levels: Array<{ method: 'log' | 'warn' | 'error'; level: 'INFO' | 'WARN' |
 
 /**
  * Patches the console methods listed above so every call still hits the
- * original implementation and is also appended to the log store with a
+ * original implementation and is mirrored to the main process with a
  * timestamp, level, serialized text, and 'renderer' as the source.
  *
- * The entry is also mirrored to the main process, which publishes it into the
- * shared log hub. That is what lets a detached Logs window show the same
- * entries as the in-app one.
+ * The main process publishes the entry into the shared log hub, which sends
+ * it back to every Logs view - including this one. Both the in-app and the
+ * detached window therefore read one ordered stream, so they cannot drift
+ * apart. Adding the entry to the local store directly as well would show it
+ * twice.
  *
  * The detached window itself records nothing: it reads the shared stream
  * instead, and mirroring its own output back would show every entry twice.
@@ -85,7 +86,6 @@ for (const { method, level } of levels) {
       text,
       source: 'renderer' as const,
     };
-    useLogStore.getState().addEntry(entry);
     mirrorLogEntry(entry);
   }) as ConsoleMethod;
   patched.__encodeXPatched = true;

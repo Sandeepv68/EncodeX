@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../App';
 import { useErrorStore } from '../stores/errorStore';
@@ -147,11 +147,17 @@ describe('App', () => {
     expect(localStorage.getItem(DRAWER_CONDENSED_STORAGE_KEY)).toBe('true');
   });
 
-  it('stores log messages received from the main process', async () => {
+  it('stores log messages received from the shared stream', async () => {
     renderApp();
-    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
+    await waitFor(() => expect(onLogMessageMock).toHaveBeenCalled(), { timeout: 10000 });
     const callback = onLogMessageMock.mock.calls[0][0];
-    const entry: LogEntry = { timestamp: '2026-07-31T12:00:00.000Z', level: 'INFO', text: 'incoming log', source: 'main' };
+    const entry: LogEntry = {
+      timestamp: '2026-07-31T12:00:00.000Z',
+      level: 'INFO',
+      text: 'incoming log',
+      source: 'main',
+      seq: 1,
+    };
     callback(entry);
     expect(useLogStore.getState().entries).toContainEqual(entry);
   });

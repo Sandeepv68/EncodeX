@@ -268,6 +268,8 @@ Object.defineProperty(globalThis, 'electronAPI', {
     onLogsWindowState: vi.fn(() => vi.fn()),
     logsGetHistory: vi.fn().mockResolvedValue([]),
     logsPublishEntries: vi.fn(),
+    logsClear: vi.fn(),
+    onLogsCleared: vi.fn(() => vi.fn()),
     checkForUpdates: vi.fn().mockResolvedValue(undefined),
     downloadUpdate: vi.fn().mockResolvedValue(undefined),
     installUpdate: vi.fn().mockResolvedValue(undefined),

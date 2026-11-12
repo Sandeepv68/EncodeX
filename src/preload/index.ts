@@ -46,7 +46,7 @@
  * - Event subscriptions (each returns an unsubscribe function): `onWindowMaximizedChange`,
  *   `onConversionProgress`, `onQueueAdded`, `onQueueRemoved`, `onQueueStatusChange`,
  *   `onQueueProgress`, `onQueueCancelled`, `onQueueMoved`, `onPlayerFrame`, `onPlayerAudio`,
- *   `onPlayerError`, `onLogMessage`.
+ *   `onPlayerError`, `onLogMessage`, `onLogsCleared`.
  */
 
 import { contextBridge, ipcRenderer, IpcRendererEvent, webUtils } from 'electron';
@@ -190,6 +190,7 @@ import {
   LOG_LOGS_WINDOW_OPEN,
   LOG_LOGS_GET_HISTORY,
   LOG_LOGS_PUBLISH,
+  LOG_LOGS_CLEAR,
 } from '../shared/log-constants';
 
 /**
@@ -243,7 +244,7 @@ const EVENT_COALESCE_INTERVALS = {
  * - Event subscriptions (each returns an unsubscribe function): `onWindowMaximizedChange`,
  *   `onConversionProgress`, `onQueueAdded`, `onQueueRemoved`, `onQueueStatusChange`,
  *   `onQueueProgress`, `onQueueCancelled`, `onQueueMoved`, `onPlayerFrame`, `onPlayerAudio`,
- *   `onPlayerError`, `onLogMessage`.
+ *   `onPlayerError`, `onLogMessage`, `onLogsCleared`.
  *
  * Request/response methods use `ipcRenderer.invoke` and reject with the error the main
  * process throws (see the file-level note on error forwarding). Fire-and-forget window
@@ -1746,6 +1747,36 @@ const api = {
     const batch = Array.isArray(entries) ? entries : [];
     log.debug(LOG_LOGS_PUBLISH, batch.length);
     ipcRenderer.send(IPC.LOGS_PUBLISH, batch);
+  },
+
+  /**
+   * Clears the shared log history in the main process.
+   *
+   * Fire-and-forget: the main process empties the hub and broadcasts
+   * `IPC.LOGS_CLEARED`, so every Logs window drops the same entries. The
+   * renderer also clears its local store immediately; the event keeps the
+   * other windows in step.
+   *
+   * @returns {void}
+   */
+  logsClear: () => {
+    log.debug(LOG_LOGS_CLEAR);
+    ipcRenderer.send(IPC.LOGS_CLEAR);
+  },
+
+  /**
+   * Subscribes to shared-log clear events pushed over `IPC.LOGS_CLEARED`.
+   *
+   * The event has no payload: receiving it means the hub history was emptied,
+   * so the consumer should drop every entry it currently holds.
+   *
+   * @param {() => void} cb - Called after the shared log was cleared.
+   * @returns {() => void} unsubscribe
+   */
+  onLogsCleared: (cb: () => void) => {
+    const handler = () => cb();
+    ipcRenderer.on(IPC.LOGS_CLEARED, handler);
+    return () => ipcRenderer.removeListener(IPC.LOGS_CLEARED, handler);
   },
 
   /**

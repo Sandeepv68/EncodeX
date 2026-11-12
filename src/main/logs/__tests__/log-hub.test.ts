@@ -39,6 +39,20 @@ describe('LogHub', () => {
     expect(hub.snapshot()).toHaveLength(1);
   });
 
+  it('empties the history when cleared', () => {
+    hub.publish(entry('one'));
+    hub.publish(entry('two'));
+    hub.clear();
+    expect(hub.snapshot()).toEqual([]);
+  });
+
+  it('keeps sequence numbers advancing after a clear', () => {
+    hub.publish(entry('before'));
+    hub.clear();
+    const after = hub.publish(entry('after'));
+    expect(after.seq).toBe(2);
+  });
+
   it('broadcasts an entry to every subscriber', () => {
     const a = subscriber(1);
     const b = subscriber(2);
