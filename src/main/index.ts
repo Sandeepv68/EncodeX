@@ -32,6 +32,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { format as formatArgs } from 'util';
 import { registerIpcHandlers } from './ipc/handlers';
+import { initNotifier } from './notifications/notifier';
 import { resolvePreloadPath, resolveRendererEntryPath } from './paths';
 import { logHub } from './logs/log-hub';
 import { subscribeWindowToLogHub, unsubscribeWindowFromLogHub } from './logs/logs-window';
@@ -294,6 +295,14 @@ function isCliMode(): boolean {
   return args.length >= 2;
 }
 
+if (process.platform === 'win32') {
+  try {
+    app.setAppUserModelId('com.encodex.app');
+  } catch {
+    /* ignore */
+  }
+}
+
 if (process.argv.includes('--mcp')) {
   // MCP mode is headless and spawns no windows: disable Chromium's GPU so
   // short-lived spawns (MCP clients, CI) never crash in the GPU process.
@@ -301,6 +310,13 @@ if (process.argv.includes('--mcp')) {
   // stdout was reserved for JSON-RPC before any module loaded by
   // ./mcp-stdio-bootstrap, imported first below.
   log.info('Starting in MCP server mode');
+  if (process.platform === 'win32') {
+    try {
+      app.setAppUserModelId('com.encodex.app');
+    } catch {
+      /* ignore */
+    }
+  }
   app.whenReady().then(async () => {
     try {
       await runMcpServer();
@@ -549,6 +565,7 @@ if (process.argv.includes('--mcp')) {
     });
 
     registerIpcHandlers(mainWindow);
+    initNotifier({ getMainWindow: () => mainWindow });
     // The main window shows the log, so it subscribes to the hub: every entry
     // the main process publishes - and every entry the renderer mirrors back -
     // is delivered to it over IPC.LOG_MESSAGE.

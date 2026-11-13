@@ -685,7 +685,9 @@
       "keyRemoved": "Хадгалагдсан түлхүүрийг устгалаа.",
       "staleStatus": "Тохиргоо өөрчлөгдлөө. Баталгаажуулахын тулд дахин холбоно уу.",
       "headerConnected": "Холбогдсон · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Ширээний мэдэгдэл",
+    "desktopNotificationsHint": "Апп ард ажиллаж байх үед дарааллын ажлууд дуусах эсвэл амжилтгүй болох үед системийн мэдэгдэл харуулна."
   },
   "shortcuts": {
     "title": "Гарны товчлолууд",
@@ -1305,5 +1307,19 @@
       "done": "Дууссан",
       "failed": "Бүтэлгүйтсэн"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Хувиргалт дууслаа",
+    "jobCompletedBody": "{{fileName}} амжилттай дууслаа.",
+    "jobFailedTitle": "Хувиргалт амжилтгүй",
+    "jobFailedBody": "{{fileName}} амжилтгүй боллоо.",
+    "queueCompletedTitle": "Дараалал дууслаа",
+    "queueCompletedBody": "Амжилттай {{succeeded}}, амжилтгүй {{failed}}.",
+    "muxJobCompletedTitle": "Remux/demux дууслаа",
+    "muxJobCompletedBody": "{{fileName}} амжилттай дууслаа.",
+    "muxJobFailedTitle": "Remux/demux амжилтгүй",
+    "muxJobFailedBody": "{{fileName}} амжилтгүй боллоо.",
+    "muxQueueCompletedTitle": "Remux/demux дараалал дууслаа",
+    "muxQueueCompletedBody": "Амжилттай {{succeeded}}, амжилтгүй {{failed}}."
   }
 }

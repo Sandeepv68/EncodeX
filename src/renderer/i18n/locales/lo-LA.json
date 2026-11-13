@@ -685,7 +685,9 @@
       "keyRemoved": "ລຶບຄີທີ່ບັນທຶກໄວ້ແລ້ວ.",
       "staleStatus": "ການຕັ້ງຄ່າປ່ຽນແປງ. ເຊື່ອມຕໍ່ອີກຄັ້ງເພື່ອຢືນຢັນ.",
       "headerConnected": "ເຊື່ອມຕໍ່ແລ້ວ · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "ການແຈ້ງເຕືອນເດັສທັອບ",
+    "desktopNotificationsHint": "ສະແດງການແຈ້ງເຕືອນລະບົບເມື່ອວຽກໃນຄິວສຳເລັດ ຫຼື ລົ້ມເຫຼວ ໃນຂະນະທີ່ແອັບກຳລັງເຮັດວຽກຢູ່ເບື້ອງຫຼັງ."
   },
   "shortcuts": {
     "title": "ປຸ່ມລັດແປ້ນພິມ",
@@ -1305,5 +1307,19 @@
       "done": "ສຳເລັດ",
       "failed": "ລົ້ມເຫຼວ"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "ການແປງສຳເລັດ",
+    "jobCompletedBody": "{{fileName}} ສຳເລັດຮຽບຮ້ອຍແລ້ວ.",
+    "jobFailedTitle": "ການແປງລົ້ມເຫຼວ",
+    "jobFailedBody": "{{fileName}} ລົ້ມເຫຼວ.",
+    "queueCompletedTitle": "ຄິວສຳເລັດ",
+    "queueCompletedBody": "ສຳເລັດ {{succeeded}}, ລົ້ມເຫຼວ {{failed}}.",
+    "muxJobCompletedTitle": "Remux/demux ສຳເລັດ",
+    "muxJobCompletedBody": "{{fileName}} ສຳເລັດຮຽບຮ້ອຍແລ້ວ.",
+    "muxJobFailedTitle": "Remux/demux ລົ້ມເຫຼວ",
+    "muxJobFailedBody": "{{fileName}} ລົ້ມເຫຼວ.",
+    "muxQueueCompletedTitle": "ຄິວ Remux/demux ສຳເລັດ",
+    "muxQueueCompletedBody": "ສຳເລັດ {{succeeded}}, ລົ້ມເຫຼວ {{failed}}."
   }
 }

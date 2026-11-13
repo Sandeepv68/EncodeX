@@ -685,7 +685,9 @@
       "keyRemoved": "Se eliminó la clave guardada.",
       "staleStatus": "La configuración cambió. Vuelve a conectar para verificar.",
       "headerConnected": "Conectado · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Notificaciones de escritorio",
+    "desktopNotificationsHint": "Mostrar notificaciones del sistema cuando los trabajos de la cola se completen o fallen mientras la aplicación está en segundo plano."
   },
   "shortcuts": {
     "title": "Atajos de teclado",
@@ -1305,5 +1307,19 @@
       "done": "Completados",
       "failed": "Con error"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Conversión completada",
+    "jobCompletedBody": "{{fileName}} finalizó correctamente.",
+    "jobFailedTitle": "Error de conversión",
+    "jobFailedBody": "{{fileName}} falló.",
+    "queueCompletedTitle": "Cola completada",
+    "queueCompletedBody": "{{succeeded}} completada(s), {{failed}} fallida(s).",
+    "muxJobCompletedTitle": "Remux/demux completado",
+    "muxJobCompletedBody": "{{fileName}} finalizó correctamente.",
+    "muxJobFailedTitle": "Error de remux/demux",
+    "muxJobFailedBody": "{{fileName}} falló.",
+    "muxQueueCompletedTitle": "Cola de remux/demux completada",
+    "muxQueueCompletedBody": "{{succeeded}} completada(s), {{failed}} fallida(s)."
   }
 }

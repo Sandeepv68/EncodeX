@@ -685,7 +685,9 @@
       "keyRemoved": "Der gespeicherte Schlüssel wurde entfernt.",
       "staleStatus": "Einstellungen geändert. Erneut verbinden, um zu verifizieren.",
       "headerConnected": "Verbunden · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Desktop-Benachrichtigungen",
+    "desktopNotificationsHint": "Systembenachrichtigungen anzeigen, wenn Warteschlangenaufträge abgeschlossen sind oder fehlschlagen, während die App im Hintergrund läuft."
   },
   "shortcuts": {
     "title": "Tastenkombinationen",
@@ -1305,5 +1307,19 @@
       "done": "Fertig",
       "failed": "Fehlgeschlagen"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Konvertierung abgeschlossen",
+    "jobCompletedBody": "{{fileName}} wurde erfolgreich abgeschlossen.",
+    "jobFailedTitle": "Konvertierung fehlgeschlagen",
+    "jobFailedBody": "{{fileName}} ist fehlgeschlagen.",
+    "queueCompletedTitle": "Warteschlange abgeschlossen",
+    "queueCompletedBody": "{{succeeded}} erfolgreich, {{failed}} fehlgeschlagen.",
+    "muxJobCompletedTitle": "Remux/Demux abgeschlossen",
+    "muxJobCompletedBody": "{{fileName}} wurde erfolgreich abgeschlossen.",
+    "muxJobFailedTitle": "Remux/Demux fehlgeschlagen",
+    "muxJobFailedBody": "{{fileName}} ist fehlgeschlagen.",
+    "muxQueueCompletedTitle": "Remux/Demux-Warteschlange abgeschlossen",
+    "muxQueueCompletedBody": "{{succeeded}} erfolgreich, {{failed}} fehlgeschlagen."
   }
 }

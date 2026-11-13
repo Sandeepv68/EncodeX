@@ -54,6 +54,17 @@ export interface AppError {
   timestamp: number;
 }
 
+/** Desktop/OS notification preference and support state shared across IPC boundaries. */
+export interface DesktopNotificationsSettings {
+  enabled: boolean;
+  supported: boolean;
+}
+
+/** Payload sent when a desktop notification is clicked. */
+export interface NotificationClickPayload {
+  target?: 'queue' | 'mux';
+}
+
 /**
  * Codec to container compatibility information.
  * @interface CodecContainerInfo

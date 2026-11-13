@@ -685,7 +685,9 @@
       "keyRemoved": "La clé enregistrée a été supprimée.",
       "staleStatus": "Les paramètres ont changé. Reconnectez-vous pour vérifier.",
       "headerConnected": "Connecté · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Notifications du bureau",
+    "desktopNotificationsHint": "Afficher des notifications système lorsque les tâches de la file d’attente se terminent ou échouent pendant que l’application est en arrière-plan."
   },
   "shortcuts": {
     "title": "Raccourcis clavier",
@@ -1305,5 +1307,19 @@
       "done": "Terminés",
       "failed": "En échec"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Conversion terminée",
+    "jobCompletedBody": "{{fileName}} s’est terminé avec succès.",
+    "jobFailedTitle": "Échec de la conversion",
+    "jobFailedBody": "{{fileName}} a échoué.",
+    "queueCompletedTitle": "File d’attente terminée",
+    "queueCompletedBody": "{{succeeded}} réussie(s), {{failed}} échouée(s).",
+    "muxJobCompletedTitle": "Remux/démux terminé",
+    "muxJobCompletedBody": "{{fileName}} s’est terminé avec succès.",
+    "muxJobFailedTitle": "Échec du remux/démux",
+    "muxJobFailedBody": "{{fileName}} a échoué.",
+    "muxQueueCompletedTitle": "File remux/démux terminée",
+    "muxQueueCompletedBody": "{{succeeded}} réussie(s), {{failed}} échouée(s)."
   }
 }

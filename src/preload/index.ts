@@ -69,6 +69,7 @@ import {
   isUpdateInfo,
   isUpdateProgress,
 } from '../shared/ipc-guards';
+import type { DesktopNotificationsSettings, NotificationClickPayload } from '../shared/types';
 import { isMuxQueueJob, isMuxQueueMovedEvent, isMuxQueueProgressEvent } from '../shared/mux-queue-guards';
 import {
   ConversionOptions,
@@ -173,12 +174,15 @@ import {
   LOG_IPC_CHECK_FOR_UPDATES,
   LOG_IPC_DOWNLOAD_UPDATE,
   LOG_IPC_INSTALL_UPDATE,
-  LOG_IPC_CANCEL_DOWNLOAD,
   LOG_UPDATER_OPEN_RELEASE_NOTES,
+  LOG_IPC_CANCEL_DOWNLOAD,
   LOG_IPC_MONITORING_GET_STATE,
   LOG_IPC_MONITORING_SET_ENABLED,
   LOG_IPC_ANALYTICS_GET_STATE,
   LOG_IPC_ANALYTICS_SET_ENABLED,
+  LOG_IPC_NOTIFICATIONS_GET_SETTINGS,
+  LOG_IPC_NOTIFICATIONS_SET_ENABLED,
+  LOG_ON_NOTIFICATION_CLICKED,
   LOG_IPC_ANALYTICS_TRACK_EVENT,
   LOG_IPC_MCP_GET_SETTINGS,
   LOG_IPC_MCP_SET_SETTINGS,
@@ -1052,6 +1056,25 @@ const api = {
   setLaunchAtLogin: (enabled: boolean) => {
     log.debug(LOG_SET_LAUNCH_AT_LOGIN_CALLED, { enabled });
     ipcRenderer.send(IPC.SET_LAUNCH_AT_LOGIN, enabled);
+  },
+
+  notificationsGetSettings: () => {
+    log.debug(LOG_IPC_NOTIFICATIONS_GET_SETTINGS);
+    return ipcRenderer.invoke(IPC.NOTIFICATIONS_GET_SETTINGS) as Promise<DesktopNotificationsSettings>;
+  },
+  notificationsSetEnabled: (enabled: boolean) => {
+    log.debug(LOG_IPC_NOTIFICATIONS_SET_ENABLED, { enabled });
+    return ipcRenderer.invoke(IPC.NOTIFICATIONS_SET_ENABLED, enabled) as Promise<DesktopNotificationsSettings>;
+  },
+  onNotificationClicked: (cb: (payload: NotificationClickPayload) => void) => {
+    const handler = (_event: IpcRendererEvent, payload: unknown) => {
+      const safe = payload && typeof payload === 'object' ? (payload as { target?: unknown }) : {};
+      const target = safe.target === 'queue' || safe.target === 'mux' ? safe.target : undefined;
+      log.debug(LOG_ON_NOTIFICATION_CLICKED, { target });
+      cb({ target });
+    };
+    ipcRenderer.on(IPC.NOTIFICATIONS_CLICKED, handler);
+    return () => ipcRenderer.removeListener(IPC.NOTIFICATIONS_CLICKED, handler);
   },
 
   /**

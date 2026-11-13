@@ -685,7 +685,9 @@
       "keyRemoved": "Inalis ang naka-imbak na key.",
       "staleStatus": "Nagbago ang mga setting. Kumonekta muli para i-verify.",
       "headerConnected": "Nakakonekta · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Mga abiso sa desktop",
+    "desktopNotificationsHint": "Magpakita ng mga abiso ng system kapag natapos o nabigo ang mga trabaho sa pila habang tumatakbo ang app sa background."
   },
   "shortcuts": {
     "title": "Mga Keyboard Shortcut",
@@ -1305,5 +1307,19 @@
       "done": "Tapos",
       "failed": "Nabigo"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Tapos na ang conversion",
+    "jobCompletedBody": "Matagumpay na natapos ang {{fileName}}.",
+    "jobFailedTitle": "Nabigo ang conversion",
+    "jobFailedBody": "Nabigo ang {{fileName}}.",
+    "queueCompletedTitle": "Tapos na ang pila",
+    "queueCompletedBody": "{{succeeded}} matagumpay, {{failed}} nabigo.",
+    "muxJobCompletedTitle": "Tapos na ang remux/demux",
+    "muxJobCompletedBody": "Matagumpay na natapos ang {{fileName}}.",
+    "muxJobFailedTitle": "Nabigo ang remux/demux",
+    "muxJobFailedBody": "Nabigo ang {{fileName}}.",
+    "muxQueueCompletedTitle": "Tapos na ang pila ng remux/demux",
+    "muxQueueCompletedBody": "{{succeeded}} matagumpay, {{failed}} nabigo."
   }
 }

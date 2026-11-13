@@ -1,6 +1,6 @@
 # 🗂️ Project Structure
 
-<!-- drift: renderer-components=66 renderer-components-top=51 renderer-styles=73 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 renderer-pages=13 renderer-stores=21 log-constants=573 builtin-profiles=115 profile-categories=8 e2e-specs=34 -->
+<!-- drift: renderer-components=67 renderer-components-top=52 renderer-styles=73 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 renderer-pages=13 renderer-stores=21 log-constants=581 builtin-profiles=115 profile-categories=8 e2e-specs=34 -->
 
 ```
 src/
@@ -241,7 +241,7 @@ src/
     ├── audit.ts                       # Mutating-operation audit record contract
     ├── mcp-settings.ts                # Embedded MCP server settings + port rules
     ├── mcp-ui.ts                      # MCP Apps UI bridge contract
-    ├── log-constants.ts               # Shared log message constants (573 exported)
+    ├── log-constants.ts               # Shared log message constants (581 exported)
     ├── logger.ts                      # Timestamped logger (main/renderer)
     └── validation.ts                  # Time/scale/bitrate/range validation helpers
 

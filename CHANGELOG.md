@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Desktop notifications** - opt-in OS/taskbar notifications for batch and mux queue job completion/failure and queue summaries when running in the background/unfocused, with click-to-focus and navigation to the Batch Queue.
 - **Remux and Demux** — dedicated lossless remux and stream-demux pages, surfaced in the app, CLI and MCP surfaces.
 - **Standalone MCP HTTP server** (`npm run mcp:http`) — loopback-only transport with optional bearer auth, session cap, body-size cap and Host/Origin checks.
 - **MCP AI tools** — `analyze_media`, `recommend_settings`, `estimate_conversion`, `validate_output`, `compress_to_target`, `analyze_folder`, `explain_error`, `advise_encoding` and `quality_report`, each returning `structuredContent` alongside the text fallback.

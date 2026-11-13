@@ -685,7 +685,9 @@
       "keyRemoved": "Den gemte nøgle blev fjernet.",
       "staleStatus": "Indstillingerne er ændret. Forbind igen for at bekræfte.",
       "headerConnected": "Forbundet · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Skrivebordsmeddelelser",
+    "desktopNotificationsHint": "Vis systemmeddelelser, når køjob fuldføres eller mislykkes, mens appen kører i baggrunden."
   },
   "shortcuts": {
     "title": "Tastaturgenveje",
@@ -1305,5 +1307,19 @@
       "done": "Færdig",
       "failed": "Mislykkedes"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Konvertering fuldført",
+    "jobCompletedBody": "{{fileName}} blev fuldført.",
+    "jobFailedTitle": "Konvertering mislykkedes",
+    "jobFailedBody": "{{fileName}} mislykkedes.",
+    "queueCompletedTitle": "Kø fuldført",
+    "queueCompletedBody": "{{succeeded}} gennemført, {{failed}} mislykkedes.",
+    "muxJobCompletedTitle": "Remux/demux fuldført",
+    "muxJobCompletedBody": "{{fileName}} blev fuldført.",
+    "muxJobFailedTitle": "Remux/demux mislykkedes",
+    "muxJobFailedBody": "{{fileName}} mislykkedes.",
+    "muxQueueCompletedTitle": "Remux/demux-kø fuldført",
+    "muxQueueCompletedBody": "{{succeeded}} gennemført, {{failed}} mislykkedes."
   }
 }

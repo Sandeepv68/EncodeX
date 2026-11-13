@@ -685,7 +685,9 @@
       "keyRemoved": "Den lagrede nøkkelen ble fjernet.",
       "staleStatus": "Innstillingene er endret. Koble til på nytt for å bekrefte.",
       "headerConnected": "Tilkoblet · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Skrivebordsvarsler",
+    "desktopNotificationsHint": "Vis systemvarsler når køjobber fullføres eller mislykkes mens appen kjører i bakgrunnen."
   },
   "shortcuts": {
     "title": "Tastatursnarveier",
@@ -1305,5 +1307,19 @@
       "done": "Ferdig",
       "failed": "Mislyktes"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Konvertering fullført",
+    "jobCompletedBody": "{{fileName}} ble fullført.",
+    "jobFailedTitle": "Konvertering mislyktes",
+    "jobFailedBody": "{{fileName}} mislyktes.",
+    "queueCompletedTitle": "Kø fullført",
+    "queueCompletedBody": "{{succeeded}} fullført, {{failed}} mislyktes.",
+    "muxJobCompletedTitle": "Remux/demux fullført",
+    "muxJobCompletedBody": "{{fileName}} ble fullført.",
+    "muxJobFailedTitle": "Remux/demux mislyktes",
+    "muxJobFailedBody": "{{fileName}} mislyktes.",
+    "muxQueueCompletedTitle": "Remux/demux-kø fullført",
+    "muxQueueCompletedBody": "{{succeeded}} fullført, {{failed}} mislyktes."
   }
 }

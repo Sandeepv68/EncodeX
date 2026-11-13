@@ -685,7 +685,9 @@
       "keyRemoved": "भण्डारित कुञ्जी हटाइयो।",
       "staleStatus": "सेटिङ्स परिवर्तन भयो। प्रमाणित गर्न फेरि जडान गर्नुहोस्।",
       "headerConnected": "जडित · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "डेस्कटप सूचनाहरू",
+    "desktopNotificationsHint": "एप पृष्ठभूमिमा चलिरहेको बेला कतारका कार्यहरू पूरा वा असफल हुँदा प्रणाली सूचनाहरू देखाउनुहोस्।"
   },
   "shortcuts": {
     "title": "किबोर्ड सर्टकट",
@@ -1305,5 +1307,19 @@
       "done": "सम्पन्न",
       "failed": "असफल"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "रूपान्तरण पूरा भयो",
+    "jobCompletedBody": "{{fileName}} सफलतापूर्वक पूरा भयो।",
+    "jobFailedTitle": "रूपान्तरण असफल भयो",
+    "jobFailedBody": "{{fileName}} असफल भयो।",
+    "queueCompletedTitle": "कतार पूरा भयो",
+    "queueCompletedBody": "{{succeeded}} सफल, {{failed}} असफल।",
+    "muxJobCompletedTitle": "रिमक्स/डिमक्स पूरा भयो",
+    "muxJobCompletedBody": "{{fileName}} सफलतापूर्वक पूरा भयो।",
+    "muxJobFailedTitle": "रिमक्स/डिमक्स असफल भयो",
+    "muxJobFailedBody": "{{fileName}} असफल भयो।",
+    "muxQueueCompletedTitle": "रिमक्स/डिमक्स कतार पूरा भयो",
+    "muxQueueCompletedBody": "{{succeeded}} सफल, {{failed}} असफल।"
   }
 }

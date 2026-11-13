@@ -54,17 +54,24 @@ import type { McpSettings } from '../../shared/mcp-settings';
 import type { HwAccelMode, EncoderType, WhenDoneAction } from '../../shared/types';
 import type { HwAccelStored, SettingsState } from './types';
 import {
+  DESKTOP_NOTIFICATIONS_STORAGE_KEY,
   WINDOW_ALWAYS_ON_TOP_STORAGE_KEY,
   QUEUE_CONCURRENCY_STORAGE_KEY,
+  DEFAULT_QUEUE_CONCURRENCY,
+  MAX_QUEUE_CONCURRENCY,
   LAUNCH_AT_LOGIN_STORAGE_KEY,
   DRAWER_CONDENSED_STORAGE_KEY,
   DEFAULT_DRAWER_CONDENSED,
   WHEN_DONE_STORAGE_KEY,
-  DEFAULT_QUEUE_CONCURRENCY,
-  MAX_QUEUE_CONCURRENCY,
-  DEFAULT_WHEN_DONE_ACTION,
   WHEN_DONE_ACTIONS,
+  DEFAULT_WHEN_DONE_ACTION,
 } from '../../shared/constants';
+import {
+  LOG_DESKTOP_NOTIFICATIONS_PERSIST_FAILED,
+  LOG_DESKTOP_NOTIFICATIONS_READ_FAILED,
+  LOG_DESKTOP_NOTIFICATIONS_SYNC_FAILED,
+  LOG_SET_DESKTOP_NOTIFICATIONS_ENABLED,
+} from '../../shared/log-constants';
 import {
   LOG_FAILED_TO_PERSIST_ALWAYS_ON_TOP_SETTING,
   LOG_FAILED_TO_PERSIST_DRAWER_CONDENSED,
@@ -196,6 +203,13 @@ function persistLaunchAtLogin(enabled: boolean): void {
   saveString(LAUNCH_AT_LOGIN_STORAGE_KEY, String(enabled), (err) => log.warn(LOG_FAILED_TO_PERSIST_LAUNCH_AT_LOGIN_SETTING, err));
 }
 
+export function readStoredDesktopNotifications(): boolean {
+  return loadString(DESKTOP_NOTIFICATIONS_STORAGE_KEY, 'false', (err) => log.warn(LOG_DESKTOP_NOTIFICATIONS_READ_FAILED, err)) === 'true';
+}
+
+function persistDesktopNotifications(enabled: boolean): void {
+  saveString(DESKTOP_NOTIFICATIONS_STORAGE_KEY, String(enabled), (err) => log.warn(LOG_DESKTOP_NOTIFICATIONS_PERSIST_FAILED, err));
+}
 /**
  * Reads the persisted batch queue concurrency from localStorage
  * ('encodex-queue-concurrency'); the value is clamped to 1..MAX_QUEUE_CONCURRENCY
@@ -385,6 +399,13 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     fireAndForgetBridge(() => window.electronAPI?.setLaunchAtLogin(enabled), 'setLaunchAtLogin');
     set({ launchAtLogin: enabled });
   },
+  desktopNotificationsEnabled: readStoredDesktopNotifications(),
+  setDesktopNotificationsEnabled: (enabled) => {
+    log.debug(LOG_SET_DESKTOP_NOTIFICATIONS_ENABLED, enabled);
+    persistDesktopNotifications(enabled);
+    fireAndForgetBridge(() => window.electronAPI?.notificationsSetEnabled(enabled), 'notificationsSetEnabled');
+    set({ desktopNotificationsEnabled: enabled });
+  },
   monitoringEnabled: true,
   /**
    * Sets error-monitoring consent. Forwards the flag to the main process via
@@ -565,4 +586,18 @@ if (typeof window !== 'undefined' && window.electronAPI?.mcpGetSettings) {
       });
     })
     .catch((err) => log.warn('Failed to hydrate MCP settings:', err));
+}
+
+/**
+ * Syncs the persisted desktop notifications preference to the main process on
+ * startup so OS notifications work without requiring a toggle change.
+ */
+if (typeof window !== 'undefined' && window.electronAPI?.notificationsSetEnabled) {
+  bridgePromise(() => window.electronAPI.notificationsSetEnabled(readStoredDesktopNotifications()))
+    .then((state) => {
+      if (state && typeof state.enabled === 'boolean') {
+        useSettingsStore.setState({ desktopNotificationsEnabled: state.enabled });
+      }
+    })
+    .catch((err) => log.warn(LOG_DESKTOP_NOTIFICATIONS_SYNC_FAILED, err));
 }

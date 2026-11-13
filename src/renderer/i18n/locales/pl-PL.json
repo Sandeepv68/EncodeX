@@ -685,7 +685,9 @@
       "keyRemoved": "Zapisany klucz został usunięty.",
       "staleStatus": "Ustawienia zmienione. Połącz ponownie, aby zweryfikować.",
       "headerConnected": "Połączono · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Powiadomienia na pulpicie",
+    "desktopNotificationsHint": "Pokazuj powiadomienia systemowe, gdy zadania w kolejce zakończą się lub nie powiodą, gdy aplikacja działa w tle."
   },
   "shortcuts": {
     "title": "Skróty klawiszowe",
@@ -1305,5 +1307,19 @@
       "done": "Ukończone",
       "failed": "Nieudane"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Konwersja zakończona",
+    "jobCompletedBody": "{{fileName}} zakończono pomyślnie.",
+    "jobFailedTitle": "Konwersja nie powiodła się",
+    "jobFailedBody": "{{fileName}} nie powiodło się.",
+    "queueCompletedTitle": "Kolejka zakończona",
+    "queueCompletedBody": "Udane: {{succeeded}}, nieudane: {{failed}}.",
+    "muxJobCompletedTitle": "Remux/demux zakończony",
+    "muxJobCompletedBody": "{{fileName}} zakończono pomyślnie.",
+    "muxJobFailedTitle": "Remux/demux nie powiódł się",
+    "muxJobFailedBody": "{{fileName}} nie powiodło się.",
+    "muxQueueCompletedTitle": "Kolejka remux/demux zakończona",
+    "muxQueueCompletedBody": "Udane: {{succeeded}}, nieudane: {{failed}}."
   }
 }

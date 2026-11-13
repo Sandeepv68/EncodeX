@@ -530,6 +530,9 @@ export interface ElectronAPI {
    * @returns {void}
    */
   setLaunchAtLogin(enabled: boolean): void;
+  notificationsGetSettings(): Promise<DesktopNotificationsSettings>;
+  notificationsSetEnabled(enabled: boolean): Promise<DesktopNotificationsSettings>;
+  onNotificationClicked(cb: (payload: NotificationClickPayload) => void): () => void;
   /**
    * Queries the current error-monitoring state from the main process over
    * `IPC.MONITORING_GET_STATE` ('monitoring-get-state').

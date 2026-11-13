@@ -685,7 +685,9 @@
       "keyRemoved": "Baineadh an eochair stóráilte.",
       "staleStatus": "Athraíodh na socruithe. Ceangail arís chun fíorú.",
       "headerConnected": "Ceangailte · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Fógraí deisce",
+    "desktopNotificationsHint": "Taispeáin fógraí córais nuair a chríochnaíonn nó a theipeann ar phoist scuaine agus an aip sa chúlra."
   },
   "shortcuts": {
     "title": "Aicearraí Méarchláir",
@@ -1305,5 +1307,19 @@
       "done": "Déanta",
       "failed": "Ar theip"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Tiontú críochnaithe",
+    "jobCompletedBody": "Críochnaíodh {{fileName}} go rathúil.",
+    "jobFailedTitle": "Theip ar an tiontú",
+    "jobFailedBody": "Theip ar {{fileName}}.",
+    "queueCompletedTitle": "Scuaine críochnaithe",
+    "queueCompletedBody": "D'éirigh le {{succeeded}}, theip ar {{failed}}.",
+    "muxJobCompletedTitle": "Remux/demux críochnaithe",
+    "muxJobCompletedBody": "Críochnaíodh {{fileName}} go rathúil.",
+    "muxJobFailedTitle": "Theip ar remux/demux",
+    "muxJobFailedBody": "Theip ar {{fileName}}.",
+    "muxQueueCompletedTitle": "Scuaine remux/demux críochnaithe",
+    "muxQueueCompletedBody": "D'éirigh le {{succeeded}}, theip ar {{failed}}."
   }
 }

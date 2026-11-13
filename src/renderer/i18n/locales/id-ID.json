@@ -685,7 +685,9 @@
       "keyRemoved": "Kunci tersimpan telah dihapus.",
       "staleStatus": "Pengaturan berubah. Hubungkan lagi untuk memverifikasi.",
       "headerConnected": "Terhubung · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Notifikasi desktop",
+    "desktopNotificationsHint": "Tampilkan notifikasi sistem saat tugas antrean selesai atau gagal ketika aplikasi berjalan di latar belakang."
   },
   "shortcuts": {
     "title": "Pintasan Keyboard",
@@ -1305,5 +1307,19 @@
       "done": "Selesai",
       "failed": "Gagal"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Konversi selesai",
+    "jobCompletedBody": "{{fileName}} berhasil diselesaikan.",
+    "jobFailedTitle": "Konversi gagal",
+    "jobFailedBody": "{{fileName}} gagal.",
+    "queueCompletedTitle": "Antrean selesai",
+    "queueCompletedBody": "{{succeeded}} berhasil, {{failed}} gagal.",
+    "muxJobCompletedTitle": "Remux/demux selesai",
+    "muxJobCompletedBody": "{{fileName}} berhasil diselesaikan.",
+    "muxJobFailedTitle": "Remux/demux gagal",
+    "muxJobFailedBody": "{{fileName}} gagal.",
+    "muxQueueCompletedTitle": "Antrean remux/demux selesai",
+    "muxQueueCompletedBody": "{{succeeded}} berhasil, {{failed}} gagal."
   }
 }

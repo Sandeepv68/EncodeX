@@ -168,7 +168,8 @@ Live log viewer that aggregates console output from both the main and renderer p
 
 ### Notifications
 
-Toast notifications (success/info/warning/error) with configurable duration for non-blocking feedback, layered on top of the global error snackbar.
+- **In-app toasts** - toast notifications (success/info/warning/error) with configurable duration for non-blocking feedback, layered on top of the global error snackbar.
+- **Desktop notifications** - opt-in OS/taskbar notifications (Windows/macOS/Linux) for batch and mux queue job completion/failure and queue-drain summaries when the app is in the background/unfocused. Clicking a notification focuses the app and opens the Batch Queue. Configurable in Settings (`Desktop notifications`, off by default).
 
 ### Custom Window Frame
 

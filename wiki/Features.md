@@ -8,7 +8,7 @@ EncodeX is a cross-platform multimedia conversion tool that brings the power of 
 
 ### Media Conversion
 
-Convert between video/audio formats with granular controls over codec selection (51 video codecs across software and hardware encoder families, 27 audio codecs), bitrate, output resolution (with optional aspect-ratio preservation), pixel format (56 formats grouped by bit depth), quality scale (qscale), audio track inclusion, and transcoder core selection. Multiple files can be queued through the Batch Queue (see below). <!-- drift:video-codecs=51 --> <!-- drift:audio-codecs=27 --> <!-- drift:pixel-formats=56 -->
+Convert between video/audio formats with granular controls over codec selection (51 video codecs across software and hardware encoder families, 27 audio codecs), bitrate, output resolution (with optional aspect-ratio preservation), pixel format (56 formats grouped by bit depth), quality scale (qscale), audio track inclusion, and transcoder core selection. Multiple files can be queued through the Batch Queue (see below). <!-- drift: video-codecs=51 --> <!-- drift: audio-codecs=27 --> <!-- drift: pixel-formats=56 -->
 
 ### Media Rotation & Mirroring
 
@@ -16,7 +16,7 @@ Rotate videos and images by 90°, 180°, or 270° clockwise and mirror them (hor
 
 ### Conversion Profiles
 
-Choose from 115 built-in conversion presets organized into 8 categories to instantly configure codec, bitrate, quality, resolution, and container settings — no manual tweaking required. <!-- drift:builtin-profiles=115 --> <!-- drift:profile-categories=8 --> Categories include:
+Choose from 115 built-in conversion presets organized into 8 categories to instantly configure codec, bitrate, quality, resolution, and container settings — no manual tweaking required. <!-- drift: builtin-profiles=115 --> <!-- drift: profile-categories=8 --> Categories include:
 
 - **Web & Social** — optimized presets for YouTube, Instagram, TikTok, Facebook, and X (Twitter)
 - **Devices** — Apple (iPhone, iPad, Apple TV), Android, gaming consoles (PlayStation, Xbox, Nintendo Switch)
@@ -54,7 +54,7 @@ Stream-copy video or audio tracks without re-encoding (`-c copy`). Useful for fa
 
 ### Video Filters
 
-Apply up to 8 curated filter presets or a custom FFmpeg filter chain (200 characters per entry) during conversion. <!-- drift:video-filter-presets=8 --> The presets are crop, framerate, deinterlace, denoise, sharpen, color, grayscale, and blur; custom `videoFilters` expressions run after scale and rotation. Filters require re-encoding and cannot be combined with stream copy.
+Apply up to 8 curated filter presets or a custom FFmpeg filter chain (200 characters per entry) during conversion. <!-- drift: video-filter-presets=8 --> The presets are crop, framerate, deinterlace, denoise, sharpen, color, grayscale, and blur; custom `videoFilters` expressions run after scale and rotation. Filters require re-encoding and cannot be combined with stream copy.
 
 ### Hardware Acceleration
 
@@ -99,7 +99,7 @@ Process multiple files with five configurable operations (transcode, extract aud
 
 ### Copilot (AI Assistant)
 
-The Copilot page turns a goal into a reviewable plan and can run it against the same media engine. It supports 13 operations: six queue-backed actions (convert, remux, demux, extract audio, compress image, cut) and seven read-only intelligence actions (analyze, transcribe, summarize, chapters, search transcript, translate, find similar). <!-- drift:copilot-operations=13 -->
+The Copilot page turns a goal into a reviewable plan and can run it against the same media engine. It supports 13 operations: six queue-backed actions (convert, remux, demux, extract audio, compress image, cut) and seven read-only intelligence actions (analyze, transcribe, summarize, chapters, search transcript, translate, find similar). <!-- drift: copilot-operations=13 -->
 
 AI providers are rules (the deterministic offline router and default), OpenAI, Anthropic, Gemini, and a local model runtime. OpenAI, Anthropic, and Gemini require an API key; the local provider runs on-device. Every plan is a proposal — nothing is queued until you confirm it.
 
@@ -107,8 +107,8 @@ AI providers are rules (the deterministic offline router and default), OpenAI, A
 
 EncodeX ships a full [Model Context Protocol](https://modelcontextprotocol.io) server so AI assistants and custom agents can drive the same media engine. Two launch modes share one tool catalogue:
 
-- **Standalone (stdio)** — `encodex --mcp` or `node dist/mcp/index.js`: 36 model-visible tools (37 registrations including the app-only `commit_operation`). <!-- drift:mcp-tools=36 --> <!-- drift:mcp-registrations=37 -->
-- **Embedded (Streamable HTTP)** — toggle in **Settings → MCP Server**: the 37 registrations + 6 GUI-parity tools (live queue state, preview, timeline, system info, updates) = **43** total (42 model-visible), bound to `127.0.0.1:8765/mcp` by default with optional bearer-token auth. <!-- drift:mcp-gui-tools=6 -->
+- **Standalone (stdio)** — `encodex --mcp` or `node dist/mcp/index.js`: 36 model-visible tools (37 registrations including the app-only `commit_operation`). <!-- drift: mcp-tools=36 --> <!-- drift: mcp-registrations=37 -->
+- **Embedded (Streamable HTTP)** — toggle in **Settings → MCP Server**: the 37 registrations + 6 GUI-parity tools (live queue state, preview, timeline, system info, updates) = **43** total (42 model-visible), bound to `127.0.0.1:8765/mcp` by default with optional bearer-token auth. <!-- drift: mcp-gui-tools=6 -->
 
 See the [[MCP]] page for the full tool catalogue, client configuration, and security model.
 
@@ -154,7 +154,7 @@ Dedicated settings page for theme, hardware acceleration (enable/disable, mode, 
 
 ### Keyboard Shortcuts
 
-A central shortcut registry (`src/renderer/constants/shortcuts.ts`) defines 71 shortcuts across 11 sections (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). <!-- drift:shortcuts=71 --> <!-- drift:shortcut-sections=11 --> Highlights:
+A central shortcut registry (`src/renderer/constants/shortcuts.ts`) defines 71 shortcuts across 11 sections (global, convert, media info, image compress, audio extract, video cut, remux, demux, batch queue, logs, dashboard). <!-- drift: shortcuts=71 --> <!-- drift: shortcut-sections=11 --> Highlights:
 
 - `Ctrl+/` — open the shortcuts help dialog
 - `Alt+0`…`Alt+9` — jump directly to a page (Remux is `Alt+0`)
@@ -194,7 +194,8 @@ Live log viewer that aggregates console output from both the main and renderer p
 
 ### Notifications
 
-Toast notifications (success/info/warning/error) with configurable duration for non-blocking feedback, layered on top of the global error snackbar.
+- **In-app toasts** - toast notifications (success/info/warning/error) with configurable duration for non-blocking feedback, layered on top of the global error snackbar.
+- **Desktop notifications** - opt-in OS/taskbar notifications (Windows/macOS/Linux) for batch and mux queue job completion/failure and queue-drain summaries when the app is in the background/unfocused. Clicking a notification focuses the app and opens the Batch Queue. Configurable in Settings (`Desktop notifications`, off by default).
 
 ### Custom Window Frame
 
@@ -218,7 +219,7 @@ Provider-agnostic, categorical-only usage analytics (PostHog or Aptabase) driven
 
 ### Internationalization
 
-56 locales (36 distinct base language subtags): <!-- drift:locales=56 --> <!-- drift:locale-subtags=36 -->
+56 locales (36 distinct base language subtags): <!-- drift: locales=56 --> <!-- drift: locale-subtags=36 -->
 
 | Language    | Locales                                    |
 | ----------- | ------------------------------------------ |

@@ -5,6 +5,7 @@ import {
   readStoredQueueConcurrency,
   readStoredWhenDone,
   readStoredDrawerCondensed,
+  readStoredDesktopNotifications,
 } from '../settingsStore';
 import { TRANSCODER_TYPES } from '../../../shared/transcoder-constants';
 import { expectAppLog } from '../../../test-utils/crash-tripwire';
@@ -24,6 +25,7 @@ import {
   DEFAULT_WHEN_DONE_ACTION,
   DRAWER_CONDENSED_STORAGE_KEY,
   DEFAULT_DRAWER_CONDENSED,
+  DESKTOP_NOTIFICATIONS_STORAGE_KEY,
 } from '../../../shared/constants';
 
 describe('settingsStore', () => {
@@ -37,6 +39,7 @@ describe('settingsStore', () => {
       alwaysOnTop: false,
       drawerCondensed: DEFAULT_DRAWER_CONDENSED,
       launchAtLogin: false,
+      desktopNotificationsEnabled: false,
       monitoringEnabled: true,
       analyticsEnabled: true,
       queueConcurrency: DEFAULT_QUEUE_CONCURRENCY,
@@ -185,6 +188,22 @@ describe('settingsStore', () => {
 
   it('defaults the analytics consent to enabled', () => {
     expect(useSettingsStore.getState().analyticsEnabled).toBe(true);
+  });
+
+  it('defaults desktop notifications to disabled', () => {
+    expect(useSettingsStore.getState().desktopNotificationsEnabled).toBe(false);
+  });
+
+  it('setDesktopNotificationsEnabled updates state, persists, and forwards to main', () => {
+    const spy = vi.fn().mockResolvedValue({ enabled: true, supported: true });
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, notificationsSetEnabled: spy },
+      writable: true,
+    });
+    useSettingsStore.getState().setDesktopNotificationsEnabled(true);
+    expect(useSettingsStore.getState().desktopNotificationsEnabled).toBe(true);
+    expect(localStorage.getItem(DESKTOP_NOTIFICATIONS_STORAGE_KEY)).toBe('true');
+    expect(spy).toHaveBeenCalledWith(true);
   });
 
   it('setTelemetryEnabled forwards the flag to both IPC channels and adopts both results', async () => {
@@ -423,5 +442,25 @@ describe('readStoredDrawerCondensed', () => {
   it('falls back to the default for a non-boolean value', () => {
     localStorage.setItem(DRAWER_CONDENSED_STORAGE_KEY, 'yes');
     expect(readStoredDrawerCondensed()).toBe(DEFAULT_DRAWER_CONDENSED);
+  });
+});
+
+describe('readStoredDesktopNotifications', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it('defaults to disabled when nothing is stored', () => {
+    expect(readStoredDesktopNotifications()).toBe(false);
+  });
+
+  it('reads a persisted enabled value', () => {
+    localStorage.setItem(DESKTOP_NOTIFICATIONS_STORAGE_KEY, 'true');
+    expect(readStoredDesktopNotifications()).toBe(true);
+  });
+
+  it('treats non-true values as disabled', () => {
+    localStorage.setItem(DESKTOP_NOTIFICATIONS_STORAGE_KEY, 'yes');
+    expect(readStoredDesktopNotifications()).toBe(false);
   });
 });

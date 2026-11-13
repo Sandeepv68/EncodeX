@@ -685,7 +685,9 @@
       "keyRemoved": "De opgeslagen sleutel is verwijderd.",
       "staleStatus": "Instellingen gewijzigd. Verbind opnieuw om te verifiëren.",
       "headerConnected": "Verbonden · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Bureaubladmeldingen",
+    "desktopNotificationsHint": "Toon systeemmeldingen wanneer wachtrijtaken zijn voltooid of mislukken terwijl de app op de achtergrond draait."
   },
   "shortcuts": {
     "title": "Sneltoetsen",
@@ -1305,5 +1307,19 @@
       "done": "Klaar",
       "failed": "Mislukt"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Conversie voltooid",
+    "jobCompletedBody": "{{fileName}} is succesvol voltooid.",
+    "jobFailedTitle": "Conversie mislukt",
+    "jobFailedBody": "{{fileName}} is mislukt.",
+    "queueCompletedTitle": "Wachtrij voltooid",
+    "queueCompletedBody": "{{succeeded}} geslaagd, {{failed}} mislukt.",
+    "muxJobCompletedTitle": "Remux/demux voltooid",
+    "muxJobCompletedBody": "{{fileName}} is succesvol voltooid.",
+    "muxJobFailedTitle": "Remux/demux mislukt",
+    "muxJobFailedBody": "{{fileName}} is mislukt.",
+    "muxQueueCompletedTitle": "Remux/demux-wachtrij voltooid",
+    "muxQueueCompletedBody": "{{succeeded}} geslaagd, {{failed}} mislukt."
   }
 }

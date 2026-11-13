@@ -28,6 +28,7 @@ import { registerTimelineHandlers } from './timeline';
 import { registerUpdaterHandlers } from './updater';
 import { registerDevHandlers } from './dev';
 import { registerLogsHandlers } from './logs';
+import { registerNotificationHandlers } from './notifications';
 import { registerCopilotHandlers } from './copilot';
 import { registerAiSettingsIpc } from '../ai/settings-ipc';
 import { registerMcpUiIpc } from '../mcp/ui-ipc';
@@ -67,4 +68,5 @@ export function registerIpcHandlers(win: BrowserWindow): void {
   registerUpdaterHandlers(win);
   registerDevHandlers(win);
   registerLogsHandlers();
+  registerNotificationHandlers(win);
 }

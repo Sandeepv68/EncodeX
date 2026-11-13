@@ -685,7 +685,9 @@
       "keyRemoved": "Den sparade nyckeln togs bort.",
       "staleStatus": "Inställningarna ändrades. Anslut igen för att verifiera.",
       "headerConnected": "Ansluten · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Skrivbordsaviseringar",
+    "desktopNotificationsHint": "Visa systemaviseringar när köjobb slutförs eller misslyckas medan appen körs i bakgrunden."
   },
   "shortcuts": {
     "title": "Kortkommandon",
@@ -1305,5 +1307,19 @@
       "done": "Klara",
       "failed": "Misslyckade"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Konvertering klar",
+    "jobCompletedBody": "{{fileName}} slutfördes.",
+    "jobFailedTitle": "Konvertering misslyckades",
+    "jobFailedBody": "{{fileName}} misslyckades.",
+    "queueCompletedTitle": "Kön är klar",
+    "queueCompletedBody": "{{succeeded}} lyckades, {{failed}} misslyckades.",
+    "muxJobCompletedTitle": "Remux/demux klar",
+    "muxJobCompletedBody": "{{fileName}} slutfördes.",
+    "muxJobFailedTitle": "Remux/demux misslyckades",
+    "muxJobFailedBody": "{{fileName}} misslyckades.",
+    "muxQueueCompletedTitle": "Remux/demux-kö klar",
+    "muxQueueCompletedBody": "{{succeeded}} lyckades, {{failed}} misslyckades."
   }
 }

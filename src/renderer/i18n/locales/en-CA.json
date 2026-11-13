@@ -685,7 +685,9 @@
       "keyRemoved": "The stored key was removed.",
       "staleStatus": "Settings changed. Connect again to verify.",
       "headerConnected": "Connected · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Desktop notifications",
+    "desktopNotificationsHint": "Show system notifications when queue jobs complete or fail while the app is in the background."
   },
   "shortcuts": {
     "title": "Keyboard Shortcuts",
@@ -1305,5 +1307,19 @@
       "done": "Done",
       "failed": "Failed"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Conversion complete",
+    "jobCompletedBody": "{{fileName}} finished successfully.",
+    "jobFailedTitle": "Conversion failed",
+    "jobFailedBody": "{{fileName}} failed.",
+    "queueCompletedTitle": "Queue complete",
+    "queueCompletedBody": "{{succeeded}} succeeded, {{failed}} failed.",
+    "muxJobCompletedTitle": "Remux/demux complete",
+    "muxJobCompletedBody": "{{fileName}} finished successfully.",
+    "muxJobFailedTitle": "Remux/demux failed",
+    "muxJobFailedBody": "{{fileName}} failed.",
+    "muxQueueCompletedTitle": "Remux/demux queue complete",
+    "muxQueueCompletedBody": "{{succeeded}} succeeded, {{failed}} failed."
   }
 }

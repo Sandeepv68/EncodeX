@@ -685,7 +685,9 @@
       "keyRemoved": "Die gestoorde sleutel is verwyder.",
       "staleStatus": "Instellings het verander. Koppel weer om te bevestig.",
       "headerConnected": "Gekoppel · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Werkskermkennisgewings",
+    "desktopNotificationsHint": "Wys stelselkennisgewings wanneer tou-take voltooi of misluk terwyl die program in die agtergrond loop."
   },
   "shortcuts": {
     "title": "Sleutelbordkortpaaie",
@@ -1305,5 +1307,19 @@
       "done": "Klaar",
       "failed": "Misluk"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Omskakeling voltooi",
+    "jobCompletedBody": "{{fileName}} is suksesvol voltooi.",
+    "jobFailedTitle": "Omskakeling het misluk",
+    "jobFailedBody": "{{fileName}} het misluk.",
+    "queueCompletedTitle": "Tou voltooi",
+    "queueCompletedBody": "{{succeeded}} suksesvol, {{failed}} misluk.",
+    "muxJobCompletedTitle": "Remux/demux voltooi",
+    "muxJobCompletedBody": "{{fileName}} is suksesvol voltooi.",
+    "muxJobFailedTitle": "Remux/demux het misluk",
+    "muxJobFailedBody": "{{fileName}} het misluk.",
+    "muxQueueCompletedTitle": "Remux/demux-tou voltooi",
+    "muxQueueCompletedBody": "{{succeeded}} suksesvol, {{failed}} misluk."
   }
 }

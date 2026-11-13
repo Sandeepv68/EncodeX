@@ -685,7 +685,9 @@
       "keyRemoved": "Vistaði lykillinn var fjarlægður.",
       "staleStatus": "Stillingar breyttust. Tengdu aftur til að staðfesta.",
       "headerConnected": "Tengt · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Skjáborðstilkynningar",
+    "desktopNotificationsHint": "Sýna kerfistilkynningar þegar verkefni í biðröð klárast eða mistakast á meðan forritið keyrir í bakgrunni."
   },
   "shortcuts": {
     "title": "Flýtilyklar",
@@ -1305,5 +1307,19 @@
       "done": "Lokið",
       "failed": "Mistókst"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Umbreytingu lokið",
+    "jobCompletedBody": "{{fileName}} tókst.",
+    "jobFailedTitle": "Umbreyting mistókst",
+    "jobFailedBody": "{{fileName}} mistókst.",
+    "queueCompletedTitle": "Biðröð lokið",
+    "queueCompletedBody": "{{succeeded}} tókst, {{failed}} mistókst.",
+    "muxJobCompletedTitle": "Remux/demux lokið",
+    "muxJobCompletedBody": "{{fileName}} tókst.",
+    "muxJobFailedTitle": "Remux/demux mistókst",
+    "muxJobFailedBody": "{{fileName}} mistókst.",
+    "muxQueueCompletedTitle": "Remux/demux biðröð lokið",
+    "muxQueueCompletedBody": "{{succeeded}} tókst, {{failed}} mistókst."
   }
 }

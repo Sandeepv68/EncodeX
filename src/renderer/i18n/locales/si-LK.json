@@ -685,7 +685,9 @@
       "keyRemoved": "ගබඩා කළ යතුර ඉවත් කරන ලදී.",
       "staleStatus": "සැකසුම් වෙනස් විය. තහවුරු කිරීමට නැවත සම්බන්ධ කරන්න.",
       "headerConnected": "සම්බන්ධයි · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "ඩෙස්ක්ටොප් දැනුම්දීම්",
+    "desktopNotificationsHint": "යෙදුම පසුබිමේ ධාවනය වන අතරතුර පෝලිම් කාර්යයන් සම්පූර්ණ වූ විට හෝ අසාර්ථක වූ විට පද්ධති දැනුම්දීම් පෙන්වන්න."
   },
   "shortcuts": {
     "title": "යතුරුපුවරු කෙටිමං",
@@ -1305,5 +1307,19 @@
       "done": "නිම",
       "failed": "අසාර්ථක"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "පරිවර්තනය සම්පූර්ණයි",
+    "jobCompletedBody": "{{fileName}} සාර්ථකව සම්පූර්ණ විය.",
+    "jobFailedTitle": "පරිවර්තනය අසාර්ථකයි",
+    "jobFailedBody": "{{fileName}} අසාර්ථක විය.",
+    "queueCompletedTitle": "පෝලිම සම්පූර්ණයි",
+    "queueCompletedBody": "සාර්ථක {{succeeded}}, අසාර්ථක {{failed}}.",
+    "muxJobCompletedTitle": "Remux/demux සම්පූර්ණයි",
+    "muxJobCompletedBody": "{{fileName}} සාර්ථකව සම්පූර්ණ විය.",
+    "muxJobFailedTitle": "Remux/demux අසාර්ථකයි",
+    "muxJobFailedBody": "{{fileName}} අසාර්ථක විය.",
+    "muxQueueCompletedTitle": "Remux/demux පෝලිම සම්පූර්ණයි",
+    "muxQueueCompletedBody": "සාර්ථක {{succeeded}}, අසාර්ථක {{failed}}."
   }
 }

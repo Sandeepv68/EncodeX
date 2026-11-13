@@ -685,7 +685,9 @@
       "keyRemoved": "សោដែលបានរក្សាទុកត្រូវបានលុប។",
       "staleStatus": "ការកំណត់បានផ្លាស់ប្តូរ។ ភ្ជាប់ឡើងវិញដើម្បីផ្ទៀងផ្ទាត់។",
       "headerConnected": "បានភ្ជាប់ · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "ការជូនដំណឹងលើដែស្កថប",
+    "desktopNotificationsHint": "បង្ហាញការជូនដំណឹងប្រព័ន្ធ នៅពេលការងារនៅក្នុងជួរត្រូវបានបញ្ចប់ ឬបរាជ័យ ខណៈពេលកម្មវិធីកំពុងដំណើរការនៅផ្ទៃខាងក្រោយ។"
   },
   "shortcuts": {
     "title": "ផ្លូវកាត់ក្តារចុច",
@@ -1305,5 +1307,19 @@
       "done": "បានបញ្ចប់",
       "failed": "បរាជ័យ"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "ការបម្លែងបានបញ្ចប់",
+    "jobCompletedBody": "{{fileName}} បានបញ្ចប់ដោយជោគជ័យ។",
+    "jobFailedTitle": "ការបម្លែងបរាជ័យ",
+    "jobFailedBody": "{{fileName}} បរាជ័យ។",
+    "queueCompletedTitle": "ជួរបានបញ្ចប់",
+    "queueCompletedBody": "ជោគជ័យ {{succeeded}} បរាជ័យ {{failed}}។",
+    "muxJobCompletedTitle": "Remux/demux បានបញ្ចប់",
+    "muxJobCompletedBody": "{{fileName}} បានបញ្ចប់ដោយជោគជ័យ។",
+    "muxJobFailedTitle": "Remux/demux បរាជ័យ",
+    "muxJobFailedBody": "{{fileName}} បរាជ័យ។",
+    "muxQueueCompletedTitle": "ជួរ Remux/demux បានបញ្ចប់",
+    "muxQueueCompletedBody": "ជោគជ័យ {{succeeded}} បរាជ័យ {{failed}}។"
   }
 }

@@ -165,6 +165,8 @@ describe('preload', () => {
     ['extractThumbnails', IPC.EXTRACT_THUMBNAILS, ['v.mp4', 60]],
     ['mcpGetSettings', IPC.MCP_SETTINGS_GET, []],
     ['mcpSetSettings', IPC.MCP_SETTINGS_SET, [{ enabled: true, port: 8765, token: 'abc' }]],
+    ['notificationsGetSettings', IPC.NOTIFICATIONS_GET_SETTINGS, []],
+    ['notificationsSetEnabled', IPC.NOTIFICATIONS_SET_ENABLED, [true]],
   ])('%s invokes the %s channel', async (method, channel, args) => {
     ipcRendererMock.invoke.mockResolvedValue('ok');
     const result = await (api[method] as (...a: unknown[]) => Promise<string>)(...args);
@@ -210,6 +212,7 @@ describe('preload', () => {
     ['onWindowMaximizedChange', IPC.WINDOW_MAXIMIZED_CHANGED, true],
     ['onWindowCloseRequested', IPC.WINDOW_CLOSE_REQUESTED, undefined],
     ['onLogsCleared', IPC.LOGS_CLEARED, undefined],
+    ['onNotificationClicked', IPC.NOTIFICATIONS_CLICKED, { target: 'queue' }],
   ])('%s subscribes and unsubscribes on the %s channel', (method, channel, payload) => {
     const cb = vi.fn();
     const unsubscribe = (api[method] as (cb: (data: unknown) => void) => () => void)(cb);

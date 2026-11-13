@@ -116,6 +116,8 @@ export interface SettingsState {
   setDrawerCondensed: (condensed: boolean) => void;
   launchAtLogin: boolean;
   setLaunchAtLogin: (enabled: boolean) => void;
+  desktopNotificationsEnabled: boolean;
+  setDesktopNotificationsEnabled: (enabled: boolean) => void;
   monitoringEnabled: boolean;
   setMonitoringEnabled: (enabled: boolean) => void;
   analyticsEnabled: boolean;
