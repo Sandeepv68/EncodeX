@@ -1,11 +1,6 @@
-import { Notification, BrowserWindow } from 'electron';
+﻿import { Notification, BrowserWindow } from 'electron';
 import { IPC } from '../../shared/ipc-channels';
-
-export interface NotifierOptions {
-  getMainWindow: () => BrowserWindow | null;
-}
-
-export type NotificationTarget = 'queue' | 'mux';
+import type { NotificationTarget, NotifierOptions } from './types';
 
 export class DesktopNotifier {
   private opts: NotifierOptions;

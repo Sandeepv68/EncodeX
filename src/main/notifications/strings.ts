@@ -1,9 +1,9 @@
-import { app } from 'electron';
+﻿import { app } from 'electron';
 import fs from 'fs';
 import path from 'path';
-import { DEFAULT_LANGUAGE, LANGUAGE_STORAGE_KEY } from '../../shared/constants';
+import { DEFAULT_LANGUAGE } from '../../shared/constants';
+import type { NotificationStringVars } from './strings.types';
 
-type Vars = Record<string, string | number | undefined>;
 let cache: { locale: string; map: Record<string, unknown> } | null = null;
 
 function readLocaleFile(locale: string): Record<string, unknown> | null {
@@ -28,7 +28,6 @@ function readLocaleFile(locale: string): Record<string, unknown> | null {
 
 function getLocale(): string {
   try {
-    // read persisted renderer language if available via localStorage-like file? not directly; fall back to app locale
     const l = app.getLocale?.() || DEFAULT_LANGUAGE;
     return l || DEFAULT_LANGUAGE;
   } catch {
@@ -47,7 +46,7 @@ function get(obj: unknown, keyPath: string): unknown {
   return keyPath.split('.').reduce((acc: any, k) => (acc && acc[k] != null ? acc[k] : undefined), obj as any);
 }
 
-function interpolate(str: string, vars?: Vars): string {
+function interpolate(str: string, vars?: NotificationStringVars): string {
   if (!vars) return str;
   return str.replace(/\{\{(\w+)\}\}/g, (_, k) => String(vars[k] ?? ''));
 }
@@ -67,7 +66,7 @@ const fallbacks: Record<string, string> = {
   'notifications.muxQueueCompletedBody': '{{succeeded}} succeeded, {{failed}} failed.',
 };
 
-export function tNotification(key: string, vars?: Vars): string {
+export function tNotification(key: string, vars?: NotificationStringVars): string {
   try {
     const locale = getLocale();
     const map = loadMap(locale);
