@@ -149,13 +149,25 @@ export function emitMuxQueueProgress(page: Page, job: MuxQueueJob, progress: Par
   });
 }
 
+/**
+ * The sequence number handed to the next emitted log entry.
+ *
+ * The main process's log hub stamps every entry it distributes with a
+ * monotonic sequence number, and the renderer's shared log feed uses that
+ * number to order and de-duplicate entries. An emitted entry without one is
+ * dropped, so the mock has to stamp it too.
+ */
+let logSeq = 0;
+
 /** Emits a log message entry to the renderer log panel. */
 export function emitLogMessage(page: Page, entry: Partial<LogEntry>) {
+  logSeq += 1;
   return mockApi.emit(page, 'log-message', {
     timestamp: new Date().toISOString(),
     level: 'INFO',
     text: 'mock log entry',
     source: 'main',
+    seq: logSeq,
     ...entry,
   });
 }

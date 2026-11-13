@@ -539,7 +539,13 @@ const api = {
   onLogsWindowState: (cb) => subscribe('logs-window-state', cb),
   logsGetHistory: () => Promise.resolve([]),
   logsPublishEntries: () => {},
-  logsClear: () => {},
+  logsClear: () => {
+    // The real main process broadcasts `IPC.LOGS_CLEARED` to every window
+    // after the hub history is emptied, so the mock has to as well: the
+    // renderer's shared log feed drops its cached entries on that event.
+    emit('logs-cleared');
+  },
+  onLogsCleared: (cb) => subscribe('logs-cleared', cb),
 
   // --- Update manager ----------------------------------------------------------
   checkForUpdates: () => Promise.resolve(),
