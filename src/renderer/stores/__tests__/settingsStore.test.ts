@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   useSettingsStore,
   readStoredHwAccel,
@@ -462,5 +462,131 @@ describe('readStoredDesktopNotifications', () => {
   it('treats non-true values as disabled', () => {
     localStorage.setItem(DESKTOP_NOTIFICATIONS_STORAGE_KEY, 'yes');
     expect(readStoredDesktopNotifications()).toBe(false);
+  });
+});
+
+describe('desktop notifications startup sync', () => {
+  const defaultElectronAPI = window.electronAPI;
+
+  beforeEach(() => {
+    localStorage.clear();
+    vi.resetModules();
+  });
+
+  afterEach(() => {
+    Object.defineProperty(globalThis, 'electronAPI', { value: defaultElectronAPI, writable: true });
+  });
+
+  it('sends the stored preference to the main process on startup', async () => {
+    const spy = vi.fn().mockResolvedValue({ enabled: true, supported: true });
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, notificationsSetEnabled: spy },
+      writable: true,
+    });
+    localStorage.setItem(DESKTOP_NOTIFICATIONS_STORAGE_KEY, 'true');
+
+    const mod = await import('../settingsStore');
+    expect(spy).toHaveBeenCalledWith(true);
+    await vi.waitFor(() => expect(mod.useSettingsStore.getState().desktopNotificationsEnabled).toBe(true));
+  });
+
+  it('keeps the stored preference when the main process reports it is off', async () => {
+    const spy = vi.fn().mockResolvedValue({ enabled: false, supported: true });
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, notificationsSetEnabled: spy },
+      writable: true,
+    });
+    localStorage.setItem(DESKTOP_NOTIFICATIONS_STORAGE_KEY, 'true');
+
+    const mod = await import('../settingsStore');
+    expect(spy).toHaveBeenCalledWith(true);
+    await vi.waitFor(() => expect(mod.useSettingsStore.getState().desktopNotificationsEnabled).toBe(false));
+  });
+
+  it('warns when the startup sync fails', async () => {
+    expectAppLog('warn', 'renderer/stores/settingsStore');
+    const spy = vi.fn().mockRejectedValue(new Error('ipc down'));
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, notificationsSetEnabled: spy },
+      writable: true,
+    });
+
+    await import('../settingsStore');
+    await vi.waitFor(() => expect(spy).toHaveBeenCalled());
+  });
+
+  it('keeps the stored preference when the main process returns a non-boolean', async () => {
+    const spy = vi.fn().mockResolvedValue({ enabled: 'yes', supported: true });
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, notificationsSetEnabled: spy },
+      writable: true,
+    });
+    localStorage.setItem(DESKTOP_NOTIFICATIONS_STORAGE_KEY, 'false');
+
+    const mod = await import('../settingsStore');
+    await vi.waitFor(() => expect(spy).toHaveBeenCalled());
+    expect(mod.useSettingsStore.getState().desktopNotificationsEnabled).toBe(false);
+  });
+
+  it('keeps the stored preference when the main process returns nothing', async () => {
+    const spy = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, notificationsSetEnabled: spy },
+      writable: true,
+    });
+    localStorage.setItem(DESKTOP_NOTIFICATIONS_STORAGE_KEY, 'true');
+
+    const mod = await import('../settingsStore');
+    await vi.waitFor(() => expect(spy).toHaveBeenCalled());
+    expect(mod.useSettingsStore.getState().desktopNotificationsEnabled).toBe(true);
+  });
+});
+
+describe('settings store hydration branches', () => {
+  const defaultElectronAPI = window.electronAPI;
+
+  beforeEach(() => {
+    localStorage.clear();
+    vi.resetModules();
+  });
+
+  afterEach(() => {
+    Object.defineProperty(globalThis, 'electronAPI', { value: defaultElectronAPI, writable: true });
+  });
+
+  it('drops a non-string MCP token from the startup hydration', async () => {
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: {
+        ...window.electronAPI,
+        mcpGetSettings: vi.fn().mockResolvedValue({ enabled: true, port: 8765, token: 42 }),
+      },
+      writable: true,
+    });
+    const mod = await import('../settingsStore');
+    await vi.waitFor(() => expect(mod.useSettingsStore.getState().mcpEnabled).toBe(true));
+    expect(mod.useSettingsStore.getState().mcpToken).toBe('');
+  });
+
+  it('keeps a local MCP change when the startup hydration lands later', async () => {
+    let resolveSettings: ((settings: unknown) => void) | undefined;
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: {
+        ...window.electronAPI,
+        mcpGetSettings: vi.fn(
+          () =>
+            new Promise((resolve) => {
+              resolveSettings = resolve;
+            }),
+        ),
+        mcpSetSettings: vi.fn().mockResolvedValue({ enabled: true, port: 8765, token: 'local-token' }),
+      },
+      writable: true,
+    });
+    const mod = await import('../settingsStore');
+    mod.useSettingsStore.getState().setMcpEnabled(true);
+    resolveSettings?.({ enabled: false, port: 1234, token: 'remote-token' });
+    await vi.waitFor(() => expect(mod.useSettingsStore.getState().mcpToken).toBe('local-token'));
+    expect(mod.useSettingsStore.getState().mcpPort).toBe(8765);
+    expect(mod.useSettingsStore.getState().mcpEnabled).toBe(true);
   });
 });

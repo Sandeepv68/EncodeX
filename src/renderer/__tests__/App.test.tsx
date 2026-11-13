@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../App';
 import { useErrorStore } from '../stores/errorStore';
@@ -92,6 +92,67 @@ describe('App', () => {
       window.history.replaceState({}, '', '/');
     }
   });
+
+  it('navigates to the batch page when a queue notification is clicked', async () => {
+    const original = window.electronAPI.onNotificationClicked;
+    let click: ((payload: { target?: string }) => void) | undefined;
+    Object.assign(window.electronAPI, {
+      onNotificationClicked: vi.fn((cb: (payload: { target?: string }) => void) => {
+        click = cb;
+        return () => {};
+      }),
+    });
+    try {
+      renderApp();
+      await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
+      act(() => click?.({ target: 'queue' }));
+      expect(await screen.findByText('batchQueue.title', {}, { timeout: 20000 })).toBeInTheDocument();
+    } finally {
+      Object.assign(window.electronAPI, { onNotificationClicked: original });
+    }
+  }, 30000);
+
+  it('navigates to the batch page when a mux notification is clicked', async () => {
+    const original = window.electronAPI.onNotificationClicked;
+    let click: ((payload: { target?: string }) => void) | undefined;
+    Object.assign(window.electronAPI, {
+      onNotificationClicked: vi.fn((cb: (payload: { target?: string }) => void) => {
+        click = cb;
+        return () => {};
+      }),
+    });
+    try {
+      renderApp();
+      await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
+      act(() => click?.({ target: 'mux' }));
+      expect(await screen.findByText('batchQueue.title', {}, { timeout: 20000 })).toBeInTheDocument();
+    } finally {
+      Object.assign(window.electronAPI, { onNotificationClicked: original });
+    }
+  }, 30000);
+
+  it('stays on the current page when the notification carries another target', async () => {
+    const original = window.electronAPI.onNotificationClicked;
+    let click: ((payload: { target?: string }) => void) | undefined;
+    Object.assign(window.electronAPI, {
+      onNotificationClicked: vi.fn((cb: (payload: { target?: string }) => void) => {
+        click = cb;
+        return () => {};
+      }),
+    });
+    try {
+      renderApp();
+      await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
+      act(() => {
+        click?.({ target: 'something-else' });
+        click?.({});
+      });
+      expect(screen.getByText('dashboard.welcome 👋')).toBeInTheDocument();
+      expect(screen.queryByText('batchQueue.title')).not.toBeInTheDocument();
+    } finally {
+      Object.assign(window.electronAPI, { onNotificationClicked: original });
+    }
+  }, 30000);
 
   it('navigates to the convert page via the drawer', async () => {
     renderApp();

@@ -35,6 +35,16 @@ describe('detached log bridge', () => {
     expect(publish.mock.calls[0][0]).toHaveLength(2);
   });
 
+  it('records a warning in the log store when the publish call fails', async () => {
+    window.electronAPI.logsPublishEntries = vi.fn().mockRejectedValue(new Error('bridge down'));
+    const { mirrorLogEntry } = await import('../detached');
+    mirrorLogEntry(makeEntry('one', 1));
+    vi.advanceTimersByTime(200);
+    await vi.waitFor(() => expect(useLogStore.getState().entries.some((entry) => entry.level === 'WARN')).toBe(true));
+    const warning = useLogStore.getState().entries.find((entry) => entry.level === 'WARN');
+    expect(warning?.text).toContain('logsPublishEntries');
+  });
+
   it('does not mirror anything from the detached window itself', async () => {
     const publish = vi.fn();
     window.electronAPI.logsPublishEntries = publish;

@@ -9,7 +9,11 @@ import { useAiSettingsStore } from '../../stores/aiSettingsStore';
 import { useAiConnectionStore } from '../../stores/aiConnectionStore';
 import { useToastStore } from '../../stores/toastStore';
 import { HWACCEL_DEFAULTS, ENCODER_TYPE_DEFAULT } from '../../../shared/hwaccel-settings';
-import { WINDOW_ALWAYS_ON_TOP_STORAGE_KEY, LAUNCH_AT_LOGIN_STORAGE_KEY } from '../../../shared/constants';
+import {
+  WINDOW_ALWAYS_ON_TOP_STORAGE_KEY,
+  LAUNCH_AT_LOGIN_STORAGE_KEY,
+  DESKTOP_NOTIFICATIONS_STORAGE_KEY,
+} from '../../../shared/constants';
 import { THEME_STORAGE_KEY } from '../../../shared/app-constants';
 import type { AIProviderId } from '../../../shared/ai/types';
 import type { SettingsLocationState } from '../../types';
@@ -100,6 +104,7 @@ describe('Settings', () => {
   const hwaccelSwitch = () => screen.getByRole('switch', { name: 'settings.hardwareAcceleration' });
   const alwaysOnTopSwitch = () => screen.getByRole('switch', { name: 'settings.alwaysOnTop' });
   const launchAtLoginSwitch = () => screen.getByRole('switch', { name: 'settings.launchAtLogin' });
+  const desktopNotificationsSwitch = () => screen.getByRole('switch', { name: 'settings.desktopNotifications' });
 
   it('renders the settings title and theme row', () => {
     renderSettings();
@@ -552,6 +557,20 @@ describe('Settings', () => {
     expect(useSettingsStore.getState().launchAtLogin).toBe(true);
     expect(spy).toHaveBeenCalledWith(true);
     expect(localStorage.getItem(LAUNCH_AT_LOGIN_STORAGE_KEY)).toBe('true');
+  });
+
+  it('toggles desktop notifications and notifies the main process', () => {
+    const spy = vi.fn().mockResolvedValue({ enabled: true, supported: true });
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, notificationsSetEnabled: spy },
+      writable: true,
+    });
+    renderSettings();
+    expect(desktopNotificationsSwitch()).toBeInTheDocument();
+    fireEvent.click(desktopNotificationsSwitch());
+    expect(useSettingsStore.getState().desktopNotificationsEnabled).toBe(true);
+    expect(spy).toHaveBeenCalledWith(true);
+    expect(localStorage.getItem(DESKTOP_NOTIFICATIONS_STORAGE_KEY)).toBe('true');
   });
 
   it('shows an info tooltip for the launch-at-startup setting', async () => {

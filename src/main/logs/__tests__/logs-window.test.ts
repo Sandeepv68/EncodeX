@@ -145,6 +145,20 @@ describe('logs-window', () => {
     expect(win.webContents.send).toHaveBeenCalledWith('logs-cleared');
   });
 
+  it('forwards hub entries to the detached window', async () => {
+    const { openLogsWindow } = await importModule();
+    openLogsWindow();
+    const win = getWindowInstances()[0];
+    const subscriber = hubSubscribeMock.mock.calls[0][0] as {
+      isDestroyed: () => boolean;
+      send: (entry: unknown) => void;
+    };
+    expect(subscriber.isDestroyed()).toBe(false);
+    const entry = { timestamp: '2026-01-01T00:00:00.000Z', level: 'INFO', source: 'main', text: 'hello', seq: 1 };
+    subscriber.send(entry);
+    expect(win.webContents.send).toHaveBeenCalledWith('log-message', entry);
+  });
+
   it('subscribes an ordinary window to the hub and removes it again', async () => {
     const { subscribeWindowToLogHub, unsubscribeWindowFromLogHub } = await importModule();
     const win = {

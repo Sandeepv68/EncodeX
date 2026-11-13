@@ -88,6 +88,44 @@ describe('DesktopNotifier', () => {
     expect(showMock).toHaveBeenCalledTimes(1);
   });
 
+  it('reports no support when the platform check throws', async () => {
+    isSupportedMock.mockImplementation(() => {
+      throw new Error('unsupported');
+    });
+    const { initNotifier } = await import('./notifier');
+    const n = initNotifier({ getMainWindow: () => makeWindow() });
+    expect(n.isSupported()).toBe(false);
+  });
+
+  it('reports whether notifications are enabled', async () => {
+    const { initNotifier } = await import('./notifier');
+    const n = initNotifier({ getMainWindow: () => makeWindow() });
+    expect(n.getEnabled()).toBe(false);
+    n.setEnabled(true);
+    expect(n.getEnabled()).toBe(true);
+  });
+
+  it('does not notify without a window', async () => {
+    const { initNotifier } = await import('./notifier');
+    const n = initNotifier({ getMainWindow: () => null });
+    n.setEnabled(true);
+    expect(n.shouldNotify(null)).toBe(false);
+    n.notify('t', 'b');
+    expect(showMock).not.toHaveBeenCalled();
+  });
+
+  it('notifies when the window state cannot be read', async () => {
+    isFocusedMock.mockImplementation(() => {
+      throw new Error('no window state');
+    });
+    const { initNotifier } = await import('./notifier');
+    const n = initNotifier({ getMainWindow: () => makeWindow() });
+    n.setEnabled(true);
+    expect(n.shouldNotify(makeWindow())).toBe(true);
+    n.notify('t', 'b');
+    expect(showMock).toHaveBeenCalledTimes(1);
+  });
+
   it('focuses window and sends click target on click', async () => {
     const { initNotifier } = await import('./notifier');
     const win = makeWindow();
@@ -100,5 +138,35 @@ describe('DesktopNotifier', () => {
     expect(showWindowMock).toHaveBeenCalled();
     expect(focusMock).toHaveBeenCalled();
     expect(sendMock).toHaveBeenCalledWith('notifications-clicked', { target: 'queue' });
+  });
+
+  it('restores a minimized window when the notification is clicked', async () => {
+    isMinimizedMock.mockReturnValue(true);
+    const { initNotifier } = await import('./notifier');
+    const n = initNotifier({ getMainWindow: () => makeWindow() });
+    n.setEnabled(true);
+    n.notify('t', 'b', 'k3', { target: 'mux' });
+    const clickHandler = onMock.mock.calls.find((c) => c[0] === 'click')?.[1];
+    clickHandler();
+    expect(restoreMock).toHaveBeenCalled();
+    expect(sendMock).toHaveBeenCalledWith('notifications-clicked', { target: 'mux' });
+  });
+
+  it('does not send a click target to a destroyed window', async () => {
+    isDestroyedMock.mockReturnValue(true);
+    const { initNotifier } = await import('./notifier');
+    const n = initNotifier({ getMainWindow: () => makeWindow() });
+    n.setEnabled(true);
+    n.notify('t', 'b', 'k4', { target: 'queue' });
+    const clickHandler = onMock.mock.calls.find((c) => c[0] === 'click')?.[1];
+    clickHandler();
+    expect(focusMock).toHaveBeenCalled();
+    expect(sendMock).not.toHaveBeenCalled();
+  });
+
+  it('exposes the current notifier', async () => {
+    const { initNotifier, getNotifier } = await import('./notifier');
+    const n = initNotifier({ getMainWindow: () => makeWindow() });
+    expect(getNotifier()).toBe(n);
   });
 });
