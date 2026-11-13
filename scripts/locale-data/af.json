@@ -193,6 +193,8 @@
   "logs.levelError": "FOUT",
   "logs.levelInfo": "INFO",
   "logs.levelWarn": "WAARSKUWING",
+  "logs.openInNewWindow": "Open in nuwe venster",
+  "logs.viewLogs": "Bekyk logboeke",
   "mcpViews.batch.dashboard": "Bondel",
   "mcpViews.batch.needsReapproval": "Hierdie bondel het verander en moet nu goedgekeur word.",
   "mcpViews.batch.run": "Voer bondel uit",

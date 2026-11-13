@@ -193,6 +193,8 @@
   "logs.levelError": "ERRO",
   "logs.levelInfo": "INFO",
   "logs.levelWarn": "AVISO",
+  "logs.openInNewWindow": "Abrir numa nova janela",
+  "logs.viewLogs": "Ver registos",
   "mcpViews.batch.dashboard": "Lote",
   "mcpViews.batch.needsReapproval": "Este lote mudou e precisa de nova aprovação.",
   "mcpViews.batch.run": "Executar lote",

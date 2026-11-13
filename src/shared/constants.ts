@@ -558,6 +558,12 @@ export const TERMS_ACCEPTED_STORAGE_KEY = 'encodex-terms-accepted';
  */
 export const LAUNCH_AT_LOGIN_STORAGE_KEY = 'encodex-launch-at-login';
 
+/**
+ * localStorage key used to persist the desktop notifications preference.
+ * @const {string} DESKTOP_NOTIFICATIONS_STORAGE_KEY
+ */
+export const DESKTOP_NOTIFICATIONS_STORAGE_KEY = 'encodex-desktop-notifications';
+
 // --- Batch queue ---
 /**
  * localStorage key used to persist the batch queue concurrency (1-4).

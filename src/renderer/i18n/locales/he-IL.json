@@ -495,7 +495,9 @@
     "auditClear": "נקה יומן הביקורת",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "הצליח",
-    "auditStatusFailed": "נכשל"
+    "auditStatusFailed": "נכשל",
+    "openInNewWindow": "פתח בחלון חדש",
+    "viewLogs": "הצג יומנים"
   },
   "footer": {
     "version": "v{{version}}",
@@ -683,7 +685,9 @@
       "keyRemoved": "המפתח השמור הוסר.",
       "staleStatus": "ההגדרות השתנו. התחבר שוב כדי לאמת.",
       "headerConnected": "מחובר · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "התראות שולחן עבודה",
+    "desktopNotificationsHint": "הצג התראות מערכת כאשר משימות בתור הושלמו או נכשלו בזמן שהאפליקציה פועלת ברקע."
   },
   "shortcuts": {
     "title": "קיצורי מקלדת",
@@ -1303,5 +1307,19 @@
       "done": "הושלמו",
       "failed": "נכשלו"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "ההמרה הושלמה",
+    "jobCompletedBody": "{{fileName}} הושלם בהצלחה.",
+    "jobFailedTitle": "ההמרה נכשלה",
+    "jobFailedBody": "{{fileName}} נכשל.",
+    "queueCompletedTitle": "התור הושלם",
+    "queueCompletedBody": "{{succeeded}} הצליחו, {{failed}} נכשלו.",
+    "muxJobCompletedTitle": "רימקס/דימקס הושלם",
+    "muxJobCompletedBody": "{{fileName}} הושלם בהצלחה.",
+    "muxJobFailedTitle": "רימקס/דימקס נכשל",
+    "muxJobFailedBody": "{{fileName}} נכשל.",
+    "muxQueueCompletedTitle": "תור רימקס/דימקס הושלם",
+    "muxQueueCompletedBody": "{{succeeded}} הצליחו, {{failed}} נכשלו."
   }
 }

@@ -27,6 +27,10 @@ import { FileQueuePersistence } from '../queue/persistence';
 import { muxOutputClaims } from '../queue/output-claims';
 import { buildQueueExport, parseQueueExport } from '../queue/queue-transfer';
 import { performPowerAction } from '../power-actions';
+import path from 'path';
+import { getNotifier } from '../notifications/notifier';
+import { tNotification } from '../notifications/strings';
+import { QUEUE_STATUS } from '../../shared/media-options';
 import { Logger } from '../../shared/logger';
 import { ConversionOptions, QueueJob, TranscoderType, ConversionProgress, WhenDoneConfig } from '../../shared/types';
 import { IPC } from '../../shared/ipc-channels';
@@ -470,6 +474,25 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
   jobQueue.on('statusChange', (job: QueueJob) => {
     log.debug(LOG_QUEUE_JOB_STATUS_CHANGE, job.id, job.status);
     send(IPC.QUEUE_STATUS_CHANGE, job);
+    const notifier = getNotifier();
+    if (notifier && (job.status === QUEUE_STATUS.DONE || job.status === QUEUE_STATUS.ERROR)) {
+      const fileName = path.basename(job.output || job.input);
+      if (job.status === QUEUE_STATUS.DONE) {
+        notifier.notify(
+          tNotification('notifications.jobCompletedTitle'),
+          tNotification('notifications.jobCompletedBody', { fileName }),
+          `queue:job:${job.id}:done`,
+          { target: 'queue' },
+        );
+      } else {
+        notifier.notify(
+          tNotification('notifications.jobFailedTitle'),
+          tNotification('notifications.jobFailedBody', { fileName }),
+          `queue:job:${job.id}:error`,
+          { target: 'queue' },
+        );
+      }
+    }
   });
 
   /**
@@ -514,6 +537,20 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
    * @returns {void} Nothing is returned.
    */
   jobQueue.on('drained', () => {
+    const notifier = getNotifier();
+    if (notifier) {
+      const jobs = jobQueue.getJobs();
+      const succeeded = jobs.filter((j) => j.status === QUEUE_STATUS.DONE).length;
+      const failed = jobs.filter((j) => j.status === QUEUE_STATUS.ERROR).length;
+      if (succeeded + failed > 0) {
+        notifier.notify(
+          tNotification('notifications.queueCompletedTitle'),
+          tNotification('notifications.queueCompletedBody', { succeeded, failed }),
+          'queue:drained',
+          { target: 'queue' },
+        );
+      }
+    }
     const config = whenDoneConfig;
     if (!config?.enabled) {
       log.debug(LOG_WHEN_DONE_SKIPPED_DISABLED);

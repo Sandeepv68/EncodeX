@@ -495,7 +495,9 @@
     "auditClear": "Whakapūtia te tohu arotake",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "I angia",
-    "auditStatusFailed": "I rahua"
+    "auditStatusFailed": "I rahua",
+    "openInNewWindow": "Whakatuwheratia ki tētahi matapihi hou",
+    "viewLogs": "Tirohia te rārangi kōrero"
   },
   "footer": {
     "version": "v{{version}}",
@@ -683,7 +685,9 @@
       "keyRemoved": "Kua tangohia te kī i rongoatia.",
       "staleStatus": "Kua rereke ngā tautuhinga. Hono anō hei whakamana.",
       "headerConnected": "Kua hono · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Whakamōhiotanga papamahi",
+    "desktopNotificationsHint": "Whakaatuhia ngā whakamōhiotanga pūnaha ina oti, ina rahua rānei ngā mahi tūtira i te wā e rere ana te taupānga ki muri."
   },
   "shortcuts": {
     "title": "Ngā Poto Aratohu Papapātuhi",
@@ -1303,5 +1307,19 @@
       "done": "Oti",
       "failed": "Rahua"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Kua oti te tahuri",
+    "jobCompletedBody": "Kua oti pai a {{fileName}}.",
+    "jobFailedTitle": "I rahua te tahuri",
+    "jobFailedBody": "I rahua a {{fileName}}.",
+    "queueCompletedTitle": "Kua oti te tūtira",
+    "queueCompletedBody": "{{succeeded}} i angitu, {{failed}} i rahua.",
+    "muxJobCompletedTitle": "Kua oti te remux/demux",
+    "muxJobCompletedBody": "Kua oti pai a {{fileName}}.",
+    "muxJobFailedTitle": "I rahua te remux/demux",
+    "muxJobFailedBody": "I rahua a {{fileName}}.",
+    "muxQueueCompletedTitle": "Kua oti te tūtira remux/demux",
+    "muxQueueCompletedBody": "{{succeeded}} i angitu, {{failed}} i rahua."
   }
 }

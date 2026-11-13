@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../App';
 import { useErrorStore } from '../stores/errorStore';
@@ -11,6 +11,7 @@ import { useVideoCutStore } from '../stores/videoCutStore';
 import { useTermsStore } from '../stores/termsStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import { DRAWER_CONDENSED_STORAGE_KEY, DEFAULT_DRAWER_CONDENSED } from '../../shared/constants';
+import { stubScrollIntoView } from '../../test-utils/page-render';
 import type { LogEntry } from '../../shared/types';
 import type { AuditEntry } from '../../shared/audit';
 
@@ -66,6 +67,93 @@ describe('App', () => {
     expect(screen.getByText('footer.poweredBy')).toBeInTheDocument();
   });
 
+  it('drops the app chrome in the detached Logs window and reads the shared stream', async () => {
+    window.history.replaceState({}, '', '/?detached=1');
+    try {
+      renderApp(['/logs']);
+      expect(screen.queryByText(/footer.version/)).not.toBeInTheDocument();
+      expect(window.electronAPI.logsGetHistory).toHaveBeenCalled();
+      expect(window.electronAPI.onLogMessage).toHaveBeenCalled();
+    } finally {
+      window.history.replaceState({}, '', '/');
+    }
+  });
+
+  it('hides the mobile menu button in the detached Logs window', async () => {
+    vi.stubGlobal('matchMedia', createMatchMedia(true));
+    const restoreScrollIntoView = stubScrollIntoView();
+    window.history.replaceState({}, '', '/?detached=1');
+    try {
+      renderApp(['/logs']);
+      await screen.findByPlaceholderText('logs.searchPlaceholder', {}, { timeout: 10000 });
+      expect(screen.queryByTestId('mobile-menu-button')).not.toBeInTheDocument();
+    } finally {
+      restoreScrollIntoView();
+      window.history.replaceState({}, '', '/');
+    }
+  });
+
+  it('navigates to the batch page when a queue notification is clicked', async () => {
+    const original = window.electronAPI.onNotificationClicked;
+    let click: ((payload: { target?: string }) => void) | undefined;
+    Object.assign(window.electronAPI, {
+      onNotificationClicked: vi.fn((cb: (payload: { target?: string }) => void) => {
+        click = cb;
+        return () => {};
+      }),
+    });
+    try {
+      renderApp();
+      await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
+      act(() => click?.({ target: 'queue' }));
+      expect(await screen.findByText('batchQueue.title', {}, { timeout: 20000 })).toBeInTheDocument();
+    } finally {
+      Object.assign(window.electronAPI, { onNotificationClicked: original });
+    }
+  }, 30000);
+
+  it('navigates to the batch page when a mux notification is clicked', async () => {
+    const original = window.electronAPI.onNotificationClicked;
+    let click: ((payload: { target?: string }) => void) | undefined;
+    Object.assign(window.electronAPI, {
+      onNotificationClicked: vi.fn((cb: (payload: { target?: string }) => void) => {
+        click = cb;
+        return () => {};
+      }),
+    });
+    try {
+      renderApp();
+      await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
+      act(() => click?.({ target: 'mux' }));
+      expect(await screen.findByText('batchQueue.title', {}, { timeout: 20000 })).toBeInTheDocument();
+    } finally {
+      Object.assign(window.electronAPI, { onNotificationClicked: original });
+    }
+  }, 30000);
+
+  it('stays on the current page when the notification carries another target', async () => {
+    const original = window.electronAPI.onNotificationClicked;
+    let click: ((payload: { target?: string }) => void) | undefined;
+    Object.assign(window.electronAPI, {
+      onNotificationClicked: vi.fn((cb: (payload: { target?: string }) => void) => {
+        click = cb;
+        return () => {};
+      }),
+    });
+    try {
+      renderApp();
+      await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
+      act(() => {
+        click?.({ target: 'something-else' });
+        click?.({});
+      });
+      expect(screen.getByText('dashboard.welcome 👋')).toBeInTheDocument();
+      expect(screen.queryByText('batchQueue.title')).not.toBeInTheDocument();
+    } finally {
+      Object.assign(window.electronAPI, { onNotificationClicked: original });
+    }
+  }, 30000);
+
   it('navigates to the convert page via the drawer', async () => {
     renderApp();
     await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
@@ -120,11 +208,17 @@ describe('App', () => {
     expect(localStorage.getItem(DRAWER_CONDENSED_STORAGE_KEY)).toBe('true');
   });
 
-  it('stores log messages received from the main process', async () => {
+  it('stores log messages received from the shared stream', async () => {
     renderApp();
-    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
+    await waitFor(() => expect(onLogMessageMock).toHaveBeenCalled(), { timeout: 10000 });
     const callback = onLogMessageMock.mock.calls[0][0];
-    const entry: LogEntry = { timestamp: '2026-07-31T12:00:00.000Z', level: 'INFO', text: 'incoming log', source: 'main' };
+    const entry: LogEntry = {
+      timestamp: '2026-07-31T12:00:00.000Z',
+      level: 'INFO',
+      text: 'incoming log',
+      source: 'main',
+      seq: 1,
+    };
     callback(entry);
     expect(useLogStore.getState().entries).toContainEqual(entry);
   });

@@ -495,7 +495,9 @@
     "auditClear": "감사 추적 지우기",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "성공",
-    "auditStatusFailed": "실패"
+    "auditStatusFailed": "실패",
+    "openInNewWindow": "새 창에서 열기",
+    "viewLogs": "로그 보기"
   },
   "footer": {
     "version": "v{{version}}",
@@ -683,7 +685,9 @@
       "keyRemoved": "저장된 키가 제거되었습니다.",
       "staleStatus": "설정이 변경되었습니다. 확인하려면 다시 연결하세요.",
       "headerConnected": "연결됨 · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "데스크톱 알림",
+    "desktopNotificationsHint": "앱이 백그라운드에서 실행되는 동안 대기열 작업이 완료되거나 실패하면 시스템 알림을 표시합니다."
   },
   "shortcuts": {
     "title": "키보드 단축키",
@@ -1303,5 +1307,19 @@
       "done": "완료",
       "failed": "실패"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "변환 완료",
+    "jobCompletedBody": "{{fileName}}이(가) 성공적으로 완료되었습니다.",
+    "jobFailedTitle": "변환 실패",
+    "jobFailedBody": "{{fileName}}이(가) 실패했습니다.",
+    "queueCompletedTitle": "대기열 완료",
+    "queueCompletedBody": "성공 {{succeeded}}건, 실패 {{failed}}건.",
+    "muxJobCompletedTitle": "리먹스/디먹스 완료",
+    "muxJobCompletedBody": "{{fileName}}이(가) 성공적으로 완료되었습니다.",
+    "muxJobFailedTitle": "리먹스/디먹스 실패",
+    "muxJobFailedBody": "{{fileName}}이(가) 실패했습니다.",
+    "muxQueueCompletedTitle": "리먹스/디먹스 대기열 완료",
+    "muxQueueCompletedBody": "성공 {{succeeded}}건, 실패 {{failed}}건."
   }
 }

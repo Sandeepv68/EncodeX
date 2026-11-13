@@ -9,7 +9,11 @@ import { useAiSettingsStore } from '../../stores/aiSettingsStore';
 import { useAiConnectionStore } from '../../stores/aiConnectionStore';
 import { useToastStore } from '../../stores/toastStore';
 import { HWACCEL_DEFAULTS, ENCODER_TYPE_DEFAULT } from '../../../shared/hwaccel-settings';
-import { WINDOW_ALWAYS_ON_TOP_STORAGE_KEY, LAUNCH_AT_LOGIN_STORAGE_KEY } from '../../../shared/constants';
+import {
+  WINDOW_ALWAYS_ON_TOP_STORAGE_KEY,
+  LAUNCH_AT_LOGIN_STORAGE_KEY,
+  DESKTOP_NOTIFICATIONS_STORAGE_KEY,
+} from '../../../shared/constants';
 import { THEME_STORAGE_KEY } from '../../../shared/app-constants';
 import type { AIProviderId } from '../../../shared/ai/types';
 import type { SettingsLocationState } from '../../types';
@@ -100,6 +104,7 @@ describe('Settings', () => {
   const hwaccelSwitch = () => screen.getByRole('switch', { name: 'settings.hardwareAcceleration' });
   const alwaysOnTopSwitch = () => screen.getByRole('switch', { name: 'settings.alwaysOnTop' });
   const launchAtLoginSwitch = () => screen.getByRole('switch', { name: 'settings.launchAtLogin' });
+  const desktopNotificationsSwitch = () => screen.getByRole('switch', { name: 'settings.desktopNotifications' });
 
   it('renders the settings title and theme row', () => {
     renderSettings();
@@ -195,27 +200,27 @@ describe('Settings', () => {
 
   it('shows info tooltips on the hardware acceleration settings', async () => {
     renderSettings();
-    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(7);
-    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[4]);
+    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(8);
+    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[5]);
     expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.hardwareAccelerationHint');
   });
 
   it('shows an info tooltip for the mode setting', async () => {
     renderSettings();
-    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[5]);
+    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[6]);
     expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.hwaccelModeHint');
   });
 
   it('shows an info tooltip for the encoder type setting', async () => {
     renderSettings();
-    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[6]);
+    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[7]);
     expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.encoderTypeHint');
   });
 
   it('keeps the hardware acceleration tooltip when disabled but hides the others', () => {
     renderSettings();
     fireEvent.click(hwaccelSwitch());
-    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(5);
+    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(6);
   });
 
   it('renders the error-reporting row and toggles consent via the main process', async () => {
@@ -269,7 +274,7 @@ describe('Settings', () => {
 
   it('shows an info tooltip for the MCP server setting', async () => {
     renderSettings();
-    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[3]);
+    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[4]);
     expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.mcpServerHint');
   });
 
@@ -552,6 +557,20 @@ describe('Settings', () => {
     expect(useSettingsStore.getState().launchAtLogin).toBe(true);
     expect(spy).toHaveBeenCalledWith(true);
     expect(localStorage.getItem(LAUNCH_AT_LOGIN_STORAGE_KEY)).toBe('true');
+  });
+
+  it('toggles desktop notifications and notifies the main process', () => {
+    const spy = vi.fn().mockResolvedValue({ enabled: true, supported: true });
+    Object.defineProperty(globalThis, 'electronAPI', {
+      value: { ...window.electronAPI, notificationsSetEnabled: spy },
+      writable: true,
+    });
+    renderSettings();
+    expect(desktopNotificationsSwitch()).toBeInTheDocument();
+    fireEvent.click(desktopNotificationsSwitch());
+    expect(useSettingsStore.getState().desktopNotificationsEnabled).toBe(true);
+    expect(spy).toHaveBeenCalledWith(true);
+    expect(localStorage.getItem(DESKTOP_NOTIFICATIONS_STORAGE_KEY)).toBe('true');
   });
 
   it('shows an info tooltip for the launch-at-startup setting', async () => {

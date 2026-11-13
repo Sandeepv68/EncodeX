@@ -495,7 +495,9 @@
     "auditClear": "Tyhjennä tarkastusloki",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
-    "auditStatusFailed": "Epäonnistui"
+    "auditStatusFailed": "Epäonnistui",
+    "openInNewWindow": "Avaa uudessa ikkunassa",
+    "viewLogs": "Näytä lokit"
   },
   "footer": {
     "version": "v{{version}}",
@@ -683,7 +685,9 @@
       "keyRemoved": "Tallennettu avain poistettiin.",
       "staleStatus": "Asetukset muuttuivat. Yhdistä uudelleen vahvistaaksesi.",
       "headerConnected": "Yhdistetty · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Työpöytäilmoitukset",
+    "desktopNotificationsHint": "Näytä järjestelmäilmoitukset, kun jonotehtävät valmistuvat tai epäonnistuvat sovelluksen ollessa taustalla."
   },
   "shortcuts": {
     "title": "Näppäimistöoikotiet",
@@ -1303,5 +1307,19 @@
       "done": "Valmis",
       "failed": "Epäonnistunut"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Muunnos valmis",
+    "jobCompletedBody": "{{fileName}} valmistui onnistuneesti.",
+    "jobFailedTitle": "Muunnos epäonnistui",
+    "jobFailedBody": "{{fileName}} epäonnistui.",
+    "queueCompletedTitle": "Jono valmis",
+    "queueCompletedBody": "{{succeeded}} onnistui, {{failed}} epäonnistui.",
+    "muxJobCompletedTitle": "Remux/demux valmis",
+    "muxJobCompletedBody": "{{fileName}} valmistui onnistuneesti.",
+    "muxJobFailedTitle": "Remux/demux epäonnistui",
+    "muxJobFailedBody": "{{fileName}} epäonnistui.",
+    "muxQueueCompletedTitle": "Remux/demux-jono valmis",
+    "muxQueueCompletedBody": "{{succeeded}} onnistui, {{failed}} epäonnistui."
   }
 }

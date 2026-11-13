@@ -116,6 +116,8 @@ export interface SettingsState {
   setDrawerCondensed: (condensed: boolean) => void;
   launchAtLogin: boolean;
   setLaunchAtLogin: (enabled: boolean) => void;
+  desktopNotificationsEnabled: boolean;
+  setDesktopNotificationsEnabled: (enabled: boolean) => void;
   monitoringEnabled: boolean;
   setMonitoringEnabled: (enabled: boolean) => void;
   analyticsEnabled: boolean;
@@ -275,11 +277,13 @@ export interface MuxQueueState {
  * @property {LogEntry[]} entries - Log entries in chronological order.
  * @property {(entry: LogEntry) => void} addEntry - Appends an entry, trimming the oldest entry when at capacity.
  * @property {() => void} clear - Empties the log.
+ * @property {(entries: LogEntry[]) => void} replaceEntries - Replaces the whole list, used by the detached Logs window to seed its store from the shared history.
  */
 export interface LogState {
   entries: LogEntry[];
   addEntry: (entry: LogEntry) => void;
   clear: () => void;
+  replaceEntries: (entries: LogEntry[]) => void;
 }
 
 /**

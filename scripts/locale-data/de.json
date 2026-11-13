@@ -193,6 +193,8 @@
   "logs.levelError": "FEHLER",
   "logs.levelInfo": "INFO",
   "logs.levelWarn": "WARNUNG",
+  "logs.openInNewWindow": "In neuem Fenster öffnen",
+  "logs.viewLogs": "Protokolle anzeigen",
   "mcpViews.batch.dashboard": "Stapel",
   "mcpViews.batch.needsReapproval": "Dieser Stapel hat sich geändert und muss erneut genehmigt werden.",
   "mcpViews.batch.run": "Stapel ausführen",

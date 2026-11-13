@@ -42,4 +42,14 @@ export const useLogStore = create<LogState>((set) => ({
    * Empties the log.
    */
   clear: () => set({ entries: [] }),
+  /**
+   * Replaces the whole entry list.
+   *
+   * The detached Logs window seeds its store from the history the main process
+   * has buffered, so it needs to set the list in one go rather than append to
+   * an empty one. The cap still applies: a history longer than
+   * LOG_MAX_ENTRIES is trimmed from the front, oldest first.
+   * @param {LogEntry[]} entries - The entries the store should hold.
+   */
+  replaceEntries: (entries) => set({ entries: entries.slice(-LOG_MAX_ENTRIES) }),
 }));

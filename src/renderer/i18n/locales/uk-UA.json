@@ -495,7 +495,9 @@
     "auditClear": "Очистити журнал аудиту",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "ОК",
-    "auditStatusFailed": "Помилка"
+    "auditStatusFailed": "Помилка",
+    "openInNewWindow": "Відкрити в новому вікні",
+    "viewLogs": "Переглянути логи"
   },
   "footer": {
     "version": "v{{version}}",
@@ -683,7 +685,9 @@
       "keyRemoved": "Збережений ключ видалено.",
       "staleStatus": "Параметри змінено. Підключіться знову для перевірки.",
       "headerConnected": "Підключено · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Сповіщення на робочому столі",
+    "desktopNotificationsHint": "Показувати системні сповіщення, коли завдання черги завершуються або завершуються з помилкою, поки застосунок працює у фоновому режимі."
   },
   "shortcuts": {
     "title": "Гарячі клавіші",
@@ -1303,5 +1307,19 @@
       "done": "Завершено",
       "failed": "З помилками"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Перетворення завершено",
+    "jobCompletedBody": "{{fileName}} успішно завершено.",
+    "jobFailedTitle": "Помилка перетворення",
+    "jobFailedBody": "Не вдалося виконати {{fileName}}.",
+    "queueCompletedTitle": "Чергу завершено",
+    "queueCompletedBody": "Успішно: {{succeeded}}, з помилками: {{failed}}.",
+    "muxJobCompletedTitle": "Remux/demux завершено",
+    "muxJobCompletedBody": "{{fileName}} успішно завершено.",
+    "muxJobFailedTitle": "Помилка remux/demux",
+    "muxJobFailedBody": "Не вдалося виконати {{fileName}}.",
+    "muxQueueCompletedTitle": "Чергу remux/demux завершено",
+    "muxQueueCompletedBody": "Успішно: {{succeeded}}, з помилками: {{failed}}."
   }
 }

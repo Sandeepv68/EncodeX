@@ -495,7 +495,9 @@
     "auditClear": "ล้างบันทึกการตรวจสอบ",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "สำเร็จ",
-    "auditStatusFailed": "ล้มเหลว"
+    "auditStatusFailed": "ล้มเหลว",
+    "openInNewWindow": "เปิดในหน้าต่างใหม่",
+    "viewLogs": "ดูบันทึก"
   },
   "footer": {
     "version": "v{{version}}",
@@ -683,7 +685,9 @@
       "keyRemoved": "ลบคีย์ที่จัดเก็บไว้แล้ว",
       "staleStatus": "การตั้งค่าเปลี่ยนแปลง เชื่อมต่ออีกครั้งเพื่อยืนยัน",
       "headerConnected": "เชื่อมต่อแล้ว · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "การแจ้งเตือนบนเดสก์ท็อป",
+    "desktopNotificationsHint": "แสดงการแจ้งเตือนระบบเมื่องานในคิวเสร็จสิ้นหรือล้มเหลวในขณะที่แอปทำงานอยู่เบื้องหลัง"
   },
   "shortcuts": {
     "title": "แป้นพิมพ์ลัด",
@@ -1303,5 +1307,19 @@
       "done": "เสร็จแล้ว",
       "failed": "ล้มเหลว"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "การแปลงเสร็จสมบูรณ์",
+    "jobCompletedBody": "{{fileName}} เสร็จสมบูรณ์แล้ว",
+    "jobFailedTitle": "การแปลงล้มเหลว",
+    "jobFailedBody": "{{fileName}} ล้มเหลว",
+    "queueCompletedTitle": "คิวเสร็จสมบูรณ์",
+    "queueCompletedBody": "สำเร็จ {{succeeded}} รายการ ล้มเหลว {{failed}} รายการ",
+    "muxJobCompletedTitle": "รีมักซ์/ดีมักซ์เสร็จสมบูรณ์",
+    "muxJobCompletedBody": "{{fileName}} เสร็จสมบูรณ์แล้ว",
+    "muxJobFailedTitle": "รีมักซ์/ดีมักซ์ล้มเหลว",
+    "muxJobFailedBody": "{{fileName}} ล้มเหลว",
+    "muxQueueCompletedTitle": "คิวรีมักซ์/ดีมักซ์เสร็จสมบูรณ์",
+    "muxQueueCompletedBody": "สำเร็จ {{succeeded}} รายการ ล้มเหลว {{failed}} รายการ"
   }
 }

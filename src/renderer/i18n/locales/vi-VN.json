@@ -495,7 +495,9 @@
     "auditClear": "Xóa nhật ký kiểm tra",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "Thành công",
-    "auditStatusFailed": "Thất bại"
+    "auditStatusFailed": "Thất bại",
+    "openInNewWindow": "Mở trong cửa sổ mới",
+    "viewLogs": "Xem nhật ký"
   },
   "footer": {
     "version": "v{{version}}",
@@ -683,7 +685,9 @@
       "keyRemoved": "Khóa đã lưu đã bị xóa.",
       "staleStatus": "Cài đặt đã thay đổi. Kết nối lại để xác minh.",
       "headerConnected": "Đã kết nối · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Thông báo trên màn hình",
+    "desktopNotificationsHint": "Hiển thị thông báo hệ thống khi tác vụ trong hàng đợi hoàn tất hoặc thất bại trong khi ứng dụng chạy nền."
   },
   "shortcuts": {
     "title": "Phím tắt",
@@ -1303,5 +1307,19 @@
       "done": "Hoàn thành",
       "failed": "Thất bại"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Chuyển đổi hoàn tất",
+    "jobCompletedBody": "{{fileName}} đã hoàn tất thành công.",
+    "jobFailedTitle": "Chuyển đổi thất bại",
+    "jobFailedBody": "{{fileName}} thất bại.",
+    "queueCompletedTitle": "Hàng đợi hoàn tất",
+    "queueCompletedBody": "Thành công {{succeeded}}, thất bại {{failed}}.",
+    "muxJobCompletedTitle": "Remux/demux hoàn tất",
+    "muxJobCompletedBody": "{{fileName}} đã hoàn tất thành công.",
+    "muxJobFailedTitle": "Remux/demux thất bại",
+    "muxJobFailedBody": "{{fileName}} thất bại.",
+    "muxQueueCompletedTitle": "Hàng đợi remux/demux hoàn tất",
+    "muxQueueCompletedBody": "Thành công {{succeeded}}, thất bại {{failed}}."
   }
 }

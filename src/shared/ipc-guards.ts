@@ -119,9 +119,17 @@ export function isPlayerAudioChunk(value: unknown): value is PlayerAudioChunk {
   );
 }
 
-/** True when `value` is a `LogEntry`. `level` is narrowed to the declared union because the Logs page filters on it. */
+/**
+ * True when `value` is a `LogEntry`. `level` is narrowed to the declared union because the Logs page filters on it.
+ *
+ * The optional `seq` is checked when present: the main-process log hub stamps every entry it
+ * distributes with a monotonic sequence number, and a consumer orders and de-duplicates on it. A
+ * `seq` of the wrong type would make that ordering meaningless, so such a payload is rejected
+ * rather than silently treated as "no sequence".
+ */
 export function isLogEntry(value: unknown): value is LogEntry {
   if (!isRecord(value)) return false;
+  if ('seq' in value && !isFiniteNumber(value.seq)) return false;
   return (
     isString(value.timestamp) &&
     (value.level === 'DEBUG' || value.level === 'INFO' || value.level === 'WARN' || value.level === 'ERROR') &&

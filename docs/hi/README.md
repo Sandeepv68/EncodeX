@@ -257,7 +257,7 @@ encodex --mcp
 ## 🧪 टेस्टिंग
 
 ```bash
-npm test           # unit tests चलाएँ (src/ में 357 test/spec files)
+npm test           # unit tests चलाएँ (src/ में 360 test/spec files)
 npm run test:watch
 npm run test:coverage
 npm run test:unit

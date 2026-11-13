@@ -495,7 +495,9 @@
     "auditClear": "監査証跡を消去",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "成功",
-    "auditStatusFailed": "失敗"
+    "auditStatusFailed": "失敗",
+    "openInNewWindow": "新しいウィンドウで開く",
+    "viewLogs": "ログを表示"
   },
   "footer": {
     "version": "v{{version}}",
@@ -683,7 +685,9 @@
       "keyRemoved": "保存されたキーを削除しました。",
       "staleStatus": "設定が変更されました。確認するには再接続してください。",
       "headerConnected": "接続済み · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "デスクトップ通知",
+    "desktopNotificationsHint": "アプリがバックグラウンドで実行中にキューのジョブが完了または失敗したときにシステム通知を表示します。"
   },
   "shortcuts": {
     "title": "キーボードショートカット",
@@ -1303,5 +1307,19 @@
       "done": "完了",
       "failed": "失敗"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "変換が完了しました",
+    "jobCompletedBody": "{{fileName}} が正常に完了しました。",
+    "jobFailedTitle": "変換に失敗しました",
+    "jobFailedBody": "{{fileName}} に失敗しました。",
+    "queueCompletedTitle": "キューが完了しました",
+    "queueCompletedBody": "成功 {{succeeded}} 件、失敗 {{failed}} 件。",
+    "muxJobCompletedTitle": "リマックス/デマックスが完了しました",
+    "muxJobCompletedBody": "{{fileName}} が正常に完了しました。",
+    "muxJobFailedTitle": "リマックス/デマックスに失敗しました",
+    "muxJobFailedBody": "{{fileName}} に失敗しました。",
+    "muxQueueCompletedTitle": "リマックス/デマックスキューが完了しました",
+    "muxQueueCompletedBody": "成功 {{succeeded}} 件、失敗 {{failed}} 件。"
   }
 }

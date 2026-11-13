@@ -193,6 +193,8 @@
   "logs.levelError": "ERROR",
   "logs.levelInfo": "INFO",
   "logs.levelWarn": "WARN",
+  "logs.openInNewWindow": "නව කවුළුවක විවෘත කරන්න",
+  "logs.viewLogs": "ලොග බලන්න",
   "mcpViews.batch.dashboard": "බැච්",
   "mcpViews.batch.needsReapproval": "මෙම බැච් වෙනස් වී ඇති නිසා නැවත අනුමැතිකමක් අවශ්‍යයි.",
   "mcpViews.batch.run": "බැච් ධාවනය කරන්න",

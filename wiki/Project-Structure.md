@@ -173,20 +173,20 @@ src/
 │   │   └── types.ts                    # Analytics renderer provider contracts
 │   ├── dev/
 │   │   └── useDevScreenshot.ts        # Dev-only window screenshot capture
-│   ├── components/                    # Shared UI components (62 modules: 48 top-level + copilot/ and settings/ subfolders) <!-- drift:renderer-components=66 --> <!-- drift:renderer-components-top=51 -->
+│   ├── components/                    # Shared UI components (62 modules: 48 top-level + copilot/ and settings/ subfolders) <!-- drift: renderer-components=67 --> <!-- drift: renderer-components-top=52 -->
 │   │   └── types.ts                   # Shared component prop shapes
 │   ├── constants/
-│   │   ├── shortcuts.ts               # 71 keyboard shortcuts registry (11 sections) + tooltip hints <!-- drift:shortcuts=71 --> <!-- drift:shortcut-sections=11 -->
+│   │   ├── shortcuts.ts               # 71 keyboard shortcuts registry (11 sections) + tooltip hints <!-- drift: shortcuts=71 --> <!-- drift: shortcut-sections=11 -->
 │   │   └── types.ts                   # Shortcut and hotkey contracts
 │   ├── hooks/                         # useConversion, useErrorHandler, useFormErrors, useMediaTask, useCapabilities, useHotkeys, useFieldId, useMuxQueueStatus
 │   │   └── types.ts                   # Codec option + progress subset types
-│   ├── i18n/                          # i18next config, RTL provider, 56 locales (36 base language subtags) <!-- drift:locales=56 --> <!-- drift:locale-subtags=36 -->
+│   ├── i18n/                          # i18next config, RTL provider, 56 locales (36 base language subtags) <!-- drift: locales=56 --> <!-- drift: locale-subtags=36 -->
 │   │   └── types.ts                   # Locale metadata + flag component types
-│   ├── pages/                         # 13 code-split page components (Convert, Remux, Demux, Copilot, BatchQueue, Dashboard, MediaInfo, ImageCompress, AudioExtract, VideoCut, Settings, Logs, About) <!-- drift:renderer-pages=13 -->
+│   ├── pages/                         # 13 code-split page components (Convert, Remux, Demux, Copilot, BatchQueue, Dashboard, MediaInfo, ImageCompress, AudioExtract, VideoCut, Settings, Logs, About) <!-- drift: renderer-pages=13 -->
 │   │   └── types.ts                   # Page-level prop and view-model types
-│   ├── stores/                        # 21 Zustand stores (queue, muxQueue, conversion, settings, profile, terms, batchConfig, audioExtract, videoCut, logs, errors, toasts, update, task, dismissedAlerts, aiSettings, aiConnection, audit, copilotChats, remux, demux) <!-- drift:renderer-stores=21 -->
+│   ├── stores/                        # 21 Zustand stores (queue, muxQueue, conversion, settings, profile, terms, batchConfig, audioExtract, videoCut, logs, errors, toasts, update, task, dismissedAlerts, aiSettings, aiConnection, audit, copilotChats, remux, demux) <!-- drift: renderer-stores=21 -->
 │   │   └── types.ts                   # Zustand store state shapes + actions
-│   ├── styles/                        # Extracted MUI style constants per component (72 modules + Copilot/Settings subfolders) <!-- drift:renderer-styles=73 -->
+│   ├── styles/                        # Extracted MUI style constants per component (72 modules + Copilot/Settings subfolders) <!-- drift: renderer-styles=73 -->
 │   ├── utils/                         # formatters, preview cache helpers, easter egg dates, batch options
 │   │   └── types.ts                   # Shared renderer utility types
 │   └── types.ts                       # Color mode / theme context types
@@ -200,7 +200,7 @@ src/
     ├── types.ts                       # Domain interfaces (ConversionOptions, MediaInfo, ...)
     ├── terms.ts                       # Versioned Terms & Conditions (TERMS_VERSION)
     ├── logger.ts                      # Timestamped logger (main/renderer)
-    ├── log-constants.ts               # Shared log message constants (527 exported) <!-- drift:log-constants=570 -->
+    ├── log-constants.ts               # Shared log message constants (581 exported) 581
     ├── validation.ts                  # Time/scale/bitrate/range validation helpers
     ├── math.ts                        # Math helpers (clamp, round, percent)
     ├── progress.ts                    # Progress/ETA computation helpers
@@ -252,7 +252,7 @@ src/
     │   ├── validate.ts                # Output validation checks
     │   └── workflow.ts                # Multi-step workflow plans
     ├── profiles/                      # Conversion profiles
-    │   ├── builtin.ts                 # 115 built-in profiles across 8 categories <!-- drift:builtin-profiles=115 --> <!-- drift:profile-categories=8 -->
+    │   ├── builtin.ts                 # 115 built-in profiles across 8 categories <!-- drift: builtin-profiles=115 --> <!-- drift: profile-categories=8 -->
     │   ├── categories.ts              # Profile category metadata (web-social, devices, video, professional, streaming, audio, images, advanced)
     │   ├── index.ts                   # Profile types + helpers
     │   └── types.ts                   # Profile category metadata types
@@ -288,7 +288,7 @@ e2e/                                  # Playwright-based end-to-end tests
 │   ├── vscode-client.spec.ts          # VS Code MCP client configuration
 │   └── vscode-ui.spec.ts              # VS Code UI integration
 ├── quarantine/                        # Quarantined spec bodies (see quarantine.json)
-└── specs/                             # 31 E2E spec files (39 e2e files total) <!-- drift:e2e-specs=34 -->
+└── specs/                             # 31 E2E spec files (39 e2e files total) <!-- drift: e2e-specs=34 -->
     ├── shell.spec.ts
     ├── convert.spec.ts
     ├── batch.spec.ts

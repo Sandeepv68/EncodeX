@@ -7,6 +7,8 @@ import { useConversionStore } from '../../stores/conversionStore';
 import { useAudioExtractStore } from '../../stores/audioExtractStore';
 import { useVideoCutStore } from '../../stores/videoCutStore';
 import { useQueueStore } from '../../stores/queueStore';
+import { useMuxQueueStore } from '../../stores/muxQueueStore';
+import type { MuxQueueJob } from '../../../shared/types';
 import { QUEUE_STATUS } from '../../../shared/media-options';
 
 function LocationProbe() {
@@ -134,6 +136,7 @@ describe('AppDrawer', () => {
     useConversionStore.getState().setIsConverting(false);
     useVideoCutStore.getState().setIsCutting(false);
     useQueueStore.getState().setJobs([]);
+    useMuxQueueStore.getState().setJobs([]);
   });
 
   it('renders the nav items', () => {
@@ -145,6 +148,20 @@ describe('AppDrawer', () => {
     expect(screen.getByText('nav.demux')).toBeInTheDocument();
     expect(screen.getByText('nav.batchQueue')).toBeInTheDocument();
     expect(screen.getByText('nav.settings')).toBeInTheDocument();
+  });
+
+  it('hides the Logs nav item while the detached Logs window is open', () => {
+    let notify: ((open: boolean) => void) | undefined;
+    window.electronAPI.onLogsWindowState = vi.fn((cb: (open: boolean) => void) => {
+      notify = cb;
+      return () => {};
+    });
+    renderDrawer();
+    expect(screen.getByText('nav.logs')).toBeInTheDocument();
+    act(() => notify?.(true));
+    expect(screen.queryByText('nav.logs')).not.toBeInTheDocument();
+    act(() => notify?.(false));
+    expect(screen.getByText('nav.logs')).toBeInTheDocument();
   });
 
   it('navigates to the clicked route', () => {
@@ -312,6 +329,78 @@ describe('AppDrawer', () => {
 
   it('hides the batch count badge when the queue is empty', () => {
     useQueueStore.getState().setJobs([]);
+    renderDrawer();
+    expect(screen.queryByTestId('nav-batch-blip')).not.toBeInTheDocument();
+  });
+
+  it('sums the general queue and the mux queue in the batch nav badge', () => {
+    const muxJobs: MuxQueueJob[] = [
+      {
+        id: 'mux-1',
+        kind: 'remux',
+        input: 'in.mkv',
+        output: 'out.mkv',
+        targets: [{ output: 'out.mkv', options: {} }],
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.QUEUED,
+        progress: 0,
+        createdAt: 1,
+      },
+      {
+        id: 'mux-2',
+        kind: 'demux',
+        input: 'in2.mkv',
+        output: 'out2',
+        targets: [{ output: 'out2/a.mkv', options: {} }],
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.RUNNING,
+        progress: 10,
+        createdAt: 2,
+      },
+      {
+        id: 'mux-3',
+        kind: 'remux',
+        input: 'in3.mkv',
+        output: 'out3.mkv',
+        targets: [{ output: 'out3.mkv', options: {} }],
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.DONE,
+        progress: 100,
+        createdAt: 3,
+      },
+    ];
+    useQueueStore.getState().setJobs([
+      {
+        id: '1',
+        input: 'in.mp4',
+        output: 'out.mp4',
+        options: {},
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.RUNNING,
+        progress: 50,
+        createdAt: 1,
+      },
+    ]);
+    useMuxQueueStore.getState().setJobs(muxJobs);
+    renderDrawer();
+    // One active general job plus two active mux jobs; the finished mux job is not counted.
+    expect(screen.getByTestId('nav-batch-blip')).toHaveTextContent('3');
+  });
+
+  it('hides the batch count badge when only finished mux jobs remain', () => {
+    useMuxQueueStore.getState().setJobs([
+      {
+        id: 'mux-1',
+        kind: 'remux',
+        input: 'in.mkv',
+        output: 'out.mkv',
+        targets: [{ output: 'out.mkv', options: {} }],
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.DONE,
+        progress: 100,
+        createdAt: 1,
+      },
+    ]);
     renderDrawer();
     expect(screen.queryByTestId('nav-batch-blip')).not.toBeInTheDocument();
   });

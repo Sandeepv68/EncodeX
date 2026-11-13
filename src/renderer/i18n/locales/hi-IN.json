@@ -495,7 +495,9 @@
     "auditClear": "ऑडिट ट्रेल साफ़ करें",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "सफल",
-    "auditStatusFailed": "विफल"
+    "auditStatusFailed": "विफल",
+    "openInNewWindow": "नई विंडो में खोलें",
+    "viewLogs": "लॉग्स देखें"
   },
   "footer": {
     "version": "v{{version}}",
@@ -683,7 +685,9 @@
       "keyRemoved": "सहेजी गई कुंजी हटा दी गई।",
       "staleStatus": "सेटिंग्स बदल गईं। सत्यापित करने के लिए फिर से कनेक्ट करें।",
       "headerConnected": "कनेक्टेड · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "डेस्कटॉप सूचनाएँ",
+    "desktopNotificationsHint": "जब ऐप बैकग्राउंड में हो और कतार के कार्य पूरे हों या विफल हों, तब सिस्टम सूचनाएँ दिखाएँ।"
   },
   "shortcuts": {
     "title": "कीबोर्ड शॉर्टकट",
@@ -1303,5 +1307,19 @@
       "done": "पूर्ण",
       "failed": "विफल"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "रूपांतरण पूर्ण",
+    "jobCompletedBody": "{{fileName}} सफलतापूर्वक पूरा हुआ।",
+    "jobFailedTitle": "रूपांतरण विफल",
+    "jobFailedBody": "{{fileName}} विफल रहा।",
+    "queueCompletedTitle": "कतार पूर्ण",
+    "queueCompletedBody": "{{succeeded}} सफल, {{failed}} विफल।",
+    "muxJobCompletedTitle": "रीमक्स/डीमक्स पूर्ण",
+    "muxJobCompletedBody": "{{fileName}} सफलतापूर्वक पूरा हुआ।",
+    "muxJobFailedTitle": "रीमक्स/डीमक्स विफल",
+    "muxJobFailedBody": "{{fileName}} विफल रहा।",
+    "muxQueueCompletedTitle": "रीमक्स/डीमक्स कतार पूर्ण",
+    "muxQueueCompletedBody": "{{succeeded}} सफल, {{failed}} विफल।"
   }
 }

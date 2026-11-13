@@ -193,6 +193,8 @@
   "logs.levelError": "VILLA",
   "logs.levelInfo": "UPPLÝSINGAR",
   "logs.levelWarn": "AÐVÖRKEN",
+  "logs.openInNewWindow": "Opna í nýjum glugga",
+  "logs.viewLogs": "Skoða annála",
   "mcpViews.batch.dashboard": "Þvíð",
   "mcpViews.batch.needsReapproval": "Þessi þvíð hefur breyst og þarf nýja samþykki.",
   "mcpViews.batch.run": "Keyra þvíð",

@@ -108,6 +108,9 @@ const API_TABLE: Record<string, MethodEntry> = {
   windowCloseConfirmed: { kind: 'send', params: [] },
   rejectTerms: { kind: 'send', params: [] },
   windowSetAlwaysOnTop: { kind: 'send', params: ['flag'] },
+  openLogsWindow: { kind: 'send', params: [] },
+  logsGetHistory: { kind: 'invoke', params: [] },
+  logsPublishEntries: { kind: 'send', params: ['entries'] },
   setLaunchAtLogin: { kind: 'send', params: ['enabled'] },
   monitoringGetState: { kind: 'invoke', params: [] },
   monitoringSetEnabled: { kind: 'invoke', params: ['enabled'] },
@@ -159,6 +162,7 @@ const SUBSCRIBERS: readonly string[] = [
   'onPlayerError',
   'onLogMessage',
   'onAuditEntry',
+  'onLogsWindowState',
   'onUpdateAvailable',
   'onUpdateNotAvailable',
   'onUpdateProgress',
@@ -267,9 +271,9 @@ function benignResolveFor(name: string): unknown {
     case 'getVideoPreview':
     case 'getCapabilities':
     case 'playerGetFrame':
-    case 'extractWaveform':
-    case 'extractThumbnails':
+    case 'extractThumbnail':
     case 'getPendingInstall':
+    case 'logsGetHistory':
       return null;
     case 'queueGetState':
       return { paused: false, concurrency: 1 };

@@ -495,7 +495,9 @@
     "auditClear": "مسح سجل التدقيق",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "تم",
-    "auditStatusFailed": "فشل"
+    "auditStatusFailed": "فشل",
+    "openInNewWindow": "فتح في نافذة جديدة",
+    "viewLogs": "عرض السجلات"
   },
   "footer": {
     "version": "v{{version}}",
@@ -683,7 +685,9 @@
       "keyRemoved": "تمت إزالة المفتاح المخزّن.",
       "staleStatus": "تغيّرت الإعدادات. اتصل مرة أخرى للتحقق.",
       "headerConnected": "متصل · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "إشعارات سطح المكتب",
+    "desktopNotificationsHint": "عرض إشعارات النظام عند اكتمال مهام قائمة الانتظار أو فشلها أثناء عمل التطبيق في الخلفية."
   },
   "shortcuts": {
     "title": "اختصارات لوحة المفاتيح",
@@ -1303,5 +1307,19 @@
       "done": "مكتمل",
       "failed": "فشل"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "اكتمل التحويل",
+    "jobCompletedBody": "اكتمل {{fileName}} بنجاح.",
+    "jobFailedTitle": "فشل التحويل",
+    "jobFailedBody": "فشل {{fileName}}.",
+    "queueCompletedTitle": "اكتملت قائمة الانتظار",
+    "queueCompletedBody": "نجح {{succeeded}}، فشل {{failed}}.",
+    "muxJobCompletedTitle": "اكتمل إعادة التغليف/الفصل",
+    "muxJobCompletedBody": "اكتمل {{fileName}} بنجاح.",
+    "muxJobFailedTitle": "فشل إعادة التغليف/الفصل",
+    "muxJobFailedBody": "فشل {{fileName}}.",
+    "muxQueueCompletedTitle": "اكتملت قائمة إعادة التغليف/الفصل",
+    "muxQueueCompletedBody": "نجح {{succeeded}}، فشل {{failed}}."
   }
 }

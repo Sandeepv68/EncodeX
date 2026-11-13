@@ -1,6 +1,6 @@
 # 🔌 IPC Channels
 
-All channel names are centralized in `src/shared/ipc-channels.ts` (85 channels). <!-- drift:ipc-channels=106 --> The preload script (`src/preload/index.ts`) exposes everything through `window.electronAPI`.
+All channel names are centralized in `src/shared/ipc-channels.ts` (110 channels). <!-- drift: ipc-channels=115 --> The preload script (`src/preload/index.ts`) exposes everything through `window.electronAPI`.
 
 ## 📥 Requests (invoke from renderer)
 
@@ -77,6 +77,7 @@ All channel names are centralized in `src/shared/ipc-channels.ts` (85 channels).
 | `ai-connect-test`     | `candidate?`                             | `AiConnectTestResult`         |
 | `ai-models-list`      | `candidate?`                             | `AiModelsListResult`          |
 | `dev-capture-screenshot` | —                                     | `string` (dev-mode only PNG path) |
+| `logs-history`         | —                                        | `LogEntry[]` (buffered history) |
 
 ## 📤 Send-only (renderer to main)
 
@@ -88,6 +89,8 @@ All channel names are centralized in `src/shared/ipc-channels.ts` (85 channels).
 | `window-confirm-close`     | —         |
 | `window-set-always-on-top` | `boolean` |
 | `terms-reject`             | —         |
+| `logs-window-open`         | -         |
+| `logs-publish`             | `LogEntry[]` |
 
 ## 📡 Events (main to renderer)
 
@@ -118,6 +121,7 @@ All channel names are centralized in `src/shared/ipc-channels.ts` (85 channels).
 | `update-downloaded`        | `string` (installer path)     |
 | `update-error`             | `string` (error message)      |
 | `audit-entry`              | `AuditEntry`                  |
+| `logs-window-state`        | `number \| null` (detached window id, `null` when closed) |
 
 ## 🧩 `window.electronAPI` (contextBridge API)
 
@@ -165,6 +169,9 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `captureDevScreenshot()` — save a PNG of the window (dev mode only; rejects otherwise)
 - `checkForUpdates()` / `downloadUpdate()` / `installUpdate(path)` / `cancelDownload()` / `openReleaseNotes(url)`
 - `scheduleInstallOnRestart(path, version)` / `cancelRestartInstall()` / `getPendingInstall()` — manage a deferred update install
+- `openLogsWindow()` — open the Logs page in its own window
+- `logsGetHistory()` — the buffered log history the main process holds
+- `logsPublishEntries(entries)` — publish renderer log entries into the shared log hub
 
 ### Event listeners (each returns a cleanup function)
 
@@ -177,3 +184,4 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `onLogMessage(cb)`
 - `onUpdateAvailable(cb)` / `onUpdateNotAvailable(cb)` / `onUpdateProgress(cb)` / `onUpdateDownloaded(cb)` / `onUpdateError(cb)`
 - `onAuditEntry(cb)` — mutating-operation audit stream
+- `onLogsWindowState(cb)` — `true` while the detached Logs window is open

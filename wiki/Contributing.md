@@ -36,15 +36,15 @@ npm run lint:regex          # no super-linear backtracking regexes
 npm run typecheck           # renderer + main + preload + test + e2e + perf (6 tsconfigs)
 
 # Locale integrity
-npm run validate:locales    # keys/values consistent across all 56 locales <!-- drift:locales=56 -->
+npm run validate:locales    # keys/values consistent across all 56 locales <!-- drift: locales=56 -->
 
 # Documentation drift (numbers in wiki/, docs/ and site/ vs the source tree)
-npm run doc:drift           # verify <!-- drift:key=value --> markers
+npm run doc:drift           # verify <!-- drift: key=value --> markers
 npm run doc:drift:strict    # also fail on documents without markers
 npm run doc:drift:test      # unit tests for the checker
 
 # Tests
-npm test                    # unit suite (357 test files in src/) <!-- drift:test-files=357 -->
+npm test                    # unit suite (361 test files in src/) <!-- drift: test-files=366 -->
 npm run test:integration    # integration tests
 npm run test:e2e:ci         # e2e suite (needs npm run build first)
 
@@ -63,7 +63,7 @@ npm run audit:gate          # fails on any new high/critical advisory not on the
 - **i18n** — add a key to every locale; `npm run validate:locales` guards consistency.
 - **Styling** — MUI `sx`/style constants extracted to `src/renderer/styles/`; spacing via rem tokens, colors via the theme palette.
 - **Testing** — component/hook/store tests alongside the code; wire new UI into the mock preload (`e2e/mocks/preload.js`) and extend the e2e specs rather than mocking ad-hoc.
-- **Documentation** — the same prose lives in `wiki/`, `docs/`, `site/docs/` and `site/locales/*/docs/`; edit all copies. Any numeric claim that the drift checker tracks (`scripts/check-doc-drift.mjs`) must carry a `<!-- drift:key=value -->` marker so `npm run doc:drift` can verify it.
+- **Documentation** — the same prose lives in `wiki/`, `docs/`, `site/docs/` and `site/locales/*/docs/`; edit all copies. Any numeric claim that the drift checker tracks (`scripts/check-doc-drift.mjs`) must carry a `<!-- drift: key=value -->` marker so `npm run doc:drift` can verify it.
 
 ## 📬 Pull Request Process
 

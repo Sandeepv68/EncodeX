@@ -80,6 +80,7 @@ Conversion runs **locally on your computer** — no accounts, no media uploads, 
 - **🧭 Getting Started** — dashboard card with six goals: Ask Copilot, Convert, Compress, Extract audio, Trim, Remux
 - **📜 Terms & Conditions** — a first-run terms dialog gates the app
 - **📋 Batch Queue** — Parallel processing (up to 4 concurrent jobs, default 1) with real-time progress, per-job errors, pause/resume, drag-and-drop reordering, job option editing, status filters, JSON export/import, and when-done power actions (shutdown/sleep/hibernate)
+- **Desktop notifications** - Opt-in OS/taskbar alerts for batch and mux queue completion/failure when the app is in the background, with click-to-focus and queue navigation.
 - **🖼️ Image Compression** — JPEG/PNG/WebP/BMP/GIF/TIFF with quality/scale, EXIF viewer, RGB/luma histograms
 - **🎵 Audio Extraction** — Any of 27 audio codecs from any video file
 - **ℹ️ Media Info** — Full per-stream probe: codec, profile, resolution, color metadata, frame rate, etc.

@@ -495,7 +495,9 @@
     "auditClear": "清除稽核記錄",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "成功",
-    "auditStatusFailed": "失敗"
+    "auditStatusFailed": "失敗",
+    "openInNewWindow": "在新視窗中開啟",
+    "viewLogs": "查看記錄"
   },
   "footer": {
     "version": "v{{version}}",
@@ -683,7 +685,9 @@
       "keyRemoved": "已移除儲存的金鑰。",
       "staleStatus": "設定已變更。請重新連線以驗證。",
       "headerConnected": "已連線 · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "桌面通知",
+    "desktopNotificationsHint": "当应用在后台运行时，在队列任务完成或失败时显示系统通知。"
   },
   "shortcuts": {
     "title": "鍵盤快速鍵",
@@ -1303,5 +1307,19 @@
       "done": "已完成",
       "failed": "已失敗"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "转换完成",
+    "jobCompletedBody": "{{fileName}} 已成功完成。",
+    "jobFailedTitle": "转换失败",
+    "jobFailedBody": "{{fileName}} 失败。",
+    "queueCompletedTitle": "队列完成",
+    "queueCompletedBody": "成功 {{succeeded}} 个，失败 {{failed}} 个。",
+    "muxJobCompletedTitle": "混流/分离完成",
+    "muxJobCompletedBody": "{{fileName}} 已成功完成。",
+    "muxJobFailedTitle": "混流/分离失败",
+    "muxJobFailedBody": "{{fileName}} 失败。",
+    "muxQueueCompletedTitle": "混流/分离队列完成",
+    "muxQueueCompletedBody": "成功 {{succeeded}} 个，失败 {{failed}} 个。"
   }
 }

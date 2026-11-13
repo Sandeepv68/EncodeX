@@ -11,7 +11,8 @@
  * The drawer also surfaces live activity indicators ("blips") on the Convert,
  * Audio Extract, and Video Cut rows while a conversion/extraction/cut is
  * running, plus a count badge on the Batch Queue row showing the number of jobs
- * still outstanding (queued or running). Each indicator sits at the end of its
+ * still outstanding (queued or running) across both the general batch queue and
+ * the dedicated mux queue. Each indicator sits at the end of its
  * row in the expanded drawer and becomes a corner badge on the nav icon when
  * condensed. It ends with a divider and a footer holding the
  * {@link LanguageMenu} component and (on desktop) the drawer condense toggle so
@@ -38,12 +39,14 @@ import { useConversionStore } from '../stores/conversionStore';
 import { useAudioExtractStore } from '../stores/audioExtractStore';
 import { useVideoCutStore } from '../stores/videoCutStore';
 import { useQueueStore } from '../stores/queueStore';
+import { useMuxQueueStore } from '../stores/muxQueueStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import LanguageMenu from './LanguageMenu';
 import NavJobPopover from './NavJobPopover';
 import { recordAnalyticsEvent, setAnalyticsContext } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
 import { basenameOrEmpty as basenameOf } from '../utils/path-utils';
+import { callBridgeVoid } from '../utils/bridge-call';
 import { isJobActive } from '../utils/queue-job-utils';
 import type { AppDrawerProps, NavBlipId, NavJobPopoverContent } from './types';
 import {
@@ -98,10 +101,11 @@ const POPOVER_CLOSE_DELAY_MS = 150;
  * appended to the Convert row while `useConversionStore.isConverting` is true,
  * to the Audio Extract row while `useAudioExtractStore.isConverting` is true,
  * to the Video Cut row while `useVideoCutStore.isCutting` is true, and a red
- * count badge to the Batch Queue row while the queue holds at least one active
- * (queued or running) job, providing at-a-glance activity feedback. The badge
- * counts only outstanding work, so it decrements as jobs finish and disappears
- * once the batch drains (completed jobs stay in the list for review).
+ * count badge to the Batch Queue row while either the general batch queue or
+ * the mux queue holds at least one active (queued or running) job, providing
+ * at-a-glance activity feedback. The badge sums the outstanding work of both
+ * queues, so it decrements as jobs finish and disappears once both drain
+ * (completed jobs stay in the list for review).
  *
  * Condensed rows are wrapped in a tooltip carrying the same localized label the
  * expanded row shows inline; the tooltip is withheld while the row's job
@@ -132,10 +136,28 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
   const cutProgress = useVideoCutStore((s) => s.progress);
   const queueJobs = useQueueStore((s) => s.jobs);
   const queueProgress = useQueueStore((s) => s.progress);
-  const batchJobCount = queueJobs.filter(isJobActive).length;
+  const muxQueueJobs = useMuxQueueStore((s) => s.jobs);
+  const muxProgress = useMuxQueueStore((s) => s.progress);
+  const batchJobCount = queueJobs.filter(isJobActive).length + muxQueueJobs.filter(isJobActive).length;
   const queueConcurrency = useSettingsStore((s) => s.queueConcurrency);
 
+  /**
+   * Counts the jobs in either queue that carry the given status.
+   * @param {string} status - The queue status to count.
+   * @returns {number} The number of matching jobs across both queues.
+   */
+  const countByStatus = (status: string): number =>
+    queueJobs.filter((j) => j.status === status).length + muxQueueJobs.filter((j) => j.status === status).length;
+
   const [popoverBlip, setPopoverBlip] = useState<NavBlipId>(null);
+  const [logsWindowOpen, setLogsWindowOpen] = useState(false);
+  useEffect(() => {
+    let cleanup: (() => void) | undefined;
+    callBridgeVoid(() => {
+      cleanup = window.electronAPI?.onLogsWindowState?.(setLogsWindowOpen);
+    }, 'onLogsWindowState');
+    return () => cleanup?.();
+  }, []);
   const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null);
   const closeTimer = useRef<number | null>(null);
 
@@ -262,15 +284,19 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
           : null;
       case 'batch': {
         if (batchJobCount === 0) return null;
-        const active = queueJobs.find((j) => j.status === QUEUE_STATUS.RUNNING) ?? queueJobs.find(isJobActive);
-        const snapshot = active ? queueProgress[active.id] : undefined;
+        const active =
+          queueJobs.find((j) => j.status === QUEUE_STATUS.RUNNING) ??
+          queueJobs.find(isJobActive) ??
+          muxQueueJobs.find((j) => j.status === QUEUE_STATUS.RUNNING) ??
+          muxQueueJobs.find(isJobActive);
+        const snapshot = active ? (queueProgress[active.id] ?? muxProgress[active.id]) : undefined;
         return {
           title: t('nav.batchQueue'),
           status: t('batchQueue.stats', {
-            queued: queueJobs.filter((j) => j.status === QUEUE_STATUS.QUEUED).length,
-            running: queueJobs.filter((j) => j.status === QUEUE_STATUS.RUNNING).length,
-            done: queueJobs.filter((j) => j.status === QUEUE_STATUS.DONE).length,
-            failed: queueJobs.filter((j) => j.status === QUEUE_STATUS.ERROR).length,
+            queued: countByStatus(QUEUE_STATUS.QUEUED),
+            running: countByStatus(QUEUE_STATUS.RUNNING),
+            done: countByStatus(QUEUE_STATUS.DONE),
+            failed: countByStatus(QUEUE_STATUS.ERROR),
           }),
           fileName: active ? basenameOf(active.input) : '',
           progress: active
@@ -297,7 +323,7 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
     <>
       <DrawerNav component="nav" aria-label={t('app.navigation')}>
         <NavList>
-          {NAV_ITEMS.map((item, index) => {
+          {NAV_ITEMS.filter((item) => !(logsWindowOpen && item.to === '/logs')).map((item, index) => {
             const label = t(`nav.${navKeyMap[item.to]}`);
             // The job popover already names the page it is anchored to and pins to
             // the same edge of the drawer, so the row tooltip stands down while

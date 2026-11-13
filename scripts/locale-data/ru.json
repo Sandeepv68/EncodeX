@@ -193,6 +193,8 @@
   "logs.levelError": "ОШИБКА",
   "logs.levelInfo": "ИНФО",
   "logs.levelWarn": "ПРЕДУПРЕЖДЕНИЕ",
+  "logs.openInNewWindow": "Открыть в новом окне",
+  "logs.viewLogs": "Посмотреть журналы",
   "mcpViews.batch.dashboard": "Пакет",
   "mcpViews.batch.needsReapproval": "Этот пакет изменился и требует повторного одобрения.",
   "mcpViews.batch.run": "Запустить пакет",

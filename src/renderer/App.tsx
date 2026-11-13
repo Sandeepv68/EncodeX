@@ -62,7 +62,7 @@ import { useDevScreenshot } from './dev/useDevScreenshot';
 import { SHORTCUTS } from './constants/shortcuts';
 import { THEMES } from '../shared/theme/colors';
 import { useErrorStore } from './stores/errorStore';
-import { useLogStore } from './stores/logStore';
+import { isDetachedMode, subscribeSharedLogFeed } from './logs/detached';
 import { useAuditStore } from './stores/auditStore';
 import { useSettingsStore } from './stores/settingsStore';
 import type { PageLoader, RouteLoaderProps } from './types';
@@ -228,8 +228,21 @@ function AppLayout() {
   const location = useLocation();
   const mainContentRef = useRef<HTMLElement>(null);
 
+  // The detached Logs window renders the same route table but without the app
+  // chrome: it is a second window onto the log, not a second copy of the app.
+  const detached = isDetachedMode();
+
   useLanguageDirection();
   useDevScreenshot();
+
+  useEffect(() => {
+    const unsub = window.electronAPI?.onNotificationClicked?.((payload) => {
+      if (payload?.target === 'mux' || payload?.target === 'queue') {
+        navigate('/batch');
+      }
+    });
+    return () => unsub?.();
+  }, [navigate]);
 
   useLayoutEffect(() => {
     // A layout effect runs after the DOM is committed, so the ref is attached
@@ -246,9 +259,10 @@ function AppLayout() {
     // synchronous throw from `contextBridge` would otherwise propagate out of the effect and take the
     // tree down - losing the log stream that would have explained why.
     callBridgeVoid(() => {
-      cleanup = window.electronAPI?.onLogMessage((entry) => {
-        useLogStore.getState().addEntry(entry);
-      });
+      // Both windows read the shared stream from the main process. The in-app view used to
+      // collect entries locally instead, which meant it never had the hub's history and the two
+      // views could disagree about what had been logged.
+      cleanup = subscribeSharedLogFeed();
     }, 'onLogMessage subscription');
     return () => cleanup?.();
   }, []);
@@ -351,9 +365,9 @@ function AppLayout() {
 
   return (
     <AppRoot>
-      <TitleBar />
+      {detached ? null : <TitleBar />}
       <AppBody>
-        {isMobile ? (
+        {detached ? null : isMobile ? (
           <TemporaryDrawer variant="temporary" open={mobileOpen} onClose={() => setMobileOpen(false)}>
             {drawerContent}
           </TemporaryDrawer>
@@ -364,7 +378,7 @@ function AppLayout() {
         )}
         <ColumnLayout>
           <MainContent ref={mainContentRef} $flush={location.pathname === '/copilot'}>
-            {isMobile && (
+            {isMobile && !detached && (
               <MobileMenuButton onClick={() => setMobileOpen(true)} aria-label={t('app.menu')} data-testid="mobile-menu-button">
                 <FontAwesomeIcon icon={faBars} />
               </MobileMenuButton>
@@ -379,7 +393,7 @@ function AppLayout() {
               </RouteContent>
             </ErrorBoundary>
           </MainContent>
-          <Footer />
+          {detached ? null : <Footer />}
         </ColumnLayout>
       </AppBody>
       <ErrorSnackbar error={currentError} onClose={clearError} />

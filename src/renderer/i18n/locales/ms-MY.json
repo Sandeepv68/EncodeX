@@ -495,7 +495,9 @@
     "auditClear": "Kosongkan jejak audit",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "Berjaya",
-    "auditStatusFailed": "Gagal"
+    "auditStatusFailed": "Gagal",
+    "openInNewWindow": "Buka dalam tetingkap baharu",
+    "viewLogs": "Lihat log"
   },
   "footer": {
     "version": "v{{version}}",
@@ -683,7 +685,9 @@
       "keyRemoved": "Kunci tersimpan telah dibuang.",
       "staleStatus": "Tetapan berubah. Sambung semula untuk mengesahkan.",
       "headerConnected": "Bersambung · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Pemberitahuan desktop",
+    "desktopNotificationsHint": "Tunjukkan pemberitahuan sistem apabila tugas baris gilir selesai atau gagal semasa aplikasi berjalan di latar belakang."
   },
   "shortcuts": {
     "title": "Pintasan Papan Kekunci",
@@ -1303,5 +1307,19 @@
       "done": "Selesai",
       "failed": "Gagal"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Penukaran selesai",
+    "jobCompletedBody": "{{fileName}} berjaya diselesaikan.",
+    "jobFailedTitle": "Penukaran gagal",
+    "jobFailedBody": "{{fileName}} gagal.",
+    "queueCompletedTitle": "Baris gilir selesai",
+    "queueCompletedBody": "{{succeeded}} berjaya, {{failed}} gagal.",
+    "muxJobCompletedTitle": "Remux/demux selesai",
+    "muxJobCompletedBody": "{{fileName}} berjaya diselesaikan.",
+    "muxJobFailedTitle": "Remux/demux gagal",
+    "muxJobFailedBody": "{{fileName}} gagal.",
+    "muxQueueCompletedTitle": "Baris gilir remux/demux selesai",
+    "muxQueueCompletedBody": "{{succeeded}} berjaya, {{failed}} gagal."
   }
 }

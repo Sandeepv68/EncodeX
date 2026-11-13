@@ -193,6 +193,8 @@
   "logs.levelError": "ERREUR",
   "logs.levelInfo": "INFO",
   "logs.levelWarn": "AVERTISSEMENT",
+  "logs.openInNewWindow": "Ouvrir dans une nouvelle fenêtre",
+  "logs.viewLogs": "Afficher les journaux",
   "mcpViews.batch.dashboard": "Lot",
   "mcpViews.batch.needsReapproval": "Ce lot a changé et nécessite une nouvelle approbation.",
   "mcpViews.batch.run": "Exécuter le lot",

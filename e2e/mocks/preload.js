@@ -393,6 +393,11 @@ const api = {
   analyticsTrackEvent: () => Promise.resolve(),
   analyticsGetPosthogConfig: () => Promise.resolve({ projectToken: '', host: '' }),
 
+  // --- Desktop notifications ---------------------------------------------------
+  notificationsGetSettings: () => Promise.resolve({ enabled: false, supported: true }),
+  notificationsSetEnabled: (enabled) => Promise.resolve({ enabled: !!enabled, supported: true }),
+  onNotificationClicked: (cb) => subscribe('notification-clicked', cb),
+
   // --- Embedded MCP server settings --------------------------------------------
   // Mirrors the main-process sanitation contract (src/shared/mcp-settings.ts)
   // and - because state.mcpSettings alone would be lost on a renderer reload,
@@ -530,6 +535,17 @@ const api = {
   onPlayerAudio: (cb) => subscribe('player-audio', cb),
   onLogMessage: (cb) => subscribe('log-message', cb),
   onAuditEntry: (cb) => subscribe('audit-entry', cb),
+  openLogsWindow: () => {},
+  onLogsWindowState: (cb) => subscribe('logs-window-state', cb),
+  logsGetHistory: () => Promise.resolve([]),
+  logsPublishEntries: () => {},
+  logsClear: () => {
+    // The real main process broadcasts `IPC.LOGS_CLEARED` to every window
+    // after the hub history is emptied, so the mock has to as well: the
+    // renderer's shared log feed drops its cached entries on that event.
+    emit('logs-cleared');
+  },
+  onLogsCleared: (cb) => subscribe('logs-cleared', cb),
 
   // --- Update manager ----------------------------------------------------------
   checkForUpdates: () => Promise.resolve(),

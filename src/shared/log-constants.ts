@@ -919,6 +919,13 @@ export const LOG_WINDOW_MINIMIZE_CALLED = 'windowMinimize called';
 export const LOG_WINDOW_SET_ALWAYS_ON_TOP_CALLED = 'windowSetAlwaysOnTop called';
 /** @const {string} Logged when setLaunchAtLogin is invoked. */
 export const LOG_SET_LAUNCH_AT_LOGIN_CALLED = 'setLaunchAtLogin called';
+export const LOG_SET_DESKTOP_NOTIFICATIONS_ENABLED = 'setDesktopNotificationsEnabled:';
+export const LOG_DESKTOP_NOTIFICATIONS_READ_FAILED = 'desktop notifications read failed';
+export const LOG_DESKTOP_NOTIFICATIONS_PERSIST_FAILED = 'desktop notifications persist failed';
+export const LOG_DESKTOP_NOTIFICATIONS_SYNC_FAILED = 'Failed to sync desktop notifications setting:';
+export const LOG_IPC_NOTIFICATIONS_GET_SETTINGS = 'NOTIFICATIONS_GET_SETTINGS';
+export const LOG_IPC_NOTIFICATIONS_SET_ENABLED = 'NOTIFICATIONS_SET_ENABLED:';
+export const LOG_ON_NOTIFICATION_CLICKED = 'onNotificationClicked';
 /** @const {string} Logged when wrapAsync is invoked. */
 export const LOG_WRAP_ASYNC_CALLED = 'wrapAsync called';
 /** @const {string} Prefix when wrapAsync catches an error. */
@@ -1155,3 +1162,11 @@ export const LOG_ON_MUX_QUEUE_STATUS_CHANGE = 'onMuxQueueStatusChange:';
 export const LOG_ON_MUX_QUEUE_CANCELLED = 'onMuxQueueCancelled';
 /** @const {string} Logged when the preload forwards a mux queue reorder event. */
 export const LOG_ON_MUX_QUEUE_MOVED = 'onMuxQueueMoved:';
+/** @const {string} Logged when the renderer asks main to open the detached Logs window. */
+export const LOG_LOGS_WINDOW_OPEN = 'logsWindowOpen:';
+/** @const {string} Logged when the renderer requests the buffered log history. */
+export const LOG_LOGS_GET_HISTORY = 'logsGetHistory:';
+/** @const {string} Logged when the renderer publishes log entries to the main-process hub. */
+export const LOG_LOGS_PUBLISH = 'logsPublishEntries:';
+/** @const {string} Logged when the renderer asks main to clear the shared log history. */
+export const LOG_LOGS_CLEAR = 'logsClear:';

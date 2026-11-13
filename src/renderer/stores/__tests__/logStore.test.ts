@@ -36,4 +36,18 @@ describe('logStore', () => {
     useLogStore.getState().clear();
     expect(useLogStore.getState().entries).toEqual([]);
   });
+
+  it('replaceEntries swaps the whole list for the seeded history', () => {
+    useLogStore.getState().addEntry(makeEntry('old'));
+    useLogStore.getState().replaceEntries([makeEntry('seeded')]);
+    expect(useLogStore.getState().entries.map((e) => e.text)).toEqual(['seeded']);
+  });
+
+  it('replaceEntries caps the seeded history at MAX_ENTRIES (2000)', () => {
+    const history = Array.from({ length: 2100 }, (_, i) => makeEntry(`entry-${i}`));
+    useLogStore.getState().replaceEntries(history);
+    const entries = useLogStore.getState().entries;
+    expect(entries).toHaveLength(2000);
+    expect(entries[0].text).toBe('entry-100');
+  });
 });

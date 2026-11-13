@@ -90,6 +90,6 @@ The [Testing page](Testing) covers the full testing script list; the [Contributi
 | Build      | Vite 8, TypeScript 5 |
 | Testing    | Vitest 4, Playwright |
 | Media      | FFmpeg (bundled via ffmpeg-static) |
-| i18n       | i18next (56 locales, 36 base language subtags) <!-- drift:locales=56 --> <!-- drift:locale-subtags=36 --> |
+| i18n       | i18next (56 locales, 36 base language subtags) <!-- drift: locales=56 --> <!-- drift: locale-subtags=36 --> |
 | AI         | @modelcontextprotocol/server + /node (MCP server) |
 | Monitoring | provider-agnostic layer with a Sentry adapter |

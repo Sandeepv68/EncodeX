@@ -193,6 +193,8 @@
   "logs.levelError": "VIRHE",
   "logs.levelInfo": "TIETO",
   "logs.levelWarn": "VAROITUS",
+  "logs.openInNewWindow": "Avaa uudessa ikkunassa",
+  "logs.viewLogs": "Näytä lokit",
   "mcpViews.batch.dashboard": "Erä",
   "mcpViews.batch.needsReapproval": "Tämä erä on muuttunut ja vaatii uuden hyväksynnän.",
   "mcpViews.batch.run": "Suorita erä",

@@ -39,6 +39,7 @@ import QueueDropArea from '../components/QueueDropArea';
 import QueueAddReviewDialog from '../components/QueueAddReviewDialog';
 import QueueJobOptionsDialog from '../components/QueueJobOptionsDialog';
 import ConfirmDialog from '../components/ConfirmDialog';
+import ViewLogsButton from '../components/ViewLogsButton';
 import { useHotkeys } from '../hooks/useHotkeys';
 import { useMuxQueueStatus } from '../hooks/useMuxQueueStatus';
 import { useQueueStore } from '../stores/queueStore';
@@ -72,6 +73,8 @@ import {
   CondenseButton,
   ClearAllBox,
   QueueTabs,
+  TabLabelRow,
+  TabCountChip,
 } from '../styles/BatchQueue.styles';
 import { TitleIcon } from '../styles/PageContainer.styles';
 import { pageIcons } from '../pageIcons';
@@ -1324,6 +1327,7 @@ export default function BatchQueue() {
             </CondenseIcon>
           </CondenseButton>
         </Tooltip>
+        <ViewLogsButton iconOnly />
       </PageTitle>
 
       <QueueTabs
@@ -1333,8 +1337,26 @@ export default function BatchQueue() {
         textColor="inherit"
         data-testid="batch-queue-tabs"
       >
-        <Tab value="general" label={`${t('muxQueue.tabGeneral')} (${jobs.length})`} data-testid="batch-queue-tab-general" />
-        <Tab value="mux" label={`${t('muxQueue.tabMux')} (${muxStatus.total})`} data-testid="batch-queue-tab-mux" />
+        <Tab
+          value="general"
+          label={
+            <TabLabelRow>
+              {t('muxQueue.tabGeneral')}
+              <TabCountChip label={jobs.length} size="small" data-testid="batch-queue-tab-general-count" />
+            </TabLabelRow>
+          }
+          data-testid="batch-queue-tab-general"
+        />
+        <Tab
+          value="mux"
+          label={
+            <TabLabelRow>
+              {t('muxQueue.tabMux')}
+              <TabCountChip label={muxStatus.total} size="small" data-testid="batch-queue-tab-mux-count" />
+            </TabLabelRow>
+          }
+          data-testid="batch-queue-tab-mux"
+        />
       </QueueTabs>
 
       {tab === 'mux' ? (

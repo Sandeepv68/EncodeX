@@ -495,7 +495,9 @@
     "auditClear": "Limpar trilha de auditoria",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
-    "auditStatusFailed": "Falhou"
+    "auditStatusFailed": "Falhou",
+    "openInNewWindow": "Abrir numa nova janela",
+    "viewLogs": "Ver registos"
   },
   "footer": {
     "version": "v{{version}}",
@@ -683,7 +685,9 @@
       "keyRemoved": "A chave armazenada foi removida.",
       "staleStatus": "As definições mudaram. Ligue novamente para verificar.",
       "headerConnected": "Ligado · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Notificações da área de trabalho",
+    "desktopNotificationsHint": "Mostrar notificações do sistema quando tarefas da fila forem concluídas ou falharem enquanto o aplicativo estiver em segundo plano."
   },
   "shortcuts": {
     "title": "Atalhos de teclado",
@@ -1303,5 +1307,19 @@
       "done": "Concluídos",
       "failed": "Com falha"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Conversão concluída",
+    "jobCompletedBody": "{{fileName}} foi concluído com sucesso.",
+    "jobFailedTitle": "Falha na conversão",
+    "jobFailedBody": "{{fileName}} falhou.",
+    "queueCompletedTitle": "Fila concluída",
+    "queueCompletedBody": "{{succeeded}} com êxito, {{failed}} com falha.",
+    "muxJobCompletedTitle": "Remux/demux concluído",
+    "muxJobCompletedBody": "{{fileName}} foi concluído com sucesso.",
+    "muxJobFailedTitle": "Falha no remux/demux",
+    "muxJobFailedBody": "{{fileName}} falhou.",
+    "muxQueueCompletedTitle": "Fila de remux/demux concluída",
+    "muxQueueCompletedBody": "{{succeeded}} com êxito, {{failed}} com falha."
   }
 }

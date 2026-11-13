@@ -483,6 +483,28 @@ describe('main/index', () => {
     expect(getMainWindows()).toHaveLength(2);
   });
 
+  it('keeps the open window on activate instead of creating a second one', async () => {
+    process.argv = ['node', 'x.js'];
+    await importIndex();
+    await triggerStartup();
+    getAppOnHandlers()['activate']();
+    expect(getMainWindows()).toHaveLength(1);
+  });
+
+  it('closes the splash on ready-to-show and skips one that is already destroyed', async () => {
+    process.argv = ['node', 'x.js'];
+    await importIndex();
+    await triggerStartup();
+    const splash = getWindowInstances()[0];
+    const main = getWindowInstances()[1];
+    const readyCb = main.on.mock.calls.find((call: unknown[]) => call[0] === 'ready-to-show')?.[1] as () => void;
+    readyCb();
+    expect(splash.close).toHaveBeenCalledTimes(1);
+    splash.isDestroyed.mockReturnValue(true);
+    readyCb();
+    expect(splash.close).toHaveBeenCalledTimes(1);
+  });
+
   it('quits on window-all-closed on non-darwin platforms', async () => {
     Object.defineProperty(process, 'platform', { value: 'linux' });
     process.argv = ['node', 'x.js'];

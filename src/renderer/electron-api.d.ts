@@ -530,6 +530,9 @@ export interface ElectronAPI {
    * @returns {void}
    */
   setLaunchAtLogin(enabled: boolean): void;
+  notificationsGetSettings(): Promise<DesktopNotificationsSettings>;
+  notificationsSetEnabled(enabled: boolean): Promise<DesktopNotificationsSettings>;
+  onNotificationClicked(cb: (payload: NotificationClickPayload) => void): () => void;
   /**
    * Queries the current error-monitoring state from the main process over
    * `IPC.MONITORING_GET_STATE` ('monitoring-get-state').
@@ -777,6 +780,39 @@ export interface ElectronAPI {
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
   onLogMessage(cb: (entry: LogEntry) => void): () => void;
+  /**
+   * Asks the main process to open the Logs page in a separate window.
+   * Fire-and-forget: returns void.
+   */
+  openLogsWindow(): void;
+  /**
+   * Subscribes to logs-window open/close state changes pushed from main.
+   * @param {(open: boolean) => void} cb
+   * @returns {() => void} unsubscribe
+   */
+  onLogsWindowState(cb: (open: boolean) => void): () => void;
+  /**
+   * Fetches the log history the main process has buffered.
+   * @returns {Promise<LogEntry[]>} The buffered entries, oldest first.
+   */
+  logsGetHistory(): Promise<LogEntry[]>;
+  /**
+   * Publishes renderer-produced log entries into the main-process log hub.
+   * @param {LogEntry[]} entries - The entries to publish.
+   * @returns {void}
+   */
+  logsPublishEntries(entries: LogEntry[]): void;
+  /**
+   * Clears the shared log history in the main process and notifies every Logs
+   * window, so all views drop the same entries.
+   */
+  logsClear(): void;
+  /**
+   * Subscribes to shared-log clear events pushed from main.
+   * @param {() => void} cb - Called after the shared log was cleared.
+   * @returns {() => void} unsubscribe
+   */
+  onLogsCleared(cb: () => void): () => void;
   /**
    * Subscribes to the mutating-operation audit stream, pushed from the main
    * process over `IPC.AUDIT_ENTRY` ('audit-entry'). Each record names the tool

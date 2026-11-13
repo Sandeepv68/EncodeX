@@ -11,6 +11,10 @@
 
 import { ipcMain, app } from 'electron';
 import { MuxQueue } from '../queue/mux-queue';
+import path from 'path';
+import { getNotifier } from '../notifications/notifier';
+import { tNotification } from '../notifications/strings';
+import { QUEUE_STATUS } from '../../shared/media-options';
 import { FileMuxQueuePersistence } from '../queue/persistence';
 import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';
@@ -212,6 +216,25 @@ export function registerMuxQueueHandlers(win: unknown, send: IpcSender): void {
   muxQueue.on('statusChange', (job: MuxQueueJob) => {
     log.debug(LOG_MUX_QUEUE_JOB_STATUS_CHANGE, job.id, job.status);
     send(IPC.MUX_QUEUE_STATUS_CHANGE, job);
+    const notifier = getNotifier();
+    if (notifier && (job.status === QUEUE_STATUS.DONE || job.status === QUEUE_STATUS.ERROR)) {
+      const fileName = path.basename(job.input || job.output);
+      if (job.status === QUEUE_STATUS.DONE) {
+        notifier.notify(
+          tNotification('notifications.muxJobCompletedTitle'),
+          tNotification('notifications.muxJobCompletedBody', { fileName }),
+          `mux:job:${job.id}:done`,
+          { target: 'mux' },
+        );
+      } else {
+        notifier.notify(
+          tNotification('notifications.muxJobFailedTitle'),
+          tNotification('notifications.muxJobFailedBody', { fileName }),
+          `mux:job:${job.id}:error`,
+          { target: 'mux' },
+        );
+      }
+    }
   });
 
   /**
@@ -243,5 +266,22 @@ export function registerMuxQueueHandlers(win: unknown, send: IpcSender): void {
   muxQueue.on('moved', ({ id, toPosition }: { id: string; toPosition: number }) => {
     log.info(LOG_MUX_QUEUE_MOVE_TO, id, toPosition);
     send(IPC.MUX_QUEUE_MOVED, { id, toPosition });
+  });
+
+  muxQueue.on('drained', () => {
+    const notifier = getNotifier();
+    if (notifier) {
+      const jobs = muxQueue.getJobs();
+      const succeeded = jobs.filter((j) => j.status === QUEUE_STATUS.DONE).length;
+      const failed = jobs.filter((j) => j.status === QUEUE_STATUS.ERROR).length;
+      if (succeeded + failed > 0) {
+        notifier.notify(
+          tNotification('notifications.muxQueueCompletedTitle'),
+          tNotification('notifications.muxQueueCompletedBody', { succeeded, failed }),
+          'mux:drained',
+          { target: 'mux' },
+        );
+      }
+    }
   });
 }

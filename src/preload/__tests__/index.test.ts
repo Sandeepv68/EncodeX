@@ -100,6 +100,8 @@ describe('preload', () => {
     expect(api).toBeDefined();
     expect(api.convertFile).toBeTypeOf('function');
     expect(api.onLogMessage).toBeTypeOf('function');
+    expect(api.onLogsCleared).toBeTypeOf('function');
+    expect(api.logsClear).toBeTypeOf('function');
   });
 
   it('getPathForFile resolves a dropped file path via webUtils', () => {
@@ -163,6 +165,8 @@ describe('preload', () => {
     ['extractThumbnails', IPC.EXTRACT_THUMBNAILS, ['v.mp4', 60]],
     ['mcpGetSettings', IPC.MCP_SETTINGS_GET, []],
     ['mcpSetSettings', IPC.MCP_SETTINGS_SET, [{ enabled: true, port: 8765, token: 'abc' }]],
+    ['notificationsGetSettings', IPC.NOTIFICATIONS_GET_SETTINGS, []],
+    ['notificationsSetEnabled', IPC.NOTIFICATIONS_SET_ENABLED, [true]],
   ])('%s invokes the %s channel', async (method, channel, args) => {
     ipcRendererMock.invoke.mockResolvedValue('ok');
     const result = await (api[method] as (...a: unknown[]) => Promise<string>)(...args);
@@ -207,6 +211,8 @@ describe('preload', () => {
     ],
     ['onWindowMaximizedChange', IPC.WINDOW_MAXIMIZED_CHANGED, true],
     ['onWindowCloseRequested', IPC.WINDOW_CLOSE_REQUESTED, undefined],
+    ['onLogsCleared', IPC.LOGS_CLEARED, undefined],
+    ['onNotificationClicked', IPC.NOTIFICATIONS_CLICKED, { target: 'queue' }],
   ])('%s subscribes and unsubscribes on the %s channel', (method, channel, payload) => {
     const cb = vi.fn();
     const unsubscribe = (api[method] as (cb: (data: unknown) => void) => () => void)(cb);
@@ -276,6 +282,7 @@ describe('preload', () => {
     ['windowClose', IPC.WINDOW_CLOSE],
     ['windowCloseConfirmed', IPC.WINDOW_CONFIRM_CLOSE],
     ['rejectTerms', IPC.TERMS_REJECT],
+    ['logsClear', IPC.LOGS_CLEAR],
   ])('%s sends the %s channel', (method, channel) => {
     (api[method] as () => void)();
     expect(ipcRendererMock.send).toHaveBeenCalledWith(channel);
@@ -287,6 +294,41 @@ describe('preload', () => {
   ])('%s sends the %s channel with the flag', (method, channel, flag) => {
     (api[method] as (flag: boolean) => void)(flag);
     expect(ipcRendererMock.send).toHaveBeenCalledWith(channel, flag);
+  });
+
+  it('reports the detached Logs window state from the pushed window id', () => {
+    const seen: boolean[] = [];
+    (api.onLogsWindowState as (cb: (open: boolean) => void) => () => void)((open) => seen.push(open));
+    const handler = ipcRendererMock.on.mock.calls.find(([c]) => c === IPC.LOGS_WINDOW_STATE)?.[1] as (
+      event: unknown,
+      data: unknown,
+    ) => void;
+    expect(handler).toBeDefined();
+
+    handler({}, 7);
+    handler({}, null);
+
+    expect(seen).toEqual([true, false]);
+  });
+
+  it.each([
+    ['a boolean', true],
+    ['a string', 'hostile'],
+    ['zero', 0],
+    ['a negative id', -1],
+    ['not-a-number', Number.NaN],
+    ['an object', { open: true }],
+  ])('drops %s on the logs-window-state channel instead of forwarding it', (_label, payload) => {
+    const cb = vi.fn();
+    (api.onLogsWindowState as (cb: (open: boolean) => void) => () => void)(cb);
+    const handler = ipcRendererMock.on.mock.calls.find(([c]) => c === IPC.LOGS_WINDOW_STATE)?.[1] as (
+      event: unknown,
+      data: unknown,
+    ) => void;
+    expect(handler).toBeDefined();
+
+    expect(() => handler({}, payload)).not.toThrow();
+    expect(cb, 'an unrecognised payload must not reach the consumer').not.toHaveBeenCalled();
   });
 
   it('queueSetWhenDone returns a promise for a cyclic config instead of throwing synchronously', async () => {

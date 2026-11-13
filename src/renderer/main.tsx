@@ -34,7 +34,7 @@ import App from './App';
 import i18n from './i18n/config';
 import { DirectionProvider } from './i18n/DirectionProvider';
 import { useLanguageDirection } from './useLanguageDirection';
-import { useLogStore } from './stores/logStore';
+import { isDetachedMode, mirrorLogEntry } from './logs/detached';
 import { setupSessionCleanup } from './sessionCleanup';
 import { withBridgeTimeout } from './utils/bridge-call';
 import { LOG_MOUNTING_REACT_APP } from '../shared/log-constants';
@@ -56,8 +56,17 @@ const levels: Array<{ method: 'log' | 'warn' | 'error'; level: 'INFO' | 'WARN' |
 
 /**
  * Patches the console methods listed above so every call still hits the
- * original implementation and is also appended to the log store with a
+ * original implementation and is mirrored to the main process with a
  * timestamp, level, serialized text, and 'renderer' as the source.
+ *
+ * The main process publishes the entry into the shared log hub, which sends
+ * it back to every Logs view - including this one. Both the in-app and the
+ * detached window therefore read one ordered stream, so they cannot drift
+ * apart. Adding the entry to the local store directly as well would show it
+ * twice.
+ *
+ * The detached window itself records nothing: it reads the shared stream
+ * instead, and mirroring its own output back would show every entry twice.
  * @constant
  */
 for (const { method, level } of levels) {
@@ -67,13 +76,17 @@ for (const { method, level } of levels) {
   }
   const patched = ((...args: unknown[]) => {
     original.apply(console, args);
+    if (isDetachedMode()) {
+      return;
+    }
     const text = args.map((a) => (typeof a === 'string' ? a : JSON.stringify(a))).join(' ');
-    useLogStore.getState().addEntry({
+    const entry = {
       timestamp: new Date().toISOString(),
       level: level as 'DEBUG' | 'INFO' | 'WARN' | 'ERROR',
       text,
-      source: 'renderer',
-    });
+      source: 'renderer' as const,
+    };
+    mirrorLogEntry(entry);
   }) as ConsoleMethod;
   patched.__encodeXPatched = true;
   console[method] = patched;
@@ -108,8 +121,14 @@ log.info(LOG_MOUNTING_REACT_APP);
  * unloads, keeping only the persisted preferences (theme, language,
  * always-on-top, hardware acceleration). The returned cleanup is intentionally
  * not stored: the listener lives for the whole renderer lifetime.
+ *
+ * The detached Logs window is skipped: it shares the app's localStorage with
+ * the main window, so wiping it on close would destroy the main window's
+ * in-progress work.
  */
-setupSessionCleanup();
+if (!isDetachedMode()) {
+  setupSessionCleanup();
+}
 log.info(LOG_MOUNTING_REACT_APP);
 
 /**

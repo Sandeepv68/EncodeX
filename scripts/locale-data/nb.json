@@ -193,6 +193,8 @@
   "logs.levelError": "FEIL",
   "logs.levelInfo": "INFO",
   "logs.levelWarn": "ADVARSEL",
+  "logs.openInNewWindow": "Åpne i nytt vindu",
+  "logs.viewLogs": "Vis logger",
   "mcpViews.batch.dashboard": "Parti",
   "mcpViews.batch.needsReapproval": "Dette partiet er endret og krever ny godkjenning.",
   "mcpViews.batch.run": "Kjør parti",

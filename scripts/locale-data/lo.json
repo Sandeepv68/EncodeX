@@ -193,6 +193,8 @@
   "logs.levelError": "ERROR",
   "logs.levelInfo": "INFO",
   "logs.levelWarn": "WARN",
+  "logs.openInNewWindow": "ເປີດໃນໜ້າຕ່າງໃໝ່",
+  "logs.viewLogs": "ເບິ່ງບັນທຶກ",
   "mcpViews.batch.dashboard": "ໂຕ່ມມະ",
   "mcpViews.batch.needsReapproval": "ໂຕ່ມມະນີ້ມີການປ່ຽນແລ້ວ ຈຶ່ງຕ້ອງມີການອະນຸມັດໃໝ່.",
   "mcpViews.batch.run": "ດຳເນີນໂຕ່ມມະ",

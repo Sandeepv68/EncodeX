@@ -771,6 +771,8 @@
   "logs": {
     "clear": "Clear",
     "download": "Download as TXT",
+    "openInNewWindow": "Open in new window",
+    "viewLogs": "View logs",
     "filter": "Filter by level",
     "search": "Search logs",
     "searchPlaceholder": "Search logs...",
@@ -885,6 +887,8 @@
     "alwaysOnTopHint": "Keeps the app window above all other windows.",
     "launchAtLogin": "Launch at startup",
     "launchAtLoginHint": "Starts EncodeX automatically when you sign in to your computer.",
+    "desktopNotifications": "Desktop notifications",
+    "desktopNotificationsHint": "Show system notifications when queue jobs complete or fail while the app is in the background.",
     "telemetry": "Usage data & error reporting",
     "telemetryHint": "Helps improve EncodeX by sending anonymous usage data and error reports. You can turn this off at any time.",
     "mcpServer": "MCP Server",
@@ -1303,5 +1307,19 @@
       "encoderVideo": "Video",
       "encoderAudio": "Audio"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Conversion complete",
+    "jobCompletedBody": "{{fileName}} finished successfully.",
+    "jobFailedTitle": "Conversion failed",
+    "jobFailedBody": "{{fileName}} failed.",
+    "queueCompletedTitle": "Queue complete",
+    "queueCompletedBody": "{{succeeded}} succeeded, {{failed}} failed.",
+    "muxJobCompletedTitle": "Remux/demux complete",
+    "muxJobCompletedBody": "{{fileName}} finished successfully.",
+    "muxJobFailedTitle": "Remux/demux failed",
+    "muxJobFailedBody": "{{fileName}} failed.",
+    "muxQueueCompletedTitle": "Remux/demux queue complete",
+    "muxQueueCompletedBody": "{{succeeded}} succeeded, {{failed}} failed."
   }
 }

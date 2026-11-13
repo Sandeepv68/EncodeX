@@ -46,7 +46,7 @@
  * - Event subscriptions (each returns an unsubscribe function): `onWindowMaximizedChange`,
  *   `onConversionProgress`, `onQueueAdded`, `onQueueRemoved`, `onQueueStatusChange`,
  *   `onQueueProgress`, `onQueueCancelled`, `onQueueMoved`, `onPlayerFrame`, `onPlayerAudio`,
- *   `onPlayerError`, `onLogMessage`.
+ *   `onPlayerError`, `onLogMessage`, `onLogsCleared`.
  */
 
 import { contextBridge, ipcRenderer, IpcRendererEvent, webUtils } from 'electron';
@@ -69,6 +69,7 @@ import {
   isUpdateInfo,
   isUpdateProgress,
 } from '../shared/ipc-guards';
+import type { DesktopNotificationsSettings, NotificationClickPayload } from '../shared/types';
 import { isMuxQueueJob, isMuxQueueMovedEvent, isMuxQueueProgressEvent } from '../shared/mux-queue-guards';
 import {
   ConversionOptions,
@@ -173,12 +174,15 @@ import {
   LOG_IPC_CHECK_FOR_UPDATES,
   LOG_IPC_DOWNLOAD_UPDATE,
   LOG_IPC_INSTALL_UPDATE,
-  LOG_IPC_CANCEL_DOWNLOAD,
   LOG_UPDATER_OPEN_RELEASE_NOTES,
+  LOG_IPC_CANCEL_DOWNLOAD,
   LOG_IPC_MONITORING_GET_STATE,
   LOG_IPC_MONITORING_SET_ENABLED,
   LOG_IPC_ANALYTICS_GET_STATE,
   LOG_IPC_ANALYTICS_SET_ENABLED,
+  LOG_IPC_NOTIFICATIONS_GET_SETTINGS,
+  LOG_IPC_NOTIFICATIONS_SET_ENABLED,
+  LOG_ON_NOTIFICATION_CLICKED,
   LOG_IPC_ANALYTICS_TRACK_EVENT,
   LOG_IPC_MCP_GET_SETTINGS,
   LOG_IPC_MCP_SET_SETTINGS,
@@ -187,6 +191,10 @@ import {
   LOG_IPC_AI_SET_SETTINGS,
   LOG_IPC_AI_CONNECT_TEST,
   LOG_IPC_AI_LIST_MODELS,
+  LOG_LOGS_WINDOW_OPEN,
+  LOG_LOGS_GET_HISTORY,
+  LOG_LOGS_PUBLISH,
+  LOG_LOGS_CLEAR,
 } from '../shared/log-constants';
 
 /**
@@ -240,7 +248,7 @@ const EVENT_COALESCE_INTERVALS = {
  * - Event subscriptions (each returns an unsubscribe function): `onWindowMaximizedChange`,
  *   `onConversionProgress`, `onQueueAdded`, `onQueueRemoved`, `onQueueStatusChange`,
  *   `onQueueProgress`, `onQueueCancelled`, `onQueueMoved`, `onPlayerFrame`, `onPlayerAudio`,
- *   `onPlayerError`, `onLogMessage`.
+ *   `onPlayerError`, `onLogMessage`, `onLogsCleared`.
  *
  * Request/response methods use `ipcRenderer.invoke` and reject with the error the main
  * process throws (see the file-level note on error forwarding). Fire-and-forget window
@@ -1050,6 +1058,25 @@ const api = {
     ipcRenderer.send(IPC.SET_LAUNCH_AT_LOGIN, enabled);
   },
 
+  notificationsGetSettings: () => {
+    log.debug(LOG_IPC_NOTIFICATIONS_GET_SETTINGS);
+    return ipcRenderer.invoke(IPC.NOTIFICATIONS_GET_SETTINGS) as Promise<DesktopNotificationsSettings>;
+  },
+  notificationsSetEnabled: (enabled: boolean) => {
+    log.debug(LOG_IPC_NOTIFICATIONS_SET_ENABLED, { enabled });
+    return ipcRenderer.invoke(IPC.NOTIFICATIONS_SET_ENABLED, enabled) as Promise<DesktopNotificationsSettings>;
+  },
+  onNotificationClicked: (cb: (payload: NotificationClickPayload) => void) => {
+    const handler = (_event: IpcRendererEvent, payload: unknown) => {
+      const safe = payload && typeof payload === 'object' ? (payload as { target?: unknown }) : {};
+      const target = safe.target === 'queue' || safe.target === 'mux' ? safe.target : undefined;
+      log.debug(LOG_ON_NOTIFICATION_CLICKED, { target });
+      cb({ target });
+    };
+    ipcRenderer.on(IPC.NOTIFICATIONS_CLICKED, handler);
+    return () => ipcRenderer.removeListener(IPC.NOTIFICATIONS_CLICKED, handler);
+  },
+
   /**
    * Queries the current error-monitoring consent state. Logs the call at debug
    * level and invokes `IPC.MONITORING_GET_STATE` ('monitoring-get-state').
@@ -1701,6 +1728,105 @@ const api = {
     };
     ipcRenderer.on(IPC.LOG_MESSAGE, handler);
     return () => ipcRenderer.removeListener(IPC.LOG_MESSAGE, handler);
+  },
+
+  /**
+   * Asks the main process to open the Logs page in a separate window.
+   * Fire-and-forget: logs the call and sends `IPC.LOGS_WINDOW_OPEN`.
+   * @returns {void}
+   */
+  openLogsWindow: () => {
+    log.debug(LOG_LOGS_WINDOW_OPEN);
+    ipcRenderer.send(IPC.LOGS_WINDOW_OPEN);
+  },
+
+  /**
+   * Fetches the log history the main process has buffered.
+   *
+   * The main-process log hub keeps the entries it has distributed, so a
+   * window that opens later can show what it missed. The entries carry the
+   * hub's monotonic `seq`, which lets the caller order them and drop the ones
+   * it already applied.
+   *
+   * @returns {Promise<LogEntry[]>} The buffered entries, oldest first.
+   */
+  logsGetHistory: () => {
+    log.debug(LOG_LOGS_GET_HISTORY);
+    return ipcRenderer.invoke(IPC.LOGS_HISTORY) as Promise<LogEntry[]>;
+  },
+
+  /**
+   * Publishes renderer-produced log entries into the main-process log hub.
+   *
+   * Fire-and-forget: the entries are sent as one batch over
+   * `IPC.LOGS_PUBLISH`, so a burst of console output costs one IPC message
+   * rather than one per entry. The main process assigns the sequence numbers
+   * and distributes them to the windows that show the log.
+   *
+   * @param {LogEntry[]} entries - The entries to publish.
+   * @returns {void}
+   */
+  logsPublishEntries: (entries: LogEntry[]) => {
+    const batch = Array.isArray(entries) ? entries : [];
+    log.debug(LOG_LOGS_PUBLISH, batch.length);
+    ipcRenderer.send(IPC.LOGS_PUBLISH, batch);
+  },
+
+  /**
+   * Clears the shared log history in the main process.
+   *
+   * Fire-and-forget: the main process empties the hub and broadcasts
+   * `IPC.LOGS_CLEARED`, so every Logs window drops the same entries. The
+   * renderer also clears its local store immediately; the event keeps the
+   * other windows in step.
+   *
+   * @returns {void}
+   */
+  logsClear: () => {
+    log.debug(LOG_LOGS_CLEAR);
+    ipcRenderer.send(IPC.LOGS_CLEAR);
+  },
+
+  /**
+   * Subscribes to shared-log clear events pushed over `IPC.LOGS_CLEARED`.
+   *
+   * The event has no payload: receiving it means the hub history was emptied,
+   * so the consumer should drop every entry it currently holds.
+   *
+   * @param {() => void} cb - Called after the shared log was cleared.
+   * @returns {() => void} unsubscribe
+   */
+  onLogsCleared: (cb: () => void) => {
+    const handler = () => cb();
+    ipcRenderer.on(IPC.LOGS_CLEARED, handler);
+    return () => ipcRenderer.removeListener(IPC.LOGS_CLEARED, handler);
+  },
+
+  /**
+   * Subscribes to logs-window open/close state changes pushed over
+   * `IPC.LOGS_WINDOW_STATE`.
+   *
+   * The payload is the id of the open detached window, or `null` when none is
+   * open. A payload that is neither is not a state this main process could
+   * have sent, so it is dropped rather than turned into a state of its own:
+   * the drawer would then hide a navigation entry that is still there.
+   *
+   * @param {(open: boolean) => void} cb - Called with `true` while a detached
+   *   Logs window is open.
+   * @returns {() => void} unsubscribe
+   */
+  onLogsWindowState: (cb: (open: boolean) => void) => {
+    const handler = (_event: IpcRendererEvent, payload: unknown) => {
+      if (payload === null) {
+        cb(false);
+        return;
+      }
+      if (typeof payload === 'number' && Number.isInteger(payload) && payload > 0) {
+        cb(true);
+      }
+    };
+    ipcRenderer.on(IPC.LOGS_WINDOW_STATE, handler);
+    return () => ipcRenderer.removeListener(IPC.LOGS_WINDOW_STATE, handler);
   },
 
   /**

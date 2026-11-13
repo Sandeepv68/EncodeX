@@ -495,7 +495,9 @@
     "auditClear": "Pisortutit piiaruk",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
-    "auditStatusFailed": "Illituarneq"
+    "auditStatusFailed": "Illituarneq",
+    "openInNewWindow": "Window nutaami ammasuk",
+    "viewLogs": "Allaaserisat takukkit"
   },
   "footer": {
     "version": "v{{version}}",
@@ -683,7 +685,9 @@
       "keyRemoved": "Matuaraat toqqorsimasoq peerneqarpoq.",
       "staleStatus": "Inissisimasut allanngorput. Attaveqaruit uppernarsaaviguk.",
       "headerConnected": "Attaveqarpoq · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Qarasaasiamut nalunaarutit",
+    "desktopNotificationsHint": "App-ip kingornani ingerlatillugu suliat naammassippata imaluunniit ajutoorpatit systemimi nalunaarutit nuisikkit."
   },
   "shortcuts": {
     "title": "Tastaturimi aaliangersagat",
@@ -1303,5 +1307,19 @@
       "done": "Naammassineqartoq",
       "failed": "Kinguneqanngitsut"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Nunnguerneq naammassivoq",
+    "jobCompletedBody": "{{fileName}} iluatsitsilluni naammassivoq.",
+    "jobFailedTitle": "Nunnguerneq iluatsinngilaq",
+    "jobFailedBody": "{{fileName}} iluatsinngilaq.",
+    "queueCompletedTitle": "Tulliuttoq naammassivoq",
+    "queueCompletedBody": "{{succeeded}} iluatsitsut, {{failed}} iluatsinngitsut.",
+    "muxJobCompletedTitle": "Remux/demux naammassivoq",
+    "muxJobCompletedBody": "{{fileName}} iluatsitsilluni naammassivoq.",
+    "muxJobFailedTitle": "Remux/demux iluatsinngilaq",
+    "muxJobFailedBody": "{{fileName}} iluatsinngilaq.",
+    "muxQueueCompletedTitle": "Remux/demux tulliuttoq naammassivoq",
+    "muxQueueCompletedBody": "{{succeeded}} iluatsitsut, {{failed}} iluatsinngitsut."
   }
 }

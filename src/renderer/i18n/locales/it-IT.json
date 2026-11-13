@@ -495,7 +495,9 @@
     "auditClear": "Cancella il registro di controllo",
     "auditTier": "T{{tier}}",
     "auditStatusOk": "OK",
-    "auditStatusFailed": "Non riuscito"
+    "auditStatusFailed": "Non riuscito",
+    "openInNewWindow": "Apri in una nuova finestra",
+    "viewLogs": "Visualizza registri"
   },
   "footer": {
     "version": "v{{version}}",
@@ -683,7 +685,9 @@
       "keyRemoved": "La chiave salvata è stata rimossa.",
       "staleStatus": "Le impostazioni sono cambiate. Riconnetti per verificare.",
       "headerConnected": "Connesso · {{provider}} · {{model}}"
-    }
+    },
+    "desktopNotifications": "Notifiche desktop",
+    "desktopNotificationsHint": "Mostra notifiche di sistema quando i lavori in coda vengono completati o non riescono mentre l’app è in background."
   },
   "shortcuts": {
     "title": "Scorciatoie da tastiera",
@@ -1303,5 +1307,19 @@
       "done": "Completati",
       "failed": "Non riusciti"
     }
+  },
+  "notifications": {
+    "jobCompletedTitle": "Conversione completata",
+    "jobCompletedBody": "{{fileName}} completato correttamente.",
+    "jobFailedTitle": "Conversione non riuscita",
+    "jobFailedBody": "{{fileName}} non riuscito.",
+    "queueCompletedTitle": "Coda completata",
+    "queueCompletedBody": "{{succeeded}} riusciti, {{failed}} non riusciti.",
+    "muxJobCompletedTitle": "Remux/demux completato",
+    "muxJobCompletedBody": "{{fileName}} completato correttamente.",
+    "muxJobFailedTitle": "Remux/demux non riuscito",
+    "muxJobFailedBody": "{{fileName}} non riuscito.",
+    "muxQueueCompletedTitle": "Coda remux/demux completata",
+    "muxQueueCompletedBody": "{{succeeded}} riusciti, {{failed}} non riusciti."
   }
 }

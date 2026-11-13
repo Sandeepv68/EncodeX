@@ -54,6 +54,17 @@ export interface AppError {
   timestamp: number;
 }
 
+/** Desktop/OS notification preference and support state shared across IPC boundaries. */
+export interface DesktopNotificationsSettings {
+  enabled: boolean;
+  supported: boolean;
+}
+
+/** Payload sent when a desktop notification is clicked. */
+export interface NotificationClickPayload {
+  target?: 'queue' | 'mux';
+}
+
 /**
  * Codec to container compatibility information.
  * @interface CodecContainerInfo
@@ -623,12 +634,17 @@ export enum ConversionOperation {
  * @property {'DEBUG' | 'INFO' | 'WARN' | 'ERROR'} level - Log severity level.
  * @property {string} text - The log message text.
  * @property {'main' | 'renderer'} source - Process that produced the entry.
+ * @property {number} [seq] - Monotonic sequence number assigned by the main
+ *   process log hub. Present on every entry the hub distributes, and absent on
+ *   entries a renderer produced locally. It lets a receiver order entries from
+ *   several sources and drop the ones it has already applied.
  */
 export interface LogEntry {
   timestamp: string;
   level: 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
   text: string;
   source: 'main' | 'renderer';
+  seq?: number;
 }
 
 /**

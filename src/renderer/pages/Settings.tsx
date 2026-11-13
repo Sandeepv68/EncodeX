@@ -65,12 +65,14 @@ export default function Settings() {
   const encoderType = useSettingsStore((s) => s.encoderType);
   const alwaysOnTop = useSettingsStore((s) => s.alwaysOnTop);
   const launchAtLogin = useSettingsStore((s) => s.launchAtLogin);
+  const desktopNotificationsEnabled = useSettingsStore((s) => s.desktopNotificationsEnabled);
   const monitoringEnabled = useSettingsStore((s) => s.monitoringEnabled);
   const setHardwareAcceleration = useSettingsStore((s) => s.setHardwareAcceleration);
   const setHwaccelMode = useSettingsStore((s) => s.setHwaccelMode);
   const setEncoderType = useSettingsStore((s) => s.setEncoderType);
   const setAlwaysOnTop = useSettingsStore((s) => s.setAlwaysOnTop);
   const setLaunchAtLogin = useSettingsStore((s) => s.setLaunchAtLogin);
+  const setDesktopNotificationsEnabled = useSettingsStore((s) => s.setDesktopNotificationsEnabled);
   const setTelemetryEnabled = useSettingsStore((s) => s.setTelemetryEnabled);
 
   return (
@@ -106,6 +108,16 @@ export default function Settings() {
             slotProps={{ input: { 'aria-label': t('settings.launchAtLogin'), 'data-testid': 'settings-launch-at-login' } }}
           />
           <SettingLabel text={t('settings.launchAtLogin')} hint={t('settings.launchAtLoginHint')} />
+        </ToggleRow>
+      </SettingsSection>
+      <SettingsSection>
+        <ToggleRow>
+          <Switch
+            checked={desktopNotificationsEnabled}
+            onChange={(e) => setDesktopNotificationsEnabled(e.target.checked)}
+            slotProps={{ input: { 'aria-label': t('settings.desktopNotifications'), 'data-testid': 'settings-desktop-notifications' } }}
+          />
+          <SettingLabel text={t('settings.desktopNotifications')} hint={t('settings.desktopNotificationsHint')} />
         </ToggleRow>
       </SettingsSection>
       <SettingsSection>
