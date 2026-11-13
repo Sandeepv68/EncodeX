@@ -393,6 +393,11 @@ const api = {
   analyticsTrackEvent: () => Promise.resolve(),
   analyticsGetPosthogConfig: () => Promise.resolve({ projectToken: '', host: '' }),
 
+  // --- Desktop notifications ---------------------------------------------------
+  notificationsGetSettings: () => Promise.resolve({ enabled: false, supported: true }),
+  notificationsSetEnabled: (enabled) => Promise.resolve({ enabled: !!enabled, supported: true }),
+  onNotificationClicked: (cb) => subscribe('notification-clicked', cb),
+
   // --- Embedded MCP server settings --------------------------------------------
   // Mirrors the main-process sanitation contract (src/shared/mcp-settings.ts)
   // and - because state.mcpSettings alone would be lost on a renderer reload,
@@ -534,6 +539,7 @@ const api = {
   onLogsWindowState: (cb) => subscribe('logs-window-state', cb),
   logsGetHistory: () => Promise.resolve([]),
   logsPublishEntries: () => {},
+  logsClear: () => {},
 
   // --- Update manager ----------------------------------------------------------
   checkForUpdates: () => Promise.resolve(),
