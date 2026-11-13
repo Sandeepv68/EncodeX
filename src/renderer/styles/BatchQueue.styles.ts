@@ -1,5 +1,6 @@
 import { alpha, styled } from '@mui/material/styles';
-import { Typography, Stack, Box, Chip, TextField, Alert, IconButton, Tabs } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
+import { Typography, Stack, Box, Chip, TextField, Alert, ButtonGroup, IconButton, Tabs } from '@mui/material';
 import type { ElementType } from 'react';
 import { OVERLAY_COLORS, SHADOWS } from '../../shared/theme/colors';
 
@@ -20,12 +21,34 @@ export const LockedAlert = styled(Alert)(({ theme }) => ({
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
 }));
 
-export const EmptyText = styled(Typography)(({ theme }) => ({
-  textAlign: 'center',
-  paddingTop: theme.spacing(4),
-  paddingBottom: theme.spacing(4),
+/**
+ * Shared look of the queue empty-state captions: centered, bold and in the
+ * secondary text colour.
+ * @param {Theme} theme - The MUI theme (provides typography/colour tokens).
+ * @returns {object} The shared caption styles.
+ */
+const emptyCaption = (theme: Theme) => ({
+  textAlign: 'center' as const,
   fontWeight: theme.typography.fontWeightBold,
   color: theme.palette.text.secondary,
+});
+
+/** Standalone empty-state heading with generous vertical padding. @const EmptyText */
+export const EmptyText = styled(Typography)(({ theme }) => ({
+  ...emptyCaption(theme),
+  paddingTop: theme.spacing(4),
+  paddingBottom: theme.spacing(4),
+}));
+
+/** Empty-state heading used inside a padded empty-state card. @const EmptyHeadingText */
+export const EmptyHeadingText = styled(Typography)(({ theme }) => ({
+  ...emptyCaption(theme),
+}));
+
+/** Secondary caption shown under an empty-state heading. @const EmptyHintText */
+export const EmptyHintText = styled(Typography)(({ theme }) => ({
+  ...emptyCaption(theme),
+  fontSize: theme.typography.pxToRem(13),
 }));
 
 export const FilterRow = styled(Stack)(({ theme }) => ({
@@ -122,10 +145,20 @@ export const ClearAllBox = styled(Box)({
   marginInlineStart: 'auto',
 });
 
-/** Vertical stack used by the mux queue's empty state, left-aligned. @const EmptyStack */
+/**
+ * Vertical stack used by the mux queue's empty state: its contents are
+ * centered on the page, without any card chrome.
+ * @const EmptyStack
+ */
 export const EmptyStack = styled(Stack)({
-  alignItems: 'flex-start',
+  alignItems: 'center',
+  textAlign: 'center',
 });
+
+/** Split button holding the empty state's two page links. @const EmptyActionGroup */
+export const EmptyActionGroup = styled(ButtonGroup)(({ theme }) => ({
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
+}));
 
 /**
  * Tab bar that switches between the general queue and the mux queue.

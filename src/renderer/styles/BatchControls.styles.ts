@@ -78,6 +78,11 @@ export const WhenDoneFieldBox = styled(FieldBox)({
   flex: '0 0 auto',
 });
 
+/** Icon button aligned to a labeled field's input. @const AlignedIconButton */
+export const AlignedIconButton = styled(OutlinedIconButton)(({ theme }) => ({
+  marginTop: fieldLabelOffset(theme),
+}));
+
 /** Browse button aligned to the output-folder field's input. @const BrowseButton */
 export const BrowseButton = styled(OutlinedIconButton)(({ theme }) => ({
   marginTop: fieldLabelOffset(theme),

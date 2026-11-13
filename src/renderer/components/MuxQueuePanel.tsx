@@ -3,7 +3,7 @@
  *
  * Renders the Mux Queue tab of the Batch Queue page: a toolbar with the queue
  * actions (Start, Pause/Resume, Cancel all, Clear completed, and the
- * parallel-jobs selector), a stats line, and the list of mux jobs.
+ * parallel-jobs selector), and the list of mux jobs.
  *
  * The panel owns no state of its own - it reads the jobs and the queue state
  * from {@link useMuxQueueStore} (kept in sync by the global `MuxQueueSync`
@@ -18,7 +18,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, MenuItem, Stack, Typography } from '@mui/material';
+import { Button, MenuItem, Stack } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faPause, faBroom, faCheckDouble } from '@fortawesome/free-solid-svg-icons';
 import { DndContext, DragOverlay, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
@@ -34,13 +34,13 @@ import MuxQueueJobCard from './MuxQueueJobCard';
 import { QUEUE_STATUS } from '../../shared/media-options';
 import { MAX_QUEUE_CONCURRENCY } from '../../shared/constants';
 import type { MuxQueueJob } from '../../shared/types';
-import { ControlsPaper, OutlinedIconButton, ToolbarRow, ConcurrencySelect } from '../styles/BatchControls.styles';
+import { ControlsPaper, AlignedIconButton, ToolbarRow, ConcurrencySelect } from '../styles/BatchControls.styles';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
-import { EmptyStack, FilterRow, FilterChip } from '../styles/BatchQueue.styles';
+import { EmptyStack, EmptyActionGroup, EmptyHeadingText, EmptyHintText, FilterRow, FilterChip } from '../styles/BatchQueue.styles';
 import TooltipIfEnabled from './TooltipIfEnabled';
 
 /**
- * Renders the mux queue panel: controls, stats, and the job list.
+ * Renders the mux queue panel: controls and the job list.
  * @returns {JSX.Element} The panel content.
  */
 export default function MuxQueuePanel() {
@@ -136,7 +136,7 @@ export default function MuxQueuePanel() {
         <ToolbarRow>
           {paused ? (
             <TooltipIfEnabled title={t('muxQueue.resume')}>
-              <OutlinedIconButton
+              <AlignedIconButton
                 size="small"
                 color="success"
                 aria-label={t('muxQueue.resume')}
@@ -146,11 +146,11 @@ export default function MuxQueuePanel() {
                 }}
               >
                 <FontAwesomeIcon icon={faPlay} />
-              </OutlinedIconButton>
+              </AlignedIconButton>
             </TooltipIfEnabled>
           ) : status.running > 0 ? (
             <TooltipIfEnabled title={t('muxQueue.pause')}>
-              <OutlinedIconButton
+              <AlignedIconButton
                 size="small"
                 color="warning"
                 aria-label={t('muxQueue.pause')}
@@ -161,11 +161,11 @@ export default function MuxQueuePanel() {
                 disabled={status.active === 0}
               >
                 <FontAwesomeIcon icon={faPause} />
-              </OutlinedIconButton>
+              </AlignedIconButton>
             </TooltipIfEnabled>
           ) : (
             <TooltipIfEnabled title={t('muxQueue.start')}>
-              <OutlinedIconButton
+              <AlignedIconButton
                 size="small"
                 color="success"
                 aria-label={t('muxQueue.start')}
@@ -173,11 +173,11 @@ export default function MuxQueuePanel() {
                 disabled={status.queued === 0}
               >
                 <FontAwesomeIcon icon={faPlay} />
-              </OutlinedIconButton>
+              </AlignedIconButton>
             </TooltipIfEnabled>
           )}
           <TooltipIfEnabled title={t('muxQueue.cancelAll')}>
-            <OutlinedIconButton
+            <AlignedIconButton
               size="small"
               color="error"
               aria-label={t('muxQueue.cancelAll')}
@@ -185,17 +185,17 @@ export default function MuxQueuePanel() {
               disabled={status.total === 0}
             >
               <FontAwesomeIcon icon={faBroom} />
-            </OutlinedIconButton>
+            </AlignedIconButton>
           </TooltipIfEnabled>
           <TooltipIfEnabled title={t('muxQueue.clearCompleted')}>
-            <OutlinedIconButton
+            <AlignedIconButton
               size="small"
               aria-label={t('muxQueue.clearCompleted')}
               onClick={() => fireAndForgetBridge(() => window.electronAPI.muxQueueClearCompleted(), 'muxQueueClearCompleted')}
               disabled={status.done + status.failed === 0}
             >
               <FontAwesomeIcon icon={faCheckDouble} />
-            </OutlinedIconButton>
+            </AlignedIconButton>
           </TooltipIfEnabled>
           <FieldBox>
             <FieldLabel htmlFor="mux-queue-concurrency">{t('muxQueue.concurrency')}</FieldLabel>
@@ -216,29 +216,17 @@ export default function MuxQueuePanel() {
               ))}
             </ConcurrencySelect>
           </FieldBox>
-          <Typography variant="body2" color="text.secondary" data-testid="mux-queue-stats">
-            {t('muxQueue.stats', {
-              queued: status.queued,
-              running: status.running,
-              done: status.done,
-              failed: status.failed,
-            })}
-          </Typography>
         </ToolbarRow>
       </ControlsPaper>
 
       {jobs.length === 0 ? (
         <EmptyStack spacing={1} data-testid="mux-queue-empty">
-          <Typography color="text.secondary">{t('muxQueue.empty')}</Typography>
-          <Typography variant="body2" color="text.secondary">
-            {t('muxQueue.emptyHint')}
-          </Typography>
-          <Button size="small" variant="outlined" onClick={() => navigate('/remux')}>
-            {t('muxQueue.openRemux')}
-          </Button>
-          <Button size="small" variant="outlined" onClick={() => navigate('/demux')}>
-            {t('muxQueue.openDemux')}
-          </Button>
+          <EmptyHeadingText>{t('muxQueue.empty')}</EmptyHeadingText>
+          <EmptyHintText>{t('muxQueue.emptyHint')}</EmptyHintText>
+          <EmptyActionGroup size="small" variant="outlined" aria-label={t('muxQueue.tabMux')}>
+            <Button onClick={() => navigate('/remux')}>{t('muxQueue.openRemux')}</Button>
+            <Button onClick={() => navigate('/demux')}>{t('muxQueue.openDemux')}</Button>
+          </EmptyActionGroup>
         </EmptyStack>
       ) : (
         <>
@@ -260,7 +248,7 @@ export default function MuxQueuePanel() {
           </FilterRow>
           {visibleJobs.length === 0 ? (
             <EmptyStack spacing={1} data-testid="mux-queue-no-results">
-              <Typography color="text.secondary">{t('batchQueue.noResults')}</Typography>
+              <EmptyHeadingText>{t('batchQueue.noResults')}</EmptyHeadingText>
             </EmptyStack>
           ) : (
             <DndContext

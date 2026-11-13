@@ -159,13 +159,6 @@ describe('MuxQueuePanel', () => {
     expect(muxQueueRemoveMock).toHaveBeenCalledWith('a');
   });
 
-  it('shows the queue statistics', async () => {
-    useMuxQueueStore.setState({ jobs: [makeJob('a'), makeJob('b', QUEUE_STATUS.DONE)] });
-    renderPanel();
-    await waitFor(() => expect(screen.getByTestId('mux-queue-stats')).toBeInTheDocument());
-    expect(screen.getByTestId('mux-queue-stats')).toHaveTextContent('muxQueue.stats');
-  });
-
   it('reorders a queued job and tells the main process', () => {
     useMuxQueueStore.setState({ jobs: [makeJob('a'), makeJob('b')] });
     renderPanel();
