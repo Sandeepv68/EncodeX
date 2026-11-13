@@ -1024,7 +1024,11 @@
     "filtersIgnoredCopy": "Videosuodattimet ohitetaan, kun videon kohde on \"Kopioi\", koska virran kopiointi ei voi koodata uudelleen. Suodattimet otetaan käyttöön valitsemalla kohdesäilö.",
     "splitChannels": "Jaa kanavat",
     "splitChannelsHint": "Jaa ääniraita yhdeksi mono-tiedostoksi kanavaa kohden. Kanavien jakaminen koodaa äänen uudelleen: käytetään valittua äänikohteen koodekkia tai FLACia, kun Kopioi on valittuna.",
-    "splitChannelsStream": "Jaa äänivirta #{{index}} erillisiksi kanavatiedostoiksi"
+    "splitChannelsStream": "Jaa äänivirta #{{index}} erillisiksi kanavatiedostoiksi",
+    "outputFolderToggle": "Siirrä poimitut tiedostot uuteen kansioon",
+    "folderName": "Uuden kansion nimi",
+    "folderNameHint": "Poimitut tiedostot kootaan tähän kansioon, joka luodaan tulostuskansion sisään. Oletuksena nimi on lähdetiedoston nimi; kansioiden nimissä kielletyt merkit korvataan automaattisesti.",
+    "folderPreview": "Tiedostot kirjoitetaan: {{path}}"
   },
   "copilot": {
     "saveChat": "Tallenna keskustelu",

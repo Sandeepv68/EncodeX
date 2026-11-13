@@ -1024,7 +1024,11 @@
     "filtersIgnoredCopy": "Videofilters word geïgnoreer solank die videobestemming \"Kopieer\" is, omdat 'n stroomkopie nie kan herkodeer nie. Kies 'n doelhouer om hulle toe te pas.",
     "splitChannels": "Verdeel kanale",
     "splitChannelsHint": "Verdeel 'n klankspoor in een mono-lêer per kanaal. Kanaalverdeling herkodeer die klank: die gekose klankteiken-kodek word gebruik, of FLAC wanneer Kopieer gekies is.",
-    "splitChannelsStream": "Verdeel klankstroom #{{index}} in afsonderlike kanaallêers"
+    "splitChannelsStream": "Verdeel klankstroom #{{index}} in afsonderlike kanaallêers",
+    "outputFolderToggle": "Plaas die onttrekte lêers in 'n nuwe vouer",
+    "folderName": "Nuwe vouernaam",
+    "folderNameHint": "Die onttrekte lêers word in hierdie vouer versamel, wat binne die uitvoergids geskep word. Dit gebruik standaard die naam van die bronlêer; karakters wat nie in vouernames toegelaat word nie, word outomaties vervang.",
+    "folderPreview": "Lêers sal geskryf word na: {{path}}"
   },
   "copilot": {
     "saveChat": "Stoor gesprek",

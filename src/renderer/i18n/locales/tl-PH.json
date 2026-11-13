@@ -1024,7 +1024,11 @@
     "filtersIgnoredCopy": "Hindi pinapansin ang mga filter ng video habang ang destinasyon ng video ay \"Kopyahin,\" dahil hindi maaaring mag-re-encode ang kopya ng stream. Pumili ng destinasyong container para mailapat ang mga filter.",
     "splitChannels": "Hatiin ang mga channel",
     "splitChannelsHint": "Hatiin ang audio track sa isang mono file bawat channel. Ang paghahati ng channel ay muling nag-e-encode ng audio: ginagamit ang napiling audio target codec, o FLAC kapag pinili ang Copy.",
-    "splitChannelsStream": "Hatiin ang audio stream #{{index}} sa magkakahiwalay na channel file"
+    "splitChannelsStream": "Hatiin ang audio stream #{{index}} sa magkakahiwalay na channel file",
+    "outputFolderToggle": "Ilagay ang mga kinuhang file sa bagong folder",
+    "folderName": "Pangalan ng bagong folder",
+    "folderNameHint": "Kinokolekta ang mga kinuhang file sa folder na ito, na nililikha sa loob ng folder ng output. Default ay ang pangalan ng source file; awtomatikong pinapalitan ang mga karakter na hindi pinapayagan sa pangalan ng folder.",
+    "folderPreview": "Isusulat ang mga file sa: {{path}}"
   },
   "copilot": {
     "saveChat": "I-save ang chat",

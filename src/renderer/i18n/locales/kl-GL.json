@@ -1024,7 +1024,11 @@
     "filtersIgnoredCopy": "Video-filterit atatoginassanngillat, video-ip kingullugu inissaq \"Kopi\"-pasilluni, stream-kopik enkoderineqarsinnaanngimmat. Filterit atatseq patsiornissaat container toqqaruk.",
     "splitChannels": "Kanalit immikkoortit",
     "splitChannelsHint": "Nipilersuut-stream-imik kanalit tamarmik mono-file-mingaannaamik immikkoortit. Kanalit immikkoortikkit nipilersuut enkoderineqartarpoq: audio-kingullugu codec toqqarneqartoq atorneqartarpoq, imaluunniit FLAC, Kopi toqqarneqaraangat.",
-    "splitChannelsStream": "Audio-stream #{{index}} kanalit immikkoortit file-nut immikkoortinneqartunut"
+    "splitChannelsStream": "Audio-stream #{{index}} kanalit immikkoortit file-nut immikkoortinneqartunut",
+    "outputFolderToggle": "Allilertussat filit uumisimut folder-imik allalerinneq",
+    "folderName": "Uumisimut folder-ip aata",
+    "folderNameHint": "Allilertussat filit kattuuffiat uumisimut folder-imik, taamaattumik output-folder-ip inner-ani saqitaavoq. Fil-ip ataa aata aamma nallun toqakkuusut; folder-ip aata-mi allamajut naallun toqamput.",
+    "folderPreview": "Filit unaani saqitaavoq: {{path}}"
   },
   "copilot": {
     "saveChat": "Oqaloqatigiit allaffigi",

@@ -29,6 +29,8 @@ function resetStore(): void {
     selectedIndices: [],
     splitIndices: [],
     outputDir: '',
+    outputToFolder: false,
+    folderName: '',
     targets: [],
     warnings: [],
     media: {},
@@ -123,6 +125,48 @@ describe('demuxStore', () => {
     await useDemuxStore.getState().setInput('/in/movie.mkv');
     expect(useErrorStore.getState().currentError?.detail).toBe('probe boom');
     expect(useDemuxStore.getState().input).toBe('');
+  });
+
+  it('setInput defaults the folder name to the source file name', async () => {
+    await useDemuxStore.getState().setInput('/in/movie.mkv');
+    expect(useDemuxStore.getState().folderName).toBe('movie');
+    expect(useDemuxStore.getState().outputToFolder).toBe(false);
+  });
+
+  it('setOutputToFolder collects the targets in a folder named after the source file', async () => {
+    await useDemuxStore.getState().setInput('/in/movie.mkv');
+    useDemuxStore.getState().setOutputToFolder(true);
+    const state = useDemuxStore.getState();
+    expect(state.outputToFolder).toBe(true);
+    expect(state.folderName).toBe('movie');
+    expect(state.targets.map((t) => t.output)).toContain('/in/movie/movie.video.mp4');
+    expect(state.targets.every((t) => t.output.startsWith('/in/movie/'))).toBe(true);
+  });
+
+  it('setOutputToFolder(false) moves the targets back into the output directory', async () => {
+    await useDemuxStore.getState().setInput('/in/movie.mkv');
+    useDemuxStore.getState().setOutputToFolder(true);
+    useDemuxStore.getState().setOutputToFolder(false);
+    const state = useDemuxStore.getState();
+    expect(state.targets.every((t) => t.output.startsWith('/in/') && !t.output.startsWith('/in/movie/'))).toBe(true);
+  });
+
+  it('setFolderName sanitizes the folder label', async () => {
+    await useDemuxStore.getState().setInput('/in/movie.mkv');
+    useDemuxStore.getState().setOutputToFolder(true);
+    useDemuxStore.getState().setFolderName('my:folder/name');
+    const state = useDemuxStore.getState();
+    expect(state.folderName).toBe('my:folder/name');
+    expect(state.targets.every((t) => t.output.startsWith('/in/my-folder-name/'))).toBe(true);
+  });
+
+  it('keeps the folder option when the output directory changes', async () => {
+    await useDemuxStore.getState().setInput('/in/movie.mkv');
+    useDemuxStore.getState().setOutputToFolder(true);
+    useDemuxStore.getState().setOutputDir('/out');
+    const state = useDemuxStore.getState();
+    expect(state.outputDir).toBe('/out');
+    expect(state.targets.every((t) => t.output.startsWith('/out/movie/'))).toBe(true);
   });
 
   it('toggleStream adds and removes indices and regenerates targets', async () => {
@@ -293,6 +337,17 @@ describe('demuxStore', () => {
     });
     expect(convertFileMock).not.toHaveBeenCalled();
     expect(useToastStore.getState().toasts).toHaveLength(1);
+  });
+
+  it('enqueueDemux queues the targets inside the new folder', async () => {
+    muxQueueAddMock.mockResolvedValue('mux-1');
+    await useDemuxStore.getState().setInput('/in/movie.mkv');
+    useDemuxStore.getState().setOutputToFolder(true);
+    await useDemuxStore.getState().enqueueDemux();
+
+    const payload = muxQueueAddMock.mock.calls[0][0];
+    expect(payload.output).toBe('/in/movie');
+    expect(payload.targets[0].output).toBe('/in/movie/movie.video.mp4');
   });
 
   it('enqueueDemux offers a toast action that opens the mux queue tab', async () => {

@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Box, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 
 /** One compatibility warning line in the warnings panel. @const WarningRow */
 export const WarningRow = styled(Box)(({ theme }) => ({
@@ -19,3 +19,8 @@ export const TargetRow = styled(Box)(({ theme }) => ({
 export const FlexibleText = styled(Typography)({
   flex: 1,
 });
+
+/** Stack holding the new-folder name field and its destination preview. @const FolderFieldsStack */
+export const FolderFieldsStack = styled(Stack)(({ theme }) => ({
+  marginTop: theme.spacing(1),
+}));

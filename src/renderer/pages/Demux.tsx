@@ -37,6 +37,7 @@ import {
   TableHead,
   TableRow,
   Checkbox,
+  FormControlLabel,
 } from '@mui/material';
 import { faScissors, faPause, faPlay, faXmark, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -58,7 +59,8 @@ import { useHotkeys } from '../hooks/useHotkeys';
 import { usePreviewThumbnail } from '../hooks/usePreviewThumbnail';
 import { SHORTCUT_BY_ID, shortcutHint } from '../constants/shortcuts';
 import { openFileDialog } from '../utils/fileDialog';
-import { fileName } from '../utils/path-utils';
+import { fileName, joinPath } from '../utils/path-utils';
+import { defaultFolderNameForFile, sanitizeFolderName } from '../../shared/folder-naming';
 import { VisuallyHidden } from '../styles/a11y.styles';
 import { VIDEO_DROPZONE_ACCEPT } from '../../shared/file-extensions';
 import { suggestedExtensionForStream, type RemuxWarning } from '../../shared/codec-containers';
@@ -67,7 +69,7 @@ import type { MediaStreamInfo } from '../../shared/types';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
 import { StreamTable } from '../styles/StreamTable.styles';
 import { SelectedFileName, ActionRow } from '../styles/AudioExtract.styles';
-import { WarningRow, TargetRow, FlexibleText } from '../styles/Demux.styles';
+import { WarningRow, TargetRow, FlexibleText, FolderFieldsStack } from '../styles/Demux.styles';
 import { LOG_ARROW, LOG_START_CONVERSION } from '../../shared/log-constants';
 
 /**
@@ -238,6 +240,19 @@ export default function DemuxPage() {
    * @type {boolean}
    */
   const reencodesVideo = store.targets.some((target) => target.kind === 'video' && !target.copy);
+
+  /**
+   * Directory the extracted streams are written to: the chosen output folder,
+   * plus the dedicated sub-folder when that option is enabled. The folder
+   * label is sanitized the same way the store sanitizes it, so the preview
+   * shows exactly the folder that will be created.
+   * @type {string}
+   */
+  const effectiveOutputDir = useMemo(() => {
+    if (!store.outputToFolder) return store.outputDir;
+    const name = sanitizeFolderName(store.folderName) || defaultFolderNameForFile(store.input);
+    return store.outputDir ? joinPath(store.outputDir, name) : name;
+  }, [store.outputDir, store.outputToFolder, store.folderName, store.input]);
 
   /**
    * Starts the demux through the store's `startDemux` (which calls
@@ -527,6 +542,41 @@ export default function DemuxPage() {
               if (dir) store.setOutputDir(dir);
             }}
           />
+
+          <FieldBox>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={store.outputToFolder}
+                  onChange={(event) => store.setOutputToFolder(event.target.checked)}
+                  disabled={store.isConverting}
+                  data-testid="demux-output-folder-toggle"
+                />
+              }
+              label={t('demux.outputFolderToggle')}
+            />
+            {store.outputToFolder && (
+              <FolderFieldsStack spacing={1} data-testid="demux-output-folder">
+                <FieldLabel>
+                  {t('demux.folderName')}
+                  <InfoTooltip title={t('demux.folderNameHint')} />
+                </FieldLabel>
+                <TextField
+                  size="small"
+                  fullWidth
+                  placeholder={t('demux.folderName')}
+                  value={store.folderName}
+                  onChange={(event) => store.setFolderName(event.target.value)}
+                  disabled={store.isConverting}
+                  data-testid="demux-folder-name"
+                  slotProps={{ htmlInput: { 'aria-label': t('demux.folderName') } }}
+                />
+                <Typography variant="caption" color="text.secondary" data-testid="demux-folder-preview">
+                  {t('demux.folderPreview', { path: effectiveOutputDir })}
+                </Typography>
+              </FolderFieldsStack>
+            )}
+          </FieldBox>
 
           <FieldBox>
             <FieldLabel>

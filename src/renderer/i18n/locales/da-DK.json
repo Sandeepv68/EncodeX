@@ -1024,7 +1024,11 @@
     "filtersIgnoredCopy": "Videofiltre ignoreres, så længe videodestinationen er \"Kopiér\", fordi en streampkopi ikke kan genkode. Vælg en destinationscontainer for at anvende dem.",
     "splitChannels": "Opdel kanaler",
     "splitChannelsHint": "Opdel et lydspor i én mono-fil pr. kanal. Kanalopdeling genkoder lyden: den valgte lydmålkodek bruges, eller FLAC når Kopiér er valgt.",
-    "splitChannelsStream": "Opdel lydstrøm #{{index}} i separate kanalfiler"
+    "splitChannelsStream": "Opdel lydstrøm #{{index}} i separate kanalfiler",
+    "outputFolderToggle": "Læg de udtrukne filer i en ny mappe",
+    "folderName": "Nyt mappenavn",
+    "folderNameHint": "De udtrukne filer samles i denne mappe, som oprettes inde i outputmappen. Som standard er det navnet på kildefilen; tegn, der ikke er tilladt i mappenavne, erstattes automatisk.",
+    "folderPreview": "Filer skrives til: {{path}}"
   },
   "copilot": {
     "saveChat": "Gem chat",

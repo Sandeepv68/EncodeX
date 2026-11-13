@@ -1024,7 +1024,11 @@
     "filtersIgnoredCopy": "Filtry wideo są ignorowane, dopóki przeznaczenie wideo to „Kopiuj”, ponieważ kopia strumienia nie może kodować ponownie. Wybierz kontener docelowy, aby je zastosować.",
     "splitChannels": "Podziel kanały",
     "splitChannelsHint": "Podziel ścieżkę audio na jeden plik mono na kanał. Dzielenie kanałów ponownie koduje dźwięk: używany jest wybrany kodek docelowy audio lub FLAC, gdy wybrano Kopiuj.",
-    "splitChannelsStream": "Podziel strumień audio #{{index}} na osobne pliki kanałów"
+    "splitChannelsStream": "Podziel strumień audio #{{index}} na osobne pliki kanałów",
+    "outputFolderToggle": "Umieść wyodrębnione pliki w nowym folderze",
+    "folderName": "Nazwa nowego folderu",
+    "folderNameHint": "Wyodrębnione pliki są zbierane w tym folderze, który jest tworzony wewnątrz folderu wyjściowego. Domyślnie jest to nazwa pliku źródłowego; znaki niedozwolone w nazwach folderów są automatycznie zastępowane.",
+    "folderPreview": "Pliki zostaną zapisane w: {{path}}"
   },
   "copilot": {
     "saveChat": "Zapisz czat",

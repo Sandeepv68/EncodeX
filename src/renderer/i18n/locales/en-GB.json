@@ -1024,7 +1024,11 @@
     "filtersIgnoredCopy": "Video filters are ignored while the video target is Copy, because a stream copy cannot re-encode. Choose a video target container to apply them.",
     "splitChannels": "Split channels",
     "splitChannelsHint": "Split an audio track into one mono file per channel. Channel splitting re-encodes the audio: the selected audio target codec is used, or FLAC when Copy is selected.",
-    "splitChannelsStream": "Split audio stream #{{index}} into separate channel files"
+    "splitChannelsStream": "Split audio stream #{{index}} into separate channel files",
+    "outputFolderToggle": "Put the extracted files in a new folder",
+    "folderName": "New folder name",
+    "folderNameHint": "The extracted files are collected in this folder, which is created inside the output folder. It defaults to the source file's name; characters that are not allowed in folder names are replaced automatically.",
+    "folderPreview": "Files will be written to: {{path}}"
   },
   "copilot": {
     "saveChat": "Save chat",

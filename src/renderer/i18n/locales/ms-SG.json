@@ -1024,7 +1024,11 @@
     "filtersIgnoredCopy": "Penapis video diabaikan selagi sasaran video ialah \"Salin\" kerana salinan strim tidak boleh mengekod semula. Pilih bekas sasaran untuk menggunakan penapis.",
     "splitChannels": "Pisahkan saluran",
     "splitChannelsHint": "Pisahkan trek audio kepada satu fail mono bagi setiap saluran. Pemisahan saluran mengekod semula audio: kodek sasaran audio yang dipilih digunakan, atau FLAC apabila \"Salin\" dipilih.",
-    "splitChannelsStream": "Pisahkan strim audio #{{index}} kepada fail saluran berasingan"
+    "splitChannelsStream": "Pisahkan strim audio #{{index}} kepada fail saluran berasingan",
+    "outputFolderToggle": "Letakkan fail yang diekstrak ke dalam folder baharu",
+    "folderName": "Nama folder baharu",
+    "folderNameHint": "Fail yang diekstrak dikumpulkan dalam folder ini, yang dicipta di dalam folder output. Lalai ialah nama fail sumber; aksara yang tidak dibenarkan dalam nama folder digantikan secara automatik.",
+    "folderPreview": "Fail akan ditulis ke: {{path}}"
   },
   "copilot": {
     "saveChat": "Simpan sembang",

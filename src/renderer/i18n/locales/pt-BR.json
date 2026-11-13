@@ -1024,7 +1024,11 @@
     "filtersIgnoredCopy": "Os filtros de vídeo são ignorados enquanto o destino de vídeo for “Copiar”, porque uma cópia de fluxo não pode recodificar. Escolha um contêiner de destino para aplicá-los.",
     "splitChannels": "Dividir canais",
     "splitChannelsHint": "Divide uma faixa de áudio em um arquivo mono por canal. A divisão de canais recodifica o áudio: o codec de destino de áudio selecionado é usado, ou FLAC quando Copiar está selecionado.",
-    "splitChannelsStream": "Divide o fluxo de áudio #{{index}} em arquivos de canal separados"
+    "splitChannelsStream": "Divide o fluxo de áudio #{{index}} em arquivos de canal separados",
+    "outputFolderToggle": "Colocar os arquivos extraídos em uma nova pasta",
+    "folderName": "Nome da nova pasta",
+    "folderNameHint": "Os arquivos extraídos são agrupados nesta pasta, que é criada dentro da pasta de saída. Por padrão, o nome é o do arquivo de origem; caracteres não permitidos em nomes de pasta são substituídos automaticamente.",
+    "folderPreview": "Os arquivos serão gravados em: {{path}}"
   },
   "copilot": {
     "saveChat": "Salvar conversa",

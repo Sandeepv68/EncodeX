@@ -1024,7 +1024,11 @@
     "filtersIgnoredCopy": "當影片輸出方式為「複製」時，影片篩選器會被忽略，因為串流複製無法重新編碼。請選擇目標容器以套用篩選器。",
     "splitChannels": "分離聲道",
     "splitChannelsHint": "將音訊軌分割成每個聲道一個單聲道檔案。聲道分割會重新編碼音訊：使用所選的音訊目標編解碼器，若選擇複製則使用 FLAC。",
-    "splitChannelsStream": "將音訊串流 #{{index}} 分割成個別聲道檔案"
+    "splitChannelsStream": "將音訊串流 #{{index}} 分割成個別聲道檔案",
+    "outputFolderToggle": "將擷取的檔案放入新資料夾",
+    "folderName": "新資料夾名稱",
+    "folderNameHint": "擷取的檔案會集中放在此資料夾中，該資料夾會在輸出資料夾內建立。預設使用來源檔案名稱；資料夾名稱中不允許的字元會自動替換。",
+    "folderPreview": "檔案將寫入：{{path}}"
   },
   "copilot": {
     "saveChat": "儲存對話",

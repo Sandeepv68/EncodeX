@@ -1024,7 +1024,11 @@
     "filtersIgnoredCopy": "Videofilter werden ignoriert, solange das Videoziel „Kopieren“ ist, da eine Stream-Kopie nicht neu kodieren kann. Wählen Sie einen Video-Zielcontainer, um sie anzuwenden.",
     "splitChannels": "Kanäle aufteilen",
     "splitChannelsHint": "Teilt eine Audiospur in eine Mono-Datei pro Kanal auf. Beim Aufteilen der Kanäle wird das Audio neu kodiert: Es wird der ausgewählte Audio-Ziel-Codec verwendet, oder FLAC, wenn „Kopieren“ ausgewählt ist.",
-    "splitChannelsStream": "Audiostream #{{index}} in separate Kanaldateien aufteilen"
+    "splitChannelsStream": "Audiostream #{{index}} in separate Kanaldateien aufteilen",
+    "outputFolderToggle": "Die extrahierten Dateien in einen neuen Ordner legen",
+    "folderName": "Name des neuen Ordners",
+    "folderNameHint": "Die extrahierten Dateien werden in diesem Ordner gesammelt, der im Ausgabeordner erstellt wird. Standardmäßig ist der Name der Quelldatei; Zeichen, die in Ordnernamen nicht erlaubt sind, werden automatisch ersetzt.",
+    "folderPreview": "Dateien werden geschrieben nach: {{path}}"
   },
   "copilot": {
     "saveChat": "Chat speichern",

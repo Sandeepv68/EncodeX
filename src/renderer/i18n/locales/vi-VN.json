@@ -1024,7 +1024,11 @@
     "filtersIgnoredCopy": "Bộ lọc video bị bỏ qua khi đích video là “Sao chép”, vì bản sao luồng không thể mã hoá lại. Hãy chọn một vùng chứa đích để áp dụng.",
     "splitChannels": "Tách kênh",
     "splitChannelsHint": "Tách một bản âm thanh thành một tệp mono cho mỗi kênh. Việc tách kênh sẽ mã hóa lại âm thanh: sử dụng codec đích âm thanh đã chọn, hoặc FLAC khi chọn Sao chép.",
-    "splitChannelsStream": "Tách luồng âm thanh #{{index}} thành các tệp kênh riêng"
+    "splitChannelsStream": "Tách luồng âm thanh #{{index}} thành các tệp kênh riêng",
+    "outputFolderToggle": "Đặt các tệp đã trích xuất vào một thư mục mới",
+    "folderName": "Tên thư mục mới",
+    "folderNameHint": "Các tệp đã trích xuất được gom vào thư mục này, được tạo bên trong thư mục đầu ra. Mặc định là tên của tệp nguồn; các ký tự không được phép trong tên thư mục sẽ được thay thế tự động.",
+    "folderPreview": "Các tệp sẽ được ghi vào: {{path}}"
   },
   "copilot": {
     "saveChat": "Lưu cuộc trò chuyện",

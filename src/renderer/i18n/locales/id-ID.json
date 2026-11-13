@@ -1024,7 +1024,11 @@
     "filtersIgnoredCopy": "Filter video diabaikan selama tujuan video adalah \"Salin\" karena salinan aliran tidak dapat disandikan ulang. Pilih wadah tujuan untuk menerapkan filter.",
     "splitChannels": "Pisahkan kanal",
     "splitChannelsHint": "Pisahkan trek audio menjadi satu file mono per kanal. Pemisahan kanal akan menyandikan ulang audio: codec tujuan audio yang dipilih digunakan, atau FLAC saat \"Salin\" dipilih.",
-    "splitChannelsStream": "Pisahkan aliran audio #{{index}} menjadi file kanal terpisah"
+    "splitChannelsStream": "Pisahkan aliran audio #{{index}} menjadi file kanal terpisah",
+    "outputFolderToggle": "Letakkan file hasil ekstraksi dalam folder baru",
+    "folderName": "Nama folder baru",
+    "folderNameHint": "File hasil ekstraksi dikumpulkan dalam folder ini, yang dibuat di dalam folder keluaran. Secara bawaan nama ini mengikuti nama file sumber; karakter yang tidak diperbolehkan pada nama folder diganti secara otomatis.",
+    "folderPreview": "File akan ditulis ke: {{path}}"
   },
   "copilot": {
     "saveChat": "Simpan chat",

@@ -1024,7 +1024,11 @@
     "filtersIgnoredCopy": "비디오 출력 방식이 “복사”인 동안 비디오 필터는 무시됩니다. 스트림 복사로는 재인코딩할 수 없기 때문입니다. 필터를 적용하려면 대상 컨테이너를 선택하세요.",
     "splitChannels": "채널 분할",
     "splitChannelsHint": "오디오 트랙을 채널별로 하나의 모노 파일로 분할합니다. 채널 분할은 오디오를 다시 인코딩하며, 선택한 오디오 대상 코덱을 사용하고 복사를 선택한 경우 FLAC을 사용합니다.",
-    "splitChannelsStream": "오디오 스트림 #{{index}}을(를) 개별 채널 파일로 분할"
+    "splitChannelsStream": "오디오 스트림 #{{index}}을(를) 개별 채널 파일로 분할",
+    "outputFolderToggle": "추출된 파일을 새 폴더에 넣기",
+    "folderName": "새 폴더 이름",
+    "folderNameHint": "추출된 파일은 출력 폴더 안에서 생성되는 이 폴더에 모입니다. 기본값은 원본 파일 이름이며, 폴더 이름에 사용할 수 없는 문자는 자동으로 대체됩니다.",
+    "folderPreview": "파일이 저장될 위치: {{path}}"
   },
   "copilot": {
     "saveChat": "채팅 저장",

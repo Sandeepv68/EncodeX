@@ -1024,7 +1024,11 @@
     "filtersIgnoredCopy": "Myndarsíurnar eru hunsaðar á meðan myndarákvörðunin er \"Afrita\", því að straumafritun getur ekki umkóðað. Veldu áhendingargáma til að beita síunum.",
     "splitChannels": "Skipta rásum",
     "splitChannelsHint": "Skiptu hljóðrás í eina einrása skrá fyrir hverja rás. Rásaskipting endurkóðar hljóðið: notaður er valinn kóðari hljóðmarks eða FLAC þegar Afrita er valið.",
-    "splitChannelsStream": "Skiptu hljóðstreymi #{{index}} í aðskildar rásarskrár"
+    "splitChannelsStream": "Skiptu hljóðstreymi #{{index}} í aðskildar rásarskrár",
+    "outputFolderToggle": "Leggja útdregnu skrárnar í nýjan möppu",
+    "folderName": "Nýr möppunafn",
+    "folderNameHint": "Útdregnu skrárnar eru safnaðar í þessa möppu, sem eruð innan útaplássskráinnar. Sjálfgefið er nafni upprunnafilsins; tákn sem eru ekki leyf í möppunöfnum eru skipt út sjálfkrafa.",
+    "folderPreview": "Skrárnar verða skrifaðar í: {{path}}"
   },
   "copilot": {
     "saveChat": "Vista spjall",

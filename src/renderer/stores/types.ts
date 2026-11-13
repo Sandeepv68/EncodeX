@@ -679,6 +679,8 @@ export interface RemuxState {
  * @property {number[]} selectedIndices - Indices of streams selected for extraction.
  * @property {number[]} splitIndices - Indices of audio streams split into per-channel outputs.
  * @property {string} outputDir - Directory where extracted streams are written.
+ * @property {boolean} outputToFolder - Whether the extracted streams go into a dedicated sub-folder.
+ * @property {string} folderName - Label of the dedicated sub-folder (defaults to the source file's name).
  * @property {DemuxTarget[]} targets - Per-stream extraction targets.
  * @property {RemuxWarning[]} warnings - Live subtitle-conversion fallback warnings.
  * @property {DemuxMediaPreferences} media - Per-kind conversion preferences.
@@ -691,6 +693,8 @@ export interface RemuxState {
  * @property {(index: number) => void} toggleSplitChannel - Toggles per-channel splitting for an audio stream.
  * @property {(media: DemuxMediaPreferences) => void} setMedia - Sets conversion prefs and regenerates targets.
  * @property {(dir: string) => void} setOutputDir - Sets the output directory.
+ * @property {(enabled: boolean) => void} setOutputToFolder - Enables/disables the dedicated output sub-folder.
+ * @property {(name: string) => void} setFolderName - Sets the label of the dedicated output sub-folder.
  * @property {(p: TaskProgress | null) => void} setProgress - Sets the aggregated demux progress (or null to clear).
  * @property {() => Promise<void>} startDemux - Runs each target sequentially.
  * @property {() => Promise<void>} pause - Pauses the running demux.
@@ -704,6 +708,8 @@ export interface DemuxState {
   selectedIndices: number[];
   splitIndices: number[];
   outputDir: string;
+  outputToFolder: boolean;
+  folderName: string;
   targets: DemuxTarget[];
   warnings: RemuxWarning[];
   media: DemuxMediaPreferences;
@@ -716,6 +722,8 @@ export interface DemuxState {
   toggleSplitChannel: (index: number) => void;
   setMedia: (media: DemuxMediaPreferences) => void;
   setOutputDir: (dir: string) => void;
+  setOutputToFolder: (enabled: boolean) => void;
+  setFolderName: (name: string) => void;
   setProgress: (p: TaskProgress | null) => void;
   startDemux: () => Promise<void>;
   enqueueDemux: () => Promise<void>;

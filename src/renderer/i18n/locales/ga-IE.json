@@ -1024,7 +1024,11 @@
     "filtersIgnoredCopy": "Déantar neamhaird de scagairí físeáin a fhad agus is é \"Cóipeáil\" an ceann scríbe físeáin, toisc nach féidir cóip srutha a athionchódú. Roghnaigh coimeádán ceann scríbe chun scagairí a chur i bhfeidhm.",
     "splitChannels": "Roinn cainéil",
     "splitChannelsHint": "Roinn rian fuaime ina chomhad mona amháin in aghaidh gach cainéil. Athionchódaíonn roinnt cainéal an fhuaim: úsáidtear an codec sprice fuaime roghnaithe, nó FLAC nuair a roghnaítear Cóipeáil.",
-    "splitChannelsStream": "Roinn sruth fuaime #{{index}} ina chomhaid chainéil ar leith"
+    "splitChannelsStream": "Roinn sruth fuaime #{{index}} ina chomhaid chainéil ar leith",
+    "outputFolderToggle": "Cuir na comhaid a bhaintear i bhfillteán nua",
+    "folderName": "Ainm an fhillidir nua",
+    "folderNameHint": "Bailítear na comhaid a bhaintear sa fhólder seo, a cruthaítear laistigh den fhillidir aschur. Is é ainm an fhois fhoinse an réamhshocrú; athshocraítear carachtarí nach bhfuil ceadithe i bhfocail fillidir go huathoibríteach.",
+    "folderPreview": "Scríobfar na comhaid chuig: {{path}}"
   },
   "copilot": {
     "saveChat": "Sábháil comhrá",
