@@ -3,11 +3,13 @@ import { render, screen, fireEvent, waitFor, act, within } from '@testing-librar
 import { MemoryRouter } from 'react-router-dom';
 import BatchQueue from '../BatchQueue';
 import { useQueueStore } from '../../stores/queueStore';
+import { useMuxQueueStore } from '../../stores/muxQueueStore';
 import { useToastStore } from '../../stores/toastStore';
 import { useSettingsStore } from '../../stores/settingsStore';
 import { useDismissedAlertsStore } from '../../stores/dismissedAlertsStore';
 import type { QueueJob } from '../../../shared/types';
 import { FILE_FILTERS } from '../../../shared/file-extensions';
+import { QUEUE_STATUS } from '../../../shared/media-options';
 import { BATCH_CONFIG_STORAGE_KEY } from '../../../shared/constants';
 import { ERROR_MESSAGES } from '../../../shared/errors';
 
@@ -21,6 +23,7 @@ const queueRemoveMock = vi.mocked(window.electronAPI.queueRemove);
 const queueCancelAllMock = vi.mocked(window.electronAPI.queueCancelAll);
 const queueClearCompletedMock = vi.mocked(window.electronAPI.queueClearCompleted);
 const queueSetConcurrencyMock = vi.mocked(window.electronAPI.queueSetConcurrency);
+const queueSetWhenDoneMock = vi.mocked(window.electronAPI.queueSetWhenDone);
 const queuePauseMock = vi.mocked(window.electronAPI.queuePause);
 const queueResumeMock = vi.mocked(window.electronAPI.queueResume);
 const queueStartMock = vi.mocked(window.electronAPI.queueStart);
@@ -77,8 +80,9 @@ describe('BatchQueue', () => {
     vi.clearAllMocks();
     localStorage.clear();
     useQueueStore.setState({ jobs: [] });
+    useMuxQueueStore.setState({ jobs: [], progress: {}, paused: false, concurrency: 1 });
     useToastStore.setState({ toasts: [] });
-    useSettingsStore.setState({ queueConcurrency: 1, hardwareAcceleration: true });
+    useSettingsStore.setState({ queueConcurrency: 1, hardwareAcceleration: true, whenDone: 'none' });
     useDismissedAlertsStore.setState({ dismissed: [] });
     vi.mocked(window.electronAPI.getBmfStatus).mockResolvedValue({ available: true, missing: [] });
   });
@@ -204,7 +208,7 @@ describe('BatchQueue', () => {
     getBmfStatusMock.mockResolvedValueOnce({ available: true, missing: [] });
     getBmfStatusMock.mockResolvedValueOnce({ available: false, missing: ['bmf_ffmpeg'] });
     renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[2]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
     fireEvent.click(screen.getByText('BMF'));
     await waitFor(() => expect(getBmfStatusMock).toHaveBeenCalledTimes(1));
     openAddFiles();
@@ -224,7 +228,7 @@ describe('BatchQueue', () => {
     getBmfStatusMock.mockResolvedValueOnce({ available: true, missing: [] });
     getBmfStatusMock.mockRejectedValueOnce(new Error('ipc down'));
     renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[2]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
     fireEvent.click(screen.getByText('BMF'));
     await waitFor(() => expect(getBmfStatusMock).toHaveBeenCalledTimes(1));
     openAddFiles();
@@ -268,7 +272,7 @@ describe('BatchQueue', () => {
     queueListMock.mockResolvedValue([]);
     selectFilesMock.mockResolvedValue(['/in/video.mp4']);
     renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
     fireEvent.click(screen.getByText('batchQueue.operationExtractAudio'));
     openAddFiles();
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
@@ -296,7 +300,7 @@ describe('BatchQueue', () => {
     queueListMock.mockResolvedValue([]);
     selectFilesMock.mockResolvedValue(['/in/photo.png']);
     renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
     fireEvent.click(screen.getByText('batchQueue.operationCompressImage'));
     openAddFiles();
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
@@ -326,9 +330,9 @@ describe('BatchQueue', () => {
     selectFilesMock.mockResolvedValue(['/in/photo.png']);
     queueAddMock.mockResolvedValue('job-3');
     renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
     fireEvent.click(screen.getByText('batchQueue.operationCompressImage'));
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[5]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[4]);
     fireEvent.click(screen.getByText('WebP'));
     fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '15' } });
     openAddFiles();
@@ -359,7 +363,7 @@ describe('BatchQueue', () => {
     selectFilesMock.mockResolvedValue(['/in/video.mp4']);
     queueAddMock.mockResolvedValue('job-3');
     renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[7]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[6]);
     fireEvent.click(screen.getByText('mkv'));
     openAddFiles();
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
@@ -373,9 +377,9 @@ describe('BatchQueue', () => {
     selectFilesMock.mockResolvedValue(['/in/video.mkv']);
     queueAddMock.mockResolvedValue('job-3');
     renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[7]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[6]);
     fireEvent.click(screen.getByText('mp4'));
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[5]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[4]);
     fireEvent.click(screen.getByText('Theora (libtheora)'));
     openAddFiles();
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
@@ -650,7 +654,7 @@ describe('BatchQueue', () => {
     queueAddMock.mockResolvedValue('job-9');
     renderPage();
     await waitFor(() => expect(queueListMock).toHaveBeenCalledOnce());
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
     fireEvent.click(screen.getByText('batchQueue.operationCompressImage'));
     openAddFiles();
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
@@ -666,7 +670,7 @@ describe('BatchQueue', () => {
     queueAddMock.mockResolvedValue('job-9');
     renderPage();
     await waitFor(() => expect(queueListMock).toHaveBeenCalledOnce());
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
     fireEvent.click(screen.getByText('batchQueue.operationCompressImage'));
     openAddFiles();
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
@@ -1244,7 +1248,7 @@ describe('BatchQueue', () => {
     expect(window.electronAPI.queueMoveTo).not.toHaveBeenCalled();
   });
 
-  it('renders a title-level toggle that condenses the page to the queue', async () => {
+  it('renders a header toggle that condenses the page to the queue', async () => {
     queueListMock.mockResolvedValue([]);
     await act(async () => {
       renderPage();
@@ -1287,6 +1291,57 @@ describe('BatchQueue', () => {
     expect(localStorage.getItem('encodex-batch-condensed')).toBe('1');
   });
 
+  it('keeps the condensed state independent between the general and mux tabs', async () => {
+    queueListMock.mockResolvedValue([]);
+    useMuxQueueStore.setState({
+      jobs: [
+        {
+          id: 'mux-1',
+          kind: 'remux',
+          input: 'C:/in/clip.mp4',
+          output: 'C:/out/clip.mkv',
+          targets: [{ output: 'C:/out/clip.mkv', options: {} }],
+          transcoder: 'FFMPEG',
+          status: QUEUE_STATUS.QUEUED,
+          progress: 0,
+          createdAt: 1,
+        },
+      ],
+    });
+    await act(async () => {
+      renderPage('/batch?tab=mux');
+    });
+    const toggle = screen.getByTestId('batch-queue-condense');
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+
+    await act(async () => {
+      fireEvent.click(toggle);
+    });
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    expect(localStorage.getItem('encodex-batch-mux-condensed')).toBe('1');
+    expect(localStorage.getItem('encodex-batch-condensed')).toBe('0');
+    expect(document.getElementById('mux-queue-controls-section')).toHaveAttribute('aria-hidden', 'true');
+    expect(document.getElementById('mux-queue-filters-section')).toHaveAttribute('aria-hidden', 'true');
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('batch-queue-tab-general'));
+    });
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    expect(document.getElementById('batch-controls-section')).toHaveAttribute('aria-hidden', 'false');
+
+    await act(async () => {
+      fireEvent.click(toggle);
+    });
+    expect(localStorage.getItem('encodex-batch-condensed')).toBe('1');
+    expect(localStorage.getItem('encodex-batch-mux-condensed')).toBe('1');
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('batch-queue-tab-mux'));
+    });
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    expect(document.getElementById('mux-queue-controls-section')).toHaveAttribute('aria-hidden', 'true');
+  });
+
   it('opens the add-files review dialog with Ctrl+O', async () => {
     queueListMock.mockResolvedValue([]);
     selectFilesMock.mockResolvedValue(['/in/video.mp4']);
@@ -1299,6 +1354,30 @@ describe('BatchQueue', () => {
     queueListMock.mockResolvedValue([job({ id: 'job-1' })]);
     renderPage();
     await screen.findByText(/video\.mp4/);
+    fireEvent.keyDown(window, { code: 'KeyF', key: 'f' });
+    expect(screen.getByRole('textbox', { name: 'Search files...' })).toHaveFocus();
+  });
+
+  it('focuses the mux queue search field with F on the mux tab', async () => {
+    queueListMock.mockResolvedValue([]);
+    useMuxQueueStore.setState({
+      jobs: [
+        {
+          id: 'mux-1',
+          kind: 'remux',
+          input: 'C:/in/clip.mp4',
+          output: 'C:/out/clip.mkv',
+          targets: [{ output: 'C:/out/clip.mkv', options: {} }],
+          transcoder: 'FFMPEG',
+          status: QUEUE_STATUS.QUEUED,
+          progress: 0,
+          createdAt: 1,
+        },
+      ],
+    });
+    await act(async () => {
+      renderPage('/batch?tab=mux');
+    });
     fireEvent.keyDown(window, { code: 'KeyF', key: 'f' });
     expect(screen.getByRole('textbox', { name: 'Search files...' })).toHaveFocus();
   });
@@ -1382,21 +1461,50 @@ describe('BatchQueue', () => {
     expect(screen.getByTestId('batch-queue-tab-general')).toHaveAttribute('aria-selected', 'true');
   });
 
-  it('shows the global options bar on the general tab', async () => {
+  it('shows the when-done action button beside the tabs on the general tab', async () => {
     queueListMock.mockResolvedValue([]);
     await act(async () => {
       renderPage();
     });
     expect(screen.getByTestId('batch-global-options')).toBeInTheDocument();
-    expect(screen.getByRole('combobox', { name: 'batchQueue.whenDone' })).toBeInTheDocument();
+    expect(screen.getByTestId('when-done-button')).toHaveAttribute('aria-label', 'batchQueue.whenDone: status.none');
+    expect(screen.queryByRole('combobox', { name: 'batchQueue.whenDone' })).not.toBeInTheDocument();
   });
 
-  it('shows the global options bar on the mux tab', async () => {
+  it('shows the when-done action button beside the tabs on the mux tab', async () => {
     queueListMock.mockResolvedValue([]);
     await act(async () => {
       renderPage('/batch?tab=mux');
     });
     expect(screen.getByTestId('batch-global-options')).toBeInTheDocument();
-    expect(screen.getByRole('combobox', { name: 'batchQueue.whenDone' })).toBeInTheDocument();
+    expect(screen.getByTestId('when-done-button')).toBeInTheDocument();
+  });
+
+  it('groups the when-done button, condense toggle and view-logs action to the right of the tabs', async () => {
+    queueListMock.mockResolvedValue([]);
+    await act(async () => {
+      renderPage();
+    });
+    const row = screen.getByTestId('batch-queue-header-row');
+    const actions = within(row).getByTestId('batch-queue-header-actions');
+    expect(within(row).getByTestId('batch-queue-tabs')).toBeInTheDocument();
+    expect(within(actions).getByTestId('when-done-button')).toBeInTheDocument();
+    expect(within(actions).getByTestId('batch-queue-condense')).toBeInTheDocument();
+    expect(within(actions).getByTestId('view-logs')).toBeInTheDocument();
+  });
+
+  it('expands the when-done button into a dropdown and applies the chosen action', async () => {
+    queueSetWhenDoneMock.mockResolvedValue(undefined);
+    queueListMock.mockResolvedValue([]);
+    await act(async () => {
+      renderPage();
+    });
+    fireEvent.click(screen.getByTestId('when-done-button'));
+    fireEvent.click(await screen.findByText('batchQueue.whenDoneHibernate'));
+    expect(queueSetWhenDoneMock).toHaveBeenCalledWith('hibernate');
+    expect(await screen.findByTestId('when-done-button')).toHaveAttribute(
+      'aria-label',
+      'batchQueue.whenDone: batchQueue.whenDoneHibernate',
+    );
   });
 });

@@ -1,11 +1,13 @@
 /**
  * @fileoverview Single job card in the mux queue list.
  *
- * Renders one remux or demux job as an outlined card: a kind chip (Remux /
- * Demux), the input filename, the queue status as a colored chip, an in-card
- * progress bar while running, the error text for failed jobs, and a summary of
- * the job's outputs - the single output file for a remux, or the number of
- * extracted streams and the output folder for a demux.
+ * Renders one remux or demux job as an outlined card: a lazy preview thumbnail
+ * of the input file (video frame or image preview, sharing the batch queue's
+ * session cache), a kind chip (Remux / Demux), the input filename, the queue
+ * status as a colored chip, an in-card progress bar while running, the error
+ * text for failed jobs, and a summary of the job's outputs - the single output
+ * file for a remux, or the number of extracted streams and the output folder
+ * for a demux.
  *
  * The card can be expanded to list every target (label and output path), which
  * is what makes a multi-stream demux readable. Per-job actions are remove,
@@ -34,6 +36,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ErrorBoundary } from './ErrorBoundary';
 import EllipsisTooltip from './EllipsisTooltip';
 import ProgressBar from './ProgressBar';
+import { useLazyThumbnail } from '../hooks/useLazyThumbnail';
 import { basename } from '../utils/path-utils';
 import { statusChipColor } from '../utils/queue-job-utils';
 import { useToastStore } from '../stores/toastStore';
@@ -41,10 +44,13 @@ import { QUEUE_STATUS } from '../../shared/media-options';
 import type { MuxQueueJobCardProps } from './types';
 import {
   JobCard,
+  CardBody,
   CardContent,
   CardHeaderRow,
   JobNameText,
   JobTitleWrapper,
+  ThumbWrap,
+  ThumbImg,
   StatusChip,
   CardActionsStack,
   DragHandleButton,
@@ -62,6 +68,14 @@ import {
 export default function MuxQueueJobCard({ job, progress, onRemove, onRetry }: MuxQueueJobCardProps) {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
+
+  /**
+   * Lazy preview thumbnail of the job's input (shared session cache with the
+   * batch queue) and the ref that marks the card as visible.
+   * @type {{ thumbnail: string | null; anchorRef: React.RefObject<HTMLDivElement | null> }}
+   */
+  const { thumbnail, anchorRef } = useLazyThumbnail(job.input);
+
   const { attributes, listeners, setNodeRef, transform, isDragging } = useSortable({
     id: job.id,
     disabled: job.status !== QUEUE_STATUS.QUEUED,
@@ -98,78 +112,85 @@ export default function MuxQueueJobCard({ job, progress, onRemove, onRetry }: Mu
       $dragging={isDragging}
       variant="outlined"
     >
-      <CardContent>
-        <CardHeaderRow>
-          <JobTitleWrapper>
-            <EllipsisTooltip title={job.input}>
-              <JobNameText variant="body2">{basename(job.input)}</JobNameText>
-            </EllipsisTooltip>
-          </JobTitleWrapper>
-          <CardActionsStack direction="row" spacing={1}>
-            <StatusChip label={kindLabel} color="default" variant="outlined" data-testid="mux-queue-job-kind" />
-            <StatusChip label={job.status} color={statusChipColor(job.status)} variant="outlined" />
-            {job.status === QUEUE_STATUS.RUNNING && job.paused && (
-              <StatusChip label={t('muxQueue.paused')} color="info" variant="outlined" />
-            )}
-            {job.status === QUEUE_STATUS.QUEUED && (
-              <Tooltip title={t('muxQueue.dragHandle')}>
-                <DragHandleButton size="small" aria-label={t('muxQueue.dragHandle')} {...attributes} {...listeners}>
-                  <FontAwesomeIcon icon={faGripVertical} />
-                </DragHandleButton>
-              </Tooltip>
-            )}
-            {job.status === QUEUE_STATUS.ERROR && onRetry && (
-              <Tooltip title={t('batchQueue.retry')}>
-                <IconButton size="small" aria-label={t('batchQueue.retry')} onClick={() => onRetry(job)}>
-                  <FontAwesomeIcon icon={faRotateRight} />
+      <CardBody ref={anchorRef}>
+        {thumbnail && (
+          <ThumbWrap>
+            <ThumbImg src={thumbnail} alt="" data-testid="mux-queue-job-thumbnail" />
+          </ThumbWrap>
+        )}
+        <CardContent>
+          <CardHeaderRow>
+            <JobTitleWrapper>
+              <EllipsisTooltip title={job.input}>
+                <JobNameText variant="body2">{basename(job.input)}</JobNameText>
+              </EllipsisTooltip>
+            </JobTitleWrapper>
+            <CardActionsStack direction="row" spacing={1}>
+              <StatusChip label={kindLabel} color="default" variant="outlined" data-testid="mux-queue-job-kind" />
+              <StatusChip label={job.status} color={statusChipColor(job.status)} variant="outlined" />
+              {job.status === QUEUE_STATUS.RUNNING && job.paused && (
+                <StatusChip label={t('muxQueue.paused')} color="info" variant="outlined" />
+              )}
+              {job.status === QUEUE_STATUS.QUEUED && (
+                <Tooltip title={t('muxQueue.dragHandle')}>
+                  <DragHandleButton size="small" aria-label={t('muxQueue.dragHandle')} {...attributes} {...listeners}>
+                    <FontAwesomeIcon icon={faGripVertical} />
+                  </DragHandleButton>
+                </Tooltip>
+              )}
+              {job.status === QUEUE_STATUS.ERROR && onRetry && (
+                <Tooltip title={t('batchQueue.retry')}>
+                  <IconButton size="small" aria-label={t('batchQueue.retry')} onClick={() => onRetry(job)}>
+                    <FontAwesomeIcon icon={faRotateRight} />
+                  </IconButton>
+                </Tooltip>
+              )}
+              <Tooltip title={t('batchQueue.revealInFolder')}>
+                <IconButton size="small" aria-label={t('batchQueue.revealInFolder')} onClick={handleReveal}>
+                  <FontAwesomeIcon icon={faFolderOpen} />
                 </IconButton>
               </Tooltip>
-            )}
-            <Tooltip title={t('batchQueue.revealInFolder')}>
-              <IconButton size="small" aria-label={t('batchQueue.revealInFolder')} onClick={handleReveal}>
-                <FontAwesomeIcon icon={faFolderOpen} />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={t('batchQueue.copyPath')}>
-              <IconButton size="small" aria-label={t('batchQueue.copyPath')} onClick={handleCopyPath}>
-                <FontAwesomeIcon icon={faCopy} />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={detailsLabel}>
-              <IconButton size="small" aria-label={detailsLabel} aria-expanded={expanded} onClick={() => setExpanded((prev) => !prev)}>
-                <FontAwesomeIcon icon={expanded ? faChevronUp : faChevronDown} />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={t('batchQueue.remove')}>
-              <IconButton size="small" color="error" aria-label={t('batchQueue.remove')} onClick={() => onRemove(job.id)}>
-                <FontAwesomeIcon icon={faTrashCan} />
-              </IconButton>
-            </Tooltip>
-          </CardActionsStack>
-        </CardHeaderRow>
-        {job.status === QUEUE_STATUS.RUNNING && (
-          <ErrorBoundary fallback={null}>
-            <ProgressBar
-              percent={job.progress}
-              time={progress?.time}
-              speed={progress?.speed}
-              eta={progress?.eta}
-              paused={job.paused}
-              shadowed
-            />
-          </ErrorBoundary>
-        )}
-        <Typography variant="caption" color="text.secondary" data-testid="mux-queue-job-summary">
-          {job.kind === 'demux'
-            ? `${t('muxQueue.targets', { count: job.targets.length })} · ${t('muxQueue.outputDir')}: ${job.output}`
-            : job.output}
-        </Typography>
-        {job.error && !expanded && (
-          <Typography variant="caption" color="error" data-testid="mux-queue-job-error">
-            {job.error}
+              <Tooltip title={t('batchQueue.copyPath')}>
+                <IconButton size="small" aria-label={t('batchQueue.copyPath')} onClick={handleCopyPath}>
+                  <FontAwesomeIcon icon={faCopy} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={detailsLabel}>
+                <IconButton size="small" aria-label={detailsLabel} aria-expanded={expanded} onClick={() => setExpanded((prev) => !prev)}>
+                  <FontAwesomeIcon icon={expanded ? faChevronUp : faChevronDown} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={t('batchQueue.remove')}>
+                <IconButton size="small" color="error" aria-label={t('batchQueue.remove')} onClick={() => onRemove(job.id)}>
+                  <FontAwesomeIcon icon={faTrashCan} />
+                </IconButton>
+              </Tooltip>
+            </CardActionsStack>
+          </CardHeaderRow>
+          {job.status === QUEUE_STATUS.RUNNING && (
+            <ErrorBoundary fallback={null}>
+              <ProgressBar
+                percent={job.progress}
+                time={progress?.time}
+                speed={progress?.speed}
+                eta={progress?.eta}
+                paused={job.paused}
+                shadowed
+              />
+            </ErrorBoundary>
+          )}
+          <Typography variant="caption" color="text.secondary" data-testid="mux-queue-job-summary">
+            {job.kind === 'demux'
+              ? `${t('muxQueue.targets', { count: job.targets.length })} · ${t('muxQueue.outputDir')}: ${job.output}`
+              : job.output}
           </Typography>
-        )}
-      </CardContent>
+          {job.error && !expanded && (
+            <Typography variant="caption" color="error" data-testid="mux-queue-job-error">
+              {job.error}
+            </Typography>
+          )}
+        </CardContent>
+      </CardBody>
       <Collapse in={expanded}>
         <DetailsBox>
           <DetailsLabel variant="caption" color="text.secondary">

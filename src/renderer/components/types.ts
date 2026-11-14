@@ -622,6 +622,20 @@ export interface MuxQueueJobCardProps {
 }
 
 /**
+ * Props for the mux queue panel.
+ * @interface MuxQueuePanelProps
+ * @property {RefObject<HTMLInputElement | null>} [searchRef] - Ref forwarded to
+ *   the filename search input, so the page-level "focus search" shortcut can
+ *   target the mux queue search while the mux tab is active.
+ * @property {boolean} [condensed] - True while the mux tab is condensed: the
+ *   queue toolbar and the filter row collapse so only the job list remains.
+ */
+export interface MuxQueuePanelProps {
+  searchRef?: RefObject<HTMLInputElement | null>;
+  condensed?: boolean;
+}
+
+/**
  * Props for the per-job encoding options dialog.
  * @interface QueueJobOptionsDialogProps
  * @property {boolean} open - Whether the dialog is shown.

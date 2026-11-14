@@ -3,7 +3,8 @@
  *
  * Renders the Mux Queue tab of the Batch Queue page: a toolbar with the queue
  * actions (Start, Pause/Resume, Cancel all, Clear completed, and the
- * parallel-jobs selector), and the list of mux jobs.
+ * parallel-jobs selector), a status filter row with a filename search, and the
+ * list of mux jobs.
  *
  * The panel owns no state of its own - it reads the jobs and the queue state
  * from {@link useMuxQueueStore} (kept in sync by the global `MuxQueueSync`
@@ -13,12 +14,16 @@
  * When the queue is empty the panel explains where mux jobs come from and
  * links to the Remux and Demux pages, so a new user can find the entry point
  * without knowing it exists.
+ *
+ * The page can condense the mux tab independently of the general tab: while
+ * `condensed` is true the toolbar and the filter row collapse with the same
+ * animation the general queue sections use, leaving only the job list.
  */
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, MenuItem, Stack } from '@mui/material';
+import { Button, Collapse, MenuItem, Stack } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faPause, faBroom, faCheckDouble } from '@fortawesome/free-solid-svg-icons';
 import { DndContext, DragOverlay, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
@@ -30,20 +35,35 @@ import { computeQueuedTargetPosition, reorderJob } from '../utils/queue-reorder'
 import { fireAndForgetBridge } from '../utils/bridge-call';
 import { useToastStore } from '../stores/toastStore';
 import { formatError } from '../../shared/errors';
+import { basename } from '../utils/path-utils';
 import MuxQueueJobCard from './MuxQueueJobCard';
 import { QUEUE_STATUS } from '../../shared/media-options';
 import { MAX_QUEUE_CONCURRENCY } from '../../shared/constants';
 import type { MuxQueueJob } from '../../shared/types';
+import type { MuxQueuePanelProps } from './types';
 import { ControlsPaper, AlignedIconButton, ToolbarRow, ConcurrencySelect } from '../styles/BatchControls.styles';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
-import { EmptyStack, EmptyActionGroup, EmptyHeadingText, EmptyHintText, FilterRow, FilterChip } from '../styles/BatchQueue.styles';
+import {
+  AnimatedSection,
+  EmptyStack,
+  EmptyActionGroup,
+  EmptyHeadingText,
+  EmptyHintText,
+  FilterRow,
+  FilterChip,
+  SearchField,
+} from '../styles/BatchQueue.styles';
 import TooltipIfEnabled from './TooltipIfEnabled';
 
 /**
- * Renders the mux queue panel: controls and the job list.
+ * Renders the mux queue panel: controls, filters, search, and the job list.
+ * @param {MuxQueuePanelProps} props - Component props.
+ * @param {React.RefObject<HTMLInputElement | null>} [props.searchRef] - Ref
+ *   forwarded to the filename search input.
+ * @param {boolean} [props.condensed] - True while the mux tab is condensed.
  * @returns {JSX.Element} The panel content.
  */
-export default function MuxQueuePanel() {
+export default function MuxQueuePanel({ searchRef, condensed = false }: MuxQueuePanelProps = {}) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const jobs = useMuxQueueStore((s) => s.jobs);
@@ -55,10 +75,28 @@ export default function MuxQueuePanel() {
   const [filter, setFilter] = useState<'all' | (typeof QUEUE_STATUS)[keyof typeof QUEUE_STATUS]>('all');
 
   /**
-   * Jobs shown after applying the active status filter. Filtering preserves the
-   * queue's relative order.
+   * Filename search term; jobs whose input basename includes it
+   * (case-insensitive) are shown, mirroring the general queue's search.
+   * @type {[string, React.Dispatch<React.SetStateAction<string>>]}
    */
-  const visibleJobs = jobs.filter((job: MuxQueueJob) => filter === 'all' || job.status === filter);
+  const [search, setSearch] = useState('');
+
+  /**
+   * True once the collapse animation of the condensed sections has fully
+   * completed. Removes the wrappers from the layout (display: none) so a
+   * condensed mux tab leaves no leftover empty space behind; seeded from the
+   * prop so switching to an already-condensed tab renders without a flash.
+   * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
+   */
+  const [sectionsGone, setSectionsGone] = useState(condensed);
+
+  /**
+   * Jobs shown after applying the active status filter and search term.
+   * Filtering preserves the queue's relative order.
+   */
+  const visibleJobs = jobs
+    .filter((job: MuxQueueJob) => filter === 'all' || job.status === filter)
+    .filter((job: MuxQueueJob) => !search || basename(job.input).toLowerCase().includes(search.toLowerCase()));
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 2 } }),
@@ -132,92 +170,96 @@ export default function MuxQueuePanel() {
 
   return (
     <Stack spacing={2} role="region" aria-label={t('muxQueue.tabMux')}>
-      <ControlsPaper>
-        <ToolbarRow>
-          {paused ? (
-            <TooltipIfEnabled title={t('muxQueue.resume')}>
-              <AlignedIconButton
-                size="small"
-                color="success"
-                aria-label={t('muxQueue.resume')}
-                onClick={() => {
-                  useMuxQueueStore.getState().setPaused(false);
-                  fireAndForgetBridge(() => window.electronAPI.muxQueueResume(), 'muxQueueResume');
-                }}
-              >
-                <FontAwesomeIcon icon={faPlay} />
-              </AlignedIconButton>
-            </TooltipIfEnabled>
-          ) : status.running > 0 ? (
-            <TooltipIfEnabled title={t('muxQueue.pause')}>
-              <AlignedIconButton
-                size="small"
-                color="warning"
-                aria-label={t('muxQueue.pause')}
-                onClick={() => {
-                  useMuxQueueStore.getState().setPaused(true);
-                  fireAndForgetBridge(() => window.electronAPI.muxQueuePause(), 'muxQueuePause');
-                }}
-                disabled={status.active === 0}
-              >
-                <FontAwesomeIcon icon={faPause} />
-              </AlignedIconButton>
-            </TooltipIfEnabled>
-          ) : (
-            <TooltipIfEnabled title={t('muxQueue.start')}>
-              <AlignedIconButton
-                size="small"
-                color="success"
-                aria-label={t('muxQueue.start')}
-                onClick={() => fireAndForgetBridge(() => window.electronAPI.muxQueueStart(), 'muxQueueStart')}
-                disabled={status.queued === 0}
-              >
-                <FontAwesomeIcon icon={faPlay} />
-              </AlignedIconButton>
-            </TooltipIfEnabled>
-          )}
-          <TooltipIfEnabled title={t('muxQueue.cancelAll')}>
-            <AlignedIconButton
-              size="small"
-              color="error"
-              aria-label={t('muxQueue.cancelAll')}
-              onClick={() => fireAndForgetBridge(() => window.electronAPI.muxQueueCancelAll(), 'muxQueueCancelAll')}
-              disabled={status.total === 0}
-            >
-              <FontAwesomeIcon icon={faBroom} />
-            </AlignedIconButton>
-          </TooltipIfEnabled>
-          <TooltipIfEnabled title={t('muxQueue.clearCompleted')}>
-            <AlignedIconButton
-              size="small"
-              aria-label={t('muxQueue.clearCompleted')}
-              onClick={() => fireAndForgetBridge(() => window.electronAPI.muxQueueClearCompleted(), 'muxQueueClearCompleted')}
-              disabled={status.done + status.failed === 0}
-            >
-              <FontAwesomeIcon icon={faCheckDouble} />
-            </AlignedIconButton>
-          </TooltipIfEnabled>
-          <FieldBox>
-            <FieldLabel htmlFor="mux-queue-concurrency">{t('muxQueue.concurrency')}</FieldLabel>
-            <ConcurrencySelect
-              id="mux-queue-concurrency"
-              select
-              size="small"
-              slotProps={{ input: { 'aria-label': t('muxQueue.concurrency') } }}
-              value={concurrency}
-              onChange={(e) =>
-                fireAndForgetBridge(() => window.electronAPI.muxQueueSetConcurrency(Number(e.target.value)), 'muxQueueSetConcurrency')
-              }
-            >
-              {Array.from({ length: MAX_QUEUE_CONCURRENCY }, (_, i) => i + 1).map((n) => (
-                <MenuItem key={n} value={n}>
-                  {n}
-                </MenuItem>
-              ))}
-            </ConcurrencySelect>
-          </FieldBox>
-        </ToolbarRow>
-      </ControlsPaper>
+      <AnimatedSection id="mux-queue-controls-section" $hidden={condensed} $gone={sectionsGone} aria-hidden={condensed}>
+        <Collapse in={!condensed} onEntering={() => setSectionsGone(false)} onExited={() => setSectionsGone(true)}>
+          <ControlsPaper>
+            <ToolbarRow>
+              {paused ? (
+                <TooltipIfEnabled title={t('muxQueue.resume')}>
+                  <AlignedIconButton
+                    size="small"
+                    color="success"
+                    aria-label={t('muxQueue.resume')}
+                    onClick={() => {
+                      useMuxQueueStore.getState().setPaused(false);
+                      fireAndForgetBridge(() => window.electronAPI.muxQueueResume(), 'muxQueueResume');
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faPlay} />
+                  </AlignedIconButton>
+                </TooltipIfEnabled>
+              ) : status.running > 0 ? (
+                <TooltipIfEnabled title={t('muxQueue.pause')}>
+                  <AlignedIconButton
+                    size="small"
+                    color="warning"
+                    aria-label={t('muxQueue.pause')}
+                    onClick={() => {
+                      useMuxQueueStore.getState().setPaused(true);
+                      fireAndForgetBridge(() => window.electronAPI.muxQueuePause(), 'muxQueuePause');
+                    }}
+                    disabled={status.active === 0}
+                  >
+                    <FontAwesomeIcon icon={faPause} />
+                  </AlignedIconButton>
+                </TooltipIfEnabled>
+              ) : (
+                <TooltipIfEnabled title={t('muxQueue.start')}>
+                  <AlignedIconButton
+                    size="small"
+                    color="success"
+                    aria-label={t('muxQueue.start')}
+                    onClick={() => fireAndForgetBridge(() => window.electronAPI.muxQueueStart(), 'muxQueueStart')}
+                    disabled={status.queued === 0}
+                  >
+                    <FontAwesomeIcon icon={faPlay} />
+                  </AlignedIconButton>
+                </TooltipIfEnabled>
+              )}
+              <TooltipIfEnabled title={t('muxQueue.cancelAll')}>
+                <AlignedIconButton
+                  size="small"
+                  color="error"
+                  aria-label={t('muxQueue.cancelAll')}
+                  onClick={() => fireAndForgetBridge(() => window.electronAPI.muxQueueCancelAll(), 'muxQueueCancelAll')}
+                  disabled={status.total === 0}
+                >
+                  <FontAwesomeIcon icon={faBroom} />
+                </AlignedIconButton>
+              </TooltipIfEnabled>
+              <TooltipIfEnabled title={t('muxQueue.clearCompleted')}>
+                <AlignedIconButton
+                  size="small"
+                  aria-label={t('muxQueue.clearCompleted')}
+                  onClick={() => fireAndForgetBridge(() => window.electronAPI.muxQueueClearCompleted(), 'muxQueueClearCompleted')}
+                  disabled={status.done + status.failed === 0}
+                >
+                  <FontAwesomeIcon icon={faCheckDouble} />
+                </AlignedIconButton>
+              </TooltipIfEnabled>
+              <FieldBox>
+                <FieldLabel htmlFor="mux-queue-concurrency">{t('muxQueue.concurrency')}</FieldLabel>
+                <ConcurrencySelect
+                  id="mux-queue-concurrency"
+                  select
+                  size="small"
+                  slotProps={{ input: { 'aria-label': t('muxQueue.concurrency') } }}
+                  value={concurrency}
+                  onChange={(e) =>
+                    fireAndForgetBridge(() => window.electronAPI.muxQueueSetConcurrency(Number(e.target.value)), 'muxQueueSetConcurrency')
+                  }
+                >
+                  {Array.from({ length: MAX_QUEUE_CONCURRENCY }, (_, i) => i + 1).map((n) => (
+                    <MenuItem key={n} value={n}>
+                      {n}
+                    </MenuItem>
+                  ))}
+                </ConcurrencySelect>
+              </FieldBox>
+            </ToolbarRow>
+          </ControlsPaper>
+        </Collapse>
+      </AnimatedSection>
 
       {jobs.length === 0 ? (
         <EmptyStack spacing={1} data-testid="mux-queue-empty">
@@ -230,22 +272,33 @@ export default function MuxQueuePanel() {
         </EmptyStack>
       ) : (
         <>
-          <FilterRow>
-            {(['all', QUEUE_STATUS.QUEUED, QUEUE_STATUS.RUNNING, QUEUE_STATUS.DONE, QUEUE_STATUS.ERROR] as const).map((value) => {
-              const count = value === 'all' ? jobs.length : jobs.filter((job: MuxQueueJob) => job.status === value).length;
-              const labelKey = value === 'all' ? 'all' : value === QUEUE_STATUS.ERROR ? 'failed' : value;
-              return (
-                <FilterChip
-                  key={value}
+          <AnimatedSection id="mux-queue-filters-section" $hidden={condensed} $gone={sectionsGone} aria-hidden={condensed}>
+            <Collapse in={!condensed} onEntering={() => setSectionsGone(false)} onExited={() => setSectionsGone(true)}>
+              <FilterRow>
+                {(['all', QUEUE_STATUS.QUEUED, QUEUE_STATUS.RUNNING, QUEUE_STATUS.DONE, QUEUE_STATUS.ERROR] as const).map((value) => {
+                  const count = value === 'all' ? jobs.length : jobs.filter((job: MuxQueueJob) => job.status === value).length;
+                  const labelKey = value === 'all' ? 'all' : value === QUEUE_STATUS.ERROR ? 'failed' : value;
+                  return (
+                    <FilterChip
+                      key={value}
+                      size="small"
+                      label={`${t(`muxQueue.filters.${labelKey}`)} (${count})`}
+                      color={filter === value ? 'primary' : 'default'}
+                      aria-pressed={filter === value}
+                      onClick={() => setFilter(value)}
+                    />
+                  );
+                })}
+                <SearchField
                   size="small"
-                  label={`${t(`muxQueue.filters.${labelKey}`)} (${count})`}
-                  color={filter === value ? 'primary' : 'default'}
-                  aria-pressed={filter === value}
-                  onClick={() => setFilter(value)}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder={t('batchQueue.search')}
+                  slotProps={{ htmlInput: { 'aria-label': t('batchQueue.search'), ref: searchRef } }}
                 />
-              );
-            })}
-          </FilterRow>
+              </FilterRow>
+            </Collapse>
+          </AnimatedSection>
           {visibleJobs.length === 0 ? (
             <EmptyStack spacing={1} data-testid="mux-queue-no-results">
               <EmptyHeadingText>{t('batchQueue.noResults')}</EmptyHeadingText>
