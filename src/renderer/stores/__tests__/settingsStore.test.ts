@@ -43,7 +43,7 @@ describe('settingsStore', () => {
       monitoringEnabled: true,
       analyticsEnabled: true,
       queueConcurrency: DEFAULT_QUEUE_CONCURRENCY,
-      whenDone: { enabled: false, action: DEFAULT_WHEN_DONE_ACTION, force: false },
+      whenDone: DEFAULT_WHEN_DONE_ACTION,
       mcpEnabled: false,
       mcpPort: 8765,
       mcpToken: '',
@@ -122,12 +122,8 @@ describe('settingsStore', () => {
     expect(localStorage.getItem(QUEUE_CONCURRENCY_STORAGE_KEY)).toBe('3');
   });
 
-  it('defaults the when-done config to disabled with the default action', () => {
-    expect(useSettingsStore.getState().whenDone).toEqual({
-      enabled: false,
-      action: DEFAULT_WHEN_DONE_ACTION,
-      force: false,
-    });
+  it('defaults the when-done action to none', () => {
+    expect(useSettingsStore.getState().whenDone).toBe(DEFAULT_WHEN_DONE_ACTION);
   });
 
   it('setWhenDone updates the value, persists it, and forwards it to the main process', () => {
@@ -136,11 +132,25 @@ describe('settingsStore', () => {
       value: { ...window.electronAPI, queueSetWhenDone: spy },
       writable: true,
     });
-    const config = { enabled: true, action: 'sleep' as const, force: true };
-    useSettingsStore.getState().setWhenDone(config);
-    expect(useSettingsStore.getState().whenDone).toEqual(config);
-    expect(JSON.parse(localStorage.getItem(WHEN_DONE_STORAGE_KEY) as string)).toEqual(config);
-    expect(spy).toHaveBeenCalledWith(config);
+    useSettingsStore.getState().setWhenDone('shutdown_force');
+    expect(useSettingsStore.getState().whenDone).toBe('shutdown_force');
+    expect(JSON.parse(localStorage.getItem(WHEN_DONE_STORAGE_KEY) as string)).toBe('shutdown_force');
+    expect(spy).toHaveBeenCalledWith('shutdown_force');
+  });
+
+  it('migrates a legacy enabled when-done config to the matching action', () => {
+    localStorage.setItem(WHEN_DONE_STORAGE_KEY, JSON.stringify({ enabled: true, action: 'shutdown', force: true }));
+    expect(readStoredWhenDone()).toBe('shutdown_force');
+  });
+
+  it('migrates a legacy disabled when-done config to none', () => {
+    localStorage.setItem(WHEN_DONE_STORAGE_KEY, JSON.stringify({ enabled: false, action: 'sleep', force: false }));
+    expect(readStoredWhenDone()).toBe('none');
+  });
+
+  it('falls back to none for an unknown persisted when-done value', () => {
+    localStorage.setItem(WHEN_DONE_STORAGE_KEY, JSON.stringify('explode'));
+    expect(readStoredWhenDone()).toBe('none');
   });
 
   it('defaults monitoring consent to enabled', () => {
@@ -397,26 +407,24 @@ describe('readStoredWhenDone', () => {
   });
 
   it('returns the defaults when nothing is stored', () => {
-    expect(readStoredWhenDone()).toEqual({ enabled: false, action: DEFAULT_WHEN_DONE_ACTION, force: false });
+    expect(readStoredWhenDone()).toBe(DEFAULT_WHEN_DONE_ACTION);
   });
 
-  it('reads a persisted when-done config', () => {
-    localStorage.setItem(WHEN_DONE_STORAGE_KEY, JSON.stringify({ enabled: true, action: 'hibernate', force: true }));
-    expect(readStoredWhenDone()).toEqual({ enabled: true, action: 'hibernate', force: true });
+  it('reads a persisted when-done action', () => {
+    localStorage.setItem(WHEN_DONE_STORAGE_KEY, JSON.stringify('hibernate'));
+    expect(readStoredWhenDone()).toBe('hibernate');
   });
 
   it('falls back to the default action for an unknown action', () => {
-    localStorage.setItem(WHEN_DONE_STORAGE_KEY, JSON.stringify({ enabled: true, action: 'bogus', force: false }));
-    const stored = readStoredWhenDone();
-    expect(stored.enabled).toBe(true);
-    expect(stored.action).toBe(DEFAULT_WHEN_DONE_ACTION);
+    localStorage.setItem(WHEN_DONE_STORAGE_KEY, JSON.stringify('bogus'));
+    expect(readStoredWhenDone()).toBe(DEFAULT_WHEN_DONE_ACTION);
   });
 
   it('falls back to defaults for corrupted storage', () => {
     expectAppLog('warn', 'renderer/stores/settingsStore');
 
     localStorage.setItem(WHEN_DONE_STORAGE_KEY, '{ not json');
-    expect(readStoredWhenDone()).toEqual({ enabled: false, action: DEFAULT_WHEN_DONE_ACTION, force: false });
+    expect(readStoredWhenDone()).toBe(DEFAULT_WHEN_DONE_ACTION);
   });
 });
 

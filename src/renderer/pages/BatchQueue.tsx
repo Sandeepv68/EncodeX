@@ -11,6 +11,11 @@
  * operation, transcoder, and the hardware-acceleration settings stored in
  * `useSettingsStore`.
  *
+ * Options that apply to every queue (currently the "Action when done"
+ * power-action setting) live in the `GlobalQueueOptions` bar rendered above the
+ * queue tab bar, so they stay visible and unambiguous for both the general and
+ * the mux queue.
+ *
  * The in-memory job list is kept in sync with the main process queue via
  * `window.electronAPI.queueList` (initial load) and the push subscriptions
  * `onQueueAdded`, `onQueueRemoved`, `onQueueStatusChange`, and `onQueueMoved`,
@@ -33,6 +38,7 @@ import type { DragEndEvent, DragStartEvent, Modifier } from '@dnd-kit/core';
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import BatchControls from '../components/BatchControls';
 import BatchEncodingPanel from '../components/BatchEncodingPanel';
+import GlobalQueueOptions from '../components/GlobalQueueOptions';
 import MuxQueuePanel from '../components/MuxQueuePanel';
 import QueueJobCard, { QueueJobCardContent } from '../components/QueueJobCard';
 import QueueDropArea from '../components/QueueDropArea';
@@ -1330,6 +1336,8 @@ export default function BatchQueue() {
         <ViewLogsButton iconOnly />
       </PageTitle>
 
+      <GlobalQueueOptions whenDone={whenDone} onWhenDoneChange={setWhenDone} />
+
       <QueueTabs
         value={tab}
         onChange={(_event, next: 'general' | 'mux') => handleTabChange(next)}
@@ -1390,8 +1398,6 @@ export default function BatchQueue() {
                   onBrowseDir={handleBrowseDir}
                   overwrite={overwrite}
                   onOverwriteChange={setOverwrite}
-                  whenDone={whenDone}
-                  onWhenDoneChange={setWhenDone}
                   onExport={handleExport}
                   onImport={handleImport}
                   hardwareAccelAlert={settingsHardwareAcceleration}

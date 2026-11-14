@@ -4,11 +4,11 @@
  * Performs a shutdown, sleep, or hibernate action after the batch queue drains.
  * The command is platform-specific and spawned detached with stdio ignored and
  * unref'd, so it keeps running even if the Electron process exits, suspends, or
- * shuts down immediately after the call returns. On Windows the `force` flag is
- * honored by passing `shutdown /f` so applications are closed without
+ * shuts down immediately after the call returns. On Windows the `shutdown_force`
+ * action is honored by passing `shutdown /f` so applications are closed without
  * prompting; macOS and Linux do not expose a user-facing force-close switch for
- * these actions, so `force` is ignored there (the command already acts without
- * interaction).
+ * these actions, so the force variant behaves like a plain shutdown there (the
+ * command already acts without interaction).
  *
  * Platform commands:
  *  - Windows: `shutdown /s [/f] /t 0` for shutdown; `rundll32.exe
@@ -30,18 +30,17 @@ const log = new Logger('main/power-actions');
 /**
  * Resolves the platform-specific command that performs the given power action.
  * Returns null when the action cannot be performed on the current platform
- * (this never happens for the supported WhenDoneAction values, but keeps the
- * caller free of platform branches).
+ * (`none` never can, and no other value does on a supported platform).
  * @param {WhenDoneAction} action - The power action to perform.
- * @param {boolean} force - Whether open processes should be force-closed (only
- *   honored on Windows shutdown).
  * @returns {PowerCommand | null} The command to spawn, or null when unsupported.
  */
-function buildPowerCommand(action: WhenDoneAction, force: boolean): PowerCommand | null {
+function buildPowerCommand(action: WhenDoneAction): PowerCommand | null {
   if (process.platform === 'win32') {
     switch (action) {
       case 'shutdown':
-        return { command: 'shutdown', args: force ? ['/s', '/f', '/t', '0'] : ['/s', '/t', '0'] };
+        return { command: 'shutdown', args: ['/s', '/t', '0'] };
+      case 'shutdown_force':
+        return { command: 'shutdown', args: ['/s', '/f', '/t', '0'] };
       case 'sleep':
         return { command: 'rundll32.exe', args: ['powrprof.dll,SetSuspendState', '0', '1', '0'] };
       case 'hibernate':
@@ -51,6 +50,7 @@ function buildPowerCommand(action: WhenDoneAction, force: boolean): PowerCommand
   if (process.platform === 'darwin') {
     switch (action) {
       case 'shutdown':
+      case 'shutdown_force':
         return { command: 'osascript', args: ['-e', 'tell app "System Events" to shut down'] };
       case 'sleep':
       case 'hibernate':
@@ -60,6 +60,7 @@ function buildPowerCommand(action: WhenDoneAction, force: boolean): PowerCommand
   if (process.platform === 'linux') {
     switch (action) {
       case 'shutdown':
+      case 'shutdown_force':
         return { command: 'systemctl', args: ['poweroff'] };
       case 'sleep':
         return { command: 'systemctl', args: ['suspend'] };
@@ -80,16 +81,15 @@ function buildPowerCommand(action: WhenDoneAction, force: boolean): PowerCommand
  * performed after spawn - the action is fully fire-and-forget. Failures to
  * spawn are logged (the OS typically has these commands present) and swallowed.
  * @param {WhenDoneAction} action - The power action to perform.
- * @param {boolean} force - Whether open processes should be force-closed.
  * @returns {void}
  */
-export function performPowerAction(action: WhenDoneAction, force: boolean): void {
-  const cmd = buildPowerCommand(action, force);
+export function performPowerAction(action: WhenDoneAction): void {
+  const cmd = buildPowerCommand(action);
   if (!cmd) {
     log.error(LOG_WHEN_DONE_UNSUPPORTED_PLATFORM, process.platform, action);
     return;
   }
-  log.info(LOG_WHEN_DONE_EXECUTING, action, 'force:', force);
+  log.info(LOG_WHEN_DONE_EXECUTING, action);
   try {
     const child = spawn(cmd.command, cmd.args, { detached: true, stdio: 'ignore' });
     child.unref();

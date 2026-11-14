@@ -243,8 +243,8 @@ const api = {
     state.queueState.concurrency = concurrency;
     return Promise.resolve();
   },
-  queueSetWhenDone: (config) => {
-    state.queueState.whenDone = config;
+  queueSetWhenDone: (action) => {
+    state.queueState.whenDone = action;
     return Promise.resolve();
   },
   queueMoveTo: (id, toPosition) => {

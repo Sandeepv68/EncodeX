@@ -204,7 +204,7 @@ describe('BatchQueue', () => {
     getBmfStatusMock.mockResolvedValueOnce({ available: true, missing: [] });
     getBmfStatusMock.mockResolvedValueOnce({ available: false, missing: ['bmf_ffmpeg'] });
     renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[2]);
     fireEvent.click(screen.getByText('BMF'));
     await waitFor(() => expect(getBmfStatusMock).toHaveBeenCalledTimes(1));
     openAddFiles();
@@ -224,7 +224,7 @@ describe('BatchQueue', () => {
     getBmfStatusMock.mockResolvedValueOnce({ available: true, missing: [] });
     getBmfStatusMock.mockRejectedValueOnce(new Error('ipc down'));
     renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[2]);
     fireEvent.click(screen.getByText('BMF'));
     await waitFor(() => expect(getBmfStatusMock).toHaveBeenCalledTimes(1));
     openAddFiles();
@@ -268,7 +268,7 @@ describe('BatchQueue', () => {
     queueListMock.mockResolvedValue([]);
     selectFilesMock.mockResolvedValue(['/in/video.mp4']);
     renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
     fireEvent.click(screen.getByText('batchQueue.operationExtractAudio'));
     openAddFiles();
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
@@ -296,7 +296,7 @@ describe('BatchQueue', () => {
     queueListMock.mockResolvedValue([]);
     selectFilesMock.mockResolvedValue(['/in/photo.png']);
     renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
     fireEvent.click(screen.getByText('batchQueue.operationCompressImage'));
     openAddFiles();
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
@@ -326,9 +326,9 @@ describe('BatchQueue', () => {
     selectFilesMock.mockResolvedValue(['/in/photo.png']);
     queueAddMock.mockResolvedValue('job-3');
     renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
     fireEvent.click(screen.getByText('batchQueue.operationCompressImage'));
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[4]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[5]);
     fireEvent.click(screen.getByText('WebP'));
     fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '15' } });
     openAddFiles();
@@ -359,7 +359,7 @@ describe('BatchQueue', () => {
     selectFilesMock.mockResolvedValue(['/in/video.mp4']);
     queueAddMock.mockResolvedValue('job-3');
     renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[6]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[7]);
     fireEvent.click(screen.getByText('mkv'));
     openAddFiles();
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
@@ -373,9 +373,9 @@ describe('BatchQueue', () => {
     selectFilesMock.mockResolvedValue(['/in/video.mkv']);
     queueAddMock.mockResolvedValue('job-3');
     renderPage();
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[6]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[7]);
     fireEvent.click(screen.getByText('mp4'));
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[4]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[5]);
     fireEvent.click(screen.getByText('Theora (libtheora)'));
     openAddFiles();
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
@@ -650,7 +650,7 @@ describe('BatchQueue', () => {
     queueAddMock.mockResolvedValue('job-9');
     renderPage();
     await waitFor(() => expect(queueListMock).toHaveBeenCalledOnce());
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
     fireEvent.click(screen.getByText('batchQueue.operationCompressImage'));
     openAddFiles();
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
@@ -666,7 +666,7 @@ describe('BatchQueue', () => {
     queueAddMock.mockResolvedValue('job-9');
     renderPage();
     await waitFor(() => expect(queueListMock).toHaveBeenCalledOnce());
-    fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
+    fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
     fireEvent.click(screen.getByText('batchQueue.operationCompressImage'));
     openAddFiles();
     fireEvent.click(await screen.findByText('batchQueue.reviewAdd'));
@@ -1380,5 +1380,23 @@ describe('BatchQueue', () => {
       fireEvent.click(screen.getByTestId('batch-queue-tab-general'));
     });
     expect(screen.getByTestId('batch-queue-tab-general')).toHaveAttribute('aria-selected', 'true');
+  });
+
+  it('shows the global options bar on the general tab', async () => {
+    queueListMock.mockResolvedValue([]);
+    await act(async () => {
+      renderPage();
+    });
+    expect(screen.getByTestId('batch-global-options')).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'batchQueue.whenDone' })).toBeInTheDocument();
+  });
+
+  it('shows the global options bar on the mux tab', async () => {
+    queueListMock.mockResolvedValue([]);
+    await act(async () => {
+      renderPage('/batch?tab=mux');
+    });
+    expect(screen.getByTestId('batch-global-options')).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'batchQueue.whenDone' })).toBeInTheDocument();
   });
 });

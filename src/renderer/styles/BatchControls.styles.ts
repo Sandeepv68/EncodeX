@@ -39,10 +39,6 @@ export const OutputDirField = styled(TextField)(({ theme }) => ({
   minWidth: theme.typography.pxToRem(220),
 }));
 
-export const WhenDoneSelect = styled(TextField)(({ theme }) => ({
-  minWidth: theme.typography.pxToRem(130),
-}));
-
 /**
  * Vertical offset aligning a label-less control (icon button or checkbox) with
  * the input of a labeled FieldBox. Labeled fields are taller than the controls
@@ -73,11 +69,6 @@ export const OutputDirFieldBox = styled(FieldBox)(({ theme }) => ({
   minWidth: theme.typography.pxToRem(220),
 }));
 
-/** "When done" action select kept at its content width. @const WhenDoneFieldBox */
-export const WhenDoneFieldBox = styled(FieldBox)({
-  flex: '0 0 auto',
-});
-
 /** Icon button aligned to a labeled field's input. @const AlignedIconButton */
 export const AlignedIconButton = styled(OutlinedIconButton)(({ theme }) => ({
   marginTop: fieldLabelOffset(theme),
@@ -92,12 +83,6 @@ export const BrowseButton = styled(OutlinedIconButton)(({ theme }) => ({
 export const AlignedCheckbox = styled(FormControlLabel)(({ theme }) => ({
   whiteSpace: 'nowrap',
   marginLeft: theme.spacing(1),
-  marginTop: fieldLabelOffset(theme),
-}));
-
-/** Force-quit checkbox aligned to a labeled field's input. @const ForceCheckbox */
-export const ForceCheckbox = styled(FormControlLabel)(({ theme }) => ({
-  whiteSpace: 'nowrap',
   marginTop: fieldLabelOffset(theme),
 }));
 

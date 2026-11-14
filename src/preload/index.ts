@@ -87,7 +87,7 @@ import {
   BmfStatus,
   WaveformData,
   ThumbnailStrip,
-  WhenDoneConfig,
+  WhenDoneAction,
   UpdateInfo,
   UpdateProgress,
   PendingInstall,
@@ -627,26 +627,24 @@ const api = {
     return ipcRenderer.invoke(IPC.QUEUE_SET_CONCURRENCY, concurrency) as Promise<void>;
   },
   /**
-   * Sets the when-done power action config for the batch queue. Logs the call
+   * Sets the when-done power action for the batch queue. Logs the call
    * at info level, then invokes the main process over the
    * `IPC.QUEUE_SET_WHEN_DONE` ('queue-set-when-done') channel. The main
-   * process records the config and runs the power action when the queue
-   * drains while it is enabled.
+   * process records the action and runs it when the queue drains.
    *
-   * @param {WhenDoneConfig} config - Whether to act when the queue drains,
-   *   which power action to run, and whether open processes should be
-   *   force-closed.
-   * @returns {Promise<void>} Resolves once the config has been recorded.
+   * @param {WhenDoneAction} action - The power action to run when the queue
+   *   drains ('none' leaves the machine alone).
+   * @returns {Promise<void>} Resolves once the action has been recorded.
    */
-  queueSetWhenDone: (config: WhenDoneConfig) => {
-    // The config is handed to the logger unserialised on purpose. `JSON.stringify` here threw on a
+  queueSetWhenDone: (action: WhenDoneAction) => {
+    // The action is handed to the logger unserialised on purpose. `JSON.stringify` here threw on a
     // cyclic payload - and structured clone preserves cycles, so a cyclic object really does reach
     // the preload - which made this Promise-returning method throw *synchronously* instead of
     // rejecting. A renderer `.catch()` never sees that, so the error escaped as an unhandled
     // renderer exception before the main process was involved at all. `sanitizeLogArg` already
     // falls back to `String(value)` for a value it cannot serialise.
-    log.info(LOG_QUEUE_SET_WHEN_DONE, config);
-    return ipcRenderer.invoke(IPC.QUEUE_SET_WHEN_DONE, config) as Promise<void>;
+    log.info(LOG_QUEUE_SET_WHEN_DONE, action);
+    return ipcRenderer.invoke(IPC.QUEUE_SET_WHEN_DONE, action) as Promise<void>;
   },
   /**
    * Reorders a QUEUED batch job to a target position within the QUEUED

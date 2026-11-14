@@ -132,7 +132,7 @@ describe('preload', () => {
     ['queueCancelAll', IPC.QUEUE_CANCEL_ALL, []],
     ['queueClearCompleted', IPC.QUEUE_CLEAR_COMPLETED, []],
     ['queueSetConcurrency', IPC.QUEUE_SET_CONCURRENCY, [3]],
-    ['queueSetWhenDone', IPC.QUEUE_SET_WHEN_DONE, [{ enabled: true, action: 'shutdown', force: false }]],
+    ['queueSetWhenDone', IPC.QUEUE_SET_WHEN_DONE, ['shutdown_force']],
     ['queueMoveTo', IPC.QUEUE_MOVE_TO, ['id-1', 2]],
     ['queueUpdateOptions', IPC.QUEUE_UPDATE_OPTIONS, ['id-1', { videoCodec: 'libx265' }, '/tmp/new.mp4']],
     ['queueUpdateOptions', IPC.QUEUE_UPDATE_OPTIONS, ['id-1', { videoCodec: 'libx265' }, undefined]],
@@ -331,27 +331,27 @@ describe('preload', () => {
     expect(cb, 'an unrecognised payload must not reach the consumer').not.toHaveBeenCalled();
   });
 
-  it('queueSetWhenDone returns a promise for a cyclic config instead of throwing synchronously', async () => {
+  it('queueSetWhenDone returns a promise for a cyclic payload instead of throwing synchronously', async () => {
     // Found by `e2e/specs/ipc-abuse.spec.ts`. The log line used `JSON.stringify(config)`, and
     // structured clone *preserves* cycles, so a cyclic object genuinely reaches the preload and
     // made this Promise-returning method throw before `invoke` was ever called. A renderer's
     // `.catch()` cannot see a synchronous throw, so the error escaped as an unhandled renderer
     // exception with the main process never involved.
-    const cyclic: Record<string, unknown> = { enabled: true, action: 'shutdown', force: false };
+    const cyclic: Record<string, unknown> = { action: 'shutdown' };
     cyclic.self = cyclic;
     ipcRendererMock.invoke.mockResolvedValue(undefined);
 
-    const returned = (api.queueSetWhenDone as (config: unknown) => Promise<void>)(cyclic);
+    const returned = (api.queueSetWhenDone as (action: unknown) => Promise<void>)(cyclic);
 
     expect(returned, 'must hand back a promise, not throw').toBeInstanceOf(Promise);
     await expect(returned).resolves.toBeUndefined();
     expect(ipcRendererMock.invoke).toHaveBeenCalledWith(IPC.QUEUE_SET_WHEN_DONE, cyclic);
   });
 
-  it('queueSetWhenDone survives a config that JSON.stringify cannot serialise', async () => {
+  it('queueSetWhenDone survives a payload that JSON.stringify cannot serialise', async () => {
     ipcRendererMock.invoke.mockResolvedValue(undefined);
-    const withBigInt = { enabled: true, action: 'shutdown', force: false, extra: 10n ** 30n } as unknown;
+    const withBigInt = { action: 'shutdown', extra: 10n ** 30n } as unknown;
 
-    await expect((api.queueSetWhenDone as (config: unknown) => Promise<void>)(withBigInt)).resolves.toBeUndefined();
+    await expect((api.queueSetWhenDone as (action: unknown) => Promise<void>)(withBigInt)).resolves.toBeUndefined();
   });
 });

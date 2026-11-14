@@ -41,7 +41,7 @@ import type {
   UpdateInfo,
   UpdateProgress,
   WaveformData,
-  WhenDoneConfig,
+  WhenDoneAction,
 } from '../../shared/types';
 import type { DemuxMediaPreferences, DemuxTarget, RemuxWarning } from '../../shared/codec-containers';
 import type { AuditEntry } from '../../shared/audit';
@@ -98,8 +98,8 @@ export interface HwAccelStored {
  * @property {(token: string) => void} setMcpToken - Sets the MCP server bearer token, persists it, and adopts the sanitized result.
  * @property {number} queueConcurrency - Number of batch jobs run in parallel (1-4).
  * @property {(concurrency: number) => void} setQueueConcurrency - Sets the batch concurrency, persists it, and forwards it to the main process.
- * @property {WhenDoneConfig} whenDone - When-done power action config for the batch queue (enabled, action, force).
- * @property {(config: WhenDoneConfig) => void} setWhenDone - Sets the when-done config, persists it, and forwards it to the main process.
+ * @property {WhenDoneAction} whenDone - Power action performed when the batch queue drains ('none' leaves the machine alone).
+ * @property {(action: WhenDoneAction) => void} setWhenDone - Sets the when-done action, persists it, and forwards it to the main process.
  */
 export interface SettingsState {
   transcoder: string;
@@ -130,8 +130,8 @@ export interface SettingsState {
   setMcpToken: (token: string) => void;
   queueConcurrency: number;
   setQueueConcurrency: (concurrency: number) => void;
-  whenDone: WhenDoneConfig;
-  setWhenDone: (config: WhenDoneConfig) => void;
+  whenDone: WhenDoneAction;
+  setWhenDone: (action: WhenDoneAction) => void;
 }
 
 /**
