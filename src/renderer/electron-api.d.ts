@@ -29,6 +29,7 @@ import {
   UpdateProgress,
   PendingInstall,
   FolderSelection,
+  WhenDoneAction,
 } from '../shared/types';
 import type { McpSettings } from '../shared/mcp-settings';
 import type { AiConnectTestResult, AiModelsListResult, AiSettingsUpdate, AiSettingsView } from '../shared/ai/settings';
@@ -263,14 +264,13 @@ export interface ElectronAPI {
   /**
    * Sets the when-done power action config for the batch queue over the
    * `IPC.QUEUE_SET_WHEN_DONE` ('queue-set-when-done') channel. The main
-   * process records the config and runs the power action when the queue
-   * drains while it is enabled.
-   * @param {WhenDoneConfig} config - Whether to act when the queue drains,
-   *   which power action to run, and whether open processes should be
-   *   force-closed.
-   * @returns {Promise<void>} Resolves once the config has been recorded.
+   * process records the action and runs the power action when the queue
+   * drains.
+   * @param {WhenDoneAction} action - The power action to run when the queue
+   *   drains ('none' leaves the machine alone).
+   * @returns {Promise<void>} Resolves once the action has been recorded.
    */
-  queueSetWhenDone(config: WhenDoneConfig): Promise<void>;
+  queueSetWhenDone(action: WhenDoneAction): Promise<void>;
   /**
    * Reorders a QUEUED batch job to a target position within the QUEUED
    * subsequence over the `IPC.QUEUE_MOVE_TO` ('queue-move-to') channel.

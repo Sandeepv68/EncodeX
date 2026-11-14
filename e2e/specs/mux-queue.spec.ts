@@ -117,7 +117,7 @@ describe.runIf(IS_E2E)('Mux queue', () => {
     const { page } = session;
     await gotoPage(page, 'batch');
     await page.locator('[data-testid="batch-queue-tab-mux"]').click();
-    await page.locator('[data-testid="mux-queue-stats"]').waitFor({ timeout: 15000 });
+    await page.locator('[data-testid="mux-queue-concurrency"]').waitFor({ timeout: 15000 });
     await expect.poll(() => page.getByRole('button', { name: 'Start' }).count()).toBeGreaterThan(0);
     await expect.poll(() => page.getByRole('button', { name: 'Cancel all' }).count()).toBeGreaterThan(0);
   });

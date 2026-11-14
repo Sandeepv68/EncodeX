@@ -5,7 +5,6 @@ import BatchControls from '../BatchControls';
 import { useDismissedAlertsStore } from '../../stores/dismissedAlertsStore';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX } from '../../../shared/media-options';
 import { TRANSCODER_TYPES } from '../../../shared/transcoder-constants';
-import type { WhenDoneConfig } from '../../../shared/types';
 import { assertNoAxeViolations } from '../../../test-utils/axe';
 
 function renderControls(
@@ -16,7 +15,6 @@ function renderControls(
     hasRunning?: boolean;
     hasQueued?: boolean;
     hasActive?: boolean;
-    whenDone?: WhenDoneConfig;
     hardwareAccelAlert?: boolean;
   } = {},
 ) {
@@ -35,8 +33,6 @@ function renderControls(
   const onOutputDirChange = vi.fn();
   const onBrowseDir = vi.fn();
   const onOverwriteChange = vi.fn();
-  const whenDone = opts.whenDone ?? { enabled: false, action: 'shutdown', force: false };
-  const onWhenDoneChange = vi.fn();
   const onExport = vi.fn();
   const onImport = vi.fn();
   const renderResult = render(
@@ -64,8 +60,6 @@ function renderControls(
       onBrowseDir={onBrowseDir}
       overwrite={false}
       onOverwriteChange={onOverwriteChange}
-      whenDone={whenDone}
-      onWhenDoneChange={onWhenDoneChange}
       onExport={onExport}
       onImport={onImport}
       hardwareAccelAlert={opts.hardwareAccelAlert ?? false}
@@ -88,8 +82,6 @@ function renderControls(
     onOutputDirChange,
     onBrowseDir,
     onOverwriteChange,
-    whenDone,
-    onWhenDoneChange,
     onExport,
     onImport,
   };
@@ -281,38 +273,6 @@ describe('BatchControls', () => {
     const { onImport } = renderControls();
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.importQueue' }));
     expect(onImport).toHaveBeenCalledOnce();
-  });
-
-  it('hides the when-done action select and force checkbox while disabled', () => {
-    renderControls(false, 1, { whenDone: { enabled: false, action: 'shutdown', force: false } });
-    expect(screen.getByLabelText('batchQueue.whenDone')).toBeInTheDocument();
-    expect(screen.queryByLabelText('batchQueue.whenDoneAction')).not.toBeInTheDocument();
-    expect(screen.queryByLabelText('batchQueue.whenDoneForce')).not.toBeInTheDocument();
-  });
-
-  it('fires onWhenDoneChange with enabled true when the when-done checkbox is toggled on', () => {
-    const { onWhenDoneChange } = renderControls(false, 1, { whenDone: { enabled: false, action: 'shutdown', force: false } });
-    fireEvent.click(screen.getByLabelText('batchQueue.whenDone'));
-    expect(onWhenDoneChange).toHaveBeenCalledWith({ enabled: true, action: 'shutdown', force: false });
-  });
-
-  it('reveals the action select and force checkbox when enabled', () => {
-    renderControls(false, 1, { whenDone: { enabled: true, action: 'shutdown', force: false } });
-    expect(screen.getByRole('combobox', { name: 'batchQueue.whenDoneAction' })).toBeInTheDocument();
-    expect(screen.getByLabelText('batchQueue.whenDoneForce')).toBeInTheDocument();
-  });
-
-  it('fires onWhenDoneChange with the new action when a different action is chosen', () => {
-    const { onWhenDoneChange } = renderControls(false, 1, { whenDone: { enabled: true, action: 'shutdown', force: false } });
-    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'batchQueue.whenDoneAction' }));
-    fireEvent.click(screen.getByText('batchQueue.whenDoneSleep'));
-    expect(onWhenDoneChange).toHaveBeenCalledWith({ enabled: true, action: 'sleep', force: false });
-  });
-
-  it('fires onWhenDoneChange with force true when the force checkbox is toggled', () => {
-    const { onWhenDoneChange } = renderControls(false, 1, { whenDone: { enabled: true, action: 'shutdown', force: false } });
-    fireEvent.click(screen.getByLabelText('batchQueue.whenDoneForce'));
-    expect(onWhenDoneChange).toHaveBeenCalledWith({ enabled: true, action: 'shutdown', force: true });
   });
 
   it('shows the hardware acceleration alert when hardware acceleration is enabled', () => {

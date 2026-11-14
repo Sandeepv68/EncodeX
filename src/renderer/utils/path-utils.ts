@@ -73,6 +73,20 @@ export function stem(file: string): string {
 }
 
 /**
+ * Joins a directory with a relative file name using the separator of the
+ * directory (Windows `\` or POSIX `/`), stripping any trailing separator.
+ * An empty directory yields the name unchanged.
+ * @param {string} dir - The directory path.
+ * @param {string} name - The relative file name.
+ * @returns {string} The joined path.
+ */
+export function joinPath(dir: string, name: string): string {
+  if (!dir) return name;
+  const sep = dir.includes('\\') ? '\\' : '/';
+  return `${dir.replace(/[\\/]+$/, '')}${sep}${name}`;
+}
+
+/**
  * Normalizes a file path for duplicate comparison: lowercases and unifies
  * Windows backslashes with POSIX forward slashes.
  * @param {string} path - The file path to normalize.

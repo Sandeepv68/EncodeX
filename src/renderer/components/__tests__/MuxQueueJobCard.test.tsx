@@ -60,7 +60,12 @@ describe('MuxQueueJobCard', () => {
     );
     expect(screen.getByTestId('mux-queue-job-kind')).toHaveTextContent('muxQueue.kindDemux');
     expect(screen.getByTestId('mux-queue-job-summary')).toHaveTextContent('muxQueue.targets');
-    expect(screen.getByTestId('mux-queue-job-summary')).toHaveTextContent('C:/out/streams');
+    expect(screen.getByTestId('mux-queue-job-summary')).toHaveTextContent('streams');
+  });
+
+  it('summarizes a remux job with its output file name', () => {
+    renderCard(makeJob());
+    expect(screen.getByTestId('mux-queue-job-summary')).toHaveTextContent('movie.mkv');
   });
 
   it('expands to list every target', () => {
@@ -76,6 +81,39 @@ describe('MuxQueueJobCard', () => {
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.expandDetails' }));
     expect(screen.getByText('C:/out/a.mkv')).toBeInTheDocument();
     expect(screen.getByText('C:/out/b.m4a')).toBeInTheDocument();
+  });
+
+  it('lists the input path, the output path and the transcoder in the details', () => {
+    renderCard(makeJob());
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.expandDetails' }));
+    expect(screen.getByTestId('mux-queue-job-input')).toHaveTextContent('C:/in/movie.mp4');
+    expect(screen.getByTestId('mux-queue-job-output')).toHaveTextContent('C:/out/movie.mkv');
+    expect(screen.getByText('FFMPEG')).toBeInTheDocument();
+  });
+
+  it('shows the output path only once for a remux job', () => {
+    renderCard(makeJob({ targets: [{ output: 'C:/out/movie.mkv', options: {}, label: 'C:/out/movie.mkv' }] }));
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.expandDetails' }));
+    expect(screen.getAllByText('C:/out/movie.mkv')).toHaveLength(1);
+  });
+
+  it('shows the conversion options of a target', () => {
+    renderCard(
+      makeJob({
+        kind: 'demux',
+        output: 'C:/out/streams',
+        targets: [
+          {
+            output: 'C:/out/streams/movie.video.mkv',
+            options: { copy: false, videoCodec: 'libx264', videoBitrate: '2000k' },
+            label: 'video:0',
+          },
+        ],
+      }),
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.expandDetails' }));
+    expect(screen.getByText(/batchQueue.optionVideoCodec/)).toHaveTextContent('libx264');
+    expect(screen.getByText(/batchQueue.optionVideoBitrate/)).toHaveTextContent('2000k');
   });
 
   it('shows the error of a failed job', () => {

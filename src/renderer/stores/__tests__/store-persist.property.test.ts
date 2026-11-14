@@ -20,7 +20,7 @@ import { loadJson, loadString, saveJson, saveString } from '../../utils/storage'
 import { readStoredBatchConfig } from '../batchConfig';
 import { readStoredHwAccel, readStoredQueueConcurrency, readStoredWhenDone, readStoredDrawerCondensed } from '../settingsStore';
 import { readStoredVideoCutDraft } from '../videoCutStore';
-import { MAX_QUEUE_CONCURRENCY } from '../../../shared/constants';
+import { MAX_QUEUE_CONCURRENCY, WHEN_DONE_ACTIONS } from '../../../shared/constants';
 
 /** @interface */
 interface Reader {
@@ -274,15 +274,13 @@ describe('store readers survive adversarial rehydration', () => {
     );
   });
 
-  it('when-done returns a fully-populated object', () => {
+  it('when-done always resolves to a known action', () => {
     for (const raw of ADVERSARIAL_RAW) {
       seed('encodex-when-done', raw);
       allowReaderWarnings(READERS[3]!);
       const wd = readStoredWhenDone();
-      expect(wd).toBeTypeOf('object');
-      expect(wd.enabled).toBeTypeOf('boolean');
-      expect(wd.force).toBeTypeOf('boolean');
-      expect(typeof wd.action).toBe('string');
+      expect(typeof wd).toBe('string');
+      expect(WHEN_DONE_ACTIONS as readonly string[]).toContain(wd);
     }
   });
 

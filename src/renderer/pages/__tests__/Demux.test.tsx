@@ -25,6 +25,8 @@ function resetStore(): void {
     selectedIndices: [],
     splitIndices: [],
     outputDir: '',
+    outputToFolder: false,
+    folderName: '',
     targets: [],
     warnings: [],
     media: {},
@@ -257,6 +259,32 @@ describe('Demux', () => {
     expect(useDemuxStore.getState().targets[0].output).toBe('/out/video.video.mp4');
   });
 
+  it('collects the extracted files in a new folder named after the source file', async () => {
+    selectFileMock.mockResolvedValue('/in/video.mkv');
+    getMediaInfoMock.mockResolvedValue({
+      file: '/in/video.mkv',
+      format: 'matroska',
+      size: 1024,
+      duration: 60,
+      bitrate: '1000k',
+      streams: [{ index: 0, type: 'video', codec: 'h264', width: 1920, height: 1080 }],
+    });
+    renderPage();
+    fireEvent.click(screen.getByText('demux.dropLabel'));
+    await waitFor(() => expect(getMediaInfoMock).toHaveBeenCalledOnce());
+
+    expect(screen.queryByTestId('demux-folder-name')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('demux-output-folder-toggle'));
+
+    const folderInput = screen.getByTestId('demux-folder-name').querySelector('input') as HTMLInputElement;
+    expect(folderInput).toHaveValue('video');
+    expect(useDemuxStore.getState().targets[0].output).toBe('/in/video/video.video.mp4');
+
+    fireEvent.change(folderInput, { target: { value: 'my:folder' } });
+    expect(useDemuxStore.getState().folderName).toBe('my:folder');
+    expect(useDemuxStore.getState().targets[0].output).toBe('/in/my-folder/video.video.mp4');
+  });
+
   it('does not enqueue twice when the add button is double-clicked', async () => {
     let resolveAdd: (value: string) => void = () => {};
     muxQueueAddMock.mockReturnValue(new Promise<string>((resolve) => (resolveAdd = resolve)));
@@ -280,7 +308,9 @@ describe('Demux', () => {
     expect(muxQueueAddMock).toHaveBeenCalledTimes(1);
 
     resolveAdd('mux-1');
-    await waitFor(() => expect(addToQueue).toBeEnabled());
+    // The queued job resets the form, so the button is disabled again because
+    // there is no input left to queue.
+    await waitFor(() => expect(addToQueue).toBeDisabled());
   });
 
   it('adds the selected streams to the mux queue without extracting them', async () => {

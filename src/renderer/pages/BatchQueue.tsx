@@ -11,6 +11,12 @@
  * operation, transcoder, and the hardware-acceleration settings stored in
  * `useSettingsStore`.
  *
+ * Options that apply to every queue (currently the "Action when done"
+ * power-action setting) live in the `GlobalQueueOptions` select grouped with
+ * the condense toggle and the view-logs action to the right of the queue tab
+ * list, so they stay visible and unambiguous for both the general and the mux
+ * queue.
+ *
  * The in-memory job list is kept in sync with the main process queue via
  * `window.electronAPI.queueList` (initial load) and the push subscriptions
  * `onQueueAdded`, `onQueueRemoved`, `onQueueStatusChange`, and `onQueueMoved`,
@@ -33,6 +39,7 @@ import type { DragEndEvent, DragStartEvent, Modifier } from '@dnd-kit/core';
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import BatchControls from '../components/BatchControls';
 import BatchEncodingPanel from '../components/BatchEncodingPanel';
+import GlobalQueueOptions from '../components/GlobalQueueOptions';
 import MuxQueuePanel from '../components/MuxQueuePanel';
 import QueueJobCard, { QueueJobCardContent } from '../components/QueueJobCard';
 import QueueDropArea from '../components/QueueDropArea';
@@ -70,8 +77,9 @@ import {
   DropOverlay,
   AnimatedSection,
   CondenseIcon,
-  CondenseButton,
   ClearAllBox,
+  QueueHeaderActions,
+  QueueHeaderRow,
   QueueTabs,
   TabLabelRow,
   TabCountChip,
@@ -141,14 +149,30 @@ export default function BatchQueue() {
   const [filter, setFilter] = useState('all');
 
   /**
-   * True while the page is condensed: the batch controls and the encoding
-   * options panel are collapsed so the page shows only the queue. Seeded from
-   * localStorage and persisted there so the preference survives navigation.
+   * True while the general queue tab is condensed: the batch controls and the
+   * encoding options panel are collapsed so the page shows only the queue.
+   * Seeded from localStorage and persisted there so the preference survives
+   * navigation. The mux tab keeps its own independent state so condensing one
+   * queue never changes the other.
    * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
    */
   const [condensed, setCondensed] = useState<boolean>(() => {
     try {
       return localStorage.getItem('encodex-batch-condensed') === '1';
+    } catch {
+      return false;
+    }
+  });
+
+  /**
+   * True while the mux queue tab is condensed: the mux toolbar and filter row
+   * are collapsed so the tab shows only the job list. Independent of the
+   * general queue's condensed preference and persisted under its own key.
+   * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
+   */
+  const [muxCondensed, setMuxCondensed] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('encodex-batch-mux-condensed') === '1';
     } catch {
       return false;
     }
@@ -164,8 +188,9 @@ export default function BatchQueue() {
   const [sectionsGone, setSectionsGone] = useState(false);
 
   /**
-   * Persists the condensed preference to localStorage whenever it changes.
-   * Failures are swallowed so a storage error can never break the page.
+   * Persists the general tab's condensed preference to localStorage whenever
+   * it changes. Failures are swallowed so a storage error can never break the
+   * page.
    * @returns {void}
    */
   useEffect(() => {
@@ -175,6 +200,19 @@ export default function BatchQueue() {
       // Storage unavailable; the preference simply will not persist.
     }
   }, [condensed]);
+
+  /**
+   * Persists the mux tab's condensed preference under its own storage key,
+   * keeping it independent from the general tab.
+   * @returns {void}
+   */
+  useEffect(() => {
+    try {
+      localStorage.setItem('encodex-batch-mux-condensed', muxCondensed ? '1' : '0');
+    } catch {
+      // Storage unavailable; the preference simply will not persist.
+    }
+  }, [muxCondensed]);
 
   /**
    * Filename search term; jobs whose input basename includes it (case-insensitive)
@@ -221,6 +259,13 @@ export default function BatchQueue() {
    * @type {React.MutableRefObject<HTMLInputElement | null>}
    */
   const searchRef = useRef<HTMLInputElement>(null);
+
+  /**
+   * Ref to the mux queue's filename search input, so the same "focus search"
+   * shortcut targets the search field of whichever tab is active.
+   * @type {React.MutableRefObject<HTMLInputElement | null>}
+   */
+  const muxSearchRef = useRef<HTMLInputElement>(null);
 
   /**
    * True while the user is dragging files over the window; shows the drop overlay.
@@ -1176,6 +1221,27 @@ export default function BatchQueue() {
   const hasCompleted = jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.DONE || job.status === QUEUE_STATUS.ERROR);
 
   /**
+   * The condensed state of the tab currently on screen. The condense toggle and
+   * the C shortcut act on this tab only.
+   * @type {boolean}
+   */
+  const activeCondensed = tab === 'mux' ? muxCondensed : condensed;
+
+  /**
+   * Flips the condensed state of the active tab, leaving the other tab's queue
+   * layout untouched, and records the change.
+   * @returns {void}
+   */
+  const toggleCondensed = () => {
+    if (tab === 'mux') {
+      setMuxCondensed((prev) => !prev);
+    } else {
+      setCondensed((prev) => !prev);
+    }
+    recordAnalyticsEvent(createAnalyticsEvent('batch_condense_toggled', { condensed: !activeCondensed }));
+  };
+
+  /**
    * Registers the page keyboard shortcuts (Ctrl+O add files, Ctrl+Enter start,
    * Ctrl+Shift+P pause, Ctrl+Shift+C cancel all, Ctrl+Shift+X clear completed,
    * Ctrl+E export, Ctrl+I import, C condense, F focus search, 1-5 status
@@ -1194,12 +1260,9 @@ export default function BatchQueue() {
     { id: 'batchQueue.import', handler: () => handleImport() },
     {
       id: 'batchQueue.condense',
-      handler: () => {
-        setCondensed((prev) => !prev);
-        recordAnalyticsEvent(createAnalyticsEvent('batch_condense_toggled', { condensed: !condensed }));
-      },
+      handler: () => toggleCondensed(),
     },
-    { id: 'batchQueue.focusSearch', handler: () => searchRef.current?.focus() },
+    { id: 'batchQueue.focusSearch', handler: () => (tab === 'mux' ? muxSearchRef.current : searchRef.current)?.focus() },
     {
       id: 'batchQueue.filterAll',
       handler: () => {
@@ -1310,57 +1373,60 @@ export default function BatchQueue() {
       <PageTitle variant="h5" component="h1">
         <TitleIcon>{pageIcons['/batch']}</TitleIcon>
         {t('batchQueue.title')}
-        <Tooltip title={condensed ? t('batchQueue.expand') : t('batchQueue.condense')} placement="left">
-          <CondenseButton
-            size="small"
-            aria-label={condensed ? t('batchQueue.expand') : t('batchQueue.condense')}
-            aria-expanded={!condensed}
-            aria-controls="batch-controls-section encoding-options-section"
-            onClick={() => {
-              setCondensed((prev) => !prev);
-              recordAnalyticsEvent(createAnalyticsEvent('batch_condense_toggled', { condensed: !condensed }));
-            }}
-            data-testid="batch-queue-condense"
-          >
-            <CondenseIcon $rotated={condensed}>
-              <FontAwesomeIcon icon={condensed ? faLayerGroup : faListOl} />
-            </CondenseIcon>
-          </CondenseButton>
-        </Tooltip>
-        <ViewLogsButton iconOnly />
       </PageTitle>
 
-      <QueueTabs
-        value={tab}
-        onChange={(_event, next: 'general' | 'mux') => handleTabChange(next)}
-        aria-label={t('batchQueue.title')}
-        textColor="inherit"
-        data-testid="batch-queue-tabs"
-      >
-        <Tab
-          value="general"
-          label={
-            <TabLabelRow>
-              {t('muxQueue.tabGeneral')}
-              <TabCountChip label={jobs.length} size="small" data-testid="batch-queue-tab-general-count" />
-            </TabLabelRow>
-          }
-          data-testid="batch-queue-tab-general"
-        />
-        <Tab
-          value="mux"
-          label={
-            <TabLabelRow>
-              {t('muxQueue.tabMux')}
-              <TabCountChip label={muxStatus.total} size="small" data-testid="batch-queue-tab-mux-count" />
-            </TabLabelRow>
-          }
-          data-testid="batch-queue-tab-mux"
-        />
-      </QueueTabs>
+      <QueueHeaderRow data-testid="batch-queue-header-row">
+        <QueueTabs
+          value={tab}
+          onChange={(_event, next: 'general' | 'mux') => handleTabChange(next)}
+          aria-label={t('batchQueue.title')}
+          textColor="inherit"
+          data-testid="batch-queue-tabs"
+        >
+          <Tab
+            value="general"
+            label={
+              <TabLabelRow>
+                {t('muxQueue.tabGeneral')}
+                <TabCountChip label={jobs.length} size="small" data-testid="batch-queue-tab-general-count" />
+              </TabLabelRow>
+            }
+            data-testid="batch-queue-tab-general"
+          />
+          <Tab
+            value="mux"
+            label={
+              <TabLabelRow>
+                {t('muxQueue.tabMux')}
+                <TabCountChip label={muxStatus.total} size="small" data-testid="batch-queue-tab-mux-count" />
+              </TabLabelRow>
+            }
+            data-testid="batch-queue-tab-mux"
+          />
+        </QueueTabs>
+
+        <QueueHeaderActions data-testid="batch-queue-header-actions">
+          <GlobalQueueOptions whenDone={whenDone} onWhenDoneChange={setWhenDone} />
+          <Tooltip title={activeCondensed ? t('batchQueue.expand') : t('batchQueue.condense')} placement="bottom">
+            <IconButton
+              size="small"
+              aria-label={activeCondensed ? t('batchQueue.expand') : t('batchQueue.condense')}
+              aria-expanded={!activeCondensed}
+              aria-controls={tab === 'mux' ? 'mux-queue-controls-section' : 'batch-controls-section encoding-options-section'}
+              onClick={toggleCondensed}
+              data-testid="batch-queue-condense"
+            >
+              <CondenseIcon $rotated={activeCondensed}>
+                <FontAwesomeIcon icon={activeCondensed ? faLayerGroup : faListOl} />
+              </CondenseIcon>
+            </IconButton>
+          </Tooltip>
+          <ViewLogsButton iconOnly />
+        </QueueHeaderActions>
+      </QueueHeaderRow>
 
       {tab === 'mux' ? (
-        <MuxQueuePanel />
+        <MuxQueuePanel searchRef={muxSearchRef} condensed={muxCondensed} />
       ) : (
         <>
           <Stack spacing={2}>
@@ -1390,8 +1456,6 @@ export default function BatchQueue() {
                   onBrowseDir={handleBrowseDir}
                   overwrite={overwrite}
                   onOverwriteChange={setOverwrite}
-                  whenDone={whenDone}
-                  onWhenDoneChange={setWhenDone}
                   onExport={handleExport}
                   onImport={handleImport}
                   hardwareAccelAlert={settingsHardwareAcceleration}

@@ -34,17 +34,16 @@
  * timestamp.
  *
  * Thumbnails are lazy: the expensive preview IPC call (which spawns ffmpeg for
- * videos) is deferred until the card scrolls near the viewport via an
- * IntersectionObserver, so large queues only pay for previews the user can
+ * videos) is deferred until the card scrolls near the viewport via
+ * {@link useLazyThumbnail}, so large queues only pay for previews the user can
  * actually see. Once a thumbnail is generated it is cached per input path for
- * the whole session (see {@link getPreviewThumbnail}) and re-seeded
- * synchronously on remount (see {@link getResolvedPreviewThumbnail}), so
- * remounting a card — during drags, reordering, or page navigation — shows the
- * thumbnail instantly and never regenerates it.
+ * the whole session and re-seeded synchronously on remount, so remounting a
+ * card — during drags, reordering, or page navigation — shows the thumbnail
+ * instantly and never regenerates it.
  */
 
-import { useEffect, useRef, useState } from 'react';
-import { Collapse, IconButton, Tooltip, Typography } from '@mui/material';
+import { useState } from 'react';
+import { Collapse, IconButton, TableBody, TableRow, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -70,7 +69,7 @@ import { QUEUE_STATUS } from '../../shared/media-options';
 import { useToastStore } from '../stores/toastStore';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
-import { getPreviewThumbnail, getResolvedPreviewThumbnail } from '../utils/preview-cache';
+import { useLazyThumbnail } from '../hooks/useLazyThumbnail';
 import { basename } from '../utils/path-utils';
 import { statusChipColor } from '../utils/queue-job-utils';
 import {
@@ -87,9 +86,11 @@ import {
   CardActionsStack,
   DragHandleButton,
   DetailsBox,
-  DetailsLabel,
-  OptionsGrid,
-  OptionRow,
+  DetailsTable,
+  DetailsCellLabel,
+  DetailsCellValue,
+  DetailsSectionCell,
+  DetailsPath,
 } from '../styles/QueueJobCard.styles';
 
 /**
@@ -122,79 +123,13 @@ export function QueueJobCardContent({
   const [expanded, setExpanded] = useState(false);
 
   /**
-   * Data URL of the job's media thumbnail (preview frame for video, scaled
-   * image preview for images), or null while loading/for unsupported files.
-   * Seeded from the renderer's session preview cache so a remounted card
-   * (navigation, drag overlay, reorder) shows an already-generated thumbnail
-   * instantly instead of waiting for an async fetch.
-   * @type {[string | null, React.Dispatch<React.SetStateAction<string | null>>]}
+   * Lazy preview thumbnail of the job's input (video frame or scaled image)
+   * together with the ref that marks the card as visible. The thumbnail is
+   * fetched once the card scrolls near the viewport and reused from the
+   * session cache on remount.
+   * @type {{ thumbnail: string | null; anchorRef: React.RefObject<HTMLDivElement | null> }}
    */
-  const [thumbnail, setThumbnail] = useState<string | null>(() => getResolvedPreviewThumbnail(job.input));
-
-  /**
-   * True once the card has scrolled near the viewport, at which point the
-   * thumbnail preview is actually fetched. Cards far off-screen stay lazy so a
-   * large queue never spawns preview work the user cannot see.
-   * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
-   */
-  const [thumbnailInView, setThumbnailInView] = useState(false);
-
-  /**
-   * Anchor whose visibility drives the lazy thumbnail load.
-   * @type {React.RefObject<HTMLDivElement | null>}
-   */
-  const thumbnailAnchorRef = useRef<HTMLDivElement | null>(null);
-
-  /**
-   * Marks the card as visible when its thumbnail anchor enters (or gets within
-   * a generous margin of) the viewport. In test environments without an
-   * IntersectionObserver the card is treated as immediately visible so previews
-   * load unconditionally. Once observed, the observer disconnects.
-   * @returns {void}
-   */
-  useEffect(() => {
-    if (typeof IntersectionObserver === 'undefined') {
-      setThumbnailInView(true);
-      return;
-    }
-    const node = thumbnailAnchorRef.current;
-    if (!node) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setThumbnailInView(true);
-            observer.disconnect();
-            break;
-          }
-        }
-      },
-      { rootMargin: '300px' },
-    );
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-
-  /**
-   * On mount (or once the card scrolls into view), fetches a thumbnail for the
-   * job's input via the session-scoped preview cache (audio files have no
-   * preview). The cache guarantees each input path is sent to the image/video
-   * preview IPC at most once per session, so remounts, drag-overlay clones, and
-   * page navigation reuse the generated thumbnail instead of regenerating it.
-   * @returns {void}
-   */
-  useEffect(() => {
-    if (!thumbnailInView) return;
-    let cancelled = false;
-    const loadThumbnail = async () => {
-      const dataUrl = await getPreviewThumbnail(job.input);
-      if (!cancelled && dataUrl) setThumbnail(dataUrl);
-    };
-    loadThumbnail();
-    return () => {
-      cancelled = true;
-    };
-  }, [thumbnailInView, job.input]);
+  const { thumbnail, anchorRef } = useLazyThumbnail(job.input);
 
   /**
    * Builds the compact label/value rows summarizing a job's encoding options.
@@ -251,7 +186,7 @@ export function QueueJobCardContent({
 
   return (
     <>
-      <CardBody ref={thumbnailAnchorRef}>
+      <CardBody ref={anchorRef}>
         {thumbnail && (
           <ThumbWrap>
             <ThumbImg src={thumbnail} alt="" data-testid="queue-job-thumbnail" />
@@ -352,47 +287,43 @@ export function QueueJobCardContent({
       </CardBody>
       <Collapse in={expanded}>
         <DetailsBox>
-          <DetailsLabel variant="caption" color="text.secondary">
-            {t('batchQueue.detailsOutput')}
-          </DetailsLabel>
-          <Typography variant="caption">{job.output}</Typography>
-          {job.error && (
-            <>
-              <DetailsLabel variant="caption" color="text.secondary">
-                {t('batchQueue.detailsError')}
-              </DetailsLabel>
-              <Typography variant="caption" color="error">
-                {job.error}
-              </Typography>
-            </>
-          )}
-          {optionRows.length > 0 && (
-            <>
-              <DetailsLabel variant="caption" color="text.secondary">
-                {t('batchQueue.detailsOptions')}
-              </DetailsLabel>
-              <OptionsGrid>
-                {optionRows.map((row) => (
-                  <OptionRow key={row.label}>
-                    <Typography variant="caption" color="text.secondary">
-                      {row.label}:
-                    </Typography>
-                    <Typography variant="caption">{row.value}</Typography>
-                  </OptionRow>
-                ))}
-                <OptionRow>
-                  <Typography variant="caption" color="text.secondary">
-                    {t('batchQueue.detailsTranscoder')}:
-                  </Typography>
-                  <Typography variant="caption">{job.transcoder}</Typography>
-                </OptionRow>
-              </OptionsGrid>
-            </>
-          )}
-          <DetailsLabel variant="caption" color="text.secondary">
-            {t('batchQueue.detailsCreatedAt')}
-          </DetailsLabel>
-          <Typography variant="caption">{new Date(job.createdAt).toLocaleString()}</Typography>
+          <DetailsTable>
+            <TableBody>
+              <TableRow>
+                <DetailsCellLabel>{t('batchQueue.detailsOutput')}</DetailsCellLabel>
+                <DetailsCellValue>
+                  <DetailsPath>{job.output}</DetailsPath>
+                </DetailsCellValue>
+              </TableRow>
+              {job.error && (
+                <TableRow>
+                  <DetailsCellLabel>{t('batchQueue.detailsError')}</DetailsCellLabel>
+                  <DetailsCellValue color="error">{job.error}</DetailsCellValue>
+                </TableRow>
+              )}
+              {optionRows.length > 0 && (
+                <>
+                  <TableRow>
+                    <DetailsSectionCell colSpan={2}>{t('batchQueue.detailsOptions')}</DetailsSectionCell>
+                  </TableRow>
+                  {optionRows.map((row) => (
+                    <TableRow key={row.label}>
+                      <DetailsCellLabel>{row.label}</DetailsCellLabel>
+                      <DetailsCellValue>{row.value}</DetailsCellValue>
+                    </TableRow>
+                  ))}
+                  <TableRow>
+                    <DetailsCellLabel>{t('batchQueue.detailsTranscoder')}</DetailsCellLabel>
+                    <DetailsCellValue>{job.transcoder}</DetailsCellValue>
+                  </TableRow>
+                </>
+              )}
+              <TableRow>
+                <DetailsCellLabel>{t('batchQueue.detailsCreatedAt')}</DetailsCellLabel>
+                <DetailsCellValue>{new Date(job.createdAt).toLocaleString()}</DetailsCellValue>
+              </TableRow>
+            </TableBody>
+          </DetailsTable>
         </DetailsBox>
       </Collapse>
     </>
