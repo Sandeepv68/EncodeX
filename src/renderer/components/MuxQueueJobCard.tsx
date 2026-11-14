@@ -9,8 +9,10 @@
  * file for a remux, or the number of extracted streams and the output folder
  * for a demux.
  *
- * The card can be expanded to list every target (label and output path), which
- * is what makes a multi-stream demux readable. Per-job actions are remove,
+ * The card can be expanded to list the job's full details: the input path, the
+ * output file (remux) or output folder (demux), every extracted stream with its
+ * own conversion settings (demux), the transcoder, the error text of a failed
+ * job, and the creation timestamp. Per-job actions are remove,
  * reveal-in-folder, and copy-path.
  *
  * The default export wires the card into @dnd-kit's sortable context so QUEUED
@@ -19,7 +21,7 @@
  */
 
 import { useState } from 'react';
-import { Collapse, IconButton, Tooltip, Typography } from '@mui/material';
+import { Collapse, IconButton, TableBody, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -41,6 +43,7 @@ import { basename } from '../utils/path-utils';
 import { statusChipColor } from '../utils/queue-job-utils';
 import { useToastStore } from '../stores/toastStore';
 import { QUEUE_STATUS } from '../../shared/media-options';
+import type { ConversionOptions } from '../../shared/types';
 import type { MuxQueueJobCardProps } from './types';
 import {
   JobCard,
@@ -55,9 +58,17 @@ import {
   CardActionsStack,
   DragHandleButton,
   DetailsBox,
-  DetailsLabel,
-  OptionsGrid,
-  OptionRow,
+  DetailsTable,
+  DetailsSubTable,
+  DetailsCellHost,
+  FLUSH_CELL_CLASS,
+  DetailsCellLabel,
+  DetailsCellValue,
+  DetailsSectionCell,
+  DetailsHeaderCell,
+  DetailsStreamCell,
+  DetailsOutputCell,
+  DetailsPath,
 } from '../styles/QueueJobCard.styles';
 
 /**
@@ -102,6 +113,73 @@ export default function MuxQueueJobCard({ job, progress, onRemove, onRetry }: Mu
 
   const detailsLabel = expanded ? t('batchQueue.collapseDetails') : t('batchQueue.expandDetails');
   const kindLabel = job.kind === 'demux' ? t('muxQueue.kindDemux') : t('muxQueue.kindRemux');
+
+  /**
+   * The target that produces the job's own output (the remux output file).
+   * Its options describe the whole job, so they are shown as the job's own
+   * options instead of as a separate output entry.
+   * @type {import('../../shared/types').MuxQueueTarget | undefined}
+   */
+  const primaryTarget = job.targets.find((target) => target.output === job.output);
+
+  /**
+   * Targets that write their own file, i.e. the extracted streams of a demux.
+   * They carry the per-stream details the job-level output cannot show.
+   * @type {import('../../shared/types').MuxQueueTarget[]}
+   */
+  const streamTargets = job.targets.filter((target) => target.output !== job.output);
+
+  /**
+   * Builds the label/value rows summarizing a set of conversion options.
+   * Only options that are actually set are listed, so the summary stays short;
+   * booleans render as Yes/No.
+   * @param {ConversionOptions} options - The options to summarize.
+   * @returns {{label: string, value: string}[]} The ordered summary rows.
+   */
+  const buildOptionRows = (options: ConversionOptions): { label: string; value: string }[] => {
+    const rows: { label: string; value: string }[] = [];
+    const yes = t('batchQueue.yes');
+    const no = t('batchQueue.no');
+    if (options.copy !== undefined) rows.push({ label: t('batchQueue.optionCopy'), value: options.copy ? yes : no });
+    if (options.videoCodec) rows.push({ label: t('batchQueue.optionVideoCodec'), value: options.videoCodec });
+    if (options.audioCodec) rows.push({ label: t('batchQueue.optionAudioCodec'), value: options.audioCodec });
+    if (options.subtitleCodec) rows.push({ label: t('mediaInfo.subtitle'), value: options.subtitleCodec });
+    if (options.videoBitrate) rows.push({ label: t('batchQueue.optionVideoBitrate'), value: options.videoBitrate });
+    if (options.audioBitrate) rows.push({ label: t('batchQueue.optionAudioBitrate'), value: options.audioBitrate });
+    if (options.qscale !== undefined) rows.push({ label: t('batchQueue.optionQscale'), value: String(options.qscale) });
+    if (options.scale) rows.push({ label: t('batchQueue.optionScale'), value: options.scale });
+    if (options.pixelFormat) rows.push({ label: t('batchQueue.optionPixelFormat'), value: options.pixelFormat });
+    if (options.startTime || options.endTime) {
+      rows.push({ label: t('batchQueue.optionTrim'), value: [options.startTime, options.endTime].filter(Boolean).join(' → ') });
+    }
+    if (options.duration) rows.push({ label: t('batchQueue.optionDuration'), value: options.duration });
+    if (options.hardwareAcceleration !== undefined) {
+      rows.push({ label: t('batchQueue.optionHwaccel'), value: options.hardwareAcceleration ? yes : no });
+    }
+    if (options.hwaccelMode) rows.push({ label: t('batchQueue.optionHwaccelMode'), value: options.hwaccelMode });
+    if (options.videoFilters?.length) {
+      rows.push({ label: t('remux.filtersTitle'), value: String(options.videoFilters.length) });
+    }
+    return rows;
+  };
+
+  /**
+   * The job-level option rows, taken from the target that writes the job's
+   * own output. Empty when the job has no such target (a demux).
+   * @type {{label: string, value: string}[]}
+   */
+  const jobOptionRows = primaryTarget ? buildOptionRows(primaryTarget.options) : [];
+
+  /**
+   * Short description of the job's output shown on the collapsed card: the
+   * output file name for a remux, the number of extracted streams and the
+   * output folder for a demux. The full paths live in the details panel.
+   * @type {string}
+   */
+  const summaryText =
+    job.kind === 'demux'
+      ? `${t('muxQueue.targets', { count: job.targets.length })} · ${t('muxQueue.outputDir')}: ${basename(job.output)}`
+      : `${t('batchQueue.detailsOutput')}: ${basename(job.output)}`;
 
   return (
     <JobCard
@@ -180,9 +258,7 @@ export default function MuxQueueJobCard({ job, progress, onRemove, onRetry }: Mu
             </ErrorBoundary>
           )}
           <Typography variant="caption" color="text.secondary" data-testid="mux-queue-job-summary">
-            {job.kind === 'demux'
-              ? `${t('muxQueue.targets', { count: job.targets.length })} · ${t('muxQueue.outputDir')}: ${job.output}`
-              : job.output}
+            {summaryText}
           </Typography>
           {job.error && !expanded && (
             <Typography variant="caption" color="error" data-testid="mux-queue-job-error">
@@ -193,37 +269,90 @@ export default function MuxQueueJobCard({ job, progress, onRemove, onRetry }: Mu
       </CardBody>
       <Collapse in={expanded}>
         <DetailsBox>
-          <DetailsLabel variant="caption" color="text.secondary">
-            {t('muxQueue.detailsTargets')}
-          </DetailsLabel>
-          {job.targets.length === 0 ? (
-            <Typography variant="caption">{t('muxQueue.noOutputs')}</Typography>
-          ) : (
-            <OptionsGrid>
-              {job.targets.map((target) => (
-                <OptionRow key={target.output}>
-                  <Typography variant="caption" color="text.secondary">
-                    {target.label ?? basename(target.output)}:
-                  </Typography>
-                  <Typography variant="caption">{target.output}</Typography>
-                </OptionRow>
-              ))}
-            </OptionsGrid>
-          )}
-          {job.error && (
-            <>
-              <DetailsLabel variant="caption" color="text.secondary">
-                {t('batchQueue.detailsError')}
-              </DetailsLabel>
-              <Typography variant="caption" color="error">
-                {job.error}
-              </Typography>
-            </>
-          )}
-          <DetailsLabel variant="caption" color="text.secondary">
-            {t('muxQueue.detailsCreatedAt')}
-          </DetailsLabel>
-          <Typography variant="caption">{new Date(job.createdAt).toLocaleString()}</Typography>
+          <DetailsTable>
+            <TableBody>
+              <TableRow>
+                <DetailsCellLabel>{t('convert.inputFile')}</DetailsCellLabel>
+                <DetailsCellValue>
+                  <DetailsPath data-testid="mux-queue-job-input">{job.input}</DetailsPath>
+                </DetailsCellValue>
+              </TableRow>
+              <TableRow>
+                <DetailsCellLabel>{job.kind === 'demux' ? t('muxQueue.outputDir') : t('muxQueue.detailsTargets')}</DetailsCellLabel>
+                <DetailsCellValue>
+                  <DetailsPath data-testid="mux-queue-job-output">{job.output}</DetailsPath>
+                </DetailsCellValue>
+              </TableRow>
+              {job.targets.length === 0 && (
+                <TableRow>
+                  <DetailsCellLabel>{t('muxQueue.noOutputs')}</DetailsCellLabel>
+                  <DetailsCellValue />
+                </TableRow>
+              )}
+              {streamTargets.length > 0 && (
+                <>
+                  <TableRow>
+                    <DetailsSectionCell colSpan={2}>{t('muxQueue.targets', { count: streamTargets.length })}</DetailsSectionCell>
+                  </TableRow>
+                  <TableRow>
+                    <DetailsCellHost colSpan={2} className={FLUSH_CELL_CLASS}>
+                      <DetailsSubTable>
+                        <TableHead>
+                          <TableRow>
+                            <DetailsHeaderCell>{t('mediaInfo.stream')}</DetailsHeaderCell>
+                            <DetailsHeaderCell>{t('batchQueue.detailsOutput')}</DetailsHeaderCell>
+                            <DetailsHeaderCell>{t('batchQueue.detailsOptions')}</DetailsHeaderCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {streamTargets.map((target) => (
+                            <TableRow key={target.output}>
+                              <DetailsStreamCell>{target.label ?? basename(target.output)}</DetailsStreamCell>
+                              <DetailsOutputCell>
+                                <DetailsPath>{target.output}</DetailsPath>
+                              </DetailsOutputCell>
+                              <DetailsCellValue>
+                                {buildOptionRows(target.options)
+                                  .map((row) => `${row.label}: ${row.value}`)
+                                  .join(' · ')}
+                              </DetailsCellValue>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </DetailsSubTable>
+                    </DetailsCellHost>
+                  </TableRow>
+                </>
+              )}
+              {jobOptionRows.length > 0 && (
+                <>
+                  <TableRow>
+                    <DetailsSectionCell colSpan={2}>{t('batchQueue.detailsOptions')}</DetailsSectionCell>
+                  </TableRow>
+                  {jobOptionRows.map((row) => (
+                    <TableRow key={row.label}>
+                      <DetailsCellLabel>{row.label}</DetailsCellLabel>
+                      <DetailsCellValue>{row.value}</DetailsCellValue>
+                    </TableRow>
+                  ))}
+                </>
+              )}
+              <TableRow>
+                <DetailsCellLabel>{t('batchQueue.detailsTranscoder')}</DetailsCellLabel>
+                <DetailsCellValue>{job.transcoder}</DetailsCellValue>
+              </TableRow>
+              {job.error && (
+                <TableRow>
+                  <DetailsCellLabel>{t('batchQueue.detailsError')}</DetailsCellLabel>
+                  <DetailsCellValue color="error">{job.error}</DetailsCellValue>
+                </TableRow>
+              )}
+              <TableRow>
+                <DetailsCellLabel>{t('muxQueue.detailsCreatedAt')}</DetailsCellLabel>
+                <DetailsCellValue>{new Date(job.createdAt).toLocaleString()}</DetailsCellValue>
+              </TableRow>
+            </TableBody>
+          </DetailsTable>
         </DetailsBox>
       </Collapse>
     </JobCard>

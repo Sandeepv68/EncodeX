@@ -382,6 +382,25 @@ describe('remuxStore', () => {
     expect(useToastStore.getState().toasts).toHaveLength(1);
   });
 
+  it('enqueueRemux resets the form once the job is queued', async () => {
+    muxQueueAddMock.mockResolvedValue('mux-1');
+    useRemuxStore.setState({
+      input: 'in.mkv',
+      container: 'mp4',
+      output: '/out/out.mp4',
+      streams: SAMPLE_STREAMS,
+      selectedMaps: ['0:v:0'],
+    });
+    await useRemuxStore.getState().enqueueRemux();
+    const state = useRemuxStore.getState();
+    expect(state.input).toBe('');
+    expect(state.output).toBe('');
+    expect(state.streams).toEqual([]);
+    expect(state.selectedMaps).toEqual([]);
+    expect(state.isDirty).toBe(false);
+    expect(state.container).toBe('mp4');
+  });
+
   it('enqueueRemux offers a toast action that opens the mux queue tab', async () => {
     muxQueueAddMock.mockResolvedValue('mux-1');
     useRemuxStore.setState({

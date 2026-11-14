@@ -350,6 +350,17 @@ describe('demuxStore', () => {
     expect(payload.targets[0].output).toBe('/in/movie/movie.video.mp4');
   });
 
+  it('enqueueDemux resets the form once the job is queued', async () => {
+    muxQueueAddMock.mockResolvedValue('mux-1');
+    await useDemuxStore.getState().setInput('/in/movie.mkv');
+    await useDemuxStore.getState().enqueueDemux();
+    const state = useDemuxStore.getState();
+    expect(state.input).toBe('');
+    expect(state.streams).toEqual([]);
+    expect(state.selectedIndices).toEqual([]);
+    expect(state.targets).toEqual([]);
+  });
+
   it('enqueueDemux offers a toast action that opens the mux queue tab', async () => {
     muxQueueAddMock.mockResolvedValue('mux-1');
     await useDemuxStore.getState().setInput('/in/movie.mkv');

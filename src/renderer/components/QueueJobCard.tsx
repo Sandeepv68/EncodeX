@@ -43,7 +43,7 @@
  */
 
 import { useState } from 'react';
-import { Collapse, IconButton, Tooltip, Typography } from '@mui/material';
+import { Collapse, IconButton, TableBody, TableRow, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -86,9 +86,11 @@ import {
   CardActionsStack,
   DragHandleButton,
   DetailsBox,
-  DetailsLabel,
-  OptionsGrid,
-  OptionRow,
+  DetailsTable,
+  DetailsCellLabel,
+  DetailsCellValue,
+  DetailsSectionCell,
+  DetailsPath,
 } from '../styles/QueueJobCard.styles';
 
 /**
@@ -285,47 +287,43 @@ export function QueueJobCardContent({
       </CardBody>
       <Collapse in={expanded}>
         <DetailsBox>
-          <DetailsLabel variant="caption" color="text.secondary">
-            {t('batchQueue.detailsOutput')}
-          </DetailsLabel>
-          <Typography variant="caption">{job.output}</Typography>
-          {job.error && (
-            <>
-              <DetailsLabel variant="caption" color="text.secondary">
-                {t('batchQueue.detailsError')}
-              </DetailsLabel>
-              <Typography variant="caption" color="error">
-                {job.error}
-              </Typography>
-            </>
-          )}
-          {optionRows.length > 0 && (
-            <>
-              <DetailsLabel variant="caption" color="text.secondary">
-                {t('batchQueue.detailsOptions')}
-              </DetailsLabel>
-              <OptionsGrid>
-                {optionRows.map((row) => (
-                  <OptionRow key={row.label}>
-                    <Typography variant="caption" color="text.secondary">
-                      {row.label}:
-                    </Typography>
-                    <Typography variant="caption">{row.value}</Typography>
-                  </OptionRow>
-                ))}
-                <OptionRow>
-                  <Typography variant="caption" color="text.secondary">
-                    {t('batchQueue.detailsTranscoder')}:
-                  </Typography>
-                  <Typography variant="caption">{job.transcoder}</Typography>
-                </OptionRow>
-              </OptionsGrid>
-            </>
-          )}
-          <DetailsLabel variant="caption" color="text.secondary">
-            {t('batchQueue.detailsCreatedAt')}
-          </DetailsLabel>
-          <Typography variant="caption">{new Date(job.createdAt).toLocaleString()}</Typography>
+          <DetailsTable>
+            <TableBody>
+              <TableRow>
+                <DetailsCellLabel>{t('batchQueue.detailsOutput')}</DetailsCellLabel>
+                <DetailsCellValue>
+                  <DetailsPath>{job.output}</DetailsPath>
+                </DetailsCellValue>
+              </TableRow>
+              {job.error && (
+                <TableRow>
+                  <DetailsCellLabel>{t('batchQueue.detailsError')}</DetailsCellLabel>
+                  <DetailsCellValue color="error">{job.error}</DetailsCellValue>
+                </TableRow>
+              )}
+              {optionRows.length > 0 && (
+                <>
+                  <TableRow>
+                    <DetailsSectionCell colSpan={2}>{t('batchQueue.detailsOptions')}</DetailsSectionCell>
+                  </TableRow>
+                  {optionRows.map((row) => (
+                    <TableRow key={row.label}>
+                      <DetailsCellLabel>{row.label}</DetailsCellLabel>
+                      <DetailsCellValue>{row.value}</DetailsCellValue>
+                    </TableRow>
+                  ))}
+                  <TableRow>
+                    <DetailsCellLabel>{t('batchQueue.detailsTranscoder')}</DetailsCellLabel>
+                    <DetailsCellValue>{job.transcoder}</DetailsCellValue>
+                  </TableRow>
+                </>
+              )}
+              <TableRow>
+                <DetailsCellLabel>{t('batchQueue.detailsCreatedAt')}</DetailsCellLabel>
+                <DetailsCellValue>{new Date(job.createdAt).toLocaleString()}</DetailsCellValue>
+              </TableRow>
+            </TableBody>
+          </DetailsTable>
         </DetailsBox>
       </Collapse>
     </>

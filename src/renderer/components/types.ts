@@ -628,7 +628,7 @@ export interface MuxQueueJobCardProps {
  *   the filename search input, so the page-level "focus search" shortcut can
  *   target the mux queue search while the mux tab is active.
  * @property {boolean} [condensed] - True while the mux tab is condensed: the
- *   queue toolbar and the filter row collapse so only the job list remains.
+ *   queue toolbar collapses so only the filter row and the job list remain.
  */
 export interface MuxQueuePanelProps {
   searchRef?: RefObject<HTMLInputElement | null>;

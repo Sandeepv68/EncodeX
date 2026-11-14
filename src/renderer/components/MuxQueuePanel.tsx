@@ -16,8 +16,9 @@
  * without knowing it exists.
  *
  * The page can condense the mux tab independently of the general tab: while
- * `condensed` is true the toolbar and the filter row collapse with the same
- * animation the general queue sections use, leaving only the job list.
+ * `condensed` is true the toolbar collapses with the same animation the
+ * general queue sections use, leaving the filter row and the job list visible
+ * so the queue stays searchable while condensed.
  */
 
 import { useState } from 'react';
@@ -272,33 +273,29 @@ export default function MuxQueuePanel({ searchRef, condensed = false }: MuxQueue
         </EmptyStack>
       ) : (
         <>
-          <AnimatedSection id="mux-queue-filters-section" $hidden={condensed} $gone={sectionsGone} aria-hidden={condensed}>
-            <Collapse in={!condensed} onEntering={() => setSectionsGone(false)} onExited={() => setSectionsGone(true)}>
-              <FilterRow>
-                {(['all', QUEUE_STATUS.QUEUED, QUEUE_STATUS.RUNNING, QUEUE_STATUS.DONE, QUEUE_STATUS.ERROR] as const).map((value) => {
-                  const count = value === 'all' ? jobs.length : jobs.filter((job: MuxQueueJob) => job.status === value).length;
-                  const labelKey = value === 'all' ? 'all' : value === QUEUE_STATUS.ERROR ? 'failed' : value;
-                  return (
-                    <FilterChip
-                      key={value}
-                      size="small"
-                      label={`${t(`muxQueue.filters.${labelKey}`)} (${count})`}
-                      color={filter === value ? 'primary' : 'default'}
-                      aria-pressed={filter === value}
-                      onClick={() => setFilter(value)}
-                    />
-                  );
-                })}
-                <SearchField
+          <FilterRow>
+            {(['all', QUEUE_STATUS.QUEUED, QUEUE_STATUS.RUNNING, QUEUE_STATUS.DONE, QUEUE_STATUS.ERROR] as const).map((value) => {
+              const count = value === 'all' ? jobs.length : jobs.filter((job: MuxQueueJob) => job.status === value).length;
+              const labelKey = value === 'all' ? 'all' : value === QUEUE_STATUS.ERROR ? 'failed' : value;
+              return (
+                <FilterChip
+                  key={value}
                   size="small"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder={t('batchQueue.search')}
-                  slotProps={{ htmlInput: { 'aria-label': t('batchQueue.search'), ref: searchRef } }}
+                  label={`${t(`muxQueue.filters.${labelKey}`)} (${count})`}
+                  color={filter === value ? 'primary' : 'default'}
+                  aria-pressed={filter === value}
+                  onClick={() => setFilter(value)}
                 />
-              </FilterRow>
-            </Collapse>
-          </AnimatedSection>
+              );
+            })}
+            <SearchField
+              size="small"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={t('batchQueue.search')}
+              slotProps={{ htmlInput: { 'aria-label': t('batchQueue.search'), ref: searchRef } }}
+            />
+          </FilterRow>
           {visibleJobs.length === 0 ? (
             <EmptyStack spacing={1} data-testid="mux-queue-no-results">
               <EmptyHeadingText>{t('batchQueue.noResults')}</EmptyHeadingText>

@@ -241,11 +241,11 @@ describe('MuxQueuePanel', () => {
     expect(await screen.findByTestId('mux-queue-job-thumbnail')).toHaveAttribute('src', 'data:image/png;base64,FRAME');
   });
 
-  it('hides the toolbar and filter row when condensed', () => {
+  it('hides the toolbar but keeps the filter row when condensed', () => {
     useMuxQueueStore.setState({ jobs: [makeJob('a')] });
     renderPanel({ condensed: true });
     expect(document.getElementById('mux-queue-controls-section')).toHaveAttribute('aria-hidden', 'true');
-    expect(document.getElementById('mux-queue-filters-section')).toHaveAttribute('aria-hidden', 'true');
+    expect(screen.getByRole('textbox', { name: 'Search files...' })).toBeInTheDocument();
     expect(screen.getByTestId('mux-queue-job-card-a')).toBeInTheDocument();
   });
 

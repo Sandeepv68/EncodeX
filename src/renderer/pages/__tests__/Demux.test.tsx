@@ -308,7 +308,9 @@ describe('Demux', () => {
     expect(muxQueueAddMock).toHaveBeenCalledTimes(1);
 
     resolveAdd('mux-1');
-    await waitFor(() => expect(addToQueue).toBeEnabled());
+    // The queued job resets the form, so the button is disabled again because
+    // there is no input left to queue.
+    await waitFor(() => expect(addToQueue).toBeDisabled());
   });
 
   it('adds the selected streams to the mux queue without extracting them', async () => {

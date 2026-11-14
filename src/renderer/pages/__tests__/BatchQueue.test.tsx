@@ -1321,7 +1321,7 @@ describe('BatchQueue', () => {
     expect(localStorage.getItem('encodex-batch-mux-condensed')).toBe('1');
     expect(localStorage.getItem('encodex-batch-condensed')).toBe('0');
     expect(document.getElementById('mux-queue-controls-section')).toHaveAttribute('aria-hidden', 'true');
-    expect(document.getElementById('mux-queue-filters-section')).toHaveAttribute('aria-hidden', 'true');
+    expect(screen.getByRole('textbox', { name: 'Search files...' })).toBeInTheDocument();
 
     await act(async () => {
       fireEvent.click(screen.getByTestId('batch-queue-tab-general'));

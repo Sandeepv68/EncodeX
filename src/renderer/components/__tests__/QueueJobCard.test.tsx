@@ -62,6 +62,14 @@ describe('QueueJobCard', () => {
     expect(screen.getByText('C:/videos/clip_out.mp4')).toBeInTheDocument();
   });
 
+  it('renders the details as a table with the output path', () => {
+    renderCard(<QueueJobCard job={makeJob()} onRemove={() => {}} />);
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.expandDetails' }));
+    expect(screen.getByRole('table')).toBeInTheDocument();
+    expect(screen.getByText('batchQueue.detailsOutput')).toBeInTheDocument();
+    expect(screen.getByText('C:/videos/clip_out.mp4')).toBeInTheDocument();
+  });
+
   it('renders the status chip', () => {
     renderCard(<QueueJobCard job={makeJob({ status: QUEUE_STATUS.DONE })} onRemove={() => {}} />);
     expect(screen.getByText(QUEUE_STATUS.DONE)).toBeInTheDocument();
@@ -145,7 +153,8 @@ describe('QueueJobCard', () => {
 
   it('falls back to the full path when no directory separator is present', () => {
     renderCard(<QueueJobCard job={makeJob({ input: 'clip.mp4' })} onRemove={() => {}} />);
-    expect(screen.getByText('clip.mp4')).toBeInTheDocument();
+    // The job name and the input path of the details table both read "clip.mp4".
+    expect(screen.getAllByText('clip.mp4').length).toBeGreaterThan(0);
   });
 
   it('does not show a tooltip when the filename fits without truncation', () => {

@@ -1412,9 +1412,7 @@ export default function BatchQueue() {
               size="small"
               aria-label={activeCondensed ? t('batchQueue.expand') : t('batchQueue.condense')}
               aria-expanded={!activeCondensed}
-              aria-controls={
-                tab === 'mux' ? 'mux-queue-controls-section mux-queue-filters-section' : 'batch-controls-section encoding-options-section'
-              }
+              aria-controls={tab === 'mux' ? 'mux-queue-controls-section' : 'batch-controls-section encoding-options-section'}
               onClick={toggleCondensed}
               data-testid="batch-queue-condense"
             >

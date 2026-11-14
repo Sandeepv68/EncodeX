@@ -499,6 +499,9 @@ export const useRemuxStore = create<RemuxState>((set, get) => ({
         label: i18n.t('muxQueue.viewQueue'),
         onClick: () => navigateToMuxQueue(),
       });
+      // The job now lives in the mux queue: reset the form so the next file
+      // can be picked right away. The container and the video filters are kept.
+      get().clearSelection();
     } catch (err: unknown) {
       log.error(LOG_REMUX_FAILED, err);
       useErrorStore.getState().showError(err);
