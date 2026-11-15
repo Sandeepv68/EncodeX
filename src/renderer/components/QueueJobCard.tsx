@@ -285,7 +285,7 @@ export function QueueJobCardContent({
           )}
         </CardContent>
       </CardBody>
-      <Collapse in={expanded}>
+      <Collapse in={expanded} unmountOnExit>
         <DetailsBox>
           <DetailsTable>
             <TableBody>

@@ -116,6 +116,61 @@ describe('MuxQueueJobCard', () => {
     expect(screen.getByText(/batchQueue.optionVideoBitrate/)).toHaveTextContent('2000k');
   });
 
+  it('shows the remaining conversion options of a target', () => {
+    renderCard(
+      makeJob({
+        kind: 'demux',
+        output: 'C:/out/streams',
+        targets: [
+          {
+            output: 'C:/out/streams/movie.video.mkv',
+            options: {
+              copy: true,
+              audioCodec: 'aac',
+              audioBitrate: '192k',
+              qscale: 20,
+              scale: '1280x720',
+              pixelFormat: 'yuv420p',
+              startTime: '00:01:00',
+              endTime: '00:02:00',
+              hardwareAcceleration: false,
+              hwaccelMode: 'auto',
+              videoFilters: ['fps=30'],
+            },
+            label: 'video:0',
+          },
+        ],
+      }),
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.expandDetails' }));
+    expect(screen.getByText(/batchQueue.optionCopy/)).toHaveTextContent('batchQueue.yes');
+    expect(screen.getByText(/batchQueue.optionAudioCodec/)).toHaveTextContent('aac');
+    expect(screen.getByText(/batchQueue.optionAudioBitrate/)).toHaveTextContent('192k');
+    expect(screen.getByText(/batchQueue.optionQscale/)).toHaveTextContent('20');
+    expect(screen.getByText(/batchQueue.optionScale/)).toHaveTextContent('1280x720');
+    expect(screen.getByText(/batchQueue.optionPixelFormat/)).toHaveTextContent('yuv420p');
+    expect(screen.getByText(/batchQueue.optionTrim/)).toHaveTextContent('00:01:00');
+    expect(screen.getByText(/batchQueue.optionHwaccel/)).toHaveTextContent('batchQueue.no');
+    expect(screen.getByText(/batchQueue.optionHwaccelMode/)).toHaveTextContent('auto');
+    expect(screen.getByText(/remux.filtersTitle/)).toHaveTextContent('1');
+  });
+
+  it('shows the job level options of a remux job', () => {
+    renderCard(
+      makeJob({
+        kind: 'remux',
+        output: 'C:/out/movie.mkv',
+        targets: [{ output: 'C:/out/movie.mkv', options: { copy: true, videoCodec: 'libx264' }, label: 'C:/out/movie.mkv' }],
+      }),
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.expandDetails' }));
+    expect(screen.getByText('batchQueue.detailsOptions')).toBeInTheDocument();
+    expect(screen.getByText('batchQueue.optionCopy')).toBeInTheDocument();
+    expect(screen.getByText('batchQueue.yes')).toBeInTheDocument();
+    expect(screen.getByText('batchQueue.optionVideoCodec')).toBeInTheDocument();
+    expect(screen.getByText('libx264')).toBeInTheDocument();
+  });
+
   it('shows the error of a failed job', () => {
     renderCard(makeJob({ status: QUEUE_STATUS.ERROR, error: 'ffmpeg exited with 1' }));
     expect(screen.getByTestId('mux-queue-job-error')).toHaveTextContent('ffmpeg exited with 1');

@@ -83,15 +83,6 @@ export default function MuxQueuePanel({ searchRef, condensed = false }: MuxQueue
   const [search, setSearch] = useState('');
 
   /**
-   * True once the collapse animation of the condensed sections has fully
-   * completed. Removes the wrappers from the layout (display: none) so a
-   * condensed mux tab leaves no leftover empty space behind; seeded from the
-   * prop so switching to an already-condensed tab renders without a flash.
-   * @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]}
-   */
-  const [sectionsGone, setSectionsGone] = useState(condensed);
-
-  /**
    * Jobs shown after applying the active status filter and search term.
    * Filtering preserves the queue's relative order.
    */
@@ -171,8 +162,8 @@ export default function MuxQueuePanel({ searchRef, condensed = false }: MuxQueue
 
   return (
     <Stack spacing={2} role="region" aria-label={t('muxQueue.tabMux')}>
-      <AnimatedSection id="mux-queue-controls-section" $hidden={condensed} $gone={sectionsGone} aria-hidden={condensed}>
-        <Collapse in={!condensed} onEntering={() => setSectionsGone(false)} onExited={() => setSectionsGone(true)}>
+      <AnimatedSection id="mux-queue-controls-section" $hidden={condensed} aria-hidden={condensed}>
+        <Collapse in={!condensed} unmountOnExit>
           <ControlsPaper>
             <ToolbarRow>
               {paused ? (
@@ -242,6 +233,7 @@ export default function MuxQueuePanel({ searchRef, condensed = false }: MuxQueue
                 <FieldLabel htmlFor="mux-queue-concurrency">{t('muxQueue.concurrency')}</FieldLabel>
                 <ConcurrencySelect
                   id="mux-queue-concurrency"
+                  data-testid="mux-queue-concurrency"
                   select
                   size="small"
                   slotProps={{ input: { 'aria-label': t('muxQueue.concurrency') } }}

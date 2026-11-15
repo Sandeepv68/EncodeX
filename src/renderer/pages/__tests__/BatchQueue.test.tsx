@@ -1291,6 +1291,19 @@ describe('BatchQueue', () => {
     expect(localStorage.getItem('encodex-batch-condensed')).toBe('1');
   });
 
+  it('falls back to the expanded layout when the condensed preference cannot be read', async () => {
+    queueListMock.mockResolvedValue([]);
+    const getItem = vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key: string) => {
+      if (key === 'encodex-batch-mux-condensed') throw new Error('storage unavailable');
+      return null;
+    });
+    await act(async () => {
+      renderPage('/batch?tab=mux');
+    });
+    getItem.mockRestore();
+    expect(screen.getByTestId('batch-queue-condense')).toHaveAttribute('aria-expanded', 'true');
+  });
+
   it('keeps the condensed state independent between the general and mux tabs', async () => {
     queueListMock.mockResolvedValue([]);
     useMuxQueueStore.setState({

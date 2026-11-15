@@ -242,6 +242,36 @@ describe('QueueJobCard', () => {
     expect(screen.queryByText('batchQueue.detailsOptions')).not.toBeInTheDocument();
   });
 
+  it('shows the remaining encoding options in the details table', () => {
+    renderCard(
+      <QueueJobCard
+        job={makeJob({
+          options: {
+            audioBitrate: '192k',
+            qscale: 20,
+            pixelFormat: 'yuv420p',
+            duration: '00:00:30',
+            copy: false,
+            audio: true,
+          },
+        })}
+        onRemove={() => {}}
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.expandDetails' }));
+    expect(screen.getByText('batchQueue.optionAudioBitrate')).toBeInTheDocument();
+    expect(screen.getByText('192k')).toBeInTheDocument();
+    expect(screen.getByText('batchQueue.optionQscale')).toBeInTheDocument();
+    expect(screen.getByText('20')).toBeInTheDocument();
+    expect(screen.getByText('batchQueue.optionPixelFormat')).toBeInTheDocument();
+    expect(screen.getByText('yuv420p')).toBeInTheDocument();
+    expect(screen.getByText('batchQueue.optionDuration')).toBeInTheDocument();
+    expect(screen.getByText('00:00:30')).toBeInTheDocument();
+    expect(screen.getByText('batchQueue.optionCopy')).toBeInTheDocument();
+    expect(screen.getByText('batchQueue.optionAudio')).toBeInTheDocument();
+    expect(screen.getByText('batchQueue.no')).toBeInTheDocument();
+  });
+
   it('expands to show the option summary, transcoder and creation time', () => {
     const createdAt = Date.UTC(2024, 0, 15, 10, 30, 0);
     render(
@@ -289,7 +319,9 @@ describe('QueueJobCard', () => {
     renderCard(<QueueJobCard job={makeJob({ error: 'something broke' })} onRemove={() => {}} />);
     const inlineErrors = screen.getAllByText('something broke').filter((el) => el.closest('.MuiCollapse-root') === null);
     expect(inlineErrors).toHaveLength(1);
-    expect(screen.getByText('batchQueue.detailsError')).toBeInTheDocument();
+    // The details panel is only mounted while it is open, so the labelled
+    // error appears once the card is expanded.
+    expect(screen.queryByText('batchQueue.detailsError')).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.expandDetails' }));
     expect(screen.getByText('batchQueue.detailsError')).toBeInTheDocument();
     expect(screen.getAllByText('something broke')).toHaveLength(1);

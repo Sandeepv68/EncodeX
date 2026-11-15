@@ -426,6 +426,16 @@ describe('readStoredWhenDone', () => {
     localStorage.setItem(WHEN_DONE_STORAGE_KEY, '{ not json');
     expect(readStoredWhenDone()).toBe(DEFAULT_WHEN_DONE_ACTION);
   });
+
+  it('migrates a legacy enabled action to the matching when-done action', () => {
+    localStorage.setItem(WHEN_DONE_STORAGE_KEY, JSON.stringify({ enabled: true, action: 'sleep', force: false }));
+    expect(readStoredWhenDone()).toBe('sleep');
+  });
+
+  it('falls back to the default action for an unknown legacy action', () => {
+    localStorage.setItem(WHEN_DONE_STORAGE_KEY, JSON.stringify({ enabled: true, action: 'explode', force: false }));
+    expect(readStoredWhenDone()).toBe(DEFAULT_WHEN_DONE_ACTION);
+  });
 });
 
 describe('readStoredDrawerCondensed', () => {

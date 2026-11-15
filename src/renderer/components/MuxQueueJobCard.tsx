@@ -267,7 +267,7 @@ export default function MuxQueueJobCard({ job, progress, onRemove, onRetry }: Mu
           )}
         </CardContent>
       </CardBody>
-      <Collapse in={expanded}>
+      <Collapse in={expanded} unmountOnExit>
         <DetailsBox>
           <DetailsTable>
             <TableBody>

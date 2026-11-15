@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { basename, basenameOrEmpty, fileName, dirname, stem, normalizePath, getExtension, replaceExtension } from '../path-utils';
+import { basename, basenameOrEmpty, fileName, dirname, stem, joinPath, normalizePath, getExtension, replaceExtension } from '../path-utils';
 
 describe('basename', () => {
   it('handles POSIX separators and falls back to the path', () => {
@@ -63,6 +63,21 @@ describe('stem', () => {
 
   it('returns the basename when there is no extension', () => {
     expect(stem('/home/user/movie')).toBe('movie');
+  });
+});
+
+describe('joinPath', () => {
+  it('joins with a POSIX separator and strips a trailing separator', () => {
+    expect(joinPath('/media/out', 'clip.mkv')).toBe('/media/out/clip.mkv');
+    expect(joinPath('/media/out/', 'clip.mkv')).toBe('/media/out/clip.mkv');
+  });
+
+  it('joins with a Windows separator when the directory uses one', () => {
+    expect(joinPath('C:\\Media\\out', 'clip.mkv')).toBe('C:\\Media\\out\\clip.mkv');
+  });
+
+  it('returns the name unchanged for an empty directory', () => {
+    expect(joinPath('', 'clip.mkv')).toBe('clip.mkv');
   });
 });
 

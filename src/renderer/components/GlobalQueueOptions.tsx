@@ -92,6 +92,16 @@ export default function GlobalQueueOptions({ whenDone, onWhenDoneChange }: Globa
   const controlLabel = `${t('batchQueue.whenDone')}: ${selectedLabel}`;
 
   /**
+   * Opens the dropdown menu. The menu is opened once the expand animation has
+   * finished so it anchors to the fully sized field; a click on the field
+   * itself re-opens it.
+   * @returns {void}
+   */
+  const handleMenuOpen = () => {
+    setMenuOpen(true);
+  };
+
+  /**
    * Collapses the dropdown back into the action button after the menu closes,
    * whether an option was picked or the menu was dismissed.
    * @returns {void}
@@ -127,9 +137,7 @@ export default function GlobalQueueOptions({ whenDone, onWhenDoneChange }: Globa
           in={expanded}
           orientation="horizontal"
           unmountOnExit
-          onEntered={() => {
-            setMenuOpen(true);
-          }}
+          onEntered={handleMenuOpen}
           onExited={() => {
             buttonRef.current?.focus();
           }}
@@ -144,7 +152,7 @@ export default function GlobalQueueOptions({ whenDone, onWhenDoneChange }: Globa
             }}
             slotProps={{
               input: { 'aria-label': t('batchQueue.whenDone') },
-              select: { open: menuOpen, onOpen: () => setMenuOpen(true), onClose: handleMenuClose },
+              select: { open: menuOpen, onOpen: handleMenuOpen, onClose: handleMenuClose },
             }}
           >
             {WHEN_DONE_ACTIONS.map((a) => (
