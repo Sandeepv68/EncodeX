@@ -686,7 +686,13 @@
       "headerConnected": "Connecté · {{provider}} · {{model}}"
     },
     "desktopNotifications": "Notifications du bureau",
-    "desktopNotificationsHint": "Afficher des notifications système lorsque les tâches de la file d’attente se terminent ou échouent pendant que l’application est en arrière-plan."
+    "desktopNotificationsHint": "Afficher des notifications système lorsque les tâches de la file d’attente se terminent ou échouent pendant que l’application est en arrière-plan.",
+    "tabs": {
+      "ariaLabel": "Sections des paramètres",
+      "general": "Général",
+      "advanced": "Avancé",
+      "ai": "IA"
+    }
   },
   "shortcuts": {
     "title": "Raccourcis clavier",

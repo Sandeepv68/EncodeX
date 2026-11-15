@@ -686,7 +686,13 @@
       "headerConnected": "Đã kết nối · {{provider}} · {{model}}"
     },
     "desktopNotifications": "Thông báo trên màn hình",
-    "desktopNotificationsHint": "Hiển thị thông báo hệ thống khi tác vụ trong hàng đợi hoàn tất hoặc thất bại trong khi ứng dụng chạy nền."
+    "desktopNotificationsHint": "Hiển thị thông báo hệ thống khi tác vụ trong hàng đợi hoàn tất hoặc thất bại trong khi ứng dụng chạy nền.",
+    "tabs": {
+      "ariaLabel": "Các phần cài đặt",
+      "general": "Chung",
+      "advanced": "Nâng cao",
+      "ai": "AI"
+    }
   },
   "shortcuts": {
     "title": "Phím tắt",

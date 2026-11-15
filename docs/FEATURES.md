@@ -130,7 +130,7 @@ Process multiple files with configurable operations (transcode, remux, demux, ex
 
 ### Settings
 
-Dedicated settings page for theme, hardware acceleration (enable/disable, mode, encoder type), window always-on-top, launch-at-login, batch queue concurrency, and the when-done power action. Preferences persist to `localStorage` and take effect on startup.
+Dedicated settings page with three tabs. **General** covers the theme picker, window always-on-top, launch-at-login, and desktop notifications. **Advanced** covers hardware acceleration (enable/disable, mode, encoder type) and usage data / error reporting. **AI** covers the Copilot AI provider and the embedded MCP server. Preferences persist to `localStorage` and take effect on startup.
 
 ### Keyboard Shortcuts
 
@@ -290,7 +290,7 @@ Structured error system with 28 typed error codes (`ErrorCode`), user-facing loc
 EncodeX ships a built-in [Model Context Protocol](https://modelcontextprotocol.io) server so MCP hosts — Claude Desktop, Claude Code, VS Code, Cursor, and custom/headless agents — can drive the same media engine as the GUI and CLI.
 
 - **Standalone (stdio):** `encodex --mcp` / `node dist/mcp/index.js` exposes 36 model-visible tools (37 registrations, including the app-only `commit_operation`).
-- **Embedded (Streamable HTTP):** toggled in **Settings → MCP Server** (`http://127.0.0.1:8765/mcp`, loopback-only, optional bearer token); adds 6 GUI-parity tools for **42** model-visible tools (43 registrations).
+- **Embedded (Streamable HTTP):** toggled in **Settings → AI** under MCP Server (`http://127.0.0.1:8765/mcp`, loopback-only, optional bearer token); adds 6 GUI-parity tools for **42** model-visible tools (43 registrations).
 - **Resources:** `encodex://profiles`, `encodex://capabilities`, `encodex://codecs` (JSON), plus eleven interactive `ui://` views.
 - **Prompts:** `convert-video`, `extract-audio`, `compress-image`, `batch-convert`.
 - **Async jobs:** conversion tools return a `jobId` immediately; poll with `get_job` / `list_jobs`, cancel with `cancel_job`. Under MCP Apps hosts the mutating tools first return a confirmation the user approves.

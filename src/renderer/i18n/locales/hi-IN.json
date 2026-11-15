@@ -686,7 +686,13 @@
       "headerConnected": "कनेक्टेड · {{provider}} · {{model}}"
     },
     "desktopNotifications": "डेस्कटॉप सूचनाएँ",
-    "desktopNotificationsHint": "जब ऐप बैकग्राउंड में हो और कतार के कार्य पूरे हों या विफल हों, तब सिस्टम सूचनाएँ दिखाएँ।"
+    "desktopNotificationsHint": "जब ऐप बैकग्राउंड में हो और कतार के कार्य पूरे हों या विफल हों, तब सिस्टम सूचनाएँ दिखाएँ।",
+    "tabs": {
+      "ariaLabel": "सेटिंग्स अनुभाग",
+      "general": "सामान्य",
+      "advanced": "उन्नत",
+      "ai": "AI"
+    }
   },
   "shortcuts": {
     "title": "कीबोर्ड शॉर्टकट",

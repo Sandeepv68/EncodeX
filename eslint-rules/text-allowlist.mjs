@@ -69,5 +69,7 @@ export const DEFAULT_ALLOW_PROPS = [
   'units',
   'unit',
   'aria-controls',
+  'aria-labelledby',
+  'aria-describedby',
   'data-testid',
 ];

@@ -19,7 +19,7 @@ All thirteen pages are code-split with a dynamic `import()` and loaded under a p
 | BatchQueue      | `/batch`       | Queue management (add/remove/cancel-all)                       |
 | Copilot         | `/copilot`     | Natural-language planning with optional AI providers           |
 | Logs            | `/logs`        | Live log viewer with level filter + download                   |
-| Settings        | `/settings`    | Theme, telemetry, MCP server, AI provider, hwaccel             |
+| Settings        | `/settings`    | Tabbed: General (theme), Advanced (hwaccel, telemetry), AI     |
 | About           | `/about`       | App info, credits, "Check for Updates" button                  |
 
 ### Hooks

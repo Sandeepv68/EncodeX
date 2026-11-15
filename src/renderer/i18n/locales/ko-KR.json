@@ -686,7 +686,13 @@
       "headerConnected": "연결됨 · {{provider}} · {{model}}"
     },
     "desktopNotifications": "데스크톱 알림",
-    "desktopNotificationsHint": "앱이 백그라운드에서 실행되는 동안 대기열 작업이 완료되거나 실패하면 시스템 알림을 표시합니다."
+    "desktopNotificationsHint": "앱이 백그라운드에서 실행되는 동안 대기열 작업이 완료되거나 실패하면 시스템 알림을 표시합니다.",
+    "tabs": {
+      "ariaLabel": "설정 섹션",
+      "general": "일반",
+      "advanced": "고급",
+      "ai": "AI"
+    }
   },
   "shortcuts": {
     "title": "키보드 단축키",

@@ -686,7 +686,13 @@
       "headerConnected": "जडित · {{provider}} · {{model}}"
     },
     "desktopNotifications": "डेस्कटप सूचनाहरू",
-    "desktopNotificationsHint": "एप पृष्ठभूमिमा चलिरहेको बेला कतारका कार्यहरू पूरा वा असफल हुँदा प्रणाली सूचनाहरू देखाउनुहोस्।"
+    "desktopNotificationsHint": "एप पृष्ठभूमिमा चलिरहेको बेला कतारका कार्यहरू पूरा वा असफल हुँदा प्रणाली सूचनाहरू देखाउनुहोस्।",
+    "tabs": {
+      "ariaLabel": "सेटिङ खण्डहरू",
+      "general": "सामान्य",
+      "advanced": "उन्नत",
+      "ai": "AI"
+    }
   },
   "shortcuts": {
     "title": "किबोर्ड सर्टकट",

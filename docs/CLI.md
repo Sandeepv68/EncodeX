@@ -253,7 +253,7 @@ stdout is reserved for MCP JSON-RPC messages; all status and logging output is r
 | ------- | ------------------------------------------------------------------ |
 | `--mcp` | Run as a stdio MCP server (no GUI, no CLI subcommand, no `app.exit`) |
 
-A second, opt-in surface is the **embedded HTTP server** inside the running GUI (`http://127.0.0.1:8765/mcp`), which adds live queue, preview, timeline, system, and update tools on top of the same core. Enable it in **Settings → MCP Server**; see [`MCP.md`](MCP.md#embedded-http-server-gui-mode).
+A second, opt-in surface is the **embedded HTTP server** inside the running GUI (`http://127.0.0.1:8765/mcp`), which adds live queue, preview, timeline, system, and update tools on top of the same core. Enable it in **Settings → AI** under MCP Server; see [`MCP.md`](MCP.md#embedded-http-server-gui-mode).
 
 ## 🚪 Exit Codes
 

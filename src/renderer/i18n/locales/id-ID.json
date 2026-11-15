@@ -686,7 +686,13 @@
       "headerConnected": "Terhubung · {{provider}} · {{model}}"
     },
     "desktopNotifications": "Notifikasi desktop",
-    "desktopNotificationsHint": "Tampilkan notifikasi sistem saat tugas antrean selesai atau gagal ketika aplikasi berjalan di latar belakang."
+    "desktopNotificationsHint": "Tampilkan notifikasi sistem saat tugas antrean selesai atau gagal ketika aplikasi berjalan di latar belakang.",
+    "tabs": {
+      "ariaLabel": "Bagian pengaturan",
+      "general": "Umum",
+      "advanced": "Lanjutan",
+      "ai": "AI"
+    }
   },
   "shortcuts": {
     "title": "Pintasan Keyboard",

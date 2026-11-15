@@ -686,7 +686,13 @@
       "headerConnected": "Connesso · {{provider}} · {{model}}"
     },
     "desktopNotifications": "Notifiche desktop",
-    "desktopNotificationsHint": "Mostra notifiche di sistema quando i lavori in coda vengono completati o non riescono mentre l’app è in background."
+    "desktopNotificationsHint": "Mostra notifiche di sistema quando i lavori in coda vengono completati o non riescono mentre l’app è in background.",
+    "tabs": {
+      "ariaLabel": "Sezioni delle impostazioni",
+      "general": "Generale",
+      "advanced": "Avanzate",
+      "ai": "IA"
+    }
   },
   "shortcuts": {
     "title": "Scorciatoie da tastiera",

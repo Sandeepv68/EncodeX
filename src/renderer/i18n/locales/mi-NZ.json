@@ -686,7 +686,13 @@
       "headerConnected": "Kua hono · {{provider}} · {{model}}"
     },
     "desktopNotifications": "Whakamōhiotanga papamahi",
-    "desktopNotificationsHint": "Whakaatuhia ngā whakamōhiotanga pūnaha ina oti, ina rahua rānei ngā mahi tūtira i te wā e rere ana te taupānga ki muri."
+    "desktopNotificationsHint": "Whakaatuhia ngā whakamōhiotanga pūnaha ina oti, ina rahua rānei ngā mahi tūtira i te wā e rere ana te taupānga ki muri.",
+    "tabs": {
+      "ariaLabel": "Ngā wāhanga tautuhinga",
+      "general": "Whānui",
+      "advanced": "Aro nui",
+      "ai": "AI"
+    }
   },
   "shortcuts": {
     "title": "Ngā Poto Aratohu Papapātuhi",

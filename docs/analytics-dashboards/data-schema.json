@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "eventCount": 128,
+  "eventCount": 129,
   "events": [
     {
       "name": "always_on_top_toggled",
@@ -480,6 +480,11 @@
     {
       "name": "remux_started",
       "group": "convert",
+      "tier": null
+    },
+    {
+      "name": "settings_tab_viewed",
+      "group": "settings",
       "tier": null
     },
     {

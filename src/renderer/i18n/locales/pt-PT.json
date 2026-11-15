@@ -686,7 +686,13 @@
       "headerConnected": "Ligado · {{provider}} · {{model}}"
     },
     "desktopNotifications": "Notificações da área de trabalho",
-    "desktopNotificationsHint": "Mostrar notificações do sistema quando tarefas da fila forem concluídas ou falharem enquanto o aplicativo estiver em segundo plano."
+    "desktopNotificationsHint": "Mostrar notificações do sistema quando tarefas da fila forem concluídas ou falharem enquanto o aplicativo estiver em segundo plano.",
+    "tabs": {
+      "ariaLabel": "Secções das definições",
+      "general": "Geral",
+      "advanced": "Avançado",
+      "ai": "IA"
+    }
   },
   "shortcuts": {
     "title": "Atalhos de teclado",

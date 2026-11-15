@@ -686,7 +686,13 @@
       "headerConnected": "متصل · {{provider}} · {{model}}"
     },
     "desktopNotifications": "إشعارات سطح المكتب",
-    "desktopNotificationsHint": "عرض إشعارات النظام عند اكتمال مهام قائمة الانتظار أو فشلها أثناء عمل التطبيق في الخلفية."
+    "desktopNotificationsHint": "عرض إشعارات النظام عند اكتمال مهام قائمة الانتظار أو فشلها أثناء عمل التطبيق في الخلفية.",
+    "tabs": {
+      "ariaLabel": "أقسام الإعدادات",
+      "general": "عام",
+      "advanced": "متقدم",
+      "ai": "الذكاء الاصطناعي"
+    }
   },
   "shortcuts": {
     "title": "اختصارات لوحة المفاتيح",

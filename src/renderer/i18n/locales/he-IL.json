@@ -686,7 +686,13 @@
       "headerConnected": "מחובר · {{provider}} · {{model}}"
     },
     "desktopNotifications": "התראות שולחן עבודה",
-    "desktopNotificationsHint": "הצג התראות מערכת כאשר משימות בתור הושלמו או נכשלו בזמן שהאפליקציה פועלת ברקע."
+    "desktopNotificationsHint": "הצג התראות מערכת כאשר משימות בתור הושלמו או נכשלו בזמן שהאפליקציה פועלת ברקע.",
+    "tabs": {
+      "ariaLabel": "מקטעי הגדרות",
+      "general": "כללי",
+      "advanced": "מתקדם",
+      "ai": "בינה מלאכותית"
+    }
   },
   "shortcuts": {
     "title": "קיצורי מקלדת",

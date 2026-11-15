@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor, within, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, useNavigate } from 'react-router-dom';
 import Settings from '../Settings';
 import { ColorModeProvider } from '../../ColorModeContext';
 import { useSettingsStore } from '../../stores/settingsStore';
@@ -18,6 +18,14 @@ import { THEME_STORAGE_KEY } from '../../../shared/app-constants';
 import type { AIProviderId } from '../../../shared/ai/types';
 import type { SettingsLocationState } from '../../types';
 import { assertNoAxeViolations } from '../../../test-utils/axe';
+import { recordAnalyticsEvent } from '../../../shared/analytics/AnalyticsService';
+
+vi.mock('../../../shared/analytics/AnalyticsService', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('../../../shared/analytics/AnalyticsService')>();
+  return { ...mod, recordAnalyticsEvent: vi.fn() };
+});
+
+const recordAnalyticsMock = vi.mocked(recordAnalyticsEvent);
 
 const defaultElectronAPI = window.electronAPI;
 
@@ -36,6 +44,18 @@ function renderSettings(state?: SettingsLocationState) {
       </ColorModeProvider>
     </MemoryRouter>,
   );
+}
+
+/**
+ * Renders the page and then activates one of the non-default tabs.
+ * @param {'advanced'|'ai'} tab - The tab to select.
+ * @param {SettingsLocationState} [state] - The location state to render with.
+ * @returns {import('@testing-library/react').RenderResult} The render result.
+ */
+function renderSettingsOn(tab: 'advanced' | 'ai', state?: SettingsLocationState) {
+  const result = renderSettings(state);
+  fireEvent.click(screen.getByTestId(`settings-tab-${tab}`));
+  return result;
 }
 
 describe('Settings', () => {
@@ -91,12 +111,160 @@ describe('Settings', () => {
   });
 
   it('has no axe violations', async () => {
-    const { container } = renderSettings();
-    await assertNoAxeViolations(container);
+    for (const tab of ['general', 'advanced', 'ai'] as const) {
+      const { container, unmount } = renderSettings();
+      if (tab !== 'general') fireEvent.click(screen.getByTestId(`settings-tab-${tab}`));
+      await assertNoAxeViolations(container);
+      unmount();
+    }
+  });
+
+  describe('tabs', () => {
+    it('renders a labelled tablist with General selected by default', () => {
+      renderSettings();
+      expect(screen.getByRole('tablist', { name: 'settings.tabs.ariaLabel' })).toBeInTheDocument();
+      expect(screen.getByRole('tab', { name: 'settings.tabs.general' })).toHaveAttribute('aria-selected', 'true');
+      expect(screen.getByRole('tab', { name: 'settings.tabs.advanced' })).toHaveAttribute('aria-selected', 'false');
+      expect(screen.getByRole('tab', { name: 'settings.tabs.ai' })).toHaveAttribute('aria-selected', 'false');
+      expect(screen.getByTestId('settings-tabpanel-general')).toBeVisible();
+      expect(screen.getByTestId('settings-tabpanel-advanced')).not.toBeVisible();
+      expect(screen.getByTestId('settings-tabpanel-ai')).not.toBeVisible();
+    });
+
+    it('wires each tab to its panel through aria-controls and aria-labelledby', () => {
+      renderSettings();
+      for (const tab of ['general', 'advanced', 'ai']) {
+        const tabEl = screen.getByTestId(`settings-tab-${tab}`);
+        const panel = screen.getByTestId(`settings-tabpanel-${tab}`);
+        expect(tabEl).toHaveAttribute('aria-controls', `settings-tabpanel-${tab}`);
+        expect(panel).toHaveAttribute('id', `settings-tabpanel-${tab}`);
+        expect(panel).toHaveAttribute('aria-labelledby', `settings-tab-${tab}`);
+      }
+    });
+
+    it('reveals only the selected panel when tabs are clicked', async () => {
+      const user = userEvent.setup();
+      renderSettings();
+      await user.click(screen.getByRole('tab', { name: 'settings.tabs.advanced' }));
+      expect(screen.getByTestId('settings-tabpanel-advanced')).toBeVisible();
+      expect(screen.getByTestId('settings-tabpanel-general')).not.toBeVisible();
+      await user.click(screen.getByRole('tab', { name: 'settings.tabs.ai' }));
+      expect(screen.getByTestId('settings-tabpanel-ai')).toBeVisible();
+      expect(screen.getByTestId('settings-tabpanel-advanced')).not.toBeVisible();
+      await user.click(screen.getByRole('tab', { name: 'settings.tabs.general' }));
+      expect(screen.getByTestId('settings-tabpanel-general')).toBeVisible();
+      expect(screen.getByTestId('settings-tabpanel-ai')).not.toBeVisible();
+    });
+
+    it('moves the selection with the keyboard', async () => {
+      const user = userEvent.setup();
+      renderSettings();
+      const general = screen.getByRole('tab', { name: 'settings.tabs.general' });
+      const advanced = screen.getByRole('tab', { name: 'settings.tabs.advanced' });
+      const ai = screen.getByRole('tab', { name: 'settings.tabs.ai' });
+      await user.click(general);
+      await user.keyboard('{ArrowRight}');
+      expect(advanced).toHaveFocus();
+      await user.keyboard('{Enter}');
+      expect(advanced).toHaveAttribute('aria-selected', 'true');
+      await user.keyboard('{End}');
+      expect(ai).toHaveFocus();
+      await user.keyboard('{Enter}');
+      expect(ai).toHaveAttribute('aria-selected', 'true');
+      await user.keyboard('{Home}');
+      expect(general).toHaveFocus();
+      await user.keyboard('{Enter}');
+      expect(general).toHaveAttribute('aria-selected', 'true');
+    });
+
+    it('keeps store-backed toggles after a tab round-trip', () => {
+      renderSettings();
+      fireEvent.click(alwaysOnTopSwitch());
+      fireEvent.click(screen.getByTestId('settings-tab-advanced'));
+      expect(screen.getByTestId('settings-tabpanel-general')).not.toBeVisible();
+      fireEvent.click(screen.getByTestId('settings-tab-general'));
+      expect(alwaysOnTopSwitch()).toBeChecked();
+      expect(useSettingsStore.getState().alwaysOnTop).toBe(true);
+    });
+
+    it('keeps an MCP port draft when switching tabs and back', async () => {
+      renderSettingsOn('ai');
+      fireEvent.click(mcpSwitch());
+      const port = await screen.findByRole('spinbutton', { name: 'settings.mcpPort' });
+      fireEvent.change(port, { target: { value: '9000' } });
+      fireEvent.click(screen.getByTestId('settings-tab-general'));
+      fireEvent.click(screen.getByTestId('settings-tab-ai'));
+      expect(screen.getByRole('spinbutton', { name: 'settings.mcpPort' })).toHaveValue(9000);
+    });
+
+    it('selects the AI tab when a deep link arrives while already mounted', async () => {
+      /**
+       * Renders a button that re-navigates to Settings with the AI deep-link
+       * state, simulating a second navigation while the page is mounted.
+       * @returns {JSX.Element} The harness button.
+       */
+      function DeepLinkButton() {
+        const navigate = useNavigate();
+        return (
+          <button type="button" onClick={() => navigate('/settings', { state: { openAiProvider: true } })}>
+            deep-link
+          </button>
+        );
+      }
+
+      render(
+        <MemoryRouter initialEntries={['/settings']}>
+          <ColorModeProvider>
+            <DeepLinkButton />
+            <Settings />
+          </ColorModeProvider>
+        </MemoryRouter>,
+      );
+      fireEvent.click(screen.getByTestId('settings-tab-advanced'));
+      expect(screen.getByRole('tab', { name: 'settings.tabs.advanced' })).toHaveAttribute('aria-selected', 'true');
+      fireEvent.click(screen.getByRole('button', { name: 'deep-link' }));
+      expect(screen.getByRole('tab', { name: 'settings.tabs.ai' })).toHaveAttribute('aria-selected', 'true');
+      expect(screen.getByTestId('settings-tabpanel-ai')).toBeVisible();
+    });
+  });
+
+  describe('tab analytics', () => {
+    /**
+     * Returns the payloads of the recorded `settings_tab_viewed` events.
+     * @returns {Array<{ tab: string }>} The recorded tab-view payloads.
+     */
+    const tabEvents = (): { tab: string }[] =>
+      recordAnalyticsMock.mock.calls
+        .map(([event]) => event)
+        .filter((event) => event.name === 'settings_tab_viewed')
+        .map((event) => event.props as { tab: string });
+
+    it('does not record a tab view on the initial render', () => {
+      renderSettings();
+      expect(tabEvents()).toHaveLength(0);
+    });
+
+    it('records one tab view per user-initiated change', () => {
+      renderSettings();
+      fireEvent.click(screen.getByTestId('settings-tab-advanced'));
+      fireEvent.click(screen.getByTestId('settings-tab-ai'));
+      expect(tabEvents().map((payload) => payload.tab)).toEqual(['advanced', 'ai']);
+    });
+
+    it('does not record a tab view when the selected tab is clicked again', () => {
+      renderSettings();
+      fireEvent.click(screen.getByTestId('settings-tab-general'));
+      expect(tabEvents()).toHaveLength(0);
+    });
+
+    it('does not record the deep-link auto-selection as a tab view', () => {
+      renderSettingsOn('ai', { openAiProvider: true });
+      expect(tabEvents()).toHaveLength(0);
+    });
   });
 
   it('names the hwaccel mode and encoder type selects', () => {
-    renderSettings();
+    renderSettingsOn('advanced');
     expect(screen.getByRole('combobox', { name: 'settings.hwaccelMode' })).toBeInTheDocument();
     expect(screen.getByRole('combobox', { name: 'settings.encoderType' })).toBeInTheDocument();
   });
@@ -157,14 +325,14 @@ describe('Settings', () => {
   });
 
   it('renders the hardware acceleration row with the mode dropdown when enabled', () => {
-    renderSettings();
+    renderSettingsOn('advanced');
     expect(screen.getByText('settings.hardwareAcceleration')).toBeInTheDocument();
     expect(screen.getByText('settings.hwaccelMode')).toBeInTheDocument();
     expect(screen.getAllByRole('combobox')).toHaveLength(2);
   });
 
   it('hides the mode dropdown when hardware acceleration is disabled', () => {
-    renderSettings();
+    renderSettingsOn('advanced');
     fireEvent.click(hwaccelSwitch());
     expect(screen.queryByText('settings.hwaccelMode')).not.toBeInTheDocument();
     expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
@@ -172,55 +340,56 @@ describe('Settings', () => {
   });
 
   it('updates the hwaccel mode when a mode is selected', () => {
-    renderSettings();
+    renderSettingsOn('advanced');
     fireEvent.mouseDown(screen.getAllByRole('combobox')[0]);
     fireEvent.click(screen.getByRole('option', { name: 'settings.hwaccelModeEncode' }));
     expect(useSettingsStore.getState().hwaccelMode).toBe('encode');
   });
 
   it('renders the encoder type dropdown when hardware acceleration is enabled', () => {
-    renderSettings();
+    renderSettingsOn('advanced');
     expect(screen.getByText('settings.encoderType')).toBeInTheDocument();
     expect(screen.getAllByRole('combobox')).toHaveLength(2);
   });
 
   it('hides the encoder type dropdown when hardware acceleration is disabled', () => {
-    renderSettings();
+    renderSettingsOn('advanced');
     fireEvent.click(hwaccelSwitch());
     expect(screen.queryByText('settings.encoderType')).not.toBeInTheDocument();
     expect(screen.queryAllByRole('combobox')).toHaveLength(0);
   });
 
   it('updates the encoder type when an option is selected', () => {
-    renderSettings();
+    renderSettingsOn('advanced');
     fireEvent.mouseDown(screen.getAllByRole('combobox')[1]);
     fireEvent.click(screen.getByRole('option', { name: 'settings.encoderTypeHardware' }));
     expect(useSettingsStore.getState().encoderType).toBe('hardware');
   });
 
   it('shows info tooltips on the hardware acceleration settings', async () => {
-    renderSettings();
-    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(8);
-    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[5]);
+    renderSettingsOn('advanced');
+    fireEvent.mouseEnter(screen.getByRole('button', { name: 'settings.hardwareAccelerationHint' }));
     expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.hardwareAccelerationHint');
   });
 
   it('shows an info tooltip for the mode setting', async () => {
-    renderSettings();
-    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[6]);
+    renderSettingsOn('advanced');
+    fireEvent.mouseEnter(screen.getByRole('button', { name: 'settings.hwaccelModeHint' }));
     expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.hwaccelModeHint');
   });
 
   it('shows an info tooltip for the encoder type setting', async () => {
-    renderSettings();
-    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[7]);
+    renderSettingsOn('advanced');
+    fireEvent.mouseEnter(screen.getByRole('button', { name: 'settings.encoderTypeHint' }));
     expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.encoderTypeHint');
   });
 
   it('keeps the hardware acceleration tooltip when disabled but hides the others', () => {
-    renderSettings();
+    renderSettingsOn('advanced');
+    const advancedPanel = screen.getByTestId('settings-tabpanel-advanced');
+    expect(within(advancedPanel).getAllByTestId('info-tooltip')).toHaveLength(4);
     fireEvent.click(hwaccelSwitch());
-    expect(screen.getAllByTestId('info-tooltip')).toHaveLength(6);
+    expect(within(advancedPanel).getAllByTestId('info-tooltip')).toHaveLength(2);
   });
 
   it('renders the error-reporting row and toggles consent via the main process', async () => {
@@ -229,7 +398,7 @@ describe('Settings', () => {
       value: { ...window.electronAPI, monitoringSetEnabled: spy },
       writable: true,
     });
-    renderSettings();
+    renderSettingsOn('advanced');
     const monitoringSwitch = screen.getByTestId('settings-monitoring-error-reporting');
     expect(monitoringSwitch).toBeChecked();
     fireEvent.click(monitoringSwitch);
@@ -242,7 +411,7 @@ describe('Settings', () => {
   const mcpTokenInput = () => screen.getByLabelText('settings.mcpToken') as HTMLInputElement;
 
   it('renders the MCP server switch off with no port or token fields', () => {
-    renderSettings();
+    renderSettingsOn('ai');
     expect(screen.getByText('settings.mcpServer')).toBeInTheDocument();
     expect(mcpSwitch()).not.toBeChecked();
     expect(screen.queryByTestId('settings-mcp-port')).not.toBeInTheDocument();
@@ -254,18 +423,18 @@ describe('Settings', () => {
     // the disabled default and the switch must render off.
     vi.mocked(window.electronAPI.mcpGetSettings).mockResolvedValue({ enabled: false, port: 8765, token: '' });
     useSettingsStore.setState({ mcpEnabled: false, mcpPort: 8765, mcpToken: '' });
-    renderSettings();
+    renderSettingsOn('ai');
     await waitFor(() => expect(mcpSwitch()).not.toBeChecked());
     expect(screen.queryByTestId('settings-mcp-port')).not.toBeInTheDocument();
   });
 
   it('hides the AI use-case link until the MCP server is enabled', () => {
-    renderSettings();
+    renderSettingsOn('ai');
     expect(screen.queryByTestId('settings-mcp-ai-use-cases-link')).not.toBeInTheDocument();
   });
 
   it('reveals the AI use-case documentation link when the MCP server is enabled', async () => {
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(mcpSwitch());
     const link = await screen.findByTestId('settings-mcp-ai-use-cases-link');
     expect(link).toHaveAttribute('href', 'https://encodex.in/features#let-an-ai-assistant-drive');
@@ -273,13 +442,13 @@ describe('Settings', () => {
   });
 
   it('shows an info tooltip for the MCP server setting', async () => {
-    renderSettings();
-    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[4]);
+    renderSettingsOn('ai');
+    fireEvent.mouseEnter(screen.getByRole('button', { name: 'settings.mcpServerHint' }));
     expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.mcpServerHint');
   });
 
   it('reveals the MCP port and generate action but no token field when enabled', async () => {
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(mcpSwitch());
     expect(await screen.findByTestId('settings-mcp-port')).toBeInTheDocument();
     expect(screen.getByTestId('settings-mcp-generate-token')).toBeInTheDocument();
@@ -294,7 +463,7 @@ describe('Settings', () => {
       value: { ...window.electronAPI, mcpSetSettings: spy },
       writable: true,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(mcpSwitch());
     expect(spy).toHaveBeenCalledWith({ enabled: true, port: 8765, token: '' });
     await waitFor(() => expect(useSettingsStore.getState().mcpEnabled).toBe(true));
@@ -306,7 +475,7 @@ describe('Settings', () => {
       value: { ...window.electronAPI, mcpSetSettings: spy },
       writable: true,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(mcpSwitch());
     const port = await screen.findByRole('spinbutton', { name: 'settings.mcpPort' });
     fireEvent.change(port, { target: { value: '9000' } });
@@ -321,7 +490,7 @@ describe('Settings', () => {
       value: { ...window.electronAPI, mcpSetSettings: spy },
       writable: true,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(mcpSwitch());
     const port = await screen.findByRole('spinbutton', { name: 'settings.mcpPort' });
     fireEvent.change(port, { target: { value: '9050' } });
@@ -335,7 +504,7 @@ describe('Settings', () => {
       value: { ...window.electronAPI, mcpSetSettings: spy },
       writable: true,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(mcpSwitch());
     const port = (await screen.findByRole('spinbutton', { name: 'settings.mcpPort' })) as HTMLInputElement;
     fireEvent.change(port, { target: { value: '' } });
@@ -351,7 +520,7 @@ describe('Settings', () => {
       value: { ...window.electronAPI, mcpSetSettings: spy },
       writable: true,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(mcpSwitch());
     fireEvent.click(await screen.findByTestId('settings-mcp-generate-token'));
     await waitFor(() => expect(mcpTokenInput().value).toHaveLength(43));
@@ -367,7 +536,7 @@ describe('Settings', () => {
       value: { ...window.electronAPI, mcpSetSettings: vi.fn().mockResolvedValue({ enabled: true, port: 8765, token: 'secret' }) },
       writable: true,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(mcpSwitch());
     await screen.findByTestId('settings-mcp-copy-token');
     fireEvent.click(screen.getByTestId('settings-mcp-copy-token'));
@@ -380,7 +549,7 @@ describe('Settings', () => {
       value: { ...window.electronAPI, mcpSetSettings: spy },
       writable: true,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(mcpSwitch());
     fireEvent.click(await screen.findByTestId('settings-mcp-generate-token'));
     await waitFor(() => expect(mcpTokenInput().value).toHaveLength(43));
@@ -391,7 +560,7 @@ describe('Settings', () => {
   });
 
   it('hides the MCP connection details when the server is disabled', () => {
-    renderSettings();
+    renderSettingsOn('ai');
     expect(screen.queryByTestId('settings-mcp-endpoint')).not.toBeInTheDocument();
     expect(screen.queryByTestId('settings-mcp-authorization')).not.toBeInTheDocument();
   });
@@ -401,7 +570,7 @@ describe('Settings', () => {
       value: { ...window.electronAPI, mcpSetSettings: vi.fn().mockResolvedValue({ enabled: true, port: 8765, token: '' }) },
       writable: true,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(mcpSwitch());
     const endpoint = await screen.findByRole('textbox', { name: 'settings.mcpEndpoint' });
     expect(endpoint).toHaveValue('http://127.0.0.1:8765/mcp');
@@ -412,7 +581,7 @@ describe('Settings', () => {
       value: { ...window.electronAPI, mcpSetSettings: vi.fn().mockResolvedValue({ enabled: true, port: 8765, token: '' }) },
       writable: true,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(mcpSwitch());
     await screen.findByTestId('settings-mcp-endpoint');
     expect(screen.queryByTestId('settings-mcp-authorization')).not.toBeInTheDocument();
@@ -423,7 +592,7 @@ describe('Settings', () => {
       value: { ...window.electronAPI, mcpSetSettings: vi.fn().mockResolvedValue({ enabled: true, port: 8765, token: 'secret' }) },
       writable: true,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(mcpSwitch());
     const authorization = await screen.findByRole('textbox', { name: 'settings.mcpAuthorization' });
     expect(authorization).toHaveValue('Bearer secret');
@@ -436,7 +605,7 @@ describe('Settings', () => {
       value: { ...window.electronAPI, mcpSetSettings: vi.fn().mockResolvedValue({ enabled: true, port: 8765, token: '' }) },
       writable: true,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(mcpSwitch());
     await screen.findByTestId('settings-mcp-endpoint');
     fireEvent.click(screen.getByTestId('settings-mcp-copy-endpoint'));
@@ -447,7 +616,7 @@ describe('Settings', () => {
   });
 
   it('toggles token visibility when the reveal button is clicked', async () => {
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(mcpSwitch());
     fireEvent.click(await screen.findByTestId('settings-mcp-generate-token'));
     const input = (await screen.findByLabelText('settings.mcpToken')) as HTMLInputElement;
@@ -468,7 +637,7 @@ describe('Settings', () => {
       value: { ...window.electronAPI, mcpSetSettings: vi.fn((settings) => Promise.resolve(settings)) },
       writable: true,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(mcpSwitch());
     fireEvent.click(await screen.findByTestId('settings-mcp-generate-token'));
     const input = (await screen.findByLabelText('settings.mcpToken')) as HTMLInputElement;
@@ -485,7 +654,7 @@ describe('Settings', () => {
       value: { ...window.electronAPI, mcpSetSettings: vi.fn().mockResolvedValue({ enabled: true, port: 8765, token: 'secret' }) },
       writable: true,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(mcpSwitch());
     await waitFor(() => expect(useSettingsStore.getState().mcpToken).toBe('secret'));
     fireEvent.click(screen.getByTestId('settings-mcp-token-copy'));
@@ -501,7 +670,7 @@ describe('Settings', () => {
       value: { ...window.electronAPI, mcpSetSettings: spy },
       writable: true,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(mcpSwitch());
     fireEvent.click(await screen.findByTestId('settings-mcp-generate-token'));
     await screen.findByTestId('settings-mcp-token');
@@ -536,7 +705,7 @@ describe('Settings', () => {
 
   it('shows an info tooltip for the always-on-top setting', async () => {
     renderSettings();
-    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[0]);
+    fireEvent.mouseEnter(screen.getByRole('button', { name: 'settings.alwaysOnTopHint' }));
     expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.alwaysOnTopHint');
   });
 
@@ -575,12 +744,12 @@ describe('Settings', () => {
 
   it('shows an info tooltip for the launch-at-startup setting', async () => {
     renderSettings();
-    fireEvent.mouseEnter(screen.getAllByTestId('info-tooltip')[1]);
+    fireEvent.mouseEnter(screen.getByRole('button', { name: 'settings.launchAtLoginHint' }));
     expect(await screen.findByRole('tooltip')).toHaveTextContent('settings.launchAtLoginHint');
   });
 
   it('keeps the AI provider editor collapsed until the toggle is clicked', async () => {
-    renderSettings();
+    renderSettingsOn('ai');
     expect(screen.getByText('settings.ai.title')).toBeInTheDocument();
     expect(screen.queryByTestId('settings-ai')).not.toBeInTheDocument();
     // The stored settings are restored in the background, but the editor
@@ -599,7 +768,9 @@ describe('Settings', () => {
     });
 
     try {
-      renderSettings({ openAiProvider: true });
+      renderSettingsOn('ai', { openAiProvider: true });
+      expect(screen.getByRole('tab', { name: 'settings.tabs.ai' })).toHaveAttribute('aria-selected', 'true');
+      expect(screen.getByTestId('settings-tabpanel-ai')).toBeVisible();
       expect(await screen.findByTestId('settings-ai')).toBeInTheDocument();
       await waitFor(() => expect(scrollIntoView).toHaveBeenCalled());
     } finally {
@@ -610,7 +781,7 @@ describe('Settings', () => {
 
   it('keeps the offline defaults when the loaded settings are malformed', async () => {
     vi.mocked(window.electronAPI.aiGetSettings).mockResolvedValue({} as never);
-    renderSettings();
+    renderSettingsOn('ai');
     await waitFor(() => expect(window.electronAPI.aiGetSettings).toHaveBeenCalled());
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
@@ -627,7 +798,7 @@ describe('Settings', () => {
       encryptionAvailable: true,
       connected: false,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     await waitFor(() => expect(window.electronAPI.aiGetSettings).toHaveBeenCalledTimes(1));
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
@@ -636,7 +807,7 @@ describe('Settings', () => {
   });
 
   it('renders a provider button for every AI provider', async () => {
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     for (const id of ['rules', 'openai', 'anthropic', 'gemini', 'local']) {
@@ -645,7 +816,7 @@ describe('Settings', () => {
   });
 
   it('renders each provider as a horizontal icon | separator | name button', async () => {
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     for (const id of ['rules', 'openai', 'anthropic', 'gemini', 'local']) {
@@ -662,7 +833,7 @@ describe('Settings', () => {
   });
 
   it('offers connect but hides advanced and key fields for the built-in rules provider', async () => {
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     expect(screen.getByTestId('settings-ai-connect')).toBeInTheDocument();
@@ -692,7 +863,7 @@ describe('Settings', () => {
       encryptionAvailable: true,
       connected: false,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-rules'));
@@ -710,7 +881,7 @@ describe('Settings', () => {
       encryptionAvailable: true,
       connected: false,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     expect(await screen.findByTestId('settings-ai')).toBeInTheDocument();
     await waitFor(() => expect(window.electronAPI.aiGetSettings).toHaveBeenCalledTimes(1));
@@ -732,7 +903,7 @@ describe('Settings', () => {
       encryptionAvailable: true,
       connected: false,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     await waitFor(() => expect(screen.getByTestId('settings-ai-provider-anthropic')).toHaveAttribute('aria-pressed', 'true'));
@@ -752,7 +923,7 @@ describe('Settings', () => {
       encryptionAvailable: true,
       connected: false,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     await waitFor(() => expect(screen.getByTestId('settings-ai-provider-anthropic')).toHaveAttribute('aria-pressed', 'true'));
@@ -760,7 +931,7 @@ describe('Settings', () => {
   });
 
   it('persists the provider selection without activating it for the Copilot', async () => {
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-gemini'));
@@ -779,7 +950,7 @@ describe('Settings', () => {
     });
     vi.mocked(window.electronAPI.aiSetSettings).mockImplementation(spy);
     vi.mocked(window.electronAPI.aiConnectTest).mockResolvedValue({ ok: true, message: 'Connected', latencyMs: 42 });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-anthropic'));
@@ -789,7 +960,7 @@ describe('Settings', () => {
   });
 
   it('deep-links to the provider key page for remote providers', async () => {
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
@@ -802,7 +973,7 @@ describe('Settings', () => {
   it('pastes the clipboard into the API key field', async () => {
     const readText = vi.fn().mockResolvedValue('sk-clip');
     Object.defineProperty(navigator, 'clipboard', { value: { readText }, configurable: true });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
@@ -811,7 +982,7 @@ describe('Settings', () => {
   });
 
   it('edits the AI model and API key fields', async () => {
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
@@ -831,7 +1002,7 @@ describe('Settings', () => {
       ok: true,
       models: ['gpt-4o-mini', 'gpt-6-astra', 'gpt-4.1'],
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
@@ -848,7 +1019,7 @@ describe('Settings', () => {
 
   it('disables remote providers while offline and shows the network tooltip', async () => {
     const spy = vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(false);
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     for (const id of ['openai', 'anthropic', 'gemini']) {
@@ -865,7 +1036,7 @@ describe('Settings', () => {
   it('falls back to the built-in rules provider when the connection drops', async () => {
     let online = true;
     const spy = vi.spyOn(navigator, 'onLine', 'get').mockImplementation(() => online);
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
@@ -880,7 +1051,7 @@ describe('Settings', () => {
   });
 
   it('disables model suggestions until an API key is available', async () => {
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
@@ -896,7 +1067,7 @@ describe('Settings', () => {
 
   it('keeps the model field usable when the provider list fetch fails', async () => {
     vi.mocked(window.electronAPI.aiListModels).mockRejectedValue(new Error('offline'));
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
@@ -911,7 +1082,7 @@ describe('Settings', () => {
 
   it('ignores a malformed model-list result', async () => {
     vi.mocked(window.electronAPI.aiListModels).mockResolvedValue({ ok: true } as never);
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
@@ -933,7 +1104,7 @@ describe('Settings', () => {
       connectedAt: 1,
       connectedModel: 'gpt-4o',
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     expect(await screen.findByTestId('settings-ai-connected')).toHaveTextContent('settings.ai.statusConnected');
@@ -957,7 +1128,7 @@ describe('Settings', () => {
         connectedModel: 'gpt-4o-mini',
       },
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
@@ -991,7 +1162,7 @@ describe('Settings', () => {
     };
     vi.mocked(window.electronAPI.aiGetSettings).mockResolvedValue(connectedLocalView);
     useAiConnectionStore.getState().patch(connectedLocalView);
-    renderSettings();
+    renderSettingsOn('ai');
     const status = await screen.findByTestId('settings-ai-header-status');
     expect(status.querySelector('[data-icon="server"]')).not.toBeNull();
     expect(status.querySelector('[data-icon="robot"]')).toBeNull();
@@ -1007,7 +1178,7 @@ describe('Settings', () => {
       encryptionAvailable: true,
       connected: false,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     expect(screen.getByLabelText('settings.ai.apiKey')).toHaveAttribute('placeholder', 'settings.ai.keySavedPlaceholder');
@@ -1030,7 +1201,7 @@ describe('Settings', () => {
         gemini: { model: '', hasKey: true, keyHint: '••••••••', storedInsecurely: false },
       },
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
 
@@ -1067,7 +1238,7 @@ describe('Settings', () => {
       connectedModel: 'gpt-4o-mini',
       activeConnection: { providerId: 'openai', model: 'gpt-4o-mini', at: 5 },
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     expect(screen.getByTestId('settings-ai-connected-dot-openai')).toBeInTheDocument();
@@ -1093,7 +1264,7 @@ describe('Settings', () => {
       connected: false,
     });
     vi.mocked(window.electronAPI.aiSetSettings).mockResolvedValue({} as never);
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-remove-key'));
@@ -1112,7 +1283,7 @@ describe('Settings', () => {
       connected: false,
     });
     vi.mocked(window.electronAPI.aiSetSettings).mockRejectedValue(new Error('boom'));
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-remove-key'));
@@ -1127,7 +1298,7 @@ describe('Settings', () => {
       model: 'gpt-4o-mini',
       view: connectedOpenAiView,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
@@ -1145,7 +1316,7 @@ describe('Settings', () => {
       model: 'gpt-4o-mini',
       view: connectedOpenAiView,
     });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
@@ -1165,7 +1336,7 @@ describe('Settings', () => {
       model: 'gpt-4o-mini',
       view: connectedOpenAiView,
     });
-    const first = renderSettings();
+    const first = renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
@@ -1173,7 +1344,7 @@ describe('Settings', () => {
     await screen.findByTestId('settings-ai-connected');
     first.unmount();
     vi.mocked(window.electronAPI.aiGetSettings).mockClear();
-    renderSettings();
+    renderSettingsOn('ai');
     expect(screen.getByTestId('settings-ai-header-status')).toHaveTextContent('settings.ai.headerConnected');
     expect(window.electronAPI.aiGetSettings).not.toHaveBeenCalled();
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
@@ -1183,7 +1354,7 @@ describe('Settings', () => {
   });
 
   it('shows the endpoint for local and the model under Advanced', async () => {
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-local'));
@@ -1196,7 +1367,7 @@ describe('Settings', () => {
   });
 
   it('edits the local provider base URL', async () => {
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-local'));
@@ -1209,7 +1380,7 @@ describe('Settings', () => {
   it('loads local model suggestions without an API key', async () => {
     const user = userEvent.setup();
     vi.mocked(window.electronAPI.aiListModels).mockResolvedValue({ ok: true, models: ['llama3'] });
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-local'));
@@ -1222,7 +1393,7 @@ describe('Settings', () => {
   });
 
   it('edits the OpenAI base URL from the advanced panel', async () => {
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
@@ -1236,7 +1407,7 @@ describe('Settings', () => {
 
   it('shows a save error when the bridge returns an unusable view', async () => {
     vi.mocked(window.electronAPI.aiSetSettings).mockResolvedValue({} as never);
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
@@ -1246,7 +1417,7 @@ describe('Settings', () => {
 
   it('surfaces a save rejection as an error', async () => {
     vi.mocked(window.electronAPI.aiSetSettings).mockRejectedValue(new Error('boom'));
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
@@ -1256,7 +1427,7 @@ describe('Settings', () => {
 
   it('reports a failed connection test without a reason as a generic error', async () => {
     vi.mocked(window.electronAPI.aiConnectTest).mockResolvedValue({ ok: false } as never);
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
@@ -1266,7 +1437,7 @@ describe('Settings', () => {
 
   it('shows a localized message for a classified connection failure', async () => {
     vi.mocked(window.electronAPI.aiConnectTest).mockResolvedValue({ ok: false, message: 'x', reason: 'invalidKey', status: 401 } as never);
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
@@ -1276,7 +1447,7 @@ describe('Settings', () => {
 
   it('surfaces a connection-test rejection as an error', async () => {
     vi.mocked(window.electronAPI.aiConnectTest).mockRejectedValue(new Error('boom'));
-    renderSettings();
+    renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
@@ -1285,7 +1456,7 @@ describe('Settings', () => {
   });
 
   it('has no axe violations with the AI editor expanded', async () => {
-    const { container } = renderSettings();
+    const { container } = renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     await assertNoAxeViolations(container);

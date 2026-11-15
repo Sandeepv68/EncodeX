@@ -686,7 +686,13 @@
       "headerConnected": "Tengt · {{provider}} · {{model}}"
     },
     "desktopNotifications": "Skjáborðstilkynningar",
-    "desktopNotificationsHint": "Sýna kerfistilkynningar þegar verkefni í biðröð klárast eða mistakast á meðan forritið keyrir í bakgrunni."
+    "desktopNotificationsHint": "Sýna kerfistilkynningar þegar verkefni í biðröð klárast eða mistakast á meðan forritið keyrir í bakgrunni.",
+    "tabs": {
+      "ariaLabel": "Stillingahlutar",
+      "general": "Almennt",
+      "advanced": "Ítarlegt",
+      "ai": "AI"
+    }
   },
   "shortcuts": {
     "title": "Flýtilyklar",
