@@ -55,7 +55,8 @@ export default function Settings() {
   }, [location.key, wantsAi]);
 
   const handleTabChange = (next: SettingsTab): void => {
-    if (next === tab) return;
+    // MUI only raises `onChange` when a *different* tab is selected, so this
+    // handler only ever runs for a real change of tab.
     setTab(next);
     recordAnalyticsEvent(createAnalyticsEvent('settings_tab_viewed', { tab: next }));
   };
