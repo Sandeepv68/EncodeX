@@ -11,7 +11,7 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
-import { launchApp, closeApp, ensureLiveSession, reloadSession, AppSession } from '../fixtures/app';
+import { launchApp, closeApp, ensureLiveSession, reloadSession, selectSettingsTab, AppSession } from '../fixtures/app';
 import { mockApi } from '../mocks/control';
 
 const IS_E2E = process.env.E2E === 'true' || !!process.env.CI;
@@ -21,7 +21,6 @@ async function gotoSettings(page: import('playwright').Page): Promise<void> {
   await page.locator('[data-testid="nav-item-settings"]').click();
   await page.waitForFunction(() => location.hash.startsWith('#/settings'));
 }
-
 describe.runIf(IS_E2E)('Settings page - embedded MCP server (Tier A)', () => {
   let session: AppSession;
 
@@ -39,7 +38,9 @@ describe.runIf(IS_E2E)('Settings page - embedded MCP server (Tier A)', () => {
     session = await reloadSession(session);
     const { page } = session;
     await gotoSettings(page);
-    await page.locator('[data-testid="settings-theme-light"]').waitFor({ timeout: 15000 });
+    // The embedded MCP server lives on the AI tab.
+    await selectSettingsTab(page, 'ai');
+    await page.locator('[data-testid="settings-mcp-server"]').waitFor({ timeout: 15000 });
   }, 30000);
 
   it('renders the MCP server switch collapsed by default', async () => {
@@ -122,6 +123,7 @@ describe.runIf(IS_E2E)('Settings page - embedded MCP server (Tier A)', () => {
     session = await reloadSession(session);
     const { page } = session;
     await gotoSettings(page);
+    await selectSettingsTab(page, 'ai');
     await expect.poll(() => page.locator('[data-testid="settings-mcp-server"]').isChecked()).toBe(true);
     await expect.poll(() => page.locator('[data-testid="settings-mcp-port"] input').inputValue()).toBe('7000');
     await expect.poll(() => page.locator('[data-testid="settings-mcp-token"] input').inputValue()).toBe('persisted-token');

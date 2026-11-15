@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
-import { launchApp, closeApp, ensureLiveSession, reloadSession, AppSession } from '../fixtures/app';
+import { launchApp, closeApp, ensureLiveSession, reloadSession, selectSettingsTab, AppSession } from '../fixtures/app';
 import { mockApi } from '../mocks/control';
 
 const IS_E2E = process.env.E2E === 'true' || !!process.env.CI;
@@ -55,6 +55,9 @@ describe.runIf(IS_E2E)('Settings page', () => {
     await expect.poll(() => page.locator('[data-testid="settings-theme-light"]').getAttribute('aria-pressed')).toBe('true');
     await expect.poll(() => page.locator('[data-testid="settings-always-on-top"]').isChecked()).toBe(false);
     await expect.poll(() => page.locator('[data-testid="settings-launch-at-login"]').isChecked()).toBe(false);
+
+    // Hardware acceleration lives on the Advanced tab.
+    await selectSettingsTab(page, 'advanced');
     await expect.poll(() => page.locator('[data-testid="settings-hardware-acceleration"]').isChecked()).toBe(true);
     await expect.poll(() => page.locator('[data-testid="settings-hwaccel-mode"] input').inputValue()).toBe('auto');
     await expect.poll(() => page.locator('[data-testid="settings-encoder-type"] input').inputValue()).toBe('auto');
@@ -83,6 +86,7 @@ describe.runIf(IS_E2E)('Settings page', () => {
 
   it('persists hardware acceleration mode and encoder type', async () => {
     const { page } = session;
+    await selectSettingsTab(page, 'advanced');
     await expect.poll(() => page.locator('[data-testid="settings-hwaccel-mode"]').count()).toBe(1);
     await expect.poll(() => page.locator('[data-testid="settings-encoder-type"]').count()).toBe(1);
 
@@ -104,6 +108,7 @@ describe.runIf(IS_E2E)('Settings page', () => {
 
   it('hides hardware selects when disabled and restores persisted values on re-enable', async () => {
     const { page } = session;
+    await selectSettingsTab(page, 'advanced');
     await page.locator('[data-testid="settings-hardware-acceleration"]').click();
     await expect.poll(() => page.locator('[data-testid="settings-hwaccel-mode"]').count()).toBe(0);
     await expect.poll(() => page.locator('[data-testid="settings-encoder-type"]').count()).toBe(0);
