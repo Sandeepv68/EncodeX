@@ -8,8 +8,8 @@
  */
 
 import { styled } from '@mui/material/styles';
-import { Alert, Box } from '@mui/material';
-import { SHADOWS } from '../../shared/theme/colors';
+import { Box } from '@mui/material';
+import { BaseAlert } from './alerts.styles';
 
 /** Full-viewport flex row hosting the Copilot page content. @const CopilotPage */
 export const CopilotPage = styled(Box)(({ theme }) => ({
@@ -69,10 +69,7 @@ export const CopilotAlertWrapper = styled(Box)(({ theme }) => ({
 }));
 
 /**
- * Inline error / notice alert with a soft elevation and a full-width message.
+ * Inline error / notice alert; shares the app-wide alert surface.
  * @const CopilotAlert
  */
-export const CopilotAlert = styled(Alert)(({ theme }) => ({
-  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
-  '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
-}));
+export const CopilotAlert = BaseAlert;

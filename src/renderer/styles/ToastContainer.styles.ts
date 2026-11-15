@@ -1,18 +1,16 @@
 import { styled } from '@mui/material/styles';
-import { Alert, Button } from '@mui/material';
+import { Button } from '@mui/material';
 
-export const ToastAlert = styled(Alert)(({ theme }) => ({
-  maxWidth: theme.typography.pxToRem(600),
-  color: theme.palette.common.white,
-}));
+/** Filled toast alert; shared with the error snackbar. */
+export { ToastAlert } from './alerts.styles';
 
 export const ToastMessage = styled('div')(({ theme }) => ({
-  fontWeight: 600,
   fontSize: theme.typography.pxToRem(13),
 }));
 
 export const ToastDetail = styled('div')(({ theme }) => ({
   fontSize: theme.typography.pxToRem(12),
+  fontWeight: 400,
   opacity: 0.9,
   marginTop: theme.typography.pxToRem(2),
 }));

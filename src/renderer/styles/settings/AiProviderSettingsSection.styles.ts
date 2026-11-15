@@ -6,9 +6,9 @@
  */
 
 import { alpha, styled } from '@mui/material/styles';
-import { Alert, Box } from '@mui/material';
-import { SHADOWS } from '../../../shared/theme/colors';
+import { Box } from '@mui/material';
 import { SettingsSection } from '../Settings.styles';
+import { BaseAlert } from '../alerts.styles';
 
 export const AiSettingsSection = styled(SettingsSection)({
   flexDirection: 'column',
@@ -150,10 +150,7 @@ export const AdvancedPanel = styled(Box)(({ theme }) => ({
   borderTop: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
 }));
 
-export const AiAlert = styled(Alert)(({ theme }) => ({
-  fontWeight: 500,
-  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
-}));
+export const AiAlert = BaseAlert;
 
 /**
  * The small green dot that marks a provider tile (and the collapsed header

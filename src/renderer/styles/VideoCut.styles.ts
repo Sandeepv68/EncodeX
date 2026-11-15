@@ -1,9 +1,7 @@
 import { styled } from '@mui/material/styles';
-import { Box, Chip, Alert, Stack } from '@mui/material';
+import { Box, Chip, Stack } from '@mui/material';
 
-export const AccelAlert = styled(Alert)(({}) => ({
-  fontWeight: 500,
-}));
+export { AccelAlert } from './alerts.styles';
 
 export const SectionsStack = styled(Box)(({ theme }) => ({
   display: 'flex',

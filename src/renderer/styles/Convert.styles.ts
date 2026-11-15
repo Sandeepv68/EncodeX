@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { Box, Stack, Typography, Alert, Paper, Divider, Button } from '@mui/material';
+import { Box, Stack, Typography, Paper, Divider, Button } from '@mui/material';
 import { SHADOWS } from '../../shared/theme/colors';
 import type { ElementType } from 'react';
 
@@ -10,13 +10,7 @@ export const PageSection = styled(Box)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-export const AccelAlert = styled(Alert)(({}) => ({
-  fontWeight: 500,
-}));
-
-export const CompatAlert = styled(Alert)(({}) => ({
-  fontWeight: 500,
-}));
+export { AccelAlert, CompatAlert } from './alerts.styles';
 
 export const ActionStack = styled(Stack)({ flexWrap: 'wrap' });
 
