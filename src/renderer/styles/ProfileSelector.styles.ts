@@ -11,12 +11,12 @@ export const HighlightMark = styled('span')(({ theme }) => ({
 
 /** Icon wrapper in each profile option row */
 export const OptionIcon = styled(Box)(({ theme }) => ({
-  minWidth: theme.typography.pxToRem(30),
+  minWidth: theme.typography.pxToRem(36),
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   fontSize: theme.typography.pxToRem(18),
-  marginTop: theme.typography.pxToRem(3),
+  alignSelf: 'stretch',
   flexShrink: 0,
 }));
 
@@ -62,13 +62,15 @@ export const OptionContent = styled(Box)({
 /**
  * The option row itself (list item rendered inside the Autocomplete listbox).
  * `position: relative` anchors the absolutely positioned check/delete icons,
- * and `alignItems: flex-start` keeps multi-line content top-aligned.
+ * and `alignItems: stretch` lets the logo tile fill the row's height while the
+ * multi-line content stays top-aligned inside its own column.
  * @const OptionItem
  */
-export const OptionItem = styled('li')({
+export const OptionItem = styled('li')(({ theme }) => ({
   position: 'relative',
-  alignItems: 'flex-start',
-});
+  alignItems: 'stretch',
+  gap: theme.spacing(1.5),
+}));
 
 /** Description line below the profile name */
 export const OptionDescription = styled(Typography)(({ theme }) => ({
