@@ -37,10 +37,6 @@
  *  - onBrowseDir: fired by the Browse button next to the output folder field.
  *  - overwrite / onOverwriteChange: controlled toggle allowing existing output
  *    files to be replaced when adding jobs.
- *  - whenDone / onWhenDoneChange: controlled "when done" power-action config;
- *    when enabled, an action dropdown (shutdown/sleep/hibernate) and a
- *    force-quit checkbox are revealed. The main process performs the selected
- *    action once the queue drains.
  *  - onExport: fired by the Export button; the parent writes the queue to a
  *    JSON file via the main process.
  *  - onImport: fired by the Import button; the parent reads and enqueues a
@@ -67,8 +63,8 @@ import { useTranslation } from 'react-i18next';
 import { SHORTCUT_BY_ID, shortcutHint } from '../constants/shortcuts';
 import { BATCH_OPERATIONS, DEFAULT_SUFFIX } from '../../shared/media-options';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
-import { MAX_QUEUE_CONCURRENCY, WHEN_DONE_ACTIONS } from '../../shared/constants';
-import type { BmfStatus, TranscoderType, WhenDoneAction } from '../../shared/types';
+import { MAX_QUEUE_CONCURRENCY } from '../../shared/constants';
+import type { BmfStatus, TranscoderType } from '../../shared/types';
 import type { BatchControlsProps } from './types';
 import TooltipIfEnabled from './TooltipIfEnabled';
 import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
@@ -80,15 +76,12 @@ import {
   ConcurrencySelect,
   SuffixField,
   OutputDirField,
-  WhenDoneSelect,
   OutlinedIconButton,
   ToolbarAlert,
   ToolbarRow,
   OutputDirFieldBox,
-  WhenDoneFieldBox,
   BrowseButton,
   AlignedCheckbox,
-  ForceCheckbox,
   DropdownChevron,
   BmfNotice,
 } from '../styles/BatchControls.styles';
@@ -139,11 +132,6 @@ import {
  *   replaced when adding jobs.
  * @param {(overwrite: boolean) => void} props.onOverwriteChange - Fired with
  *   the new value when the overwrite toggle changes.
- * @param {WhenDoneConfig} props.whenDone - Current "when done" power-action
- *   config ({enabled, action, force}).
- * @param {(config: WhenDoneConfig) => void} props.onWhenDoneChange - Fired with
- *   the merged config when the "when done" checkbox, action dropdown, or force
- *   checkbox changes.
  * @param {() => void} props.onExport - Fired by the Export button.
  * @param {() => void} props.onImport - Fired by the Import button.
  * @param {boolean} [props.hardwareAccelAlert=false] - When true and not already
@@ -175,8 +163,6 @@ export default function BatchControls({
   onBrowseDir,
   overwrite,
   onOverwriteChange,
-  whenDone,
-  onWhenDoneChange,
   onExport,
   onImport,
   hardwareAccelAlert,
@@ -225,16 +211,6 @@ export default function BatchControls({
     transcode: t('batchQueue.operationTranscode'),
     extract_audio: t('batchQueue.operationExtractAudio'),
     compress_image: t('batchQueue.operationCompressImage'),
-  };
-
-  /**
-   * Localized display labels keyed by when-done power action value.
-   * @const {Record<WhenDoneAction, string>} whenDoneActionLabels
-   */
-  const whenDoneActionLabels: Record<WhenDoneAction, string> = {
-    shutdown: t('batchQueue.whenDoneShutdown'),
-    sleep: t('batchQueue.whenDoneSleep'),
-    hibernate: t('batchQueue.whenDoneHibernate'),
   };
 
   return (
@@ -450,53 +426,6 @@ export default function BatchControls({
               }
               label={t('batchQueue.overwrite')}
             />
-            <AlignedCheckbox
-              control={
-                <Checkbox
-                  size="small"
-                  checked={whenDone.enabled}
-                  onChange={(e) => {
-                    onWhenDoneChange({ ...whenDone, enabled: e.target.checked });
-                  }}
-                />
-              }
-              label={t('batchQueue.whenDone')}
-            />
-            {whenDone.enabled && (
-              <>
-                <WhenDoneFieldBox>
-                  <FieldLabel htmlFor="batch-when-done-action">{t('batchQueue.whenDoneAction')}</FieldLabel>
-                  <WhenDoneSelect
-                    id="batch-when-done-action"
-                    select
-                    size="small"
-                    slotProps={{ input: { 'aria-label': t('batchQueue.whenDoneAction') } }}
-                    value={whenDone.action}
-                    onChange={(e) => {
-                      onWhenDoneChange({ ...whenDone, action: e.target.value as WhenDoneAction });
-                    }}
-                  >
-                    {WHEN_DONE_ACTIONS.map((a) => (
-                      <MenuItem key={a} value={a}>
-                        {whenDoneActionLabels[a]}
-                      </MenuItem>
-                    ))}
-                  </WhenDoneSelect>
-                </WhenDoneFieldBox>
-                <ForceCheckbox
-                  control={
-                    <Checkbox
-                      size="small"
-                      checked={whenDone.force}
-                      onChange={(e) => {
-                        onWhenDoneChange({ ...whenDone, force: e.target.checked });
-                      }}
-                    />
-                  }
-                  label={t('batchQueue.whenDoneForce')}
-                />
-              </>
-            )}
           </ToolbarRow>
         </Grid>
       </Grid>

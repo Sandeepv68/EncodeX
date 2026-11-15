@@ -1,7 +1,9 @@
 import { styled, alpha } from '@mui/material/styles';
-import { Box, Chip, IconButton, Paper, Stack, Typography } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
+import { Box, Chip, IconButton, Paper, Stack, Table, TableCell, Typography } from '@mui/material';
 import { QUEUE_STATUS } from '../../shared/media-options';
 import { SHADOWS, OVERLAY_COLORS } from '../../shared/theme/colors';
+import { framedTableCellStyle } from './StreamTable.styles';
 
 /**
  * Job card surface.
@@ -162,7 +164,11 @@ export const DetailsBox = styled(Box)(({ theme }) => ({
 export const DetailsLabel = styled(Typography)(({ theme }) => ({
   display: 'block',
   fontWeight: 600,
+  marginTop: theme.spacing(1),
   marginBottom: theme.spacing(0.5),
+  '&:first-of-type': {
+    marginTop: 0,
+  },
 }));
 
 export const OptionsGrid = styled(Box)(({ theme }) => ({
@@ -176,4 +182,137 @@ export const OptionRow = styled(Stack)(({ theme }) => ({
   flexDirection: 'row',
   alignItems: 'center',
   columnGap: theme.typography.pxToRem(4),
+}));
+
+/**
+ * A path value inside the details panel. Long paths are broken so they stay
+ * inside the panel instead of running over the neighbouring text.
+ */
+export const DetailsPath = styled(Typography)({
+  wordBreak: 'break-all',
+});
+
+/**
+ * Marker class of the cell that hosts a nested table. The surrounding cell
+ * padding is skipped for it, so the nested table sits flush against the frame
+ * of the details table instead of floating inside a padded cell.
+ * @const {string} FLUSH_CELL_CLASS
+ */
+export const FLUSH_CELL_CLASS = 'detailsFlushCell';
+
+/**
+ * The row and cell rules of a details table: the same single-line borders and
+ * banded rows the Remux/Demux stream tables use, without the hover tone - the
+ * details panel is a read-only view, so rows do not react to the pointer.
+ * @param {Theme} theme - The active MUI theme.
+ * @returns {object} The table rule set.
+ */
+function detailsTableRules(theme: Theme) {
+  return {
+    '& > .MuiTableBody-root > .MuiTableRow-root > .MuiTableCell-root': {
+      ...framedTableCellStyle(theme),
+      overflowWrap: 'anywhere',
+    },
+    [`& > .MuiTableBody-root > .MuiTableRow-root > .MuiTableCell-root:not(.${FLUSH_CELL_CLASS})`]: {
+      padding: `${theme.typography.pxToRem(4)} ${theme.typography.pxToRem(8)}`,
+    },
+    '& > .MuiTableBody-root > .MuiTableRow-root:last-of-type > .MuiTableCell-root': {
+      borderBottom: 'none',
+    },
+    '& > .MuiTableBody-root > .MuiTableRow-root:nth-of-type(even)': {
+      backgroundColor: alpha(theme.palette.primary.main, 0.04),
+    },
+    '& > .MuiTableHead-root > .MuiTableRow-root > .MuiTableCell-root': {
+      ...framedTableCellStyle(theme),
+      padding: `${theme.typography.pxToRem(4)} ${theme.typography.pxToRem(8)}`,
+      fontWeight: 600,
+      whiteSpace: 'nowrap',
+      backgroundColor: alpha(theme.palette.text.secondary, 0.12),
+    },
+  };
+}
+
+/**
+ * The job details table: a framed label/value table drawn exactly like the
+ * Remux/Demux stream tables, with the label column shaded like a header.
+ */
+export const DetailsTable = styled(Table)(({ theme }) => ({
+  borderCollapse: 'separate',
+  borderSpacing: 0,
+  border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
+  borderRadius: theme.typography.pxToRem(8),
+  overflow: 'hidden',
+  width: '100%',
+  tableLayout: 'fixed',
+  marginBottom: theme.typography.pxToRem(4),
+  ...detailsTableRules(theme),
+}));
+
+/**
+ * A nested details table (the extracted streams of a demux job). It shares the
+ * cell styling of the Remux/Demux stream tables but has no frame of its own,
+ * because it already sits inside the framed details table.
+ */
+export const DetailsSubTable = styled(Table)(({ theme }) => ({
+  ...detailsTableRules(theme),
+}));
+
+/**
+ * The cell that hosts a nested table. It carries no padding of its own, so the
+ * nested table sits flush inside the details table instead of floating inside
+ * a padded cell.
+ */
+export const DetailsCellHost = styled(TableCell)({
+  padding: 0,
+});
+
+/**
+ * The label cell of a details table row. Shaded like a header cell so the two
+ * columns read as a label column and a value column.
+ */
+export const DetailsCellLabel = styled(TableCell)(({ theme }) => ({
+  width: theme.typography.pxToRem(150),
+  fontWeight: 600,
+  fontSize: theme.typography.pxToRem(12),
+  backgroundColor: alpha(theme.palette.text.secondary, 0.12),
+}));
+
+/**
+ * The value cell of a details table row.
+ */
+export const DetailsCellValue = styled(TableCell)(({ theme }) => ({
+  fontSize: theme.typography.pxToRem(12),
+}));
+
+/**
+ * A section heading row inside a details table.
+ */
+export const DetailsSectionCell = styled(TableCell)(({ theme }) => ({
+  paddingTop: theme.typography.pxToRem(12),
+  fontWeight: 600,
+  fontSize: theme.typography.pxToRem(12),
+}));
+
+/**
+ * The header cell of a nested details table.
+ */
+export const DetailsHeaderCell = styled(TableCell)(({ theme }) => ({
+  fontWeight: 600,
+  fontSize: theme.typography.pxToRem(12),
+}));
+
+/**
+ * The stream cell of a nested details table.
+ */
+export const DetailsStreamCell = styled(TableCell)(({ theme }) => ({
+  width: '22%',
+  fontSize: theme.typography.pxToRem(12),
+}));
+
+/**
+ * The output path cell of a nested details table.
+ */
+export const DetailsOutputCell = styled(TableCell)(({ theme }) => ({
+  width: '40%',
+  fontSize: theme.typography.pxToRem(12),
 }));

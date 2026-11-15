@@ -64,7 +64,7 @@ const API_TABLE = {
   queueCancelAll: { kind: 'invoke', channel: IPC.QUEUE_CANCEL_ALL, params: [] },
   queueClearCompleted: { kind: 'invoke', channel: IPC.QUEUE_CLEAR_COMPLETED, params: [] },
   queueSetConcurrency: { kind: 'invoke', channel: IPC.QUEUE_SET_CONCURRENCY, params: ['concurrency'] },
-  queueSetWhenDone: { kind: 'invoke', channel: IPC.QUEUE_SET_WHEN_DONE, params: ['config'] },
+  queueSetWhenDone: { kind: 'invoke', channel: IPC.QUEUE_SET_WHEN_DONE, params: ['action'] },
   queueMoveTo: { kind: 'invoke', channel: IPC.QUEUE_MOVE_TO, params: ['id', 'toPosition'] },
   queueUpdateOptions: { kind: 'invoke', channel: IPC.QUEUE_UPDATE_OPTIONS, params: ['id', 'options', 'output'] },
   queuePause: { kind: 'invoke', channel: IPC.QUEUE_PAUSE, params: [] },

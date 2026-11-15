@@ -22,7 +22,7 @@ import type {
   ThumbnailStrip,
   TranscoderType,
   WaveformData,
-  WhenDoneConfig,
+  WhenDoneAction,
 } from '../../shared/types';
 import type { AIProviderId } from '../../shared/ai/types';
 import type { OnboardingGoal } from '../../shared/analytics/events';
@@ -151,8 +151,6 @@ export interface BatchControlsProps {
   onBrowseDir: () => void;
   overwrite: boolean;
   onOverwriteChange: (overwrite: boolean) => void;
-  whenDone: WhenDoneConfig;
-  onWhenDoneChange: (config: WhenDoneConfig) => void;
   onExport: () => void;
   onImport: () => void;
   /**
@@ -161,6 +159,17 @@ export interface BatchControlsProps {
    * store.
    */
   hardwareAccelAlert?: boolean;
+}
+
+/**
+ * Props for the global (all-queues) options bar.
+ * @interface GlobalQueueOptionsProps
+ */
+export interface GlobalQueueOptionsProps {
+  /** Power action performed when a queue drains ('none' leaves the machine alone). */
+  whenDone: WhenDoneAction;
+  /** Fired with the new action whenever the selection changes. */
+  onWhenDoneChange: (action: WhenDoneAction) => void;
 }
 
 /**
@@ -610,6 +619,20 @@ export interface MuxQueueJobCardProps {
   progress?: ConversionProgress | null;
   onRemove: (id: string) => void;
   onRetry?: (job: MuxQueueJob) => void;
+}
+
+/**
+ * Props for the mux queue panel.
+ * @interface MuxQueuePanelProps
+ * @property {RefObject<HTMLInputElement | null>} [searchRef] - Ref forwarded to
+ *   the filename search input, so the page-level "focus search" shortcut can
+ *   target the mux queue search while the mux tab is active.
+ * @property {boolean} [condensed] - True while the mux tab is condensed: the
+ *   queue toolbar collapses so only the filter row and the job list remain.
+ */
+export interface MuxQueuePanelProps {
+  searchRef?: RefObject<HTMLInputElement | null>;
+  condensed?: boolean;
 }
 
 /**

@@ -55,7 +55,8 @@ import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
 import { demuxAnalyticsSummary } from '../../shared/analytics/analytics-summaries';
 import type { DemuxState, TaskProgress } from './types';
-import { dirname as pathDirname, stem as pathStem } from '../utils/path-utils';
+import { dirname as pathDirname, stem as pathStem, joinPath } from '../utils/path-utils';
+import { defaultFolderNameForFile, sanitizeFolderName } from '../../shared/folder-naming';
 import i18n from '../i18n/config';
 import {
   LOG_ARROW,
@@ -87,18 +88,6 @@ const log = new Logger('renderer/stores/demuxStore');
 const ATTACHED_PIC_DISPOSITION = 'attached_pic';
 
 /**
- * Joins a directory with a relative file name using the separator of the
- * directory (Windows `\` or POSIX `/`), stripping any trailing separator.
- * @param {string} dir - The output directory.
- * @param {string} name - The relative file name.
- * @returns {string} The joined absolute path.
- */
-function joinPath(dir: string, name: string): string {
-  const sep = dir.includes('\\') ? '\\' : '/';
-  return `${dir.replace(/[\\/]+$/, '')}${sep}${name}`;
-}
-
-/**
  * Initial (and reset) values for the demux form and run state.
  * @const {Object} INITIAL_STATE
  * @property {string} input - Empty input path.
@@ -106,6 +95,8 @@ function joinPath(dir: string, name: string): string {
  * @property {number[]} selectedIndices - No selected stream indices.
  * @property {number[]} splitIndices - No audio streams split into channels.
  * @property {string} outputDir - Empty output directory.
+ * @property {boolean} outputToFolder - Whether the extracted streams go into a dedicated sub-folder.
+ * @property {string} folderName - Label of the dedicated sub-folder.
  * @property {DemuxTarget[]} targets - No extraction targets.
  * @property {RemuxWarning[]} warnings - No subtitle-conversion warnings.
  * @property {DemuxMediaPreferences} media - No conversion prefs (all copy).
@@ -120,6 +111,8 @@ const INITIAL_STATE = {
   selectedIndices: [] as number[],
   splitIndices: [] as number[],
   outputDir: '',
+  outputToFolder: false,
+  folderName: '',
   targets: [] as DemuxTarget[],
   warnings: [] as RemuxWarning[],
   media: {} as DemuxMediaPreferences,
@@ -150,6 +143,27 @@ function resolveTargetOutput(outputDir: string, name: string): string {
 }
 
 /**
+ * Resolves the directory the extracted streams are actually written to.
+ *
+ * When the "new folder" option is enabled, a dedicated sub-folder named after
+ * the source file (or after the user-supplied label) is created inside the
+ * output directory; otherwise the streams land directly in the output
+ * directory. The folder label is sanitized so it is a valid folder name on
+ * every platform.
+ * @param {Object} state - The relevant parts of the demux state.
+ * @param {string} state.outputDir - The chosen output directory.
+ * @param {boolean} state.outputToFolder - Whether a dedicated sub-folder is used.
+ * @param {string} state.folderName - Label of the dedicated sub-folder.
+ * @param {string} state.input - Absolute path of the source file.
+ * @returns {string} The directory the extracted files are written to.
+ */
+function resolveOutputDir(state: { outputDir: string; outputToFolder: boolean; folderName: string; input: string }): string {
+  if (!state.outputToFolder) return state.outputDir;
+  const name = sanitizeFolderName(state.folderName) || defaultFolderNameForFile(state.input);
+  return state.outputDir ? joinPath(state.outputDir, name) : name;
+}
+
+/**
  * Zustand store for demux task state.
  * Implemented as a module-level singleton so the React components and the
  * onConversionProgress IPC subscription can read the store outside of React via
@@ -172,8 +186,16 @@ export const useDemuxStore = create<DemuxState>((set, get) => ({
       const selectedIndices = streams.map((s) => s.index);
       const splitIndices: number[] = [];
       const outputDir = pathDirname(file);
-      const { targets, warnings } = buildTargets(file, streams, selectedIndices, get().media, outputDir, splitIndices);
-      set({ input: file, streams, selectedIndices, splitIndices, outputDir, targets, warnings });
+      const folderName = defaultFolderNameForFile(file);
+      const { targets, warnings } = buildTargets(
+        file,
+        streams,
+        selectedIndices,
+        get().media,
+        resolveOutputDir({ ...get(), input: file, outputDir, folderName }),
+        splitIndices,
+      );
+      set({ input: file, streams, selectedIndices, splitIndices, outputDir, folderName, targets, warnings });
     } catch (err: unknown) {
       log.error(LOG_FAILED_TO_GET_MEDIA_INFO, err);
       useErrorStore.getState().showError(err);
@@ -193,7 +215,7 @@ export const useDemuxStore = create<DemuxState>((set, get) => ({
       state.streams,
       selectedIndices,
       state.media,
-      state.outputDir,
+      resolveOutputDir(state),
       state.splitIndices,
     );
     set({ selectedIndices, targets, warnings });
@@ -218,7 +240,7 @@ export const useDemuxStore = create<DemuxState>((set, get) => ({
       state.streams,
       state.selectedIndices,
       state.media,
-      state.outputDir,
+      resolveOutputDir(state),
       splitIndices,
     );
     set({ splitIndices, targets, warnings });
@@ -235,7 +257,7 @@ export const useDemuxStore = create<DemuxState>((set, get) => ({
       state.streams,
       state.selectedIndices,
       media,
-      state.outputDir,
+      resolveOutputDir(state),
       state.splitIndices,
     );
     set({ media, targets, warnings });
@@ -246,8 +268,52 @@ export const useDemuxStore = create<DemuxState>((set, get) => ({
    */
   setOutputDir: (dir) => {
     const state = get();
-    const { targets, warnings } = buildTargets(state.input, state.streams, state.selectedIndices, state.media, dir, state.splitIndices);
+    const { targets, warnings } = buildTargets(
+      state.input,
+      state.streams,
+      state.selectedIndices,
+      state.media,
+      resolveOutputDir({ ...state, outputDir: dir }),
+      state.splitIndices,
+    );
     set({ outputDir: dir, targets, warnings });
+  },
+  /**
+   * Enables or disables the dedicated output sub-folder. When it is enabled
+   * the label defaults to the source file's name, and the extracted files are
+   * written into that folder instead of directly into the output directory.
+   * @param {boolean} enabled - Whether the extracted streams go into their own folder.
+   */
+  setOutputToFolder: (enabled) => {
+    const state = get();
+    const folderName = state.folderName || defaultFolderNameForFile(state.input);
+    const { targets, warnings } = buildTargets(
+      state.input,
+      state.streams,
+      state.selectedIndices,
+      state.media,
+      resolveOutputDir({ ...state, outputToFolder: enabled, folderName }),
+      state.splitIndices,
+    );
+    set({ outputToFolder: enabled, folderName, targets, warnings });
+  },
+  /**
+   * Sets the label of the dedicated output sub-folder. The label is sanitized
+   * into a valid folder name before it is used, so illegal characters are
+   * replaced automatically.
+   * @param {string} name - The raw folder label.
+   */
+  setFolderName: (name) => {
+    const state = get();
+    const { targets, warnings } = buildTargets(
+      state.input,
+      state.streams,
+      state.selectedIndices,
+      state.media,
+      resolveOutputDir({ ...state, folderName: name }),
+      state.splitIndices,
+    );
+    set({ folderName: name, targets, warnings });
   },
   /**
    * Runs each selected target sequentially via window.electronAPI.convertFile,
@@ -330,7 +396,8 @@ export const useDemuxStore = create<DemuxState>((set, get) => ({
    * @returns {Promise<void>} Resolves once the job was enqueued (or rejected).
    */
   enqueueDemux: async () => {
-    const { input, targets, outputDir } = get();
+    const { input, targets } = get();
+    const outputDir = resolveOutputDir(get());
     if (!input) {
       log.warn(LOG_START_CONVERSION_NO_INPUT_FILE);
       useErrorStore.getState().showErrorMessage(ErrorCode.INPUT_NOT_SPECIFIED);
@@ -359,6 +426,9 @@ export const useDemuxStore = create<DemuxState>((set, get) => ({
         label: i18n.t('muxQueue.viewQueue'),
         onClick: () => navigateToMuxQueue(),
       });
+      // The job now lives in the mux queue: reset the form so the next file
+      // can be picked right away. The per-kind conversion prefs are kept.
+      get().clearSelection();
     } catch (err: unknown) {
       log.error(LOG_DEMUX_FAILED, err);
       useErrorStore.getState().showError(err);
@@ -405,6 +475,7 @@ export const useDemuxStore = create<DemuxState>((set, get) => ({
       selectedIndices: [],
       splitIndices: [],
       outputDir: '',
+      folderName: '',
       targets: [],
       warnings: [],
       current: null,

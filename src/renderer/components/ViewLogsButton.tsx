@@ -34,7 +34,7 @@ export default function ViewLogsButton({ iconOnly = false }: ViewLogsButtonProps
 
   if (iconOnly) {
     return (
-      <Tooltip title={label}>
+      <Tooltip title={label} placement="bottom">
         <IconButton size="small" aria-label={label} onClick={handleOpenLogs} data-testid="view-logs">
           <FontAwesomeIcon icon={faFileLines} />
         </IconButton>

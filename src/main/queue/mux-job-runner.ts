@@ -15,6 +15,7 @@ import { EventEmitter } from 'events';
 import { ErrorCode, cancelledError } from '../../shared/errors';
 import type { AppError, ConversionProgress, MuxQueueJob, MuxQueueTarget, TranscoderType } from '../../shared/types';
 import { createTranscoder } from '../transcoders/factory';
+import { ensureOutputDirectory } from '../fs/ensure-output-dir';
 import type { ITranscoder } from '../transcoders/types';
 import { Logger } from '../../shared/logger';
 import { COMPLETED_PROGRESS } from '../../shared/transcoder-constants';
@@ -147,6 +148,7 @@ export class MuxJobRunner extends EventEmitter {
       }
       this.current = transcoder;
       log.info(LOG_MUX_RUNNER_TARGET_STARTED, index + 1, count, target.output);
+      ensureOutputDirectory(target.output);
       let emitter: EventEmitter;
       try {
         emitter = transcoder.convert(this.job.input, target.output, target.options);

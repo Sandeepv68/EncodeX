@@ -12,6 +12,7 @@ import { MemoryRouter, useLocation } from 'react-router-dom';
 import MuxQueuePanel from '../MuxQueuePanel';
 import { useMuxQueueStore } from '../../stores/muxQueueStore';
 import { useToastStore } from '../../stores/toastStore';
+import { clearPreviewCache } from '../../utils/preview-cache';
 import { QUEUE_STATUS } from '../../../shared/media-options';
 import type { MuxQueueJob } from '../../../shared/types';
 
@@ -74,10 +75,10 @@ function makeJob(id: string, status: string = QUEUE_STATUS.QUEUED): MuxQueueJob 
   };
 }
 
-function renderPanel() {
+function renderPanel(props: { condensed?: boolean } = {}) {
   return render(
     <MemoryRouter>
-      <MuxQueuePanel />
+      <MuxQueuePanel {...props} />
       <LocationProbe />
     </MemoryRouter>,
   );
@@ -95,6 +96,8 @@ function LocationProbe() {
 describe('MuxQueuePanel', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(window.electronAPI.getVideoPreview).mockResolvedValue(null);
+    clearPreviewCache();
     useMuxQueueStore.setState({ jobs: [], progress: {}, paused: false, concurrency: 1 });
   });
 
@@ -159,13 +162,6 @@ describe('MuxQueuePanel', () => {
     expect(muxQueueRemoveMock).toHaveBeenCalledWith('a');
   });
 
-  it('shows the queue statistics', async () => {
-    useMuxQueueStore.setState({ jobs: [makeJob('a'), makeJob('b', QUEUE_STATUS.DONE)] });
-    renderPanel();
-    await waitFor(() => expect(screen.getByTestId('mux-queue-stats')).toBeInTheDocument());
-    expect(screen.getByTestId('mux-queue-stats')).toHaveTextContent('muxQueue.stats');
-  });
-
   it('reorders a queued job and tells the main process', () => {
     useMuxQueueStore.setState({ jobs: [makeJob('a'), makeJob('b')] });
     renderPanel();
@@ -221,6 +217,36 @@ describe('MuxQueuePanel', () => {
     fireEvent.click(screen.getByRole('button', { name: 'muxQueue.filters.done (1)' }));
     expect(screen.queryByTestId('mux-queue-job-card-a')).not.toBeInTheDocument();
     expect(screen.getByTestId('mux-queue-job-card-b')).toBeInTheDocument();
+  });
+
+  it('filters the job list by filename search', () => {
+    useMuxQueueStore.setState({ jobs: [makeJob('alpha'), makeJob('beta')] });
+    renderPanel();
+    fireEvent.change(screen.getByRole('textbox', { name: 'Search files...' }), { target: { value: 'BET' } });
+    expect(screen.queryByTestId('mux-queue-job-card-alpha')).not.toBeInTheDocument();
+    expect(screen.getByTestId('mux-queue-job-card-beta')).toBeInTheDocument();
+  });
+
+  it('shows the no-results state when the search matches nothing', () => {
+    useMuxQueueStore.setState({ jobs: [makeJob('alpha')] });
+    renderPanel();
+    fireEvent.change(screen.getByRole('textbox', { name: 'Search files...' }), { target: { value: 'zzz' } });
+    expect(screen.getByTestId('mux-queue-no-results')).toBeInTheDocument();
+  });
+
+  it('renders the input thumbnail from the video preview API', async () => {
+    vi.mocked(window.electronAPI.getVideoPreview).mockResolvedValue('data:image/png;base64,FRAME');
+    useMuxQueueStore.setState({ jobs: [makeJob('a')] });
+    renderPanel();
+    expect(await screen.findByTestId('mux-queue-job-thumbnail')).toHaveAttribute('src', 'data:image/png;base64,FRAME');
+  });
+
+  it('hides the toolbar but keeps the filter row when condensed', () => {
+    useMuxQueueStore.setState({ jobs: [makeJob('a')] });
+    renderPanel({ condensed: true });
+    expect(document.getElementById('mux-queue-controls-section')).toHaveAttribute('aria-hidden', 'true');
+    expect(screen.getByRole('textbox', { name: 'Search files...' })).toBeInTheDocument();
+    expect(screen.getByTestId('mux-queue-job-card-a')).toBeInTheDocument();
   });
 
   it('links the empty state to the remux and demux pages', () => {

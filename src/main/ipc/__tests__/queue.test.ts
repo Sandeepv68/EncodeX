@@ -398,35 +398,47 @@ describe('registerQueueHandlers', () => {
     expect(muxClear).toHaveBeenCalled();
   });
 
-  it('QUEUE_SET_WHEN_DONE records the config and runs the action after the delay on drain', async () => {
+  it('QUEUE_SET_WHEN_DONE records the action and runs it after the delay on drain', async () => {
     vi.useFakeTimers();
     try {
-      await getHandlers()[IPC.QUEUE_SET_WHEN_DONE]({}, { enabled: true, action: 'shutdown', force: true });
+      await getHandlers()[IPC.QUEUE_SET_WHEN_DONE]({}, 'shutdown_force');
       jobQueue.emit('drained');
       expect(performPowerAction).not.toHaveBeenCalled();
       vi.advanceTimersByTime(WHEN_DONE_ACTION_DELAY_MS);
-      expect(performPowerAction).toHaveBeenCalledWith('shutdown', true);
+      expect(performPowerAction).toHaveBeenCalledWith('shutdown_force');
     } finally {
       vi.useRealTimers();
     }
   });
 
-  it('QUEUE_SET_WHEN_DONE accepts a cyclic config rather than throwing on JSON.stringify', async () => {
+  it('QUEUE_SET_WHEN_DONE accepts a cyclic payload rather than throwing on JSON.stringify', async () => {
     // Found by `e2e/specs/ipc-abuse.spec.ts`. Structured clone *preserves* reference cycles, so a
     // cyclic object genuinely reaches this handler, and the log line used `JSON.stringify(config)`
     // and threw "Converting circular structure to JSON" - rejecting the renderer's promise with a
     // raw TypeError. There was a second, identical `JSON.stringify` in the preload on top of this
     // one; fixing only the preload leaves the channel broken.
-    const cyclic: Record<string, unknown> = { enabled: false, action: 'shutdown', force: false };
+    const cyclic: Record<string, unknown> = { action: 'shutdown' };
     cyclic.self = cyclic;
 
     await expect(getHandlers()[IPC.QUEUE_SET_WHEN_DONE]({}, cyclic)).resolves.toBeUndefined();
   });
 
-  it('QUEUE_SET_WHEN_DONE with enabled false never runs the power action', async () => {
+  it('QUEUE_SET_WHEN_DONE with the none action never runs the power action', async () => {
     vi.useFakeTimers();
     try {
-      await getHandlers()[IPC.QUEUE_SET_WHEN_DONE]({}, { enabled: false, action: 'sleep', force: false });
+      await getHandlers()[IPC.QUEUE_SET_WHEN_DONE]({}, 'none');
+      jobQueue.emit('drained');
+      vi.advanceTimersByTime(WHEN_DONE_ACTION_DELAY_MS);
+      expect(performPowerAction).not.toHaveBeenCalled();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('QUEUE_SET_WHEN_DONE ignores an unknown action', async () => {
+    vi.useFakeTimers();
+    try {
+      await getHandlers()[IPC.QUEUE_SET_WHEN_DONE]({}, 'explode');
       jobQueue.emit('drained');
       vi.advanceTimersByTime(WHEN_DONE_ACTION_DELAY_MS);
       expect(performPowerAction).not.toHaveBeenCalled();

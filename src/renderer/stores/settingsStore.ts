@@ -17,7 +17,8 @@
  *  - drawerCondensed: whether the navigation drawer shows icons only
  *  - launchAtLogin: whether the app launches at OS startup
  *  - queueConcurrency: batch jobs run in parallel (1-4)
- *  - whenDone: {enabled, action, force} power action for when the batch queue drains
+ *  - whenDone: power action performed when the batch queue drains ('none' when
+ *    the machine should be left alone)
  *
  * Behavior notes:
  *  - Hardware acceleration setters persist the new values to localStorage
@@ -31,7 +32,7 @@
  *    window.electronAPI.setLaunchAtLogin, and then updates state.
  *  - setQueueConcurrency persists the value, forwards it to the main process
  *    via window.electronAPI.queueSetConcurrency, and then updates state.
- *  - setWhenDone persists the config, forwards it to the main process via
+ *  - setWhenDone persists the action, forwards it to the main process via
  *    window.electronAPI.queueSetWhenDone, and then updates state.
  *  - setMcpEnabled/setMcpPort/setMcpToken forward the whole embedded MCP server
  *    snapshot to the main process via window.electronAPI.mcpSetSettings (which
@@ -239,37 +240,39 @@ function persistQueueConcurrency(concurrency: number): void {
 }
 
 /**
- * Reads the persisted when-done config from localStorage
- * ('encodex-when-done') and validates it field-by-field: `enabled` must be a
- * boolean, `action` must be one of the known WhenDoneAction values, and
- * `force` must be a boolean. Invalid or missing fields fall back to the
- * defaults (disabled, DEFAULT_WHEN_DONE_ACTION, force off). Storage failures
- * are logged and treated as the defaults.
- * @returns {{enabled: boolean, action: WhenDoneAction, force: boolean}} The
- *   validated when-done config snapshot.
+ * Reads the persisted when-done action from localStorage
+ * ('encodex-when-done') and validates it against the known WhenDoneAction
+ * values. A legacy `{enabled, action, force}` object (written by older
+ * versions) is migrated: an enabled config keeps its action, and an enabled
+ * shutdown with `force` becomes `shutdown_force`; a disabled config becomes
+ * `none`. Invalid or missing values fall back to DEFAULT_WHEN_DONE_ACTION.
+ * Storage failures are logged and treated as the default.
+ * @returns {WhenDoneAction} The validated when-done action.
  */
-export function readStoredWhenDone(): { enabled: boolean; action: WhenDoneAction; force: boolean } {
-  const parsed = loadJson<Partial<{ enabled: boolean; action: WhenDoneAction; force: boolean }>>(WHEN_DONE_STORAGE_KEY, {}, (err) =>
-    log.warn(LOG_FAILED_TO_READ_STORED_WHEN_DONE_CONFIG, err),
-  );
-  const action =
-    parsed.action && (WHEN_DONE_ACTIONS as readonly string[]).includes(parsed.action) ? parsed.action : DEFAULT_WHEN_DONE_ACTION;
-  return {
-    enabled: typeof parsed.enabled === 'boolean' ? parsed.enabled : false,
-    action,
-    force: typeof parsed.force === 'boolean' ? parsed.force : false,
-  };
+export function readStoredWhenDone(): WhenDoneAction {
+  const parsed = loadJson<unknown>(WHEN_DONE_STORAGE_KEY, null, (err) => log.warn(LOG_FAILED_TO_READ_STORED_WHEN_DONE_CONFIG, err));
+  if (typeof parsed === 'string') {
+    return (WHEN_DONE_ACTIONS as readonly string[]).includes(parsed) ? (parsed as WhenDoneAction) : DEFAULT_WHEN_DONE_ACTION;
+  }
+  if (!parsed || typeof parsed !== 'object') return DEFAULT_WHEN_DONE_ACTION;
+  // Legacy `{enabled, action, force}` snapshot written by older versions.
+  const legacy = parsed as { enabled?: unknown; action?: unknown; force?: unknown };
+  if (legacy.enabled !== true) return DEFAULT_WHEN_DONE_ACTION;
+  if (legacy.action === 'shutdown' && legacy.force === true) return 'shutdown_force';
+  if (legacy.action === 'shutdown' || legacy.action === 'sleep' || legacy.action === 'hibernate') {
+    return legacy.action;
+  }
+  return DEFAULT_WHEN_DONE_ACTION;
 }
 
 /**
- * Persists the when-done config to localStorage ('encodex-when-done'). Failures
+ * Persists the when-done action to localStorage ('encodex-when-done'). Failures
  * are logged and swallowed.
- * @param {{enabled: boolean, action: WhenDoneAction, force: boolean}} config -
- *   The when-done config to persist.
+ * @param {WhenDoneAction} action - The when-done action to persist.
  * @returns {void}
  */
-function persistWhenDone(config: { enabled: boolean; action: WhenDoneAction; force: boolean }): void {
-  saveJson(WHEN_DONE_STORAGE_KEY, config, (err) => log.warn(LOG_FAILED_TO_PERSIST_WHEN_DONE_CONFIG, err));
+function persistWhenDone(action: WhenDoneAction): void {
+  saveJson(WHEN_DONE_STORAGE_KEY, action, (err) => log.warn(LOG_FAILED_TO_PERSIST_WHEN_DONE_CONFIG, err));
 }
 
 /**
@@ -498,19 +501,18 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   },
   whenDone: readStoredWhenDone(),
   /**
-   * Sets the batch queue when-done config. Persists it to localStorage and
+   * Sets the batch queue when-done action. Persists it to localStorage and
    * forwards it to the main process via window.electronAPI.queueSetWhenDone,
-   * which performs the selected power action once the queue drains while the
-   * feature is enabled.
-   * @param {{enabled: boolean, action: WhenDoneAction, force: boolean}} config -
-   *   Whether to act when the queue drains, which power action to run, and
-   *   whether open processes should be force-closed.
+   * which performs the selected power action once the queue drains ('none'
+   * performs nothing).
+   * @param {WhenDoneAction} action - The power action to run when the queue
+   *   drains.
    */
-  setWhenDone: (config) => {
-    log.debug(LOG_SET_WHEN_DONE, JSON.stringify(config));
-    persistWhenDone(config);
-    fireAndForgetBridge(() => window.electronAPI?.queueSetWhenDone(config), 'queueSetWhenDone');
-    set({ whenDone: config });
+  setWhenDone: (action) => {
+    log.debug(LOG_SET_WHEN_DONE, action);
+    persistWhenDone(action);
+    fireAndForgetBridge(() => window.electronAPI?.queueSetWhenDone(action), 'queueSetWhenDone');
+    set({ whenDone: action });
   },
 }));
 

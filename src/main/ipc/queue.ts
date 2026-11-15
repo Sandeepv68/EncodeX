@@ -12,12 +12,12 @@
  * completion. When the application quits (`will-quit`), the persisted queue
  * snapshot is deleted so the next launch starts with an empty queue.
  *
- * When-done power action: the QUEUE_SET_WHEN_DONE handler records a
- * WhenDoneConfig (enabled, action, force) pushed by the renderer settings
- * store. When the queue emits its `drained` event (a batch finished naturally)
- * and the config is enabled, the corresponding OS power action is scheduled
- * after WHEN_DONE_ACTION_DELAY_MS via performPowerAction; adding a new job
- * within that grace period cancels the pending action.
+ * When-done power action: the QUEUE_SET_WHEN_DONE handler records the
+ * WhenDoneAction pushed by the renderer settings store. When the queue emits
+ * its `drained` event (a batch finished naturally) and the action is not
+ * `none`, the corresponding OS power action is scheduled after
+ * WHEN_DONE_ACTION_DELAY_MS via performPowerAction; adding a new job within
+ * that grace period cancels the pending action.
  */
 
 import { ipcMain, BrowserWindow, app, dialog } from 'electron';
@@ -32,9 +32,9 @@ import { getNotifier } from '../notifications/notifier';
 import { tNotification } from '../notifications/strings';
 import { QUEUE_STATUS } from '../../shared/media-options';
 import { Logger } from '../../shared/logger';
-import { ConversionOptions, QueueJob, TranscoderType, ConversionProgress, WhenDoneConfig } from '../../shared/types';
+import { ConversionOptions, QueueJob, TranscoderType, ConversionProgress, WhenDoneAction } from '../../shared/types';
 import { IPC } from '../../shared/ipc-channels';
-import { WHEN_DONE_ACTION_DELAY_MS } from '../../shared/constants';
+import { WHEN_DONE_ACTION_DELAY_MS, WHEN_DONE_ACTIONS } from '../../shared/constants';
 import { invalidQueueFileError, outputExistsError } from '../../shared/errors';
 import type { IpcSender } from './types';
 import {
@@ -86,12 +86,12 @@ const queueSnapshotCleanups = new Set<() => void>();
 let willQuitHandlerRegistered = false;
 
 /**
- * The most recently configured when-done power action config (or null when the
+ * The most recently configured when-done power action (or null when the
  * renderer has never pushed one). Lives at module level so it survives window
  * re-creates; the renderer settings store re-pushes it on every mount.
- * @type {WhenDoneConfig | null}
+ * @type {WhenDoneAction | null}
  */
-let whenDoneConfig: WhenDoneConfig | null = null;
+let whenDoneAction: WhenDoneAction | null = null;
 
 /**
  * Pending timeout scheduled when the queue drains with a when-done action
@@ -288,22 +288,24 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
 
   /**
    * Handles the IPC.QUEUE_SET_WHEN_DONE channel (queue-set-when-done).
-   * Records the renderer's when-done config (enabled, action, force). The
-   * config is applied app-wide for the next queue drain; nothing runs until
-   * the queue emits `drained` while enabled.
+   * Records the renderer's when-done power action. The action is applied
+   * app-wide for the next queue drain; nothing runs until the queue emits
+   * `drained` while an action other than `none` is selected.
    *
-   * @param {WhenDoneConfig} config - Whether to act, which power action to run,
-   *   and whether open processes should be force-closed.
-   * @returns {Promise<void>} Resolves once the config is recorded.
+   * @param {WhenDoneAction} action - The power action to run when the queue
+   *   drains.
+   * @returns {Promise<void>} Resolves once the action is recorded.
    */
-  ipcMain.handle(IPC.QUEUE_SET_WHEN_DONE, async (_event, config: WhenDoneConfig) => {
-    // Logged as an object, not `JSON.stringify(config)`. Structured clone preserves reference
-    // cycles, so a cyclic object genuinely crosses this boundary and `JSON.stringify` threw
+  ipcMain.handle(IPC.QUEUE_SET_WHEN_DONE, async (_event, action: WhenDoneAction) => {
+    // Logged as a plain value, not `JSON.stringify(action)`. Structured clone preserves reference
+    // cycles, so a cyclic payload genuinely crosses this boundary and `JSON.stringify` threw
     // "Converting circular structure to JSON" here - rejecting the renderer's promise with a
-    // raw TypeError. The logger sanitises non-serialisable values itself, so passing the object
+    // raw TypeError. The logger sanitises non-serialisable values itself, so passing the value
     // through is both safe and more informative.
-    log.info(LOG_IPC_QUEUE_SET_WHEN_DONE, config);
-    whenDoneConfig = config;
+    log.info(LOG_IPC_QUEUE_SET_WHEN_DONE, action);
+    // Only known actions are honoured; an unrecognised value disables the
+    // feature rather than arming an unknown power action.
+    whenDoneAction = (WHEN_DONE_ACTIONS as readonly string[]).includes(action) ? action : 'none';
   });
 
   /**
@@ -551,16 +553,16 @@ export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void
         );
       }
     }
-    const config = whenDoneConfig;
-    if (!config?.enabled) {
+    const action = whenDoneAction;
+    if (!action || action === 'none') {
       log.debug(LOG_WHEN_DONE_SKIPPED_DISABLED);
       return;
     }
     clearWhenDoneTimer();
-    log.info(LOG_WHEN_DONE_QUEUE_DRAINED, config.action);
+    log.info(LOG_WHEN_DONE_QUEUE_DRAINED, action);
     whenDoneTimer = setTimeout(() => {
       whenDoneTimer = null;
-      performPowerAction(config.action, config.force);
+      performPowerAction(action);
     }, WHEN_DONE_ACTION_DELAY_MS);
     whenDoneTimer.unref();
   });

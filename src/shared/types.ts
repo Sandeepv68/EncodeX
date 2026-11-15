@@ -691,31 +691,20 @@ export interface EncoderCapabilities {
 
 /**
  * Power action performed automatically when the batch queue finishes.
+ *
+ * The value encodes both the action and whether open programs are closed
+ * without prompting, so the whole "action when done" setting is a single
+ * choice: `none` leaves the machine alone, `shutdown_force` shuts the machine
+ * down after force-closing the programs that would otherwise block it.
  * @typedef {string} WhenDoneAction
- * @property {'shutdown'} shutdown - Turn the computer off.
+ * @property {'none'} none - Do nothing when the queue finishes.
  * @property {'sleep'} sleep - Suspend the computer (sleep).
  * @property {'hibernate'} hibernate - Hibernate the computer.
+ * @property {'shutdown'} shutdown - Turn the computer off.
+ * @property {'shutdown_force'} shutdown_force - Force-close open programs and
+ *   turn the computer off.
  */
-export type WhenDoneAction = 'shutdown' | 'sleep' | 'hibernate';
-
-/**
- * Configuration for the batch queue "when done" power action.
- * Shared by the renderer settings store (persisted to localStorage) and the
- * main-process queue IPC layer, which performs the action once the queue
- * drains. `force` closes applications that would otherwise block the action
- * (only honored on platforms that support it, e.g. Windows `shutdown /f`).
- * @interface WhenDoneConfig
- * @property {boolean} enabled - Whether the power action is armed and should
- *   fire after the batch finishes.
- * @property {WhenDoneAction} action - The power action to perform.
- * @property {boolean} force - Whether open processes should be force-closed
- *   when performing the action.
- */
-export interface WhenDoneConfig {
-  enabled: boolean;
-  action: WhenDoneAction;
-  force: boolean;
-}
+export type WhenDoneAction = 'none' | 'sleep' | 'hibernate' | 'shutdown' | 'shutdown_force';
 
 /**
  * A GitHub Release asset matched to the current platform/architecture.

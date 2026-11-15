@@ -626,10 +626,9 @@ export const BATCH_CONFIG_STORAGE_KEY = 'encodex-batch-config';
 export const VIDEO_CUT_DRAFT_STORAGE_KEY = 'encodex-video-cut-draft';
 
 /**
- * localStorage key used to persist the batch queue "when done" power-action
- * configuration ({enabled, action, force}). Read back on startup by the
- * settings store and pushed to the main process, which performs the action
- * once the queue drains.
+ * localStorage key used to persist the batch queue "when done" power action.
+ * Read back on startup by the settings store and pushed to the main process,
+ * which performs the action once the queue drains.
  * @const {string} WHEN_DONE_STORAGE_KEY
  */
 export const WHEN_DONE_STORAGE_KEY = 'encodex-when-done';
@@ -643,15 +642,14 @@ export const WHEN_DONE_STORAGE_KEY = 'encodex-when-done';
 export const WHEN_DONE_ACTION_DELAY_MS = 3000;
 
 /**
- * Default "when done" power action selected when the user enables the feature
- * without choosing one.
+ * Default "when done" power action: do nothing when the queue finishes.
  * @const {string} DEFAULT_WHEN_DONE_ACTION
  */
-export const DEFAULT_WHEN_DONE_ACTION = 'shutdown';
+export const DEFAULT_WHEN_DONE_ACTION = 'none';
 
 /**
- * The ordered list of "when done" power actions offered by the batch queue UI.
- * Backs the action dropdown and validates persisted configs on read.
+ * The ordered list of "when done" choices offered by the batch queue UI.
+ * Backs the action dropdown and validates persisted values on read.
  * @const {readonly string[]} WHEN_DONE_ACTIONS
  */
-export const WHEN_DONE_ACTIONS = ['shutdown', 'sleep', 'hibernate'] as const;
+export const WHEN_DONE_ACTIONS = ['none', 'sleep', 'hibernate', 'shutdown', 'shutdown_force'] as const;

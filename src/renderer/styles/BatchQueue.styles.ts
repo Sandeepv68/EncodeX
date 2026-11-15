@@ -1,5 +1,6 @@
 import { alpha, styled } from '@mui/material/styles';
-import { Typography, Stack, Box, Chip, TextField, Alert, IconButton, Tabs } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
+import { Typography, Stack, Box, Chip, TextField, Alert, ButtonGroup, Tabs } from '@mui/material';
 import type { ElementType } from 'react';
 import { OVERLAY_COLORS, SHADOWS } from '../../shared/theme/colors';
 
@@ -20,12 +21,34 @@ export const LockedAlert = styled(Alert)(({ theme }) => ({
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
 }));
 
-export const EmptyText = styled(Typography)(({ theme }) => ({
-  textAlign: 'center',
-  paddingTop: theme.spacing(4),
-  paddingBottom: theme.spacing(4),
+/**
+ * Shared look of the queue empty-state captions: centered, bold and in the
+ * secondary text colour.
+ * @param {Theme} theme - The MUI theme (provides typography/colour tokens).
+ * @returns {object} The shared caption styles.
+ */
+const emptyCaption = (theme: Theme) => ({
+  textAlign: 'center' as const,
   fontWeight: theme.typography.fontWeightBold,
   color: theme.palette.text.secondary,
+});
+
+/** Standalone empty-state heading with generous vertical padding. @const EmptyText */
+export const EmptyText = styled(Typography)(({ theme }) => ({
+  ...emptyCaption(theme),
+  paddingTop: theme.spacing(4),
+  paddingBottom: theme.spacing(4),
+}));
+
+/** Empty-state heading used inside a padded empty-state card. @const EmptyHeadingText */
+export const EmptyHeadingText = styled(Typography)(({ theme }) => ({
+  ...emptyCaption(theme),
+}));
+
+/** Secondary caption shown under an empty-state heading. @const EmptyHintText */
+export const EmptyHintText = styled(Typography)(({ theme }) => ({
+  ...emptyCaption(theme),
+  fontSize: theme.typography.pxToRem(13),
 }));
 
 export const FilterRow = styled(Stack)(({ theme }) => ({
@@ -112,20 +135,54 @@ export const DropOverlay = styled(Box)(({ theme }) => ({
   pointerEvents: 'none',
 }));
 
-/** Condense/expand toggle button, pushed to the far right of the page title. @const CondenseButton */
-export const CondenseButton = styled(IconButton)({
-  marginInlineStart: 'auto',
-});
-
 /** Wrapper of the "clear all" button, pushed to the far right of the filter row. @const ClearAllBox */
 export const ClearAllBox = styled(Box)({
   marginInlineStart: 'auto',
 });
 
-/** Vertical stack used by the mux queue's empty state, left-aligned. @const EmptyStack */
+/**
+ * Vertical stack used by the mux queue's empty states: its contents are
+ * centered both horizontally and vertically, without any card chrome, so the
+ * message sits in the middle of the queue area instead of hugging the top.
+ * @const EmptyStack
+ */
 export const EmptyStack = styled(Stack)({
-  alignItems: 'flex-start',
+  alignItems: 'center',
+  justifyContent: 'center',
+  textAlign: 'center',
+  minHeight: '50vh',
 });
+
+/** Split button holding the empty state's two page links. @const EmptyActionGroup */
+export const EmptyActionGroup = styled(ButtonGroup)(({ theme }) => ({
+  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
+}));
+
+/**
+ * Header row pairing the queue tab list with the queue-wide actions. Tabs and
+ * actions share the baseline of the controls so nothing shifts when the
+ * when-done control expands; they wrap only on narrow screens.
+ * @const QueueHeaderRow
+ */
+export const QueueHeaderRow = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexWrap: 'wrap',
+  alignItems: 'flex-end',
+  gap: theme.spacing(2),
+  marginBottom: theme.spacing(2),
+}));
+
+/**
+ * Group of queue-wide actions shown to the right of the tab list: the
+ * "Action when done" select, the condense toggle and the view-logs button.
+ * @const QueueHeaderActions
+ */
+export const QueueHeaderActions = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'flex-end',
+  gap: theme.spacing(1),
+  marginInlineStart: 'auto',
+}));
 
 /**
  * Tab bar that switches between the general queue and the mux queue.
@@ -138,7 +195,8 @@ export const EmptyStack = styled(Stack)({
  * @const QueueTabs
  */
 export const QueueTabs = styled(Tabs)(({ theme }) => ({
-  marginBottom: theme.spacing(2),
+  flex: '1 1 auto',
+  minWidth: 0,
   // The tabs use MUI's `inherit` text colour so the theme's own colours apply
   // instead of the primary tint (which sits just under the 4.5:1 contrast
   // ratio axe requires). MUI's inherit variant dims unselected tabs with

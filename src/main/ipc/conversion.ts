@@ -22,6 +22,7 @@ import { createError, ERROR_MESSAGES, ErrorCode, formatError } from '../../share
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
 import type { IpcSender } from './types';
+import { ensureOutputDirectory } from '../fs/ensure-output-dir';
 import {
   LOG_ARROW,
   LOG_CONVERSION_CANCELLED,
@@ -126,6 +127,7 @@ export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender)
         }
         const transcoder = createTranscoder(transcoderType);
         currentTranscoder = transcoder;
+        ensureOutputDirectory(output);
         const emitter = transcoder.convert(input, output, options);
         recordAnalyticsEvent(
           createAnalyticsEvent('conversion_started', {
