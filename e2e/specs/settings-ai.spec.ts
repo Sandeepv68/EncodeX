@@ -15,7 +15,7 @@
 
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import type { Page } from 'playwright';
-import { launchApp, closeApp, ensureLiveSession, reloadSession, AppSession } from '../fixtures/app';
+import { launchApp, closeApp, ensureLiveSession, reloadSession, selectSettingsTab, AppSession } from '../fixtures/app';
 import { mockApi } from '../mocks/control';
 
 const IS_E2E = process.env.E2E === 'true' || !!process.env.CI;
@@ -30,8 +30,14 @@ async function gotoSettings(page: Page): Promise<void> {
   await page.waitForFunction(() => location.hash.startsWith('#/settings'));
 }
 
+/** Opens the AI tab, which is where the AI provider editor lives. */
+async function gotoAiTab(page: Page): Promise<void> {
+  await selectSettingsTab(page, 'ai');
+}
+
 /** Expands the AI-provider editor and waits for its well to render. */
 async function openAiEditor(page: Page): Promise<void> {
+  await gotoAiTab(page);
   await page.locator('[data-testid="settings-ai-toggle"]').click();
   await page.locator('[data-testid="settings-ai"]').waitFor({ timeout: 15000 });
 }
@@ -53,6 +59,8 @@ describe.runIf(IS_E2E)('Settings page - AI provider editor', () => {
     session = await reloadSession(session);
     const { page } = session;
     await gotoSettings(page);
+    // The AI provider editor lives on the AI tab.
+    await gotoAiTab(page);
     await page.locator('[data-testid="settings-ai-toggle"]').waitFor({ timeout: 15000 });
   }, 30000);
 

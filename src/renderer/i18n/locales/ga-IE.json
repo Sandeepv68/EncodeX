@@ -686,7 +686,13 @@
       "headerConnected": "Ceangailte · {{provider}} · {{model}}"
     },
     "desktopNotifications": "Fógraí deisce",
-    "desktopNotificationsHint": "Taispeáin fógraí córais nuair a chríochnaíonn nó a theipeann ar phoist scuaine agus an aip sa chúlra."
+    "desktopNotificationsHint": "Taispeáin fógraí córais nuair a chríochnaíonn nó a theipeann ar phoist scuaine agus an aip sa chúlra.",
+    "tabs": {
+      "ariaLabel": "Rannóga socruithe",
+      "general": "Ginearálta",
+      "advanced": "Ardghnéithe",
+      "ai": "AI"
+    }
   },
   "shortcuts": {
     "title": "Aicearraí Méarchláir",

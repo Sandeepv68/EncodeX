@@ -686,7 +686,13 @@
       "headerConnected": "已连接 · {{provider}} · {{model}}"
     },
     "desktopNotifications": "桌面通知",
-    "desktopNotificationsHint": "当应用在后台运行时，在队列任务完成或失败时显示系统通知。"
+    "desktopNotificationsHint": "当应用在后台运行时，在队列任务完成或失败时显示系统通知。",
+    "tabs": {
+      "ariaLabel": "设置分区",
+      "general": "常规",
+      "advanced": "高级",
+      "ai": "AI"
+    }
   },
   "shortcuts": {
     "title": "键盘快捷键",

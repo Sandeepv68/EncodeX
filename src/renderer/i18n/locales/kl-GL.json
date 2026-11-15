@@ -686,7 +686,13 @@
       "headerConnected": "Attaveqarpoq · {{provider}} · {{model}}"
     },
     "desktopNotifications": "Qarasaasiamut nalunaarutit",
-    "desktopNotificationsHint": "App-ip kingornani ingerlatillugu suliat naammassippata imaluunniit ajutoorpatit systemimi nalunaarutit nuisikkit."
+    "desktopNotificationsHint": "App-ip kingornani ingerlatillugu suliat naammassippata imaluunniit ajutoorpatit systemimi nalunaarutit nuisikkit.",
+    "tabs": {
+      "ariaLabel": "Inissiissutit immikkoortut",
+      "general": "Tamarmik",
+      "advanced": "Qaffasissumik",
+      "ai": "AI"
+    }
   },
   "shortcuts": {
     "title": "Tastaturimi aaliangersagat",

@@ -686,7 +686,13 @@
       "headerConnected": "Connected · {{provider}} · {{model}}"
     },
     "desktopNotifications": "Desktop notifications",
-    "desktopNotificationsHint": "Show system notifications when queue jobs complete or fail while the app is in the background."
+    "desktopNotificationsHint": "Show system notifications when queue jobs complete or fail while the app is in the background.",
+    "tabs": {
+      "ariaLabel": "Settings sections",
+      "general": "General",
+      "advanced": "Advanced",
+      "ai": "AI"
+    }
   },
   "shortcuts": {
     "title": "Keyboard Shortcuts",

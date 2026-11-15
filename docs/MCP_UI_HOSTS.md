@@ -73,7 +73,7 @@ The same server serves every host. The differences are how the host is told to s
 
 ### Loopback HTTP
 
-Start the app and enable **Settings → MCP server**; the endpoint is
+Start the app and enable **Settings → AI** under MCP server; the endpoint is
 `http://127.0.0.1:8765/mcp`. Copy the generated client configuration from
 `site/.vitepress/theme/components/McpConfig.vue`, which carries a ready-made snippet per host.
 

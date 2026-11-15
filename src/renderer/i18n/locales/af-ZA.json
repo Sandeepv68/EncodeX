@@ -686,7 +686,13 @@
       "headerConnected": "Gekoppel · {{provider}} · {{model}}"
     },
     "desktopNotifications": "Werkskermkennisgewings",
-    "desktopNotificationsHint": "Wys stelselkennisgewings wanneer tou-take voltooi of misluk terwyl die program in die agtergrond loop."
+    "desktopNotificationsHint": "Wys stelselkennisgewings wanneer tou-take voltooi of misluk terwyl die program in die agtergrond loop.",
+    "tabs": {
+      "ariaLabel": "Instellingsafdelings",
+      "general": "Algemeen",
+      "advanced": "Gevorderd",
+      "ai": "AI"
+    }
   },
   "shortcuts": {
     "title": "Sleutelbordkortpaaie",

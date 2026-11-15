@@ -686,7 +686,13 @@
       "headerConnected": "Conectado · {{provider}} · {{model}}"
     },
     "desktopNotifications": "Notificaciones de escritorio",
-    "desktopNotificationsHint": "Mostrar notificaciones del sistema cuando los trabajos de la cola se completen o fallen mientras la aplicación está en segundo plano."
+    "desktopNotificationsHint": "Mostrar notificaciones del sistema cuando los trabajos de la cola se completen o fallen mientras la aplicación está en segundo plano.",
+    "tabs": {
+      "ariaLabel": "Secciones de configuración",
+      "general": "General",
+      "advanced": "Avanzado",
+      "ai": "IA"
+    }
   },
   "shortcuts": {
     "title": "Atajos de teclado",

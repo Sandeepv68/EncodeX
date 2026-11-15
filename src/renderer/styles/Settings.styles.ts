@@ -8,7 +8,7 @@
  */
 
 import { styled } from '@mui/material/styles';
-import { Box, TextField, Typography } from '@mui/material';
+import { Box, Tabs, TextField, Typography } from '@mui/material';
 import type { ElementType } from 'react';
 
 export const SettingsRoot = styled(Box)(({ theme }) => ({ display: 'flex', flexDirection: 'column', gap: theme.spacing(2) }));
@@ -73,4 +73,51 @@ export const ModeSettingsSection = styled(SettingsSection)(({ theme }) => ({
     flexDirection: 'column',
     alignItems: 'stretch',
   },
+}));
+
+/**
+ * Tab strip for the Settings page, matched to the batch-queue tab bar so both
+ * pages share the same tab sizing and spacing. Uses the `inherit` text colour
+ * instead of MUI's primary tint, which sits just under the 4.5:1 contrast ratio
+ * axe requires; unselected tabs keep the secondary text colour at full opacity.
+ * @const SettingsTabs
+ */
+export const SettingsTabs = styled(Tabs)(({ theme }) => ({
+  '&&& .MuiTab-root': {
+    minWidth: theme.typography.pxToRem(140),
+    whiteSpace: 'nowrap',
+    opacity: 1,
+    color: theme.palette.text.secondary,
+    textTransform: 'none',
+  },
+  '&&& .MuiTab-root.Mui-selected': {
+    color: theme.palette.text.primary,
+    fontWeight: theme.typography.fontWeightBold,
+  },
+}));
+
+/**
+ * Row wrapper keeping a tab's icon and label on one line. The icon is part of
+ * the label rather than MUI's `icon` prop, which would switch the tab to the
+ * taller icon-and-label layout and break the sizing the queue tab bar uses.
+ * @const SettingsTabLabel
+ */
+export const SettingsTabLabel = styled('span')(({ theme }) => ({
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: theme.spacing(0.75),
+}));
+
+/**
+ * Panel that holds one tab's settings sections. All panels stay mounted; the
+ * `hidden` attribute removes inactive ones from the accessibility tree. The
+ * explicit `&[hidden]` rule is required because the `display: flex` below would
+ * otherwise beat the user agent's `[hidden] { display: none }` style.
+ * @const SettingsTabPanel
+ */
+export const SettingsTabPanel = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing(2),
+  '&[hidden]': { display: 'none' },
 }));

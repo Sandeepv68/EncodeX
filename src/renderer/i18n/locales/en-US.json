@@ -869,6 +869,12 @@
   },
   "settings": {
     "title": "Settings",
+    "tabs": {
+      "ariaLabel": "Settings sections",
+      "general": "General",
+      "advanced": "Advanced",
+      "ai": "AI"
+    },
     "theme": "Theme",
     "themes": {
       "light": "Light",

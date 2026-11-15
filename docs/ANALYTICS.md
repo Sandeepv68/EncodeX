@@ -133,7 +133,7 @@ All events are defined in `src/shared/analytics/events.ts`. Categories:
 | cut         | `video_cut_started/completed/failed`, `timeline_zoom_changed`, `media_playback_toggled` |
 | queue       | `batch_queue_started`, `batch_completed`, `batch_job_retried`, `batch_export`         |
 | profiles    | `profile_applied`, `profile_created`, `profile_updated`, `profile_deleted`            |
-| settings    | `telemetry_opt_in/out`, `theme_changed`, `hwaccel_*`, `always_on_top_toggled`, `encoder_type_changed` |
+| settings    | `telemetry_opt_in/out`, `theme_changed`, `hwaccel_*`, `always_on_top_toggled`, `encoder_type_changed`, `settings_tab_viewed` |
 | mcp         | `mcp_server_toggled`, `mcp_port_committed`, `mcp_token_generated`, `mcp_connection_value_copied` |
 | updates     | `update_available`, `update_downloaded`, `update_installed`, ...                      |
 | hw          | `hw_accel_detected`                                                                   |

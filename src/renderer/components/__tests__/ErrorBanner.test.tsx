@@ -53,4 +53,13 @@ describe('ErrorBanner', () => {
     const { container } = render(<ErrorBanner error={error} />);
     expect(container.querySelector('[data-icon="circle-info"]')).not.toBeNull();
   });
+
+  it('falls back to the error presentation for a code without its own entry', () => {
+    // `OUTPUT_EXISTS` has no entry in the banner's config map, so the banner
+    // has to resolve it through the UNKNOWN fallback.
+    const error = createError(ErrorCode.OUTPUT_EXISTS, 'Output exists');
+    const { container } = render(<ErrorBanner error={error} />);
+    expect(screen.getByText('Output exists')).toBeInTheDocument();
+    expect(container.querySelector('[data-icon="circle-exclamation"]')).not.toBeNull();
+  });
 });

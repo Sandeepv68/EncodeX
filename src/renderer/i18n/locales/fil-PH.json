@@ -686,7 +686,13 @@
       "headerConnected": "Nakakonekta · {{provider}} · {{model}}"
     },
     "desktopNotifications": "Mga abiso sa desktop",
-    "desktopNotificationsHint": "Magpakita ng mga abiso ng system kapag natapos o nabigo ang mga trabaho sa pila habang tumatakbo ang app sa background."
+    "desktopNotificationsHint": "Magpakita ng mga abiso ng system kapag natapos o nabigo ang mga trabaho sa pila habang tumatakbo ang app sa background.",
+    "tabs": {
+      "ariaLabel": "Mga seksyon ng setting",
+      "general": "Pangkalahatan",
+      "advanced": "Makabago",
+      "ai": "AI"
+    }
   },
   "shortcuts": {
     "title": "Mga Keyboard Shortcut",

@@ -11,7 +11,7 @@ There are two launch modes that share one core catalogue:
 | Mode | Transport | Launched by | Surface |
 | ---- | --------- | ----------- | ------- |
 | **Standalone** | stdio | `encodex --mcp` or `node dist/mcp/index.js` | 36 model-visible tools + app-only `commit_operation` = **37 registrations** |
-| **Embedded** | Streamable HTTP | Toggle in **Settings → MCP Server** | 36 core + app-only `commit_operation` + 6 GUI-parity tools = **43 registrations (42 model-visible)** |
+| **Embedded** | Streamable HTTP | Toggle in **Settings → AI** (MCP Server) | 36 core + app-only `commit_operation` + 6 GUI-parity tools = **43 registrations (42 model-visible)** |
 
 Related docs: [`CLI.md`](CLI.md), [`IPC.md`](IPC.md), [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
@@ -404,7 +404,7 @@ Jobs are held in memory. In embedded mode the MCP job manager is **shared with t
 
 ## 🌐 Embedded HTTP server (GUI mode)
 
-Enable it in **Settings → MCP Server**, optionally set a port and bearer token, then run a conversion from the UI. The server binds `127.0.0.1` only and adds the GUI-parity tools on top of the core surface.
+Enable it in **Settings → AI** under MCP Server, optionally set a port and bearer token, then run a conversion from the UI. The server binds `127.0.0.1` only and adds the GUI-parity tools on top of the core surface.
 
 - **Endpoint:** `http://127.0.0.1:8765/mcp` (default)
 - **Port range:** 1024–65535 (default `8765`)

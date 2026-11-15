@@ -686,7 +686,13 @@
       "headerConnected": "接続済み · {{provider}} · {{model}}"
     },
     "desktopNotifications": "デスクトップ通知",
-    "desktopNotificationsHint": "アプリがバックグラウンドで実行中にキューのジョブが完了または失敗したときにシステム通知を表示します。"
+    "desktopNotificationsHint": "アプリがバックグラウンドで実行中にキューのジョブが完了または失敗したときにシステム通知を表示します。",
+    "tabs": {
+      "ariaLabel": "設定セクション",
+      "general": "一般",
+      "advanced": "詳細設定",
+      "ai": "AI"
+    }
   },
   "shortcuts": {
     "title": "キーボードショートカット",

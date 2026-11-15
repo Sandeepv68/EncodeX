@@ -79,6 +79,13 @@ export interface SettingsLocationState {
 }
 
 /**
+ * The three Settings page tabs. `general` is the default; `ai` is selected when
+ * a caller deep-links to the AI-provider editor.
+ * @typedef {('general'|'advanced'|'ai')} SettingsTab
+ */
+export type SettingsTab = 'general' | 'advanced' | 'ai';
+
+/**
  * Signature of the console methods that the renderer entry point patches.
  * The `__encodeXPatched` flag marks a method as already wrapped so a
  * re-evaluated entry point does not wrap it twice (which would duplicate

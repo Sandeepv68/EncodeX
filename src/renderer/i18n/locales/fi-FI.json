@@ -686,7 +686,13 @@
       "headerConnected": "Yhdistetty · {{provider}} · {{model}}"
     },
     "desktopNotifications": "Työpöytäilmoitukset",
-    "desktopNotificationsHint": "Näytä järjestelmäilmoitukset, kun jonotehtävät valmistuvat tai epäonnistuvat sovelluksen ollessa taustalla."
+    "desktopNotificationsHint": "Näytä järjestelmäilmoitukset, kun jonotehtävät valmistuvat tai epäonnistuvat sovelluksen ollessa taustalla.",
+    "tabs": {
+      "ariaLabel": "Asetusten osiot",
+      "general": "Yleiset",
+      "advanced": "Lisäasetukset",
+      "ai": "AI"
+    }
   },
   "shortcuts": {
     "title": "Näppäimistöoikotiet",

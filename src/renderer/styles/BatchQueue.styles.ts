@@ -1,24 +1,16 @@
 import { alpha, styled } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
-import { Typography, Stack, Box, Chip, TextField, Alert, ButtonGroup, Tabs } from '@mui/material';
+import { Typography, Stack, Box, Chip, TextField, ButtonGroup, Tabs } from '@mui/material';
 import type { ElementType } from 'react';
 import { OVERLAY_COLORS, SHADOWS } from '../../shared/theme/colors';
+
+export { AccelAlert, LockedAlert } from './alerts.styles';
 
 export const PageTitle = styled(Typography)<{ component?: ElementType }>(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   fontWeight: 600,
   marginBottom: theme.spacing(2),
-}));
-
-export const AccelAlert = styled(Alert)(({ theme }) => ({
-  fontWeight: 500,
-  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
-}));
-
-export const LockedAlert = styled(Alert)(({ theme }) => ({
-  fontWeight: 500,
-  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
 }));
 
 /**

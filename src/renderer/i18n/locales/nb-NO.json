@@ -686,7 +686,13 @@
       "headerConnected": "Tilkoblet · {{provider}} · {{model}}"
     },
     "desktopNotifications": "Skrivebordsvarsler",
-    "desktopNotificationsHint": "Vis systemvarsler når køjobber fullføres eller mislykkes mens appen kjører i bakgrunnen."
+    "desktopNotificationsHint": "Vis systemvarsler når køjobber fullføres eller mislykkes mens appen kjører i bakgrunnen.",
+    "tabs": {
+      "ariaLabel": "Innstillingsseksjoner",
+      "general": "Generelt",
+      "advanced": "Avansert",
+      "ai": "KI"
+    }
   },
   "shortcuts": {
     "title": "Tastatursnarveier",

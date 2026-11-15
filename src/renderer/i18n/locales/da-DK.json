@@ -686,7 +686,13 @@
       "headerConnected": "Forbundet · {{provider}} · {{model}}"
     },
     "desktopNotifications": "Skrivebordsmeddelelser",
-    "desktopNotificationsHint": "Vis systemmeddelelser, når køjob fuldføres eller mislykkes, mens appen kører i baggrunden."
+    "desktopNotificationsHint": "Vis systemmeddelelser, når køjob fuldføres eller mislykkes, mens appen kører i baggrunden.",
+    "tabs": {
+      "ariaLabel": "Indstillingssektioner",
+      "general": "Generelt",
+      "advanced": "Avanceret",
+      "ai": "AI"
+    }
   },
   "shortcuts": {
     "title": "Tastaturgenveje",

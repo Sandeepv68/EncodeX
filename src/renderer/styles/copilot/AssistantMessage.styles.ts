@@ -1,7 +1,7 @@
 import type { ElementType } from 'react';
 import { styled } from '@mui/material/styles';
-import { Alert, Box, Button, Chip, ListItem, ListItemIcon, Typography } from '@mui/material';
-import { SHADOWS } from '../../../shared/theme/colors';
+import { Box, Button, Chip, ListItem, ListItemIcon, Typography } from '@mui/material';
+import { BaseAlert } from '../alerts.styles';
 
 /**
  * Typographic container for assistant message content. Applies consistent
@@ -39,13 +39,10 @@ export const AssistantBody = styled(Box)(({ theme }) => ({
 }));
 
 /** Inline alert used for assistant errors and notices. */
-export const AssistantAlert = styled(Alert)(({ theme }) => ({
-  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
-  '& .MuiAlert-message': { width: '100%', fontWeight: 600 },
-}));
+export const AssistantAlert = BaseAlert;
 
 /** Warning alert that is separated from the content below it. */
-export const AssistantWarningAlert = styled(AssistantAlert)(({ theme }) => ({
+export const AssistantWarningAlert = styled(BaseAlert)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
 

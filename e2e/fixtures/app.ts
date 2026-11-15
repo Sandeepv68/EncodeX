@@ -177,6 +177,27 @@ export async function getMainWindow(app: ElectronApplication): Promise<Page> {
 }
 
 /**
+ * The Settings page tabs. Each tab keeps its panel mounted but hides the
+ * inactive ones, so a spec has to select the tab that owns a control before
+ * it can interact with it.
+ */
+export type SettingsTab = 'general' | 'advanced' | 'ai';
+
+/**
+ * Selects one of the Settings page tabs and waits for its panel to show.
+ *
+ * The inactive panels stay mounted but are hidden, so Playwright refuses to
+ * click a control that lives in a panel the user has not opened yet.
+ * @param {Page} page - The main application window's page.
+ * @param {SettingsTab} tab - The tab to select.
+ * @returns {Promise<void>} Resolves once the tab's panel is visible.
+ */
+export async function selectSettingsTab(page: Page, tab: SettingsTab): Promise<void> {
+  await page.locator(`[data-testid="settings-tab-${tab}"]`).click();
+  await page.locator(`[data-testid="settings-tabpanel-${tab}"]`).waitFor({ state: 'visible', timeout: 15000 });
+}
+
+/**
  * Accepts the Terms & Conditions gate and waits for the modal to close. Used by
  * real-preload (Tier B) specs, where the gate is never pre-seeded and must be
  * dismissed before the app UI is usable.

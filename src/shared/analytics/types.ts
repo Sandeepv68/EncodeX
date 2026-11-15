@@ -312,6 +312,7 @@ export type AnalyticsEventName =
   | 'encoder_type_changed'
   | 'always_on_top_toggled'
   | 'launch_at_login_toggled'
+  | 'settings_tab_viewed'
   | 'mcp_server_toggled'
   | 'mcp_port_committed'
   | 'mcp_token_generated'
@@ -521,6 +522,7 @@ export interface AnalyticsEventPayloadMap {
   encoder_type_changed: { encoderType: string };
   always_on_top_toggled: { enabled: boolean };
   launch_at_login_toggled: { enabled: boolean };
+  settings_tab_viewed: { tab: string };
 
   mcp_server_toggled: { enabled: boolean };
   mcp_port_committed: { isDefaultPort: boolean };

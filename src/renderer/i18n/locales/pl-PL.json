@@ -686,7 +686,13 @@
       "headerConnected": "Połączono · {{provider}} · {{model}}"
     },
     "desktopNotifications": "Powiadomienia na pulpicie",
-    "desktopNotificationsHint": "Pokazuj powiadomienia systemowe, gdy zadania w kolejce zakończą się lub nie powiodą, gdy aplikacja działa w tle."
+    "desktopNotificationsHint": "Pokazuj powiadomienia systemowe, gdy zadania w kolejce zakończą się lub nie powiodą, gdy aplikacja działa w tle.",
+    "tabs": {
+      "ariaLabel": "Sekcje ustawień",
+      "general": "Ogólne",
+      "advanced": "Zaawansowane",
+      "ai": "AI"
+    }
   },
   "shortcuts": {
     "title": "Skróty klawiszowe",

@@ -43,6 +43,8 @@ ruleTester.run('no-hardcoded-strings', noHardcodedStrings, {
     '<div>   </div>',
     // allowProps values are exempt.
     "const meta = { id: 'video1', codec: 'h264', ext: 'mp4' };",
+    // IDREF props reference element ids, not user-facing copy.
+    '<div id="tab-general" aria-controls="panel-general" aria-labelledby="label-general" aria-describedby="help-general" />',
   ],
   invalid: [
     // Visible JSX text.

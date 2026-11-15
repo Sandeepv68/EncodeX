@@ -23,8 +23,8 @@ import { useTheme } from '@mui/material/styles';
 import { PROFILE_ICON_COLORS } from '../../shared/theme/colors';
 import { isNearBlack } from '../utils/colors';
 import type { BadgeEntry, FallbackEntry, ResolvedIcon } from './types';
-import { OptionIcon, FormatBadge, BrandSvg } from '../styles/ProfileSelector.styles';
-import { ColoredOptionIcon, ChipIconBox, ColoredChipIconBox } from '../styles/ProfileIcon.styles';
+import { OptionIcon, BrandSvg, FormatBadge } from '../styles/ProfileSelector.styles';
+import { ColoredOptionIcon, ChipIconBox, ColoredChipIconBox, LogoTile, TileFormatBadge } from '../styles/ProfileIcon.styles';
 
 /** Better-fit brands of `simple-icons` that offer per-generation console glyphs. */
 const PLAYSTATION_SPECIFIC: Array<{ test: RegExp; icon: SimpleIcon }> = [
@@ -145,7 +145,9 @@ export default function ProfileIcon({ name }: { name: string }) {
   if (resolved.kind === 'brand') {
     return (
       <OptionIcon>
-        <BrandGlyph icon={resolved.icon} />
+        <LogoTile>
+          <BrandGlyph icon={resolved.icon} />
+        </LogoTile>
       </OptionIcon>
     );
   }
@@ -153,14 +155,18 @@ export default function ProfileIcon({ name }: { name: string }) {
   if (resolved.kind === 'fa') {
     return (
       <ColoredOptionIcon $color={resolved.color}>
-        <FontAwesomeIcon icon={resolved.icon} />
+        <LogoTile $color={resolved.color}>
+          <FontAwesomeIcon icon={resolved.icon} />
+        </LogoTile>
       </ColoredOptionIcon>
     );
   }
 
   return (
     <OptionIcon>
-      <FormatBadge $color={resolved.color}>{resolved.label}</FormatBadge>
+      <LogoTile>
+        <TileFormatBadge $color={resolved.color}>{resolved.label}</TileFormatBadge>
+      </LogoTile>
     </OptionIcon>
   );
 }

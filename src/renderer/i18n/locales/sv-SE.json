@@ -686,7 +686,13 @@
       "headerConnected": "Ansluten · {{provider}} · {{model}}"
     },
     "desktopNotifications": "Skrivbordsaviseringar",
-    "desktopNotificationsHint": "Visa systemaviseringar när köjobb slutförs eller misslyckas medan appen körs i bakgrunden."
+    "desktopNotificationsHint": "Visa systemaviseringar när köjobb slutförs eller misslyckas medan appen körs i bakgrunden.",
+    "tabs": {
+      "ariaLabel": "Inställningsavsnitt",
+      "general": "Allmänt",
+      "advanced": "Avancerat",
+      "ai": "AI"
+    }
   },
   "shortcuts": {
     "title": "Kortkommandon",

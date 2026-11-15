@@ -686,7 +686,13 @@
       "headerConnected": "Verbonden · {{provider}} · {{model}}"
     },
     "desktopNotifications": "Bureaubladmeldingen",
-    "desktopNotificationsHint": "Toon systeemmeldingen wanneer wachtrijtaken zijn voltooid of mislukken terwijl de app op de achtergrond draait."
+    "desktopNotificationsHint": "Toon systeemmeldingen wanneer wachtrijtaken zijn voltooid of mislukken terwijl de app op de achtergrond draait.",
+    "tabs": {
+      "ariaLabel": "Instellingensecties",
+      "general": "Algemeen",
+      "advanced": "Geavanceerd",
+      "ai": "AI"
+    }
   },
   "shortcuts": {
     "title": "Sneltoetsen",
