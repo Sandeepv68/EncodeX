@@ -23,7 +23,7 @@
  */
 
 import type { ComponentType, ReactNode } from 'react';
-import { useState, useEffect, useLayoutEffect, useReducer, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, useMemo, useReducer, useRef } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useTheme, CircularProgress } from '@mui/material';
@@ -67,7 +67,6 @@ import { useAuditStore } from './stores/auditStore';
 import { useSettingsStore } from './stores/settingsStore';
 import type { PageLoader, RouteLoaderProps } from './types';
 import { callBridgeVoid, fireAndForgetBridge } from './utils/bridge-call';
-import { useLanguageDirection } from './useLanguageDirection';
 import {
   AppRoot,
   AppBody,
@@ -219,30 +218,44 @@ function AppLayout() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { t } = useTranslation();
-  const { currentError, clearError } = useErrorStore();
+  // The shell subscribes to the slices it renders, not to the whole stores:
+  // a whole-store subscription re-renders the entire app on every error or
+  // settings write, wherever it comes from.
+  const currentError = useErrorStore((s) => s.currentError);
+  const clearError = useErrorStore((s) => s.clearError);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { drawerCondensed, setDrawerCondensed } = useSettingsStore();
+  const drawerCondensed = useSettingsStore((s) => s.drawerCondensed);
+  const setDrawerCondensed = useSettingsStore((s) => s.setDrawerCondensed);
   const [helpOpen, setHelpOpen] = useState(false);
   const { navigate } = useNavigationGuard();
   const { themeId, setTheme } = useColorMode();
   const location = useLocation();
   const mainContentRef = useRef<HTMLElement>(null);
+  // The guarded navigation is held in a ref so the effects that use it do not
+  // have to re-subscribe whenever the route changes.
+  const navigateRef = useRef(navigate);
+  navigateRef.current = navigate;
 
   // The detached Logs window renders the same route table but without the app
   // chrome: it is a second window onto the log, not a second copy of the app.
   const detached = isDetachedMode();
 
-  useLanguageDirection();
+  // The text direction is set by the composition root (main.tsx), which owns
+  // the DirectionProvider. Calling the hook again here would subscribe to a
+  // second `languageChanged` listener and write `document.dir` twice.
   useDevScreenshot();
 
   useEffect(() => {
+    // The notification listener is subscribed once: `navigate` gets a new
+    // identity on every route change, and depending on it tore the listener
+    // down and set it up again on every navigation.
     const unsub = window.electronAPI?.onNotificationClicked?.((payload) => {
       if (payload?.target === 'mux' || payload?.target === 'queue') {
-        navigate('/batch');
+        navigateRef.current('/batch');
       }
     });
     return () => unsub?.();
-  }, [navigate]);
+  }, []);
 
   useLayoutEffect(() => {
     // A layout effect runs after the DOM is committed, so the ref is attached
@@ -321,36 +334,42 @@ function AppLayout() {
    * as its own chunk and shows its own skeleton until that chunk arrives (see
    * {@link RouteLoader}). Keys mirror the path definitions used by AppDrawer
    * and pageIcons.tsx.
+   *
+   * The table is memoized: it is rebuilt on every render of the shell
+   * otherwise, and rebuilding it re-creates every route element.
    * @const {Array<{path: string, element: ReactNode}>}
    */
-  const routes: { path: string; element: ReactNode }[] = [
-    {
-      path: '/',
-      element: (
-        <RouteLoader
-          load={loadDashboard}
-          skeleton={
-            <PageFallback>
-              <CircularProgress aria-label={t('app.loading')} />
-            </PageFallback>
-          }
-          minVisibleMs={0}
-        />
-      ),
-    },
-    { path: '/convert', element: <RouteLoader load={loadConvert} skeleton={<ConvertSkeleton />} /> },
-    { path: '/media-info', element: <RouteLoader load={loadMediaInfo} skeleton={<MediaInfoSkeleton />} /> },
-    { path: '/image-compress', element: <RouteLoader load={loadImageCompress} skeleton={<ImageCompressSkeleton />} /> },
-    { path: '/audio-extract', element: <RouteLoader load={loadAudioExtract} skeleton={<AudioExtractSkeleton />} /> },
-    { path: '/video-cut', element: <RouteLoader load={loadVideoCut} skeleton={<VideoCutSkeleton />} /> },
-    { path: '/remux', element: <RouteLoader load={loadRemux} skeleton={<RemuxSkeleton />} /> },
-    { path: '/demux', element: <RouteLoader load={loadDemux} skeleton={<DemuxSkeleton />} /> },
-    { path: '/batch', element: <RouteLoader load={loadBatchQueue} skeleton={<BatchQueueSkeleton />} /> },
-    { path: '/copilot', element: <RouteLoader load={loadCopilot} skeleton={<CopilotSkeleton />} /> },
-    { path: '/logs', element: <RouteLoader load={loadLogs} skeleton={<LogsSkeleton />} /> },
-    { path: '/settings', element: <RouteLoader load={loadSettings} skeleton={<SettingsSkeleton />} /> },
-    { path: '/about', element: <RouteLoader load={loadAbout} skeleton={<AboutSkeleton />} /> },
-  ];
+  const routes: { path: string; element: ReactNode }[] = useMemo(
+    () => [
+      {
+        path: '/',
+        element: (
+          <RouteLoader
+            load={loadDashboard}
+            skeleton={
+              <PageFallback>
+                <CircularProgress aria-label={t('app.loading')} />
+              </PageFallback>
+            }
+            minVisibleMs={0}
+          />
+        ),
+      },
+      { path: '/convert', element: <RouteLoader load={loadConvert} skeleton={<ConvertSkeleton />} /> },
+      { path: '/media-info', element: <RouteLoader load={loadMediaInfo} skeleton={<MediaInfoSkeleton />} /> },
+      { path: '/image-compress', element: <RouteLoader load={loadImageCompress} skeleton={<ImageCompressSkeleton />} /> },
+      { path: '/audio-extract', element: <RouteLoader load={loadAudioExtract} skeleton={<AudioExtractSkeleton />} /> },
+      { path: '/video-cut', element: <RouteLoader load={loadVideoCut} skeleton={<VideoCutSkeleton />} /> },
+      { path: '/remux', element: <RouteLoader load={loadRemux} skeleton={<RemuxSkeleton />} /> },
+      { path: '/demux', element: <RouteLoader load={loadDemux} skeleton={<DemuxSkeleton />} /> },
+      { path: '/batch', element: <RouteLoader load={loadBatchQueue} skeleton={<BatchQueueSkeleton />} /> },
+      { path: '/copilot', element: <RouteLoader load={loadCopilot} skeleton={<CopilotSkeleton />} /> },
+      { path: '/logs', element: <RouteLoader load={loadLogs} skeleton={<LogsSkeleton />} /> },
+      { path: '/settings', element: <RouteLoader load={loadSettings} skeleton={<SettingsSkeleton />} /> },
+      { path: '/about', element: <RouteLoader load={loadAbout} skeleton={<AboutSkeleton />} /> },
+    ],
+    [t],
+  );
 
   const drawerContent = (
     <AppDrawer

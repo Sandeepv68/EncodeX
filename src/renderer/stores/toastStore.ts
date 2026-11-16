@@ -28,6 +28,14 @@ import type { Toast, ToastState } from './types';
 let counter = 0;
 
 /**
+ * The largest number of toasts kept in the queue. A bulk operation can raise
+ * one toast per file, and the queue must not grow for as long as the window
+ * is open.
+ * @type {number}
+ */
+const MAX_TOASTS = 20;
+
+/**
  * Zustand store for toast notification state.
  * Holds the active toasts and provides addToast / removeToast plus the typed
  * convenience wrappers success / error / warning / info. Implemented as a
@@ -48,7 +56,12 @@ export const useToastStore = create<ToastState>((set, get) => ({
   addToast: (type, message, detail, duration, action) => {
     const id = `toast-${++counter}`;
     const toast: Toast = { id, type, message, detail, duration, action };
-    set((s) => ({ toasts: [...s.toasts, toast] }));
+    set((s) => {
+      // The queue is capped: a bulk operation can raise one toast per file,
+      // and an unbounded array would grow for as long as the window is open.
+      const toasts = [...s.toasts, toast];
+      return { toasts: toasts.length > MAX_TOASTS ? toasts.slice(toasts.length - MAX_TOASTS) : toasts };
+    });
   },
   /**
    * Removes the toast with the given id.

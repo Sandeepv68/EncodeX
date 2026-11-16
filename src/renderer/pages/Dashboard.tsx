@@ -119,6 +119,29 @@ function buildCardRings(key: string): RingGroup[] {
 }
 
 /**
+ * The ring clusters of a card, cached by route.
+ *
+ * The generator is seeded by the route, so a card always gets the same
+ * background. The dashboard used to rebuild the clusters for every card on
+ * every render.
+ * @const {Map<string, RingGroup[]>}
+ */
+const ringCache = new Map<string, RingGroup[]>();
+
+/**
+ * Returns the (cached) ring clusters of a card.
+ * @param {string} key - Route key used to seed the randomness.
+ * @returns {RingGroup[]} Ring clusters to render in the card background.
+ */
+function cardRings(key: string): RingGroup[] {
+  const cached = ringCache.get(key);
+  if (cached) return cached;
+  const rings = buildCardRings(key);
+  ringCache.set(key, rings);
+  return rings;
+}
+
+/**
  * Renders the Dashboard page (`/`).
  *
  * Displays a welcome title and subtitle, then a responsive `Grid` of
@@ -173,7 +196,7 @@ export default function Dashboard() {
             <FeatureGridItem size={{ xs: 12, sm: 6, md: 4 }} key={item.to}>
               <FeatureCard gradientAngle={index * 60} $animationDelay={`${0.3 + index * 0.08}s`}>
                 <CardBackgroundSvg aria-hidden="true" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice">
-                  {buildCardRings(item.to).map((ring) => (
+                  {cardRings(item.to).map((ring) => (
                     <g key={ring.id} fill="none" stroke="currentColor" strokeWidth={1} vectorEffect="non-scaling-stroke">
                       {ring.radii.map((r) => (
                         <circle key={r} cx={ring.cx} cy={ring.cy} r={r} />

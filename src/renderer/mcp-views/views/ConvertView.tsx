@@ -7,10 +7,10 @@
  * tracks the resulting job.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Checkbox, FormControlLabel, Typography } from '@mui/material';
-import { basename, clampPercent } from '../format';
+import { basename, clampPercent, contentKey } from '../format';
 import { useMcpView, useMcpViewData } from '../McpViewProvider';
 import { resultErrorText } from '../host';
 import { useMcpViewPolling } from '../useMcpViewPolling';
@@ -52,15 +52,26 @@ export default function ConvertView() {
   const [form, setForm] = useState<ConvertForm>(EMPTY_FORM);
   const [trackedJobId, setTrackedJobId] = useState<string | undefined>(undefined);
   const [message, setMessage] = useState<string | undefined>(undefined);
+  // The proposal is latched on its *content*, not on its identity: the host
+  // delivers a fresh object on every push, and latching on identity would
+  // reset the form on every poll.
+  const confirmationKey = useMemo(() => contentKey(payload?.confirmation), [payload?.confirmation]);
+  const proposalKeyRef = useRef(confirmationKey);
+  // The fields the user has edited. A proposal that arrives later fills in the
+  // rest, but it must never overwrite what the user typed.
+  const editedRef = useRef<Set<keyof ConvertForm>>(new Set());
 
   useEffect(() => {
-    if (payload?.confirmation) setProposal(payload.confirmation);
-  }, [payload?.confirmation]);
+    if (!payload?.confirmation) return;
+    if (confirmationKey === proposalKeyRef.current) return;
+    proposalKeyRef.current = confirmationKey;
+    setProposal(payload.confirmation);
+  }, [confirmationKey, payload?.confirmation]);
 
   useEffect(() => {
     if (!proposal) return;
     const args = (proposal.args ?? {}) as Record<string, unknown>;
-    setForm({
+    const proposed: ConvertForm = {
       input: String(args.input ?? ''),
       output: String(args.output ?? ''),
       videoCodec: String(args.videoCodec ?? ''),
@@ -70,6 +81,13 @@ export default function ConvertView() {
       qscale: args.qscale === undefined ? '' : String(args.qscale),
       scale: String(args.scale ?? ''),
       copy: args.copy === true,
+    };
+    setForm((current) => {
+      const next: ConvertForm = { ...proposed };
+      for (const key of editedRef.current) {
+        Object.assign(next, { [key]: current[key] });
+      }
+      return next;
     });
   }, [proposal]);
 
@@ -77,14 +95,21 @@ export default function ConvertView() {
     if (job?.id && job.id !== trackedJobId) setTrackedJobId(job.id);
   }, [job?.id, trackedJobId]);
 
+  // A finished job has nothing left to report, so the polling stops.
+  const jobFinished = job?.status === 'done' || job?.status === 'error';
+
   useMcpViewPolling({
     tool: 'get_job',
     args: trackedJobId ? { jobId: trackedJobId } : undefined,
     intervalMs: 2000,
-    enabled: Boolean(trackedJobId) && host.context.supportsServerTools !== false,
+    enabled: Boolean(trackedJobId) && !jobFinished && host.context.supportsServerTools !== false,
   });
 
-  const update = (key: keyof ConvertForm) => (value: string | boolean) => setForm((current) => ({ ...current, [key]: value }));
+  const update = (key: keyof ConvertForm) => (value: string | boolean) => {
+    // Remember the edit: a later proposal must not undo it.
+    editedRef.current.add(key);
+    setForm((current) => ({ ...current, [key]: value }));
+  };
 
   const armedCancel = useArmedAction(async () => {
     if (job?.id) await callTool('cancel_job', { jobId: job.id });

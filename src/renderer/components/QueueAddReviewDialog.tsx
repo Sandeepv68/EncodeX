@@ -67,13 +67,20 @@ export default function QueueAddReviewDialog({ open, files, defaultOperation, on
    * opens or its inputs change, so stale selections never leak between opens.
    * @returns {void}
    */
+  // The rows are (re)initialized whenever the dialog opens or its inputs
+  // change, so stale selections never leak between opens. The dependency is
+  // the *content* of the file list, not the array: a parent that passes a
+  // fresh array on every render would otherwise discard the per-file choices
+  // the user just made.
+  const filesKey = files.join('\n');
+
   useEffect(() => {
     if (open) {
       const initial: Record<string, string> = {};
       for (const file of files) initial[file] = defaultOperation;
       setSelections(initial);
     }
-  }, [open, files, defaultOperation]);
+  }, [open, filesKey, defaultOperation]);
 
   return (
     <Dialog open={open} onClose={onCancel} maxWidth="sm" fullWidth>

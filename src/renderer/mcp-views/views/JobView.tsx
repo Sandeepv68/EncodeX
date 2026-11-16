@@ -37,11 +37,16 @@ export default function JobView() {
     if (job?.id && job.id !== jobId) setJobId(job.id);
   }, [job?.id, jobId]);
 
+  // A finished job has nothing left to report, so the polling stops instead
+  // of asking the host about it every couple of seconds for the rest of the
+  // session.
+  const finished = job?.status === 'done' || job?.status === 'error';
+
   useMcpViewPolling({
     tool: 'get_job',
     args: jobId ? { jobId } : undefined,
     intervalMs: 2000,
-    enabled: Boolean(jobId) && host.context.supportsServerTools !== false,
+    enabled: Boolean(jobId) && !finished && host.context.supportsServerTools !== false,
   });
 
   if (!job) {
@@ -53,7 +58,6 @@ export default function JobView() {
   }
 
   const percent = clampPercent(job.progress);
-  const finished = job.status === 'done' || job.status === 'error';
   const title = basename(job.output || job.input || job.id);
 
   return (

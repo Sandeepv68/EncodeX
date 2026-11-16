@@ -23,7 +23,7 @@
  * which feed the `useQueueStore` zustand store.
  */
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { bridgePromise, fireAndForgetBridge } from '../utils/bridge-call';
@@ -61,7 +61,7 @@ import { QueueJob, ConversionProfile, TranscoderType } from '../../shared/types'
 import { useSettingsStore } from '../stores/settingsStore';
 import { readStoredBatchConfig, persistBatchConfig, type BatchConfig } from '../stores/batchConfig';
 import type { QueueAddReviewSelection } from '../components/types';
-import { buildBatchOptions, inferJobOperation, recomputeJobOutput, recomputeJobOutputDir } from '../utils/batch-options';
+import { buildBatchOptions, inferJobOperation, recomputeJobOutput, recomputeJobOutputDir, sameBatchOptions } from '../utils/batch-options';
 import { planEnqueues } from '../utils/queue-job-utils';
 import { formatError } from '../../shared/errors';
 import { computeQueuedTargetPosition, reorderJob } from '../utils/queue-reorder';
@@ -134,7 +134,16 @@ const restrictToVerticalAxis: Modifier = ({ transform }) => ({ ...transform, x: 
  */
 export default function BatchQueue() {
   const { t } = useTranslation();
-  const { jobs, progress, addJob, removeJob, updateJob, updateProgress, clearJobs } = useQueueStore();
+  // The page subscribes to the two slices it renders instead of the whole
+  // store: a whole-store subscription wakes the page on every write to the
+  // store, including the progress ticks it does not care about.
+  const jobs = useQueueStore((s) => s.jobs);
+  const progress = useQueueStore((s) => s.progress);
+  const addJob = useQueueStore((s) => s.addJob);
+  const removeJob = useQueueStore((s) => s.removeJob);
+  const updateJob = useQueueStore((s) => s.updateJob);
+  const updateProgress = useQueueStore((s) => s.updateProgress);
+  const clearJobs = useQueueStore((s) => s.clearJobs);
   const muxStatus = useMuxQueueStatus();
   const [searchParams, setSearchParams] = useSearchParams();
   const queueConcurrency = useSettingsStore((s) => s.queueConcurrency);
@@ -228,6 +237,42 @@ export default function BatchQueue() {
    * @type {'general' | 'mux'}
    */
   const tab = searchParams.get('tab') === 'mux' ? 'mux' : 'general';
+
+  /**
+   * The facts about the queue that the page renders, derived from the job
+   * list in a single pass.
+   *
+   * The queue re-renders on every progress tick, so the derivations must not
+   * walk the job list once per flag: the page used to scan the list a dozen
+   * times per render.
+   * @type {{queued: number, running: number, completed: number, visible: QueueJob[]}}
+   */
+  const queueFacts = useMemo(() => {
+    let queued = 0;
+    let running = 0;
+    let completed = 0;
+    const visible: QueueJob[] = [];
+    const needle = search.toLowerCase();
+    for (const job of jobs) {
+      if (job.status === QUEUE_STATUS.QUEUED) queued += 1;
+      else if (job.status === QUEUE_STATUS.RUNNING) running += 1;
+      else if (job.status === QUEUE_STATUS.DONE || job.status === QUEUE_STATUS.ERROR) completed += 1;
+      if (filter !== 'all' && job.status !== filter) continue;
+      if (search && !basename(job.input).toLowerCase().includes(needle)) continue;
+      visible.push(job);
+    }
+    return { queued, running, completed, visible };
+  }, [jobs, filter, search]);
+
+  /**
+   * The number of jobs per status, used by the filter chips.
+   * @type {Record<string, number>}
+   */
+  const statusCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const job of jobs) counts[job.status] = (counts[job.status] ?? 0) + 1;
+    return counts;
+  }, [jobs]);
 
   /**
    * Switches the active tab, writing the choice into the `?tab=` query
@@ -628,6 +673,9 @@ export default function BatchQueue() {
         skippedNames.push(basename(job.input));
         continue;
       }
+      // A job that already carries these options does not need the round-trip:
+      // the update comes back as a status change and re-renders the page.
+      if (!dirChanged && output === job.output && sameBatchOptions(options, job.options)) continue;
       fireAndForgetBridge(() => window.electronAPI?.queueUpdateOptions(job.id, options, output), 'queueUpdateOptions');
     }
     if (skippedNames.length > 0) {
@@ -1215,10 +1263,10 @@ export default function BatchQueue() {
     }
   };
 
-  const hasQueued = jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED);
-  const hasRunning = jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.RUNNING);
+  const hasQueued = queueFacts.queued > 0;
+  const hasRunning = queueFacts.running > 0;
   const hasActive = hasQueued || hasRunning;
-  const hasCompleted = jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.DONE || job.status === QUEUE_STATUS.ERROR);
+  const hasCompleted = queueFacts.completed > 0;
 
   /**
    * The condensed state of the tab currently on screen. The condense toggle and
@@ -1305,7 +1353,7 @@ export default function BatchQueue() {
     },
   ]);
 
-  const remainingSeconds = estimateRemaining(jobs, progress);
+  const remainingSeconds = useMemo(() => estimateRemaining(jobs, progress), [jobs, progress]);
 
   /**
    * True when every job in the batch has finished (done or failed) and there
@@ -1320,9 +1368,7 @@ export default function BatchQueue() {
    * order mirrors the store's queue order (filtering preserves relative order).
    * @type {QueueJob[]}
    */
-  const visibleJobs = jobs
-    .filter((job: QueueJob) => filter === 'all' || job.status === filter)
-    .filter((job: QueueJob) => !search || basename(job.input).toLowerCase().includes(search.toLowerCase()));
+  const visibleJobs = queueFacts.visible;
 
   /**
    * Records which job is being dragged so the DragOverlay can preview it.
@@ -1367,6 +1413,24 @@ export default function BatchQueue() {
   };
 
   const activeJob = activeDragId ? jobs.find((job: QueueJob) => job.id === activeDragId) : null;
+  // True while a card is being dragged. The cards read it from a prop, so a
+  // drag does not re-render every card in the list on every pointer move.
+  const dragActive = activeDragId !== null;
+
+  /**
+   * Removes a job from the queue. The job is read from the store rather than
+   * from the render scope, so the callback keeps its identity and the memoized
+   * job cards are not re-rendered on every progress tick.
+   * @param {string} id - The id of the job to remove.
+   * @returns {void}
+   */
+  const handleRemoveJob = useCallback((id: string): void => {
+    const removed = useQueueStore.getState().jobs.find((j: QueueJob) => j.id === id);
+    fireAndForgetBridge(() => window.electronAPI.queueRemove(id), 'queueRemove');
+    if (removed) {
+      recordAnalyticsEvent(createAnalyticsEvent('batch_job_removed', { status: removed.status }));
+    }
+  }, []);
 
   return (
     <Box>
@@ -1441,16 +1505,16 @@ export default function BatchQueue() {
                   onAddFolder={handleAddFolder}
                   onCancelAll={handleCancelAll}
                   onClearCompleted={handleClearCompleted}
-                  hasCompleted={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.DONE || job.status === QUEUE_STATUS.ERROR)}
+                  hasCompleted={hasCompleted}
                   concurrency={queueConcurrency}
                   onConcurrencyChange={handleConcurrencyChange}
                   paused={paused}
                   onPause={handlePause}
                   onResume={handleResume}
-                  hasRunning={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.RUNNING)}
-                  hasQueued={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED)}
+                  hasRunning={hasRunning}
+                  hasQueued={hasQueued}
                   onStart={handleStart}
-                  hasActive={jobs.some((job: QueueJob) => job.status === QUEUE_STATUS.QUEUED || job.status === QUEUE_STATUS.RUNNING)}
+                  hasActive={hasActive}
                   outputDir={outputDir}
                   onOutputDirChange={setOutputDir}
                   onBrowseDir={handleBrowseDir}
@@ -1501,7 +1565,7 @@ export default function BatchQueue() {
             {jobs.length > 0 && (
               <FilterRow>
                 {['all', QUEUE_STATUS.QUEUED, QUEUE_STATUS.RUNNING, QUEUE_STATUS.DONE, QUEUE_STATUS.ERROR].map((value) => {
-                  const count = value === 'all' ? jobs.length : jobs.filter((job: QueueJob) => job.status === value).length;
+                  const count = value === 'all' ? jobs.length : (statusCounts[value] ?? 0);
                   const labelKey = value === 'all' ? 'all' : value === QUEUE_STATUS.ERROR ? 'failed' : value;
                   const label = t(`batchQueue.filters.${labelKey}`);
                   return (
@@ -1566,17 +1630,12 @@ export default function BatchQueue() {
                           key={job.id}
                           job={job}
                           progress={progress[job.id]}
-                          onRemove={(id) => {
-                            const removed = jobs.find((j: QueueJob) => j.id === id);
-                            fireAndForgetBridge(() => window.electronAPI.queueRemove(id), 'queueRemove');
-                            if (removed) {
-                              recordAnalyticsEvent(createAnalyticsEvent('batch_job_removed', { status: removed.status }));
-                            }
-                          }}
+                          onRemove={handleRemoveJob}
                           onRetry={handleRetry}
                           onEditOptions={handleEditOptions}
                           editLocked={batchStarted}
                           customized={customizedIds.has(job.id)}
+                          dragActive={dragActive}
                         />
                       ))}
                     </Stack>

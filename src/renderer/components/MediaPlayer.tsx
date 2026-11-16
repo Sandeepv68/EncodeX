@@ -690,6 +690,22 @@ const MediaPlayer = memo(
       }, [filePath, queueAudioChunk, closeAudio, drawFrame]);
 
       /**
+       * Releases the pending-seek timer. It is owned by its own effect because
+       * the loading effect above returns early when there is no file, and an
+       * early return skips its cleanup: the timer would then fire after the
+       * player was unmounted.
+       * @returns {void}
+       */
+      useEffect(() => {
+        return () => {
+          if (pendingSeekRef.current.timer !== null) {
+            window.clearTimeout(pendingSeekRef.current.timer);
+            pendingSeekRef.current.timer = null;
+          }
+        };
+      }, []);
+
+      /**
        * The requestAnimationFrame render loop. Each tick drains the audio
        * queue, picks the best buffered frame for the current media time (dropping
        * frames too far in the future), force-draws the oldest frame when the

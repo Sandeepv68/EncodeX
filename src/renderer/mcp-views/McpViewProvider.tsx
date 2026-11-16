@@ -11,6 +11,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { structuredPayload, type McpViewProviderProps, type McpViewState, type McpViewToolResult } from './host';
+import type { McpViewCallOptions } from './types';
 
 const McpViewContext = createContext<McpViewState | null>(null);
 
@@ -24,6 +25,32 @@ export function McpViewProvider({ host, initialData, children }: McpViewProvider
   const [error, setError] = useState<string | undefined>(undefined);
   const [busy, setBusy] = useState(false);
   const mountedRef = useRef(true);
+  // The last payload that was written, serialized. A poll that returns the
+  // same thing must not invalidate the context: every write creates a new
+  // context value and re-renders the whole view.
+  const payloadKeyRef = useRef<string | undefined>(undefined);
+
+  /**
+   * Writes a payload, skipping the write when the payload is unchanged.
+   * @param {unknown} payload - The payload to publish.
+   * @returns {void}
+   */
+  const publish = useCallback((payload: unknown): void => {
+    // An empty payload carries no information; publishing it would wipe the
+    // view (a poll that answers with an empty result would blank the card).
+    if (payload && typeof payload === 'object' && !Array.isArray(payload) && Object.keys(payload).length === 0) return;
+    let key: string;
+    try {
+      key = JSON.stringify(payload) ?? 'undefined';
+    } catch {
+      // A payload that cannot be serialized is always published: the equality
+      // check cannot tell two of them apart.
+      key = `unserializable:${payloadKeyRef.current ?? ''}`;
+    }
+    if (key === payloadKeyRef.current) return;
+    payloadKeyRef.current = key;
+    setData(payload);
+  }, []);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -35,32 +62,39 @@ export function McpViewProvider({ host, initialData, children }: McpViewProvider
   useEffect(() => {
     const unsubscribe = host.subscribe((result: McpViewToolResult) => {
       const payload = structuredPayload(result);
-      if (payload !== undefined && mountedRef.current) setData(payload);
+      if (payload !== undefined && mountedRef.current) publish(payload);
     });
     return unsubscribe;
-  }, [host]);
+  }, [host, publish]);
 
   const callTool = useCallback(
-    async (name: string, args?: Record<string, unknown>): Promise<McpViewToolResult> => {
-      setBusy(true);
-      setError(undefined);
+    async (name: string, args?: Record<string, unknown>, options?: McpViewCallOptions): Promise<McpViewToolResult> => {
+      // A silent call is a background poll: it must not flip the view into a
+      // busy state and a dropped poll must not leave a permanent error behind.
+      const silent = options?.silent === true;
+      if (!silent) {
+        setBusy(true);
+        setError(undefined);
+      }
       try {
         const result = await host.callTool(name, args);
         const payload = structuredPayload(result);
-        if (payload !== undefined && mountedRef.current) setData(payload);
-        if (result.isError && mountedRef.current) {
+        if (payload !== undefined && mountedRef.current) publish(payload);
+        if (!silent && result.isError && mountedRef.current) {
           setError(result.content?.map((block) => block.text ?? '').join('') || 'error');
         }
         return result;
       } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        if (mountedRef.current) setError(message);
+        if (!silent && mountedRef.current) {
+          const message = err instanceof Error ? err.message : String(err);
+          setError(message);
+        }
         throw err;
       } finally {
-        if (mountedRef.current) setBusy(false);
+        if (!silent && mountedRef.current) setBusy(false);
       }
     },
-    [host],
+    [host, publish],
   );
 
   const value = useMemo<McpViewState>(() => ({ data, error, busy, callTool, setData, host }), [data, error, busy, callTool, host]);

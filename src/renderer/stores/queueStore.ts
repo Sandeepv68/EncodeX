@@ -67,6 +67,7 @@ export const useQueueStore = create<QueueState>((set) => ({
   removeJob: (id) => {
     log.info(LOG_REMOVE_JOB, id);
     set((s) => {
+      if (!s.jobs.some((j) => j.id === id) && !(id in s.progress)) return {};
       const progress = { ...s.progress };
       delete progress[id];
       return { jobs: s.jobs.filter((j: QueueJob) => j.id !== id), progress };
@@ -79,9 +80,16 @@ export const useQueueStore = create<QueueState>((set) => ({
    */
   updateJob: (job) => {
     log.debug(LOG_UPDATE_JOB, job.id, job.status, job.progress.toFixed(0) + '%');
-    set((s) => ({
-      jobs: s.jobs.map((j: QueueJob) => (j.id === job.id ? job : j)),
-    }));
+    set((s) => {
+      // The job list is copied on every progress event, and a new array
+      // invalidates every subscriber. A job that is not in the list, or that
+      // is already the stored one, must not touch the state.
+      const index = s.jobs.findIndex((j: QueueJob) => j.id === job.id);
+      if (index === -1 || s.jobs[index] === job) return {};
+      const jobs = s.jobs.slice();
+      jobs[index] = job;
+      return { jobs };
+    });
   },
   /**
    * Stores the latest live progress snapshot for the job with the given id,
@@ -91,7 +99,10 @@ export const useQueueStore = create<QueueState>((set) => ({
    */
   updateProgress: (id, data) => {
     log.debug(LOG_UPDATE_PROGRESS, id, data.percent.toFixed(0) + '%');
-    set((s) => ({ progress: { ...s.progress, [id]: data } }));
+    set((s) => {
+      if (s.progress[id] === data) return {};
+      return { progress: { ...s.progress, [id]: data } };
+    });
   },
   /**
    * Removes all jobs from the queue.

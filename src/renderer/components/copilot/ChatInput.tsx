@@ -67,6 +67,11 @@ function onError(error: Error): void {
  */
 function SubmitOnEnterPlugin({ onSubmit }: { onSubmit: () => void }) {
   const [editor] = useLexicalComposerContext();
+  // The submit callback is held in a ref: the parent recreates it on every
+  // render (the composer re-renders on every keystroke), and depending on it
+  // would tear down and re-register the command on every one of them.
+  const onSubmitRef = useRef(onSubmit);
+  onSubmitRef.current = onSubmit;
 
   useEffect(
     () =>
@@ -78,12 +83,12 @@ function SubmitOnEnterPlugin({ onSubmit }: { onSubmit: () => void }) {
             editor.dispatchCommand(INSERT_LINE_BREAK_COMMAND, false);
             return true;
           }
-          onSubmit();
+          onSubmitRef.current();
           return true;
         },
         COMMAND_PRIORITY_LOW,
       ),
-    [editor, onSubmit],
+    [editor],
   );
 
   return null;

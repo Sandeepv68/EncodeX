@@ -28,7 +28,7 @@
  * until translated in the other 55 locale files.
  */
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import type { ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -91,6 +91,9 @@ export default function GettingStartedCard(): ReactElement | null {
       return false;
     }
   });
+  // Guards the one-off `onboarding_started` event against the remounts that
+  // every route change causes.
+  const onboardingStartedRef = useRef(false);
 
   /**
    * Marks the card resolved in localStorage and hides it.
@@ -107,12 +110,16 @@ export default function GettingStartedCard(): ReactElement | null {
 
   /**
    * Records `onboarding_started` the first time the card actually appears.
+   *
+   * The event is recorded once per session: the card is unmounted and
+   * remounted on every route change, and the effect used to fire again on
+   * each of them.
    * @returns {void}
    */
   useEffect(() => {
-    if (!completed) {
-      recordAnalyticsEvent(createAnalyticsEvent('onboarding_started', { version: APP_VERSION }));
-    }
+    if (completed || onboardingStartedRef.current) return;
+    onboardingStartedRef.current = true;
+    recordAnalyticsEvent(createAnalyticsEvent('onboarding_started', { version: APP_VERSION }));
   }, [completed]);
 
   if (completed) return null;

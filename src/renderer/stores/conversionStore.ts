@@ -299,7 +299,7 @@ export const useConversionStore = create<ConversionState>((set) => ({
   setIsConverting: (v) => {
     log.debug(LOG_SET_IS_CONVERTING, v);
     if (!v) set({ isPaused: false });
-    set({ isConverting: v });
+    set((s) => (s.isConverting === v ? {} : { isConverting: v }));
   },
   /**
    * Sets the paused flag.
@@ -307,13 +307,13 @@ export const useConversionStore = create<ConversionState>((set) => ({
    */
   setIsPaused: (v) => {
     log.debug(LOG_SET_IS_PAUSED, v);
-    set({ isPaused: v });
+    set((s) => (s.isPaused === v ? {} : { isPaused: v }));
   },
   /**
    * Sets the live conversion progress (or null to clear it).
    * @param {ProgressData | null} p - Progress data, or null when idle/complete.
    */
-  setProgress: (p) => set({ progress: p }),
+  setProgress: (p) => set((s) => (s.progress === p ? {} : { progress: p })),
   /**
    * Restores the entire store to its initial values (INITIAL_STATE), clearing
    * all form fields, run flags, dirty flag, and progress. Because INITIAL_STATE

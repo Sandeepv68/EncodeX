@@ -10,8 +10,7 @@
  * or navigating away and back never regenerates a preview.
  */
 
-import { useEffect, useRef, useState } from 'react';
-import type { RefObject } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getPreviewThumbnail, getResolvedPreviewThumbnail } from '../utils/preview-cache';
 
 /**
@@ -24,25 +23,27 @@ import { getPreviewThumbnail, getResolvedPreviewThumbnail } from '../utils/previ
  * Audio and other non-previewable files resolve to `null` without an IPC call.
  *
  * @param {string} input - Absolute path of the job's input file.
- * @returns {{ thumbnail: string | null; anchorRef: RefObject<HTMLDivElement | null> }}
+ * @returns {{ thumbnail: string | null; anchorRef: (node: HTMLDivElement | null) => void }}
  *   The current preview data URL (null while loading or unavailable) and the
- *   ref that marks the card as visible.
+ *   ref callback that marks the card as visible.
  */
 export function useLazyThumbnail(input: string): {
   thumbnail: string | null;
-  anchorRef: RefObject<HTMLDivElement | null>;
+  anchorRef: (node: HTMLDivElement | null) => void;
 } {
   const [thumbnail, setThumbnail] = useState<string | null>(() => getResolvedPreviewThumbnail(input));
   const [inView, setInView] = useState(false);
-  const anchorRef = useRef<HTMLDivElement | null>(null);
+  // The observer is created when the anchor is attached. The effect used to
+  // run once on mount, so a card whose anchor was not attached yet never
+  // observed anything and its thumbnail never loaded.
+  const [anchor, setAnchor] = useState<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (typeof IntersectionObserver === 'undefined') {
       setInView(true);
-      return;
+      return undefined;
     }
-    const node = anchorRef.current;
-    if (!node) return;
+    if (!anchor) return undefined;
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -55,9 +56,9 @@ export function useLazyThumbnail(input: string): {
       },
       { rootMargin: '300px' },
     );
-    observer.observe(node);
+    observer.observe(anchor);
     return () => observer.disconnect();
-  }, []);
+  }, [anchor]);
 
   useEffect(() => {
     if (!inView) return;
@@ -70,5 +71,11 @@ export function useLazyThumbnail(input: string): {
     };
   }, [inView, input]);
 
-  return { thumbnail, anchorRef };
+  // The ref is filled in by the consumer, but the observer needs the element
+  // itself, so the ref is mirrored into state.
+  const setAnchorRef = useCallback((node: HTMLDivElement | null) => {
+    setAnchor(node);
+  }, []);
+
+  return { thumbnail, anchorRef: setAnchorRef };
 }

@@ -10,7 +10,7 @@
  * failed or reported no matching encoders.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AUDIO_CODECS, VIDEO_CODECS } from '../../shared/media-options';
 import { bridgePromise } from '../utils/bridge-call';
 import type { EncoderCapabilities } from '../../shared/types';
@@ -113,7 +113,13 @@ export function useCapabilities() {
   const [capabilities, setCapabilities] = useState<EncoderCapabilities | null | undefined>(cached);
 
   useEffect(() => {
-    if (cached !== undefined) return;
+    // The cache may have been filled between the first render and this
+    // effect (another component's probe resolved first). Reading it again
+    // here keeps this consumer from waiting for a probe that never starts.
+    if (cached !== undefined) {
+      setCapabilities(cached);
+      return undefined;
+    }
     let mounted = true;
     loadCapabilities().then((caps) => {
       if (mounted) setCapabilities(caps);
@@ -123,8 +129,11 @@ export function useCapabilities() {
     };
   }, []);
 
-  const videoCodecs = filterCodecs(VIDEO_CODECS, capabilities?.videoEncoders);
-  const audioCodecs = filterCodecs(AUDIO_CODECS, capabilities?.audioEncoders);
+  // The codec lists are memoized: they are filtered from shared constants
+  // against the probed encoder names, and the hook result ends up in the
+  // dependency arrays of its consumers.
+  const videoCodecs = useMemo(() => filterCodecs(VIDEO_CODECS, capabilities?.videoEncoders), [capabilities]);
+  const audioCodecs = useMemo(() => filterCodecs(AUDIO_CODECS, capabilities?.audioEncoders), [capabilities]);
 
-  return { videoCodecs, audioCodecs, capabilities: capabilities ?? null };
+  return useMemo(() => ({ videoCodecs, audioCodecs, capabilities: capabilities ?? null }), [videoCodecs, audioCodecs, capabilities]);
 }

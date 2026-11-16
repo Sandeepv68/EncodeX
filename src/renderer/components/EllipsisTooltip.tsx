@@ -48,19 +48,33 @@ export default function EllipsisTooltip({ title, children }: EllipsisTooltipProp
   const measure = useCallback((): boolean => {
     const el = ref.current;
     const isOverflowing = !!el && el.scrollWidth > el.clientWidth + 1;
-    setOverflowing(isOverflowing);
+    // The measurement forces a layout, and the value rarely changes: writing
+    // it unconditionally re-renders the tooltip on every resize event.
+    setOverflowing((current) => (current === isOverflowing ? current : isOverflowing));
     return isOverflowing;
   }, []);
 
   /**
    * Re-measures on mount and on window resize so the focusable state tracks
    * the current layout (e.g. after fonts load or the panel is resized).
+   *
+   * The resize handler is throttled to one measurement per frame: a window
+   * drag fires dozens of resize events per second, and each one would force a
+   * layout read.
    * @returns {void}
    */
   useEffect(() => {
     measure();
-    window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
+    let frame = 0;
+    const onResize = (): void => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => measure());
+    };
+    window.addEventListener('resize', onResize);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('resize', onResize);
+    };
   }, [measure]);
 
   /**
