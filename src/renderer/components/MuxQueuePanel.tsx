@@ -21,7 +21,7 @@
  * so the queue stays searchable while condensed.
  */
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button, Collapse, MenuItem, Stack } from '@mui/material';
@@ -83,12 +83,22 @@ export default function MuxQueuePanel({ searchRef, condensed = false }: MuxQueue
   const [search, setSearch] = useState('');
 
   /**
-   * Jobs shown after applying the active status filter and search term.
-   * Filtering preserves the queue's relative order.
+   * Jobs shown after applying the active status filter and search term, and the
+   * number of jobs per status. Both are derived in one pass: the panel
+   * re-renders on every progress tick of a running job.
    */
-  const visibleJobs = jobs
-    .filter((job: MuxQueueJob) => filter === 'all' || job.status === filter)
-    .filter((job: MuxQueueJob) => !search || basename(job.input).toLowerCase().includes(search.toLowerCase()));
+  const { visibleJobs, statusCounts } = useMemo(() => {
+    const visible: MuxQueueJob[] = [];
+    const counts: Record<string, number> = {};
+    const needle = search.toLowerCase();
+    for (const job of jobs) {
+      counts[job.status] = (counts[job.status] ?? 0) + 1;
+      if (filter !== 'all' && job.status !== filter) continue;
+      if (search && !basename(job.input).toLowerCase().includes(needle)) continue;
+      visible.push(job);
+    }
+    return { visibleJobs: visible, statusCounts: counts };
+  }, [jobs, filter, search]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 2 } }),
@@ -267,7 +277,7 @@ export default function MuxQueuePanel({ searchRef, condensed = false }: MuxQueue
         <>
           <FilterRow>
             {(['all', QUEUE_STATUS.QUEUED, QUEUE_STATUS.RUNNING, QUEUE_STATUS.DONE, QUEUE_STATUS.ERROR] as const).map((value) => {
-              const count = value === 'all' ? jobs.length : jobs.filter((job: MuxQueueJob) => job.status === value).length;
+              const count = value === 'all' ? jobs.length : (statusCounts[value] ?? 0);
               const labelKey = value === 'all' ? 'all' : value === QUEUE_STATUS.ERROR ? 'failed' : value;
               return (
                 <FilterChip

@@ -48,6 +48,16 @@ export interface McpViewProviderProps {
   children?: ReactNode;
 }
 
+/** Options of a tool call. */
+export interface McpViewCallOptions {
+  /**
+   * Runs the call without touching the provider's `busy` flag or its `error`
+   * state. Used by the background polling: a poll is not a user action, and a
+   * dropped poll must not leave the view in a permanent error state.
+   */
+  silent?: boolean;
+}
+
 /** The state a view reads from the provider. */
 export interface McpViewState {
   /** The latest payload delivered by the host. */
@@ -57,7 +67,7 @@ export interface McpViewState {
   /** True while a tool call is in flight. */
   busy: boolean;
   /** Calls a tool and returns its result. */
-  callTool: (name: string, args?: Record<string, unknown>) => Promise<McpViewToolResult>;
+  callTool: (name: string, args?: Record<string, unknown>, options?: McpViewCallOptions) => Promise<McpViewToolResult>;
   /** Replaces the current payload (used when a view learns new arguments). */
   setData: (data: unknown) => void;
   /** The host the view talks to. */

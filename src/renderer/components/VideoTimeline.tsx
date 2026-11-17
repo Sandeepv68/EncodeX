@@ -158,6 +158,8 @@ export default function VideoTimeline({
    * @type {React.RefObject<HTMLDivElement>}
    */
   const viewportRef = useRef<HTMLDivElement>(null);
+  // The pending zoom-recenter frame, so it can be cancelled on unmount.
+  const zoomFrameRef = useRef(0);
   /**
    * Reference to the scroller (track surface) element; used to map pointer
    * client X coordinates to media time.
@@ -341,6 +343,7 @@ export default function VideoTimeline({
   useEffect(() => {
     return () => {
       releaseWindowDragListeners();
+      cancelAnimationFrame(zoomFrameRef.current);
     };
   }, []);
 
@@ -426,7 +429,10 @@ export default function VideoTimeline({
     setZoomState(next);
     onZoomChange?.(next);
     if (viewport && typeof requestAnimationFrame === 'function') {
-      requestAnimationFrame(() => {
+      // The frame is tracked so it can be cancelled: an uncancelled frame
+      // writes `scrollLeft` on a viewport that may already be detached.
+      cancelAnimationFrame(zoomFrameRef.current);
+      zoomFrameRef.current = requestAnimationFrame(() => {
         viewport.scrollLeft = zoomCenterScrollLeft(centerTime, next, viewport.clientWidth);
       });
     }

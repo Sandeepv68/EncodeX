@@ -72,6 +72,8 @@ export default function Conversation({ messages, isThinking = false, onAddToQueu
     const element = scrollRef.current;
     if (!element || rowCount === 0) return;
     virtualizer.scrollToIndex(rowCount - 1, { align: 'end' });
+    // The transcript follows new content. The manual write is what guarantees
+    // it in a browser that has not measured the rows yet, so it stays.
     element.scrollTop = element.scrollHeight;
   }, [messages, isThinking, rowCount, virtualizer]);
 

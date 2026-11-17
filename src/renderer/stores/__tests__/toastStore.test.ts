@@ -62,4 +62,15 @@ describe('toastStore', () => {
     const toast = useToastStore.getState().toasts[0];
     expect(toast.action).toEqual({ label: 'Go', onClick });
   });
+
+  it('caps the queue so a bulk operation cannot grow it without bound', () => {
+    for (let index = 0; index < 25; index += 1) {
+      useToastStore.getState().addToast('info', `toast ${index}`);
+    }
+    const toasts = useToastStore.getState().toasts;
+    expect(toasts).toHaveLength(20);
+    // The newest toasts are the ones that survive.
+    expect(toasts[toasts.length - 1].message).toBe('toast 24');
+    expect(toasts[0].message).toBe('toast 5');
+  });
 });

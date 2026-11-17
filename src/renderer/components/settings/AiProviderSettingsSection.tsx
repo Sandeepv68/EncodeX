@@ -124,13 +124,29 @@ export default function AiProviderSettingsSection({ autoOpen = false }: { autoOp
   // The in-flight (or finished) settings load, so a second expand does not
   // race the first one.
   const loadRef = useRef<Promise<AiSettingsView | null> | null>(null);
+  // Tags the newest model-list request, so a late response from an older one
+  // cannot overwrite the current options.
+  const modelsRequestRef = useRef(0);
   // The section header, scrolled into view when the section arrives already
   // open.
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    useAiSettingsStore.getState().patch({ view, providerId, model, baseUrl });
-  }, [view, providerId, model, baseUrl]);
+    // The view and the selected provider are structural: they are mirrored
+    // straight away, so expanding the editor again finds a warm cache and
+    // skips the round-trip.
+    useAiSettingsStore.getState().patch({ view, providerId });
+  }, [view, providerId]);
+
+  useEffect(() => {
+    // The model and the base URL are typed one character at a time. The cache
+    // is a session snapshot, not a live mirror, so the write is debounced
+    // instead of running on every keystroke.
+    const timer = setTimeout(() => {
+      useAiSettingsStore.getState().patch({ model, baseUrl });
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [model, baseUrl]);
 
   // Bring the section into view when it opens on arrival. The editor expands
   // after the first paint, so the scroll runs on the next frame to land on the
@@ -423,6 +439,14 @@ export default function AiProviderSettingsSection({ autoOpen = false }: { autoOp
     }
   }, [online, providerId]);
 
+  /**
+   * Lists the models the provider offers.
+   *
+   * The request is tagged so that only the newest one may write the options:
+   * the list is refetched while the user is still typing the key, and a slow
+   * response that arrives late must not overwrite a fresher one.
+   * @returns {Promise<void>} Resolves once the options are written.
+   */
   const loadModels = async (): Promise<void> => {
     if (!configurable) {
       setModelOptions([]);
@@ -432,6 +456,8 @@ export default function AiProviderSettingsSection({ autoOpen = false }: { autoOp
       setModelOptions([]);
       return;
     }
+    const requestId = modelsRequestRef.current + 1;
+    modelsRequestRef.current = requestId;
     setModelsLoading(true);
     try {
       const result = await bridgePromise(() =>
@@ -441,21 +467,37 @@ export default function AiProviderSettingsSection({ autoOpen = false }: { autoOp
           ...(apiKey ? { apiKey } : {}),
         }),
       );
+      // A newer request has started in the meantime: its response wins.
+      if (requestId !== modelsRequestRef.current) return;
       if (result && typeof result === 'object' && Array.isArray(result.models)) {
         setModelOptions(result.models);
       } else {
         setModelOptions([]);
       }
     } catch {
+      if (requestId !== modelsRequestRef.current) return;
       setModelOptions([]);
     } finally {
-      setModelsLoading(false);
+      if (requestId === modelsRequestRef.current) setModelsLoading(false);
     }
   };
 
+  // The provider, its endpoint and the presence of a saved key decide which
+  // list is shown; those change rarely, so the list is fetched straight away.
   useEffect(() => {
     if (advanced) void loadModels();
-  }, [advanced, providerId, baseUrl, resolvedView?.hasKey, apiKey]);
+  }, [advanced, providerId, baseUrl, resolvedView?.hasKey]);
+
+  // The API key is typed one character at a time. Fetching the list on every
+  // keystroke would ship a partial key to the provider on every character and
+  // fire a request per character, so the key change is debounced instead.
+  useEffect(() => {
+    if (!advanced) return undefined;
+    const timer = setTimeout(() => {
+      void loadModels();
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [advanced, apiKey]);
 
   const connectButton = (
     <Button

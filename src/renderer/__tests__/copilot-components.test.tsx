@@ -191,6 +191,80 @@ describe('ChatInput', () => {
     expect(focusSpy).not.toHaveBeenCalled();
     focusSpy.mockRestore();
   });
+
+  it('grows the composer to its content height and keeps the scroll offset', () => {
+    const frames: FrameRequestCallback[] = [];
+    const raf = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((callback) => {
+      frames.push(callback);
+      return frames.length;
+    });
+    const cancel = vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {});
+    try {
+      render(<Harness onSubmit={vi.fn()} />);
+      const editor = getEditor();
+      Object.defineProperty(editor, 'scrollHeight', { configurable: true, get: () => 120 });
+      let reads = 0;
+      let restored: number | null = null;
+      Object.defineProperty(editor, 'scrollTop', {
+        configurable: true,
+        get: () => {
+          reads += 1;
+          // The element starts scrolled down and is clamped to the top by the
+          // height round-trip, which is what the restore has to undo.
+          return reads === 1 ? 5 : 0;
+        },
+        set: (value: number) => {
+          restored = value;
+        },
+      });
+
+      act(() => {
+        for (const frame of frames.splice(0)) frame(0);
+      });
+
+      expect(editor.style.height).toBe('120px');
+      // The measurement clamps the element to `auto`, so the scroll offset the
+      // user was at has to be put back.
+      expect(restored).toBe(5);
+    } finally {
+      raf.mockRestore();
+      cancel.mockRestore();
+    }
+  });
+
+  it('re-measures the composer once the web fonts are ready', async () => {
+    const frames: FrameRequestCallback[] = [];
+    const raf = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((callback) => {
+      frames.push(callback);
+      return frames.length;
+    });
+    const cancel = vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {});
+    let resolveFonts: (() => void) | null = null;
+    const ready = new Promise<void>((resolve) => {
+      resolveFonts = resolve;
+    });
+    Object.defineProperty(document, 'fonts', { configurable: true, value: { ready } });
+    try {
+      render(<Harness onSubmit={vi.fn()} />);
+      const editor = getEditor();
+      Object.defineProperty(editor, 'scrollHeight', { configurable: true, get: () => 96 });
+
+      await act(async () => {
+        resolveFonts!();
+        await ready;
+        await Promise.resolve();
+      });
+      act(() => {
+        for (const frame of frames.splice(0)) frame(0);
+      });
+
+      expect(editor.style.height).toBe('96px');
+    } finally {
+      Reflect.deleteProperty(document, 'fonts');
+      raf.mockRestore();
+      cancel.mockRestore();
+    }
+  });
 });
 
 describe('Conversation', () => {

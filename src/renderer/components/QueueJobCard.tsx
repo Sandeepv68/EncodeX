@@ -42,12 +42,11 @@
  * instantly and never regenerates it.
  */
 
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { Collapse, IconButton, TableBody, TableRow, Tooltip, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { useDndContext } from '@dnd-kit/core';
 import {
   faTrashCan,
   faRotateRight,
@@ -337,16 +336,28 @@ export function QueueJobCardContent({
  * non-queued jobs are sortable items but not draggable, so they act as static
  * drop targets. While dragging, the source card is faded out and the floating
  * preview is provided by the parent's DragOverlay.
+ *
+ * The card is memoized: the queue re-renders on every progress tick, and only
+ * the card of the running job has new props. It also reads the drag state from
+ * a prop rather than from the drag context, because the context changes on
+ * every pointer move and would re-render every card in the list.
  * @param {QueueJobCardProps} props - Component props.
  * @returns {JSX.Element} The sortable job card.
  */
-export default function QueueJobCard({ job, progress, onRemove, onRetry, onEditOptions, editLocked, customized }: QueueJobCardProps) {
+const QueueJobCard = memo(function QueueJobCard({
+  job,
+  progress,
+  onRemove,
+  onRetry,
+  onEditOptions,
+  editLocked,
+  customized,
+  dragActive = false,
+}: QueueJobCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useSortable({
     id: job.id,
     disabled: job.status !== QUEUE_STATUS.QUEUED,
   });
-  const { active } = useDndContext();
-  const isDragActive = Boolean(active);
 
   return (
     <JobCard
@@ -354,7 +365,7 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry, onEditO
       data-testid={`queue-job-card-${job.id}`}
       $status={job.status}
       $transform={CSS.Transform.toString(transform)}
-      $dragActive={isDragActive}
+      $dragActive={dragActive}
       $dragging={isDragging}
       variant="outlined"
     >
@@ -370,4 +381,6 @@ export default function QueueJobCard({ job, progress, onRemove, onRetry, onEditO
       />
     </JobCard>
   );
-}
+});
+
+export default QueueJobCard;

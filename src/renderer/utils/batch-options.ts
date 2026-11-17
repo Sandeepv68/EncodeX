@@ -28,6 +28,34 @@ import type { BatchEncodingValues, BatchHwSettings } from './types';
 export type { BatchEncodingValues, BatchHwSettings };
 
 /**
+ * Compares two option records field by field.
+ *
+ * The records are flat, with at most one array field, so a field-by-field
+ * comparison is enough - and unlike a JSON comparison it does not depend on
+ * the key order, which differs between the page and the main process.
+ * @param {object} left - The first record.
+ * @param {object} right - The second record.
+ * @returns {boolean} True when both records carry the same values.
+ */
+export function sameBatchOptions(left: object, right: object): boolean {
+  const leftRecord = left as Record<string, unknown>;
+  const rightRecord = right as Record<string, unknown>;
+  const keys = new Set([...Object.keys(leftRecord), ...Object.keys(rightRecord)]);
+  for (const key of keys) {
+    const a = leftRecord[key];
+    const b = rightRecord[key];
+    if (Array.isArray(a) || Array.isArray(b)) {
+      if (!Array.isArray(a) || !Array.isArray(b)) return false;
+      if (a.length !== b.length) return false;
+      if (a.some((value, index) => value !== b[index])) return false;
+      continue;
+    }
+    if (a !== b) return false;
+  }
+  return true;
+}
+
+/**
  * Builds the queued `ConversionOptions` for a batch operation from the shared
  * encoding field values and the hardware-acceleration settings. 'transcode'
  * keeps video and audio codecs plus video/audio bitrate, scale, pixel format,

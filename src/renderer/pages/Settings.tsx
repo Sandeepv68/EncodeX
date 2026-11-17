@@ -49,10 +49,13 @@ export default function Settings() {
   const [aiReveal, setAiReveal] = useState(wantsAi);
 
   useEffect(() => {
+    // Only the arrival of the location applies the request. The effect used to
+    // run on every location change, which threw away a tab the user had
+    // picked by hand whenever the same state was still in play.
     if (!wantsAi) return;
     setTab('ai');
     setAiReveal(true);
-  }, [location.key, wantsAi]);
+  }, [location.key]);
 
   const handleTabChange = (next: SettingsTab): void => {
     // MUI only raises `onChange` when a *different* tab is selected, so this

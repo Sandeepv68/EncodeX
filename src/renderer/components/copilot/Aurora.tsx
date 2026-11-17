@@ -100,7 +100,13 @@ export default function Aurora({ compact = false }: { compact?: boolean }) {
     };
 
     let raf = 0;
+    // The canvas loop runs at 60fps, so it is paused while the window is
+    // hidden: nobody sees the animation, and the frames cost real CPU.
+    let visible = typeof document === 'undefined' || !document.hidden;
+
     const animate = () => {
+      raf = requestAnimationFrame(animate);
+      if (!visible) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       sparkles.forEach((sparkle) => {
         if (sparkle.growing) {
@@ -128,14 +134,20 @@ export default function Aurora({ compact = false }: { compact?: boolean }) {
         }
         ctx.restore();
       });
-      raf = requestAnimationFrame(animate);
     };
+
+    const onVisibilityChange = (): void => {
+      visible = !document.hidden;
+    };
+
+    document.addEventListener('visibilitychange', onVisibilityChange);
     animate();
 
     return () => {
       cancelAnimationFrame(raf);
       observer?.disconnect();
       window.removeEventListener('resize', resize);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
     };
   }, []);
 

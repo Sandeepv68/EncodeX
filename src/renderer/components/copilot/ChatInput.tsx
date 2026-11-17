@@ -36,6 +36,7 @@ import {
   ProviderLogoButton,
   ProviderLogoFallback,
   ProviderLogoImage,
+  ProviderLogoWrap,
   ProviderStatusPopover,
   ResetButtonWrap,
   ResetIconButton,
@@ -56,28 +57,38 @@ function onError(error: Error): void {
 
 /**
  * Submits on Enter and inserts a line break on Shift+Enter.
+ *
+ * The default browser handling of Enter inside a contenteditable is to insert
+ * a line break, so it has to be suppressed: without it every Shift+Enter adds
+ * a second (blank) line and every Enter leaves a stray break behind.
  * @param {object} props - Plugin props.
  * @param {() => void} props.onSubmit - Called when plain Enter is pressed.
  * @returns {null} This plugin renders nothing.
  */
 function SubmitOnEnterPlugin({ onSubmit }: { onSubmit: () => void }) {
   const [editor] = useLexicalComposerContext();
+  // The submit callback is held in a ref: the parent recreates it on every
+  // render (the composer re-renders on every keystroke), and depending on it
+  // would tear down and re-register the command on every one of them.
+  const onSubmitRef = useRef(onSubmit);
+  onSubmitRef.current = onSubmit;
 
   useEffect(
     () =>
       editor.registerCommand(
         KEY_ENTER_COMMAND,
         (event: KeyboardEvent | null) => {
+          event?.preventDefault();
           if (event?.shiftKey) {
             editor.dispatchCommand(INSERT_LINE_BREAK_COMMAND, false);
             return true;
           }
-          onSubmit();
+          onSubmitRef.current();
           return true;
         },
         COMMAND_PRIORITY_LOW,
       ),
-    [editor, onSubmit],
+    [editor],
   );
 
   return null;
@@ -136,6 +147,69 @@ function ValueSyncPlugin({ value, onChange }: { value: string; onChange: (v: str
   );
 
   return <OnChangePlugin onChange={handleChange} />;
+}
+
+/**
+ * Keeps the editable as tall as its content, the way a textarea does.
+ *
+ * The editable is a contenteditable, so it has no intrinsic "fit to content"
+ * behaviour: without this the composer stays a single line tall and the text
+ * that no longer fits is simply clipped. The height is measured from
+ * `scrollHeight` (the content height) and written back to the element, so the
+ * composer grows while typing and shrinks back when the text is deleted.
+ *
+ * The measurement is re-run whenever the editor content changes, whenever the
+ * element is resized (a narrower window re-wraps the text) and once the web
+ * fonts have loaded, because a font swap changes the line height.
+ * @returns {null} This plugin renders nothing.
+ */
+function AutoGrowPlugin() {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    const root = editor.getRootElement();
+    if (!root) return undefined;
+
+    let frame = 0;
+
+    const resize = (): void => {
+      // The scroll offset is restored afterwards: collapsing the element to
+      // `auto` clamps it to zero, which would jump a scrolled editor back to
+      // the top on every keystroke.
+      const scrollTop = root.scrollTop;
+      root.style.height = 'auto';
+      const next = root.scrollHeight;
+      root.style.height = `${next}px`;
+      if (root.scrollTop !== scrollTop) root.scrollTop = scrollTop;
+    };
+
+    const schedule = (): void => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(resize);
+    };
+
+    schedule();
+
+    // `ResizeObserver` is not available in every environment (jsdom, for
+    // one), so the editor still works without the width-change re-measure.
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(schedule);
+    observer?.observe(root);
+
+    const unregisterUpdateListener = editor.registerUpdateListener(schedule);
+
+    // A late-loading web font changes the line height, so the height has to be
+    // measured again once the fonts are ready.
+    const fonts = document.fonts;
+    fonts?.ready.then(schedule).catch(() => undefined);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      observer?.disconnect();
+      unregisterUpdateListener();
+    };
+  }, [editor]);
+
+  return null;
 }
 
 /**
@@ -252,6 +326,7 @@ export default function ChatInput({
           <SubmitOnEnterPlugin onSubmit={onSubmit} />
           <EditablePlugin disabled={disabled} />
           <ValueSyncPlugin value={value} onChange={onChange} />
+          <AutoGrowPlugin />
         </EditorArea>
         <ComposerPlanButton
           variant="text"
@@ -266,7 +341,7 @@ export default function ChatInput({
         {connection && (
           <>
             <ComposerDivider aria-hidden="true" data-testid="copilot-composer-divider" />
-            <ResetButtonWrap>
+            <ProviderLogoWrap>
               <Tooltip title={connection.connected ? t('settings.ai.title') : t('copilot.ai.notConnected')} placement="top" arrow>
                 <ProviderLogoButton
                   size="small"
@@ -286,7 +361,7 @@ export default function ChatInput({
                   )}
                 </ProviderLogoButton>
               </Tooltip>
-            </ResetButtonWrap>
+            </ProviderLogoWrap>
             <Popover
               open={Boolean(statusAnchor)}
               anchorEl={statusAnchor}

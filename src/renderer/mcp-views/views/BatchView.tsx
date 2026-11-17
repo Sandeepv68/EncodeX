@@ -5,10 +5,10 @@
  * dashboard that follows polls `list_jobs` for every file of the batch.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography } from '@mui/material';
-import { basename, clampPercent } from '../format';
+import { basename, clampPercent, contentKey } from '../format';
 import { useMcpView, useMcpViewData } from '../McpViewProvider';
 import { resultErrorText } from '../host';
 import { useMcpViewPolling } from '../useMcpViewPolling';
@@ -38,14 +38,25 @@ export default function BatchView() {
   const [message, setMessage] = useState<string | undefined>(undefined);
   const [running, setRunning] = useState(false);
 
+  // The proposal is latched on its content, not on its identity: the host
+  // delivers a fresh object on every push.
+  const confirmationKey = useMemo(() => contentKey(payload?.confirmation), [payload?.confirmation]);
+  const proposalKeyRef = useRef(confirmationKey);
+
   useEffect(() => {
-    if (payload?.confirmation) setProposal(payload.confirmation);
-  }, [payload?.confirmation]);
+    if (!payload?.confirmation) return;
+    if (confirmationKey === proposalKeyRef.current) return;
+    proposalKeyRef.current = confirmationKey;
+    setProposal(payload.confirmation);
+  }, [confirmationKey, payload?.confirmation]);
+
+  // Once every job of the batch has finished there is nothing left to poll.
+  const allFinished = jobs.length > 0 && jobs.every((job) => job.status === 'done' || job.status === 'error');
 
   useMcpViewPolling({
     tool: 'list_jobs',
     intervalMs: 2500,
-    enabled: !confirmation && host.context.supportsServerTools !== false,
+    enabled: !confirmation && !allFinished && host.context.supportsServerTools !== false,
   });
 
   /**

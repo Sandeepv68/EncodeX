@@ -66,4 +66,26 @@ describe('EllipsisTooltip', () => {
     );
     expect(screen.getByText('short')).toHaveAttribute('tabindex', '-1');
   });
+
+  it('re-measures the content when the window is resized', async () => {
+    // The content fits at first, so the tooltip stays out of the tab order.
+    Object.defineProperty(HTMLElement.prototype, 'scrollWidth', { configurable: true, get: () => 0 });
+    Object.defineProperty(HTMLElement.prototype, 'clientWidth', { configurable: true, get: () => 100 });
+    render(
+      <EllipsisTooltip title="a very long value that overflows">
+        <span>a very long value that overflows</span>
+      </EllipsisTooltip>,
+    );
+    const value = screen.getByText('a very long value that overflows');
+    expect(value).not.toHaveAttribute('tabindex', '0');
+
+    // The window shrinks the box, and the content starts to overflow.
+    mockOverflow();
+    await act(async () => {
+      window.dispatchEvent(new Event('resize'));
+      await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+    });
+
+    expect(value).toHaveAttribute('tabindex', '0');
+  });
 });

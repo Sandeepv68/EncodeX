@@ -25,7 +25,7 @@
  *  - onNavigate: callback invoked after a successful navigate on mobile.
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useNavigationGuard } from '../NavigationGuardContext';
@@ -49,6 +49,7 @@ import { basenameOrEmpty as basenameOf } from '../utils/path-utils';
 import { callBridgeVoid } from '../utils/bridge-call';
 import { isJobActive } from '../utils/queue-job-utils';
 import type { AppDrawerProps, NavBlipId, NavJobPopoverContent } from './types';
+import type { ConversionProgress } from '../../shared/types';
 import {
   DrawerDivider,
   NavList,
@@ -90,6 +91,14 @@ const navKeyMap: Record<string, string> = {
  * @const {number} POPOVER_CLOSE_DELAY_MS
  */
 const POPOVER_CLOSE_DELAY_MS = 150;
+
+/**
+ * Stable empty progress map. The drawer reads the queue progress only while
+ * the batch popover is open, and an empty map keeps the subscription from
+ * waking the drawer on every progress tick.
+ * @const {Record<string, ConversionProgress>} NO_QUEUE_PROGRESS
+ */
+const NO_QUEUE_PROGRESS: Record<string, ConversionProgress> = {};
 
 /**
  * Renders the application navigation drawer.
@@ -135,10 +144,19 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
   const cutInput = useVideoCutStore((s) => s.input);
   const cutProgress = useVideoCutStore((s) => s.progress);
   const queueJobs = useQueueStore((s) => s.jobs);
-  const queueProgress = useQueueStore((s) => s.progress);
   const muxQueueJobs = useMuxQueueStore((s) => s.jobs);
-  const muxProgress = useMuxQueueStore((s) => s.progress);
-  const batchJobCount = queueJobs.filter(isJobActive).length + muxQueueJobs.filter(isJobActive).length;
+  const [popoverBlip, setPopoverBlip] = useState<NavBlipId>(null);
+  // The queue progress maps change several times per second while a job runs.
+  // The drawer is mounted app-wide, so it must not subscribe to them: it would
+  // re-render the whole navigation on every tick. They are only read while the
+  // batch popover is open, so the subscription is scoped to that.
+  const batchPopoverOpen = popoverBlip === 'batch';
+  const queueProgress = useQueueStore((s) => (batchPopoverOpen ? s.progress : NO_QUEUE_PROGRESS));
+  const muxProgress = useMuxQueueStore((s) => (batchPopoverOpen ? s.progress : NO_QUEUE_PROGRESS));
+  const batchJobCount = useMemo(
+    () => queueJobs.filter(isJobActive).length + muxQueueJobs.filter(isJobActive).length,
+    [queueJobs, muxQueueJobs],
+  );
   const queueConcurrency = useSettingsStore((s) => s.queueConcurrency);
 
   /**
@@ -146,10 +164,12 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
    * @param {string} status - The queue status to count.
    * @returns {number} The number of matching jobs across both queues.
    */
-  const countByStatus = (status: string): number =>
-    queueJobs.filter((j) => j.status === status).length + muxQueueJobs.filter((j) => j.status === status).length;
+  const countByStatus = useCallback(
+    (status: string): number =>
+      queueJobs.filter((j) => j.status === status).length + muxQueueJobs.filter((j) => j.status === status).length,
+    [queueJobs, muxQueueJobs],
+  );
 
-  const [popoverBlip, setPopoverBlip] = useState<NavBlipId>(null);
   const [logsWindowOpen, setLogsWindowOpen] = useState(false);
   useEffect(() => {
     let cleanup: (() => void) | undefined;

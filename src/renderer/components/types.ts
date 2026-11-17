@@ -602,6 +602,12 @@ export interface QueueJobCardProps {
   editLocked?: boolean;
   customized?: boolean;
   dragOverlay?: boolean;
+  /**
+   * True while a drag is in progress anywhere in the list. The card reads it
+   * from a prop instead of the drag context so that a drag does not re-render
+   * every card on every pointer move.
+   */
+  dragActive?: boolean;
 }
 
 /**

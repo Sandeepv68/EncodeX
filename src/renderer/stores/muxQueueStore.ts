@@ -68,6 +68,7 @@ export const useMuxQueueStore = create<MuxQueueState>((set) => ({
   removeJob: (id) => {
     log.info('Mux queue job removed:', id);
     set((s) => {
+      if (!s.jobs.some((j) => j.id === id) && !(id in s.progress)) return {};
       const progress = { ...s.progress };
       delete progress[id];
       return { jobs: s.jobs.filter((j: MuxQueueJob) => j.id !== id), progress };
@@ -79,9 +80,15 @@ export const useMuxQueueStore = create<MuxQueueState>((set) => ({
    */
   updateJob: (job) => {
     log.debug('Mux queue job updated:', job.id, job.status);
-    set((s) => ({
-      jobs: s.jobs.map((j: MuxQueueJob) => (j.id === job.id ? job : j)),
-    }));
+    set((s) => {
+      // A job that is not in the list must not copy the list: the copy would
+      // invalidate every subscriber for nothing.
+      const index = s.jobs.findIndex((j: MuxQueueJob) => j.id === job.id);
+      if (index === -1 || s.jobs[index] === job) return {};
+      const jobs = s.jobs.slice();
+      jobs[index] = job;
+      return { jobs };
+    });
   },
   /**
    * Stores the latest live progress snapshot for the job with the given id.
@@ -94,7 +101,10 @@ export const useMuxQueueStore = create<MuxQueueState>((set) => ({
       log.warn('Ignoring non-finite mux queue progress');
       return;
     }
-    set((s) => ({ progress: { ...s.progress, [id]: data } }));
+    set((s) => {
+      if (s.progress[id] === data) return {};
+      return { progress: { ...s.progress, [id]: data } };
+    });
   },
   /**
    * Removes all jobs from the queue.
@@ -106,7 +116,7 @@ export const useMuxQueueStore = create<MuxQueueState>((set) => ({
    * Records the queue's paused flag.
    * @param {boolean} paused - True while the queue is paused.
    */
-  setPaused: (paused) => set({ paused }),
+  setPaused: (paused) => set((s) => (s.paused === paused ? {} : { paused })),
   /**
    * Records the queue's concurrency cap.
    * @param {number} concurrency - The parallel-job cap.
@@ -116,6 +126,6 @@ export const useMuxQueueStore = create<MuxQueueState>((set) => ({
       log.warn('Ignoring non-finite mux queue concurrency');
       return;
     }
-    set({ concurrency });
+    set((s) => (s.concurrency === concurrency ? {} : { concurrency }));
   },
 }));

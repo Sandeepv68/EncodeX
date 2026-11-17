@@ -14,13 +14,15 @@
  *  - ColorModeProvider  - context provider that also installs the MUI ThemeProvider
  */
 
-import { createContext, useContext, useMemo, useState, ReactNode, useEffect } from 'react';
+import { createContext, useCallback, useContext, useMemo, useState, ReactNode, useEffect } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import { THEME_STORAGE_KEY } from '../shared/app-constants';
 import { createAppTheme } from '../shared/theme/theme';
 import { getTheme, isThemeId } from '../shared/theme/colors';
 import { recordAnalyticsEvent } from '../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../shared/analytics/events';
+import i18n from './i18n/config';
+import { isRtlLocale } from './i18n/localeMeta';
 import type { ColorMode, ColorModeContextValue, ThemeId } from './types';
 import { loadString, saveString } from './utils/storage';
 
@@ -75,23 +77,43 @@ export function ColorModeProvider({ children }: { children: ReactNode }) {
     return 'light';
   });
   /** Text layout direction, 'ltr' or 'rtl'. @type {'ltr' | 'rtl'} */
-  const [direction, setDirection] = useState<'ltr' | 'rtl'>('ltr');
+  // The direction starts from the active locale: booting the app with a
+  // persisted RTL locale must not paint an LTR theme until the user picks the
+  // language again.
+  const [direction, setDirection] = useState<'ltr' | 'rtl'>(() => (isRtlLocale(i18n.language) ? 'rtl' : 'ltr'));
 
   useEffect(() => {
     saveString(THEME_STORAGE_KEY, themeId);
   }, [themeId]);
 
+  // The locale can change while the app runs (the language menu), so the
+  // direction follows it.
+  useEffect(() => {
+    const update = () => setDirection(isRtlLocale(i18n.language) ? 'rtl' : 'ltr');
+    i18n.on('languageChanged', update);
+    return () => {
+      i18n.off('languageChanged', update);
+    };
+  }, []);
+
   /** Light/dark mode derived from the active theme definition. @type {ColorMode} */
   const mode: ColorMode = getTheme(themeId).mode;
-  const setTheme = (next: ThemeId) => {
+  const setTheme = useCallback((next: ThemeId) => {
     setThemeId(next);
     recordAnalyticsEvent(createAnalyticsEvent('theme_changed', { themeId: next }));
-  };
+  }, []);
 
   const theme = useMemo(() => createAppTheme(themeId, direction), [themeId, direction]);
 
+  // The context value is memoized: a new object on every render re-renders
+  // every consumer of the color mode.
+  const value = useMemo<ColorModeContextValue>(
+    () => ({ themeId, mode, direction, setDirection, setTheme }),
+    [themeId, mode, direction, setTheme],
+  );
+
   return (
-    <ColorModeContext.Provider value={{ themeId, mode, direction, setDirection, setTheme }}>
+    <ColorModeContext.Provider value={value}>
       <ThemeProvider theme={theme}>{children}</ThemeProvider>
     </ColorModeContext.Provider>
   );

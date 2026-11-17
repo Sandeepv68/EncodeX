@@ -64,6 +64,23 @@ export function clampPercent(percent: number | undefined | null): number {
 }
 
 /**
+ * Serializes a value into a comparable key.
+ *
+ * The views latch a payload on its *content* rather than on its identity: the
+ * host delivers a fresh object on every push, so an identity check would treat
+ * every poll as a new payload.
+ * @param {unknown} value - The value to serialize.
+ * @returns {string} The key, or an empty string when it cannot be serialized.
+ */
+export function contentKey(value: unknown): string {
+  try {
+    return JSON.stringify(value) ?? '';
+  } catch {
+    return '';
+  }
+}
+
+/**
  * Turns a camelCase key into a human-readable label (`videoBitrateKbps` becomes
  * `Video bitrate kbps`).
  * @param {string} key - The key to humanize.

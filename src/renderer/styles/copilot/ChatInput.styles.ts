@@ -14,7 +14,9 @@ export const ComposerShell = styled(Box)(({ theme }) => ({
   // as a layer tucked behind it.
   zIndex: 1,
   display: 'flex',
-  alignItems: 'center',
+  // The actions stay at the bottom of the composer, next to the end of the
+  // text, so they keep their place when the input grows to several lines.
+  alignItems: 'flex-end',
   flexWrap: 'nowrap',
   gap: theme.spacing(0.5),
   paddingBlock: theme.spacing(1),
@@ -23,9 +25,11 @@ export const ComposerShell = styled(Box)(({ theme }) => ({
   width: '100%',
   maxWidth: theme.typography.pxToRem(750),
   minWidth: 0,
-  borderRadius: theme.typography.pxToRem(24),
+  // The composer grows with its content, so it is a rounded rectangle rather
+  // than a pill: a pill radius would clip the tall surface into an oval.
+  borderRadius: theme.typography.pxToRem(16),
   [theme.breakpoints.up('sm')]: {
-    borderRadius: theme.typography.pxToRem(999),
+    borderRadius: theme.typography.pxToRem(16),
   },
   backgroundColor: theme.palette.background.paper,
   border: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
@@ -41,43 +45,48 @@ export const ComposerShell = styled(Box)(({ theme }) => ({
 }));
 
 /**
- * The single-line editor row. It holds the optional reset button and the
- * Lexical editable field side by side, so it is a horizontal flex row. The
- * Lexical contenteditable is styled through a
- * descendant selector (rather than a `styled(ContentEditable)`) so Lexical keeps
- * full control of the element's own attributes. The area is tall enough to be a
- * comfortable click target while the editable line stays vertically centred; the
- * text itself never wraps (`pre`, overriding Lexical's inline `pre-wrap`) so the
- * composer remains a one-line field.
+ * The editor row. It holds the optional reset button and the Lexical editable
+ * field side by side, so it is a horizontal flex row. The Lexical contenteditable
+ * is styled through a descendant selector (rather than a `styled(ContentEditable)`)
+ * so Lexical keeps full control of the element's own attributes.
+ *
+ * The area is a comfortable click target (it keeps a minimum height) and it
+ * grows with the content: the editable wraps (`pre-wrap`) and its height is
+ * driven by the auto-grow plugin, so the composer is always as tall as the
+ * text it holds instead of hiding the overflowing lines.
  */
 export const EditorArea = styled(Box)(({ theme }) => ({
   position: 'relative',
   flex: 1,
   minWidth: 0,
-  height: theme.typography.pxToRem(56),
+  minHeight: theme.typography.pxToRem(56),
   display: 'flex',
   alignItems: 'center',
   flexWrap: 'nowrap',
   gap: theme.spacing(0.5),
   [theme.breakpoints.up('sm')]: {
-    height: theme.typography.pxToRem(64),
+    minHeight: theme.typography.pxToRem(64),
   },
   '& [contenteditable="true"]': {
     outline: 'none',
     border: 'none',
     width: '100%',
-    height: theme.typography.pxToRem(56),
-    lineHeight: theme.typography.pxToRem(56),
+    height: 'auto',
+    // One line of text plus the vertical padding: the editor never collapses
+    // below a single row, even when it is empty.
+    minHeight: theme.typography.pxToRem(48),
+    // The composer stops growing at this point and scrolls its own content.
+    maxHeight: '40vh',
+    lineHeight: theme.typography.body1.lineHeight,
     paddingInline: theme.typography.pxToRem(4),
+    paddingBlock: theme.spacing(1.5),
     fontFamily: theme.typography.fontFamily,
     fontSize: theme.typography.body1.fontSize,
     color: theme.palette.text.primary,
-    whiteSpace: 'pre !important',
-    overflow: 'hidden',
-    [theme.breakpoints.up('sm')]: {
-      height: theme.typography.pxToRem(64),
-      lineHeight: theme.typography.pxToRem(64),
-    },
+    whiteSpace: 'pre-wrap !important',
+    overflowWrap: 'anywhere',
+    overflowX: 'hidden',
+    overflowY: 'auto',
   },
   '& p': { margin: 0, lineHeight: 'inherit' },
 }));
@@ -88,27 +97,42 @@ export const EditorPlaceholder = styled(Box)(({ theme }) => ({
   top: 0,
   insetInlineStart: 0,
   insetInlineEnd: 0,
-  height: theme.typography.pxToRem(56),
-  lineHeight: theme.typography.pxToRem(56),
+  // Matches the editable's padding so the placeholder sits exactly on the
+  // first line of the text it stands in for.
+  lineHeight: theme.typography.body1.lineHeight,
   paddingInline: theme.typography.pxToRem(4),
+  paddingBlock: theme.spacing(1.5),
   pointerEvents: 'none',
   color: alpha(theme.palette.text.primary, 0.72),
   fontSize: theme.typography.body1.fontSize,
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-  [theme.breakpoints.up('sm')]: {
-    height: theme.typography.pxToRem(64),
-    lineHeight: theme.typography.pxToRem(64),
-  },
 }));
 
 /**
  * Wrapper around the "reset conversation" icon button. Rendered as an inline
- * span so it can sit inside the tooltip trigger without breaking the row.
+ * span so it can sit inside the tooltip trigger without breaking the row. It
+ * is pinned to the top of the editor row so it stays next to the first line of
+ * the text when the composer grows.
  * @const ResetButtonWrap
  */
-export const ResetButtonWrap = styled('span')({
+export const ResetButtonWrap = styled('span')(({ theme }) => ({
+  display: 'inline-flex',
+  alignItems: 'center',
+  alignSelf: 'flex-start',
+  flexShrink: 0,
+  lineHeight: 0,
+  // Nudges the button onto the first line of the text.
+  marginTop: theme.typography.pxToRem(8),
+}));
+
+/**
+ * Wrapper around the provider logo button. It is a flex item of the composer
+ * shell, so it is pinned to the bottom next to the plan button.
+ * @const ProviderLogoWrap
+ */
+export const ProviderLogoWrap = styled('span')({
   display: 'inline-flex',
   alignItems: 'center',
   flexShrink: 0,
@@ -117,6 +141,9 @@ export const ResetButtonWrap = styled('span')({
 
 /**
  * "Reset conversation" icon button, muted until hovered.
+ *
+ * The composer is a rounded rectangle, so the button is a rounded square as
+ * well: a circle would read as a leftover from the pill-shaped composer.
  * @const ResetIconButton
  */
 export const ResetIconButton = styled(Button)(({ theme }) => ({
@@ -125,14 +152,15 @@ export const ResetIconButton = styled(Button)(({ theme }) => ({
   minWidth: 0,
   width: theme.typography.pxToRem(40),
   height: theme.typography.pxToRem(40),
-  borderRadius: theme.typography.pxToRem(999),
+  borderRadius: theme.typography.pxToRem(12),
   padding: 0,
   '&:hover': {
     color: theme.palette.primary.main,
   },
   [theme.breakpoints.up('sm')]: {
-    width: theme.typography.pxToRem(64),
-    height: theme.typography.pxToRem(64),
+    width: theme.typography.pxToRem(48),
+    height: theme.typography.pxToRem(48),
+    borderRadius: theme.typography.pxToRem(16),
   },
 }));
 
@@ -156,14 +184,18 @@ export const ProviderLogoButton = styled(Button)(({ theme }) => ({
   minWidth: 0,
   width: theme.typography.pxToRem(40),
   height: theme.typography.pxToRem(40),
-  borderRadius: theme.typography.pxToRem(999),
+  borderRadius: theme.typography.pxToRem(12),
   padding: 0,
+  // Centred against the taller plan button next to it.
+  marginBottom: theme.typography.pxToRem(8),
   '&:hover': {
     color: theme.palette.primary.main,
   },
   [theme.breakpoints.up('sm')]: {
-    width: theme.typography.pxToRem(64),
-    height: theme.typography.pxToRem(64),
+    width: theme.typography.pxToRem(48),
+    height: theme.typography.pxToRem(48),
+    borderRadius: theme.typography.pxToRem(16),
+    marginBottom: theme.typography.pxToRem(8),
   },
 }));
 
@@ -172,11 +204,16 @@ export const ProviderLogoButton = styled(Button)(({ theme }) => ({
  * @const ComposerDivider
  */
 export const ComposerDivider = styled('span')(({ theme }) => ({
-  alignSelf: 'center',
+  alignSelf: 'flex-end',
   width: theme.typography.pxToRem(1),
   height: theme.typography.pxToRem(24),
   flexShrink: 0,
+  // Centred against the plan button next to it.
+  marginBottom: theme.typography.pxToRem(16),
   backgroundColor: theme.palette.divider,
+  [theme.breakpoints.up('sm')]: {
+    marginBottom: theme.typography.pxToRem(20),
+  },
 }));
 
 /**
@@ -270,16 +307,16 @@ export const ProviderStatusPopover = styled(Paper)(({ theme }) => ({
 
 /**
  * Box that holds the Lexical plugin tree (editable field + placeholder).
+ * Its height follows the editable, which the auto-grow plugin keeps in sync
+ * with the content; the minimum is a single line of text so the placeholder
+ * and the text it stands in for always share the same first-line offset.
  * @const EditorField
  */
 export const EditorField = styled(Box)(({ theme }) => ({
   flex: 1,
   minWidth: 0,
   position: 'relative',
-  height: theme.typography.pxToRem(56),
-  [theme.breakpoints.up('sm')]: {
-    height: theme.typography.pxToRem(64),
-  },
+  minHeight: theme.typography.pxToRem(48),
 }));
 
 /**

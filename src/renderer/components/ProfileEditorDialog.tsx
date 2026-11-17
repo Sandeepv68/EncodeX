@@ -81,6 +81,12 @@ export default function ProfileEditorDialog({ open, onClose, editProfile }: Prof
   const [extraArgsStr, setExtraArgsStr] = useState('');
   const [description, setDescription] = useState('');
 
+  // The form is hydrated from the profile that is being edited. The effect
+  // keys on the profile *id*, not on the object: a parent that resolves the
+  // profile from a store hands over a fresh object on every render, and an
+  // object dependency would wipe what the user typed on each of them.
+  const editProfileId = editProfile?.id ?? null;
+
   useEffect(() => {
     if (editProfile) {
       setName(editProfile.name);
@@ -114,7 +120,7 @@ export default function ProfileEditorDialog({ open, onClose, editProfile }: Prof
       setDescription('');
     }
     setShowAdvanced(false);
-  }, [editProfile, open]);
+  }, [editProfileId, open]);
 
   const handleSave = () => {
     const extraArgs = extraArgsStr.trim() ? extraArgsStr.trim().split(/\s+/) : undefined;
