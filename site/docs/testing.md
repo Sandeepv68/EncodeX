@@ -1,9 +1,9 @@
 ---
-
-<!-- drift:test-files=373 renderer-component-tests=52 -->
 title: "Testing — Unit, Integration & E2E for EncodeX"
 description: "EncodeX test suite: Vitest unit/integration tests, Electron E2E specs, performance suites, test setup, coverage, and CI integration."
 ---
+
+<!-- drift:test-files=373 renderer-component-tests=52 -->
 
 # Testing
 
