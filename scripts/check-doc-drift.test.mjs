@@ -6,7 +6,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import path from 'path';
-import { checkFile, collectDocFiles, computeFacts, parseMarkers } from './lib/doc-drift.mjs';
+import { checkFile, collectDocFiles, computeFacts, parseMarkers, readFile } from './lib/doc-drift.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 
@@ -92,4 +92,14 @@ test('collectDocFiles finds every documentation tree', () => {
   assert.ok(files.includes(path.join('site', 'docs', 'ipc.md')));
   assert.ok(files.some((file) => file.startsWith(path.join('docs', 'de'))));
   assert.ok(files.some((file) => file.startsWith(path.join('site', 'locales', 'de'))));
+});
+
+test('drift markers stay outside YAML frontmatter', () => {
+  const offenders = [];
+  for (const { file } of collectDocFiles(ROOT)) {
+    const source = readFile(ROOT, file);
+    const frontmatter = source.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
+    if (frontmatter && /<!--\s*drift:/.test(frontmatter[1])) offenders.push(file);
+  }
+  assert.deepEqual(offenders, []);
 });

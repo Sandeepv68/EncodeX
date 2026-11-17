@@ -1,9 +1,9 @@
 ---
-
-<!-- drift: cli-subcommands=8 -->
 title: "CLI Usage — EncodeX Command-Line Interface"
 description: "EncodeX CLI reference: subcommands, options, batch processing, format conversion, and automation scripting via the command line."
 ---
+
+<!-- drift: cli-subcommands=8 -->
 
 # CLI Usage
 
