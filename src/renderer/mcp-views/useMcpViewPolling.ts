@@ -46,7 +46,6 @@ export function useMcpViewPolling({ tool, args, intervalMs = 2500, enabled = tru
     };
 
     const tick = async (): Promise<void> => {
-      if (stopped) return;
       // A hidden window has nothing to show, so polling it is pure waste.
       if (typeof document !== 'undefined' && document.hidden) {
         schedule();

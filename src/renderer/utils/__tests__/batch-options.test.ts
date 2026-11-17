@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   buildBatchOptions,
+  sameBatchOptions,
   buildOutputPath,
   inferJobOperation,
   recomputeJobOutput,
@@ -319,5 +320,35 @@ describe('buildOutputPath', () => {
     expect(buildOutputPath({ ...base, file: '/in/video.mp4', operation: 'transcode', sourceExt: 'mp4', suffix: '_v2' })).toBe(
       '/in/video_v2.mp4',
     );
+  });
+});
+
+describe('sameBatchOptions', () => {
+  it('treats records with the same values as equal', () => {
+    expect(sameBatchOptions({ videoCodec: 'libx264', qscale: 20 }, { videoCodec: 'libx264', qscale: 20 })).toBe(true);
+  });
+
+  it('ignores the key order', () => {
+    expect(sameBatchOptions({ a: 1, b: 2 }, { b: 2, a: 1 })).toBe(true);
+  });
+
+  it('detects a changed value', () => {
+    expect(sameBatchOptions({ videoCodec: 'libx264' }, { videoCodec: 'libx265' })).toBe(false);
+  });
+
+  it('detects a missing key', () => {
+    expect(sameBatchOptions({ videoCodec: 'libx264' }, {})).toBe(false);
+    expect(sameBatchOptions({}, { videoCodec: 'libx264' })).toBe(false);
+  });
+
+  it('compares array fields element by element', () => {
+    expect(sameBatchOptions({ videoFilters: ['fps=30', 'scale=2'] }, { videoFilters: ['fps=30', 'scale=2'] })).toBe(true);
+    expect(sameBatchOptions({ videoFilters: ['fps=30'] }, { videoFilters: ['fps=30', 'scale=2'] })).toBe(false);
+    expect(sameBatchOptions({ videoFilters: ['fps=30'] }, { videoFilters: ['fps=60'] })).toBe(false);
+  });
+
+  it('treats an array and a plain value as different', () => {
+    expect(sameBatchOptions({ videoFilters: ['fps=30'] }, { videoFilters: 'fps=30' })).toBe(false);
+    expect(sameBatchOptions({ videoFilters: 'fps=30' }, { videoFilters: ['fps=30'] })).toBe(false);
   });
 });

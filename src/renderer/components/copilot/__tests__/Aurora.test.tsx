@@ -160,4 +160,23 @@ describe('Aurora', () => {
     unmount();
     expect(disconnect).toHaveBeenCalled();
   });
+
+  it('stops painting while the window is hidden', () => {
+    const original = Object.getOwnPropertyDescriptor(document, 'hidden');
+    Object.defineProperty(document, 'hidden', { configurable: true, get: () => true });
+    try {
+      render(<Aurora />);
+      const drawnWhileHidden = calls.clearRect;
+
+      act(() => {
+        document.dispatchEvent(new Event('visibilitychange'));
+      });
+
+      // The loop keeps running, but it no longer paints.
+      expect(calls.clearRect).toBe(drawnWhileHidden);
+    } finally {
+      if (original) Object.defineProperty(document, 'hidden', original);
+      else Reflect.deleteProperty(document, 'hidden');
+    }
+  });
 });

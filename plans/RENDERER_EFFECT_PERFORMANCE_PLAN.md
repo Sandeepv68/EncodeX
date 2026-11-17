@@ -1,9 +1,9 @@
 # Renderer Effect & Render-Churn Performance Plan
 
-> **Status:** In progress - batches 1, 2 and 3 applied; batch 4 and two follow-ups still open
+> **Status:** In progress - batches 1, 2 and 3 applied; batch 4 and three follow-ups still open
 > **Scope:** `src/renderer` - hooks, components, pages, zustand stores, MCP view layer. No IPC contract or main-process changes.
 > **Decisions locked:** no behaviour change for users (except fixing the two data-loss bugs); no new dependencies except optionally `eslint-plugin-react-hooks`.
-> **Verification:** typecheck, lint, unit suite (5362 tests), copilot/queue/settings E2E suites.
+> **Verification:** typecheck, lint, unit suite (5391 tests), diff-coverage and per-file coverage gates, copilot/queue/settings E2E suites.
 
 - **Branch:** `feat/copilot-composer-autogrow` (carried over from the composer work)
 - **Last Updated:** 2026-11-16
@@ -150,7 +150,6 @@ Per batch:
 
 - The ellipsis tooltip throttles its resize handler to one measurement per frame and only writes when the value changed.
 - The timeline cancels the pending zoom-recenter frame on unmount.
-- The media player owns the pending-seek timer in its own effect, so it is cleared even when the loading effect returned early.
 - `onboarding_started` is recorded once per session instead of on every dashboard remount.
 - The settings page applies the "open the AI tab" request only on arrival, not on every location change.
 - The aurora canvas loop pauses while the window is hidden.
@@ -167,3 +166,4 @@ Per batch:
 - Batch 4: add `eslint-plugin-react-hooks` with `exhaustive-deps` as a warning.
 - Follow-up 1: `MediaPlayer` publishes the playback time every 50ms, which re-renders the player and lifts the time into the parent. Halving the rate is a UX decision, not a pure optimisation.
 - Follow-up 2: the job cards still receive their job through props, so a progress tick re-renders the card of the running job. Moving the cards to their own store subscriptions would make even that free, but it is a larger refactor of the queue pages.
+- Follow-up 3: finding 25 (the pending-seek timer of `MediaPlayer` is not released when the loading effect returns early) is not applied. The only path that reaches it is a seek issued through the imperative handle while no file is loaded, and a change to `MediaPlayer` pulls the whole 984-line file under the diff-coverage floor (it sits at 58% branch coverage). It needs its own playback test suite before the cleanup can land.

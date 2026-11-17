@@ -87,4 +87,37 @@ describe('queueStore', () => {
     expect(useQueueStore.getState().jobs).toEqual([]);
     expect(useQueueStore.getState().progress).toEqual({});
   });
+
+  it('keeps the job list untouched when the updated job is not in the queue', () => {
+    useQueueStore.getState().addJob(makeJob('a'));
+    const before = useQueueStore.getState().jobs;
+    useQueueStore.getState().updateJob(makeJob('missing'));
+    expect(useQueueStore.getState().jobs).toBe(before);
+  });
+
+  it('keeps the job list untouched when the job did not change', () => {
+    const job = makeJob('a');
+    useQueueStore.getState().addJob(job);
+    const before = useQueueStore.getState().jobs;
+    useQueueStore.getState().updateJob(job);
+    expect(useQueueStore.getState().jobs).toBe(before);
+  });
+
+  it('keeps the state untouched when an unknown job is removed', () => {
+    useQueueStore.getState().addJob(makeJob('a'));
+    const before = useQueueStore.getState().jobs;
+    const progressBefore = useQueueStore.getState().progress;
+    useQueueStore.getState().removeJob('missing');
+    expect(useQueueStore.getState().jobs).toBe(before);
+    expect(useQueueStore.getState().progress).toBe(progressBefore);
+  });
+
+  it('keeps the progress map untouched when the snapshot did not change', () => {
+    useQueueStore.getState().addJob(makeJob('a'));
+    const snapshot = { percent: 40, time: '00:00:10', fps: 30, speed: '2.5x', eta: '5', bitrate: '1200k' };
+    useQueueStore.getState().updateProgress('a', snapshot);
+    const before = useQueueStore.getState().progress;
+    useQueueStore.getState().updateProgress('a', snapshot);
+    expect(useQueueStore.getState().progress).toBe(before);
+  });
 });
