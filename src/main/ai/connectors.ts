@@ -332,7 +332,23 @@ export function createOpenAICompatibleConnector(options: {
         if (request.jsonMode) body.response_format = { type: 'json_object' };
         const signal = request.signal ?? AbortSignal.timeout(timeoutMs);
         const headers: Record<string, string> = options.apiKey ? { authorization: `Bearer ${options.apiKey}` } : {};
-        const data = await postJson(fetchImpl, `${baseUrl}/chat/completions`, headers, body, signal);
+        let data: unknown;
+        try {
+          data = await postJson(fetchImpl, `${baseUrl}/chat/completions`, headers, body, signal);
+        } catch (err) {
+          if (
+            err instanceof ProviderHttpError &&
+            err.status === 400 &&
+            'temperature' in body &&
+            /"?temperature"?/i.test(err.body) &&
+            /unsupported|only the default|does not support/i.test(err.body)
+          ) {
+            const { temperature: _omit, ...bodyWithoutTemperature } = body;
+            data = await postJson(fetchImpl, `${baseUrl}/chat/completions`, headers, bodyWithoutTemperature, signal);
+          } else {
+            throw err;
+          }
+        }
         const text = openAiText(data);
         if (!text) throw createError(ErrorCode.AI_RESPONSE_INVALID, 'Provider returned an empty completion.');
         captureGeneration(request, provider, model, startedAt, { text, ...usage(data, 'prompt_tokens', 'completion_tokens') });

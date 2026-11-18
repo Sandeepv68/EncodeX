@@ -303,7 +303,12 @@ export default function AiProviderSettingsSection({ autoOpen = false }: { autoOp
       if (result && typeof result.message === 'string') {
         if (result.ok) {
           const refreshed = result.view;
-          if (refreshed && typeof refreshed === 'object' && isAiProviderId(refreshed.providerId)) applyView(refreshed);
+          if (refreshed && typeof refreshed === 'object' && isAiProviderId(refreshed.providerId)) {
+            applyView(refreshed);
+            const target = viewForProvider(refreshed, providerId);
+            setModel(typeof target.model === 'string' ? target.model : '');
+            setBaseUrl(typeof target.baseUrl === 'string' ? target.baseUrl : '');
+          }
           if (advanced) void loadModels();
           const latency = typeof result.latencyMs === 'number' ? ` (${result.latencyMs} ms)` : '';
           setStatus(`${result.message}${latency}`);
