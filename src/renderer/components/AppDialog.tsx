@@ -97,10 +97,7 @@ export default function AppDialog({
 
       <Divider />
 
-      <AppDialogBody
-        disablePadding={disableContentPadding}
-        dividers={contentDividers}
-      >
+      <AppDialogBody $disablePadding={disableContentPadding} dividers={contentDividers}>
         {children}
       </AppDialogBody>
 
