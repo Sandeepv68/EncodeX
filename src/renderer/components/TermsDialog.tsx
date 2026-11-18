@@ -14,13 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AppDialog from './AppDialog';
 import { TERMS_VERSION, TERMS_SECTIONS } from '../../shared/terms';
 import { useTermsStore } from '../stores/termsStore';
-import {
-  TermsContent,
-  TermsDialogPaper,
-  TermsSectionBody,
-  TermsSectionTitle,
-  TermsLastUpdated,
-} from '../styles/TermsDialog.styles';
+import { TermsContent, TermsDialogPaper, TermsSectionBody, TermsSectionTitle, TermsLastUpdated } from '../styles/TermsDialog.styles';
 
 /**
  * Blocks dialog dismissal in accept mode.
