@@ -15,7 +15,9 @@
 
 import { useEffect, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { Button, DialogContentText } from '@mui/material';
+import { faComments } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   deleteCopilotChat,
   deriveCopilotChatTitle,
@@ -28,6 +30,7 @@ import Aurora from '../components/copilot/Aurora';
 
 import { useNavigationGuard } from '../NavigationGuardContext';
 import PageContainer from '../components/PageContainer';
+import AppDialog from '../components/AppDialog';
 import { bridgePromise, withBridgeTimeout } from '../utils/bridge-call';
 import { useToastStore } from '../stores/toastStore';
 import { useQueueStore } from '../stores/queueStore';
@@ -470,28 +473,31 @@ export default function Copilot() {
         />
         <CopilotConversationColumn $hasChat={hasActiveChat}>
           <VisuallyHidden as="h1">{t('nav.copilot')}</VisuallyHidden>
-          <Dialog
+          <AppDialog
             open={pendingChat !== null}
             onClose={() => setPendingChat(null)}
-            aria-labelledby={openChatConfirmTitleId}
-            data-testid="open-chat-confirm"
+            title={t('copilot.openChatConfirmTitle')}
+            icon={<FontAwesomeIcon icon={faComments} />}
+            showCloseButton
+            closeButtonAriaLabel={t('shortcuts.close')}
+            ariaLabelledBy={openChatConfirmTitleId}
+            paperTestId="open-chat-confirm"
+            actions={
+              <>
+                <Button onClick={() => setPendingChat(null)} data-testid="open-chat-cancel">
+                  {t('copilot.openChatCancel')}
+                </Button>
+                <Button onClick={() => resolvePendingChat('discard')} color="error" data-testid="open-chat-discard">
+                  {t('copilot.openChatDiscard')}
+                </Button>
+                <Button variant="contained" onClick={() => resolvePendingChat('save')} data-testid="open-chat-save">
+                  {t('copilot.openChatSave')}
+                </Button>
+              </>
+            }
           >
-            <DialogTitle id={openChatConfirmTitleId}>{t('copilot.openChatConfirmTitle')}</DialogTitle>
-            <DialogContent>
-              <DialogContentText>{t('copilot.openChatConfirmMessage')}</DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setPendingChat(null)} data-testid="open-chat-cancel">
-                {t('copilot.openChatCancel')}
-              </Button>
-              <Button onClick={() => resolvePendingChat('discard')} color="error" data-testid="open-chat-discard">
-                {t('copilot.openChatDiscard')}
-              </Button>
-              <Button variant="contained" onClick={() => resolvePendingChat('save')} data-testid="open-chat-save">
-                {t('copilot.openChatSave')}
-              </Button>
-            </DialogActions>
-          </Dialog>
+            <DialogContentText>{t('copilot.openChatConfirmMessage')}</DialogContentText>
+          </AppDialog>
           {globalError && (
             <CopilotAlertWrapper>
               <CopilotAlert severity="error" data-testid="copilot-error">

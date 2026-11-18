@@ -1,20 +1,21 @@
-/**
+﻿/**
  * @fileoverview Dialog for creating and editing custom conversion profiles.
  * Reuses MUI form components and validates codec-container compatibility.
  */
 
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dialog, DialogContent, DialogActions, TextField, MenuItem, Button, Box, Stack, IconButton, Collapse } from '@mui/material';
+import { TextField, MenuItem, Button, Box, Stack, Collapse } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import type { ConversionProfile, ProfileCategory } from '../../shared/types';
 import { CATEGORY_ORDER, PROFILE_CATEGORIES } from '../../shared/profiles/categories';
 import { useProfileStore } from '../stores/profileStore';
 import { useToastStore } from '../stores/toastStore';
 import type { ProfileEditorDialogProps } from './types';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
-import { EditorDialogTitle, EditorFieldStack, ExpandChevron } from '../styles/ProfileEditorDialog.styles';
+import { EditorFieldStack, ExpandChevron } from '../styles/ProfileEditorDialog.styles';
+import AppDialog from './AppDialog';
 import CodecSelect from './CodecSelect';
 import { ErrorBoundary } from './ErrorBoundary';
 import { SCALE_OPTIONS, BITRATE_OPTIONS, VIDEO_BITRATE_OPTIONS, PIXEL_FORMATS } from '../../shared/media-options';
@@ -45,12 +46,6 @@ const CRF_OPTIONS = Array.from({ length: 32 }, (_, i) => i);
 /**
  * Adds the currently selected value to a fixed option list when it is not already
  * present.
- *
- * Profiles are read from user-editable JSON on disk, so a stored bitrate is not
- * guaranteed to be one of today's presets - an older profile, or a hand-edited
- * file, can hold anything. MUI's `Select` renders a value with no matching
- * `MenuItem` as blank, which silently hides the setting the user actually has,
- * so the stored value is appended to keep the control faithful to the profile.
  * @param {readonly string[]} options - The preset option values.
  * @param {string} value - The value currently held by the field.
  * @returns {string[]} The options to render, including `value` when needed.
@@ -81,10 +76,6 @@ export default function ProfileEditorDialog({ open, onClose, editProfile }: Prof
   const [extraArgsStr, setExtraArgsStr] = useState('');
   const [description, setDescription] = useState('');
 
-  // The form is hydrated from the profile that is being edited. The effect
-  // keys on the profile *id*, not on the object: a parent that resolves the
-  // profile from a store hands over a fresh object on every render, and an
-  // object dependency would wipe what the user typed on each of them.
   const editProfileId = editProfile?.id ?? null;
 
   useEffect(() => {
@@ -152,262 +143,263 @@ export default function ProfileEditorDialog({ open, onClose, editProfile }: Prof
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <EditorDialogTitle>
-        {editProfile ? t('profiles.editTitle') : t('profiles.createTitle')}
-        <IconButton size="small" onClick={onClose}>
-          <FontAwesomeIcon icon={faXmark} />
-        </IconButton>
-      </EditorDialogTitle>
+    <AppDialog
+      open={open}
+      onClose={onClose}
+      title={editProfile ? t('profiles.editTitle') : t('profiles.createTitle')}
+      icon={<FontAwesomeIcon icon={faPenToSquare} />}
+      showCloseButton
+      closeButtonAriaLabel={t('shortcuts.close')}
+      maxWidth="sm"
+      fullWidth
+      actions={
+        <>
+          <Button onClick={onClose}>{t('profiles.cancel')}</Button>
+          <Button variant="contained" onClick={handleSave} disabled={!name.trim()}>
+            {editProfile ? t('profiles.saveChanges') : t('profiles.createProfile')}
+          </Button>
+        </>
+      }
+    >
+      <EditorFieldStack spacing={2}>
+        <FieldBox>
+          <FieldLabel htmlFor="profile-name">{t('profiles.nameLabel')}</FieldLabel>
+          <TextField
+            id="profile-name"
+            fullWidth
+            size="small"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder={t('profiles.namePlaceholder')}
+          />
+        </FieldBox>
 
-      <DialogContent dividers>
-        <EditorFieldStack spacing={2}>
+        <FieldBox>
+          <FieldLabel htmlFor="profile-description">{t('profiles.descriptionLabel')}</FieldLabel>
+          <TextField
+            id="profile-description"
+            fullWidth
+            size="small"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder={t('profiles.descriptionPlaceholder')}
+          />
+        </FieldBox>
+
+        <Stack direction="row" spacing={2}>
           <FieldBox>
-            <FieldLabel htmlFor="profile-name">{t('profiles.nameLabel')}</FieldLabel>
+            <FieldLabel htmlFor="profile-category">{t('profiles.categoryLabel')}</FieldLabel>
             <TextField
-              id="profile-name"
+              id="profile-category"
+              select
               fullWidth
               size="small"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder={t('profiles.namePlaceholder')}
-            />
-          </FieldBox>
-
-          <FieldBox>
-            <FieldLabel htmlFor="profile-description">{t('profiles.descriptionLabel')}</FieldLabel>
-            <TextField
-              id="profile-description"
-              fullWidth
-              size="small"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder={t('profiles.descriptionPlaceholder')}
-            />
-          </FieldBox>
-
-          <Stack direction="row" spacing={2}>
-            <FieldBox>
-              <FieldLabel htmlFor="profile-category">{t('profiles.categoryLabel')}</FieldLabel>
-              <TextField
-                id="profile-category"
-                select
-                fullWidth
-                size="small"
-                value={category}
-                onChange={(e) => setCategory(e.target.value as ProfileCategory)}
-              >
-                {CATEGORY_ORDER.map((cat) => (
-                  <MenuItem key={cat} value={cat}>
-                    {PROFILE_CATEGORIES[cat].label}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </FieldBox>
-
-            <FieldBox>
-              <FieldLabel htmlFor="profile-container">{t('profiles.containerLabel')}</FieldLabel>
-              <TextField
-                id="profile-container"
-                select
-                fullWidth
-                size="small"
-                value={container}
-                onChange={(e) => setContainer(e.target.value)}
-              >
-                {CONTAINER_OPTIONS.map((c) => (
-                  <MenuItem key={c} value={c}>
-                    .{c}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </FieldBox>
-          </Stack>
-
-          <Stack direction="row" spacing={2}>
-            <FieldBox>
-              <FieldLabel htmlFor="profile-video-codec">{t('profiles.videoCodecLabel')}</FieldLabel>
-              <ErrorBoundary fallback={null}>
-                <CodecSelect
-                  id="profile-video-codec"
-                  type="video"
-                  value={videoCodec}
-                  onChange={setVideoCodec}
-                  ariaLabel={t('profiles.videoCodecLabel')}
-                />
-              </ErrorBoundary>
-            </FieldBox>
-
-            <FieldBox>
-              <FieldLabel htmlFor="profile-audio-codec">{t('profiles.audioCodecLabel')}</FieldLabel>
-              <ErrorBoundary fallback={null}>
-                <CodecSelect
-                  id="profile-audio-codec"
-                  type="audio"
-                  value={audioCodec}
-                  onChange={setAudioCodec}
-                  ariaLabel={t('profiles.audioCodecLabel')}
-                />
-              </ErrorBoundary>
-            </FieldBox>
-          </Stack>
-
-          <Stack direction="row" spacing={2}>
-            <FieldBox>
-              <FieldLabel htmlFor="profile-quality">{t('profiles.qualityLabel')}</FieldLabel>
-              <TextField id="profile-quality" select fullWidth size="small" value={crf} onChange={(e) => setCrf(Number(e.target.value))}>
-                {CRF_OPTIONS.map((v) => (
-                  <MenuItem key={v} value={v}>
-                    {v}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </FieldBox>
-
-            <FieldBox>
-              <FieldLabel htmlFor="profile-preset">{t('profiles.presetLabel')}</FieldLabel>
-              <TextField id="profile-preset" select fullWidth size="small" value={preset} onChange={(e) => setPreset(e.target.value)}>
-                {PRESET_OPTIONS.map((p) => (
-                  <MenuItem key={p} value={p}>
-                    {p}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </FieldBox>
-          </Stack>
-
-          <Stack direction="row" spacing={2}>
-            <FieldBox>
-              <FieldLabel htmlFor="profile-scale">{t('profiles.resolutionLabel')}</FieldLabel>
-              <TextField
-                id="profile-scale"
-                select
-                fullWidth
-                size="small"
-                slotProps={{ select: { displayEmpty: true } }}
-                value={scale}
-                onChange={(e) => setScale(e.target.value)}
-              >
-                <MenuItem value="">{t('profiles.original')}</MenuItem>
-                {SCALE_OPTIONS.filter((s) => s !== '').map((s) => (
-                  <MenuItem key={s} value={s}>
-                    {s}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </FieldBox>
-
-            <FieldBox>
-              <FieldLabel htmlFor="profile-pixel-format">{t('profiles.pixelFormatLabel')}</FieldLabel>
-              <TextField
-                id="profile-pixel-format"
-                select
-                fullWidth
-                size="small"
-                value={pixelFormat}
-                onChange={(e) => setPixelFormat(e.target.value)}
-              >
-                {PIXEL_FORMATS.map((f) => (
-                  <MenuItem key={f.value} value={f.value}>
-                    {f.value}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </FieldBox>
-          </Stack>
-
-          <Stack direction="row" spacing={2}>
-            <FieldBox>
-              <FieldLabel htmlFor="profile-video-bitrate">{t('profiles.videoBitrateLabel')}</FieldLabel>
-              <TextField
-                id="profile-video-bitrate"
-                select
-                fullWidth
-                size="small"
-                value={videoBitrate}
-                onChange={(e) => setVideoBitrate(e.target.value)}
-                slotProps={{ select: { displayEmpty: true } }}
-              >
-                <MenuItem value="">{t('profiles.autoCrf')}</MenuItem>
-                {withUnknownValue(
-                  VIDEO_BITRATE_OPTIONS.filter((b) => b !== ''),
-                  videoBitrate,
-                ).map((b) => (
-                  <MenuItem key={b} value={b}>
-                    {b}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </FieldBox>
-
-            <FieldBox>
-              <FieldLabel htmlFor="profile-audio-bitrate">{t('profiles.audioBitrateLabel')}</FieldLabel>
-              <TextField
-                id="profile-audio-bitrate"
-                select
-                fullWidth
-                size="small"
-                value={audioBitrate}
-                onChange={(e) => setAudioBitrate(e.target.value)}
-              >
-                {withUnknownValue(BITRATE_OPTIONS, audioBitrate).map((b) => (
-                  <MenuItem key={b} value={b}>
-                    {b}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </FieldBox>
-          </Stack>
-
-          <Box>
-            <Button
-              size="small"
-              onClick={() => setShowAdvanced(!showAdvanced)}
-              endIcon={
-                <ExpandChevron component="span" $expanded={showAdvanced}>
-                  <FontAwesomeIcon icon={faChevronDown} />
-                </ExpandChevron>
-              }
+              value={category}
+              onChange={(e) => setCategory(e.target.value as ProfileCategory)}
             >
-              {t('profiles.advancedOptions')}
-            </Button>
-            <Collapse in={showAdvanced}>
-              <EditorFieldStack spacing={2}>
-                <FieldBox>
-                  <FieldLabel htmlFor="profile-extension">{t('profiles.extensionOverrideLabel')}</FieldLabel>
-                  <TextField
-                    id="profile-extension"
-                    fullWidth
-                    size="small"
-                    value={extension}
-                    onChange={(e) => setExtension(e.target.value)}
-                    placeholder={t('profiles.extensionPlaceholder')}
-                  />
-                </FieldBox>
-                <FieldBox>
-                  <FieldLabel htmlFor="profile-extra-args">{t('profiles.extraArgsLabel')}</FieldLabel>
-                  <TextField
-                    id="profile-extra-args"
-                    fullWidth
-                    size="small"
-                    value={extraArgsStr}
-                    onChange={(e) => setExtraArgsStr(e.target.value)}
-                    placeholder="-movflags +faststart"
-                    helperText={t('profiles.extraArgsHelp')}
-                  />
-                </FieldBox>
-              </EditorFieldStack>
-            </Collapse>
-          </Box>
-        </EditorFieldStack>
-      </DialogContent>
+              {CATEGORY_ORDER.map((cat) => (
+                <MenuItem key={cat} value={cat}>
+                  {PROFILE_CATEGORIES[cat].label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </FieldBox>
 
-      <DialogActions>
-        <Button onClick={onClose}>{t('profiles.cancel')}</Button>
-        <Button variant="contained" onClick={handleSave} disabled={!name.trim()}>
-          {editProfile ? t('profiles.saveChanges') : t('profiles.createProfile')}
-        </Button>
-      </DialogActions>
-    </Dialog>
+          <FieldBox>
+            <FieldLabel htmlFor="profile-container">{t('profiles.containerLabel')}</FieldLabel>
+            <TextField
+              id="profile-container"
+              select
+              fullWidth
+              size="small"
+              value={container}
+              onChange={(e) => setContainer(e.target.value)}
+            >
+              {CONTAINER_OPTIONS.map((c) => (
+                <MenuItem key={c} value={c}>
+                  .{c}
+                </MenuItem>
+              ))}
+            </TextField>
+          </FieldBox>
+        </Stack>
+
+        <Stack direction="row" spacing={2}>
+          <FieldBox>
+            <FieldLabel htmlFor="profile-video-codec">{t('profiles.videoCodecLabel')}</FieldLabel>
+            <ErrorBoundary fallback={null}>
+              <CodecSelect
+                id="profile-video-codec"
+                type="video"
+                value={videoCodec}
+                onChange={setVideoCodec}
+                ariaLabel={t('profiles.videoCodecLabel')}
+              />
+            </ErrorBoundary>
+          </FieldBox>
+
+          <FieldBox>
+            <FieldLabel htmlFor="profile-audio-codec">{t('profiles.audioCodecLabel')}</FieldLabel>
+            <ErrorBoundary fallback={null}>
+              <CodecSelect
+                id="profile-audio-codec"
+                type="audio"
+                value={audioCodec}
+                onChange={setAudioCodec}
+                ariaLabel={t('profiles.audioCodecLabel')}
+              />
+            </ErrorBoundary>
+          </FieldBox>
+        </Stack>
+
+        <Stack direction="row" spacing={2}>
+          <FieldBox>
+            <FieldLabel htmlFor="profile-quality">{t('profiles.qualityLabel')}</FieldLabel>
+            <TextField id="profile-quality" select fullWidth size="small" value={crf} onChange={(e) => setCrf(Number(e.target.value))}>
+              {CRF_OPTIONS.map((v) => (
+                <MenuItem key={v} value={v}>
+                  {v}
+                </MenuItem>
+              ))}
+            </TextField>
+          </FieldBox>
+
+          <FieldBox>
+            <FieldLabel htmlFor="profile-preset">{t('profiles.presetLabel')}</FieldLabel>
+            <TextField id="profile-preset" select fullWidth size="small" value={preset} onChange={(e) => setPreset(e.target.value)}>
+              {PRESET_OPTIONS.map((p) => (
+                <MenuItem key={p} value={p}>
+                  {p}
+                </MenuItem>
+              ))}
+            </TextField>
+          </FieldBox>
+        </Stack>
+
+        <Stack direction="row" spacing={2}>
+          <FieldBox>
+            <FieldLabel htmlFor="profile-scale">{t('profiles.resolutionLabel')}</FieldLabel>
+            <TextField
+              id="profile-scale"
+              select
+              fullWidth
+              size="small"
+              slotProps={{ select: { displayEmpty: true } }}
+              value={scale}
+              onChange={(e) => setScale(e.target.value)}
+            >
+              <MenuItem value="">{t('profiles.original')}</MenuItem>
+              {SCALE_OPTIONS.filter((s) => s !== '').map((s) => (
+                <MenuItem key={s} value={s}>
+                  {s}
+                </MenuItem>
+              ))}
+            </TextField>
+          </FieldBox>
+
+          <FieldBox>
+            <FieldLabel htmlFor="profile-pixel-format">{t('profiles.pixelFormatLabel')}</FieldLabel>
+            <TextField
+              id="profile-pixel-format"
+              select
+              fullWidth
+              size="small"
+              value={pixelFormat}
+              onChange={(e) => setPixelFormat(e.target.value)}
+            >
+              {PIXEL_FORMATS.map((f) => (
+                <MenuItem key={f.value} value={f.value}>
+                  {f.value}
+                </MenuItem>
+              ))}
+            </TextField>
+          </FieldBox>
+        </Stack>
+
+        <Stack direction="row" spacing={2}>
+          <FieldBox>
+            <FieldLabel htmlFor="profile-video-bitrate">{t('profiles.videoBitrateLabel')}</FieldLabel>
+            <TextField
+              id="profile-video-bitrate"
+              select
+              fullWidth
+              size="small"
+              value={videoBitrate}
+              onChange={(e) => setVideoBitrate(e.target.value)}
+              slotProps={{ select: { displayEmpty: true } }}
+            >
+              <MenuItem value="">{t('profiles.autoCrf')}</MenuItem>
+              {withUnknownValue(
+                VIDEO_BITRATE_OPTIONS.filter((b) => b !== ''),
+                videoBitrate,
+              ).map((b) => (
+                <MenuItem key={b} value={b}>
+                  {b}
+                </MenuItem>
+              ))}
+            </TextField>
+          </FieldBox>
+
+          <FieldBox>
+            <FieldLabel htmlFor="profile-audio-bitrate">{t('profiles.audioBitrateLabel')}</FieldLabel>
+            <TextField
+              id="profile-audio-bitrate"
+              select
+              fullWidth
+              size="small"
+              value={audioBitrate}
+              onChange={(e) => setAudioBitrate(e.target.value)}
+            >
+              {withUnknownValue(BITRATE_OPTIONS, audioBitrate).map((b) => (
+                <MenuItem key={b} value={b}>
+                  {b}
+                </MenuItem>
+              ))}
+            </TextField>
+          </FieldBox>
+        </Stack>
+
+        <Box>
+          <Button
+            size="small"
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            endIcon={
+              <ExpandChevron component="span" $expanded={showAdvanced}>
+                <FontAwesomeIcon icon={faChevronDown} />
+              </ExpandChevron>
+            }
+          >
+            {t('profiles.advancedOptions')}
+          </Button>
+          <Collapse in={showAdvanced}>
+            <EditorFieldStack spacing={2}>
+              <FieldBox>
+                <FieldLabel htmlFor="profile-extension">{t('profiles.extensionOverrideLabel')}</FieldLabel>
+                <TextField
+                  id="profile-extension"
+                  fullWidth
+                  size="small"
+                  value={extension}
+                  onChange={(e) => setExtension(e.target.value)}
+                  placeholder={t('profiles.extensionPlaceholder')}
+                />
+              </FieldBox>
+              <FieldBox>
+                <FieldLabel htmlFor="profile-extra-args">{t('profiles.extraArgsLabel')}</FieldLabel>
+                <TextField
+                  id="profile-extra-args"
+                  fullWidth
+                  size="small"
+                  value={extraArgsStr}
+                  onChange={(e) => setExtraArgsStr(e.target.value)}
+                  placeholder="-movflags +faststart"
+                  helperText={t('profiles.extraArgsHelp')}
+                />
+              </FieldBox>
+            </EditorFieldStack>
+          </Collapse>
+        </Box>
+      </EditorFieldStack>
+    </AppDialog>
   );
 }
