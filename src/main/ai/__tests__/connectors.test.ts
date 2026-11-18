@@ -125,6 +125,19 @@ describe('createOpenAICompatibleConnector', () => {
     expect((caught as ProviderHttpError).body).toHaveLength(4000);
   });
 
+  it('retries without temperature when the model rejects it', async () => {
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValueOnce(errorResponse(400, '{"error":{"message":"`temperature` is unsupported for this model"}}'))
+      .mockResolvedValueOnce(jsonResponse({ choices: [{ message: { content: 'ok' } }] })) as unknown as SpyFetch;
+    const connector = createOpenAICompatibleConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
+    const response = await connector.complete(request);
+    expect(response.text).toBe('ok');
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+    expect(JSON.parse(String(fetchImpl.mock.calls[0][1].body)).temperature).toBe(0);
+    expect(JSON.parse(String(fetchImpl.mock.calls[1][1].body)).temperature).toBeUndefined();
+  });
+
   it('swallows a throwing response.text() and still classifies the failure', async () => {
     const failing = {
       ok: false,
@@ -188,6 +201,13 @@ describe('createAnthropicConnector', () => {
     expect(fetchImpl).toHaveBeenCalledTimes(2);
     expect(JSON.parse(String(fetchImpl.mock.calls[0][1].body)).temperature).toBe(0);
     expect(JSON.parse(String(fetchImpl.mock.calls[1][1].body)).temperature).toBeUndefined();
+  });
+
+  it('rethrows a 400 error when it is not a temperature rejection', async () => {
+    const fetchImpl = vi.fn(async () => errorResponse(400, 'bad request')) as unknown as SpyFetch;
+    const connector = createAnthropicConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
+    await expect(connector.complete(request)).rejects.toThrow(/HTTP 400/);
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
   });
 });
 
