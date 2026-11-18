@@ -405,7 +405,13 @@ export default function ChatInput({
                 {t('copilot.saveAndReset')}
               </Button>
             )}
-            <Button ref={resetConfirmRef} onClick={handleResetConfirm} color="error" variant="contained">
+            <Button
+              ref={resetConfirmRef}
+              onClick={handleResetConfirm}
+              color="error"
+              variant="contained"
+              data-testid="copilot-reset-confirm"
+            >
               {t('copilot.resetConfirmAction')}
             </Button>
           </>
