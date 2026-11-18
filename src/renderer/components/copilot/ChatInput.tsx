@@ -297,24 +297,24 @@ export default function ChatInput({
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <FocusableShell>
+        {showReset && onResetConversation && (
+          <Tooltip title={t('copilot.resetConversation')} placement="top" arrow>
+            <ResetButtonWrap>
+              <ResetIconButton
+                size="small"
+                onClick={handleResetClick}
+                disabled={busy || disabled}
+                aria-label={t('copilot.resetConversation')}
+                data-testid="copilot-reset-conversation"
+              >
+                <ResetIconGlyph>
+                  <FontAwesomeIcon icon={faPlus} />
+                </ResetIconGlyph>
+              </ResetIconButton>
+            </ResetButtonWrap>
+          </Tooltip>
+        )}
         <EditorArea>
-          {showReset && onResetConversation && (
-            <Tooltip title={t('copilot.resetConversation')} placement="top" arrow>
-              <ResetButtonWrap>
-                <ResetIconButton
-                  size="small"
-                  onClick={handleResetClick}
-                  disabled={busy || disabled}
-                  aria-label={t('copilot.resetConversation')}
-                  data-testid="copilot-reset-conversation"
-                >
-                  <ResetIconGlyph>
-                    <FontAwesomeIcon icon={faPlus} />
-                  </ResetIconGlyph>
-                </ResetIconButton>
-              </ResetButtonWrap>
-            </Tooltip>
-          )}
           <EditorField>
             <RichTextPlugin
               contentEditable={<ContentEditable tabIndex={0} aria-label={t('copilot.inputAria')} />}
