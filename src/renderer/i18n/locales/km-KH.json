@@ -628,7 +628,7 @@
       "providers": {
         "rules": "ច្បាប់ភ្ជាប់មកជាមួយ (មិនភ្ជាប់អ៊ីនធឺណិត)",
         "openai": "OpenAI",
-        "anthropic": "Anthropic",
+        "anthropic": "Claude AI",
         "gemini": "Google Gemini",
         "local": "ម៉ូដែលក្នុងមូលដ្ឋាន"
       },

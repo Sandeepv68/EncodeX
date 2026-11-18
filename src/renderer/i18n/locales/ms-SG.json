@@ -628,7 +628,7 @@
       "providers": {
         "rules": "Peraturan terbina dalam (luar talian)",
         "openai": "OpenAI",
-        "anthropic": "Anthropic",
+        "anthropic": "Claude AI",
         "gemini": "Google Gemini",
         "local": "Model setempat"
       },

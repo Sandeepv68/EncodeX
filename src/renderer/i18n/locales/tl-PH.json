@@ -628,7 +628,7 @@
       "providers": {
         "rules": "Built-in na mga panuntunan (offline)",
         "openai": "OpenAI",
-        "anthropic": "Anthropic",
+        "anthropic": "Claude AI",
         "gemini": "Google Gemini",
         "local": "Lokal na modelo"
       },

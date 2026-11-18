@@ -171,6 +171,24 @@ describe('createAnthropicConnector', () => {
     const connector = createAnthropicConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
     await expect(connector.complete(request)).rejects.toThrow(/empty completion/);
   });
+
+  it('retries without temperature when the model deprecates it', async () => {
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValueOnce(
+        errorResponse(
+          400,
+          '{"type":"error","error":{"type":"invalid_request_error","message":"`temperature` is deprecated for this model."},"request_id":"req_test"}',
+        ),
+      )
+      .mockResolvedValueOnce(jsonResponse({ content: [{ type: 'text', text: 'ok' }] })) as unknown as SpyFetch;
+    const connector = createAnthropicConnector({ apiKey: 'k', model: 'test-model', fetchImpl });
+    const response = await connector.complete(request);
+    expect(response.text).toBe('ok');
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+    expect(JSON.parse(String(fetchImpl.mock.calls[0][1].body)).temperature).toBe(0);
+    expect(JSON.parse(String(fetchImpl.mock.calls[1][1].body)).temperature).toBeUndefined();
+  });
 });
 
 describe('createGeminiConnector', () => {

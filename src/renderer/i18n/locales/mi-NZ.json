@@ -628,7 +628,7 @@
       "providers": {
         "rules": "He ture kōmana (tuimotu)",
         "openai": "OpenAI",
-        "anthropic": "Anthropic",
+        "anthropic": "Claude AI",
         "gemini": "Google Gemini",
         "local": "Tauira ā-rohe"
       },

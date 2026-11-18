@@ -628,7 +628,7 @@
       "providers": {
         "rules": "כללים מובנים (ללא חיבור)",
         "openai": "OpenAI",
-        "anthropic": "Anthropic",
+        "anthropic": "Claude AI",
         "gemini": "Google Gemini",
         "local": "מודל מקומי"
       },

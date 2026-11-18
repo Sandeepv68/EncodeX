@@ -628,7 +628,7 @@
       "providers": {
         "rules": "Inbyggda regler (offline)",
         "openai": "OpenAI",
-        "anthropic": "Anthropic",
+        "anthropic": "Claude AI",
         "gemini": "Google Gemini",
         "local": "Lokal modell"
       },

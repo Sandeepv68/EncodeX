@@ -628,7 +628,7 @@
       "providers": {
         "rules": "Quy tắc tích hợp (ngoại tuyến)",
         "openai": "OpenAI",
-        "anthropic": "Anthropic",
+        "anthropic": "Claude AI",
         "gemini": "Google Gemini",
         "local": "Mô hình cục bộ"
       },

@@ -628,7 +628,7 @@
       "providers": {
         "rules": "සාදන ලද රීති (සම්බන්ධතාව නොමැතිව)",
         "openai": "OpenAI",
-        "anthropic": "Anthropic",
+        "anthropic": "Claude AI",
         "gemini": "Google Gemini",
         "local": "දේශීය ආකෘතිය"
       },

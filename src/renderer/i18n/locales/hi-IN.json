@@ -628,7 +628,7 @@
       "providers": {
         "rules": "अंतर्निर्मित नियम (ऑफ़लाइन)",
         "openai": "OpenAI",
-        "anthropic": "Anthropic",
+        "anthropic": "Claude AI",
         "gemini": "Google Gemini",
         "local": "स्थानीय मॉडल"
       },

@@ -628,7 +628,7 @@
       "providers": {
         "rules": "內建規則（離線）",
         "openai": "OpenAI",
-        "anthropic": "Anthropic",
+        "anthropic": "Claude AI",
         "gemini": "Google Gemini",
         "local": "本機模型"
       },

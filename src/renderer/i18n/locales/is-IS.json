@@ -628,7 +628,7 @@
       "providers": {
         "rules": "Innbyggðar reglur (án nettengingar)",
         "openai": "OpenAI",
-        "anthropic": "Anthropic",
+        "anthropic": "Claude AI",
         "gemini": "Google Gemini",
         "local": "Staðbundið líkan"
       },

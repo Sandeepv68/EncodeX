@@ -628,7 +628,7 @@
       "providers": {
         "rules": "قواعد مدمجة (دون اتصال)",
         "openai": "OpenAI",
-        "anthropic": "Anthropic",
+        "anthropic": "Claude AI",
         "gemini": "Google Gemini",
         "local": "نموذج محلي"
       },
