@@ -18,13 +18,14 @@ import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $getRoot, COMMAND_PRIORITY_LOW, INSERT_LINE_BREAK_COMMAND, KEY_ENTER_COMMAND } from 'lexical';
 import type { EditorState } from 'lexical';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Popover, Tooltip } from '@mui/material';
+import { Button, DialogContentText, Popover, Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faRotateLeft, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
 import type { ChatInputProps } from './types';
 import AiConnectionStatus from '../AiConnectionStatus';
+import AppDialog from '../AppDialog';
 import { aiProviderFallbackIcon, aiProviderLogo } from '../../utils/ai-provider-icons';
 import {
   ComposerDivider,
@@ -297,24 +298,24 @@ export default function ChatInput({
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <FocusableShell>
+        {showReset && onResetConversation && (
+          <Tooltip title={t('copilot.resetConversation')} placement="top" arrow>
+            <ResetButtonWrap>
+              <ResetIconButton
+                size="small"
+                onClick={handleResetClick}
+                disabled={busy || disabled}
+                aria-label={t('copilot.resetConversation')}
+                data-testid="copilot-reset-conversation"
+              >
+                <ResetIconGlyph>
+                  <FontAwesomeIcon icon={faPlus} />
+                </ResetIconGlyph>
+              </ResetIconButton>
+            </ResetButtonWrap>
+          </Tooltip>
+        )}
         <EditorArea>
-          {showReset && onResetConversation && (
-            <Tooltip title={t('copilot.resetConversation')} placement="top" arrow>
-              <ResetButtonWrap>
-                <ResetIconButton
-                  size="small"
-                  onClick={handleResetClick}
-                  disabled={busy || disabled}
-                  aria-label={t('copilot.resetConversation')}
-                  data-testid="copilot-reset-conversation"
-                >
-                  <ResetIconGlyph>
-                    <FontAwesomeIcon icon={faPlus} />
-                  </ResetIconGlyph>
-                </ResetIconButton>
-              </ResetButtonWrap>
-            </Tooltip>
-          )}
           <EditorField>
             <RichTextPlugin
               contentEditable={<ContentEditable tabIndex={0} aria-label={t('copilot.inputAria')} />}
@@ -382,33 +383,42 @@ export default function ChatInput({
           </>
         )}
       </FocusableShell>
-      <Dialog
+      <AppDialog
         open={resetDialogOpen}
         onClose={() => setResetDialogOpen(false)}
-        aria-labelledby={`${resetDialogId}-title`}
-        aria-describedby={`${resetDialogId}-description`}
-      >
-        <DialogTitle id={`${resetDialogId}-title`}>{t('copilot.resetConfirmTitle')}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id={`${resetDialogId}-description`}>{t('copilot.resetConfirmMessage')}</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setResetDialogOpen(false)}>{t('closeConfirm.cancelLabel')}</Button>
-          {showSaveAndReset && onSaveAndResetConversation && (
+        title={t('copilot.resetConfirmTitle')}
+        icon={<FontAwesomeIcon icon={faRotateLeft} />}
+        showCloseButton
+        closeButtonAriaLabel={t('shortcuts.close')}
+        ariaLabelledBy={`${resetDialogId}-title`}
+        ariaDescribedBy={`${resetDialogId}-description`}
+        actions={
+          <>
+            <Button onClick={() => setResetDialogOpen(false)}>{t('closeConfirm.cancelLabel')}</Button>
+            {showSaveAndReset && onSaveAndResetConversation && (
+              <Button
+                onClick={() => {
+                  setResetDialogOpen(false);
+                  onSaveAndResetConversation();
+                }}
+              >
+                {t('copilot.saveAndReset')}
+              </Button>
+            )}
             <Button
-              onClick={() => {
-                setResetDialogOpen(false);
-                onSaveAndResetConversation();
-              }}
+              ref={resetConfirmRef}
+              onClick={handleResetConfirm}
+              color="error"
+              variant="contained"
+              data-testid="copilot-reset-confirm"
             >
-              {t('copilot.saveAndReset')}
+              {t('copilot.resetConfirmAction')}
             </Button>
-          )}
-          <Button ref={resetConfirmRef} onClick={handleResetConfirm} color="error" variant="contained">
-            {t('copilot.resetConfirmAction')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+          </>
+        }
+      >
+        <DialogContentText id={`${resetDialogId}-description`}>{t('copilot.resetConfirmMessage')}</DialogContentText>
+      </AppDialog>
     </LexicalComposer>
   );
 }

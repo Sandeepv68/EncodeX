@@ -1,11 +1,9 @@
-import { styled } from '@mui/material/styles';
-import { Box, Dialog, Typography } from '@mui/material';
+﻿import { styled } from '@mui/material/styles';
+import { Box, Paper, Typography } from '@mui/material';
 
-export const TermsDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialog-paper': {
-    width: theme.typography.pxToRem(560),
-    maxWidth: '92vw',
-  },
+export const TermsDialogPaper = styled(Paper)(({ theme }) => ({
+  width: theme.typography.pxToRem(560),
+  maxWidth: '92vw',
 }));
 
 export const TermsContent = styled(Box)(({ theme }) => ({

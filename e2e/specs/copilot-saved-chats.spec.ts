@@ -336,10 +336,9 @@ describe.runIf(IS_E2E)('Copilot saved conversations and AI status', () => {
     await startActivePlan(page);
 
     await page.locator('[data-testid="copilot-reset-conversation"]').click();
-    // The confirm dialog has no test id; its confirm action is the second button (cancel comes first).
     const dialog = page.getByRole('dialog');
     await dialog.waitFor({ timeout: 5000 });
-    await dialog.getByRole('button').nth(1).click();
+    await dialog.locator('[data-testid="copilot-reset-confirm"]').click();
     await expect.poll(() => page.locator('[data-testid="copilot-plan-summary"]').count()).toBe(0);
     await expect.poll(() => page.locator('[data-testid="copilot-conversation"]').innerText()).toContain('How can I help?');
   });

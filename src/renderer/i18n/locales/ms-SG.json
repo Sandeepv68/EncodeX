@@ -628,7 +628,7 @@
       "providers": {
         "rules": "Peraturan terbina dalam (luar talian)",
         "openai": "OpenAI",
-        "anthropic": "Anthropic",
+        "anthropic": "Claude AI",
         "gemini": "Google Gemini",
         "local": "Model setempat"
       },
@@ -807,7 +807,7 @@
   "about": {
     "title": "Tentang EncodeX",
     "subtitle": "Kit alat multimedia percuma dan sumber terbuka yang dibina di atas FFmpeg. Tukar, mampatkan, ekstrak, potong dan proses audio, video serta imej secara berkelompok, atau kendalikan enjin yang sama dari CLI, pelayan MCP atau pembantu AI Copilot.",
-    "description": "EncodeX ialah kit alat multimedia rentas platform yang membawa kuasa FFmpeg ke antara muka desktop yang moden dan mudah digunakan. Tukar audio, video dan imej dengan kawalan terperinci ke atas codec, kadar bit, resolusi, format piksel dan kualiti; salin trek tanpa kehilangan kualiti; putar dan cerminkan media; gunakan penapis video; dan potong video dengan pemain pratonton yang tepat sehingga ke bingkai. Profil penukaran menetapkan sasaran lazim dengan satu klik, dan anda boleh menyimpan profil sendiri. Pengekodan pecutan perkakasan menyokong NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox dan Microsoft Media Foundation, dengan keluarga pengekod dikesan secara automatik daripada FFmpeg yang disertakan semasa aplikasi berjalan. Barisan kelompok menjalankan kerja secara selari dengan kemajuan langsung, penyimpanan keadaan, serta import dan eksport. Selain GUI, CLI tanpa antara muka, pelayan MCP berdiri sendiri dan terbenam, serta pembantu AI Copilot membolehkan skrip dan pembantu mengawal enjin media yang sama.",
+    "description": "EncodeX ialah kit alat multimedia merentas platform yang membawa kuasa FFmpeg ke antara muka desktop moden. Tukar audio, video dan imej dengan kawalan terperinci ke atas codec, kadar bit, resolusi, format piksel dan kualiti; salin strim tanpa kehilangan; putar dan cerminkan media; gunakan penapis video; dan potong video dengan pemain pratonton tepat bingkai. Profil penukaran mengkonfigurasi sasaran biasa dengan satu klik, dan anda boleh menyimpan profil sendiri. Pengekodan dipercepat perkakasan merangkumi NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox dan Microsoft Media Foundation, dengan keluarga pengekod dikesan secara automatik daripada FFmpeg yang disertakan. Baris gilir kelompok menjalankan tugas secara selari dengan kemajuan langsung, ketekalan, import/eksport, pemberitahuan desktop pilihan dan tindakan kuasa apabila selesai. Selain GUI, CLI tanpa antara muka, pelayan MCP kendiri dan terbenam, serta AI Copilot membolehkan skrip dan pembantu memacu enjin media yang sama.",
     "logoAlt": "Logo EncodeX",
     "featuresTitle": "Apa yang anda boleh lakukan",
     "featureConvert": "Tukar video, audio dan imej dengan kawalan terperinci ke atas codec, kadar bit, resolusi dan kualiti, serta putaran dan penapis",
@@ -817,9 +817,9 @@
     "featureAudio": "Ekstrak trek audio daripada video dalam format AAC, MP3, FLAC, Opus dan lain-lain",
     "featureCut": "Potong video dengan ketepatan bingkai pada garis masa imej kecil dan bentuk gelombang",
     "featureProfiles": "Mulakan dengan profil penukaran terbina dalam, atau simpan profil anda sendiri",
-    "featureBatch": "Jalankan kerja berkelompok secara selari dengan jeda, susunan semula, import dan eksport, serta tindakan kuasa apabila selesai",
+    "featureBatch": "Jalankan tugas kelompok secara selari dengan jeda, susun semula, import/eksport, tindakan kuasa apabila selesai dan pemberitahuan desktop pilihan",
     "featureHardware": "Gunakan pengekod GPU seperti NVENC, Quick Sync, AMF, VAAPI dan VideoToolbox yang dikesan secara automatik",
-    "featureAutomation": "Terangkan matlamat kepada pembantu AI Copilot, atau tulis skrip untuk EncodeX melalui CLI dan pelayan MCP",
+    "featureAutomation": "Gunakan AI Copilot untuk merancang tugas dan menganalisis, mentranskrip, meringkaskan atau menterjemah media, atau skrip EncodeX daripada CLI dan pelayan MCP",
     "version": "Versi",
     "builtWith": "Dibina dengan",
     "authorTitle": "Penulis & maklum balas",

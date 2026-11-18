@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+﻿import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import ConfirmDialog from '../ConfirmDialog';
 
@@ -43,5 +43,12 @@ describe('ConfirmDialog', () => {
   it('does not render content when closed', () => {
     render(<ConfirmDialog {...makeProps({ open: false })} />);
     expect(screen.queryByText('Delete?')).not.toBeInTheDocument();
+  });
+
+  it('calls onClose when header close button is clicked', () => {
+    const props = makeProps();
+    render(<ConfirmDialog {...props} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    expect(props.onClose).toHaveBeenCalled();
   });
 });

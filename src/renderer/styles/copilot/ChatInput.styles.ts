@@ -113,18 +113,16 @@ export const EditorPlaceholder = styled(Box)(({ theme }) => ({
 /**
  * Wrapper around the "reset conversation" icon button. Rendered as an inline
  * span so it can sit inside the tooltip trigger without breaking the row. It
- * is pinned to the top of the editor row so it stays next to the first line of
- * the text when the composer grows.
+ * stays aligned with the bottom action buttons as the composer grows.
  * @const ResetButtonWrap
  */
 export const ResetButtonWrap = styled('span')(({ theme }) => ({
   display: 'inline-flex',
   alignItems: 'center',
-  alignSelf: 'flex-start',
+  alignSelf: 'flex-end',
   flexShrink: 0,
   lineHeight: 0,
-  // Nudges the button onto the first line of the text.
-  marginTop: theme.typography.pxToRem(8),
+  marginBottom: theme.typography.pxToRem(8),
 }));
 
 /**
@@ -329,7 +327,7 @@ export const ComposerPlanButton = styled(Button)(({ theme }) => ({
   minWidth: theme.typography.pxToRem(44),
   height: theme.typography.pxToRem(56),
   paddingInline: theme.spacing(1.5),
-  borderRadius: theme.typography.pxToRem(999),
+  borderRadius: theme.typography.pxToRem(12),
   fontSize: theme.typography.body1.fontSize,
   color: theme.palette.mode === 'dark' ? theme.palette.primary.light : theme.palette.primary.dark,
   '& .MuiButton-startIcon': {
@@ -346,6 +344,7 @@ export const ComposerPlanButton = styled(Button)(({ theme }) => ({
   [theme.breakpoints.up('sm')]: {
     height: theme.typography.pxToRem(64),
     paddingInline: theme.spacing(2.5),
+    borderRadius: theme.typography.pxToRem(16),
     '& .MuiButton-startIcon': {
       marginInlineEnd: theme.spacing(0.75),
     },

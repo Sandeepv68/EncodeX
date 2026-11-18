@@ -44,28 +44,28 @@ Coverage reports are generated in `coverage/`:
 
 ## ✅ Test Suite
 
-The suite is run by Vitest 4 across **361 test/spec files** in `src/`. <!-- drift:test-files=373 --> Coverage uses the v8 provider.
+The suite is run by Vitest 4 across **361 test/spec files** in `src/`. <!-- drift:test-files=375 --> Coverage uses the v8 provider.
 
-| Area | What's Covered |
-| ---- | -------------- |
-| **Shared (53 files)** | Error normalization, constants, codec/container mapping, validation, types, logger, IPC channel registry, estimation, progress, math, AI/copilot contracts, video filters, remux utilities, audit |
-| **Main (88 files)** | CLI entry, window lifecycle, encoder probing, queue semantics, process utilities, media binary resolution, power actions, preview cache, image/video preview generation, cli-logo, AI providers, analytics |
-| **Main CLI** | CLI subcommand parsing, option handling, conversion/compress/remux/demux subcommands, utility functions, integration tests |
-| **Main IPC (16 files)** | Per-channel IPC handlers, event broadcasting, error wrapping, system handlers, Copilot/AI/analytics/update, dev screenshot |
-| **Main transcoders** | All three cores, hardware-acceleration flag building, ffprobe mapping, factory dispatch, transcoder interface contract |
-| **Main player / queue / timeline** | Rawvideo frame decoding, audio pipe, buffering, queue transfer, waveform extraction, thumbnail montage generation |
-| **Main MCP (3 files)** | HTTP server (integration), GUI-parity tools, settings persistence |
-| **Monitoring (9 files)** | MonitoringService facade, noop provider, logger bridge, Sentry providers (main + renderer), provider factories, consent + IPC bridge |
-| **Standalone MCP (27 files)** | Server wiring, the full tool catalogue (37 registrations), conversion-options mapping, job manager, safety/validation, STT/translation, stdio integration |
-| **Preload (3 files)** | Full `electronAPI` bridge surface, every IPC method |
-| **Renderer components (44 files)** | Rendering, interactions, error states, accessibility for all shared UI components <!-- drift:renderer-component-tests=52 --> |
-| **Renderer hooks (9 files)** | Conversion orchestration, error handling, form validation, media task lifecycle, RTL direction, keyboard shortcuts, AI connection |
-| **Renderer pages (14 files)** | Full page flows: form state, validation, IPC invocation, settings persistence, Copilot, Remux/Demux, about/update |
-| **Renderer stores (22 files)** | Zustand store state transitions and persistence, terms gate, batch config, profiles, dismissed alerts, AI/audit/remux/demux |
-| **Renderer constants / utils (20 files)** | Formatting helpers, preview cache, easter egg dates, queue reorder logic, string/security/storage utils, shortcuts registry |
-| **Renderer monitoring** | Renderer Sentry provider + factory selection |
-| **Renderer app / misc** | App shell routing, color palette, session cleanup, terms debug spec |
-| **Integration** | Full pipeline: Error → `formatError` → store → display → clear; terms gate bootstrap; MCP stdio round-trip |
+| Area                                      | What's Covered                                                                                                                                                                                             |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Shared (53 files)**                     | Error normalization, constants, codec/container mapping, validation, types, logger, IPC channel registry, estimation, progress, math, AI/copilot contracts, video filters, remux utilities, audit          |
+| **Main (88 files)**                       | CLI entry, window lifecycle, encoder probing, queue semantics, process utilities, media binary resolution, power actions, preview cache, image/video preview generation, cli-logo, AI providers, analytics |
+| **Main CLI**                              | CLI subcommand parsing, option handling, conversion/compress/remux/demux subcommands, utility functions, integration tests                                                                                 |
+| **Main IPC (16 files)**                   | Per-channel IPC handlers, event broadcasting, error wrapping, system handlers, Copilot/AI/analytics/update, dev screenshot                                                                                 |
+| **Main transcoders**                      | All three cores, hardware-acceleration flag building, ffprobe mapping, factory dispatch, transcoder interface contract                                                                                     |
+| **Main player / queue / timeline**        | Rawvideo frame decoding, audio pipe, buffering, queue transfer, waveform extraction, thumbnail montage generation                                                                                          |
+| **Main MCP (3 files)**                    | HTTP server (integration), GUI-parity tools, settings persistence                                                                                                                                          |
+| **Monitoring (9 files)**                  | MonitoringService facade, noop provider, logger bridge, Sentry providers (main + renderer), provider factories, consent + IPC bridge                                                                       |
+| **Standalone MCP (27 files)**             | Server wiring, the full tool catalogue (37 registrations), conversion-options mapping, job manager, safety/validation, STT/translation, stdio integration                                                  |
+| **Preload (3 files)**                     | Full `electronAPI` bridge surface, every IPC method                                                                                                                                                        |
+| **Renderer components (44 files)**        | Rendering, interactions, error states, accessibility for all shared UI components <!-- drift:renderer-component-tests=54 -->                                                                               |
+| **Renderer hooks (9 files)**              | Conversion orchestration, error handling, form validation, media task lifecycle, RTL direction, keyboard shortcuts, AI connection                                                                          |
+| **Renderer pages (14 files)**             | Full page flows: form state, validation, IPC invocation, settings persistence, Copilot, Remux/Demux, about/update                                                                                          |
+| **Renderer stores (22 files)**            | Zustand store state transitions and persistence, terms gate, batch config, profiles, dismissed alerts, AI/audit/remux/demux                                                                                |
+| **Renderer constants / utils (20 files)** | Formatting helpers, preview cache, easter egg dates, queue reorder logic, string/security/storage utils, shortcuts registry                                                                                |
+| **Renderer monitoring**                   | Renderer Sentry provider + factory selection                                                                                                                                                               |
+| **Renderer app / misc**                   | App shell routing, color palette, session cleanup, terms debug spec                                                                                                                                        |
+| **Integration**                           | Full pipeline: Error → `formatError` → store → display → clear; terms gate bootstrap; MCP stdio round-trip                                                                                                 |
 
 ## 🛠️ Test Setup
 
@@ -79,66 +79,66 @@ The test environment (`src/test-setup.ts`) provides:
 
 Playwright-based end-to-end tests live in `e2e/` (node environment, 60s timeouts) and are gated behind the `E2E` env var or CI:
 
-| Spec File | What's Covered |
-| --------- | -------------- |
-| `e2e/cli.spec.ts` | CLI mode: `--help`/`-h`, subcommands, legacy flat syntax, global flags |
-| `e2e/specs/shell.spec.ts` | App shell: window title, `electronAPI` presence, all nav routes, drawer navigation, window controls, language menu |
-| `e2e/specs/convert.spec.ts` | Convert page: file selection, output auto-suggestion, codec/bitrate/scale/pixel/transcoder options, lossless copy, conversion with progress, pause/resume, cancel |
-| `e2e/specs/batch.spec.ts` | Batch queue: empty state, add files via review dialog, queue events, live progress, cancel all, status filter, remove job, drag reorder, window close confirmation |
-| `e2e/specs/audio-extract.spec.ts` | Audio extraction: disabled button, video selection with audio streams, codec/bitrate changes, extraction with success toast |
-| `e2e/specs/image-compress.spec.ts` | Image compression: dropzone, image selection with preview, format/quality/scale changes, compression with success toast |
-| `e2e/specs/media-info.spec.ts` | Media info: video analysis (streams, codec details), image analysis (EXIF data) |
-| `e2e/specs/settings.spec.ts` | Settings: theme cards, theme switching, always-on-top, launch-at-login, hwaccel mode persistence |
-| `e2e/specs/logs.spec.ts` | Logs: emit entries, level filtering, clear all, download with toast |
-| `e2e/specs/video-cut.spec.ts` | Video cut: disabled button, timeline + waveform + thumbnails, duration/end-time toggle, playhead scrubbing, cut with progress, cancel, clear form |
-| `e2e/specs/profiles.spec.ts` | Conversion profiles: built-in catalogue, category navigation, profile application, custom profile create/edit/persist |
-| `e2e/specs/terms-gate.spec.ts` | Terms & Conditions gate: first-run dialog, accept persists, reject quits |
-| `e2e/specs/real-convert.spec.ts` | Tier B (real): actual FFmpeg conversion without mocks (gated behind `E2E_REAL=1`) |
-| `e2e/specs/about.spec.ts` | About page: version, update check, links |
-| `e2e/specs/a11y.spec.ts` | Accessibility checks across pages |
-| `e2e/specs/boot-budget.spec.ts` | Startup performance budget |
-| `e2e/specs/cli-hostile.spec.ts` | CLI handling of hostile/oversized input |
-| `e2e/specs/copilot.spec.ts` | Copilot: chat, plan review, provider gating |
-| `e2e/specs/copilot-saved-chats.spec.ts` | Saved Copilot chat persistence |
-| `e2e/specs/dashboard.spec.ts` | Dashboard tiles and getting-started card |
-| `e2e/specs/error-states.spec.ts` | Error snackbar, banner, and boundary states |
-| `e2e/specs/focus-order.spec.ts` | Keyboard focus order across the shell |
-| `e2e/specs/harness-recovery.spec.ts` | Test harness recovery from crashes |
-| `e2e/specs/hostile-bridge.spec.ts` | Hostile preload/IPC bridge inputs |
-| `e2e/specs/ipc-abuse.spec.ts` | IPC input validation and abuse cases |
-| `e2e/specs/ipc-events.spec.ts` | Event payload guards and coalescing |
-| `e2e/specs/keyboard-shortcuts.spec.ts` | Shortcut registry and help dialog |
-| `e2e/specs/language.spec.ts` | Locale switching and RTL layout |
-| `e2e/specs/navigation-drawer.spec.ts` | Drawer navigation and active-route state |
-| `e2e/specs/remux-demux-filters.spec.ts` | Remux/Demux pages and video filter presets |
-| `e2e/specs/settings-ai.spec.ts` | AI provider settings and connection test |
-| `e2e/specs/settings-mcp.spec.ts` | Embedded MCP server settings |
-| `e2e/fixtures/__tests__/boot-budget.test.ts` | Unit tests for boot-budget helper math |
-| `e2e/mcp/stdio.spec.ts` | stdio handshake and tool catalogue |
-| `e2e/mcp/http-standalone.spec.ts` | Standalone HTTP transport and auth |
-| `e2e/mcp/embedded-gui.spec.ts` | Embedded HTTP server with GUI-parity tools |
-| `e2e/mcp/mcp-apps.spec.ts` | MCP Apps UI bridge and approval flow |
-| `e2e/mcp/vscode-client.spec.ts` | VS Code MCP client configuration |
-| `e2e/mcp/vscode-ui.spec.ts` | VS Code UI integration |
+| Spec File                                    | What's Covered                                                                                                                                                     |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `e2e/cli.spec.ts`                            | CLI mode: `--help`/`-h`, subcommands, legacy flat syntax, global flags                                                                                             |
+| `e2e/specs/shell.spec.ts`                    | App shell: window title, `electronAPI` presence, all nav routes, drawer navigation, window controls, language menu                                                 |
+| `e2e/specs/convert.spec.ts`                  | Convert page: file selection, output auto-suggestion, codec/bitrate/scale/pixel/transcoder options, lossless copy, conversion with progress, pause/resume, cancel  |
+| `e2e/specs/batch.spec.ts`                    | Batch queue: empty state, add files via review dialog, queue events, live progress, cancel all, status filter, remove job, drag reorder, window close confirmation |
+| `e2e/specs/audio-extract.spec.ts`            | Audio extraction: disabled button, video selection with audio streams, codec/bitrate changes, extraction with success toast                                        |
+| `e2e/specs/image-compress.spec.ts`           | Image compression: dropzone, image selection with preview, format/quality/scale changes, compression with success toast                                            |
+| `e2e/specs/media-info.spec.ts`               | Media info: video analysis (streams, codec details), image analysis (EXIF data)                                                                                    |
+| `e2e/specs/settings.spec.ts`                 | Settings: theme cards, theme switching, always-on-top, launch-at-login, hwaccel mode persistence                                                                   |
+| `e2e/specs/logs.spec.ts`                     | Logs: emit entries, level filtering, clear all, download with toast                                                                                                |
+| `e2e/specs/video-cut.spec.ts`                | Video cut: disabled button, timeline + waveform + thumbnails, duration/end-time toggle, playhead scrubbing, cut with progress, cancel, clear form                  |
+| `e2e/specs/profiles.spec.ts`                 | Conversion profiles: built-in catalogue, category navigation, profile application, custom profile create/edit/persist                                              |
+| `e2e/specs/terms-gate.spec.ts`               | Terms & Conditions gate: first-run dialog, accept persists, reject quits                                                                                           |
+| `e2e/specs/real-convert.spec.ts`             | Tier B (real): actual FFmpeg conversion without mocks (gated behind `E2E_REAL=1`)                                                                                  |
+| `e2e/specs/about.spec.ts`                    | About page: version, update check, links                                                                                                                           |
+| `e2e/specs/a11y.spec.ts`                     | Accessibility checks across pages                                                                                                                                  |
+| `e2e/specs/boot-budget.spec.ts`              | Startup performance budget                                                                                                                                         |
+| `e2e/specs/cli-hostile.spec.ts`              | CLI handling of hostile/oversized input                                                                                                                            |
+| `e2e/specs/copilot.spec.ts`                  | Copilot: chat, plan review, provider gating                                                                                                                        |
+| `e2e/specs/copilot-saved-chats.spec.ts`      | Saved Copilot chat persistence                                                                                                                                     |
+| `e2e/specs/dashboard.spec.ts`                | Dashboard tiles and getting-started card                                                                                                                           |
+| `e2e/specs/error-states.spec.ts`             | Error snackbar, banner, and boundary states                                                                                                                        |
+| `e2e/specs/focus-order.spec.ts`              | Keyboard focus order across the shell                                                                                                                              |
+| `e2e/specs/harness-recovery.spec.ts`         | Test harness recovery from crashes                                                                                                                                 |
+| `e2e/specs/hostile-bridge.spec.ts`           | Hostile preload/IPC bridge inputs                                                                                                                                  |
+| `e2e/specs/ipc-abuse.spec.ts`                | IPC input validation and abuse cases                                                                                                                               |
+| `e2e/specs/ipc-events.spec.ts`               | Event payload guards and coalescing                                                                                                                                |
+| `e2e/specs/keyboard-shortcuts.spec.ts`       | Shortcut registry and help dialog                                                                                                                                  |
+| `e2e/specs/language.spec.ts`                 | Locale switching and RTL layout                                                                                                                                    |
+| `e2e/specs/navigation-drawer.spec.ts`        | Drawer navigation and active-route state                                                                                                                           |
+| `e2e/specs/remux-demux-filters.spec.ts`      | Remux/Demux pages and video filter presets                                                                                                                         |
+| `e2e/specs/settings-ai.spec.ts`              | AI provider settings and connection test                                                                                                                           |
+| `e2e/specs/settings-mcp.spec.ts`             | Embedded MCP server settings                                                                                                                                       |
+| `e2e/fixtures/__tests__/boot-budget.test.ts` | Unit tests for boot-budget helper math                                                                                                                             |
+| `e2e/mcp/stdio.spec.ts`                      | stdio handshake and tool catalogue                                                                                                                                 |
+| `e2e/mcp/http-standalone.spec.ts`            | Standalone HTTP transport and auth                                                                                                                                 |
+| `e2e/mcp/embedded-gui.spec.ts`               | Embedded HTTP server with GUI-parity tools                                                                                                                         |
+| `e2e/mcp/mcp-apps.spec.ts`                   | MCP Apps UI bridge and approval flow                                                                                                                               |
+| `e2e/mcp/vscode-client.spec.ts`              | VS Code MCP client configuration                                                                                                                                   |
+| `e2e/mcp/vscode-ui.spec.ts`                  | VS Code UI integration                                                                                                                                             |
 
 ## 🚀 Performance Benchmarks
 
 `perf/` holds the benchmark suites run with their own Vitest config (`npm run perf`, split into three phases):
 
-| Suite | What's Measured |
-| ----- | --------------- |
-| `conversion-benchmark` | End-to-end FFmpeg conversion throughput/latency |
-| `queue-concurrency` | Parallel queue scaling (1–4 jobs) |
-| `startup` | Cold-start to ready timings |
-| `process-lifecycle` | Main process boot + shutdown |
-| `memory-leak` | Peak RSS / leak detection over repeated conversions |
-| `large-file` | Large media handling and memory bounds |
-| `ipc-overhead` | IPC round-trip latency |
-| `cli-batch` | CLI batch command throughput |
-| `extraction` | Waveform/thumbnail extraction cost |
-| `phase8-io` | I/O pipeline benchmarks |
-| `phase8-queue` | Queue pipeline benchmarks |
-| `job-card-render` | Job card render cost |
+| Suite                  | What's Measured                                     |
+| ---------------------- | --------------------------------------------------- |
+| `conversion-benchmark` | End-to-end FFmpeg conversion throughput/latency     |
+| `queue-concurrency`    | Parallel queue scaling (1–4 jobs)                   |
+| `startup`              | Cold-start to ready timings                         |
+| `process-lifecycle`    | Main process boot + shutdown                        |
+| `memory-leak`          | Peak RSS / leak detection over repeated conversions |
+| `large-file`           | Large media handling and memory bounds              |
+| `ipc-overhead`         | IPC round-trip latency                              |
+| `cli-batch`            | CLI batch command throughput                        |
+| `extraction`           | Waveform/thumbnail extraction cost                  |
+| `phase8-io`            | I/O pipeline benchmarks                             |
+| `phase8-queue`         | Queue pipeline benchmarks                           |
+| `job-card-render`      | Job card render cost                                |
 
 Fixtures are generated with `npm run perf:generate-media` (`perf/fixtures/generate-media.cjs`).
 
@@ -182,17 +182,17 @@ npm run audit:gate          # blocking dependency audit
 
 Beyond the default Vitest run, the repo ships dedicated configs, each with its own npm script:
 
-| Script                    | Config                              | What it covers                                        |
-| ------------------------- | ----------------------------------- | ----------------------------------------------------- |
-| `npm run test:integration`| `vitest.integration.config.ts`      | Cross-module integration paths (builds main first)    |
-| `npm run test:media-fuzz` | `vitest.media-fuzz.config.ts`       | Corrupt-media corpus against real ffmpeg/ffprobe      |
-| `npm run test:locale-matrix` | `vitest.locale-matrix.config.ts` | 56 locales x 12 routes, RTL mirror, longest-string    |
-| `npm run test:a11y`       | `vitest.a11y.config.ts`             | axe matrix: 12 routes x light/dark x 320/768/1440     |
-| `npm run test:big-lists`  | `vitest.big-lists.config.ts`        | Render budgets (50k log rows, 3k job cards)           |
-| `npm run test:route-changes` | `vitest.route-change.config.ts`   | 1,000 rapid route changes                              |
-| `npm run test:mutate`     | `vitest.mutation.config.ts`         | Stryker mutation testing                               |
-| `npm run test:coverage:perfile` | —                              | Per-file coverage floors (ratchet)                    |
-| `npm run test:coverage:diff`  | —                               | Coverage delta vs the committed baseline              |
-| `npm run test:flake-detect`   | —                               | Flaky-test detection report                            |
+| Script                          | Config                           | What it covers                                     |
+| ------------------------------- | -------------------------------- | -------------------------------------------------- |
+| `npm run test:integration`      | `vitest.integration.config.ts`   | Cross-module integration paths (builds main first) |
+| `npm run test:media-fuzz`       | `vitest.media-fuzz.config.ts`    | Corrupt-media corpus against real ffmpeg/ffprobe   |
+| `npm run test:locale-matrix`    | `vitest.locale-matrix.config.ts` | 56 locales x 12 routes, RTL mirror, longest-string |
+| `npm run test:a11y`             | `vitest.a11y.config.ts`          | axe matrix: 12 routes x light/dark x 320/768/1440  |
+| `npm run test:big-lists`        | `vitest.big-lists.config.ts`     | Render budgets (50k log rows, 3k job cards)        |
+| `npm run test:route-changes`    | `vitest.route-change.config.ts`  | 1,000 rapid route changes                          |
+| `npm run test:mutate`           | `vitest.mutation.config.ts`      | Stryker mutation testing                           |
+| `npm run test:coverage:perfile` | —                                | Per-file coverage floors (ratchet)                 |
+| `npm run test:coverage:diff`    | —                                | Coverage delta vs the committed baseline           |
+| `npm run test:flake-detect`     | —                                | Flaky-test detection report                        |
 
 Mutation testing is ratcheted by `mutation-scope` / `mutation-delta` / `mutation-gate`, and the audit gate is enforced by `npm run audit:gate` (blocking in CI).

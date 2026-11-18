@@ -628,7 +628,7 @@
       "providers": {
         "rules": "Wbudowane reguły (offline)",
         "openai": "OpenAI",
-        "anthropic": "Anthropic",
+        "anthropic": "Claude AI",
         "gemini": "Google Gemini",
         "local": "Model lokalny"
       },
@@ -807,7 +807,7 @@
   "about": {
     "title": "O EncodeX",
     "subtitle": "Darmowy zestaw narzędzi multimedialnych o otwartym kodzie, oparty na FFmpeg. Konwertuj, kompresuj, wyodrębniaj, przycinaj i przetwarzaj wsadowo dźwięk, wideo i obrazy albo steruj tym samym silnikiem z wiersza poleceń, serwera MCP lub asystenta AI Copilot.",
-    "description": "EncodeX to wieloplatformowy zestaw narzędzi multimedialnych, który udostępnia możliwości FFmpeg w nowoczesnym, intuicyjnym interfejsie desktopowym. Konwertuj dźwięk, wideo i obrazy z precyzyjną kontrolą kodeków, bitrate'u, rozdzielczości, formatu pikseli i jakości; kopiuj ścieżki bez strat; obracaj i odbijaj media; stosuj filtry wideo; oraz przycinaj nagrania za pomocą odtwarzacza podglądu dokładnego co do klatki. Profile konwersji ustawiają typowe cele jednym kliknięciem, a własne profile można zapisać. Kodowanie z akceleracją sprzętową obsługuje NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox i Microsoft Media Foundation, a rodziny koderów są wykrywane automatycznie w dołączonym FFmpeg podczas działania. Kolejka wsadowa wykonuje zadania równolegle z podglądem postępu na żywo, zapisywaniem stanu oraz importem i eksportem. Oprócz interfejsu graficznego bezgłowy interfejs CLI, samodzielny i wbudowany serwer MCP oraz asystent AI Copilot pozwalają skryptom i asystentom sterować tym samym silnikiem multimediów.",
+    "description": "EncodeX to wieloplatformowy zestaw narzędzi multimedialnych, który przenosi moc FFmpeg do nowoczesnego interfejsu desktopowego. Konwertuj audio, wideo i obrazy z precyzyjną kontrolą nad kodekiem, przepływnością, rozdzielczością, formatem pikseli i jakością; kopiuj strumienie bezstratnie; obracaj i odbijaj media; stosuj filtry wideo; oraz tnij wideo za pomocą odtwarzacza podglądu z dokładnością do klatki. Profile konwersji konfigurują typowe cele jednym kliknięciem, a możesz zapisywać własne. Kodowanie sprzętowe obejmuje NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox i Microsoft Media Foundation, a rodziny enkoderów są wykrywane automatycznie z dołączonego FFmpeg. Kolejka wsadowa uruchamia zadania równolegle z postępem na żywo, trwałością, importem/eksportem, opcjonalnymi powiadomieniami na pulpicie i akcjami zasilania po zakończeniu. Poza interfejsem, bezinterfejsowe CLI, samodzielny i osadzony serwer MCP oraz Copilot AI pozwalają skryptom i asystentom sterować tym samym silnikiem multimediów.",
     "logoAlt": "Logo EncodeX",
     "featuresTitle": "Co możesz zrobić",
     "featureConvert": "Konwertuj wideo, audio i obrazy z precyzyjną kontrolą kodeków, bitrate'u, rozdzielczości i jakości, a także obracaj i stosuj filtry",
@@ -817,9 +817,9 @@
     "featureAudio": "Wyodrębniaj ścieżki audio z wideo w formatach AAC, MP3, FLAC, Opus i innych",
     "featureCut": "Przycinaj wideo z dokładnością co do klatki na osi czasu z miniaturami i przebiegiem fali",
     "featureProfiles": "Zacznij od wbudowanych profili konwersji lub zapisz własne",
-    "featureBatch": "Uruchamiaj zadania wsadowe równolegle z pauzą, zmianą kolejności, importem i eksportem oraz akcją zasilania po zakończeniu",
+    "featureBatch": "Uruchamiaj zadania wsadowe równolegle z pauzą, zmianą kolejności, importem/eksportem, akcjami zasilania po zakończeniu i opcjonalnymi powiadomieniami na pulpicie",
     "featureHardware": "Korzystaj z koderów GPU, takich jak NVENC, Quick Sync, AMF, VAAPI i VideoToolbox, wykrywanych automatycznie",
-    "featureAutomation": "Opisz cel asystentowi AI Copilot lub pisz skrypty dla EncodeX przez CLI i serwer MCP",
+    "featureAutomation": "Użyj Copilota AI do planowania zadań oraz analizowania, transkrybowania, streszczania lub tłumaczenia mediów, albo steruj EncodeX skryptami przez CLI i serwer MCP",
     "version": "Wersja",
     "builtWith": "Zbudowane z",
     "authorTitle": "Autor i opinie",

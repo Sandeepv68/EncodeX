@@ -7,8 +7,19 @@
  * into the host contract the views use.
  */
 
-import { describe, it, expect } from 'vitest';
+import { beforeAll, describe, it, expect, vi } from 'vitest';
+import i18next from 'i18next';
+import { render } from '@testing-library/react';
+import { I18nextProvider, initReactI18next } from 'react-i18next';
+import { ThemeProvider } from '@mui/material';
+import { createAppTheme } from '../../../shared/theme/theme';
+import { McpViewProvider } from '../McpViewProvider';
 import { AppExtAppsHost } from '../standalone/AppExtAppsHost';
+import { MCP_VIEW_STRINGS } from '../standalone/generated-strings';
+import QueueView from '../views/QueueView';
+import { FakeViewHost } from './harness';
+
+vi.unmock('react-i18next');
 
 /**
  * A stand-in for the `ext-apps` `App` class.
@@ -110,5 +121,46 @@ describe('AppExtAppsHost', () => {
     expect(host.context.theme).toBeUndefined();
     expect(host.context.variables).toEqual({});
     expect(host.context.locale).toBeUndefined();
+  });
+});
+
+describe('standalone translation resources', () => {
+  const translations = i18next.createInstance();
+
+  beforeAll(async () => {
+    await translations.use(initReactI18next).init({
+      resources: { 'en-US': { translation: MCP_VIEW_STRINGS } },
+      lng: 'en-US',
+      fallbackLng: 'en-US',
+      interpolation: { escapeValue: false },
+    });
+  });
+
+  it('resolves fully qualified view keys', () => {
+    expect(translations.t('mcpViews.common.cancel')).toBe('Cancel');
+    expect(translations.t('mcpViews.capabilities.hardwareNone')).toBe('Software only');
+  });
+
+  it('resolves queue status keys used by queue rows', () => {
+    expect(translations.t('batchQueue.filters.running')).toBe('Running');
+    expect(translations.t('batchQueue.filters.failed')).toBe('Failed');
+  });
+
+  it('renders a view without leaking raw translation keys', () => {
+    const host = new FakeViewHost();
+    const { container } = render(
+      <ThemeProvider theme={createAppTheme('light', 'ltr')}>
+        <I18nextProvider i18n={translations}>
+          <McpViewProvider
+            host={host}
+            initialData={{ jobs: [{ id: 'a', input: '/a.mkv', output: '/a.mp4', status: 'running', progress: 42 }] }}
+          >
+            <QueueView />
+          </McpViewProvider>
+        </I18nextProvider>
+      </ThemeProvider>,
+    );
+    expect(container.textContent).toContain('Running');
+    expect(container.textContent).not.toMatch(/mcpViews\.|batchQueue\./);
   });
 });

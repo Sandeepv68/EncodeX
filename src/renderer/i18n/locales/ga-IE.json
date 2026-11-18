@@ -628,7 +628,7 @@
       "providers": {
         "rules": "Rialacha ionsuite (as líne)",
         "openai": "OpenAI",
-        "anthropic": "Anthropic",
+        "anthropic": "Claude AI",
         "gemini": "Google Gemini",
         "local": "Samhail áitiúil"
       },
@@ -807,7 +807,7 @@
   "about": {
     "title": "Maidir le EncodeX",
     "subtitle": "Trealamh ildaonta ilmheán saor in aisce agus foinse oscailte, bunaithe ar FFmpeg. Tiontaigh, comhbhrúigh, bain amach, gearr agus próiseáil i mbaisc fuaim, físeán agus íomhánna, nó rialaigh an t-inneall céanna ón CLI, freastalaí MCP, nó ón gcúntóir AI Copilot.",
-    "description": "Is trealamh ildaonta ilardchórasach é EncodeX a thugann cumhacht FFmpeg isteach i gcomhéadan nua-aimseartha deisce. Tiontaigh fuaim, físeán agus íomhánna le rialú mionsonraithe ar chodecanna, ar ráta giotán, ar thaifeach, ar fhormáid picteilíne agus ar cháilíocht; cóipeáil rianta gan chaillteanas; rothlaigh agus scátáil meáin; cuir scagairí físeáin i bhfeidhm; agus gearr físeán le seinnteoir réamhamhairc atá cruinn go fráma. Socraíonn próifílí tiontaithe spriocanna coitianta le cliceáil amháin, agus is féidir leat do chuid féin a shábháil. Tacaíonn ionchódú luasaithe ar chrua-earraí le NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox agus Microsoft Media Foundation, agus aithnítear teaghlaigh ionchódóirí go huathoibríoch ón FFmpeg bundáilte le linn ritheadh. Ritheann an scuaine baisc poist go comhthreomhar le dul chun cinn beo, stát sábhálta, agus iompórtáil agus easpórtáil. Lasmuigh den GUI, cuireann CLI gan cheann, freastalaí MCP neamhspleách agus leabaithe, agus an cúntóir AI Copilot ar chumas scripteanna agus cúntóirí an t-inneall meán céanna a rialú.",
+    "description": "Is foireann uirlisí ilmheán tras-ardáin é EncodeX a thugann cumhacht FFmpeg chuig comhéadan deisce nua-aimseartha. Tiontaigh fuaim, físeán agus íomhánna le rialú mionsonraithe ar chodec, ráta giotán, taifeach, formáid picteilín agus cáilíocht; cóipeáil sruthanna gan chaillteanas; rothlaigh agus scáthánaigh meáin; cuir scagairí físe i bhfeidhm; agus gearr físeán le seinnteoir réamhamhairc cruinn ar fhrámaí. Cumraíonn próifílí tiontaithe spriocanna coitianta le cliceáil amháin, agus is féidir leat do cinn féin a shábháil. Clúdaíonn ionchódú luasghéaraithe crua-earraí NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox agus Microsoft Media Foundation, le teaghlaigh ionchódóra a aimsítear go huathoibríoch ón FFmpeg cuachta. Ritheann an scuaine bhaisce jabanna i gcomhthreo le dul chun cinn beo, marthanacht, iompórtáil/easpórtáil, fógraí deisce roghnacha agus gníomhartha cumhachta nuair a chríochnaítear. Taobh amuigh den chomhéadan, ligeann CLI gan cheann, freastalaí MCP neamhspleách agus leabaithe, agus Copilot AI do scripteanna agus do chúntóirí an t-inneall meán céanna a thiomáint.",
     "logoAlt": "Lógó EncodeX",
     "featuresTitle": "Cad is féidir leat a dhéanamh",
     "featureConvert": "Tiontaigh físeán, fuaim agus íomhánna le rialú mionsonraithe ar chodecanna, ar ráta giotán, ar thaifeach agus ar cháilíocht, chomh maith le rothlú agus scagairí",
@@ -817,9 +817,9 @@
     "featureAudio": "Bain rianta fuaime amach as físeán i AAC, MP3, FLAC, Opus agus formáidí eile",
     "featureCut": "Gearr físeán le baint chruinn go fráma ar amlíne mionsamhlacha agus cruth tonnach",
     "featureProfiles": "Tosaigh ó phróifílí tiontaithe ionchuimsithe, nó sábháil do chuid féin",
-    "featureBatch": "Rith poist baisc go comhthreomhar le sos, athordú, iompórtáil agus easpórtáil, agus gníomh cumhachta nuair a bhíonn siad críochnaithe",
+    "featureBatch": "Rith jabanna baisce i gcomhthreo le sos, athordú, iompórtáil/easpórtáil, gníomhartha cumhachta nuair a chríochnaítear, agus fógraí deisce roghnacha",
     "featureHardware": "Úsáid ionchódóirí GPU mar NVENC, Quick Sync, AMF, VAAPI agus VideoToolbox, a aimsítear go huathoibríoch",
-    "featureAutomation": "Déan cur síos ar sprioc don chúntóir AI Copilot, nó scriptigh EncodeX ón CLI agus ón bhfreastalaí MCP",
+    "featureAutomation": "Úsáid Copilot AI chun jabanna a phleanáil agus meáin a anailísiú, a thrascríobh, a achoimriú nó a aistriú, nó déan EncodeX a scriptiú ón CLI agus ón bhfreastalaí MCP",
     "version": "Leagan",
     "builtWith": "Tógtha le",
     "authorTitle": "Údar agus aiseolas",

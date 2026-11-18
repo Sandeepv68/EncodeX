@@ -628,7 +628,7 @@
       "providers": {
         "rules": "Ingeboude reëls (aanlyn af)",
         "openai": "OpenAI",
-        "anthropic": "Anthropic",
+        "anthropic": "Claude AI",
         "gemini": "Google Gemini",
         "local": "Plaaslike model"
       },
@@ -807,7 +807,7 @@
   "about": {
     "title": "Oor EncodeX",
     "subtitle": "'n Gratis en oopbron-multimedia-stel gereedskap gebou op FFmpeg. Skakel, komprimeer, onttrek, sny en verwerk klank, video en beelde in groepe, of beheer dieselfde enjin vanaf die CLI, 'n MCP-bediener of die KI-Copilot.",
-    "description": "EncodeX is 'n multiplatform multimedia-gereedskapstel wat die krag van FFmpeg na 'n moderne lessenaarkoppelvlak bring. Skakel klank, video en beelde met noukeurige beheer oor kodeks, bitsnelheid, resolusie, pikselformaat en gehalte; kopieer snitte sonder verlies; draai en spieël media; pas videofilters toe; en sny video met 'n raam-akkurate voorskouspeler. Omskakelprofiele stel algemene teikens in een klik op, en jy kan jou eie stoor. Hardeware-versnelde enkodering ondersteun NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox en Microsoft Media Foundation, met enkodeerderfamilies wat tydens looptyd outomaties uit die meegelewerde FFmpeg bespeur word. Die groeplys verwerk take parallel met lewendige vordering, volharding en invoer/uitvoer. Benewens die GUI bied 'n koplose CLI, 'n alleenstaande en ingebedde MCP-bediener en 'n KI-Copilot skrifte en assistente die geleentheid om dieselfde mediaenjin te beheer.",
+    "description": "EncodeX is 'n kruisplatform-multimedia-nutsmiddel wat die krag van FFmpeg na 'n moderne werkskermkoppelvlak bring. Skakel oudio, video en beelde om met fyn beheer oor kodek, bistempo, resolusie, pixelformaat en kwaliteit; kopieer strome sonder verlies; draai en spieël media; pas videofilters toe; en sny video met 'n raamakkurate voorskouspeler. Omskakelingsprofiele stel algemene teikens met een klik op, en jy kan jou eie stoor. Hardewareversnelde enkodering dek NVIDIA NVENC, Intel QSV, AMD AMF, VAAPI, Apple VideoToolbox en Microsoft Media Foundation, met enkodeerderfamilies wat outomaties vanaf die gebundelde FFmpeg opgespoor word. Die bondeltou laat take parallel loop met lewendige vordering, volharding, invoer/uitvoer, opsionele werkskermkennisgewings en kragaksies wanneer klaar. Buiten die koppelvlak laat 'n koplose CLI, 'n alleenstaande en ingebedde MCP-bediener, en 'n KI-Copilot skripte en assistente dieselfde media-enjin aandryf.",
     "logoAlt": "EncodeX-logo",
     "featuresTitle": "Wat jy kan doen",
     "featureConvert": "Skakel video, klank en beelde met fyn beheer oor kodeks, bitsnelheid, resolusie en gehalte, plus rotasie en filters",
@@ -817,9 +817,9 @@
     "featureAudio": "Onttrek klankspore uit video in AAC, MP3, FLAC, Opus en ander formate",
     "featureCut": "Sny video met raam-akkurate trimming op 'n tydlyn van miniatuurbeelde en golfvorm",
     "featureProfiles": "Begin met ingeboude omskakelprofiele, of stoor jou eie",
-    "featureBatch": "Voer groepwerk parallel uit met pouse, herrangskikking, invoer en uitvoer, en 'n krag-aksie wanneer klaar",
+    "featureBatch": "Laat bondeltake parallel loop met pouse, herrangskik, invoer/uitvoer, kragaksies wanneer klaar en opsionele werkskermkennisgewings",
     "featureHardware": "Gebruik GPU-enkodeerders soos NVENC, Quick Sync, AMF, VAAPI en VideoToolbox, outomaties bespeur",
-    "featureAutomation": "Beskryf 'n doel aan die KI-Copilot, of skryf skrifte vir EncodeX via die CLI en MCP-bediener",
+    "featureAutomation": "Gebruik die KI-Copilot om take te beplan en media te ontleed, te transkribeer, op te som of te vertaal, of skryf skripte vir EncodeX via die CLI en MCP-bediener",
     "version": "Weergawe",
     "builtWith": "Gebou met",
     "authorTitle": "Skrywer & terugvoer",

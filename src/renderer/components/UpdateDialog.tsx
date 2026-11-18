@@ -1,23 +1,12 @@
-/**
+﻿/**
  * @fileoverview In-app update dialog.
- *
- * Renders a modal MUI Dialog that guides the user through the update lifecycle:
- * checking for updates, displaying availability with release notes and a download
- * button, showing download progress, and offering to install the downloaded
- * installer. The download can be pushed to the background at any time by closing
- * the dialog (the footer widget keeps showing progress). Once downloaded the user
- * picks between installing & restarting now, scheduling the install for the next
- * app restart, or doing nothing for now.
- *
- * The dialog is controlled by the `useUpdateStore` Zustand store and subscribes to
- * main-process events via the preload bridge. Mounted once inside `AppLayout` so it
- * persists across route changes.
  */
 
 import { useTranslation } from 'react-i18next';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
-import { faArrowUp, faDownload, faXmark, faCircleCheck, faStopwatch } from '@fortawesome/free-solid-svg-icons';
+import { Button, Typography } from '@mui/material';
+import { faArrowUp, faCircleCheck, faCloudArrowDown, faDownload, faStopwatch, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import AppDialog from './AppDialog';
 import { useUpdateStore } from '../stores/updateStore';
 import { formatBytes } from '../utils/formatters';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
@@ -35,13 +24,7 @@ import {
 
 /**
  * Renders the update dialog.
- *
- * The dialog is fully controlled by the useUpdateStore state machine. Each
- * status renders a distinct content area; action buttons drive the next step.
- * Closing the dialog never stops work: a running download continues in the
- * background and its progress is shown in the app footer.
- *
- * @returns {JSX.Element} The update dialog, rendered only when open.
+ * @returns {JSX.Element} The update dialog.
  */
 export default function UpdateDialog() {
   const { t } = useTranslation();
@@ -73,120 +56,123 @@ export default function UpdateDialog() {
     recordAnalyticsEvent(createAnalyticsEvent('update_retry', {}));
   };
 
+  const actions =
+    status === 'idle' || status === 'checking' ? (
+      <Button onClick={handleClose} startIcon={<FontAwesomeIcon icon={faXmark} />}>
+        {t('update.cancel')}
+      </Button>
+    ) : status === 'not-available' ? (
+      <Button onClick={handleClose} startIcon={<FontAwesomeIcon icon={faXmark} />}>
+        {t('update.close')}
+      </Button>
+    ) : status === 'available' ? (
+      <>
+        <Button onClick={handleClose} startIcon={<FontAwesomeIcon icon={faXmark} />}>
+          {t('update.later')}
+        </Button>
+        <Button variant="contained" onClick={downloadUpdate} startIcon={<FontAwesomeIcon icon={faDownload} />}>
+          {t('update.download')}
+        </Button>
+      </>
+    ) : status === 'downloading' ? (
+      <>
+        <Button
+          onClick={() => {
+            cancelDownload();
+            closeDialog();
+          }}
+          startIcon={<FontAwesomeIcon icon={faXmark} />}
+          color="warning"
+        >
+          {t('update.cancelDownload')}
+        </Button>
+        <Button variant="contained" onClick={handleClose} startIcon={<FontAwesomeIcon icon={faStopwatch} />}>
+          {t('update.background')}
+        </Button>
+      </>
+    ) : status === 'downloaded' ? (
+      <>
+        <Button onClick={handleClose} startIcon={<FontAwesomeIcon icon={faXmark} />}>
+          {t('update.later')}
+        </Button>
+        <Button onClick={installOnRestart} startIcon={<FontAwesomeIcon icon={faStopwatch} />}>
+          {t('update.installOnRestart')}
+        </Button>
+        <Button variant="contained" onClick={installUpdate} startIcon={<FontAwesomeIcon icon={faCircleCheck} />}>
+          {t('update.installRestart')}
+        </Button>
+      </>
+    ) : status === 'restart-scheduled' ? (
+      <>
+        <Button onClick={cancelRestartInstall} startIcon={<FontAwesomeIcon icon={faXmark} />} color="warning">
+          {t('update.cancelRestartInstall')}
+        </Button>
+        <Button variant="contained" onClick={installUpdate} startIcon={<FontAwesomeIcon icon={faCircleCheck} />}>
+          {t('update.installRestart')}
+        </Button>
+      </>
+    ) : status === 'error' ? (
+      <>
+        <Button onClick={handleClose} startIcon={<FontAwesomeIcon icon={faXmark} />}>
+          {t('update.close')}
+        </Button>
+        <Button onClick={handleRetry} startIcon={<FontAwesomeIcon icon={faArrowUp} />} variant="contained">
+          {t('update.retry')}
+        </Button>
+      </>
+    ) : null;
+
   return (
-    <Dialog open={dialogOpen} onClose={handleClose} maxWidth="sm" fullWidth slotProps={{ paper: { 'data-testid': 'update-dialog' } }}>
-      <DialogTitle>{t('update.title')}</DialogTitle>
-      <DialogContent>
-        <UpdateDialogContent>
-          {status === 'idle' || status === 'checking' ? (
-            <UpdateStatusMessage>
-              <UpdateCheckingSpinner size={24} aria-label={t('update.checking')} />
-              {t('update.checking')}
-            </UpdateStatusMessage>
-          ) : status === 'not-available' ? (
-            <UpdateStatusMessage>{t('update.upToDate')}</UpdateStatusMessage>
-          ) : status === 'available' && info ? (
-            <>
-              <Typography variant="body1">{t('update.newVersionAvailable')}</Typography>
-              <UpdateVersionText variant="h6">v{info.version}</UpdateVersionText>
-              {info.releaseNotes && <UpdateReleaseNotes>{info.releaseNotes}</UpdateReleaseNotes>}
-              <UpdateReleaseNotesLink
-                component="button"
-                variant="body2"
-                underline="hover"
-                onClick={() => openReleaseNotes(info.releaseUrl)}
-              >
-                {t('update.viewReleaseNotes')}
-              </UpdateReleaseNotesLink>
-            </>
-          ) : status === 'downloading' ? (
-            <>
-              <Typography variant="body1">{t('update.downloading')}</Typography>
-              {progress && (
-                <>
-                  <UpdateProgressBar variant="determinate" value={progress.percent} />
-                  <UpdateProgressText variant="body2" color="text.secondary">
-                    {progress.percent}% — {formatBytes(progress.transferred)} / {formatBytes(progress.total)}
-                  </UpdateProgressText>
-                </>
-              )}
-              <UpdateStatusMessage>{t('update.downloadInBackground')}</UpdateStatusMessage>
-            </>
-          ) : status === 'downloaded' ? (
-            <UpdateStatusMessage>{t('update.readyToInstall', { version: info?.version })}</UpdateStatusMessage>
-          ) : status === 'restart-scheduled' ? (
-            <UpdateStatusMessage>{t('update.installScheduled', { version: info?.version || scheduledVersion })}</UpdateStatusMessage>
-          ) : status === 'error' ? (
-            <UpdateStatusMessage color="error">{errorMessage || t('update.error')}</UpdateStatusMessage>
-          ) : null}
-        </UpdateDialogContent>
-      </DialogContent>
-      <DialogActions>
+    <AppDialog
+      open={dialogOpen}
+      onClose={handleClose}
+      title={t('update.title')}
+      icon={<FontAwesomeIcon icon={faCloudArrowDown} />}
+      showCloseButton
+      closeButtonAriaLabel={t('update.close')}
+      maxWidth="sm"
+      fullWidth
+      paperTestId="update-dialog"
+      actions={actions}
+    >
+      <UpdateDialogContent>
         {status === 'idle' || status === 'checking' ? (
-          <Button onClick={handleClose} startIcon={<FontAwesomeIcon icon={faXmark} />}>
-            {t('update.cancel')}
-          </Button>
+          <UpdateStatusMessage>
+            <UpdateCheckingSpinner size={24} aria-label={t('update.checking')} />
+            {t('update.checking')}
+          </UpdateStatusMessage>
         ) : status === 'not-available' ? (
-          <Button onClick={handleClose} startIcon={<FontAwesomeIcon icon={faXmark} />}>
-            {t('update.close')}
-          </Button>
-        ) : status === 'available' ? (
+          <UpdateStatusMessage>{t('update.upToDate')}</UpdateStatusMessage>
+        ) : status === 'available' && info ? (
           <>
-            <Button onClick={handleClose} startIcon={<FontAwesomeIcon icon={faXmark} />}>
-              {t('update.later')}
-            </Button>
-            <Button variant="contained" onClick={downloadUpdate} startIcon={<FontAwesomeIcon icon={faDownload} />}>
-              {t('update.download')}
-            </Button>
+            <Typography variant="body1">{t('update.newVersionAvailable')}</Typography>
+            <UpdateVersionText variant="h6">v{info.version}</UpdateVersionText>
+            {info.releaseNotes && <UpdateReleaseNotes>{info.releaseNotes}</UpdateReleaseNotes>}
+            <UpdateReleaseNotesLink component="button" variant="body2" underline="hover" onClick={() => openReleaseNotes(info.releaseUrl)}>
+              {t('update.viewReleaseNotes')}
+            </UpdateReleaseNotesLink>
           </>
         ) : status === 'downloading' ? (
           <>
-            <Button
-              onClick={() => {
-                cancelDownload();
-                closeDialog();
-              }}
-              startIcon={<FontAwesomeIcon icon={faXmark} />}
-              color="warning"
-            >
-              {t('update.cancelDownload')}
-            </Button>
-            <Button variant="contained" onClick={handleClose} startIcon={<FontAwesomeIcon icon={faStopwatch} />}>
-              {t('update.background')}
-            </Button>
+            <Typography variant="body1">{t('update.downloading')}</Typography>
+            {progress && (
+              <>
+                <UpdateProgressBar variant="determinate" value={progress.percent} />
+                <UpdateProgressText variant="body2" color="text.secondary">
+                  {progress.percent}% — {formatBytes(progress.transferred)} / {formatBytes(progress.total)}
+                </UpdateProgressText>
+              </>
+            )}
+            <UpdateStatusMessage>{t('update.downloadInBackground')}</UpdateStatusMessage>
           </>
         ) : status === 'downloaded' ? (
-          <>
-            <Button onClick={handleClose} startIcon={<FontAwesomeIcon icon={faXmark} />}>
-              {t('update.later')}
-            </Button>
-            <Button onClick={installOnRestart} startIcon={<FontAwesomeIcon icon={faStopwatch} />}>
-              {t('update.installOnRestart')}
-            </Button>
-            <Button variant="contained" onClick={installUpdate} startIcon={<FontAwesomeIcon icon={faCircleCheck} />}>
-              {t('update.installRestart')}
-            </Button>
-          </>
+          <UpdateStatusMessage>{t('update.readyToInstall', { version: info?.version })}</UpdateStatusMessage>
         ) : status === 'restart-scheduled' ? (
-          <>
-            <Button onClick={cancelRestartInstall} startIcon={<FontAwesomeIcon icon={faXmark} />} color="warning">
-              {t('update.cancelRestartInstall')}
-            </Button>
-            <Button variant="contained" onClick={installUpdate} startIcon={<FontAwesomeIcon icon={faCircleCheck} />}>
-              {t('update.installRestart')}
-            </Button>
-          </>
+          <UpdateStatusMessage>{t('update.installScheduled', { version: info?.version || scheduledVersion })}</UpdateStatusMessage>
         ) : status === 'error' ? (
-          <>
-            <Button onClick={handleClose} startIcon={<FontAwesomeIcon icon={faXmark} />}>
-              {t('update.close')}
-            </Button>
-            <Button onClick={handleRetry} startIcon={<FontAwesomeIcon icon={faArrowUp} />} variant="contained">
-              {t('update.retry')}
-            </Button>
-          </>
+          <UpdateStatusMessage color="error">{errorMessage || t('update.error')}</UpdateStatusMessage>
         ) : null}
-      </DialogActions>
-    </Dialog>
+      </UpdateDialogContent>
+    </AppDialog>
   );
 }

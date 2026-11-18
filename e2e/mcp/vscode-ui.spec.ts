@@ -100,6 +100,14 @@ async function clickRow(window: Page, matches: (row: QuickPickRow) => boolean, l
   throw new Error(`quick-pick row "${label}" was never clickable (rows: ${JSON.stringify(last)})`);
 }
 
+async function showLocalServers(window: Page): Promise<void> {
+  const rows = await readQuickPickRows(window);
+  const local = rows.find((row) => /show locally configured servers/i.test(row.text));
+  if (!local?.box) return;
+  await window.mouse.click(local.box.x + 30, local.box.y + local.box.h / 2);
+  await sleep(1500);
+}
+
 /** Opens the command palette with the given query, typing char-by-char. */
 async function openPalette(window: Page, query: string): Promise<void> {
   for (let attempt = 0; attempt < 8; attempt++) {
@@ -127,6 +135,7 @@ async function runMcpListServers(window: Page): Promise<void> {
   await sleep(500);
   await clickRow(window, (row) => /list servers/i.test(row.text), 'MCP: List Servers');
   await sleep(2500);
+  await showLocalServers(window);
   const rows = await readQuickPickRows(window);
   if (!rows.some((row) => /encodex/i.test(row.text) && row.text.includes('/.vscode/mcp.json'))) {
     throw new Error(`MCP server list never appeared (rows: ${JSON.stringify(rows)})`);

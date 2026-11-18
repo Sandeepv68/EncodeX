@@ -1118,7 +1118,8 @@ describe('Settings', () => {
       model: 'gpt-4o-mini',
       view: {
         providerId: 'openai',
-        model: '',
+        model: 'gpt-4o-mini',
+        baseUrl: 'https://api.example.com/v1',
         hasKey: true,
         keyHint: '••••',
         storedInsecurely: false,
@@ -1132,8 +1133,13 @@ describe('Settings', () => {
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
     fireEvent.click(screen.getByTestId('settings-ai-provider-openai'));
+    fireEvent.click(screen.getByTestId('settings-ai-advanced'));
+    fireEvent.change(screen.getByLabelText('settings.ai.model'), { target: { value: 'stale-model' } });
+    fireEvent.change(screen.getByLabelText('settings.ai.baseUrl'), { target: { value: 'https://stale.example.com/v1' } });
     fireEvent.click(screen.getByTestId('settings-ai-connect'));
     expect(await screen.findByTestId('settings-ai-connected')).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByLabelText('settings.ai.model')).toHaveValue('gpt-4o-mini'));
+    await waitFor(() => expect(screen.getByLabelText('settings.ai.baseUrl')).toHaveValue('https://api.example.com/v1'));
   });
 
   const connectedOpenAiView = {

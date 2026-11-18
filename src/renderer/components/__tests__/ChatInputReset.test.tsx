@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @fileoverview Covers the reset-conversation confirmation dialog in ChatInput:
  * cancel, Escape-to-dismiss, and confirm.
  */
@@ -28,7 +28,7 @@ describe('ChatInput reset confirmation', () => {
 
     fireEvent.click(screen.getByTestId('copilot-reset-conversation'));
     const dialog = await screen.findByRole('dialog');
-    fireEvent.click(within(dialog).getAllByRole('button')[0]);
+    fireEvent.click(within(dialog).getByRole('button', { name: /^cancel$/i }));
 
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
     expect(onReset).not.toHaveBeenCalled();
@@ -52,7 +52,7 @@ describe('ChatInput reset confirmation', () => {
 
     fireEvent.click(screen.getByTestId('copilot-reset-conversation'));
     const dialog = await screen.findByRole('dialog');
-    fireEvent.click(within(dialog).getAllByRole('button')[1]);
+    fireEvent.click(within(dialog).getByRole('button', { name: 'copilot.resetConfirmAction' }));
 
     await waitFor(() => expect(onReset).toHaveBeenCalledTimes(1));
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
