@@ -1,8 +1,8 @@
-﻿import { useId, type ReactNode } from 'react';
+﻿import { useId } from 'react';
 import { Dialog, DialogActions, Divider } from '@mui/material';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import type { DialogProps } from '@mui/material/Dialog';
+import type { AppDialogProps } from './AppDialog.types';
 import {
   AppDialogBody,
   AppDialogCloseButton,
@@ -11,34 +11,6 @@ import {
   AppDialogTitle,
   AppDialogTitleText,
 } from '../styles/AppDialog.styles';
-
-/**
- * Props for the shared application dialog shell.
- * @interface AppDialogProps
- */
-export interface AppDialogProps {
-  open: boolean;
-  onClose?: DialogProps['onClose'];
-  onCloseButton?: () => void;
-  title: ReactNode;
-  icon?: ReactNode;
-  children: ReactNode;
-  actions?: ReactNode;
-  maxWidth?: DialogProps['maxWidth'];
-  fullWidth?: boolean;
-  showCloseButton?: boolean;
-  closeButtonAriaLabel?: string;
-  closeButtonTestId?: string;
-  closeButtonDisabled?: boolean;
-  paperTestId?: string;
-  ariaLabelledBy?: string;
-  ariaDescribedBy?: string;
-  scroll?: DialogProps['scroll'];
-  disableContentPadding?: boolean;
-  contentDividers?: boolean;
-  PaperComponent?: DialogProps['PaperComponent'];
-  slotProps?: DialogProps['slotProps'];
-}
 
 /**
  * Shared modal dialog with a standard header/body/footer layout.
@@ -82,14 +54,14 @@ export default function AppDialog({
       ...(slotProps?.paper ?? {}),
       ...(paperTestId ? { 'data-testid': paperTestId } : {}),
     },
-  } as DialogProps['slotProps'];
+  };
 
-  const handleCloseButton = () => {
+  const handleHeaderClose = () => {
     if (onCloseButton) {
       onCloseButton();
       return;
     }
-    if (onClose) onClose({} as any, 'escapeKeyDown');
+    onClose?.({}, 'escapeKeyDown');
   };
 
   return (
@@ -99,38 +71,42 @@ export default function AppDialog({
       maxWidth={maxWidth}
       fullWidth={fullWidth}
       scroll={scroll}
+      PaperComponent={PaperComponent}
       aria-labelledby={titleId}
       aria-describedby={ariaDescribedBy}
-      PaperComponent={PaperComponent}
       slotProps={mergedSlotProps}
     >
-      <AppDialogTitle id={titleId}>
-        <AppDialogHeader>
+      <AppDialogHeader>
+        <AppDialogTitle id={titleId}>
           {icon ? <AppDialogIcon>{icon}</AppDialogIcon> : null}
-          <AppDialogTitleText component="span" variant="h6">
+          <AppDialogTitleText variant="h6" component="span">
             {title}
           </AppDialogTitleText>
-          {showCloseButton ? (
-            <AppDialogCloseButton
-              aria-label={closeButtonAriaLabel ?? 'Close'}
-              onClick={handleCloseButton}
-              data-testid={closeButtonTestId}
-              disabled={closeButtonDisabled}
-              edge="end"
-              size="small"
-            >
-              <FontAwesomeIcon icon={faXmark} />
-            </AppDialogCloseButton>
-          ) : null}
-        </AppDialogHeader>
-      </AppDialogTitle>
-      {contentDividers ? <Divider /> : null}
-      <AppDialogBody dividers={false} $disablePadding={disableContentPadding}>
+        </AppDialogTitle>
+        {showCloseButton ? (
+          <AppDialogCloseButton
+            aria-label={closeButtonAriaLabel ?? 'Close'}
+            data-testid={closeButtonTestId}
+            disabled={closeButtonDisabled}
+            onClick={handleHeaderClose}
+          >
+            <FontAwesomeIcon icon={faXmark} />
+          </AppDialogCloseButton>
+        ) : null}
+      </AppDialogHeader>
+
+      <Divider />
+
+      <AppDialogBody
+        disablePadding={disableContentPadding}
+        dividers={contentDividers}
+      >
         {children}
       </AppDialogBody>
+
       {actions !== undefined ? (
         <>
-          {contentDividers ? <Divider /> : null}
+          <Divider />
           <DialogActions>{actions}</DialogActions>
         </>
       ) : null}
