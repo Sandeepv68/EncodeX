@@ -15,7 +15,7 @@
  *
  * - **stable** (the running version has no pre-release identifier) is offered
  *   stable releases only.
-  * - **beta** (the running version is a pre-release, e.g. `1.0.0-beta.6`) is
+ * - **beta** (the running version is a pre-release, e.g. `1.0.0-beta.6`) is
  *   offered both pre-releases and stable releases, so a beta user keeps
  *   receiving betas and still receives the eventual `1.0.0`.
  *
