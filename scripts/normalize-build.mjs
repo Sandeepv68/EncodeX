@@ -14,7 +14,7 @@
  *
  * The sitemap.xml, canonical tags, hreflang and og:url already use trailing-slash URLs.
  */
-import { readdirSync, renameSync, statSync, mkdirSync, rmSync, existsSync } from 'node:fs';
+import { readdirSync, readFileSync, renameSync, statSync, mkdirSync, rmSync, existsSync, writeFileSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -22,6 +22,28 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const distDir = join(__dirname, '..', 'site', '.vitepress', 'dist');
 
 const KEEP_AS_FILE = new Set(['index.html', '404.html']);
+const ANCHOR_HREF = /(<a\b[^>]*?\bhref=")([^"]*)(")/gi;
+const ABSOLUTE_SITE_HREF = /^https?:\/\/(?:www\.)?encodex\.in(?=\/|$)/i;
+const ASSET_EXTENSIONS = /\.(?:xml|txt|json|webmanifest|ico|png|jpe?g|gif|webp|avif|svg|css|js|mjs|map|woff2?|ttf|otf|eot|pdf|zip|dmg|exe|AppImage|deb|rpm|apk|yml|yaml|html)$/i;
+
+function canonicalizeHref(href) {
+  const splitAt = href.search(/[?#]/);
+  const target = splitAt === -1 ? href : href.slice(0, splitAt);
+  const suffix = splitAt === -1 ? '' : href.slice(splitAt);
+  const absolute = ABSOLUTE_SITE_HREF.test(target);
+
+  if (!absolute && (!target.startsWith('/') || target.startsWith('//'))) return href;
+
+  let pathname = absolute ? target.replace(ABSOLUTE_SITE_HREF, '') : target;
+  if (!pathname.startsWith('/')) pathname = `/${pathname}`;
+
+  if (pathname === '/' || pathname === '/404' || pathname === '/404/' || ASSET_EXTENSIONS.test(pathname)) {
+    return absolute ? `https://encodex.in${pathname}${suffix}` : href;
+  }
+
+  const canonicalPath = `${pathname.replace(/\/{2,}/g, '/').replace(/\/+$/, '')}/`;
+  return absolute ? `https://encodex.in${canonicalPath}${suffix}` : `${canonicalPath}${suffix}`;
+}
 
 function walk(dir) {
   const entries = [];
@@ -67,7 +89,21 @@ async function main() {
     console.log(`moved: ${file.replace(distDir, '')} -> ${targetIndex.replace(distDir, '')}`);
   }
 
+  let rewritten = 0;
+  for (const file of walk(distDir).filter((f) => f.endsWith('.html'))) {
+    const html = readFileSync(file, 'utf8');
+    const normalized = html.replace(ANCHOR_HREF, (match, open, href, close) => {
+      const canonical = canonicalizeHref(href);
+      return canonical === href ? match : `${open}${canonical}${close}`;
+    });
+    if (normalized !== html) {
+      writeFileSync(file, normalized, 'utf8');
+      rewritten++;
+    }
+  }
+
   console.log(`\nDone: moved ${moved} pages, skipped ${skipped}.`);
+  console.log(`Normalized internal links in ${rewritten} pages.`);
 
   const rootFiles = readdirSync(distDir).filter((f) => f.endsWith('.html'));
   console.log(`Root html remaining (should only be index.html + 404.html): ${rootFiles.join(', ') || '(none)'}`);

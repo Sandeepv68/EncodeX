@@ -4859,6 +4859,7 @@ export default defineConfig({
     hostname: 'https://encodex.in',
     transformItems(items) {
       const noIndexLocaleDocs = /^(?:de|es|fr|hi|pt|zh)\/docs\//;
+      const isNoIndexLocaleDoc = (url: string) => noIndexLocaleDocs.test(url.replace(/^\/+/, ''));
       const withTrailingSlash = (url: string) => {
         if (!url || url.endsWith('/')) return url;
         return `${url}/`;
@@ -4868,7 +4869,9 @@ export default defineConfig({
         .map((item) => ({
           ...item,
           url: withTrailingSlash(item.url),
-          links: item.links?.map((link) => ({ ...link, url: withTrailingSlash(link.url) })),
+          links: item.links
+            ?.filter((link) => !isNoIndexLocaleDoc(link.url))
+            .map((link) => ({ ...link, url: withTrailingSlash(link.url) })),
         }));
     },
   },
@@ -4963,13 +4966,15 @@ gtag('config', 'G-SM28DL4DYR');`,
     head.push(['meta', { name: 'twitter:description', content: pageDescription }]);
     head.push(['meta', { name: 'twitter:image', content: pageOgImage }]);
 
-    const localeEntries = Object.entries(localeLangMap);
-    for (const [prefix, hreflang] of localeEntries) {
-      const base = prefix ? `${prefix}/` : '';
-      const href = pageSlug ? `${SITE_URL}/${base}${pageSlug}/` : `${SITE_URL}/${base}`;
-      head.push(['link', { rel: 'alternate', hreflang, href }]);
+    if (!pageSlug.startsWith('docs/')) {
+      const localeEntries = Object.entries(localeLangMap);
+      for (const [prefix, hreflang] of localeEntries) {
+        const base = prefix ? `${prefix}/` : '';
+        const href = pageSlug ? `${SITE_URL}/${base}${pageSlug}/` : `${SITE_URL}/${base}`;
+        head.push(['link', { rel: 'alternate', hreflang, href }]);
+      }
+      head.push(['link', { rel: 'alternate', hreflang: 'x-default', href: pageSlug ? `${SITE_URL}/${pageSlug}/` : `${SITE_URL}/` }]);
     }
-    head.push(['link', { rel: 'alternate', hreflang: 'x-default', href: pageSlug ? `${SITE_URL}/${pageSlug}/` : `${SITE_URL}/` }]);
 
     if ((pageSlug === '' || pageSlug === 'index') && !localePrefix) {
       const jsonLd = {
@@ -4980,7 +4985,7 @@ gtag('config', 'G-SM28DL4DYR');`,
         applicationCategory: 'MultimediaApplication',
         operatingSystem: 'Windows 10+, macOS 11+, Linux',
         url: SITE_URL,
-        downloadUrl: `${SITE_URL}/download`,
+        downloadUrl: `${SITE_URL}/download/`,
         screenshot: `${SITE_URL}/images/home_dashboard.webp`,
         icon: `${SITE_URL}/images/icon.webp`,
         license: 'https://opensource.org/licenses/MIT',
