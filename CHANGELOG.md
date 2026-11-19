@@ -44,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documentation synced with `1.0.0-beta.6` across all shipped locales.
 - Website internal links, canonical tags and structured data normalized to trailing-slash URLs; legacy duplicate paths no longer appear in the sitemap or hreflang sets.
 - Release packaging now receives PostHog build-time variables, and CI cleans generated app/site outputs before build, package and deploy.
+- `.env.example` now mirrors every key available in local `.env`, including Copilot provider and site conversion-tag placeholders.
 
 ### Removed
 
