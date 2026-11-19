@@ -19,7 +19,7 @@ Before comparing tools, it helps to know what actually matters. These five crite
 - **Ease of use.** Dragging a file in and clicking convert should be the whole workflow. If you need a manual to change a container, the tool is working against you.
 - **Batch processing.** Nobody converts one file. The ability to queue a folder and walk away — with parallel jobs, pause/resume, and sensible defaults — is what turns a utility into a workhorse.
 - **Hardware acceleration.** Modern NVIDIA, Intel, AMD, and Apple GPUs encode several times faster than a CPU. A converter that uses them automatically is dramatically faster than one that doesn't.
-- **Format and preset coverage.** The great equalizer here is FFmpeg: nearly every real converter is built on it. The difference is how much of that power is within reach. 140+ ready-made presets beat a wall of undocumented flags every time.
+- **Format and preset coverage.** The great equalizer here is FFmpeg: nearly every real converter is built on it. The difference is how much of that power is within reach. 115 ready-made presets beat a wall of undocumented flags every time.
 - **Price and trust.** "Free" should mean free: no watermarks, no accounts, no trials that quietly become subscriptions.
 
 ## EncodeX at a Glance
@@ -44,7 +44,7 @@ Shotcut is a full video editor, and a good one. Its strength — a timeline with
 
 ### Where EncodeX Fits
 
-EncodeX targets the space between "rip a disc" and "edit a movie": straightforward conversion. It ships **140+ presets across 8 categories**, a **batch queue with up to four parallel jobs**, pause/resume, and drag-and-drop reordering, plus **device-specific presets** for consoles and phones. The [video converter](/video-converter) page rounds up what it handles — from MP4, MKV, and WebM to ProRes, audio extraction, and GIF.
+EncodeX targets the space between "rip a disc" and "edit a movie": straightforward conversion. It ships **115 presets across 8 categories**, a **batch queue with up to four parallel jobs**, pause/resume, and drag-and-drop reordering, plus **device-specific presets** for consoles and phones. The [video converter](/video-converter) page rounds up what it handles — from MP4, MKV, and WebM to ProRes, audio extraction, and GIF.
 
 ## Why EncodeX Stands Out
 

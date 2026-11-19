@@ -44,25 +44,25 @@ Coverage reports are generated in `coverage/`:
 
 ## ✅ Test Suite
 
-The suite is run by Vitest 4 across **361 test/spec files** in `src/`. <!-- drift:test-files=375 --> Coverage uses the v8 provider.
+The suite is run by Vitest 4 across **375 test/spec files** in `src/`. <!-- drift:test-files=375 --> Coverage uses the v8 provider.
 
 | Area                                      | What's Covered                                                                                                                                                                                             |
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Shared (53 files)**                     | Error normalization, constants, codec/container mapping, validation, types, logger, IPC channel registry, estimation, progress, math, AI/copilot contracts, video filters, remux utilities, audit          |
-| **Main (88 files)**                       | CLI entry, window lifecycle, encoder probing, queue semantics, process utilities, media binary resolution, power actions, preview cache, image/video preview generation, cli-logo, AI providers, analytics |
+| **Shared (57 files)**                     | Error normalization, constants, codec/container mapping, validation, types, logger, IPC channel registry, estimation, progress, math, AI/copilot contracts, video filters, remux utilities, audit          |
+| **Main (110 files)**                       | CLI entry, window lifecycle, encoder probing, queue semantics, process utilities, media binary resolution, power actions, preview cache, image/video preview generation, cli-logo, AI providers, analytics |
 | **Main CLI**                              | CLI subcommand parsing, option handling, conversion/compress/remux/demux subcommands, utility functions, integration tests                                                                                 |
-| **Main IPC (16 files)**                   | Per-channel IPC handlers, event broadcasting, error wrapping, system handlers, Copilot/AI/analytics/update, dev screenshot                                                                                 |
+| **Main IPC (20 files)**                   | Per-channel IPC handlers, event broadcasting, error wrapping, system handlers, Copilot/AI/analytics/update, dev screenshot                                                                                 |
 | **Main transcoders**                      | All three cores, hardware-acceleration flag building, ffprobe mapping, factory dispatch, transcoder interface contract                                                                                     |
 | **Main player / queue / timeline**        | Rawvideo frame decoding, audio pipe, buffering, queue transfer, waveform extraction, thumbnail montage generation                                                                                          |
-| **Main MCP (3 files)**                    | HTTP server (integration), GUI-parity tools, settings persistence                                                                                                                                          |
+| **Main MCP (5 files)**                    | HTTP server (integration), GUI-parity tools, settings persistence                                                                                                                                          |
 | **Monitoring (9 files)**                  | MonitoringService facade, noop provider, logger bridge, Sentry providers (main + renderer), provider factories, consent + IPC bridge                                                                       |
-| **Standalone MCP (27 files)**             | Server wiring, the full tool catalogue (37 registrations), conversion-options mapping, job manager, safety/validation, STT/translation, stdio integration                                                  |
+| **Standalone MCP (32 files)**             | Server wiring, the full tool catalogue (37 registrations), conversion-options mapping, job manager, safety/validation, STT/translation, stdio integration                                                  |
 | **Preload (3 files)**                     | Full `electronAPI` bridge surface, every IPC method                                                                                                                                                        |
-| **Renderer components (44 files)**        | Rendering, interactions, error states, accessibility for all shared UI components <!-- drift:renderer-component-tests=54 -->                                                                               |
-| **Renderer hooks (9 files)**              | Conversion orchestration, error handling, form validation, media task lifecycle, RTL direction, keyboard shortcuts, AI connection                                                                          |
+| **Renderer components (54 files)**        | Rendering, interactions, error states, accessibility for all shared UI components <!-- drift:renderer-component-tests=54 -->                                                                               |
+| **Renderer hooks (11 files)**              | Conversion orchestration, error handling, form validation, media task lifecycle, RTL direction, keyboard shortcuts, AI connection                                                                          |
 | **Renderer pages (14 files)**             | Full page flows: form state, validation, IPC invocation, settings persistence, Copilot, Remux/Demux, about/update                                                                                          |
-| **Renderer stores (22 files)**            | Zustand store state transitions and persistence, terms gate, batch config, profiles, dismissed alerts, AI/audit/remux/demux                                                                                |
-| **Renderer constants / utils (20 files)** | Formatting helpers, preview cache, easter egg dates, queue reorder logic, string/security/storage utils, shortcuts registry                                                                                |
+| **Renderer stores (23 files)**            | Zustand store state transitions and persistence, terms gate, batch config, profiles, dismissed alerts, AI/audit/remux/demux                                                                                |
+| **Renderer constants / utils (22 files)** | Formatting helpers, preview cache, easter egg dates, queue reorder logic, string/security/storage utils, shortcuts registry                                                                                |
 | **Renderer monitoring**                   | Renderer Sentry provider + factory selection                                                                                                                                                               |
 | **Renderer app / misc**                   | App shell routing, color palette, session cleanup, terms debug spec                                                                                                                                        |
 | **Integration**                           | Full pipeline: Error → `formatError` → store → display → clear; terms gate bootstrap; MCP stdio round-trip                                                                                                 |
@@ -77,7 +77,7 @@ The test environment (`src/test-setup.ts`) provides:
 
 ## 🌐 E2E Tests
 
-Playwright-based end-to-end tests live in `e2e/` (node environment, 60s timeouts) and are gated behind the `E2E` env var or CI:
+Vitest end-to-end tests live in `e2e/` (node environment, 60s timeouts), driving the packaged app through Playwright's Electron automation:
 
 | Spec File                                    | What's Covered                                                                                                                                                     |
 | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -100,6 +100,9 @@ Playwright-based end-to-end tests live in `e2e/` (node environment, 60s timeouts
 | `e2e/specs/cli-hostile.spec.ts`              | CLI handling of hostile/oversized input                                                                                                                            |
 | `e2e/specs/copilot.spec.ts`                  | Copilot: chat, plan review, provider gating                                                                                                                        |
 | `e2e/specs/copilot-saved-chats.spec.ts`      | Saved Copilot chat persistence                                                                                                                                     |
+| `e2e/specs/copilot-mcp-views.spec.ts`        | Copilot inline MCP App views                                                                                                                                       |
+| `e2e/specs/copilot-responsive.spec.ts`       | Copilot responsive layout                                                                                                                                          |
+| `e2e/specs/mux-queue.spec.ts`                | Mux/demux queue add, reorder, progress, and cancellation                                                                                                           |
 | `e2e/specs/dashboard.spec.ts`                | Dashboard tiles and getting-started card                                                                                                                           |
 | `e2e/specs/error-states.spec.ts`             | Error snackbar, banner, and boundary states                                                                                                                        |
 | `e2e/specs/focus-order.spec.ts`              | Keyboard focus order across the shell                                                                                                                              |

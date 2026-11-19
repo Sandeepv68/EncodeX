@@ -2,9 +2,9 @@
 
 These dashboards are the PostHog-side rendering of the analytics questions in
 `docs/ANALYTICS.md`. They are created in the PostHog UI and exported here as
-JSON (via the read-only personal API key, run locally - never in CI). The
-exported files are committed so the intended insights are reviewable in the
-repo; PostHog remains the rendering target.
+JSON (via the read-only personal API key, run locally - never in CI) as the
+insights are built. The planned exports are listed below; `data-schema.json`
+is the only artifact currently checked into this directory.
 
 Every saved insight **must** filter `channel = prod` (PD13: one project, env
 separated by super property).
@@ -71,4 +71,5 @@ Question: what do users run on?
 3. Save as `docs/analytics-dashboards/<name>.json`.
 4. Commit in the same PR that adds the underlying event or property.
 
-These files are committed empty until the first export is performed.
+Dashboard JSON files are committed once their first export is performed; until
+then the headings below describe the intended exports.

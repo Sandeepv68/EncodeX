@@ -5,7 +5,7 @@ import packageJson from '../../package.json';
 
 const SITE_URL = 'https://encodex.in';
 
-const SITE_VERSION: string = (packageJson as { version?: string }).version || '1.0.0-beta.2';
+const SITE_VERSION: string = (packageJson as { version?: string }).version || '1.0.0-beta.5';
 
 // Optional Google Ads conversion tag. Set GOOGLE_ADS_CONVERSION_ID (AW-…) and
 // GOOGLE_ADS_CONVERSION_LABEL in the build environment to enable it. The site

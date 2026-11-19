@@ -4,6 +4,8 @@
 > **Last updated:** 2026-09-18
 > **Owner:** EncodeX core
 > **Related docs:** [`CLI.md`](CLI.md), [`IPC.md`](IPC.md), [`ARCHITECTURE.md`](ARCHITECTURE.md), [`TESTING.md`](TESTING.md)
+>
+> **Note:** Historical implementation plan. Current tool counts, transports, and MCP Apps views are documented in [`MCP.md`](MCP.md) and [`MCP_UI.md`](MCP_UI.md).
 
 ---
 

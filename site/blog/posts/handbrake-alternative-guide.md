@@ -28,7 +28,7 @@ Modern GPUs encode video several times faster than a CPU. HandBrake supports har
 
 ## Format Support
 
-All four programs are ultimately powered by the same engine — FFmpeg — so raw format support is similar. The difference is how easily you reach it. HandBrake focuses on MP4 and MKV output. Shutter Encoder exposes dozens of possibilities under its hood. EncodeX offers 140+ ready-made presets across 8 categories, covering video, audio, and codecs — without demanding you learn what a "pixel format" is.
+All four programs are ultimately powered by the same engine — FFmpeg — so raw format support is similar. The difference is how easily you reach it. HandBrake focuses on MP4 and MKV output. Shutter Encoder exposes dozens of possibilities under its hood. EncodeX offers 115 ready-made presets across 8 categories, covering video, audio, and codecs — without demanding you learn what a "pixel format" is.
 
 ## Price
 

@@ -2,6 +2,8 @@
 
 Audit of renderer modals/dialogs in EncodeX to support a shared, consistent dialog implementation.
 
+> **Note:** Historical audit snapshot. Dialog implementations and owning stores have changed since this inventory was taken; treat the tables as background, not a description of current code.
+
 ## Inventory
 
 | Modal | File(s) | Purpose / owner | API shape | Layout | Size/scroll | Close behavior | A11y | Styling/test hooks |

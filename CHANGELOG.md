@@ -14,7 +14,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Standalone MCP HTTP server** (`npm run mcp:http`) — loopback-only transport with optional bearer auth, session cap, body-size cap and Host/Origin checks.
 - **MCP AI tools** — `analyze_media`, `recommend_settings`, `estimate_conversion`, `validate_output`, `compress_to_target`, `analyze_folder`, `explain_error`, `advise_encoding` and `quality_report`, each returning `structuredContent` alongside the text fallback.
 - **MCP Apps views** — inspector, plan, compression-lab and error views, plus a batch dashboard over `batch_convert` / `get_queue_state`.
-- **MCP Tasks extension** — `convert_media` / `batch_convert` are registered as optional tasks, advertising `tasks/get`, `tasks/result`, `tasks/cancel` and `tasks/list`.
 - **MCP SDK 2.x** — the MCP server now runs on the 2.x split packages (`@modelcontextprotocol/server`, `@modelcontextprotocol/node`, `@modelcontextprotocol/ext-apps@2`), which brings the browser-side MCP Apps `App` API and React hooks used by the view pipeline.
 - **MCP App views are React now** — the eleven interactive views were rewritten as React components authored against the app's own design system and bundled into one self-contained document, so a view looks the same in a third-party host as it does inside EncodeX.
 - **Two more MCP App views** — `ui://encodex/profiles` (the built-in conversion profiles) and `ui://encodex/capabilities` (the encoders and hardware acceleration methods of this machine) are served and wired to their tools.

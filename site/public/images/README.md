@@ -1,27 +1,32 @@
 # Screenshots
 
-Place app screenshots here for use on the marketing site.
+Screenshot assets for the marketing site. All files are WebP.
 
-## Recommended Screenshots
+## Available screenshots
 
-| Filename | Description |
-|----------|-------------|
-| `dashboard.png` | Main dashboard / home page |
-| `convert.png` | Media conversion page with options |
-| `batch-queue.png` | Batch queue with jobs in progress |
-| `video-cut.png` | Video cutting page with timeline |
-| `image-compress.png` | Image compression with preview |
-| `settings.png` | Settings page |
-| `media-info.png` | Media info / probe results |
+| Filename                   | Description                                   |
+| -------------------------- | --------------------------------------------- |
+| `home_dashboard.webp`      | Main dashboard / home page                    |
+| `home_dashboard_800.webp`  | Narrow-width dashboard variant                |
+| `convert.webp`             | Media conversion page with options            |
+| `batch_process.webp`       | Batch queue with jobs in progress             |
+| `cut_video.webp`           | Video cutting page with timeline              |
+| `image_compress.webp`      | Image compression with preview                |
+| `extract_audio.webp`       | Audio extraction page                         |
+| `media_info.webp`          | Media info / probe results                    |
+| `architecture.webp`        | Architecture diagram                          |
+| `banner.webp`              | Site banner                                   |
+| `icon.webp`                | Full-size app icon                            |
+| `icon_380.webp`            | Medium app icon                               |
+| `favicon-64.webp`          | Favicon                                       |
 
 ## Usage in Markdown
 
 ```markdown
-![Dashboard](/images/dashboard.png)
+![Dashboard](/images/home_dashboard.webp)
 ```
 
 ## Tips
 
-- Resolution: 1280x720 or 1920x1080
-- Format: PNG
-- Keep file sizes under 500 KB for fast page loads
+- Prefer the `*_800.webp` variant where a narrow layout needs it.
+- Keep replacements under 500 KB where possible.

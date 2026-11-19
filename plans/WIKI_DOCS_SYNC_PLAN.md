@@ -4,6 +4,8 @@
 >
 > Status: **COMPLETE** (all phases done, verified)
 > Created: 2026-10-27
+>
+> **Note:** Historical snapshot. Current counts must be verified with `npm run doc:drift`; several numbers in this plan predate later feature work.
 > Scope: `wiki/`, `docs/`, `site/docs/`, `site/locales/*/docs/`, `scripts/`, `.github/workflows/`, `package.json`
 
 ---

@@ -41,8 +41,21 @@ All channel names are centralized in `src/shared/ipc-channels.ts`.
 | `queue-resume`        | —                                        | `void`                        |
 | `queue-export`        | —                                        | `number` (count exported)     |
 | `queue-import`        | —                                        | `number` (count imported)     |
+| `mux-queue-add`       | `MuxQueueAddPayload`                     | `string` (job id)             |
+| `mux-queue-remove`    | `id`                                     | `void`                        |
+| `mux-queue-list`      | —                                        | `MuxQueueJob[]`               |
+| `mux-queue-get-state` | —                                        | `{ paused, concurrency }`     |
+| `mux-queue-start`     | —                                        | `void`                        |
+| `mux-queue-pause`     | —                                        | `void`                        |
+| `mux-queue-resume`    | —                                        | `void`                        |
+| `mux-queue-cancel-all` | —                                       | `void`                        |
+| `mux-queue-clear-completed` | —                                   | `number` (count removed)      |
+| `mux-queue-set-concurrency` | `concurrency`                       | `void`                        |
+| `mux-queue-move-to`   | `id, toPosition`                         | `boolean`                     |
 | `queue-reveal`        | `filePath`                               | `void`                        |
 | `set-launch-at-login` | `enabled`                                | `void`                        |
+| `notifications-get-settings` | —                                 | `DesktopNotificationsSettings` |
+| `notifications-set-enabled` | `enabled`                          | `DesktopNotificationsSettings` |
 | `player-open`         | `filePath`                               | `number` (generation token)   |
 | `player-seek`         | `time`                                   | `number` (generation token)   |
 | `player-close`        | —                                        | `void`                        |
@@ -61,13 +74,18 @@ All channel names are centralized in `src/shared/ipc-channels.ts`.
 | `monitoring-set-enabled` | `enabled`                             | `{ enabled, backend }`        |
 | `analytics-get-state` | —                                        | `{ enabled, backend }`        |
 | `analytics-set-enabled` | `enabled`                              | `{ enabled, backend }`        |
+| `analytics-track-event` | `event`                                | `void`                        |
+| `analytics-get-posthog-config` | —                                | `{ projectToken?, host? }`    |
 | `mcp-settings-get`    | —                                        | `McpSettings`                 |
 | `mcp-settings-set`    | `settings`                               | `McpSettings`                 |
+| `mcp-ui-call-tool`    | `{ name?, args? }`                       | `unknown`                     |
+| `mcp-ui-list-views`   | —                                        | `Array<{ viewId, uri, title }>` |
 | `ai-settings-get`     | —                                        | `AiSettingsView`              |
 | `ai-settings-set`     | `update`                                 | `AiSettingsView`              |
 | `ai-connect-test`     | `candidate?`                             | `AiConnectTestResult`         |
 | `ai-models-list`      | `candidate?`                             | `AiModelsListResult`          |
 | `dev-capture-screenshot` | —                                     | `string` (PNG path)           |
+| `logs-history`        | —                                        | `LogEntry[]`                  |
 
 ## 📤 Send-only (renderer to main)
 
@@ -79,6 +97,9 @@ All channel names are centralized in `src/shared/ipc-channels.ts`.
 | `window-confirm-close`     | —         |
 | `window-set-always-on-top` | `boolean` |
 | `terms-reject`             | —         |
+| `logs-window-open`         | —         |
+| `logs-publish`             | `LogEntry[]` |
+| `logs-clear`               | —         |
 
 ## 📡 Events (main to renderer)
 
@@ -93,11 +114,20 @@ All channel names are centralized in `src/shared/ipc-channels.ts`.
 | `queue-progress`           | `{ job, progress }`           |
 | `queue-cancelled`          | —                             |
 | `queue-moved`              | `{ id, toPosition }`          |
+| `mux-queue-added`          | `MuxQueueJob`                 |
+| `mux-queue-removed`        | `string` (job id)             |
+| `mux-queue-status-change`  | `MuxQueueJob`                 |
+| `mux-queue-progress`       | `{ job, progress }`           |
+| `mux-queue-cancelled`      | —                             |
+| `mux-queue-moved`          | `{ id, toPosition }`          |
 | `player-frame`             | `PlayerFrame`                 |
 | `player-audio`             | `PlayerAudioChunk`            |
 | `player-error`             | `string`                      |
 | `log-message`              | `LogEntry`                    |
 | `audit-entry`              | `AuditEntry`                  |
+| `logs-window-state`        | `number \| null` (detached window id) |
+| `logs-cleared`             | —                             |
+| `notifications-clicked`    | `{ target }`                  |
 | `update-available`         | `UpdateInfo`                  |
 | `update-not-available`     | —                             |
 | `update-progress`          | `UpdateProgress`              |
@@ -144,8 +174,21 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `queueResume() -> Promise<void>`
 - `queueExport() -> Promise<number>`
 - `queueImport() -> Promise<number>`
+- `muxQueueAdd(payload) -> Promise<string>`
+- `muxQueueRemove(id) -> Promise<void>`
+- `muxQueueList() -> Promise<MuxQueueJob[]>`
+- `muxQueueGetState() -> Promise<{ paused, concurrency }>`
+- `muxQueueCancelAll() -> Promise<void>`
+- `muxQueueClearCompleted() -> Promise<number>`
+- `muxQueueSetConcurrency(concurrency) -> Promise<void>`
+- `muxQueueStart() -> Promise<void>`
+- `muxQueuePause() -> Promise<void>`
+- `muxQueueResume() -> Promise<void>`
+- `muxQueueMoveTo(id, toPosition) -> Promise<boolean>`
 - `revealFile(filePath) -> Promise<void>`
 - `setLaunchAtLogin(enabled) -> void`
+- `notificationsGetSettings() -> Promise<DesktopNotificationsSettings>`
+- `notificationsSetEnabled(enabled) -> Promise<DesktopNotificationsSettings>`
 - `playerOpen(filePath) -> Promise<number>` (generation token)
 - `playerSeek(time) -> Promise<number>` (generation token)
 - `playerClose() -> Promise<void>`
@@ -170,13 +213,21 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `monitoringSetEnabled(enabled) -> Promise<{ enabled, backend }>`
 - `analyticsGetState() -> Promise<{ enabled, backend }>`
 - `analyticsSetEnabled(enabled) -> Promise<{ enabled, backend }>`
+- `analyticsTrackEvent(event) -> Promise<void>`
+- `analyticsGetPosthogConfig() -> Promise<{ projectToken?, host? }>`
 - `mcpGetSettings() -> Promise<McpSettings>`
 - `mcpSetSettings(settings) -> Promise<McpSettings>`
+- `mcpUiCallTool({ name?, args? }) -> Promise<unknown>`
+- `mcpUiListViews() -> Promise<Array<{ viewId, uri, title }>>`
 - `aiGetSettings() -> Promise<AiSettingsView>`
 - `aiSetSettings(update) -> Promise<AiSettingsView>`
 - `aiConnectTest(candidate?) -> Promise<AiConnectTestResult>`
 - `aiListModels(candidate?) -> Promise<AiModelsListResult>`
 - `captureDevScreenshot() -> Promise<string>`
+- `openLogsWindow() -> void`
+- `logsGetHistory() -> Promise<LogEntry[]>`
+- `logsPublishEntries(entries) -> void`
+- `logsClear() -> void`
 
 ### Event listeners (each returns a cleanup function)
 
@@ -189,25 +240,31 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `onQueueProgress(cb) -> () => void`
 - `onQueueCancelled(cb) -> () => void`
 - `onQueueMoved(cb) -> () => void`
+- `onMuxQueueAdded(cb) -> () => void`
+- `onMuxQueueRemoved(cb) -> () => void`
+- `onMuxQueueStatusChange(cb) -> () => void`
+- `onMuxQueueProgress(cb) -> () => void`
+- `onMuxQueueCancelled(cb) -> () => void`
+- `onMuxQueueMoved(cb) -> () => void`
 - `onPlayerFrame(cb) -> () => void`
 - `onPlayerAudio(cb) -> () => void`
 - `onPlayerError(cb) -> () => void`
 - `onLogMessage(cb) -> () => void`
 - `onAuditEntry(cb) -> () => void`
+- `onLogsWindowState(cb) -> () => void`
+- `onLogsCleared(cb) -> () => void`
+- `onNotificationClicked(cb) -> () => void`
 - `onUpdateAvailable(cb) -> () => void`
 - `onUpdateNotAvailable(cb) -> () => void`
 - `onUpdateProgress(cb) -> () => void`
 - `onUpdateDownloaded(cb) -> () => void`
 - `onUpdateError(cb) -> () => void`
 
-## 📦 Remux & Demux reuse `CONVERT_FILE`
+## 📦 Remux & Demux IPC
 
-Remux and demux add **no new IPC channels**. Both features plan their FFmpeg invocations in the renderer (or CLI/MCP layer) and then submit them through the existing channels:
+Single-shot remux and demux jobs still use `convert-file` (`CONVERT_FILE`) with the existing `options: ConversionOptions` payload, and ordinary batched work can use `queue-add` (`QUEUE_ADD`).
 
-- `convert-file` (`CONVERT_FILE`) for a single-shot job, and
-- `queue-add` (`QUEUE_ADD`) for batched or multi-target work — demux enqueues one job per extracted stream.
-
-All stream-composition data rides inside the existing `options: ConversionOptions` payload, so the main process, the transcoder cores, progress events (`CONVERSION_PROGRESS`), and the queue's pause/resume/cancel plumbing are reused unchanged.
+Queued remux/demux work now has its own mux queue (`mux-queue-*` invokes and events) with `MuxQueueAddPayload` jobs. It reuses the same FFmpeg planning layer and `ConversionProgress` shape as the conversion queue, but keeps its own store, concurrency, and lifecycle. Copilot plans route remux/demux actions to `muxQueueAdd`, and the Batch Queue page hosts a dedicated `MuxQueuePanel`.
 
 ### New `ConversionOptions` fields
 

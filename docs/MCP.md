@@ -4,7 +4,7 @@
 
 EncodeX ships a full [Model Context Protocol](https://modelcontextprotocol.io) server so MCP hosts — Claude Desktop, Claude Code, VS Code, Cursor, and custom/headless agents — can probe media, convert, compress, extract audio, cut, remux, demux, batch-process, and (opt-in) read live GUI state. It runs over the same media engine as the CLI, so behavior is identical across surfaces.
 
-The server is also [MCP Apps](https://modelcontextprotocol.io) (SEP-1865) compliant: in hosts that support the extension, the job and media-intelligence tools render as interactive views (queue dashboard, job progress card, media-info table, conversion form, inspector, plan, size-target lab, error card, batch dashboard, and workflow report). See [`MCP_UI.md`](MCP_UI.md) for the view catalogue; hosts without the extension fall back to the JSON text payloads documented here.
+The server is also [MCP Apps](https://modelcontextprotocol.io) (SEP-1865) compliant: in hosts that support the extension, the job and media-intelligence tools render as interactive views (queue dashboard, job progress card, media-info table, conversion form, confirmation card, inspector, plan, size-target lab, error card, batch dashboard, workflow report, profile catalogue, and capability report). See [`MCP_UI.md`](MCP_UI.md) for the view catalogue; hosts without the extension fall back to the JSON text payloads documented here.
 
 There are two launch modes that share one core catalogue:
 
@@ -202,7 +202,7 @@ These tools run locally and never call a cloud model. Planning, diagnosis, and r
 
 ### MCP Apps views
 
-When a host supports MCP Apps, eleven `ui://` resources render as interactive views (MIME `text/html;profile=mcp-app`):
+When a host supports MCP Apps, thirteen `ui://` resources render as interactive views (MIME `text/html;profile=mcp-app`):
 
 | URI | Rendered by |
 | --- | ----------- |
@@ -217,6 +217,8 @@ When a host supports MCP Apps, eleven `ui://` resources render as interactive vi
 | `ui://encodex/error` | `explain_error` |
 | `ui://encodex/batch` | `batch_convert` confirmation + live per-file dashboard |
 | `ui://encodex/workflow` | `plan_workflow`, `execute_workflow` |
+| `ui://encodex/profiles` | `list_profiles` |
+| `ui://encodex/capabilities` | `list_capabilities` |
 
 See [`MCP_UI.md`](MCP_UI.md) for what each view shows, the `structuredContent` shapes, the user-approval gate, and the bidirectional actions (including confirm-gated cancel).
 

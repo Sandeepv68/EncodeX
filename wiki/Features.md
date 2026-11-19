@@ -114,7 +114,7 @@ See the [[MCP]] page for the full tool catalogue, client configuration, and secu
 
 ### MCP Apps (Interactive Views)
 
-Beyond plain JSON tool results, the MCP surface can render interactive views inside the host client via the [MCP Apps](https://modelcontextprotocol.io) extension. `src/mcp/ui/` ships a resource registry, a renderer bridge, and an approval flow, plus 11 views:
+Beyond plain JSON tool results, the MCP surface can render interactive views inside the host client via the [MCP Apps](https://modelcontextprotocol.io) extension. `src/mcp/ui/` ships a resource registry, a renderer bridge, and an approval flow, plus 13 views:
 
 | View          | Purpose                                                     |
 | ------------- | ----------------------------------------------------------- |
@@ -129,6 +129,8 @@ Beyond plain JSON tool results, the MCP surface can render interactive views ins
 | `plan`        | Reviewable plan (the same plan object the Copilot uses)    |
 | `queue`       | Live queue state                                            |
 | `workflow`    | Multi-step workflow runner                                  |
+| `profiles`    | Built-in profile catalogue                                  |
+| `capabilities` | Encoders and hardware acceleration detected on this machine |
 
 Operations that mutate the queue go through the approval bridge, so an agent cannot silently start work without the user seeing the plan.
 
