@@ -396,14 +396,24 @@ function isInstallerFileName(name: string): boolean {
  * @param {UpdateAsset[]} assets - Available release assets.
  * @returns {UpdateAsset | null} The matched asset, or null if none match.
  */
-export function selectAsset(assets: UpdateAsset[]): UpdateAsset | null {
-  const arch = process.arch;
+const ARCH_ALIASES: Record<string, string[]> = {
+  x64: ['x64', 'x86_64', 'amd64'],
+  arm64: ['arm64', 'aarch64'],
+  ia32: ['ia32', 'x86', 'i386', 'i686'],
+  arm: ['arm', 'armv7l', 'armv7'],
+};
 
+export function selectAsset(assets: UpdateAsset[]): UpdateAsset | null {
   const platformAssets = assets.filter((a) => typeof a?.name === 'string' && isInstallerFileName(a.name));
   if (platformAssets.length === 0) return null;
 
-  const archMatch = platformAssets.find((a) => a.name.toLowerCase().includes(arch));
-  return archMatch || platformAssets[0];
+  const arch = process.arch.toLowerCase();
+  for (const alias of ARCH_ALIASES[arch] ?? [arch]) {
+    const pattern = new RegExp(`(?:^|[-_.])${alias}(?=$|[-_.])`, 'i');
+    const match = platformAssets.find((asset) => pattern.test(asset.name));
+    if (match) return match;
+  }
+  return platformAssets[0];
 }
 
 /**

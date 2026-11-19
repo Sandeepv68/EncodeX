@@ -43,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sidebar condensed by default, with the condensed/expanded state persisted to `localStorage`; page icons refreshed.
 - Documentation synced with `1.0.0-beta.6` across all shipped locales.
 - Website internal links, canonical tags and structured data normalized to trailing-slash URLs; legacy duplicate paths no longer appear in the sitemap or hreflang sets.
+- Release packaging now receives PostHog build-time variables, and CI cleans generated app/site outputs before build, package and deploy.
 
 ### Removed
 
@@ -59,6 +60,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The 5,000-card performance render self-skips on CI instead of exhausting the vitest worker.
 - Super-linear regular expressions removed from Bearer-token extraction and the `matchMedia` stub.
 - Saved-chat hover shadow styling tidied to match the project's formatting rules.
+- Updater asset selection now recognizes `x86_64`/`aarch64` aliases, so Linux x64 and arm64 builds pick the correct AppImage.
+- The release URL helper derives artifact names from `package.json` and only lists installers produced by the packaging matrix.
 
 ### Security
 
