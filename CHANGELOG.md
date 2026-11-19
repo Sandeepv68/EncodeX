@@ -61,7 +61,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Super-linear regular expressions removed from Bearer-token extraction and the `matchMedia` stub.
 - Saved-chat hover shadow styling tidied to match the project's formatting rules.
 - Updater asset selection now recognizes `x86_64`/`aarch64` aliases, so Linux x64 and arm64 builds pick the correct AppImage.
-- The release URL helper derives artifact names from `package.json` and only lists installers produced by the packaging matrix.
 
 ### Security
 
