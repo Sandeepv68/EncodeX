@@ -24,7 +24,8 @@ const distDir = join(__dirname, '..', 'site', '.vitepress', 'dist');
 const KEEP_AS_FILE = new Set(['index.html', '404.html']);
 const ANCHOR_HREF = /(<a\b[^>]*?\bhref=")([^"]*)(")/gi;
 const ABSOLUTE_SITE_HREF = /^https?:\/\/(?:www\.)?encodex\.in(?=\/|$)/i;
-const ASSET_EXTENSIONS = /\.(?:xml|txt|json|webmanifest|ico|png|jpe?g|gif|webp|avif|svg|css|js|mjs|map|woff2?|ttf|otf|eot|pdf|zip|dmg|exe|AppImage|deb|rpm|apk|yml|yaml|html)$/i;
+const ASSET_EXTENSIONS =
+  /\.(?:xml|txt|json|webmanifest|ico|png|jpe?g|gif|webp|avif|svg|css|js|mjs|map|woff2?|ttf|otf|eot|pdf|zip|dmg|exe|AppImage|deb|rpm|apk|yml|yaml|html)$/i;
 
 function canonicalizeHref(href) {
   const splitAt = href.search(/[?#]/);
