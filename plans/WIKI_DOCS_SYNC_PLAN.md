@@ -76,7 +76,7 @@
 - [x] **P3-2** `wiki/Features.md` + `wiki/MCP.md` - new "Local Model Runtime" section (local provider, whisper STT, translation) with the `ENCODEX_*` env vars and the typed unavailable errors
 - [x] **P3-3** `wiki/Features.md` - new "Audit Trail" section (`src/shared/audit.ts`, `audit-entry`, `auditStore`)
 - [x] **P3-4** `wiki/Features.md` - new "Output Size Estimation" section (experimental, `src/shared/estimate.ts`)
-- [x] **P3-5** `wiki/Home.md` + `wiki/Features.md` - version/status note (1.0.0-beta.5, 1.0 production-readiness phase)
+- [x] **P3-5** `wiki/Home.md` + `wiki/Features.md` - version/status note (1.0.0-beta.6, 1.0 production-readiness phase)
 
 ## Phase 4 - P3: propagation to duplicate doc trees
 

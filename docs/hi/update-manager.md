@@ -71,7 +71,7 @@ Channel चल रहे version से derive होता है और यह
 | Channel | चल रहा version | Eligible releases |
 |---|---|---|
 | `stable` | कोई pre-release identifier नहीं, जैसे `1.0.0` | केवल stable releases |
-| `beta` | एक pre-release identifier, जैसे `1.0.0-beta.5` | pre-releases *और* stable releases |
+| `beta` | एक pre-release identifier, जैसे `1.0.0-beta.6` | pre-releases *और* stable releases |
 
 जानने योग्य परिणाम:
 
@@ -125,4 +125,4 @@ Windows पर डाउनलोड किया गया इंस्टॉ�
 - Unit tests: semver comparison, update-channel selection, asset selection, download validation, checksum handling, और pending-install marker।
 - Hostile-input tests: `src/main/__tests__/updater-hostile.test.ts` path traversal, redirect, truncated download और digest-mismatch व्यवहार को pin करता है।
 - IPC tests: `src/main/ipc/__tests__/updater.test.ts` में handler registration और event forwarding।
-- Manual testing: `1.0.0-beta.5` से नया test tag **pre-release** के रूप में publish करें, draft को publish करके draft state से बाहर निकालें, और check -> download -> install flow के साथ install-on-restart path भी verify करें। फिर stable build से verify करें कि वही pre-release *नहीं* offer होता।
+- Manual testing: `1.0.0-beta.6` से नया test tag **pre-release** के रूप में publish करें, draft को publish करके draft state से बाहर निकालें, और check -> download -> install flow के साथ install-on-restart path भी verify करें। फिर stable build से verify करें कि वही pre-release *नहीं* offer होता।

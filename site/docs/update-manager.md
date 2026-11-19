@@ -77,7 +77,7 @@ The channel is derived from the running version, and decides which releases are 
 | Channel | Running version | Eligible releases |
 |---|---|---|
 | `stable` | no pre-release identifier, e.g. `1.0.0` | stable releases only |
-| `beta` | a pre-release identifier, e.g. `1.0.0-beta.5` | pre-releases *and* stable releases |
+| `beta` | a pre-release identifier, e.g. `1.0.0-beta.6` | pre-releases *and* stable releases |
 
 Consequences worth knowing:
 
@@ -131,4 +131,4 @@ On Windows, launching the downloaded installer can trigger the SmartScreen warni
 - Unit: semver comparison, update-channel selection, asset selection, download validation, checksum handling, and the pending-install marker.
 - Hostile-input tests: `src/main/__tests__/updater-hostile.test.ts` pins path traversal, redirect, truncated download, and digest-mismatch behavior.
 - IPC tests: handler registration and event forwarding in `src/main/ipc/__tests__/updater.test.ts`.
-- Manual: publish a test tag newer than `1.0.0-beta.5` as a **pre-release**, publish the draft so it leaves draft state, and verify check -> download -> install, plus the install-on-restart path. Then verify from a stable build that the same pre-release is *not* offered.
+- Manual: publish a test tag newer than `1.0.0-beta.6` as a **pre-release**, publish the draft so it leaves draft state, and verify check -> download -> install, plus the install-on-restart path. Then verify from a stable build that the same pre-release is *not* offered.

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.6] - 2026-11-19
+
 ### Added
 
 - **Desktop notifications** - opt-in OS/taskbar notifications for batch and mux queue job completion/failure and queue summaries when running in the background/unfocused, with click-to-focus and navigation to the Batch Queue.
@@ -36,7 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sidebar condensed by default, with the condensed/expanded state persisted to `localStorage`; page icons refreshed.
 - CI/CD expanded with a nightly workflow, an OpenSSF Scorecard workflow, Codecov bundle analysis, coverage flags/components and coverage test analytics; release workflow updated with monitoring and observability.
 - Website homepage redesigned with a hero section, a "latest downloads" card and an open-source card.
-- Documentation synced with `1.0.0-beta.5` across all shipped locales.
+- Documentation synced with `1.0.0-beta.6` across all shipped locales.
+- Website internal links, canonical tags and structured data normalized to trailing-slash URLs; legacy duplicate paths no longer appear in the sitemap or hreflang sets.
 
 ### Removed
 
@@ -67,6 +70,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - README and per-locale READMEs document macOS notarization status, Windows SmartScreen guidance and separate Linux install instructions.
 - `SECURITY.md`, `docs/UPDATE_MANAGER.md` and the site security/download/platform pages updated in all locales.
+- Full documentation, wiki and website sweep for the `1.0.0-beta.6` release, including feature references, release blog posts and drift markers.
 
 ## [1.0.0-beta.5] - 2026-09-23
 
@@ -204,7 +208,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Architecture and feature documentation restructured; community files (code of conduct, contributing) added.
 
-[Unreleased]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.5...HEAD
+[Unreleased]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.6...HEAD
+[1.0.0-beta.6]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.5...v1.0.0-beta.6
 [1.0.0-beta.5]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.4...v1.0.0-beta.5
 [1.0.0-beta.4]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.3...v1.0.0-beta.4
 [1.0.0-beta.3]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.2...v1.0.0-beta.3

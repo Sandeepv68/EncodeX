@@ -72,7 +72,7 @@ Der Kanal wird aus der laufenden Version abgeleitet und bestimmt, welche Release
 | Kanal | Laufende Version | Infrage kommende Releases |
 |---|---|---|
 | `stable` | keine Pre-Release-Kennung, z. B. `1.0.0` | nur stabile Releases |
-| `beta` | eine Pre-Release-Kennung, z. B. `1.0.0-beta.5` | Pre-Releases *und* stabile Releases |
+| `beta` | eine Pre-Release-Kennung, z. B. `1.0.0-beta.6` | Pre-Releases *und* stabile Releases |
 
 Folgen, die man kennen sollte:
 
@@ -126,4 +126,4 @@ Unter Windows kann das Starten des heruntergeladenen Installers die SmartScreen-
 - Unit: Semver-Vergleich, Update-Kanal-Auswahl, Asset-Auswahl, Download-Validierung, Prüfsummen-Behandlung und die Pending-Install-Markierung.
 - Tests mit feindlichen Eingaben: `src/main/__tests__/updater-hostile.test.ts` fixiert das Verhalten bei Path-Traversal, Weiterleitungen, abgebrochenen Downloads und Digest-Abweichungen.
 - IPC-Tests: Handler-Registrierung und Event-Weiterleitung in `src/main/ipc/__tests__/updater.test.ts`.
-- Manuell: ein Test-Tag veröffentlichen, der neuer als `1.0.0-beta.5` ist, ihn als **Pre-Release** markieren, den Entwurf veröffentlichen, damit er den Entwurfsstatus verlässt, und Suche -> Download -> Installation sowie den Ablauf „Installation beim Neustart" prüfen. Anschließend von einem stabilen Build aus verifizieren, dass dasselbe Pre-Release *nicht* angeboten wird.
+- Manuell: ein Test-Tag veröffentlichen, der neuer als `1.0.0-beta.6` ist, ihn als **Pre-Release** markieren, den Entwurf veröffentlichen, damit er den Entwurfsstatus verlässt, und Suche -> Download -> Installation sowie den Ablauf „Installation beim Neustart" prüfen. Anschließend von einem stabilen Build aus verifizieren, dass dasselbe Pre-Release *nicht* angeboten wird.

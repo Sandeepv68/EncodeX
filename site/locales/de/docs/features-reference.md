@@ -4,6 +4,14 @@
 
 EncodeX ist ein plattformübergreifendes Multimedia-Konvertierungstool, das die Leistung von FFmpeg in eine moderne, intuitive Desktop-Oberfläche bringt. Gebaut mit Electron, React und TypeScript ermöglicht es, Medien zwischen Formaten zu konvertieren, Audio zu extrahieren, Videos zu schneiden und Bilder zu komprimieren — alles über eine aufgeräumte, reaktionsschnelle UI mit Batch-Warteschlange, Hardwarebeschleunigung, CLI-Modus und vollständiger Internationalisierung.
 
+## Neu in 1.0.0-beta.6
+
+- **Copilot-Refresh** — überarbeitete Konversationsoberfläche, gespeicherte Chats, lokaler Ollama-Anbieter, Modell-Erkennung und Wiederholungsbehandlung sowie Transkription, Zusammenfassung, Kapitel, Übersetzung und Find-Similar-Operationen.
+- **MCP 2.x Apps** — React-MCP-App-Ansichten, die in EncodeX und in Hosts von Drittanbietern gerendert werden, eingebettete Copilot-Dashboards, ein eigenständiger Loopback-HTTP-Transport und ein Verfahren zur Host-Verifizierung.
+- **Remux, Demux & Videofilter** — dedizierte verlustfreie Workflows und kuratierte Filterketten in der App, der CLI und über MCP.
+- **Warteschlange & Benachrichtigungen** — eine eigene Mux-Warteschlange, Kondensieren pro Tab, tabellarische Job-Details, eine abtrennbare Logs-Seite und opt-in Desktop-Benachrichtigungen für Ergebnisse von Hintergrundjobs.
+- **Sicherheit & Dokumentation** — gepinnte Actions, blockierende Audit-/IPC-/Fuzz-Gates sowie eine synchronisierte Aktualisierung von Dokumentation, Wiki und Website mit kanonischen URLs.
+
 ## Funktionsübersicht
 
 ### Medienkonvertierung

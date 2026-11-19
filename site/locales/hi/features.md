@@ -11,6 +11,14 @@ EncodeX आपके कंप्यूटर के लिए एक मुफ�
 
 ---
 
+## 1.0.0-beta.6 में नया
+
+- **Copilot refresh** — नए रूप में डिज़ाइन की गई conversation UI, saved chats, local Ollama provider, model discovery और retry handling, साथ ही transcription, summarization, chapters, translation और find-similar ऑपरेशन।
+- **MCP 2.x Apps** — React MCP App views जो EncodeX और तीसरे पक्ष के hosts के अंदर render होती हैं, inline Copilot dashboards, एक standalone loopback HTTP transport, और host verification प्रक्रिया।
+- **Remux, Demux और Video Filters** — समर्पित lossless workflows और curated filter chains, ऐप, CLI और MCP surfaces में उपलब्ध।
+- **Queue और notifications** — समर्पित mux queue, per-tab condense, tabular job details, अलग होने वाली Logs page, और background job परिणामों के लिए opt-in desktop notifications।
+- **Security और docs** — pinned actions, blocking audit/IPC/fuzz gates, और canonical URLs के साथ docs, wiki और website की synchronized refresh।
+
 ## वीडियो और ऑडियो का फ़ॉर्मैट बदलें
 
 <img src="/images/convert.webp" alt="मीडिया कन्वर्ज़न" width="1600" height="1057" loading="lazy">

@@ -72,7 +72,7 @@ O canal é derivado da versão em execução e decide quais releases são elegí
 | Canal | Versão em execução | Releases elegíveis |
 |---|---|---|
 | `stable` | sem identificador de pre-release, por exemplo `1.0.0` | apenas releases estáveis |
-| `beta` | com um identificador de pre-release, por exemplo `1.0.0-beta.5` | pre-releases *e* releases estáveis |
+| `beta` | com um identificador de pre-release, por exemplo `1.0.0-beta.6` | pre-releases *e* releases estáveis |
 
 Consequências que vale conhecer:
 
@@ -126,4 +126,4 @@ No Windows, executar o instalador baixado pode disparar o aviso do SmartScreen "
 - Unitários: comparação semver, seleção de canal de atualização, seleção de assets, validação do download, tratamento de checksum e o marcador de instalação pendente.
 - Testes de entradas hostis: `src/main/__tests__/updater-hostile.test.ts` fixa o comportamento para travessia de caminho, redirecionamento, download truncado e divergência de digest.
 - Testes de IPC: registro dos handlers e encaminhamento de eventos em `src/main/ipc/__tests__/updater.test.ts`.
-- Manuais: publicar um tag/release de teste mais recente que `1.0.0-beta.5` como **pre-release**, publicar o rascunho para que ele saia do estado de rascunho, e verificar verificação -> download -> instalação, além do caminho de instalação na próxima reinicialização. Em seguida, verificar a partir de uma build estável que a mesma pre-release *não* é oferecida.
+- Manuais: publicar um tag/release de teste mais recente que `1.0.0-beta.6` como **pre-release**, publicar o rascunho para que ele saia do estado de rascunho, e verificar verificação -> download -> instalação, além do caminho de instalação na próxima reinicialização. Em seguida, verificar a partir de uma build estável que a mesma pre-release *não* é oferecida.

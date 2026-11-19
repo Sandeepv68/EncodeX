@@ -16,6 +16,14 @@ Funciona no Windows, Mac e Linux, é totalmente grátis e fala mais de 56 idioma
 
 ---
 
+## Novo em 1.0.0-beta.6
+
+- **Copilot renovado** — interface de conversação redesenhada, chats salvos, provedor Ollama local, descoberta de modelos e tratamento de novas tentativas, além de operações de transcrição, resumo, capítulos, tradução e busca por similaridade.
+- **Apps MCP 2.x** — visualizações React MCP App renderizadas dentro do EncodeX e de hosts de terceiros, painéis do Copilot embutidos, um transporte HTTP loopback independente e um procedimento de verificação de host.
+- **Remux, Demux e filtros de vídeo** — fluxos de trabalho dedicados e sem perdas e cadeias de filtros selecionadas nas interfaces do app, da CLI e do MCP.
+- **Fila e notificações** — uma fila de mux dedicada, compactação por aba, detalhes de tarefas em formato de tabela, uma página de Logs destacável e notificações desktop opcionais para resultados de tarefas em segundo plano.
+- **Segurança e documentação** — ações com versão fixada, gates obrigatórios de auditoria/IPC/fuzz e uma atualização sincronizada da documentação, da wiki e do site com URLs canônicas.
+
 ## Mudar formatos de vídeo e áudio
 
 <img src="/images/convert.webp" alt="Conversão de mídia" width="1600" height="1057" loading="lazy">
