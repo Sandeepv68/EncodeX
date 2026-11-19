@@ -10,7 +10,7 @@
  * Falls back to unauthenticated requests for public repos (60 req/hr limit).
  */
 
-import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -83,14 +83,18 @@ async function main() {
 
     const slug = slugify(release.tag_name);
     const filename = join(BLOG_DIR, `${slug}.md`);
-    if (existsSync(filename)) {
-      console.log(`[generate-blog] Keeping existing ${filename}`);
-      continue;
-    }
     const content = generatePost(release);
-    writeFileSync(filename, content, 'utf-8');
-    console.log(`[generate-blog] Wrote ${filename}`);
-    count++;
+    try {
+      writeFileSync(filename, content, { encoding: 'utf-8', flag: 'wx' });
+      console.log(`[generate-blog] Wrote ${filename}`);
+      count++;
+    } catch (error) {
+      if (error?.code === 'EEXIST') {
+        console.log(`[generate-blog] Keeping existing ${filename}`);
+        continue;
+      }
+      throw error;
+    }
   }
 
   console.log(`[generate-blog] Done. Generated ${count} blog posts.`);
