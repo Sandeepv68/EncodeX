@@ -12,7 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Desktop notifications** - opt-in OS/taskbar notifications for batch and mux queue job completion/failure and queue summaries when running in the background/unfocused, with click-to-focus and navigation to the Batch Queue.
+- **Mux queue** — a dedicated remux/demux queue with per-tab condense and tabular job details.
 - **Remux and Demux** — dedicated lossless remux and stream-demux pages, surfaced in the app, CLI and MCP surfaces.
+- **Video filters** — crop, frame rate, deinterlace, denoise, sharpen, color, grayscale, blur and custom chains across Convert, Batch, Remux, Demux, CLI and MCP, with explicit warnings when a filter forces re-encoding.
 - **Standalone MCP HTTP server** (`npm run mcp:http`) — loopback-only transport with optional bearer auth, session cap, body-size cap and Host/Origin checks.
 - **MCP AI tools** — `analyze_media`, `recommend_settings`, `estimate_conversion`, `validate_output`, `compress_to_target`, `analyze_folder`, `explain_error`, `advise_encoding` and `quality_report`, each returning `structuredContent` alongside the text fallback.
 - **MCP Apps views** — inspector, plan, compression-lab and error views, plus a batch dashboard over `batch_convert` / `get_queue_state`.
@@ -23,9 +25,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **A host verification procedure** — `npm run mcp:host-check` verifies every served view document, and `docs/MCP_UI_HOSTS.md` documents how to check the views in a real host (Claude Desktop, VS Code, Cursor, ChatGPT, Goose, MCPJam).
 - **Copilot AI extras** — transcribe, summarize, chapters, transcript search, translate and find-similar operations, wired through the operation router.
 - **Copilot redesign** — ChatGPT-style conversation UI with a Lexical composer, suggestion placeholder, advanced popover and a provider logo-grid connect flow in Settings.
+- **Auto-growing composer** — the Copilot input expands as you type, with route scroll reset and responsive composer polish.
 - **AI provider settings** — model list sourced from the provider API with offline handling, retry with backoff on transient `429/5xx` responses, Connected/stale status states, key removal, and a session-only settings cache.
+- **Local AI providers** — Ollama support alongside the hosted providers, with consistent provider glyphs and localized settings.
+- **PostHog analytics** — privacy-aware product analytics integrated behind the existing consent/telemetry controls.
 - **Copilot saved chats** — a side panel listing saved conversations, plus BMF availability detection and AI rules-connect wiring.
-- **Logs page free-text search** across stored log entries.
+- **Logs page** — free-text search across stored log entries, with the page detachable into its own window.
 - **Loading skeletons** for lazily loaded routes.
 - **MCP E2E suites** covering the stdio, standalone HTTP and embedded GUI surfaces, plus a VS Code client-wire contract test.
 - **CI gates** — sharded, diff-scoped mutation testing; a blocking dependency-audit gate with a documented allowlist; media-fuzz, IPC-abuse, locale-matrix, RTL, accessibility and perf-budget tiers.
@@ -36,8 +41,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Copilot saved-chats panel is now an overlay** — it slides in with a transform animation instead of animating its width as a layout sibling, so the conversation column is never resized, re-wrapped or re-laid out when the panel opens.
 - **Saved-chat list items** now carry a 1px divider border and a theme-aware soft drop shadow (light/dark), with a stronger shadow on hover.
 - Sidebar condensed by default, with the condensed/expanded state persisted to `localStorage`; page icons refreshed.
-- CI/CD expanded with a nightly workflow, an OpenSSF Scorecard workflow, Codecov bundle analysis, coverage flags/components and coverage test analytics; release workflow updated with monitoring and observability.
-- Website homepage redesigned with a hero section, a "latest downloads" card and an open-source card.
 - Documentation synced with `1.0.0-beta.6` across all shipped locales.
 - Website internal links, canonical tags and structured data normalized to trailing-slash URLs; legacy duplicate paths no longer appear in the sitemap or hreflang sets.
 

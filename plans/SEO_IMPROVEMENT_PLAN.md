@@ -42,7 +42,7 @@ content enhancements, and authority-building to move from "SEO-ready" to "rankin
 |---|-----|----------|--------|--------|---------|
 | 1 | `ogImage` frontmatter supported but never used | Medium | Low | Social sharing appearance | C1 |
 | 2 | Structured data is EN-only (no FAQ/Breadcrumb for locales) | Medium | Medium | Rich results in non-EN SERPs | B1, B2 |
-| 3 | `softwareVersion` hardcoded as `1.0.0-beta.2` | Low | Low | Accurate schema data | A2 |
+| 3 | `softwareVersion` hardcoded as `1.0.0-beta.2` (resolved: now dynamic) | Low | Low | Accurate schema data | A2 |
 | 4 | No `og:site_name` meta tag | Low | Low | Brand consistency in shares | A1 |
 | 5 | Blog posts lack `dateModified` in Article schema | Low | Low | Freshness signals | A3 |
 | 6 | No `HowTo` structured data for conversion guides | Medium | Medium | Rich results for how-to queries | B3 |
@@ -85,10 +85,10 @@ head.push(['meta', { property: 'og:site_name', content: 'EncodeX' }])
 import packageJson from '../../package.json'
 
 // In transformHead:
-softwareVersion: (packageJson as { version?: string }).version || '1.0.0-beta.2',
+softwareVersion: (packageJson as { version?: string }).version || '1.0.0-beta.6',
 ```
 
-**Verification:** `npm run docs:build` → check JSON-LD output matches `package.json` version (currently `1.0.0-beta.2`)
+**Verification:** `npm run docs:build` → check JSON-LD output matches `package.json` version (currently `1.0.0-beta.6`)
 
 ---
 
