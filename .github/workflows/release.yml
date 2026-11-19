@@ -222,6 +222,9 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
+      - name: Clean build output
+        shell: bash
+        run: rm -rf dist
       - run: npm run build
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
@@ -349,6 +352,8 @@ jobs:
       APTABASE_ENVIRONMENT: ${{ secrets.APTABASE_ENVIRONMENT }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       SENTRY_ENVIRONMENT: ${{ secrets.SENTRY_ENVIRONMENT }}
+      POSTHOG_PROJECT_TOKEN: ${{ secrets.POSTHOG_PROJECT_TOKEN }}
+      POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -356,6 +361,9 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
+      - name: Clean package output
+        shell: bash
+        run: rm -rf dist release staging
       - name: Fetch media binaries for ${{ matrix.os }} ${{ matrix.arch }}
         run: node scripts/fetch-media-binaries.mjs --platform=${{ matrix.os }} --arch=${{ matrix.arch }}
       - name: Build ${{ matrix.arch }} ${{ matrix.target }} installer

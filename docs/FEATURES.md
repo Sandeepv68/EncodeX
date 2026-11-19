@@ -4,6 +4,14 @@
 
 EncodeX is a cross-platform multimedia conversion tool that brings the power of FFmpeg to a modern, intuitive desktop interface. Built with Electron, React, and TypeScript, it lets you convert media between formats, remux streams losslessly, demux them into separate files, extract audio, cut videos, and compress images — all through a clean, responsive UI with a batch queue, hardware acceleration, CLI mode, and full internationalization.
 
+## 🆕 New in 1.0.0-beta.6
+
+- **Copilot refresh** — redesigned conversation UI, saved chats, local Ollama provider, model discovery and retry handling, plus transcription, summarization, chapters, translation and find-similar operations.
+- **MCP 2.x Apps** — React MCP App views that render inside EncodeX and third-party hosts, inline Copilot dashboards, a standalone loopback HTTP transport, and a host verification procedure.
+- **Remux, Demux & Video Filters** — dedicated lossless workflows and curated filter chains across the app, CLI and MCP surfaces.
+- **Queue & notifications** — a dedicated mux queue, per-tab condense, tabular job details, a detachable Logs page, and opt-in desktop notifications for background job results.
+- **Security & docs** — pinned actions, blocking audit/IPC/fuzz gates, and a synchronized docs, wiki and website refresh with canonical URLs.
+
 ## 🔄 Feature Overview
 
 ### Media Conversion
@@ -291,13 +299,13 @@ EncodeX ships a built-in [Model Context Protocol](https://modelcontextprotocol.i
 
 - **Standalone (stdio):** `encodex --mcp` / `node dist/mcp/index.js` exposes 36 model-visible tools (37 registrations, including the app-only `commit_operation`).
 - **Embedded (Streamable HTTP):** toggled in **Settings → AI** under MCP Server (`http://127.0.0.1:8765/mcp`, loopback-only, optional bearer token); adds 6 GUI-parity tools for **42** model-visible tools (43 registrations).
-- **Resources:** `encodex://profiles`, `encodex://capabilities`, `encodex://codecs` (JSON), plus eleven interactive `ui://` views.
+- **Resources:** `encodex://profiles`, `encodex://capabilities`, `encodex://codecs` (JSON), plus thirteen interactive `ui://` views.
 - **Prompts:** `convert-video`, `extract-audio`, `compress-image`, `batch-convert`.
 - **Async jobs:** conversion tools return a `jobId` immediately; poll with `get_job` / `list_jobs`, cancel with `cancel_job`. Under MCP Apps hosts the mutating tools first return a confirmation the user approves.
 
 ### Interactive views (MCP Apps / SEP-1865)
 
-The server is MCP Apps compliant: it advertises the `io.modelcontextprotocol/ui` extension and serves eleven self-contained `ui://` views that compatible hosts render in a sandboxed iframe — a **live queue** dashboard, a **per-job** progress card, a **media-info** table, a **conversion form**, a generic **confirmation card**, a media **inspector**, a conversion **plan**, a **size-target lab**, an **error explanation** card, a **batch** dashboard, and a **workflow** dry-run/report. Mutating operations never run straight from a model call in these hosts: the tool returns a proposal, the view shows it, and the work runs only when the user approves (via the app-only `commit_operation`). Views pass data via `structuredContent` (never HTML interpolation) and can call tools back, including confirm-gated `cancel_job`. Hosts without the extension fall back to the JSON text payload and run immediately. See [`MCP_UI.md`](MCP_UI.md).
+The server is MCP Apps compliant: it advertises the `io.modelcontextprotocol/ui` extension and serves thirteen self-contained `ui://` views that compatible hosts render in a sandboxed iframe — a **live queue** dashboard, a **per-job** progress card, a **media-info** table, a **conversion form**, a generic **confirmation card**, a media **inspector**, a conversion **plan**, a **size-target lab**, an **error explanation** card, a **batch** dashboard, a **workflow** dry-run/report, a **profile catalogue**, and a machine **capability report**. Mutating operations never run straight from a model call in these hosts: the tool returns a proposal, the view shows it, and the work runs only when the user approves (via the app-only `commit_operation`). Views pass data via `structuredContent` (never HTML interpolation) and can call tools back, including confirm-gated `cancel_job`. Hosts without the extension fall back to the JSON text payload and run immediately. See [`MCP_UI.md`](MCP_UI.md).
 
 Full reference: [`MCP.md`](MCP.md) and [`MCP_UI.md`](MCP_UI.md).
 

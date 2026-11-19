@@ -1,6 +1,6 @@
 # 🖼️ Interactive MCP Apps
 
-EncodeX's MCP server is [MCP Apps](https://modelcontextprotocol.io) (SEP-1865) compliant. In hosts that support the extension — Claude, VS Code, ChatGPT, Goose, Postman, MCPJam — EncodeX's job and media-intelligence tools render as interactive views: a live queue dashboard, a per-job progress card, a media-info table, a conversion setup form, an inspector, a plan/estimate card, a size-target lab, an error card, a batch dashboard, a workflow report, a profile catalogue and a capability report. In hosts that don't, every tool still returns its normal JSON text payload, so nothing breaks.
+EncodeX's MCP server is [MCP Apps](https://modelcontextprotocol.io) (SEP-1865) compliant. In hosts that support the extension — Claude, VS Code, ChatGPT, Goose, Postman, MCPJam — EncodeX's job and media-intelligence tools render as interactive views: a live queue dashboard, a per-job progress card, a media-info table, a conversion setup form, an inspector, a plan/estimate card, a confirmation card, a size-target lab, an error card, a batch dashboard, a workflow report, a profile catalogue and a capability report. In hosts that don't, every tool still returns its normal JSON text payload, so nothing breaks.
 
 Inside EncodeX itself, the Copilot renders the very same views inline, so a plan that analyses a file shows the inspector card right in the transcript.
 

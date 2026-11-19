@@ -42,7 +42,7 @@ Coverage reports are generated in `coverage/`:
 
 ## Test Suite
 
-The suite is run by Vitest 4. There are 360 test/spec files under `src/`, 355 test/spec files under `e2e/`, and 11 performance suites under `perf/`. Coverage uses the v8 provider. The table below lists representative files rather than every test.
+The suite is run by Vitest 4. There are 375 test/spec files under `src/`, 41 test/spec files under `e2e/`, and 11 performance suites under `perf/`. Coverage uses the v8 provider. The table below lists representative files rather than every test.
 
 | Area                                            | Representative files                                                                                                                                                                                                                                                                                                                                                                                                  | What's Covered                                                                                                                                        |
 | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -75,7 +75,7 @@ The test environment (`src/test-setup.ts`) provides:
 
 ## E2E Tests
 
-End-to-end tests live in `e2e/` (Vitest with the node environment, 60s timeouts) and are gated behind the `E2E` env var or CI. There are 31 specs in `e2e/specs/`, 6 in `e2e/mcp/`, the root CLI spec, and one boot-budget fixture test:
+End-to-end tests live in `e2e/` (Vitest with the node environment, 60s timeouts) and are gated behind the `E2E` env var or CI. There are 34 specs in `e2e/specs/`, 6 in `e2e/mcp/`, the root CLI spec, and one boot-budget fixture test:
 
 | File(s)                                                                                                                                        | What's Covered                                                                                                                                                                                          |
 | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

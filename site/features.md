@@ -14,6 +14,14 @@ EncodeX is a free app for your computer that fixes common file problems in a few
 
 It works on Windows, Mac, and Linux, it's completely free, and its interface is available in 56 locales.
 
+## New in 1.0.0-beta.6
+
+- **A smarter Copilot** — a cleaner chat layout, saved conversations, local Ollama support, and AI actions like transcribe, summarize, chapters and translate.
+- **MCP Apps everywhere** — interactive MCP views now render inside EncodeX and compatible AI hosts, with live job dashboards in the Copilot.
+- **More lossless workflows** — dedicated Remux and Demux pages, video filter presets, and a separate mux queue.
+- **Better background work** — desktop notifications, a detachable Logs window, and clearer job details.
+- **Safer and easier to find** — stronger CI security gates plus refreshed documentation and cleaner search-friendly URLs.
+
 ## Change Video & Audio Formats
 
 <img src="/images/convert.webp" alt="Media Conversion" width="1600" height="1057" loading="lazy">

@@ -215,6 +215,22 @@ describe('updater', () => {
       expect(selectAsset(assets(['EncodeX-1.0.0-x86_64.AppImage']))?.name).toBe('EncodeX-1.0.0-x86_64.AppImage');
     });
 
+    it('matches linux x64 assets named x86_64 even when arm64 is listed first', () => {
+      Object.defineProperty(process, 'platform', { value: 'linux' });
+      Object.defineProperty(process, 'arch', { value: 'x64' });
+      expect(selectAsset(assets(['EncodeX-1.0.0-arm64.AppImage', 'EncodeX-1.0.0-x86_64.AppImage']))?.name).toBe(
+        'EncodeX-1.0.0-x86_64.AppImage',
+      );
+    });
+
+    it('matches arm64 aliases without cross-matching x86_64', () => {
+      Object.defineProperty(process, 'platform', { value: 'linux' });
+      Object.defineProperty(process, 'arch', { value: 'arm64' });
+      expect(selectAsset(assets(['EncodeX-1.0.0-x86_64.AppImage', 'EncodeX-1.0.0-aarch64.AppImage']))?.name).toBe(
+        'EncodeX-1.0.0-aarch64.AppImage',
+      );
+    });
+
     it('never matches blockmap files', () => {
       Object.defineProperty(process, 'platform', { value: 'win32' });
       Object.defineProperty(process, 'arch', { value: 'arm64' });

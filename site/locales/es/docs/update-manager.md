@@ -72,7 +72,7 @@ El canal se deriva de la versión en ejecución y decide qué releases son elegi
 | Canal | Versión en ejecución | Releases elegibles |
 |---|---|---|
 | `stable` | sin identificador de pre-release, p. ej. `1.0.0` | solo releases estables |
-| `beta` | con un identificador de pre-release, p. ej. `1.0.0-beta.5` | pre-releases *y* releases estables |
+| `beta` | con un identificador de pre-release, p. ej. `1.0.0-beta.6` | pre-releases *y* releases estables |
 
 Consecuencias que conviene conocer:
 
@@ -126,4 +126,4 @@ En Windows, al iniciar el instalador descargado puede aparecer la advertencia de
 - Unitarias: comparación semver, selección de canal de actualización, selección de assets, validación de descargas, gestión de checksums y el marcador de instalación pendiente.
 - Pruebas de entradas hostiles: `src/main/__tests__/updater-hostile.test.ts` fija el comportamiento ante recorridos de ruta, redirecciones, descargas truncadas y digests que no coinciden.
 - Pruebas de IPC: registro de manejadores y reenvío de eventos en `src/main/ipc/__tests__/updater.test.ts`.
-- Manual: publicar un tag de prueba más nuevo que `1.0.0-beta.5` como **pre-release**, publicar el borrador para que salga del estado de borrador y verificar búsqueda -> descarga -> instalación, además de la ruta de instalación al reiniciar. A continuación, verificar desde una compilación estable que esa misma pre-release *no* se ofrece.
+- Manual: publicar un tag de prueba más nuevo que `1.0.0-beta.6` como **pre-release**, publicar el borrador para que salga del estado de borrador y verificar búsqueda -> descarga -> instalación, además de la ruta de instalación al reiniciar. A continuación, verificar desde una compilación estable que esa misma pre-release *no* se ofrece.

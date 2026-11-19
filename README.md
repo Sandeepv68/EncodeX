@@ -85,15 +85,17 @@ Conversion runs **locally on your computer** — no accounts, no media uploads, 
 - **🎵 Audio Extraction** — Any of 27 audio codecs from any video file
 - **ℹ️ Media Info** — Full per-stream probe: codec, profile, resolution, color metadata, frame rate, etc.
 - **⌨️ CLI Mode** — Headless scripting with subcommands (`convert`, `info`, `capabilities`, `compress`, `extract-audio`, `remux`, `demux`, `batch`)
-- **🤖 MCP Server** — Built-in [Model Context Protocol](https://modelcontextprotocol.io) server: 36 model-visible tools, 3 resources, and 4 prompts over stdio (`encodex --mcp`), plus an optional embedded localhost HTTP endpoint (off by default) that adds 6 GUI-parity tools (live queue, preview, timeline, system info, updates) for 42 model-visible tools in total. Run one-off conversions or manage async jobs from Claude Desktop, Claude Code, Cursor, VS Code, or any MCP client
+- **🤖 MCP Server** — Built-in [Model Context Protocol](https://modelcontextprotocol.io) server: 36 model-visible tools, 3 resources, and 4 prompts over stdio (`encodex --mcp`), plus an optional embedded localhost HTTP endpoint (off by default) that adds 6 GUI-parity tools (live queue, preview, timeline, system info, updates, cancel all jobs) for 42 model-visible tools in total. Run one-off conversions or manage async jobs from Claude Desktop, Claude Code, Cursor, VS Code, or any MCP client
 - **⚙️ 3 Transcoder Cores** — FFmpeg API (fluent-ffmpeg), FFmpeg CLI (child_process), BMF Framework
 - **🌍 56 Locales** — with RTL support (Arabic, Hebrew)
-- **⌨️ Keyboard Shortcuts** — 82 shortcuts in 11 help sections, with an in-app help dialog (`Ctrl+/`)
+- **⌨️ Keyboard Shortcuts** — 71 shortcuts in 11 help sections, with an in-app help dialog (`Ctrl+/`)
 - **🔄 In-App Updates** — Checks GitHub Releases, downloads the platform installer when you ask (never installed automatically), real-time progress
 - **🛡️ Error Handling** — 28 typed error codes, global snackbar, inline banners, React error boundaries
 - **🌗 Dark/Light Theme** — System-aware with manual toggle, persistent preferences
 
 See [docs/FEATURES.md](docs/FEATURES.md) for the full feature breakdown, supported formats, and codec lists.
+
+> **New in `1.0.0-beta.6`:** redesigned Copilot with saved chats and local Ollama support, MCP 2.x React App views, standalone MCP HTTP transport, remux/demux and video filters across app/CLI/MCP, a dedicated mux queue, detachable Logs, desktop notifications, and a full security/docs/SEO refresh.
 
 ## 📸 Screenshots
 
@@ -208,7 +210,7 @@ npm run dev
 # Full dev environment with Electron window
 npm run electron:dev
 
-# Quick start (build then launch)
+# Quick start (compile main/preload, then launch with Vite renderer)
 npm run dev:start
 ```
 
@@ -218,6 +220,8 @@ npm run dev:start
 2. **tsc** — watches and compiles the main process TypeScript to `dist/main/`
 
 `npm run electron:dev` waits for Vite to be ready, compiles both main and preload, then launches Electron with the `--dev` flag pointing at the Vite dev server URL. DevTools open automatically.
+
+`npm run dev:start` compiles the main and preload TypeScript once, then runs the Vite renderer and Electron concurrently. It does not run the production `build` pipeline.
 
 ## 🔨 Build
 
@@ -242,7 +246,7 @@ npm run dist
 | `npm run build`          | All three in sequence                                       |
 | `npm run start`          | Launch compiled app from `dist/` via `electron .`           |
 | `npm run electron:dev`   | Vite + Electron dev environment                             |
-| `npm run dev:start`      | Build then launch                                           |
+| `npm run dev:start`      | Compile main/preload, then launch with Vite renderer        |
 | `npm run format`         | `prettier --write` on TypeScript/JS in `src`, `e2e`, `perf`, `scripts`, `bin`, and root |
 | `npm run format:check`   | `prettier --check` on the same patterns                     |
 | `npm run pack`           | Build + electron-builder `--dir`                            |
@@ -251,7 +255,7 @@ npm run dist
 ## 🧪 Testing
 
 ```bash
-npm test           # Run unit tests (330 test/spec files under src/)
+npm test           # Run unit tests (375 test/spec files under src/)
 npm run test:watch
 npm run test:coverage
 npm run test:unit

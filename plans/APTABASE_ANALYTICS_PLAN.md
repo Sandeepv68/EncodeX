@@ -1,15 +1,15 @@
-# Aptabase Usage Analytics Plan â€” EncodeX
+# Aptabase Usage Analytics Plan — EncodeX
 
-> Status legend: `[ ]` pending Â· `[~]` in progress Â· `[x]` done
+> Status legend: `[ ]` pending · `[~]` in progress · `[x]` done
 >
 > **Goal:** Integrate **Aptabase** as the application-usage-analytics backend behind a
 > provider-agnostic analytics layer (ports & adapters), mirroring the existing monitoring
 > architecture, so the analytics platform can be swapped later with **zero call-site changes**.
 >
-> Captures as much product signal as possible **and reconstructs full user journeys** â€” from
-> install â†’ terms â†’ onboarding â†’ first goal â†’ first successful conversion â†’ repeat use â€” across
+> Captures as much product signal as possible **and reconstructs full user journeys** — from
+> install → terms → onboarding → first goal → first successful conversion → repeat use — across
 > all 10 screens, plus queue, profiles, image/audio/video tools, settings, MCP, updates, hardware
-> acceleration, window chrome, CLI, and telemetry (â‰ˆ80 named events, preferred-tier rollout).
+> acceleration, window chrome, CLI, and telemetry (≈80 named events, preferred-tier rollout).
 >
 > Companion docs: `plans/SENTRY_MONITORING_PLAN.md` (the architecture being mirrored),
 > `plans/PRODUCT_LAUNCH_GROWTH_PLAN.md` (KPI tracker / Checkpoint 10), `docs/MONITORING.md`.
@@ -23,38 +23,38 @@
 | D1 | Consent model | **One visual telemetry switch, layered stores.** Settings keeps a single "usage analytics + error reporting" toggle. Each layer keeps its OWN persisted consent file (`analytics-consent.json` seeds from `monitoring-consent.json` on first boot) so either platform can be removed without breaking the other. The one switch flips BOTH IPC channels.        |
 | D2 | Backend       | SaaS Aptabase (app key via env `APTABASE_APP_KEY`), self-hosted supported via `APTABASE_HOST` + `A-SH-*` key.                                                                                                                                                                                                                                                 |
 | D3 | Scope         | GUI **and** CLI mode (`encodex --cli`) report; MCP mode reports only framing events.                                                                                                                                                                                                                                                                          |
-| D4 | Transport     | `@aptabase/electron` â€” renderer tracks via `@aptabase/electron/renderer` which relays over the SDK's own `aptabase-ipc` scheme to main; **the App Key lives only in the main process** (same rule as the Sentry DSN). SDK uses Electron `net` (proxy-aware, non-blocking).                                                                                     |
-| D5 | Provider swap | Selection via `ANALYTICS_PROVIDER` env (`aptabase` \| `noop`); default `aptabase` only when `APTABASE_APP_KEY` present. Runtime enforcement lives in the shared facade (consent off â‡’ NoopProvider) exactly like monitoring.                                                                                                                                  |
-| D6 | Taxonomy      | Bump `ANALYTICS_SCHEMA_VERSION` 1 â†’ 2. Extend the existing 14-event taxonomy to an **â‰ˆ80-event catalog across 16 user journeys** (Â§4). All payloads stay **categorical-only** (source disambiguators, counts, buckets, ids, modes, durations as numbers â€” never file names, paths, or PII). Rolled out in two tiers: `v1` launch (~45) and `v2` follow-up (~30). |
+| D4 | Transport     | `@aptabase/electron` — renderer tracks via `@aptabase/electron/renderer` which relays over the SDK's own `aptabase-ipc` scheme to main; **the App Key lives only in the main process** (same rule as the Sentry DSN). SDK uses Electron `net` (proxy-aware, non-blocking).                                                                                     |
+| D5 | Provider swap | Selection via `ANALYTICS_PROVIDER` env (`aptabase` \| `noop`); default `aptabase` only when `APTABASE_APP_KEY` present. Runtime enforcement lives in the shared facade (consent off ⇒ NoopProvider) exactly like monitoring.                                                                                                                                  |
+| D6 | Taxonomy      | Bump `ANALYTICS_SCHEMA_VERSION` 1 → 2. Extend the existing 14-event taxonomy to an **≈80-event catalog across 16 user journeys** (§4). All payloads stay **categorical-only** (source disambiguators, counts, buckets, ids, modes, durations as numbers — never file names, paths, or PII). Rolled out in two tiers: `v1` launch (~45) and `v2` follow-up (~30). |
 | D7 | SDK constraint| `@aptabase/electron@0.3.1` has **no `flush()`/`close()` export** and requires `initialize()` **before `app.whenReady()`** (otherwise it self-disables). The adapter therefore (a) inits synchronously at module load like monitoring does, and (b) tracks in-flight request promises itself to give the facade real `flush`/`close` semantics.                 |
-| D8 | Existing layer| Keep `recordAnalyticsEvent` / `analyticsService.recordEvent` / `createAnalyticsEvent` public surface **byte-identical**; only the routing changes (breadcrumbs â†’ real AnalyticsProvider backend). Call sites stay untouched.                                                                     |
-| D9 | Journey depth | Journey reconstruction is **event-sequence based**, not screen-tour based: no page/route dumps, no throttle-prone UI micro-events. `tool_opened {route}` marks screen entry; `source` props (`dialog`/`drop`/`folder`), `mode` (`gui`/`cli`), `jobKind`, and SDK session id stitch each journey's steps together (Â§5).                                                |
+| D8 | Existing layer| Keep `recordAnalyticsEvent` / `analyticsService.recordEvent` / `createAnalyticsEvent` public surface **byte-identical**; only the routing changes (breadcrumbs → real AnalyticsProvider backend). Call sites stay untouched.                                                                     |
+| D9 | Journey depth | Journey reconstruction is **event-sequence based**, not screen-tour based: no page/route dumps, no throttle-prone UI micro-events. `tool_opened {route}` marks screen entry; `source` props (`dialog`/`drop`/`folder`), `mode` (`gui`/`cli`), `jobKind`, and SDK session id stitch each journey's steps together (§5).                                                |
 | D10| Noise gates   | Two-tier rollout + a per-group event flag. High-frequency interactions (playback toggle, timeline zoom, drag) are excluded by default and only enabled if a specific question needs them (Phase 6.5).                                                                                           |
 
-## 2. Architecture â€” Ports & Adapters
+## 2. Architecture — Ports & Adapters
 
 ```
-App code â”€â”€â–º recordAnalyticsEvent(event)            (src/shared/analytics/AnalyticsService.ts)
-                  â”‚                                                  â–² the "port"
-                  â”‚ delegates to AnalyticsProvider interface         â”‚ (src/shared/analytics/types.ts)
-                  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                                          â”‚ implemented by adapters
-        â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+App code ──► recordAnalyticsEvent(event)            (src/shared/analytics/AnalyticsService.ts)
+                  │                                                  ▲ the "port"
+                  │ delegates to AnalyticsProvider interface         │ (src/shared/analytics/types.ts)
+                  └───────────────────────┬──────────────────────────┘
+                                          │ implemented by adapters
+        ┌──────────────────────────────────┼───────────────────────────────────┐
   AptabaseMainProvider               NoopProvider                    (future providers
   (src/main/analytics, wraps        (default fallback)                one file each,
    @aptabase/electron/main)         src/shared/analytics)             e.g. PostHogMainProvider)
-        â”‚                                  â–²
-        â”‚ (main posts to <region>.aptabase.com/api/v0/event via Electron net)
-   AptabaseRendererProvider               â”‚ mirrors main backend via ANALYTICS_GET_STATE
-   (src/renderer/analytics, wraps  @aptabase/electron/renderer  â†’ aptabase-ipc â†’ main)
+        │                                  ▲
+        │ (main posts to <region>.aptabase.com/api/v0/event via Electron net)
+   AptabaseRendererProvider               │ mirrors main backend via ANALYTICS_GET_STATE
+   (src/renderer/analytics, wraps  @aptabase/electron/renderer  → aptabase-ipc → main)
 ```
 
 - App code only ever calls `recordAnalyticsEvent(createAnalyticsEvent(name, props))`.
 - The `AnalyticsProvider` contract is the only coupling; backends are one file each + a
-  factory entry. Swapping Aptabase â‡’ PostHog/Plausible/etc. = new adapter + `ANALYTICS_PROVIDER` change.
-- **Renderer never sees the App Key** â€” it relays `{eventName, props}` over the SDK's
+  factory entry. Swapping Aptabase ⇒ PostHog/Plausible/etc. = new adapter + `ANALYTICS_PROVIDER` change.
+- **Renderer never sees the App Key** — it relays `{eventName, props}` over the SDK's
   `aptabase-ipc` scheme registered by main (`initialize` does this automatically).
-- The old breadcrumb routing (`addMonitoringBreadcrumb`) is **removed** â€” analytics gets its
+- The old breadcrumb routing (`addMonitoringBreadcrumb`) is **removed** — analytics gets its
   own network channel. Monitoring and analytics become fully independent layers.
 - Same never-throws, no-op-before-init, consent-gated guarantees as `MonitoringService`.
 
@@ -85,41 +85,41 @@ export interface AnalyticsConfig {
 ### SDK truth (verified @aptabase/electron@0.3.1)
 
 - `@aptabase/electron/main` exports `{ initialize, trackEvent }`.
-  - `initialize(appKey, { host? })` â€” must run before `app.whenReady()`; validates key format
+  - `initialize(appKey, { host? })` — must run before `app.whenReady()`; validates key format
     (`A-{US|EU|DEV|SH}-\d+`), registers `aptabase-ipc` scheme + `aptabase:trackEvent` IPC.
-  - `trackEvent(name, props?)` â€” fire-and-forget POST per event; buffers events emitted before
+  - `trackEvent(name, props?)` — fire-and-forget POST per event; buffers events emitted before
     init completes; props limited to **strings and numbers**; auto 1-hour session rotation; auto
     system props (OS name/version, app version, locale, isDebug, engine, SDK version).
-- `@aptabase/electron/renderer` exports `{ trackEvent }` â€” posts to `aptabase-ipc://trackEvent`.
-- Peer dep: `electron >= 3` (project is on Electron `^43.4.0` â€” satisfied).
-- Package last published 3 years ago (low churn) â€” the adapter pattern fully contains that risk.
+- `@aptabase/electron/renderer` exports `{ trackEvent }` — posts to `aptabase-ipc://trackEvent`.
+- Peer dep: `electron >= 3` (project is on Electron `^43.4.0` — satisfied).
+- Package last published 3 years ago (low churn) — the adapter pattern fully contains that risk.
 
-## 3. Capture matrix â€” what each KPI maps to
+## 3. Capture matrix — what each KPI maps to
 
 | KPI (from `plans/PRODUCT_LAUNCH_GROWTH_PLAN.md`)      | Journey | Event(s)                                                          |
 | ----------------------------------------------------- | ------- | ----------------------------------------------------------------- |
-| Install â†’ first launch                                | J1/J2   | `app_installed`, `app_launched`                                  |
+| Install → first launch                                | J1/J2   | `app_installed`, `app_launched`                                  |
 | Terms gate pass rate                                  | J2      | `terms_rejected` vs `terms_accepted`                              |
-| Onboarding start â†’ goal â†’ first conversion            | J2â†’J4   | `onboarding_started` â†’ `onboarding_goal_selected` â†’ `conversion_started` â†’ `conversion_completed` |
-| First successful conversion (priority #1)             | J4      | `conversion_started` â†’ `conversion_completed`\|`_failed`          |
+| Onboarding start → goal → first conversion            | J2→J4   | `onboarding_started` → `onboarding_goal_selected` → `conversion_started` → `conversion_completed` |
+| First successful conversion (priority #1)             | J4      | `conversion_started` → `conversion_completed`\|`_failed`          |
 | Repeat conversion (retention)                         | J4/J8   | `conversion_completed` grouped by SDK session id                  |
-| Batch power users                                     | J8      | `batch_files_added` â†’ `batch_queue_started` â†’ `batch_completed`   |
-| Profile adoption                                      | J10     | `profile_created` â†’ `profile_applied`                             |
-| Aux tools adoption (image/audio/cut)                  | J5/J6/J7| `*_started` â†’ `*_completed`\|`_failed` per tool                    |
+| Batch power users                                     | J8      | `batch_files_added` → `batch_queue_started` → `batch_completed`   |
+| Profile adoption                                      | J10     | `profile_created` → `profile_applied`                             |
+| Aux tools adoption (image/audio/cut)                  | J5/J6/J7| `*_started` → `*_completed`\|`_failed` per tool                    |
 | Hardware-accel share                                  | J14     | `hw_accel_detected` + `conversion_* .hwAccel`                     |
-| CLI adoption                                          | J15     | `cli_invoked` (+ subcommand) â†’ `cli_completed`                    |
-| Update health                                         | J13     | `update_*` chain (available â†’ download â†’ install)                 |
+| CLI adoption                                          | J15     | `cli_invoked` (+ subcommand) → `cli_completed`                    |
+| Update health                                         | J13     | `update_*` chain (available → download → install)                 |
 | Setting exploration                                  | J11     | `theme_changed`, `hwaccel_*`, `locale_changed`, etc.              |
 | Telemetry opt-out rate                                | J11     | `telemetry_opt_in`, `telemetry_opt_out`                          |
 
-## 4. Event taxonomy v2 â€” full catalog by user journey
+## 4. Event taxonomy v2 — full catalog by user journey
 
 Bump to `ANALYTICS_SCHEMA_VERSION = 2`. Names stay snake_case/dot-free. Every payload field
-**must** remain categorical or a plain number â€” the privacy contract in the `events.ts` header
+**must** remain categorical or a plain number — the privacy contract in the `events.ts` header
 is non-negotiable. `v1` = first-pass launch set; `v2` = second-pass follow-up. Existing wired
 events are marked **(wired)**. Line numbers are the verified insertion points.
 
-### J1 â€” App lifecycle & window chrome
+### J1 — App lifecycle & window chrome
 
 | Event                      | Tier | Props                                            | Call site                                        |
 | -------------------------- | ---- | ------------------------------------------------ | ------------------------------------------------ |
@@ -130,7 +130,7 @@ events are marked **(wired)**. Line numbers are the verified insertion points.
 | `window_close_requested`   | v2   | `{}`                                             | `src/renderer/components/TitleBar.tsx:80`         |
 | `window_close_deferred`    | v2   | `{ reason: 'pending' }`                          | `src/renderer/components/CloseConfirmDialog.tsx:87` |
 
-### J2 â€” First-run, terms & onboarding (the acquisition funnel)
+### J2 — First-run, terms & onboarding (the acquisition funnel)
 
 | Event                      | Tier | Props                          | Call site                                        |
 | -------------------------- | ---- | ------------------------------ | ------------------------------------------------ |
@@ -142,7 +142,7 @@ events are marked **(wired)**. Line numbers are the verified insertion points.
 | `dashboard_card_clicked`   | v2   | `{ route }`                    | `src/renderer/pages/Dashboard.tsx:187`           |
 | `dashboard_shortcut_used`  | v2   | `{ shortcutId }`               | `Dashboard.tsx:158-163`                          |
 
-### J3 â€” Navigation & language shell
+### J3 — Navigation & language shell
 
 | Event           | Tier | Props                        | Call site                                        |
 | --------------- | ---- | ---------------------------- | ------------------------------------------------ |
@@ -153,7 +153,7 @@ events are marked **(wired)**. Line numbers are the verified insertion points.
 > tool it happened in by its `route` (and the SDK session), so nav paths are reconstructable
 > without a `page_view` event per render.
 
-### J4 â€” Single conversion spine (primary journey)
+### J4 — Single conversion spine (primary journey)
 
 | Event                      | Tier | Props                                                                               | Call site                                        |
 | -------------------------- | ---- | ----------------------------------------------------------------------------------- | ------------------------------------------------ |
@@ -173,7 +173,7 @@ events are marked **(wired)**. Line numbers are the verified insertion points.
 | `preview_closed`           | v2   | `{}`                                                                                | `Convert.tsx:353`                                |
 | `convert_form_cleared`     | v2   | `{}`                                                                                | `Convert.tsx:886`                                |
 
-### J5 â€” Image compression journey
+### J5 — Image compression journey
 
 | Event                       | Tier | Props                                           | Call site                                        |
 | --------------------------- | ---- | ----------------------------------------------- | ------------------------------------------------ |
@@ -183,7 +183,7 @@ events are marked **(wired)**. Line numbers are the verified insertion points.
 | `compress_completed`        | v1   | `{ format, savedPercent: number }`              | `ImageCompress.tsx:263-310` (success path)       |
 | `compress_failed`           | v1   | `{ format, code? }`                             | `src/renderer/hooks/useMediaTask.ts:90-91`       |
 
-### J6 â€” Audio extraction journey
+### J6 — Audio extraction journey
 
 | Event                      | Tier | Props                 | Call site                                        |
 | -------------------------- | ---- | --------------------- | ------------------------------------------------ |
@@ -196,7 +196,7 @@ events are marked **(wired)**. Line numbers are the verified insertion points.
 | `audio_extract_completed`  | v1   | `{ codec, durationSec }` | success path                                   |
 | `audio_extract_failed`     | v1   | `{ codec, code? }`    | error path                                       |
 
-### J7 â€” Video cut journey
+### J7 — Video cut journey
 
 | Event                      | Tier | Props                                      | Call site                                        |
 | -------------------------- | ---- | ------------------------------------------ | ------------------------------------------------ |
@@ -213,7 +213,7 @@ events are marked **(wired)**. Line numbers are the verified insertion points.
 | `media_playback_toggled`   | v2   | `{ playing }`                              | `src/renderer/components/MediaPlayer.tsx:793`    |
 | `video_cut_form_cleared`   | v2   | `{}`                                       | `VideoCut.tsx:842` (dialog :882)                 |
 
-### J8 â€” Batch queue journey
+### J8 — Batch queue journey
 
 | Event                      | Tier | Props                                              | Call site                                        |
 | -------------------------- | ---- | -------------------------------------------------- | ------------------------------------------------ |
@@ -227,11 +227,11 @@ events are marked **(wired)**. Line numbers are the verified insertion points.
 | `batch_queue_resumed`      | v1   | `{}`                                               | `BatchQueue.tsx:983`                              |
 | `batch_queue_cancelled_all`| v1   | `{ count }`                                        | `BatchQueue.tsx:823` (opened at :813)             |
 | `batch_clear_completed`    | v1   | `{ count }`                                        | `BatchQueue.tsx:835` (button :1244)               |
-| `batch_job_retried`        | v1   | `{ operation }`                                    | `src/renderer/components/QueueJobCard.tsx:316` â†’ `BatchQueue.tsx:786` |
+| `batch_job_retried`        | v1   | `{ operation }`                                    | `src/renderer/components/QueueJobCard.tsx:316` → `BatchQueue.tsx:786` |
 | `batch_job_removed`        | v1   | `{ status }`                                       | `QueueJobCard.tsx:337`                            |
 | `batch_completed`          | v1   | `{ completed, failed }`                            | `src/main/queue/job-queue.ts:542` (drain)         |
 | `batch_job_reordered`      | v2   | `{ movedBy }`                                      | `BatchQueue.tsx:1099` (`handleDragEnd`)           |
-| `batch_job_options_edited` | v2   | `{ operation }`                                    | `QueueJobCard.tsx:296` â†’ `BatchQueue.tsx:849`/`865` |
+| `batch_job_options_edited` | v2   | `{ operation }`                                    | `QueueJobCard.tsx:296` → `BatchQueue.tsx:849`/`865` |
 | `batch_job_reveal_in_folder` | v2 | `{}`                                             | `QueueJobCard.tsx:322`                            |
 | `batch_job_path_copied`    | v2   | `{}`                                               | `QueueJobCard.tsx:327`                            |
 | `batch_export`             | v2   | `{ count }`                                        | `BatchQueue.tsx:1005`                             |
@@ -239,7 +239,7 @@ events are marked **(wired)**. Line numbers are the verified insertion points.
 | `batch_condense_toggled`   | v2   | `{ condensed }`                                    | `BatchQueue.tsx:1132`                             |
 | `batch_filter_changed`     | v2   | `{ filter: 'all'\|'queued'\|'running'\|'done'\|'failed' }` | `BatchQueue.tsx:1225`                    |
 
-### J9 â€” Media info & logs (support journey)
+### J9 — Media info & logs (support journey)
 
 | Event                 | Tier | Props                                      | Call site                                        |
 | --------------------- | ---- | ------------------------------------------ | ------------------------------------------------ |
@@ -248,34 +248,34 @@ events are marked **(wired)**. Line numbers are the verified insertion points.
 | `logs_cleared`        | v2   | `{}`                                       | `Logs.tsx:154`                                   |
 | `logs_exported`       | v2   | `{ entryCount }`                           | `Logs.tsx:159` (`downloadLogs` :94)               |
 
-### J10 â€” Profiles journey
+### J10 — Profiles journey
 
 | Event               | Tier | Props                          | Call site                                        |
 | ------------------- | ---- | ------------------------------ | ------------------------------------------------ |
 | `profile_applied`   | v1   | `{ profileId, category }`      | `src/renderer/components/ProfileSelector.tsx:174-187` **(wired)** |
-| `profile_created`   | v1   | `{ category, advanced }`       | `src/renderer/components/ProfileEditorDialog.tsx:394` â†’ `src/renderer/stores/profileStore.ts:90` |
+| `profile_created`   | v1   | `{ category, advanced }`       | `src/renderer/components/ProfileEditorDialog.tsx:394` → `src/renderer/stores/profileStore.ts:90` |
 | `profile_updated`   | v1   | `{ category }`                 | `ProfileEditorDialog.tsx:394` (edit branch :136-138) |
 | `profile_deleted`   | v1   | `{ category, custom }`         | `ProfileSelector.tsx:315-323`                    |
 | `profile_reset`     | v2   | `{ category }`                 | `ProfileEditorDialog.tsx` reset-to-default       |
 
-### J11 â€” Settings & app identity
+### J11 — Settings & app identity
 
 | Event                     | Tier | Props                  | Call site (all `src/renderer/pages/Settings.tsx` + `stores/settingsStore.ts`) |
 | ------------------------- | ---- | ---------------------- | ------------------------------------------------------------------------------ |
 | `theme_changed`           | v1   | `{ themeId }`          | `Settings.tsx:392`                                                             |
 | `telemetry_opt_in`        | v1   | `{ version }`          | `settingsStore.ts:338` (enabled transition)                                    |
-| `telemetry_opt_out`       | v1   | `{ version }`          | `settingsStore.ts:338` (disabled transition â€” see note below)                  |
+| `telemetry_opt_out`       | v1   | `{ version }`          | `settingsStore.ts:338` (disabled transition — see note below)                  |
 | `hwaccel_toggled`         | v1   | `{ enabled }`          | `Settings.tsx:438` / `settingsStore.ts:272`                                    |
 | `hwaccel_mode_changed`    | v1   | `{ mode }`             | `Settings.tsx:453` / `settingsStore.ts:284`                                    |
 | `encoder_type_changed`    | v1   | `{ encoderType }`      | `Settings.tsx:472` / `settingsStore.ts:297`                                    |
 | `always_on_top_toggled`   | v2   | `{ enabled }`          | `Settings.tsx:405` / `settingsStore.ts:311`                                    |
 | `launch_at_login_toggled` | v2   | `{ enabled }`          | `Settings.tsx:415` / `settingsStore.ts:325`                                    |
 
-> **Note on `telemetry_opt_out`:** with consent now off, the facade is a no-op â€” so emit it
+> **Note on `telemetry_opt_out`:** with consent now off, the facade is a no-op — so emit it
 > **before** disabling and rely on `flushAnalytics()` to deliver it. If that proves unreliable,
 > accept the event loss (the opt-in rate is the metric that matters). Decide in Phase 6 review.
 
-### J12 â€” MCP server journey (power users)
+### J12 — MCP server journey (power users)
 
 | Event                         | Tier | Props                                   | Call site (`src/renderer/pages/Settings.tsx`) |
 | ----------------------------- | ---- | --------------------------------------- | --------------------------------------------- |
@@ -285,7 +285,7 @@ events are marked **(wired)**. Line numbers are the verified insertion points.
 | `mcp_token_cleared`           | v2   | `{}`                                    | `:300` (`handleClearToken` :190)              |
 | `mcp_connection_value_copied` | v2   | `{ valueType: 'token'\|'endpoint'\|'authorization' }` | `:294`/`:320`/`:334` (`copyConnectionValue` :205) |
 
-### J13 â€” Update journey
+### J13 — Update journey
 
 | Event                        | Tier | Props                        | Call site                                             |
 | ---------------------------- | ---- | ---------------------------- | ----------------------------------------------------- |
@@ -302,33 +302,33 @@ events are marked **(wired)**. Line numbers are the verified insertion points.
 | `update_retry`               | v2   | `{}`                         | `UpdateDialog.tsx:183` (reset + re-check)             |
 | `update_installed`           | v2   | `{ version, newVersion }`    | `src/main/updater.ts` install branch                  |
 
-### J14 â€” Hardware acceleration
+### J14 — Hardware acceleration
 
 | Event                  | Tier | Props                       | Call site                        |
 | ---------------------- | ---- | --------------------------- | -------------------------------- |
-| `hw_accel_detected`    | v1   | `{ mode, encoderType }`     | existing (defined, unwired) â€” wire at detection |
+| `hw_accel_detected`    | v1   | `{ mode, encoderType }`     | existing (defined, unwired) — wire at detection |
 
-### J15 â€” CLI journey
+### J15 — CLI journey
 
 | Event            | Tier | Props                                            | Call site                      |
 | ---------------- | ---- | ------------------------------------------------ | ------------------------------ |
-| `cli_invoked`    | v1   | `{ version, platform, arch, subcommand?, hwAccel }` | `src/main/index.ts:229` **(wired)** â€” add `hwAccel` |
+| `cli_invoked`    | v1   | `{ version, platform, arch, subcommand?, hwAccel }` | `src/main/index.ts:229` **(wired)** — add `hwAccel` |
 | `cli_completed`  | v2   | `{ subcommand?, outcome: 'ok'\|'error', durationSec }` | CLI exit paths in `src/main/index.ts` |
 
-### J16 â€” Product-visible friction (low noise)
+### J16 — Product-visible friction (low noise)
 
 | Event            | Tier | Props            | Call site                                   |
 | ---------------- | ---- | ---------------- | ------------------------------------------- |
-| `ui_error_shown` | v2   | `{ category }`   | `src/renderer/components/ErrorBoundary.tsx` / `ErrorBanner.tsx` / `ErrorSnackbar.tsx` â€” product-visible only, NOT crash data (monitoring owns that) |
+| `ui_error_shown` | v2   | `{ category }`   | `src/renderer/components/ErrorBoundary.tsx` / `ErrorBanner.tsx` / `ErrorSnackbar.tsx` — product-visible only, NOT crash data (monitoring owns that) |
 
 Every addition must be added to `AnalyticsEventName` + `AnalyticsEventPayloadMap` in `events.ts`
 (`schema: 2` comes from `ANALYTICS_SCHEMA_VERSION`). Recommended launch cut: **all `v1` (~45)**;
 `v2` (~30) is reviewed group-by-group before wiring.
 
-## 5. User journeys & funnels â€” how the catalog reconstructs them
+## 5. User journeys & funnels — how the catalog reconstructs them
 
 Aptabase gives us the **session id** on every event (auto, rotates after 1 h idle) plus system
-props (OS, app version, locale). Journey reconstruction therefore needs no screen-tour capture â€”
+props (OS, app version, locale). Journey reconstruction therefore needs no screen-tour capture —
 it is pure **event sequencing within a session**, stitched by:
 - **Entry anchor:** `tool_opened { route }` fires on every navigation (AppDrawer).
 - **Disambiguation props:** `source` (`dialog`/`drop`/`folder`), `mode` (`gui`/`cli`),
@@ -339,41 +339,41 @@ it is pure **event sequencing within a session**, stitched by:
 ### 5.1 Journey sequences (event order per journey)
 
 ```
-FIRST-RUN:      app_installed â†’ app_launched â†’ [terms_rejected (exit)] | terms_accepted
-                â†’ onboarding_started â†’ onboarding_goal_selected â†’ tool_opened{goal route} â†’ â€¦
+FIRST-RUN:      app_installed → app_launched → [terms_rejected (exit)] | terms_accepted
+                → onboarding_started → onboarding_goal_selected → tool_opened{goal route} → …
 
-SINGLE CONVERT: tool_opened{/convert} â†’ convert_input_selected{source} â†’ codec_changed?
-                â†’ conversion_started â†’ [conversion_paused|resumed]*
-                â†’ conversion_completed{durationSec, speedX} | conversion_failed{code} | conversion_cancelled
+SINGLE CONVERT: tool_opened{/convert} → convert_input_selected{source} → codec_changed?
+                → conversion_started → [conversion_paused|resumed]*
+                → conversion_completed{durationSec, speedX} | conversion_failed{code} | conversion_cancelled
 
-IMAGE:          tool_opened{/image-compress} â†’ compress_input_selected â†’ compress_format_changed?
-                â†’ compress_started â†’ compress_completed{savedPercent} | compress_failed
+IMAGE:          tool_opened{/image-compress} → compress_input_selected → compress_format_changed?
+                → compress_started → compress_completed{savedPercent} | compress_failed
 
-BATCH:          tool_opened{/batch-queue} â†’ batch_files_added{source} â†’ batch_review_confirmed
-                â†’ batch_operation_changed? â†’ batch_profile_applied? â†’ batch_queue_started
-                â†’ [batch_queue_paused|resumed] â†’ per-job patchwork â†’ batch_completed{completed,failed}
+BATCH:          tool_opened{/batch-queue} → batch_files_added{source} → batch_review_confirmed
+                → batch_operation_changed? → batch_profile_applied? → batch_queue_started
+                → [batch_queue_paused|resumed] → per-job patchwork → batch_completed{completed,failed}
 
-VIDEO CUT:      tool_opened{/video-cut} â†’ cut_input_selected â†’ cut_use_duration_toggled?
-                â†’ video_cut_started â†’ [pause|resume]* â†’ video_cut_completed | _failed | _cancelled
+VIDEO CUT:      tool_opened{/video-cut} → cut_input_selected → cut_use_duration_toggled?
+                → video_cut_started → [pause|resume]* → video_cut_completed | _failed | _cancelled
 
-UPDATE:         update_check_triggered â†’ update_available â†’ update_download_started
-                â†’ update_downloaded â†’ update_install_now | update_install_on_restart
+UPDATE:         update_check_triggered → update_available → update_download_started
+                → update_downloaded → update_install_now | update_install_on_restart
 
-PROFILES:       profile_created â†’ profile_applied {in J4 or J8} â†’ profile_updated | profile_deleted
+PROFILES:       profile_created → profile_applied {in J4 or J8} → profile_updated | profile_deleted
 
-CLI:            cli_invoked{subcommand} â†’ cli_completed{outcome, durationSec}
+CLI:            cli_invoked{subcommand} → cli_completed{outcome, durationSec}
 ```
 
 ### 5.2 Funnel definitions to build in the Aptabase dashboard
 
-| Funnel                     | Entry â†’ Exit                                                     | Metric |
+| Funnel                     | Entry → Exit                                                     | Metric |
 | -------------------------- | ---------------------------------------------------------------- | ------ |
-| Acquisition                | `app_installed` â†’ `terms_accepted` â†’ `onboarding_goal_selected`  | %     |
-| First conversion (KPI #1)  | `conversion_started` â†’ `conversion_completed` (first in session) | rate, median durationSec |
-| Batch power-user            | `batch_files_added` â†’ `batch_queue_started` â†’ `batch_completed`  | %, avg count |
-| Aux-tool adoption           | `*_input_selected` â†’ `*_started` â†’ `*_completed` per tool        | % per tool |
-| Update loop                | `update_download_started` â†’ `update_downloaded` â†’ `update_install_now` | % |
-| Profile power-user          | `profile_created` â†’ `profile_applied` (same/any session)         | % |
+| Acquisition                | `app_installed` → `terms_accepted` → `onboarding_goal_selected`  | %     |
+| First conversion (KPI #1)  | `conversion_started` → `conversion_completed` (first in session) | rate, median durationSec |
+| Batch power-user            | `batch_files_added` → `batch_queue_started` → `batch_completed`  | %, avg count |
+| Aux-tool adoption           | `*_input_selected` → `*_started` → `*_completed` per tool        | % per tool |
+| Update loop                | `update_download_started` → `update_downloaded` → `update_install_now` | % |
+| Profile power-user          | `profile_created` → `profile_applied` (same/any session)         | % |
 | Drop vs dialog             | `convert_input_selected{source}` / `batch_files_added{source}` / `cut_input_selected{source}` split | distribution |
 
 ### 5.3 Session & funnel enrichment
@@ -381,16 +381,16 @@ CLI:            cli_invoked{subcommand} â†’ cli_completed{outcome, duration
 - **Journey context badge:** optional middleware in `AnalyticsService.recordEvent` that stamps
   active `route` and `jobKind` onto every event as `ctx.route` / `ctx.jobKind` (derived from the
   last `tool_opened`), so per-journey breakdowns stay correct even if a call site forgets a prop.
-- **Duration bucketing:** durations as **numbers** (Aptabase allows numbers) â€” keep raw
+- **Duration bucketing:** durations as **numbers** (Aptabase allows numbers) — keep raw
   `durationSec`/`speedX` for median/percentile computes in dashboards.
 - **Cross-reference to monitoring:** same session + opt-in consent means the analytics session id
   can be paired with Sentry breadcrumb/trace scope for "did an error correlate with a conversion
-  failure" post-mortems â€” but only at aggregate level, never PII.
+  failure" post-mortems — but only at aggregate level, never PII.
 
 ### 5.4 Anti-noise guardrails (D10)
 
 - High-frequency interactions (`media_playback_toggled`, `timeline_zoom_changed`,
-  `batch_job_reordered`) stay **v2 + feature-flag gated** â€” off unless a specific question needs them.
+  `batch_job_reordered`) stay **v2 + feature-flag gated** — off unless a specific question needs them.
 - No drag/throttle events, no per-render events, no file-name/path/size props anywhere.
 - Per-group emission flag (`ANALYTICS_GROUPS=lifecycle,convert,queue,...`) so a noisy group can
   be disabled remotely without a release.
@@ -406,83 +406,83 @@ ANALYTICS_GROUPS=lifecycle,onboarding,nav,convert,image,audio,cut,queue,profiles
                                      # optional per-group switch for noise control (D10)
 ```
 
-Consent file: `<userData>/analytics-consent.json` â†’ `{ "enabled": true }` (absent â‡’ seeded
-from `monitoring-consent.json`'s value â‡ default `true`).
+Consent file: `<userData>/analytics-consent.json` → `{ "enabled": true }` (absent ⇒ seeded
+from `monitoring-consent.json`'s value ⇐ default `true`).
 
 No build-time config needed (unlike Sentry DSN): the App Key is a runtime env var. For
 packaged builds, electron-builder can embed it or it can ship unset (layer inert).
 
 ## 7. Phases
 
-### Phase 0 â€” Dependency
+### Phase 0 — Dependency
 
-- [x] 0.1 `npm add @aptabase/electron` â†’ 0.3.1 (peer `electron >= 3`, project on `^43.4.0` âœ“)
-- [x] 0.2 Verify exports: `@aptabase/electron/main` â†’ `{ initialize, trackEvent }`; `@aptabase/electron/renderer` â†’ `{ trackEvent }`
-- [x] 0.3 Confirm no `flush`/`close` in SDK â‡’ adapter owns in-flight tracking (D7)
+- [x] 0.1 `npm add @aptabase/electron` → 0.3.1 (peer `electron >= 3`, project on `^43.4.0` ✓)
+- [x] 0.2 Verify exports: `@aptabase/electron/main` → `{ initialize, trackEvent }`; `@aptabase/electron/renderer` → `{ trackEvent }`
+- [x] 0.3 Confirm no `flush`/`close` in SDK ⇒ adapter owns in-flight tracking (D7)
 
-### Phase 1 â€” Shared contracts (`src/shared/analytics/`)
+### Phase 1 — Shared contracts (`src/shared/analytics/`)
 
-- [x] 1.1 `types.ts` â€” `AnalyticsProvider`, `AnalyticsConfig` (Â§2), `AnalyticsState` `{ enabled, backend }`
-- [x] 1.2 `noopProvider.ts` â€” dependency-free fallback (copy `noopProvider.ts` pattern from `src/shared/monitoring/`)
-- [x] 1.3 Refactor `AnalyticsService.ts` â†’ facade singleton with `initAnalytics`, `setAnalyticsEnabled`, `isAnalyticsEnabled`, `getAnalyticsBackendName`, `trackAnalyticsEvent`, `flushAnalytics`, `closeAnalytics`, `resetAnalyticsForTests`, `getActiveAnalyticsProviderForTests`
+- [x] 1.1 `types.ts` — `AnalyticsProvider`, `AnalyticsConfig` (§2), `AnalyticsState` `{ enabled, backend }`
+- [x] 1.2 `noopProvider.ts` — dependency-free fallback (copy `noopProvider.ts` pattern from `src/shared/monitoring/`)
+- [x] 1.3 Refactor `AnalyticsService.ts` → facade singleton with `initAnalytics`, `setAnalyticsEnabled`, `isAnalyticsEnabled`, `getAnalyticsBackendName`, `trackAnalyticsEvent`, `flushAnalytics`, `closeAnalytics`, `resetAnalyticsForTests`, `getActiveAnalyticsProviderForTests`
 - [x] 1.4 **Remove** `addMonitoringBreadcrumb` coupling from `AnalyticsService.ts` (no monitoring import left)
-- [x] 1.5 Journey badge middleware: stamp `ctx.route` / `ctx.jobKind` from last `tool_opened` (Â§5.3)
+- [x] 1.5 Journey badge middleware: stamp `ctx.route` / `ctx.jobKind` from last `tool_opened` (§5.3)
 - [x] 1.6 Keep `recordAnalyticsEvent` / `analyticsService.recordEvent` public surface unchanged
-- [x] 1.7 Unit tests: delegation, no-op-before-init, never-throws, consent-off â‡’ noop, badge stamping (mirror `MonitoringService.test.ts` / `noopProvider.test.ts`)
+- [x] 1.7 Unit tests: delegation, no-op-before-init, never-throws, consent-off ⇒ noop, badge stamping (mirror `MonitoringService.test.ts` / `noopProvider.test.ts`)
 
-### Phase 2 â€” Main-side provider
+### Phase 2 — Main-side provider
 
-- [x] 2.1 `src/main/analytics/aptabaseMainProvider.ts` â€” ONLY module allowed to import `@aptabase/electron/main`; lazy `import()`; `init` calls `initialize(appKey, { host? })` guarding on key presence; must complete before `app.whenReady()` â‡’ facade called from module-load bootstrap (Phase 7); `track()` â†’ `trackEvent(name, props)` with `props` whitelisted + sanitized (strings/numbers only, empty omitted); track in-flight promises for `flush`/`close`; supports `ANALYTICS_GROUPS` group gating; `name = 'aptabase'`
-- [x] 2.2 `src/main/analytics/providerFactory.ts` â€” `ANALYTICS_PROVIDER` env override; default `aptabase` when `config.appKey` or `process.env.APTABASE_APP_KEY`; unknown â‡’ `null`
+- [x] 2.1 `src/main/analytics/aptabaseMainProvider.ts` — ONLY module allowed to import `@aptabase/electron/main`; lazy `import()`; `init` calls `initialize(appKey, { host? })` guarding on key presence; must complete before `app.whenReady()` ⇒ facade called from module-load bootstrap (Phase 7); `track()` → `trackEvent(name, props)` with `props` whitelisted + sanitized (strings/numbers only, empty omitted); track in-flight promises for `flush`/`close`; supports `ANALYTICS_GROUPS` group gating; `name = 'aptabase'`
+- [x] 2.2 `src/main/analytics/providerFactory.ts` — `ANALYTICS_PROVIDER` env override; default `aptabase` when `config.appKey` or `process.env.APTABASE_APP_KEY`; unknown ⇒ `null`
 - [x] 2.3 Tests with `vi.mock('@aptabase/electron/main')` (init order, key missing, props sanitize, group gating, flush waits inflight)
 
-### Phase 3 â€” Renderer-side provider
+### Phase 3 — Renderer-side provider
 
-- [x] 3.1 `src/renderer/analytics/aptabaseRendererProvider.ts` â€” ONLY module allowed to import `@aptabase/electron/renderer`; `track()` â†’ `trackEvent(name, props)`; App Key never present here
-- [x] 3.2 `src/renderer/analytics/providerFactory.ts` â€” mirrors main backend from `analyticsGetState()` (same as `resolveRendererMonitorProvider`)
+- [x] 3.1 `src/renderer/analytics/aptabaseRendererProvider.ts` — ONLY module allowed to import `@aptabase/electron/renderer`; `track()` → `trackEvent(name, props)`; App Key never present here
+- [x] 3.2 `src/renderer/analytics/providerFactory.ts` — mirrors main backend from `analyticsGetState()` (same as `resolveRendererMonitorProvider`)
 - [x] 3.3 Tests with `vi.mock('@aptabase/electron/renderer')`
 
-### Phase 4 â€” Consent, IPC surface
+### Phase 4 — Consent, IPC surface
 
-- [x] 4.1 `src/main/analytics/consent.ts` â€” read/write `userData/analytics-consent.json`; missing â‡’ `readMonitoringConsent()` (D1 seed); corrupt â‡’ default `true`
+- [x] 4.1 `src/main/analytics/consent.ts` — read/write `userData/analytics-consent.json`; missing ⇒ `readMonitoringConsent()` (D1 seed); corrupt ⇒ default `true`
 - [x] 4.2 `IPC.ANALYTICS_GET_STATE` + `IPC.ANALYTICS_SET_ENABLED` in `src/shared/ipc-channels.ts` (+ `ANALYTICS_GET_GROUPS` if remote toggling needed)
-- [x] 4.3 `src/main/analytics/ipcBridge.ts` â€” thin handlers returning `AnalyticsState`; persists consent via `writeAnalyticsConsent`; toggles facade (mirror `src/main/monitoring/ipcBridge.ts`)
+- [x] 4.3 `src/main/analytics/ipcBridge.ts` — thin handlers returning `AnalyticsState`; persists consent via `writeAnalyticsConsent`; toggles facade (mirror `src/main/monitoring/ipcBridge.ts`)
 - [x] 4.4 Preload: `analyticsGetState()`, `analyticsSetEnabled(enabled)` in `src/preload/index.ts` + synced `src/renderer/electron-api.d.ts`
 - [x] 4.5 Synced mocks: `e2e/mocks/preload.js`, `src/test-setup.ts`
 
-### Phase 5 â€” Bootstrap wiring
+### Phase 5 — Bootstrap wiring
 
 - [x] 5.1 MAIN `src/main/index.ts`: `bootstrapAnalytics()` at module load **before** `app.whenReady()` (D7), collocated with `bootstrapMonitoring()`; reads `analytics-consent.json`, builds `AnalyticsConfig`, calls `initAnalytics(config, resolveMainAnalyticsProvider)`
-- [x] 5.2 Renderer bootstrap before React mount â†’ queries `analyticsGetState()`, `initAnalytics({ enabled, provider: backend })`; render guaranteed via `.finally` (same as monitoring)
+- [x] 5.2 Renderer bootstrap before React mount → queries `analyticsGetState()`, `initAnalytics({ enabled, provider: backend })`; render guaranteed via `.finally` (same as monitoring)
 - [x] 5.3 `will-quit`: `void flushAnalytics(5000)` before `closeAnalytics()` (adapter drains in-flight requests); renderer window close guarded by `window_close_deferred`
 - [x] 5.4 CLI branch: after `cli_invoked`, **await** the track promise before exit; `cli_completed` on exit; `closeAnalytics()` on CLI/MCP exit paths
 
-### Phase 6 â€” Event wiring (taxonomy v2 + journeys)
+### Phase 6 — Event wiring (taxonomy v2 + journeys)
 
-- [x] 6.1 `events.ts`: bump schema to 2; add all Â§4 events (~80) to `AnalyticsEventName` + `AnalyticsEventPayloadMap`
-- [x] 6.2 Wire the `v1` launch cut (~45) per Â§4 tables (every journey table above)
+- [x] 6.1 `events.ts`: bump schema to 2; add all §4 events (~80) to `AnalyticsEventName` + `AnalyticsEventPayloadMap`
+- [x] 6.2 Wire the `v1` launch cut (~45) per §4 tables (every journey table above)
 - [x] 6.3 Journey sequence call sites: `tool_opened` (AppDrawer) + badge propagation so every event carries `ctx.route`/`ctx.jobKind`
 - [x] 6.4 Enrich `conversion_*` in `job-queue.ts` with `durationSec`/`speedX`/`presetClass`/`container`/`mode` (no file names/paths/sizes)
-- [x] 6.5 Review + wire `v2` groups behind `ANALYTICS_GROUPS` flags; default OFF for window-chrome, logs, MCP, playback/zoom, reorder (Â§5.4)
+- [x] 6.5 Review + wire `v2` groups behind `ANALYTICS_GROUPS` flags; default OFF for window-chrome, logs, MCP, playback/zoom, reorder (§5.4)
 - [x] 6.6 Privacy lint pass: assert no payload carries paths/filenames; grep call sites for accidental path props
 - [x] 6.7 Update `src/shared/analytics/__tests__/AnalyticsService.test.ts` for new taxonomy + routing + badge (no longer asserts breadcrumb behavior)
 
-### Phase 7 â€” Settings UI (single switch, D1)
+### Phase 7 — Settings UI (single switch, D1)
 
 - [x] 7.1 `settingsStore.ts`: add `analyticsEnabled`; `setTelemetryEnabled(enabled)` calls `analyticsSetEnabled(enabled)` **and** `monitoringSetEnabled(enabled)`, adopts both results; hydration calls both getters
-- [x] 7.2 `Settings.tsx`: relabel the existing switch (id `settings-monitoring-error-reporting` kept for tests) â†’ "Usage data & error reporting"; hint string updated
+- [x] 7.2 `Settings.tsx`: relabel the existing switch (id `settings-monitoring-error-reporting` kept for tests) → "Usage data & error reporting"; hint string updated
 - [x] 7.3 i18n keys (en + all locales) + `npm run validate:locales`
-- [x] 7.4 Emit `telemetry_opt_in`/`telemetry_opt_out` on transition (see Â§4 note)
-- [x] 7.5 First-run `app_installed` marker (write `<userData>/first-launch` when absent) â†’ `app_installed` then `app_launched`
+- [x] 7.4 Emit `telemetry_opt_in`/`telemetry_opt_out` on transition (see §4 note)
+- [x] 7.5 First-run `app_installed` marker (write `<userData>/first-launch` when absent) → `app_installed` then `app_launched`
 
-### Phase 8 â€” Docs & config
+### Phase 8 — Docs & config
 
 - [x] 8.1 `.env.example`: `APTABASE_APP_KEY`, `APTABASE_HOST`, `ANALYTICS_PROVIDER`, `ANALYTICS_GROUPS`
-- [x] 8.2 New `docs/ANALYTICS.md` â€” architecture, privacy, env vars, event catalog reference, swap guide, recommended dashboard queries (funnels Â§5.2, feature adoption, retention)
-- [x] 8.3 Update `docs/MONITORING.md` + `plans/SENTRY_MONITORING_PLAN.md` Â§6: analytics moved off the breadcrumb channel onto its own layer
+- [x] 8.2 New `docs/ANALYTICS.md` — architecture, privacy, env vars, event catalog reference, swap guide, recommended dashboard queries (funnels §5.2, feature adoption, retention)
+- [x] 8.3 Update `docs/MONITORING.md` + `plans/SENTRY_MONITORING_PLAN.md` §6: analytics moved off the breadcrumb channel onto its own layer
 - [x] 8.4 Update `wiki/` + `site/` privacy note ("usage analytics" disclosed alongside monitoring)
 
-### Phase 9 â€” Tests
+### Phase 9 — Tests
 
 - [x] 9.1 Facade + noopProvider + badge middleware (Phase 1)
 - [x] 9.2 `consent.test.ts` (seeding from monitoring file, tmp-dir based)
@@ -493,13 +493,13 @@ packaged builds, electron-builder can embed it or it can ship unset (layer inert
 - [x] 9.7 Taxonomy completeness test: every `AnalyticsEventName` has wiring (grep-based) so the catalog never silently drifts
 - [x] 9.8 Validate no direct `@aptabase/*` imports outside the two adapters (lint rule / CI grep)
 
-### Phase 10 â€” Verification
+### Phase 10 — Verification
 
 - [x] 10.1 `npm run typecheck`
 - [x] 10.2 `npm run lint`
 - [x] 10.3 `npm run test:unit`
 - [x] 10.4 `npm run validate:locales`
-- [ ] 10.5 Manual smoke (dev with fake `A-DEV-` key on `http://localhost:3000`): full first-run journey replay lands in order; journey badge correct; toggle off â†’ silence; CLI run arrives; `APTABASE_HOST` honored for self-host key
+- [ ] 10.5 Manual smoke (dev with fake `A-DEV-` key on `http://localhost:3000`): full first-run journey replay lands in order; journey badge correct; toggle off → silence; CLI run arrives; `APTABASE_HOST` honored for self-host key
 
 ## 8. Swap-Out Guide (future backend change)
 
@@ -511,7 +511,7 @@ packaged builds, electron-builder can embed it or it can ship unset (layer inert
 
 ## 9. Rollback
 
-Set `ANALYTICS_PROVIDER=noop` (or unset `APTABASE_APP_KEY`) â€” the whole system becomes a
+Set `ANALYTICS_PROVIDER=noop` (or unset `APTABASE_APP_KEY`) — the whole system becomes a
 no-op without code changes. Removing the feature = revert this branch (call sites already
 only touch the facade).
 
@@ -520,10 +520,10 @@ only touch the facade).
 | Risk | Mitigation |
 | ---- | ---------- |
 | SDK requires init before `app.whenReady()` | Bootstrap at module load (Phase 5.1); SDK buffers pre-init events (D7) |
-| No `flush`/`close` in SDK â‡’ events could drop at quit | Adapter owns in-flight promise list; `flushAnalytics` drains it; CLI exit awaits the track promise |
+| No `flush`/`close` in SDK ⇒ events could drop at quit | Adapter owns in-flight promise list; `flushAnalytics` drains it; CLI exit awaits the track promise |
 | Renderer tracking depends on `aptabase-ipc` scheme registered by main | Renderer provider guards `isEnabled()`; failure is console-only in SDK and silently dropped by facade |
-| Package has low release cadence / could be abandoned | Contained behind adapter; swap-out is one file (see Â§8) |
+| Package has low release cadence / could be abandoned | Contained behind adapter; swap-out is one file (see §8) |
 | Event flood / taxonomy drift | Two-tier rollout + `ANALYTICS_GROUPS` gating; categorical-only lint (6.6); wiring-completeness test (9.7); schema version on every event |
-| Journey reconstruction ambiguity | `tool_opened` anchor + ctx badge + `source`/`mode`/`jobKind` disambiguation props (Â§5) |
-| `telemetry_opt_out` lost on consent-off | Emit before disabling + flush; accept loss as fallback (Â§4 J11 note) |
+| Journey reconstruction ambiguity | `tool_opened` anchor + ctx badge + `source`/`mode`/`jobKind` disambiguation props (§5) |
+| `telemetry_opt_out` lost on consent-off | Emit before disabling + flush; accept loss as fallback (§4 J11 note) |
 | Network only reachable online | Fire-and-forget; events are non-blocking; dropped events are acceptable (analytics, not correctness) |

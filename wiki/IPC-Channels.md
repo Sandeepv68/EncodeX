@@ -1,6 +1,6 @@
 # 🔌 IPC Channels
 
-All channel names are centralized in `src/shared/ipc-channels.ts` (110 channels). <!-- drift: ipc-channels=115 --> The preload script (`src/preload/index.ts`) exposes everything through `window.electronAPI`.
+All channel names are centralized in `src/shared/ipc-channels.ts` (115 channels). <!-- drift: ipc-channels=115 --> The preload script (`src/preload/index.ts`) exposes everything through `window.electronAPI`.
 
 ## 📥 Requests (invoke from renderer)
 
@@ -52,6 +52,8 @@ All channel names are centralized in `src/shared/ipc-channels.ts` (110 channels)
 | `mux-queue-move-to`   | `id, toPosition`                         | `boolean`                     |
 | `queue-reveal`        | `filePath`                               | `void`                        |
 | `set-launch-at-login` | `enabled`                                | `void`                        |
+| `notifications-get-settings` | —                                 | `DesktopNotificationsSettings` |
+| `notifications-set-enabled` | `enabled`                          | `DesktopNotificationsSettings` |
 | `player-open`         | `filePath`                               | `number` (generation token)   |
 | `player-seek`         | `time`                                   | `number` (generation token)   |
 | `player-close`        | —                                        | `void`                        |
@@ -70,8 +72,12 @@ All channel names are centralized in `src/shared/ipc-channels.ts` (110 channels)
 | `monitoring-set-enabled` | `enabled`                              | `{ enabled, backend }`        |
 | `analytics-get-state` | —                                        | `{ enabled, backend }`        |
 | `analytics-set-enabled` | `enabled`                              | `{ enabled, backend }`        |
+| `analytics-track-event` | `event`                                | `void`                        |
+| `analytics-get-posthog-config` | —                                | `{ projectToken?, host? }`    |
 | `mcp-settings-get`    | —                                        | `McpSettings`                 |
 | `mcp-settings-set`    | `settings`                               | `McpSettings` (sanitized)     |
+| `mcp-ui-call-tool`    | `{ name?, args? }`                       | `unknown`                     |
+| `mcp-ui-list-views`   | —                                        | `Array<{ viewId, uri, title }>` |
 | `ai-settings-get`     | —                                        | `AiSettingsView` (key redacted) |
 | `ai-settings-set`     | `AiSettingsUpdate`                       | `AiSettingsView` (sanitized)  |
 | `ai-connect-test`     | `candidate?`                             | `AiConnectTestResult`         |
@@ -91,6 +97,7 @@ All channel names are centralized in `src/shared/ipc-channels.ts` (110 channels)
 | `terms-reject`             | —         |
 | `logs-window-open`         | -         |
 | `logs-publish`             | `LogEntry[]` |
+| `logs-clear`               | —            |
 
 ## 📡 Events (main to renderer)
 
@@ -122,6 +129,8 @@ All channel names are centralized in `src/shared/ipc-channels.ts` (110 channels)
 | `update-error`             | `string` (error message)      |
 | `audit-entry`              | `AuditEntry`                  |
 | `logs-window-state`        | `number \| null` (detached window id, `null` when closed) |
+| `logs-cleared`             | —                             |
+| `notifications-clicked`    | `{ target }`                  |
 
 ## 🧩 `window.electronAPI` (contextBridge API)
 
@@ -157,6 +166,7 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `muxQueueMoveTo(id, pos)` — reorder a queued remux/demux job
 - `revealFile(filePath)` — open in system file manager (channel `queue-reveal`)
 - `setLaunchAtLogin(enabled)` — toggle launch at login
+- `notificationsGetSettings()` / `notificationsSetEnabled(enabled)` — query/toggle desktop notifications
 - `playerOpen(filePath)` / `playerSeek(time)` / `playerClose()` / `playerGetFrame()`
 - `extractWaveform(filePath, duration)` / `extractThumbnails(filePath, duration)`
 - `windowMinimize()` / `windowMaximizeToggle()` / `windowClose()` / `windowCloseConfirmed()`
@@ -164,7 +174,9 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `rejectTerms()` — quit the app (used when the terms gate is declined; bypasses close confirmation)
 - `monitoringGetState()` / `monitoringSetEnabled(enabled)` — query/toggle error-monitoring consent
 - `analyticsGetState()` / `analyticsSetEnabled(enabled)` — query/toggle usage analytics
+- `analyticsTrackEvent(event)` / `analyticsGetPosthogConfig()` — relay renderer analytics and read the public PostHog config
 - `mcpGetSettings()` / `mcpSetSettings(settings)` — read/update embedded MCP server settings
+- `mcpUiCallTool({ name, args })` / `mcpUiListViews()` — in-app MCP App view bridge
 - `aiGetSettings()` / `aiSetSettings(update)` / `aiConnectTest(candidate?)` / `aiListModels(candidate?)` — read/update and probe the Copilot AI provider
 - `captureDevScreenshot()` — save a PNG of the window (dev mode only; rejects otherwise)
 - `checkForUpdates()` / `downloadUpdate()` / `installUpdate(path)` / `cancelDownload()` / `openReleaseNotes(url)`
@@ -172,6 +184,7 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `openLogsWindow()` — open the Logs page in its own window
 - `logsGetHistory()` — the buffered log history the main process holds
 - `logsPublishEntries(entries)` — publish renderer log entries into the shared log hub
+- `logsClear()` — clear the shared log history in every window
 
 ### Event listeners (each returns a cleanup function)
 
@@ -184,4 +197,6 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `onLogMessage(cb)`
 - `onUpdateAvailable(cb)` / `onUpdateNotAvailable(cb)` / `onUpdateProgress(cb)` / `onUpdateDownloaded(cb)` / `onUpdateError(cb)`
 - `onAuditEntry(cb)` — mutating-operation audit stream
-- `onLogsWindowState(cb)` — `true` while the detached Logs window is open
+- `onLogsWindowState(cb)` — detached Logs window id or `null`
+- `onLogsCleared(cb)` — shared log history was cleared
+- `onNotificationClicked(cb)` — notification click with its `target`

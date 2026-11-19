@@ -7,14 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.6] - 2026-11-19
+
 ### Added
 
 - **Desktop notifications** - opt-in OS/taskbar notifications for batch and mux queue job completion/failure and queue summaries when running in the background/unfocused, with click-to-focus and navigation to the Batch Queue.
+- **Mux queue** — a dedicated remux/demux queue with per-tab condense and tabular job details.
 - **Remux and Demux** — dedicated lossless remux and stream-demux pages, surfaced in the app, CLI and MCP surfaces.
+- **Video filters** — crop, frame rate, deinterlace, denoise, sharpen, color, grayscale, blur and custom chains across Convert, Batch, Remux, Demux, CLI and MCP, with explicit warnings when a filter forces re-encoding.
 - **Standalone MCP HTTP server** (`npm run mcp:http`) — loopback-only transport with optional bearer auth, session cap, body-size cap and Host/Origin checks.
 - **MCP AI tools** — `analyze_media`, `recommend_settings`, `estimate_conversion`, `validate_output`, `compress_to_target`, `analyze_folder`, `explain_error`, `advise_encoding` and `quality_report`, each returning `structuredContent` alongside the text fallback.
 - **MCP Apps views** — inspector, plan, compression-lab and error views, plus a batch dashboard over `batch_convert` / `get_queue_state`.
-- **MCP Tasks extension** — `convert_media` / `batch_convert` are registered as optional tasks, advertising `tasks/get`, `tasks/result`, `tasks/cancel` and `tasks/list`.
 - **MCP SDK 2.x** — the MCP server now runs on the 2.x split packages (`@modelcontextprotocol/server`, `@modelcontextprotocol/node`, `@modelcontextprotocol/ext-apps@2`), which brings the browser-side MCP Apps `App` API and React hooks used by the view pipeline.
 - **MCP App views are React now** — the eleven interactive views were rewritten as React components authored against the app's own design system and bundled into one self-contained document, so a view looks the same in a third-party host as it does inside EncodeX.
 - **Two more MCP App views** — `ui://encodex/profiles` (the built-in conversion profiles) and `ui://encodex/capabilities` (the encoders and hardware acceleration methods of this machine) are served and wired to their tools.
@@ -22,9 +25,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **A host verification procedure** — `npm run mcp:host-check` verifies every served view document, and `docs/MCP_UI_HOSTS.md` documents how to check the views in a real host (Claude Desktop, VS Code, Cursor, ChatGPT, Goose, MCPJam).
 - **Copilot AI extras** — transcribe, summarize, chapters, transcript search, translate and find-similar operations, wired through the operation router.
 - **Copilot redesign** — ChatGPT-style conversation UI with a Lexical composer, suggestion placeholder, advanced popover and a provider logo-grid connect flow in Settings.
+- **Auto-growing composer** — the Copilot input expands as you type, with route scroll reset and responsive composer polish.
 - **AI provider settings** — model list sourced from the provider API with offline handling, retry with backoff on transient `429/5xx` responses, Connected/stale status states, key removal, and a session-only settings cache.
+- **Local AI providers** — Ollama support alongside the hosted providers, with consistent provider glyphs and localized settings.
+- **PostHog analytics** — privacy-aware product analytics integrated behind the existing consent/telemetry controls.
 - **Copilot saved chats** — a side panel listing saved conversations, plus BMF availability detection and AI rules-connect wiring.
-- **Logs page free-text search** across stored log entries.
+- **Logs page** — free-text search across stored log entries, with the page detachable into its own window.
 - **Loading skeletons** for lazily loaded routes.
 - **MCP E2E suites** covering the stdio, standalone HTTP and embedded GUI surfaces, plus a VS Code client-wire contract test.
 - **CI gates** — sharded, diff-scoped mutation testing; a blocking dependency-audit gate with a documented allowlist; media-fuzz, IPC-abuse, locale-matrix, RTL, accessibility and perf-budget tiers.
@@ -35,9 +41,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Copilot saved-chats panel is now an overlay** — it slides in with a transform animation instead of animating its width as a layout sibling, so the conversation column is never resized, re-wrapped or re-laid out when the panel opens.
 - **Saved-chat list items** now carry a 1px divider border and a theme-aware soft drop shadow (light/dark), with a stronger shadow on hover.
 - Sidebar condensed by default, with the condensed/expanded state persisted to `localStorage`; page icons refreshed.
-- CI/CD expanded with a nightly workflow, an OpenSSF Scorecard workflow, Codecov bundle analysis, coverage flags/components and coverage test analytics; release workflow updated with monitoring and observability.
-- Website homepage redesigned with a hero section, a "latest downloads" card and an open-source card.
-- Documentation synced with `1.0.0-beta.5` across all shipped locales.
+- Documentation synced with `1.0.0-beta.6` across all shipped locales.
+- Website internal links, canonical tags and structured data normalized to trailing-slash URLs; legacy duplicate paths no longer appear in the sitemap or hreflang sets.
+- Release packaging now receives PostHog build-time variables, and CI cleans generated app/site outputs before build, package and deploy.
+- `.env.example` now mirrors every key available in local `.env`, including Copilot provider and site conversion-tag placeholders.
 
 ### Removed
 
@@ -54,6 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The 5,000-card performance render self-skips on CI instead of exhausting the vitest worker.
 - Super-linear regular expressions removed from Bearer-token extraction and the `matchMedia` stub.
 - Saved-chat hover shadow styling tidied to match the project's formatting rules.
+- Updater asset selection now recognizes `x86_64`/`aarch64` aliases, so Linux x64 and arm64 builds pick the correct AppImage.
 
 ### Security
 
@@ -68,6 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - README and per-locale READMEs document macOS notarization status, Windows SmartScreen guidance and separate Linux install instructions.
 - `SECURITY.md`, `docs/UPDATE_MANAGER.md` and the site security/download/platform pages updated in all locales.
+- Full documentation, wiki and website sweep for the `1.0.0-beta.6` release, including feature references, release blog posts and drift markers.
 
 ## [1.0.0-beta.5] - 2026-09-23
 
@@ -205,7 +214,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Architecture and feature documentation restructured; community files (code of conduct, contributing) added.
 
-[Unreleased]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.5...HEAD
+[Unreleased]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.6...HEAD
+[1.0.0-beta.6]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.5...v1.0.0-beta.6
 [1.0.0-beta.5]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.4...v1.0.0-beta.5
 [1.0.0-beta.4]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.3...v1.0.0-beta.4
 [1.0.0-beta.3]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.2...v1.0.0-beta.3

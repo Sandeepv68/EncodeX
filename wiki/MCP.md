@@ -263,7 +263,7 @@ The STT and translation adapters raise typed errors (`TRANSCRIPTION_UNAVAILABLE`
 
 ## 🎛️ MCP Apps (interactive views)
 
-Alongside the JSON tool results, the MCP surface can render interactive views in the host client through the MCP Apps extension. `src/mcp/ui/` contains the resource registry, the renderer bridge and the approval flow, and 11 views: `batch`, `confirm`, `convert`, `error`, `inspector`, `job`, `lab`, `media-info`, `plan`, `queue`, `workflow`. Mutating tools route through the approval bridge so the user sees the plan before anything is queued.
+Alongside the JSON tool results, the MCP surface can render interactive views in the host client through the MCP Apps extension. `src/mcp/ui/` contains the resource registry, the renderer bridge and the approval flow, and 13 views: `batch`, `capabilities`, `confirm`, `convert`, `error`, `inspector`, `job`, `lab`, `media-info`, `plan`, `profiles`, `queue`, `workflow`. Mutating tools route through the approval bridge so the user sees the plan before anything is queued.
 
 ---
 

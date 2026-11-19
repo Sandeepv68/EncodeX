@@ -76,7 +76,7 @@ flowchart TD
 | चैनल | चल रहा वर्ज़न | Eligible releases |
 |---|---|---|
 | `stable` | कोई pre-release identifier नहीं, जैसे `1.0.0` | केवल stable releases |
-| `beta` | एक pre-release identifier, जैसे `1.0.0-beta.5` | pre-releases *और* stable releases |
+| `beta` | एक pre-release identifier, जैसे `1.0.0-beta.6` | pre-releases *और* stable releases |
 
 जानने योग्य परिणाम:
 
@@ -130,4 +130,4 @@ Windows पर डाउनलोड किया गया इंस्टॉ�
 - यूनिट: semver तुलना, update-channel चयन, एसेट चयन, डाउनलोड सत्यापन, checksum हैंडलिंग और pending-install marker।
 - Hostile-input परीक्षण: `src/main/__tests__/updater-hostile.test.ts` path traversal, redirect, अधूरे डाउनलोड और digest mismatch के व्यवहार को पिन करता है।
 - IPC परीक्षण: `src/main/ipc/__tests__/updater.test.ts` में हैंडलर पंजीकरण और इवेंट फ़ॉरवर्डिंग।
-- मैनुअल: `1.0.0-beta.5` से नया टैग **pre-release** के रूप में प्रकाशित करें, draft को प्रकाशित करके draft state से बाहर निकालें, और जाँच -> डाउनलोड -> इंस्टॉल प्रवाह के साथ install-on-restart पथ भी सत्यापित करें। फिर stable build से सत्यापित करें कि वही pre-release *नहीं* दिया जाता।
+- मैनुअल: `1.0.0-beta.6` से नया टैग **pre-release** के रूप में प्रकाशित करें, draft को प्रकाशित करके draft state से बाहर निकालें, और जाँच -> डाउनलोड -> इंस्टॉल प्रवाह के साथ install-on-restart पथ भी सत्यापित करें। फिर stable build से सत्यापित करें कि वही pre-release *नहीं* दिया जाता।

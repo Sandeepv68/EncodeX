@@ -2,7 +2,15 @@
 
 EncodeX is a cross-platform multimedia conversion tool that brings the power of FFmpeg to a modern, intuitive desktop interface. Built with Electron, React, and TypeScript, it lets you convert media between formats, extract audio, cut videos, and compress images — all through a clean, responsive UI with a batch queue, hardware acceleration, conversion profiles, CLI mode, an MCP server for AI assistants, and full internationalization.
 
-> **Version:** the app is currently at `1.0.0-beta.5`, in the 1.0 production-readiness phase (release hardening, blocking audit gate, per-file coverage ratchet, mutation ratchet). The embedded MCP server and the local-model/STT/translation runtimes are the newest subsystems and are still opt-in.
+> **Version:** the app is currently at `1.0.0-beta.6`, in the 1.0 production-readiness phase (release hardening, blocking audit gate, per-file coverage ratchet, mutation ratchet). The embedded MCP server and the local-model/STT/translation runtimes are the newest subsystems and are still opt-in.
+
+## 🆕 New in 1.0.0-beta.6
+
+- **Copilot refresh** — redesigned conversation UI, saved chats, local Ollama provider, model discovery and retry handling, plus transcription, summarization, chapters, translation and find-similar operations.
+- **MCP 2.x Apps** — React MCP App views that render inside EncodeX and third-party hosts, inline Copilot dashboards, a standalone loopback HTTP transport, and a host verification procedure.
+- **Remux, Demux & Video Filters** — dedicated lossless workflows and curated filter chains across the app, CLI and MCP surfaces.
+- **Queue & notifications** — a dedicated mux queue, per-tab condense, tabular job details, a detachable Logs page, and opt-in desktop notifications for background job results.
+- **Security & docs** — pinned actions, blocking audit/IPC/fuzz gates, and a synchronized docs, wiki and website refresh with canonical URLs.
 
 ## 🔄 Feature Overview
 
@@ -114,7 +122,7 @@ See the [[MCP]] page for the full tool catalogue, client configuration, and secu
 
 ### MCP Apps (Interactive Views)
 
-Beyond plain JSON tool results, the MCP surface can render interactive views inside the host client via the [MCP Apps](https://modelcontextprotocol.io) extension. `src/mcp/ui/` ships a resource registry, a renderer bridge, and an approval flow, plus 11 views:
+Beyond plain JSON tool results, the MCP surface can render interactive views inside the host client via the [MCP Apps](https://modelcontextprotocol.io) extension. `src/mcp/ui/` ships a resource registry, a renderer bridge, and an approval flow, plus 13 views:
 
 | View          | Purpose                                                     |
 | ------------- | ----------------------------------------------------------- |
@@ -129,6 +137,8 @@ Beyond plain JSON tool results, the MCP surface can render interactive views ins
 | `plan`        | Reviewable plan (the same plan object the Copilot uses)    |
 | `queue`       | Live queue state                                            |
 | `workflow`    | Multi-step workflow runner                                  |
+| `profiles`    | Built-in profile catalogue                                  |
+| `capabilities` | Encoders and hardware acceleration detected on this machine |
 
 Operations that mutate the queue go through the approval bridge, so an agent cannot silently start work without the user seeing the plan.
 

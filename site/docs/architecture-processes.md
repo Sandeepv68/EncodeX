@@ -90,4 +90,4 @@ The single most important architectural decision is that all cross-process contr
 - **`transcoder-constants.ts` / `hwaccel-settings.ts`** — FFmpeg flags, defaults, progress patterns, and hardware-acceleration settings.
 - **`media-options.ts` / `codec-containers.ts` / `codec-classification.ts`** — the curated lists of 51 video codecs, 27 audio codecs, 56 pixel formats, container-compatibility rules, and codec-family helpers.
 - **`validation.ts`** — pure functions for time/scale/bitrate/range validation, used by both the renderer forms and the CLI.
-- **`logger.ts` / `log-constants.ts`** — a timestamped logger plus 527 shared log message templates so logs are consistent across processes.
+- **`logger.ts` / `log-constants.ts`** — a timestamped logger plus 581 shared log message templates so logs are consistent across processes.

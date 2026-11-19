@@ -31,6 +31,9 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
+      - name: Clean site build output
+        shell: bash
+        run: rm -rf site/.vitepress/dist site/.vitepress/cache
       - name: Copy images to site/public/images
         run: |
           cp assets/banner.png site/public/images/banner.png 2>/dev/null || true

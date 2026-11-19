@@ -5,8 +5,17 @@
     <link>https://encodex.in/blog/</link>
     <description>Release announcements, guides, and updates about EncodeX — the free, open-source video converter.</description>
     <language>en</language>
-    <lastBuildDate>Thu, 24 Sep 2026 08:06:54 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 19 Nov 2026 11:54:32 GMT</lastBuildDate>
     <atom:link href="https://encodex.in/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>EncodeX V1.0.0-beta.6</title>
+      <link>https://encodex.in/blog/releases/1.0.0-beta.6/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/1.0.0-beta.6/</guid>
+      <description>A large Copilot and MCP release: React MCP Apps, a redesigned assistant, local AI providers, remux/demux, desktop notifications, security hardening, and a docs/SEO refresh.</description>
+      <pubDate>Thu, 19 Nov 2026 00:00:00 GMT</pubDate>
+      <category>release</category>
+      <category>1.0.0-beta.6</category>
+    </item>
     <item>
       <title>MCP Privacy and Security: Why EncodeX Keeps Your Media Local</title>
       <link>https://encodex.in/blog/posts/mcp-privacy-security/</link>

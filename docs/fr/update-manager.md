@@ -72,7 +72,7 @@ Le canal est déduit de la version en cours et détermine les releases éligible
 | Canal | Version en cours | Releases éligibles |
 |---|---|---|
 | `stable` | aucun identifiant de pre-release, p. ex. `1.0.0` | uniquement les releases stables |
-| `beta` | un identifiant de pre-release, p. ex. `1.0.0-beta.5` | les pre-releases *et* les releases stables |
+| `beta` | un identifiant de pre-release, p. ex. `1.0.0-beta.6` | les pre-releases *et* les releases stables |
 
 Conséquences à connaître :
 
@@ -126,4 +126,4 @@ Sous Windows, le lancement de l'installateur téléchargé peut déclencher l'av
 - Unitaires : comparaison semver, sélection du canal de mise à jour, sélection des assets, validation du téléchargement, gestion des sommes de contrôle et marqueur d'installation en attente.
 - Tests d'entrées hostiles : `src/main/__tests__/updater-hostile.test.ts` verrouille le comportement face à la traversée de chemin, aux redirections, aux téléchargements tronqués et aux condensés non concordants.
 - Tests IPC : enregistrement des gestionnaires et relais des événements dans `src/main/ipc/__tests__/updater.test.ts`.
-- Manuels : publier un tag de test plus récent que `1.0.0-beta.5` en tant que **pre-release**, publier le brouillon pour qu'il quitte l'état de brouillon, et vérifier le flux recherche -> téléchargement -> installation, ainsi que le chemin d'installation au redémarrage. Vérifier ensuite, depuis une version stable, que cette même pre-release n'est *pas* proposée.
+- Manuels : publier un tag de test plus récent que `1.0.0-beta.6` en tant que **pre-release**, publier le brouillon pour qu'il quitte l'état de brouillon, et vérifier le flux recherche -> téléchargement -> installation, ainsi que le chemin d'installation au redémarrage. Vérifier ensuite, depuis une version stable, que cette même pre-release n'est *pas* proposée.
