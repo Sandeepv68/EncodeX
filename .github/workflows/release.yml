@@ -86,43 +86,28 @@ jobs:
         run: npm run test:route-changes
 
   gate-coverage:
-    # The per-file coverage floor, enforced against the previous release tag
-    # rather than a branch base: a tag has no base branch, and the point of the
-    # gate is that the released commit does not lower the floor for the files
-    # it changed.
-    name: Gate - Diff coverage against the previous release (blocking)
+    # The per-file floor is a ratchet against the committed baseline, not a
+    # fixed 80/70 threshold: grandfathered files sit below the global floor.
+    # Added-line coverage is already enforced on every PR and push by ci.yml;
+    # diffing it against a previous release tag re-litigates months of changes.
+    name: Gate - Per-file coverage ratchet (blocking)
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-        with:
-          # Full history so the previous tag can be resolved and diffed against.
-          fetch-depth: 0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
       - run: npm ci
-      - name: Build main process (integration tier imports it)
-        run: npm run build:main
-      - name: Resolve the previous release tag
-        id: base
-        shell: bash
-        run: |
-          set -euo pipefail
-          previous=$(git describe --tags --abbrev=0 "${GITHUB_REF_NAME}^" 2>/dev/null || true)
-          if [ -z "$previous" ]; then
-            echo "No previous release tag to diff against - nothing to gate."
-            echo "base=" >> "$GITHUB_OUTPUT"
-          else
-            echo "Diffing against $previous"
-            echo "base=$previous" >> "$GITHUB_OUTPUT"
-          fi
-      - name: Enforce the per-file floor on the changed files
-        if: steps.base.outputs.base != ''
+      - name: Run the unit and integration coverage tiers
+        # test:integration builds the main process itself, so no separate build.
+        run: npm run test:coverage && npm run test:integration
+      - name: Enforce the per-file coverage ratchet
+        # The baseline is per-platform; this job measures on Linux.
         env:
-          COVERAGE_BASE: ${{ steps.base.outputs.base }}
-        run: node scripts/coverage-diff.mjs "${{ steps.base.outputs.base }}"
+          COVERAGE_PLATFORM: linux
+        run: npm run test:coverage:floor
 
   gate-perf:
     # The performance regression gate, with the same baseline comparison the
@@ -215,6 +200,8 @@ jobs:
             runner: ubuntu-latest
           - os: windows
             runner: windows-latest
+          - os: macos
+            runner: macos-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4

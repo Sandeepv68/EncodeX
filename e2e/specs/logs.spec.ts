@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import { launchApp, closeApp, ensureLiveSession, reloadSession, AppSession } from '../fixtures/app';
 import { mockApi, emitLogMessage } from '../mocks/control';
+import { LOG_EXPORT_FILENAME_PREFIX } from '../../src/shared/constants';
 
 const IS_E2E = process.env.E2E === 'true' || !!process.env.CI;
 
@@ -73,18 +74,36 @@ describe.runIf(IS_E2E)('Logs page', () => {
     await emitLogMessage(page, { text: 'export me' });
     await expect.poll(() => page.getByText('export me').count()).toBeGreaterThan(0);
 
-    // The real blob download can keep Playwright's click pending for seconds on
-    // CI. The toast auto-hides after 3s, so awaiting the click first races that
-    // timer: the toast can appear and vanish before the poll ever starts. Skip
-    // the post-click navigation wait and poll the toast concurrently instead.
-    await Promise.all([
-      page.locator('[data-testid="logs-download"]').click({ noWaitAfter: true }),
-      expect
-        .poll(() => page.locator('[role="alert"]').filter({ hasText: 'Logs downloaded' }).count(), {
-          timeout: 15000,
-        })
-        .toBeGreaterThan(0),
-    ]);
+    // Clicking the real blob anchor hands the download to Electron's download
+    // pipeline. On CI that can block the renderer for tens of seconds (and the
+    // toast auto-hides after 3s), which made this spec flaky in the x3 gate.
+    // Capture the anchor click instead: the page still builds the export and
+    // shows the toast, and the test asserts the generated filename/URL directly
+    // without depending on the OS download completing. The next `reloadSession`
+    // in `beforeEach` discards this override before any other test runs.
+    await page.evaluate(() => {
+      const target = window as unknown as {
+        __encodexDownloads?: Array<{ href: string; name: string }>;
+      };
+      target.__encodexDownloads = [];
+      HTMLAnchorElement.prototype.click = function clickStub() {
+        target.__encodexDownloads!.push({ href: String(this.href), name: String(this.download) });
+      };
+    });
+
+    await page.locator('[data-testid="logs-download"]').click();
+    await expect
+      .poll(() => page.locator('[role="alert"]').filter({ hasText: 'Logs downloaded' }).count(), {
+        timeout: 10000,
+      })
+      .toBeGreaterThan(0);
+
+    const downloads = await page.evaluate(
+      () => (window as unknown as { __encodexDownloads?: Array<{ href: string; name: string }> }).__encodexDownloads ?? [],
+    );
+    expect(downloads).toHaveLength(1);
+    expect(downloads[0].href).toMatch(/^blob:/);
+    expect(downloads[0].name).toMatch(new RegExp(`^${LOG_EXPORT_FILENAME_PREFIX}-\\d{4}-\\d{2}-\\d{2}T\\d{2}-\\d{2}-\\d{2}\\.txt$`));
   });
 
   it('filters entries by the search text', async () => {
