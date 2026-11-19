@@ -14,7 +14,7 @@
  *
  * The sitemap.xml, canonical tags, hreflang and og:url already use trailing-slash URLs.
  */
-import { readdirSync, readFileSync, renameSync, statSync, mkdirSync, rmSync, existsSync, writeFileSync } from 'node:fs';
+import { readdirSync, readFileSync, renameSync, statSync, mkdirSync, existsSync, writeFileSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
