@@ -391,6 +391,7 @@ jobs:
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           path: release-artifacts
+          pattern: release-*
           merge-multiple: true
       - name: Generate SHA256SUMS.txt
         shell: bash
@@ -398,14 +399,19 @@ jobs:
           set -euo pipefail
           shopt -s nullglob
 
-          files=(release-artifacts/*)
-          if [ "${#files[@]}" -eq 0 ]; then
+          entries=(release-artifacts/*)
+          if [ "${#entries[@]}" -eq 0 ]; then
             echo "::error::No release artifacts were downloaded"
             exit 1
           fi
 
           cd release-artifacts
-          sha256sum -- * > SHA256SUMS.txt
+          mapfile -d '' files < <(find . -maxdepth 1 -type f -printf '%f\0' | sort -z)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "::error::No installer files were downloaded"
+            exit 1
+          fi
+          sha256sum -- "${files[@]}" > SHA256SUMS.txt
           cat SHA256SUMS.txt
       - name: Compute artifact digests
         id: subject
@@ -413,7 +419,8 @@ jobs:
         run: |
           set -euo pipefail
           cd release-artifacts
-          DIGESTS=$(sha256sum -- * | base64 -w0)
+          mapfile -d '' files < <(find . -maxdepth 1 -type f -printf '%f\0' | sort -z)
+          DIGESTS=$(sha256sum -- "${files[@]}" | base64 -w0)
           echo "subject=$DIGESTS" >> "$GITHUB_OUTPUT"
       - name: Generate CycloneDX SBOM
         uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
