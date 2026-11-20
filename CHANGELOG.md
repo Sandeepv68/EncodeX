@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.8] - 2026-11-20
+
+### Fixed
+
+- The in-app updater now forwards an available update to the renderer. The production IPC guard validated `asset.fileName`, but main sends `asset.name/url/size`, so the update-available event was silently dropped and the UI stayed on "Checking for updates".
+
+### Documentation
+
+- Version references synced to `1.0.0-beta.8` across the README, docs, wiki, website, release posts and supported-version policy.
+
 ## [1.0.0-beta.7] - 2026-11-20
 
 ### Fixed
@@ -225,7 +235,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Architecture and feature documentation restructured; community files (code of conduct, contributing) added.
 
-[Unreleased]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.7...HEAD
+[Unreleased]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.8...HEAD
+[1.0.0-beta.8]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.7...v1.0.0-beta.8
 [1.0.0-beta.7]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.6...v1.0.0-beta.7
 [1.0.0-beta.6]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.5...v1.0.0-beta.6
 [1.0.0-beta.5]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.4...v1.0.0-beta.5

@@ -5,7 +5,7 @@
     <link>https://encodex.in/blog/</link>
     <description>Release announcements, guides, and updates about EncodeX — the free, open-source video converter.</description>
     <language>en</language>
-    <lastBuildDate>Fri, 20 Nov 2026 12:11:52 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 20 Nov 2026 16:34:59 GMT</lastBuildDate>
     <atom:link href="https://encodex.in/feed.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>EncodeX V1.0.0-beta.7</title>
@@ -15,6 +15,15 @@
       <pubDate>Fri, 20 Nov 2026 00:00:00 GMT</pubDate>
       <category>release</category>
       <category>1.0.0-beta.7</category>
+    </item>
+    <item>
+      <title>EncodeX V1.0.0-beta.8</title>
+      <link>https://encodex.in/blog/releases/1.0.0-beta.8/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/1.0.0-beta.8/</guid>
+      <description>A focused fix release: an available update now reaches the renderer, so Check for Updates no longer gets stuck on \&quot;Checking for updates\&quot;.</description>
+      <pubDate>Fri, 20 Nov 2026 00:00:00 GMT</pubDate>
+      <category>release</category>
+      <category>1.0.0-beta.8</category>
     </item>
     <item>
       <title>EncodeX V1.0.0-beta.6</title>

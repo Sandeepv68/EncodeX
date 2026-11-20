@@ -14,6 +14,10 @@ EncodeX is a free app for your computer that fixes common file problems in a few
 
 It works on Windows, Mac, and Linux, it's completely free, and its interface is available in 56 locales.
 
+## New in 1.0.0-beta.8
+
+- **Updater fix** — an available update is now forwarded to the renderer, so **Check for Updates** no longer gets stuck on "Checking for updates".
+
 ## New in 1.0.0-beta.7
 
 - **Dialog polish** — the modal close button now sits at the trailing edge of the header, and header/footer dividers use a lighter, theme-aware color.

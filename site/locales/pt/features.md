@@ -16,6 +16,10 @@ Funciona no Windows, Mac e Linux, é totalmente grátis e fala mais de 56 idioma
 
 ---
 
+## Novo em 1.0.0-beta.8
+
+- **Correção do atualizador** — uma atualização disponível agora é encaminhada ao renderer, de modo que **Check for Updates** não fica mais preso em "Verificando atualizações".
+
 ## Novo em 1.0.0-beta.7
 
 - **Ajustes de diálogo** — o botão de fechar agora fica no fim do cabeçalho e os divisores do cabeçalho e rodapé usam uma cor mais clara conforme o tema.

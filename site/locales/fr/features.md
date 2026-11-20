@@ -16,6 +16,10 @@ Il fonctionne sur Windows, Mac et Linux, est entièrement gratuit, et son interf
 
 ---
 
+## Nouveautés de 1.0.0-beta.8
+
+- **Correctif du gestionnaire de mises à jour** — une mise à jour disponible est désormais transmise au renderer, afin que **Vérifier les mises à jour** ne reste plus bloqué sur « Vérification des mises à jour ».
+
 ## Nouveautés de 1.0.0-beta.7
 
 - **Ajustements des fenêtres** — le bouton de fermeture est désormais en fin d'en-tête et les séparateurs d'en-tête et de pied utilisent une couleur plus claire selon le thème.

@@ -89,6 +89,11 @@ describe.runIf(IS_E2E)('About page and updates', () => {
       version: '9.9.9',
       releaseNotes: 'Fixes everything',
       releaseUrl: `${REPOSITORY_URL}/releases/tag/v9.9.9`,
+      asset: {
+        name: `EncodeX-9.9.9-x64-setup.exe`,
+        url: `${REPOSITORY_URL}/releases/download/v9.9.9/EncodeX-9.9.9-x64-setup.exe`,
+        size: 123456,
+      },
     });
     await expect.poll(() => updateDialog(page).innerText()).toContain('v9.9.9');
     await expect.poll(() => updateDialog(page).innerText()).toContain('Fixes everything');
