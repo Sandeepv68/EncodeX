@@ -1191,9 +1191,10 @@ describe('BatchQueue', () => {
     expect(await screen.findByText('Edit options for video.mp4')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
     await waitFor(() => expect(queueUpdateOptionsMock).toHaveBeenCalled());
+    await waitFor(() => expect(screen.queryByText('Edit options for video.mp4')).not.toBeInTheDocument());
     queueUpdateOptionsMock.mockClear();
     fireEvent.mouseDown(screen.getByRole('combobox', { name: 'batchQueue.container' }));
-    fireEvent.click(screen.getByText('mkv'));
+    fireEvent.click(await screen.findByText('mkv'));
     await waitFor(() =>
       expect(queueUpdateOptionsMock).toHaveBeenCalledWith(
         'job-2',
