@@ -432,7 +432,7 @@ jobs:
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
         with:
           draft: true
-          # A semver pre-release tag (`v1.0.0-beta.6`) must be published as a
+          # A semver pre-release tag (`v1.0.0-beta.7`) must be published as a
           # GitHub *pre-release*. Without this flag the release is published as
           # stable, and the updater - which now reads the release list and
           # filters by channel - would offer the beta to stable users.

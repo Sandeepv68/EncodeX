@@ -77,7 +77,7 @@ The channel is derived from the running version, and decides which releases are 
 | Channel | Running version | Eligible releases |
 |---|---|---|
 | `stable` | no pre-release identifier, e.g. `1.0.0` | stable releases only |
-| `beta` | a pre-release identifier, e.g. `1.0.0-beta.6` | pre-releases *and* stable releases |
+| `beta` | a pre-release identifier, e.g. `1.0.0-beta.7` | pre-releases *and* stable releases |
 
 Consequences worth knowing:
 
@@ -85,7 +85,7 @@ Consequences worth knowing:
 - A stable build is never offered a pre-release.
 - A **draft** release is never offered to anyone. GitHub excludes drafts from the published release list, so a release left as a draft is invisible to the updater until it is published.
 - GitHub's own "latest release" endpoint is deliberately *not* used: it resolves to the newest non-draft, non-prerelease release, which a beta build could never see past, and a beta published without the pre-release flag would be handed to stable users as if it were the stable release. The updater reads the release **list** and applies the channel filter itself.
-- The release workflow marks a pre-release tag (`v1.0.0-beta.6`) as a GitHub pre-release, so the flag and the tag agree.
+- The release workflow marks a pre-release tag (`v1.0.0-beta.7`) as a GitHub pre-release, so the flag and the tag agree.
 
 ## Asset Selection Logic
 
@@ -131,4 +131,4 @@ On Windows, launching the downloaded installer can trigger the SmartScreen warni
 - Unit: semver comparison, update-channel selection, asset selection, download validation, checksum handling, and the pending-install marker.
 - Hostile-input tests: `src/main/__tests__/updater-hostile.test.ts` pins path traversal, redirect, truncated download, and digest-mismatch behavior.
 - IPC tests: handler registration and event forwarding in `src/main/ipc/__tests__/updater.test.ts`.
-- Manual: publish a test tag newer than `1.0.0-beta.6` as a **pre-release**, publish the draft so it leaves draft state, and verify check -> download -> install, plus the install-on-restart path. Then verify from a stable build that the same pre-release is *not* offered.
+- Manual: publish a test tag newer than `1.0.0-beta.7` as a **pre-release**, publish the draft so it leaves draft state, and verify check -> download -> install, plus the install-on-restart path. Then verify from a stable build that the same pre-release is *not* offered.

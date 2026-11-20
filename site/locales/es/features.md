@@ -16,6 +16,10 @@ Funciona en Windows, Mac y Linux, es completamente gratis y su interfaz está di
 
 ---
 
+## Novedades en 1.0.0-beta.7
+
+- **Ajustes de diálogo** — el botón de cierre ahora está al final de la cabecera y las líneas divisoras de la cabecera y el pie usan un color más claro según el tema.
+
 ## Novedades en 1.0.0-beta.6
 
 - **Actualización de Copilot** — interfaz de conversación rediseñada, chats guardados, proveedor local Ollama, descubrimiento de modelos y manejo de reintentos, además de operaciones de transcripción, resumen, capítulos, traducción y búsqueda de similares.

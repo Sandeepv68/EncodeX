@@ -11,6 +11,10 @@ EncodeX आपके कंप्यूटर के लिए एक मुफ�
 
 ---
 
+## 1.0.0-beta.7 में नया
+
+- **डायलॉग पॉलिश** — मोडल का क्लोज़ बटन अब हेडर के अंत में है, और हेडर/फ़ुटर की विभाजक रेखाएँ थीम के अनुसार हल्का रंग इस्तेमाल करती हैं।
+
 ## 1.0.0-beta.6 में नया
 
 - **Copilot refresh** — नए रूप में डिज़ाइन की गई conversation UI, saved chats, local Ollama provider, model discovery और retry handling, साथ ही transcription, summarization, chapters, translation और find-similar ऑपरेशन।

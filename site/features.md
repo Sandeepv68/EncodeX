@@ -14,6 +14,10 @@ EncodeX is a free app for your computer that fixes common file problems in a few
 
 It works on Windows, Mac, and Linux, it's completely free, and its interface is available in 56 locales.
 
+## New in 1.0.0-beta.7
+
+- **Dialog polish** — the modal close button now sits at the trailing edge of the header, and header/footer dividers use a lighter, theme-aware color.
+
 ## New in 1.0.0-beta.6
 
 - **A smarter Copilot** — a cleaner chat layout, saved conversations, local Ollama support, and AI actions like transcribe, summarize, chapters and translate.

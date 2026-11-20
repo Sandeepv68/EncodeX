@@ -71,7 +71,7 @@ Channel चल रहे version से derive होता है और यह
 | Channel | चल रहा version | Eligible releases |
 |---|---|---|
 | `stable` | कोई pre-release identifier नहीं, जैसे `1.0.0` | केवल stable releases |
-| `beta` | एक pre-release identifier, जैसे `1.0.0-beta.6` | pre-releases *और* stable releases |
+| `beta` | एक pre-release identifier, जैसे `1.0.0-beta.7` | pre-releases *और* stable releases |
 
 जानने योग्य परिणाम:
 
@@ -79,7 +79,7 @@ Channel चल रहे version से derive होता है और यह
 - Stable build को कभी कोई pre-release offer नहीं होता।
 - **Draft** release किसी को भी offer नहीं होता। GitHub published release list से drafts को बाहर रखता है, इसलिए draft में छोड़ा गया release updater के लिए publish होने तक अदृश्य रहता है।
 - GitHub का अपना "latest release" endpoint जानबूझकर *नहीं* इस्तेमाल किया जाता: यह सबसे नया non-draft, non-prerelease release पर resolve होता है, जिसे कोई beta build कभी पार नहीं कर सकता, और बिना pre-release flag के publish किया गया beta stable users को stable release की तरह मिल जाएगा। Updater release की **list** पढ़ता है और channel filter खुद लागू करता है।
-- Release workflow एक pre-release tag (`v1.0.0-beta.6`) को GitHub pre-release के रूप में चिह्नित करता है, ताकि flag और tag आपस में मेल खाएँ।
+- Release workflow एक pre-release tag (`v1.0.0-beta.7`) को GitHub pre-release के रूप में चिह्नित करता है, ताकि flag और tag आपस में मेल खाएँ।
 
 ## Asset selection logic
 
@@ -125,4 +125,4 @@ Windows पर डाउनलोड किया गया इंस्टॉ�
 - Unit tests: semver comparison, update-channel selection, asset selection, download validation, checksum handling, और pending-install marker।
 - Hostile-input tests: `src/main/__tests__/updater-hostile.test.ts` path traversal, redirect, truncated download और digest-mismatch व्यवहार को pin करता है।
 - IPC tests: `src/main/ipc/__tests__/updater.test.ts` में handler registration और event forwarding।
-- Manual testing: `1.0.0-beta.6` से नया test tag **pre-release** के रूप में publish करें, draft को publish करके draft state से बाहर निकालें, और check -> download -> install flow के साथ install-on-restart path भी verify करें। फिर stable build से verify करें कि वही pre-release *नहीं* offer होता।
+- Manual testing: `1.0.0-beta.7` से नया test tag **pre-release** के रूप में publish करें, draft को publish करके draft state से बाहर निकालें, और check -> download -> install flow के साथ install-on-restart path भी verify करें। फिर stable build से verify करें कि वही pre-release *नहीं* offer होता।
