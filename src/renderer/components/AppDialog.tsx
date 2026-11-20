@@ -1,11 +1,12 @@
 ﻿import { useId } from 'react';
-import { Dialog, DialogActions, Divider } from '@mui/material';
+import { Dialog, DialogActions } from '@mui/material';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { AppDialogProps } from './AppDialog.types';
 import {
   AppDialogBody,
   AppDialogCloseButton,
+  AppDialogDivider,
   AppDialogHeader,
   AppDialogIcon,
   AppDialogTitle,
@@ -95,7 +96,7 @@ export default function AppDialog({
         ) : null}
       </AppDialogHeader>
 
-      <Divider />
+      <AppDialogDivider />
 
       <AppDialogBody $disablePadding={disableContentPadding} dividers={contentDividers}>
         {children}
@@ -103,7 +104,7 @@ export default function AppDialog({
 
       {actions !== undefined ? (
         <>
-          <Divider />
+          <AppDialogDivider />
           <DialogActions>{actions}</DialogActions>
         </>
       ) : null}
