@@ -16,6 +16,10 @@ Funciona no Windows, Mac e Linux, é totalmente grátis e fala mais de 56 idioma
 
 ---
 
+## Novo em 1.0.0-beta.7
+
+- **Ajustes de diálogo** — o botão de fechar agora fica no fim do cabeçalho e os divisores do cabeçalho e rodapé usam uma cor mais clara conforme o tema.
+
 ## Novo em 1.0.0-beta.6
 
 - **Copilot renovado** — interface de conversação redesenhada, chats salvos, provedor Ollama local, descoberta de modelos e tratamento de novas tentativas, além de operações de transcrição, resumo, capítulos, tradução e busca por similaridade.

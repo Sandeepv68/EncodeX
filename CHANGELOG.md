@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.7] - 2026-11-20
+
+### Fixed
+
+- The modal close button now sits at the trailing edge of the dialog header; the title expands to fill the header and the button no longer shifts when the title is long.
+- Dialog header and footer dividers use a lighter, theme-aware color, reducing the visual weight of the modal chrome in both light and dark themes.
+
+### Documentation
+
+- Version references synced to `1.0.0-beta.7` across the README, docs, wiki, website, release posts and supported-version policy.
+
 ## [1.0.0-beta.6] - 2026-11-19
 
 ### Added
@@ -214,7 +225,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Architecture and feature documentation restructured; community files (code of conduct, contributing) added.
 
-[Unreleased]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.6...HEAD
+[Unreleased]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.7...HEAD
+[1.0.0-beta.7]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.6...v1.0.0-beta.7
 [1.0.0-beta.6]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.5...v1.0.0-beta.6
 [1.0.0-beta.5]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.4...v1.0.0-beta.5
 [1.0.0-beta.4]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.3...v1.0.0-beta.4

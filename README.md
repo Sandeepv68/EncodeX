@@ -95,7 +95,7 @@ Conversion runs **locally on your computer** — no accounts, no media uploads, 
 
 See [docs/FEATURES.md](docs/FEATURES.md) for the full feature breakdown, supported formats, and codec lists.
 
-> **New in `1.0.0-beta.6`:** redesigned Copilot with saved chats and local Ollama support, MCP 2.x React App views, standalone MCP HTTP transport, remux/demux and video filters across app/CLI/MCP, a dedicated mux queue, detachable Logs, desktop notifications, and a full security/docs/SEO refresh.
+> **New in `1.0.0-beta.7`:** dialog polish — the modal close button now aligns to the trailing edge of the header, and header/footer dividers use a lighter, theme-aware color. For the larger Copilot, MCP 2.x, remux/demux and mux queue changes, see `1.0.0-beta.6`.
 
 ## 📸 Screenshots
 

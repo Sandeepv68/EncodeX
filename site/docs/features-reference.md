@@ -9,6 +9,10 @@ description: "Complete feature reference for EncodeX: supported media formats, c
 
 EncodeX is a cross-platform multimedia conversion tool that brings the power of FFmpeg to a modern, intuitive desktop interface. Built with Electron, React, and TypeScript, it lets you convert media between formats, extract audio, cut videos, and compress images — all through a clean, responsive UI with a batch queue, hardware acceleration, CLI mode, and full internationalization.
 
+## New in 1.0.0-beta.7
+
+- **Dialog polish** — the modal close button now sits at the trailing edge of the header, and header/footer dividers use a lighter, theme-aware color.
+
 ## New in 1.0.0-beta.6
 
 - **Copilot refresh** — a redesigned conversation UI, saved chats, local Ollama provider support, model discovery and retry handling, plus transcription, summarization, chapters, translation and find-similar operations.

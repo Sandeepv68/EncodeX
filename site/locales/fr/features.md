@@ -16,6 +16,10 @@ Il fonctionne sur Windows, Mac et Linux, est entièrement gratuit, et son interf
 
 ---
 
+## Nouveautés de 1.0.0-beta.7
+
+- **Ajustements des fenêtres** — le bouton de fermeture est désormais en fin d'en-tête et les séparateurs d'en-tête et de pied utilisent une couleur plus claire selon le thème.
+
 ## Nouveautés de 1.0.0-beta.6
 
 - **Copilot rafraîchi** — interface de conversation repensée, chats enregistrés, fournisseur Ollama local, découverte des modèles et gestion des nouvelles tentatives, ainsi que les opérations de transcription, de résumé, de chapitrage, de traduction et de recherche de contenus similaires.

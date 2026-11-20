@@ -1,7 +1,11 @@
-﻿import { styled } from '@mui/material/styles';
-import { Box, DialogContent, DialogTitle, IconButton, Typography } from '@mui/material';
+﻿import { alpha, styled } from '@mui/material/styles';
+import { Box, DialogContent, DialogTitle, Divider, IconButton, Typography } from '@mui/material';
 
 export const AppDialogTitle = styled(DialogTitle)({
+  display: 'flex',
+  alignItems: 'center',
+  flex: 1,
+  minWidth: 0,
   paddingRight: 16,
 });
 
@@ -24,7 +28,13 @@ export const AppDialogTitleText = styled(Typography)({
   fontWeight: 600,
 }) as typeof Typography;
 
-export const AppDialogCloseButton = styled(IconButton)({});
+export const AppDialogCloseButton = styled(IconButton)({
+  flexShrink: 0,
+});
+
+export const AppDialogDivider = styled(Divider)(({ theme }) => ({
+  borderColor: alpha(theme.palette.divider, 0.25),
+}));
 
 export const AppDialogBody = styled(DialogContent, {
   shouldForwardProp: (prop) => prop !== '$disablePadding',

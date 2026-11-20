@@ -11,6 +11,10 @@ Es läuft auf Windows, Mac und Linux, ist vollständig kostenlos und seine Oberf
 
 ---
 
+## Neu in 1.0.0-beta.7
+
+- **Dialog-Verfeinerung** — der Schließen-Button sitzt jetzt am rechten Ende der Kopfzeile, und die Trennlinien von Kopf- und Fußzeile verwenden eine hellere, theme-abhängige Farbe.
+
 ## Neu in 1.0.0-beta.6
 
 - **Copilot-Refresh** — überarbeitete Konversationsoberfläche, gespeicherte Chats, lokaler Ollama-Anbieter, Modell-Erkennung und Wiederholungsbehandlung sowie Transkription, Zusammenfassung, Kapitel, Übersetzung und Find-Similar-Operationen.
