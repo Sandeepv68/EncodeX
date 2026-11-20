@@ -99,11 +99,18 @@ describe('payload guards', () => {
     expect(isAuditEntry(null)).toBe(false);
   });
 
-  it('isUpdateInfo requires the nested asset', () => {
-    const info = { version: '1.0.0', releaseNotes: 'notes', releaseUrl: 'https://x', asset: { fileName: 'setup.exe' } };
+  it('isUpdateInfo requires the nested asset emitted by main', () => {
+    const info = {
+      version: '1.0.0',
+      releaseNotes: 'notes',
+      releaseUrl: 'https://x',
+      asset: { name: 'setup.exe', url: 'https://x/setup.exe', size: 1234, digest: 'sha256:abc' },
+    };
     expect(isUpdateInfo(info)).toBe(true);
     expect(isUpdateInfo({ ...info, asset: null })).toBe(false);
-    expect(isUpdateInfo({ ...info, asset: { fileName: 7 } })).toBe(false);
+    expect(isUpdateInfo({ ...info, asset: { ...info.asset, name: 7 } })).toBe(false);
+    expect(isUpdateInfo({ ...info, asset: { ...info.asset, url: 7 } })).toBe(false);
+    expect(isUpdateInfo({ ...info, asset: { ...info.asset, size: '1234' } })).toBe(false);
     expect(isUpdateInfo({ ...info, version: undefined })).toBe(false);
     expect(isUpdateInfo(null)).toBe(false);
   });

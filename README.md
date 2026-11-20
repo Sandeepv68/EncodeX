@@ -95,7 +95,7 @@ Conversion runs **locally on your computer** — no accounts, no media uploads, 
 
 See [docs/FEATURES.md](docs/FEATURES.md) for the full feature breakdown, supported formats, and codec lists.
 
-> **New in `1.0.0-beta.7`:** dialog polish — the modal close button now aligns to the trailing edge of the header, and header/footer dividers use a lighter, theme-aware color. For the larger Copilot, MCP 2.x, remux/demux and mux queue changes, see `1.0.0-beta.6`.
+> **New in `1.0.0-beta.8`:** updater fix — an available update is now forwarded to the renderer, so **Check for Updates** no longer stays stuck on "Checking for updates". For beta.7 dialog polish and the larger Copilot, MCP 2.x, remux/demux and mux queue changes, see `1.0.0-beta.7` and `1.0.0-beta.6`.
 
 ## 📸 Screenshots
 

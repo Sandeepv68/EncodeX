@@ -11,6 +11,10 @@ Es läuft auf Windows, Mac und Linux, ist vollständig kostenlos und seine Oberf
 
 ---
 
+## Neu in 1.0.0-beta.8
+
+- **Updater-Fix** — ein verfügbares Update wird jetzt an den Renderer weitergeleitet, sodass **Nach Updates suchen** nicht mehr auf „Updates werden geprüft" hängen bleibt.
+
 ## Neu in 1.0.0-beta.7
 
 - **Dialog-Verfeinerung** — der Schließen-Button sitzt jetzt am rechten Ende der Kopfzeile, und die Trennlinien von Kopf- und Fußzeile verwenden eine hellere, theme-abhängige Farbe.

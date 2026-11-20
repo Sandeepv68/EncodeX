@@ -68,7 +68,7 @@ O canal e derivado da versao em execucao e decide quais releases sao elegiveis:
 | Canal | Versao em execucao | Releases elegiveis |
 |---|---|---|
 | `stable` | sem identificador de pre-release, como `1.0.0` | apenas releases estaveis |
-| `beta` | com um identificador de pre-release, como `1.0.0-beta.7` | pre-releases *e* releases estaveis |
+| `beta` | com um identificador de pre-release, como `1.0.0-beta.8` | pre-releases *e* releases estaveis |
 
 Consequencias que vale conhecer:
 
@@ -76,7 +76,7 @@ Consequencias que vale conhecer:
 - Uma build estavel nunca recebe uma pre-release.
 - Uma release **rascunho** nunca e oferecida a ninguem. O GitHub exclui rascunhos da lista de releases publicadas, entao uma release deixada como rascunho fica invisivel para o atualizador ate ser publicada.
 - O endpoint de "ultima release" do proprio GitHub nao e usado de proposito: ele resolve para a release mais recente que nao seja rascunho nem pre-release, o que uma build beta nunca conseguiria ultrapassar, e uma beta publicada sem a flag de pre-release seria entregue aos usuarios estaveis como se fosse a release estavel. O atualizador le a **lista** de releases e aplica ele mesmo o filtro de canal.
-- O workflow de release marca uma tag de pre-release (`v1.0.0-beta.7`) como pre-release do GitHub, para que a flag e a tag concordem.
+- O workflow de release marca uma tag de pre-release (`v1.0.0-beta.8`) como pre-release do GitHub, para que a flag e a tag concordem.
 
 ## Logica de seleção de assets
 
@@ -122,4 +122,4 @@ No Windows, executar o instalador baixado pode disparar o aviso do SmartScreen "
 - Unitários: comparação semver, seleção do canal de atualização, seleção de assets, validacao de download, tratamento de checksum e o marcador de instalação pendente.
 - Testes de entrada hostil: `src/main/__tests__/updater-hostile.test.ts` fixa comportamentos de travessia de caminho, redirecionamento, download truncado e incompatibilidade de digest.
 - Testes IPC: registro de handlers e encaminhamento de eventos em `src/main/ipc/__tests__/updater.test.ts`.
-- Manuais: publicar um tag de teste mais recente que `1.0.0-beta.7` como **pre-release**, publicar o rascunho para que ele saia do estado de rascunho, e verificar o fluxo verificação -> download -> instalação, alem do caminho de instalacao na proxima reinicializacao. Em seguida, verificar a partir de uma build estavel que a mesma pre-release *nao* e oferecida.
+- Manuais: publicar um tag de teste mais recente que `1.0.0-beta.8` como **pre-release**, publicar o rascunho para que ele saia do estado de rascunho, e verificar o fluxo verificação -> download -> instalação, alem do caminho de instalacao na proxima reinicializacao. Em seguida, verificar a partir de uma build estavel que a mesma pre-release *nao* e oferecida.

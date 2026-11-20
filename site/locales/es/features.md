@@ -16,6 +16,10 @@ Funciona en Windows, Mac y Linux, es completamente gratis y su interfaz está di
 
 ---
 
+## Novedades en 1.0.0-beta.8
+
+- **Corrección del actualizador** — ahora se reenvía una actualización disponible al renderer, de modo que **Buscar actualizaciones** ya no se queda atascado en «Buscando actualizaciones».
+
 ## Novedades en 1.0.0-beta.7
 
 - **Ajustes de diálogo** — el botón de cierre ahora está al final de la cabecera y las líneas divisoras de la cabecera y el pie usan un color más claro según el tema.

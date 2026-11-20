@@ -155,7 +155,7 @@ export function isAuditEntry(value: unknown): value is AuditEntry {
 export function isUpdateInfo(value: unknown): value is UpdateInfo {
   if (!isRecord(value)) return false;
   if (!isString(value.version) || !isString(value.releaseNotes) || !isString(value.releaseUrl)) return false;
-  return isRecord(value.asset) && isString(value.asset.fileName);
+  return isRecord(value.asset) && isString(value.asset.name) && isString(value.asset.url) && isFiniteNumber(value.asset.size);
 }
 
 /** True when `value` is an `UpdateProgress` with a usable `percent`. */

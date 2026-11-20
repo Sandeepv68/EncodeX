@@ -83,6 +83,18 @@ describe('preload', () => {
     createdAt: 0,
   } as const;
 
+  const UPDATE_INFO_FIXTURE = {
+    version: '1.0.1',
+    releaseNotes: 'Fixes everything',
+    releaseUrl: 'https://example.com/releases/v1.0.1',
+    asset: {
+      name: 'EncodeX-1.0.1-x64-setup.exe',
+      url: 'https://example.com/EncodeX-1.0.1-x64-setup.exe',
+      size: 1234,
+      digest: 'sha256:abc',
+    },
+  } as const;
+
   beforeEach(() => {
     vi.clearAllMocks();
     // The drop-logging throttle is module-global by design - it has to outlive a single handler to
@@ -209,6 +221,7 @@ describe('preload', () => {
       IPC.AUDIT_ENTRY,
       { id: 'audit-1', timestamp: 't', tool: 'convert_media', tier: 2, argsDigest: 'deadbeef', result: 'ok' },
     ],
+    ['onUpdateAvailable', IPC.UPDATE_AVAILABLE, { ...UPDATE_INFO_FIXTURE }],
     ['onWindowMaximizedChange', IPC.WINDOW_MAXIMIZED_CHANGED, true],
     ['onWindowCloseRequested', IPC.WINDOW_CLOSE_REQUESTED, undefined],
     ['onLogsCleared', IPC.LOGS_CLEARED, undefined],
@@ -258,6 +271,10 @@ describe('preload', () => {
     // let `[...]` through and fail later on a `.id` read.
     ['onLogMessage', IPC.LOG_MESSAGE, [{ timestamp: 't', level: 'INFO', text: 'x', source: 'main' }]],
     ['onAuditEntry', IPC.AUDIT_ENTRY, { id: 'audit-1' }],
+    ['onUpdateAvailable', IPC.UPDATE_AVAILABLE, null],
+    ['onUpdateAvailable', IPC.UPDATE_AVAILABLE, { ...UPDATE_INFO_FIXTURE, asset: null }],
+    ['onUpdateAvailable', IPC.UPDATE_AVAILABLE, { ...UPDATE_INFO_FIXTURE, asset: { ...UPDATE_INFO_FIXTURE.asset, name: 7 } }],
+    ['onUpdateAvailable', IPC.UPDATE_AVAILABLE, { ...UPDATE_INFO_FIXTURE, asset: { ...UPDATE_INFO_FIXTURE.asset, size: '1234' } }],
     ['onPlayerFrame', IPC.PLAYER_FRAME, { data: new ArrayBuffer(0), width: 1, height: 1, pts: 0 }],
     ['onPlayerAudio', IPC.PLAYER_AUDIO, { data: 'not-an-ArrayBuffer', sampleRate: 48000, channels: 2, generation: 0 }],
     ['onPlayerError', IPC.PLAYER_ERROR, { message: 'decoder crashed' }],

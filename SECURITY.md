@@ -2,12 +2,12 @@
 
 ## Supported Versions
 
-EncodeX is currently in pre-release. The current version is `1.0.0-beta.7`, and there is no stable `1.0` release yet. Security fixes are released on the current pre-release line only.
+EncodeX is currently in pre-release. The current version is `1.0.0-beta.8`, and there is no stable `1.0` release yet. Security fixes are released on the current pre-release line only.
 
 | Version                     | Supported                                                |
 | --------------------------- | -------------------------------------------------------- |
-| 1.0.0-beta.7 (current)      | Yes — receives security fixes                            |
-| 1.0.0-beta.0 – 1.0.0-beta.5 | No — no longer supported, upgrade to the current release |
+| 1.0.0-beta.8 (current)      | Yes — receives security fixes                            |
+| 1.0.0-beta.0 – 1.0.0-beta.7 | No — no longer supported, upgrade to the current release |
 | 1.0.0 (stable)              | Not yet released                                         |
 
 Older beta lines are no longer supported and will not receive fixes. If you find a vulnerability in an unsupported version, please report it anyway — we may still be able to tell you whether the issue is fixed in the current release.
@@ -28,7 +28,7 @@ If private reporting is unavailable to you, you may email <developer@encodex.in>
 
 A good report helps us triage quickly. Please include:
 
-- **Affected version** — the exact EncodeX version (e.g. `1.0.0-beta.7`) and, if relevant, the commit or build you are running.
+- **Affected version** — the exact EncodeX version (e.g. `1.0.0-beta.8`) and, if relevant, the commit or build you are running.
 - **Environment** — operating system and version, architecture, and how EncodeX was installed.
 - **Reproduction steps** — clear, step-by-step instructions that we can follow to reproduce the issue, including the input files or commands involved.
 - **Impact** — what an attacker can achieve (e.g. arbitrary file read/write, code execution, information disclosure) and what access is required.
