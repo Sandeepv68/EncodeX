@@ -13,6 +13,7 @@ import {
   faPlus,
   faTrash,
   faUpload,
+  faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { ToolbarRow } from '../../styles/Automations.styles';
 import type { AutomationToolbarProps } from './Automation.types';
@@ -34,6 +35,8 @@ export default function AutomationToolbar({
   onExport,
   onSelectInput,
   onRun,
+  isRunning,
+  onCancel,
 }: AutomationToolbarProps) {
   const { t } = useTranslation();
   return (
@@ -98,6 +101,16 @@ export default function AutomationToolbar({
       </Button>
       <Button size="small" variant="contained" startIcon={<FontAwesomeIcon icon={faPlay} />} onClick={onRun} disabled={!hasDefinition}>
         {t('automations.run')}
+      </Button>
+      <Button
+        size="small"
+        variant="outlined"
+        color="error"
+        startIcon={<FontAwesomeIcon icon={faXmark} />}
+        onClick={onCancel}
+        disabled={!isRunning || !hasDefinition}
+      >
+        {t('automations.cancelRun')}
       </Button>
       <Chip
         size="small"

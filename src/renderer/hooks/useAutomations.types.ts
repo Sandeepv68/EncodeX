@@ -1,4 +1,4 @@
-import type { AutomationDefinition } from '../../shared/automations/types';
+import type { AutomationDefinition, AutomationMediaKind, AutomationRuntime } from '../../shared/automations/types';
 import type { AutomationState } from '../stores/types';
 
 export type UseAutomationsResult = Omit<
@@ -21,6 +21,9 @@ export type UseAutomationsResult = Omit<
   importAutomation: () => Promise<AutomationDefinition | null>;
   exportAutomation: (id: string) => Promise<string | null>;
   selectInput: () => Promise<void>;
-  run: () => Promise<string | null>;
+  selectRuntimeInput: () => Promise<AutomationMediaKind | null>;
+  probeInput: (pathOverride?: string) => Promise<AutomationMediaKind | null>;
+  run: (override?: Partial<AutomationRuntime>) => Promise<string | null>;
+  rerun: () => Promise<string | null>;
   cancel: (runId: string) => Promise<boolean>;
 };

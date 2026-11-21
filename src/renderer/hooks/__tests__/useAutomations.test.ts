@@ -12,12 +12,16 @@ import {
 } from '../../../shared/automations/defaults';
 import { AUTOMATION_KIND, AUTOMATION_RUN_STATUS } from '../../../shared/automations/types';
 import type { AutomationBackend, AutomationDefinition, AutomationProgressEvent } from '../../../shared/automations/types';
+import type { MediaInfo } from '../../../shared/types';
 
 const automationStartMock = vi.mocked(window.electronAPI.automationStart);
 const automationCancelMock = vi.mocked(window.electronAPI.automationCancel);
 const onAutomationStatusMock = vi.mocked(window.electronAPI.onAutomationStatus);
 const onAutomationProgressMock = vi.mocked(window.electronAPI.onAutomationProgress);
 const onAutomationEventMock = vi.mocked(window.electronAPI.onAutomationEvent);
+const getMediaInfoMock = vi.mocked(window.electronAPI.getMediaInfo);
+const getBmfStatusMock = vi.mocked(window.electronAPI.getBmfStatus);
+const selectFileMock = vi.mocked(window.electronAPI.selectFile);
 
 function validDefinition(): AutomationDefinition {
   const definition = createAutomationDefinition('auto-1', 'Alpha', 1);
@@ -57,6 +61,10 @@ function event(overrides: Partial<AutomationProgressEvent> = {}): AutomationProg
   };
 }
 
+function mediaInfo(streams: MediaInfo['streams']): MediaInfo {
+  return { file: '/in.mp4', format: 'mp4', size: 1024, duration: 60, bitrate: '1000k', streams };
+}
+
 function hasToast(message: string): boolean {
   return useToastStore.getState().toasts.some((toast) => toast.message === message);
 }
@@ -72,6 +80,9 @@ describe('useAutomations runtime bridge', () => {
       isDirty: false,
       isInitialized: false,
       runs: {},
+      runtimeInputPath: null,
+      detectedMediaKind: null,
+      selectedRunId: null,
       backendStatus: AUTOMATION_BACKENDS.reduce<Record<AutomationBackend, boolean>>(
         (status, backend) => ({ ...status, [backend]: true }),
         {} as Record<AutomationBackend, boolean>,
@@ -84,6 +95,9 @@ describe('useAutomations runtime bridge', () => {
     onAutomationStatusMock.mockReturnValue(vi.fn());
     onAutomationProgressMock.mockReturnValue(vi.fn());
     onAutomationEventMock.mockReturnValue(vi.fn());
+    getMediaInfoMock.mockReset().mockResolvedValue(mediaInfo([{ index: 0, type: 'video', codec: 'h264' }]));
+    getBmfStatusMock.mockReset().mockResolvedValue({ available: true, missing: [] });
+    selectFileMock.mockReset().mockResolvedValue(null);
   });
 
   it('subscribes to all automation push channels and cleans them up on unmount', () => {
@@ -213,5 +227,77 @@ describe('useAutomations runtime bridge', () => {
     } finally {
       api.automationStart = original;
     }
+  });
+
+  it('probes the active input and stores the inferred media kind', async () => {
+    useAutomationStore.setState({ activeDefinition: validDefinition() });
+    const { result } = renderHook(() => useAutomations());
+    let kind: string | null = null;
+
+    await act(async () => {
+      kind = await result.current.probeInput();
+    });
+
+    expect(kind).toBe('video');
+    expect(getMediaInfoMock).toHaveBeenCalledWith('/in.mp4', 'FFMPEG');
+    expect(useAutomationStore.getState().detectedMediaKind).toBe('video');
+    expect(hasToast('automations.inputProbed')).toBe(true);
+  });
+
+  it('uses runtime overrides for input path and media kind', async () => {
+    useAutomationStore.setState({
+      activeDefinition: validDefinition(),
+      runtimeInputPath: '/override.png',
+      detectedMediaKind: 'image',
+    });
+    const { result } = renderHook(() => useAutomations());
+
+    await act(async () => {
+      await result.current.run();
+    });
+
+    expect(automationStartMock).toHaveBeenCalledWith({
+      definition: expect.objectContaining({ id: 'auto-1' }),
+      runtime: expect.objectContaining({ inputPath: '/override.png', mediaKind: 'image' }),
+    });
+  });
+
+  it('selects a runtime input file and probes it', async () => {
+    selectFileMock.mockResolvedValue('/override.mov');
+    getMediaInfoMock.mockResolvedValue(mediaInfo([{ index: 0, type: 'video', codec: 'h264' }]));
+    useAutomationStore.setState({ activeDefinition: validDefinition() });
+    const { result } = renderHook(() => useAutomations());
+
+    await act(async () => {
+      await result.current.selectRuntimeInput();
+    });
+
+    expect(selectFileMock).toHaveBeenCalled();
+    expect(useAutomationStore.getState().runtimeInputPath).toBe('/override.mov');
+    expect(useAutomationStore.getState().detectedMediaKind).toBe('video');
+  });
+
+  it('clears stale media detection when a probe fails', async () => {
+    getMediaInfoMock.mockRejectedValue(new Error('probe failed'));
+    useAutomationStore.setState({ activeDefinition: validDefinition(), detectedMediaKind: 'image' });
+    const { result } = renderHook(() => useAutomations());
+
+    await act(async () => {
+      await result.current.probeInput();
+    });
+
+    expect(useAutomationStore.getState().detectedMediaKind).toBeNull();
+    expect(hasToast('automations.probeFailed')).toBe(true);
+  });
+
+  it('applies backend availability during initialization', async () => {
+    getBmfStatusMock.mockResolvedValue({ available: false, missing: ['bmf'] });
+    const { result } = renderHook(() => useAutomations());
+
+    await act(async () => {
+      await result.current.initialize();
+    });
+
+    expect(useAutomationStore.getState().backendStatus.BMF).toBe(false);
   });
 });

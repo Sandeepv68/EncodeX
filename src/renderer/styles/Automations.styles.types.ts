@@ -9,3 +9,7 @@ export interface AutomationStatusProps {
 export interface KindBadgeProps {
   $code?: AutomationIssueCode;
 }
+
+export interface RunDetailProps {
+  $error?: boolean;
+}

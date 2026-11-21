@@ -1,6 +1,6 @@
 # Automations Feature Plan — Visual Media Pipelines for EncodeX
 
-> **Status:** In progress — Phase 0, Phase 1, Phase 2, and Phase 3 implemented (runtime engine complete); Phase 4 not started
+> **Status:** In progress — Phases 0 through 4 implemented (run UX complete); Phase 5 not started
 > **Last updated:** 2026-11-21
 > **Owner:** EncodeX core
 > **Related docs:** [`ARCHITECTURE.md`](ARCHITECTURE.md), [`ARCHITECTURE_PROCESSES.md`](ARCHITECTURE_PROCESSES.md), [`ARCHITECTURE_RENDERER.md`](ARCHITECTURE_RENDERER.md), [`ARCHITECTURE_TRANSCODERS.md`](ARCHITECTURE_TRANSCODERS.md), [`IPC.md`](IPC.md), [`FEATURES.md`](FEATURES.md), [`TESTING.md`](TESTING.md), [`PROJECT_STRUCTURE.md`](PROJECT_STRUCTURE.md)
@@ -15,7 +15,7 @@
 | Phase 1 — Page shell and static editor | **Complete** | `/automations` route/nav/icon/skeleton/i18n and React Flow editor implemented with in-memory store, palette/canvas/inspector/toolbar/stage list/run panel/library drawer, validation display, and local run placeholder. |
 | Phase 2 — Save/load library | **Complete** | Persisted definition library with seven IPC channels, atomic JSON storage plus backup recovery, bounded schema validation, native import/export, Save As/Duplicate, dirty state, and toast feedback. |
 | Phase 3 — Runtime engine | **Complete** | Sequential main-process runner, FFmpeg/FFTool/BMF step execution, five runtime IPC channels, progress/status events, cancellation, run-scoped temp files, and renderer start/cancel wiring. |
-| Phase 4 — Run UX and cascading stages | Not started | — |
+| Phase 4 — Run UX and cascading stages | **Complete** | Interactive run console with bounded history, stage timeline, node badges, error/output details, cancel/rerun, runtime input override, media probing, and media-aware operation filtering. |
 | Phase 5 — Hardening and release | Not started | — |
 
 ### Phase 0 notes and deviations
@@ -59,6 +59,16 @@
 - Strengthened `isAutomationProgressEvent` to reject wrong-typed `message`, `error`, and `outputPath` fields in addition to routing keys, status, progress, and `stageId`.
 - `npm run sync:locales` added 5 keys per locale; `validate:locale-usage` reports 1254 base keys with 0 unused and 0 unknown keys, and `validate:locales` reports 55 locales matching en-US.
 - Verification completed for Phase 3: `npm run format:check`, `npm run lint`, `npm run lint:types`, `npm run validate:locale-usage`, `npm run validate:locales`, `npm run typecheck`, `npm test -- --reporter=default` (**374 files / 5513 tests passing**), `npm run audit:gate`, `npm run doc:drift` (facts: 26, doc files: 168, markers: 629), and `git diff --check` all pass.
+
+### Phase 4 notes and deviations
+
+- Expanded `AutomationRunState` with automation metadata, timestamps, stage statuses, output/error details, runtime input path, and a bounded event log; run history is capped at 20 entries and logs at 80 entries.
+- Added a selected-run model so the canvas, stage list, and run console share one view of the active run instead of reading the first record in the store.
+- Added runtime input override and media probing through the existing `getMediaInfo` bridge; inferred media kind revalidates the graph and filters incompatible operations from the palette.
+- Backend availability is refreshed from `getBmfStatus` during initialization, and the inspector disables unavailable backends while preserving the node's current backend value.
+- Added cancel/rerun controls in both the toolbar and run console, plus history selection and clearing; persisted history remains deferred to Phase 5.
+- `npm run sync:locales` added 21 keys per locale; `validate:locale-usage` reports 1275 base keys with 0 unused and 0 unknown keys, and `validate:locales` reports 55 locales matching en-US.
+- Verification completed for Phase 4: `npm run format:check`, `npm run lint`, `npm run lint:types`, `npm run validate:locale-usage`, `npm run validate:locales`, `npm run typecheck`, `npm test -- --reporter=default` (**374 files / 5527 tests passing**), `npm run audit:gate`, `npm run doc:drift` (facts: 26, doc files: 168, markers: 629), and `git diff --check` all pass.
 
 ---
 
@@ -689,12 +699,12 @@ npm run build
 
 **Exit criteria:** a two-stage pipeline executes end to end with progress events.
 
-### Phase 4 — Run UX and cascading stages
+### Phase 4 — Run UX and cascading stages ✅ Complete
 
-- Wire node badges, stage timeline, run console, error details.
-- Add runtime file picker override.
-- Add dynamic operation filtering based on probed input media.
-- Add rerun, cancel, and run history.
+- [x] Wire node badges, stage timeline, run console, error details.
+- [x] Add runtime file picker override.
+- [x] Add dynamic operation filtering based on probed input media.
+- [x] Add rerun, cancel, and run history.
 
 **Exit criteria:** users can build, run, monitor, and rerun staged automations fully in the UI.
 

@@ -16,11 +16,27 @@ import { bridgePromise } from '../utils/bridge-call';
 import { openFileDialog } from '../utils/fileDialog';
 import { AUTOMATION_BACKENDS } from '../../shared/automations/defaults';
 import { AUTOMATION_KIND, AUTOMATION_RUN_STATUS } from '../../shared/automations/types';
-import type { AutomationProgressEvent, AutomationRuntime, AutomationStartRequest } from '../../shared/automations/types';
+import type {
+  AutomationMediaKind,
+  AutomationProgressEvent,
+  AutomationRuntime,
+  AutomationStartRequest,
+} from '../../shared/automations/types';
+import { validateAutomation } from '../../shared/automations/validate';
+import { isImageFile } from '../../shared/file-extensions';
+import type { MediaInfo } from '../../shared/types';
 import type { UseAutomationsResult } from './useAutomations.types';
 
 const MAX_PENDING_RUN_EVENTS = 64;
 const MAX_PENDING_RUN_IDS = 16;
+
+function inferAutomationMediaKind(info: MediaInfo, path: string): AutomationMediaKind {
+  if (isImageFile(path)) return 'image';
+  const streams = (info.streams ?? []).filter((stream) => !stream.disposition?.includes('attached_pic'));
+  if (streams.some((stream) => stream.type === 'video')) return 'video';
+  if (streams.some((stream) => stream.type === 'audio')) return 'audio';
+  return 'unknown';
+}
 
 /** Hook used by the Automations page and its child components. */
 export function useAutomations(): UseAutomationsResult {
@@ -61,8 +77,8 @@ export function useAutomations(): UseAutomationsResult {
   }, []);
 
   const startRun = useCallback(
-    (runId: string) => {
-      useAutomationStore.getState().startRun(runId);
+    (runId: string, automationId?: string, automationName?: string) => {
+      useAutomationStore.getState().startRun(runId, automationId, automationName);
       flushPendingRunEvents(runId);
     },
     [flushPendingRunEvents],
@@ -94,7 +110,16 @@ export function useAutomations(): UseAutomationsResult {
     };
   }, [applyRunEvent, flushPendingRunEvents]);
 
-  const initialize = useCallback(() => useAutomationStore.getState().initialize(), []);
+  const initialize = useCallback(async () => {
+    const definitions = await useAutomationStore.getState().initialize();
+    try {
+      const status = await window.electronAPI?.getBmfStatus?.();
+      if (status) useAutomationStore.getState().setBackendStatus('BMF', status.available);
+    } catch {
+      useAutomationStore.getState().setBackendStatus('BMF', false);
+    }
+    return definitions;
+  }, []);
 
   const save = useCallback(async () => {
     const saved = await useAutomationStore.getState().saveAutomation();
@@ -160,57 +185,107 @@ export function useAutomations(): UseAutomationsResult {
     [showSuccess, showToastError, t],
   );
 
+  const probeInput = useCallback(
+    async (pathOverride?: string) => {
+      const current = useAutomationStore.getState();
+      const input = current.activeDefinition?.graph.nodes.find((node) => node.kind === AUTOMATION_KIND.INPUT);
+      const path = pathOverride ?? current.runtimeInputPath ?? (input?.data.kind === AUTOMATION_KIND.INPUT ? input.data.path : undefined);
+      if (!path) {
+        current.setDetectedMediaKind(null);
+        showWarning(t('automations.probeNoInput'));
+        return null;
+      }
+      const probe = window.electronAPI?.getMediaInfo;
+      if (!probe) {
+        current.setDetectedMediaKind(null);
+        showToastError(t('automations.probeUnavailable'));
+        return null;
+      }
+      try {
+        const info = await bridgePromise(() => probe(path, 'FFMPEG'));
+        const kind = inferAutomationMediaKind(info, path);
+        useAutomationStore.getState().setDetectedMediaKind(kind);
+        showSuccess(t('automations.inputProbed'));
+        return kind;
+      } catch (err) {
+        useAutomationStore.getState().setDetectedMediaKind(null);
+        showToastError(t('automations.probeFailed'));
+        showAppError(err);
+        return null;
+      }
+    },
+    [showAppError, showSuccess, showToastError, showWarning, t],
+  );
+
   const selectInput = useCallback(async () => {
     const path = await openFileDialog();
     if (!path) return;
     const current = useAutomationStore.getState();
+    current.setRuntimeInputPath(null);
+    current.setDetectedMediaKind(null);
     const input = current.activeDefinition?.graph.nodes.find((node) => node.kind === AUTOMATION_KIND.INPUT);
     if (!input) return;
     current.updateNode(input.id, { data: { kind: AUTOMATION_KIND.INPUT, path } });
-  }, []);
+    await probeInput(path);
+  }, [probeInput]);
 
-  const run = useCallback(async () => {
-    const current = useAutomationStore.getState();
-    const definition = current.activeDefinition;
-    if (!definition) {
-      showWarning(t('automations.runNoDefinition'));
-      return null;
-    }
-    const issues = current.validate();
-    if (issues.length > 0) {
-      showWarning(t('automations.validationFailed', { count: issues.length }));
-      return null;
-    }
-    const invoke = window.electronAPI?.automationStart;
-    if (!invoke) {
-      const message = t('automations.runUnavailable');
-      showToastError(message);
-      showAppError(new Error(message));
-      return null;
-    }
-    const input = definition.graph.nodes.find((node) => node.kind === AUTOMATION_KIND.INPUT);
-    const output = definition.graph.nodes.find((node) => node.kind === AUTOMATION_KIND.OUTPUT);
-    const runtime: AutomationRuntime = {
-      inputPath: input?.data.kind === AUTOMATION_KIND.INPUT ? input.data.path : undefined,
-      outputPath: output?.data.kind === AUTOMATION_KIND.OUTPUT ? output.data.path : undefined,
-      mediaKind: input?.data.kind === AUTOMATION_KIND.INPUT ? input.data.mediaKind : undefined,
-      availableBackends: AUTOMATION_BACKENDS.filter((backend) => current.backendStatus[backend]),
-    };
-    const request: AutomationStartRequest = { definition, runtime };
-    try {
-      const runId = await bridgePromise(() => invoke(request));
-      if (typeof runId !== 'string' || runId.length === 0) {
-        throw new Error(t('automations.runFailed'));
+  const selectRuntimeInput = useCallback(async () => {
+    const path = await openFileDialog();
+    if (!path) return null;
+    useAutomationStore.getState().setRuntimeInputPath(path);
+    return probeInput(path);
+  }, [probeInput]);
+
+  const run = useCallback(
+    async (override: Partial<AutomationRuntime> = {}) => {
+      const current = useAutomationStore.getState();
+      const definition = current.activeDefinition;
+      if (!definition) {
+        showWarning(t('automations.runNoDefinition'));
+        return null;
       }
-      startRun(runId);
-      showInfo(t('automations.runQueued'));
-      return runId;
-    } catch (err) {
-      showToastError(t('automations.runFailed'));
-      showAppError(err);
-      return null;
-    }
-  }, [showAppError, showInfo, showToastError, showWarning, startRun, t]);
+      const input = definition.graph.nodes.find((node) => node.kind === AUTOMATION_KIND.INPUT);
+      const output = definition.graph.nodes.find((node) => node.kind === AUTOMATION_KIND.OUTPUT);
+      const nodeMediaKind = input?.data.kind === AUTOMATION_KIND.INPUT ? input.data.mediaKind : undefined;
+      const runtime: AutomationRuntime = {
+        inputPath: current.runtimeInputPath ?? (input?.data.kind === AUTOMATION_KIND.INPUT ? input.data.path : undefined),
+        outputPath: output?.data.kind === AUTOMATION_KIND.OUTPUT ? output.data.path : undefined,
+        mediaKind: current.detectedMediaKind ?? (nodeMediaKind && nodeMediaKind !== 'unknown' ? nodeMediaKind : undefined),
+        availableBackends: AUTOMATION_BACKENDS.filter((backend) => current.backendStatus[backend]),
+        ...override,
+      };
+      const issues = validateAutomation(definition, runtime);
+      useAutomationStore.setState({ validationIssues: issues });
+      if (issues.length > 0) {
+        showWarning(t('automations.validationFailed', { count: issues.length }));
+        return null;
+      }
+      const invoke = window.electronAPI?.automationStart;
+      if (!invoke) {
+        const message = t('automations.runUnavailable');
+        showToastError(message);
+        showAppError(new Error(message));
+        return null;
+      }
+      const request: AutomationStartRequest = { definition, runtime };
+      try {
+        const runId = await bridgePromise(() => invoke(request));
+        if (typeof runId !== 'string' || runId.length === 0) {
+          throw new Error(t('automations.runFailed'));
+        }
+        startRun(runId, definition.id, definition.name);
+        showInfo(t('automations.runQueued'));
+        return runId;
+      } catch (err) {
+        showToastError(t('automations.runFailed'));
+        showAppError(err);
+        return null;
+      }
+    },
+    [showAppError, showInfo, showToastError, showWarning, startRun, t],
+  );
+
+  const rerun = useCallback(() => run(), [run]);
 
   const cancel = useCallback(
     async (runId: string) => {
@@ -258,8 +333,11 @@ export function useAutomations(): UseAutomationsResult {
     importAutomation: importDefinition,
     exportAutomation: exportDefinition,
     selectInput,
+    selectRuntimeInput,
+    probeInput,
     startRun,
     run,
+    rerun,
     cancel,
   };
 }

@@ -14,6 +14,7 @@ import { ReactFlowProvider } from '@xyflow/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDiagramProject } from '@fortawesome/free-solid-svg-icons';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
+import { AUTOMATION_RUN_STATUS } from '../../shared/automations/types';
 import PageContainer from '../components/PageContainer';
 import AutomationCanvas from '../components/automations/AutomationCanvas';
 import AutomationInspector from '../components/automations/AutomationInspector';
@@ -23,7 +24,7 @@ import AutomationRunPanel from '../components/automations/AutomationRunPanel';
 import AutomationStageList from '../components/automations/AutomationStageList';
 import AutomationToolbar from '../components/automations/AutomationToolbar';
 import { useAutomations } from '../hooks/useAutomations';
-import { useAutomationStore } from '../stores/automationStore';
+import { latestAutomationRun, useAutomationStore } from '../stores/automationStore';
 import { EditorGrid, EditorLayout } from '../styles/Automations.styles';
 
 /** Renders the `/automations` route. */
@@ -47,7 +48,13 @@ export default function Automations() {
     exportAutomation,
     selectInput,
     run,
+    rerun,
+    probeInput,
+    selectRuntimeInput,
+    cancel,
   } = useAutomations();
+  const latestRun = useAutomationStore(latestAutomationRun);
+  const isRunning = latestRun?.status === AUTOMATION_RUN_STATUS.RUNNING || latestRun?.status === AUTOMATION_RUN_STATUS.QUEUED;
 
   useEffect(() => {
     let cancelled = false;
@@ -92,6 +99,8 @@ export default function Automations() {
           onExport={() => activeDefinition && void exportAutomation(activeDefinition.id)}
           onSelectInput={() => void selectInput()}
           onRun={run}
+          isRunning={isRunning}
+          onCancel={() => latestRun && void cancel(latestRun.runId)}
         />
         <EditorGrid>
           <AutomationNodePalette />
@@ -101,7 +110,12 @@ export default function Automations() {
           <AutomationStageList />
         </EditorGrid>
         <AutomationInspector />
-        <AutomationRunPanel />
+        <AutomationRunPanel
+          onCancel={(runId) => void cancel(runId)}
+          onRerun={() => void rerun()}
+          onProbeInput={(path) => void probeInput(path)}
+          onSelectRuntimeInput={() => void selectRuntimeInput()}
+        />
       </EditorLayout>
       <AutomationLibraryDrawer open={libraryOpen} onClose={() => setLibraryOpen(false)} />
       <Dialog open={saveAsOpen} onClose={() => setSaveAsOpen(false)} aria-labelledby="automation-save-as-title" fullWidth maxWidth="xs">

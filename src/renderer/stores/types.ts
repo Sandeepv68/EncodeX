@@ -53,6 +53,7 @@ import type {
   AutomationDefinition,
   AutomationEdge,
   AutomationIssue,
+  AutomationMediaKind,
   AutomationNode,
   AutomationNodeKind,
   AutomationPosition,
@@ -275,6 +276,9 @@ export interface AutomationState {
   isDirty: boolean;
   isInitialized: boolean;
   runs: Record<string, AutomationRunState>;
+  runtimeInputPath: string | null;
+  detectedMediaKind: AutomationMediaKind | null;
+  selectedRunId: string | null;
   backendStatus: Record<AutomationBackend, boolean>;
   setDefinitions: (definitions: AutomationDefinition[]) => void;
   initialize: () => Promise<AutomationDefinition[]>;
@@ -297,7 +301,11 @@ export interface AutomationState {
   renameStage: (id: string, name: string) => void;
   validate: () => AutomationIssue[];
   setBackendStatus: (backend: AutomationBackend, available: boolean) => void;
-  startRun: (runId: string) => void;
+  setRuntimeInputPath: (path: string | null) => void;
+  setDetectedMediaKind: (mediaKind: AutomationMediaKind | null) => void;
+  selectRun: (runId: string | null) => void;
+  clearRuns: () => void;
+  startRun: (runId: string, automationId?: string, automationName?: string) => void;
   updateRun: (event: AutomationProgressEvent) => void;
 }
 

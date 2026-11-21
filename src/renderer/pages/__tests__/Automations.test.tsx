@@ -7,9 +7,19 @@ import { useToastStore } from '../../stores/toastStore';
 import { createAutomationDefinition, createAutomationEdge, createAutomationNode } from '../../../shared/automations/defaults';
 import { AUTOMATION_KIND, AUTOMATION_RUN_STATUS } from '../../../shared/automations/types';
 import type { AutomationDefinition } from '../../../shared/automations/types';
+import type { MediaInfo } from '../../../shared/types';
 
 const electronApi = window.electronAPI as unknown as Record<string, unknown>;
 const originalMethods = { ...electronApi };
+const getMediaInfoMock = vi.mocked(window.electronAPI.getMediaInfo);
+const defaultMediaInfo: MediaInfo = {
+  file: '/in.mp4',
+  format: 'mp4',
+  size: 100,
+  duration: 5,
+  bitrate: '100k',
+  streams: [{ index: 0, type: 'video', codec: 'h264' }],
+};
 
 function definition(id: string, name: string): AutomationDefinition {
   return createAutomationDefinition(id, name, 1);
@@ -59,6 +69,9 @@ describe('Automations page', () => {
       isDirty: false,
       isInitialized: false,
       runs: {},
+      runtimeInputPath: null,
+      detectedMediaKind: null,
+      selectedRunId: null,
     });
     useToastStore.setState({ toasts: [] });
     bridge().automationList = vi.fn().mockResolvedValue([]);
@@ -78,6 +91,7 @@ describe('Automations page', () => {
       if (!(key in originalMethods)) delete current[key];
     }
     Object.assign(current, originalMethods);
+    getMediaInfoMock.mockReset().mockResolvedValue(defaultMediaInfo);
   });
 
   it('renders the editor shell and creates an empty definition', async () => {
@@ -218,6 +232,98 @@ describe('Automations page', () => {
     await waitFor(() => expect(start).toHaveBeenCalledWith(expect.objectContaining({ definition: expect.any(Object) })));
     await waitFor(() => expect(useAutomationStore.getState().runs['run-page']?.status).toBe(AUTOMATION_RUN_STATUS.QUEUED));
     expect(hasToast('automations.runQueued')).toBe(true);
+  });
+
+  it('cancels and reruns from the run console', async () => {
+    const start = vi.fn().mockResolvedValue('run-page');
+    const cancel = vi.fn().mockResolvedValue(true);
+    bridge().automationStart = start;
+    bridge().automationCancel = cancel;
+    useAutomationStore.setState({ activeDefinition: runnableDefinition() });
+    renderPage('Automations');
+
+    fireEvent.click(screen.getByRole('button', { name: 'automations.run' }));
+    await waitFor(() => expect(useAutomationStore.getState().runs['run-page']?.status).toBe(AUTOMATION_RUN_STATUS.QUEUED));
+    fireEvent.click(screen.getAllByRole('button', { name: 'automations.cancelRun' })[0]);
+    await waitFor(() => expect(cancel).toHaveBeenCalledWith('run-page'));
+    fireEvent.click(screen.getByRole('button', { name: 'automations.rerun' }));
+    await waitFor(() => expect(start).toHaveBeenCalledTimes(2));
+  });
+
+  it('probes the runtime input from the run console', async () => {
+    const info: MediaInfo = {
+      file: '/override.mov',
+      format: 'mov',
+      size: 100,
+      duration: 5,
+      bitrate: '100k',
+      streams: [{ index: 0, type: 'video', codec: 'h264' }],
+    };
+    getMediaInfoMock.mockResolvedValue(info);
+    useAutomationStore.setState({
+      activeDefinition: runnableDefinition(),
+      runtimeInputPath: '/override.mov',
+    });
+    renderPage('Automations');
+
+    fireEvent.click(screen.getByRole('button', { name: 'automations.probeInput' }));
+    await waitFor(() => expect(getMediaInfoMock).toHaveBeenCalledWith('/override.mov', 'FFMPEG'));
+    expect(useAutomationStore.getState().detectedMediaKind).toBe('video');
+  });
+
+  it('shows run history details, stage timeline, and events', async () => {
+    const definition = runnableDefinition();
+    const stageId = definition.id;
+    useAutomationStore.setState({
+      activeDefinition: definition,
+      selectedRunId: 'run-history',
+      runs: {
+        'run-history': {
+          runId: 'run-history',
+          automationId: definition.id,
+          automationName: 'Alpha',
+          startedAt: 1,
+          updatedAt: 2,
+          status: AUTOMATION_RUN_STATUS.FAILED,
+          progress: 75,
+          runtimeInputPath: '/in.mp4',
+          outputPath: '/out.mp4',
+          error: 'boom',
+          nodeStatuses: {},
+          stageStatuses: { [stageId]: AUTOMATION_RUN_STATUS.FAILED },
+          events: [
+            {
+              timestamp: 2,
+              status: AUTOMATION_RUN_STATUS.FAILED,
+              message: 'step failed',
+              nodeId: 'n1',
+              stageId,
+            },
+          ],
+        },
+      },
+    });
+    renderPage('Automations');
+    await waitFor(() => expect(useAutomationStore.getState().isInitialized).toBe(true));
+
+    expect(screen.getByText('automations.stageTimeline')).toBeInTheDocument();
+    expect(screen.getByText('automations.runEvents')).toBeInTheDocument();
+    expect(screen.getByText('/out.mp4')).toBeInTheDocument();
+    expect(screen.getByText('boom')).toBeInTheDocument();
+    expect(screen.getByText('step failed')).toBeInTheDocument();
+  });
+
+  it('filters palette operations by the selected media kind', async () => {
+    const definition = runnableDefinition();
+    const input = definition.graph.nodes.find((node) => node.kind === AUTOMATION_KIND.INPUT);
+    if (input?.data.kind === AUTOMATION_KIND.INPUT) input.data.mediaKind = 'audio';
+    useAutomationStore.setState({ activeDefinition: definition });
+    renderPage('Automations');
+    await waitFor(() => expect(useAutomationStore.getState().isInitialized).toBe(true));
+
+    expect(screen.getByRole('button', { name: 'automations.node.input' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'automations.node.compressImage' })).not.toBeInTheDocument();
+    expect(screen.getByText('automations.paletteFilteredHint')).toBeInTheDocument();
   });
 
   it('deletes a definition from the library', async () => {

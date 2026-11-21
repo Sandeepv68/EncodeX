@@ -1431,6 +1431,27 @@
     "runUnavailable": "Automation execution is not available in this build",
     "runFailed": "Could not start the automation run",
     "cancelUnavailable": "Automation cancellation is not available in this build",
-    "cancelFailed": "Could not cancel the automation run"
+    "cancelFailed": "Could not cancel the automation run",
+    "runtimeInputPath": "Runtime input path",
+    "browse": "Browse",
+    "probeInput": "Probe",
+    "probeHint": "Probe the runtime input to detect its media kind.",
+    "inputProbed": "Input media kind detected",
+    "probeFailed": "Could not probe the selected input",
+    "probeUnavailable": "Media probing is not available in this build",
+    "probeNoInput": "Select an input before probing",
+    "runHistory": "Run history",
+    "noRunHistory": "No runs yet",
+    "cancelRun": "Cancel run",
+    "rerun": "Rerun",
+    "clearHistory": "Clear history",
+    "stageTimeline": "Stage timeline",
+    "runEvents": "Run events",
+    "noRunEvents": "No run events yet",
+    "outputPath": "Output path",
+    "error": "Error",
+    "detectedMediaKind": "Detected media kind: {{mediaKind}}",
+    "paletteFilteredHint": "Showing operations compatible with {{mediaKind}}.",
+    "noStages": "No stages yet."
   }
 }

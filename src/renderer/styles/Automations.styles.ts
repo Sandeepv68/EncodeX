@@ -10,7 +10,7 @@ import { Box, Button, Paper, Stack, Typography, Chip, LinearProgress } from '@mu
 import type { Theme } from '@mui/material/styles';
 import type { AutomationRunStatus } from '../../shared/automations/types';
 import { AUTOMATION_RUN_STATUS } from '../../shared/automations/types';
-import type { AutomationStatusProps, KindBadgeProps } from './Automations.styles.types';
+import type { AutomationStatusProps, KindBadgeProps, RunDetailProps } from './Automations.styles.types';
 
 /** Resolves a run status to a palette colour. */
 export function statusColor(theme: Theme, status?: AutomationRunStatus): string {
@@ -189,4 +189,66 @@ export const KindBadge = styled(Typography, {
 })<KindBadgeProps>(({ theme }) => ({
   color: theme.palette.text.secondary,
   fontSize: theme.typography.pxToRem(11),
+}));
+
+/** Vertical grouping inside the run console. */
+export const ConsoleSection = styled(Stack)(({ theme }) => ({
+  gap: theme.spacing(0.75),
+}));
+
+/** Horizontal run-action row. */
+export const RunControlRow = styled(Stack)(({ theme }) => ({
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  alignItems: 'center',
+  gap: theme.spacing(1),
+}));
+
+/** Runtime override field with its adjacent action buttons. */
+export const RuntimeInputRow = styled(Stack)(({ theme }) => ({
+  flexDirection: 'row',
+  alignItems: 'center',
+  gap: theme.spacing(1),
+  [theme.breakpoints.down('sm')]: {
+    flexDirection: 'column',
+    alignItems: 'stretch',
+  },
+}));
+
+/** One stage/status pair in the run timeline. */
+export const TimelineRow = styled(Stack)(({ theme }) => ({
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: theme.spacing(1),
+  paddingBlock: theme.spacing(0.5),
+  borderBottom: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
+}));
+
+/** Named run detail such as output path or failure text. */
+export const DetailRow = styled(Stack, {
+  shouldForwardProp: (prop) => prop !== '$error',
+})<RunDetailProps>(({ theme, $error }) => ({
+  flexDirection: 'row',
+  alignItems: 'flex-start',
+  gap: theme.spacing(1),
+  color: $error ? theme.palette.error.main : theme.palette.text.primary,
+  fontSize: theme.typography.pxToRem(12),
+}));
+
+/** One timestamped entry in the run event log. */
+export const EventRow = styled(Stack)(({ theme }) => ({
+  flexDirection: 'row',
+  alignItems: 'flex-start',
+  gap: theme.spacing(1),
+  paddingBlock: theme.spacing(0.5),
+  borderBottom: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
+}));
+
+/** Monospaced timestamp column in the event log. */
+export const EventTime = styled(Typography)(({ theme }) => ({
+  fontFamily: 'monospace',
+  fontSize: theme.typography.pxToRem(11),
+  color: theme.palette.text.secondary,
+  whiteSpace: 'nowrap',
 }));

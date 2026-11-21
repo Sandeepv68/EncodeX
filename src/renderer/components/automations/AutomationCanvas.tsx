@@ -6,7 +6,7 @@ import { Background, Controls, MiniMap, ReactFlow, useReactFlow } from '@xyflow/
 import type { Edge, NodeTypes, OnConnect, OnEdgesChange, OnNodesChange } from '@xyflow/react';
 import { useTranslation } from 'react-i18next';
 import { CanvasSurface } from '../../styles/Automations.styles';
-import { useAutomationStore } from '../../stores/automationStore';
+import { currentAutomationRun, useAutomationStore } from '../../stores/automationStore';
 import type { AutomationNodeKind } from '../../../shared/automations/types';
 import { newAutomationNodeId } from '../../../shared/automations/defaults';
 import type { AutomationFlowNode } from './AutomationNode.types';
@@ -36,15 +36,13 @@ export default function AutomationCanvas() {
   const activeDefinition = useAutomationStore((state) => state.activeDefinition);
   const selectedNodeId = useAutomationStore((state) => state.selectedNodeId);
   const validationIssues = useAutomationStore((state) => state.validationIssues);
-  const runs = useAutomationStore((state) => state.runs);
+  const currentRun = useAutomationStore(currentAutomationRun);
   const updateNode = useAutomationStore((state) => state.updateNode);
   const removeNode = useAutomationStore((state) => state.removeNode);
   const selectNode = useAutomationStore((state) => state.selectNode);
   const addEdge = useAutomationStore((state) => state.addEdge);
   const removeEdge = useAutomationStore((state) => state.removeEdge);
   const addNode = useAutomationStore((state) => state.addNode);
-
-  const currentRun = Object.values(runs)[0];
 
   const nodes = useMemo<AutomationFlowNode[]>(() => {
     if (!activeDefinition) return [];
@@ -56,7 +54,10 @@ export default function AutomationCanvas() {
       data: {
         automationNode,
         label: automationNode.label,
-        status: currentRun?.nodeStatuses[automationNode.id],
+        status:
+          automationNode.kind === 'stage'
+            ? (currentRun?.stageStatuses[automationNode.id] ?? currentRun?.nodeStatuses[automationNode.id])
+            : currentRun?.nodeStatuses[automationNode.id],
         issueCodes: validationIssues.filter((issue) => issue.nodeId === automationNode.id).map((issue) => issue.code),
       },
     }));

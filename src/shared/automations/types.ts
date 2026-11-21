@@ -220,13 +220,29 @@ export interface AutomationPlan {
   summary: string;
 }
 
-/** Aggregate state of one automation run in the renderer. */
+export interface AutomationRunLogEntry {
+  timestamp: number;
+  status: AutomationRunStatus;
+  message?: string;
+  nodeId?: string;
+  stageId?: string;
+}
+
 export interface AutomationRunState {
   runId: string;
   status: AutomationRunStatus;
   progress: number;
+  automationId: string;
+  automationName: string;
+  startedAt: number;
+  updatedAt: number;
   message?: string;
+  runtimeInputPath?: string;
+  outputPath?: string;
+  error?: string;
   nodeStatuses: Record<string, AutomationRunStatus>;
+  stageStatuses: Record<string, AutomationRunStatus>;
+  events: AutomationRunLogEntry[];
 }
 
 /** Progress/status event pushed from the main process to the renderer. */

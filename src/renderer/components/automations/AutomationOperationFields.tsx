@@ -13,7 +13,10 @@ import type { AutomationOperationFieldsProps } from './Automation.types';
 export default function AutomationOperationFields({ node, defaultBackend }: AutomationOperationFieldsProps) {
   const { t } = useTranslation();
   const updateNode = useAutomationStore((state) => state.updateNode);
+  const backendStatus = useAutomationStore((state) => state.backendStatus);
   const data = node.data as OperationNodeData;
+  const currentBackend = data.backend ?? defaultBackend;
+  const visibleBackends = AUTOMATION_BACKENDS.filter((backend) => backendStatus[backend] || backend === currentBackend);
 
   const updateOption = <K extends keyof ConversionOptions>(key: K, value: ConversionOptions[K]) => {
     updateNode(node.id, { data: { ...data, options: { ...data.options, [key]: value } } });
@@ -26,13 +29,13 @@ export default function AutomationOperationFields({ node, defaultBackend }: Auto
         <Select
           labelId="automation-backend-label"
           label={t('automations.fields.backend')}
-          value={data.backend ?? defaultBackend}
+          value={currentBackend}
           onChange={(event: SelectChangeEvent) =>
             updateNode(node.id, { data: { ...data, backend: event.target.value as AutomationBackend } })
           }
         >
-          {AUTOMATION_BACKENDS.map((backend) => (
-            <MenuItem key={backend} value={backend}>
+          {visibleBackends.map((backend) => (
+            <MenuItem key={backend} value={backend} disabled={!backendStatus[backend]}>
               {backend}
             </MenuItem>
           ))}

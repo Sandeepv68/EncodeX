@@ -19,11 +19,24 @@ import {
   newAutomationNodeId,
 } from '../../shared/automations/defaults';
 import { AUTOMATION_KIND, AUTOMATION_RUN_STATUS } from '../../shared/automations/types';
-import type { AutomationBackend, AutomationDefinition, AutomationGraph, AutomationIssue } from '../../shared/automations/types';
+import type {
+  AutomationBackend,
+  AutomationDefinition,
+  AutomationGraph,
+  AutomationIssue,
+  AutomationMediaKind,
+  AutomationProgressEvent,
+  AutomationRuntime,
+  AutomationRunLogEntry,
+  AutomationRunState,
+} from '../../shared/automations/types';
 import { validateAutomation } from '../../shared/automations/validate';
 
 /** Per-store logger. @const {Logger} */
 const log = new Logger('renderer/stores/automationStore');
+
+const MAX_RUN_HISTORY = 20;
+const MAX_RUN_EVENTS = 80;
 
 /** Builds a fresh backend availability map with every backend enabled. */
 function initialBackendStatus(): Record<AutomationBackend, boolean> {
@@ -64,15 +77,106 @@ function activationPatch(state: AutomationState, definition: AutomationDefinitio
   return {
     activeDefinition,
     selectedNodeId: null,
-    validationIssues: issuesFor(activeDefinition, state.backendStatus),
+    validationIssues: issuesForState(state, activeDefinition),
     isDirty: dirty,
   };
 }
 
-/** Validates a candidate definition with the current backend availability. */
-function issuesFor(definition: AutomationDefinition, backendStatus: Record<AutomationBackend, boolean>): AutomationIssue[] {
-  const availableBackends = AUTOMATION_BACKENDS.filter((backend) => backendStatus[backend]);
-  return validateAutomation(definition, { availableBackends });
+function effectiveMediaKind(state: AutomationState, definition: AutomationDefinition | null): AutomationMediaKind | undefined {
+  if (state.detectedMediaKind && state.detectedMediaKind !== 'unknown') return state.detectedMediaKind;
+  const input = definition?.graph.nodes.find((node) => node.kind === AUTOMATION_KIND.INPUT);
+  if (input?.data.kind === AUTOMATION_KIND.INPUT && input.data.mediaKind && input.data.mediaKind !== 'unknown') {
+    return input.data.mediaKind;
+  }
+  return undefined;
+}
+
+function issuesForState(state: AutomationState, definition: AutomationDefinition | null = state.activeDefinition): AutomationIssue[] {
+  if (!definition) return [];
+  const availableBackends = AUTOMATION_BACKENDS.filter((backend) => state.backendStatus[backend]);
+  const runtime: AutomationRuntime = {
+    inputPath: state.runtimeInputPath ?? undefined,
+    mediaKind: effectiveMediaKind(state, definition),
+  };
+  return validateAutomation(definition, { ...runtime, availableBackends });
+}
+
+function pruneRuns(
+  runs: Record<string, AutomationRunState>,
+  selectedRunId: string | null,
+): { runs: Record<string, AutomationRunState>; selectedRunId: string | null } {
+  const ids = Object.keys(runs);
+  if (ids.length <= MAX_RUN_HISTORY) return { runs, selectedRunId };
+  const ordered = ids
+    .map((id, index) => ({ run: runs[id], index }))
+    .sort((a, b) => b.run.updatedAt - a.run.updatedAt || b.run.startedAt - a.run.startedAt || b.index - a.index)
+    .map(({ run }) => run);
+  const retained = new Set(ordered.slice(0, MAX_RUN_HISTORY).map((run) => run.runId));
+  const next: Record<string, AutomationRunState> = {};
+  for (const id of ids) {
+    if (retained.has(id)) next[id] = runs[id];
+  }
+  return {
+    runs: next,
+    selectedRunId: selectedRunId && retained.has(selectedRunId) ? selectedRunId : (ordered[0]?.runId ?? null),
+  };
+}
+
+function isMeaningfulRunEvent(
+  previous: AutomationRunState,
+  event: AutomationProgressEvent,
+  next: Pick<AutomationRunState, 'message' | 'outputPath' | 'error' | 'nodeStatuses' | 'stageStatuses'>,
+): boolean {
+  return (
+    previous.status !== event.status ||
+    event.status === AUTOMATION_RUN_STATUS.SUCCEEDED ||
+    event.status === AUTOMATION_RUN_STATUS.FAILED ||
+    event.status === AUTOMATION_RUN_STATUS.CANCELLED ||
+    (Boolean(event.nodeId) && previous.nodeStatuses[event.nodeId] !== event.status) ||
+    (Boolean(event.stageId) && previous.stageStatuses[event.stageId ?? ''] !== event.status) ||
+    next.message !== previous.message ||
+    next.outputPath !== previous.outputPath ||
+    next.error !== previous.error
+  );
+}
+
+function createRunLogEntry(event: AutomationProgressEvent, timestamp: number): AutomationRunLogEntry {
+  const message = event.message ?? event.error;
+  return {
+    timestamp,
+    status: event.status,
+    ...(message !== undefined ? { message } : {}),
+    ...(event.nodeId ? { nodeId: event.nodeId } : {}),
+    ...(event.stageId ? { stageId: event.stageId } : {}),
+  };
+}
+
+function isActiveAutomationRun(run: AutomationRunState): boolean {
+  return run.status === AUTOMATION_RUN_STATUS.QUEUED || run.status === AUTOMATION_RUN_STATUS.RUNNING;
+}
+
+export function latestAutomationRun(state: AutomationState): AutomationRunState | undefined {
+  const ids = Object.keys(state.runs);
+  let latest: AutomationRunState | undefined;
+  for (const id of ids) {
+    const run = state.runs[id];
+    if (!latest) {
+      latest = run;
+      continue;
+    }
+    if (run.updatedAt > latest.updatedAt || (run.updatedAt === latest.updatedAt && run.startedAt >= latest.startedAt)) {
+      latest = run;
+    }
+  }
+  return latest;
+}
+
+export function currentAutomationRun(state: AutomationState): AutomationRunState | undefined {
+  if (state.selectedRunId) {
+    const selected = state.runs[state.selectedRunId];
+    if (selected) return selected;
+  }
+  return latestAutomationRun(state);
 }
 
 let initialization: Promise<AutomationDefinition[]> | null = null;
@@ -88,7 +192,7 @@ function graphPatch(
   return {
     activeDefinition,
     selectedNodeId,
-    validationIssues: issuesFor(activeDefinition, state.backendStatus),
+    validationIssues: issuesForState(state, activeDefinition),
     isDirty: true,
   };
 }
@@ -102,6 +206,9 @@ export const useAutomationStore = create<AutomationState>((set, get) => ({
   isDirty: false,
   isInitialized: false,
   runs: {},
+  runtimeInputPath: null,
+  detectedMediaKind: null,
+  selectedRunId: null,
   backendStatus: initialBackendStatus(),
 
   setDefinitions: (definitions) => set({ definitions }),
@@ -137,7 +244,7 @@ export const useAutomationStore = create<AutomationState>((set, get) => ({
   newAutomation: () => {
     const activeDefinition = createAutomationDefinition(newAutomationId(), DEFAULT_AUTOMATION_NAME);
     log.info(activeDefinition.id);
-    set({ activeDefinition, selectedNodeId: null, validationIssues: issuesFor(activeDefinition, get().backendStatus), isDirty: true });
+    set({ activeDefinition, selectedNodeId: null, validationIssues: issuesForState(get(), activeDefinition), isDirty: true });
   },
 
   loadAutomation: async (id) => {
@@ -249,7 +356,7 @@ export const useAutomationStore = create<AutomationState>((set, get) => ({
           definitions,
           activeDefinition,
           selectedNodeId: null,
-          validationIssues: issuesFor(activeDefinition, state.backendStatus),
+          validationIssues: issuesForState(state, activeDefinition),
           isDirty: true,
         };
       });
@@ -398,7 +505,7 @@ export const useAutomationStore = create<AutomationState>((set, get) => ({
       set({ validationIssues: [] });
       return [];
     }
-    const issues = issuesFor(state.activeDefinition, state.backendStatus);
+    const issues = issuesForState(state);
     set({ validationIssues: issues });
     return issues;
   },
@@ -409,29 +516,78 @@ export const useAutomationStore = create<AutomationState>((set, get) => ({
       const activeDefinition = state.activeDefinition;
       return {
         backendStatus,
-        validationIssues: activeDefinition ? issuesFor(activeDefinition, backendStatus) : state.validationIssues,
+        validationIssues: issuesForState({ ...state, backendStatus }, activeDefinition),
       };
     }),
 
-  startRun: (runId) =>
+  setRuntimeInputPath: (path) =>
     set((state) => ({
-      runs: {
-        ...state.runs,
-        [runId]: { runId, status: AUTOMATION_RUN_STATUS.QUEUED, progress: 0, nodeStatuses: {} },
-      },
+      runtimeInputPath: path,
+      detectedMediaKind: null,
+      validationIssues: issuesForState({ ...state, runtimeInputPath: path, detectedMediaKind: null }),
     })),
+
+  setDetectedMediaKind: (mediaKind) =>
+    set((state) => ({
+      detectedMediaKind: mediaKind,
+      validationIssues: issuesForState({ ...state, detectedMediaKind: mediaKind }),
+    })),
+
+  selectRun: (runId) => set({ selectedRunId: runId }),
+
+  clearRuns: () =>
+    set((state) => {
+      const runs = Object.fromEntries(Object.entries(state.runs).filter(([, run]) => isActiveAutomationRun(run)));
+      const selectedRunId = state.selectedRunId && runs[state.selectedRunId] ? state.selectedRunId : null;
+      return { runs, selectedRunId };
+    }),
+
+  startRun: (runId, automationId, automationName) =>
+    set((state) => {
+      const timestamp = Date.now();
+      const run: AutomationRunState = {
+        runId,
+        status: AUTOMATION_RUN_STATUS.QUEUED,
+        progress: 0,
+        automationId: automationId ?? state.activeDefinition?.id ?? '',
+        automationName: automationName ?? state.activeDefinition?.name ?? '',
+        startedAt: timestamp,
+        updatedAt: timestamp,
+        nodeStatuses: {},
+        stageStatuses: {},
+        events: [],
+        ...(state.runtimeInputPath ? { runtimeInputPath: state.runtimeInputPath } : {}),
+      };
+      return pruneRuns({ ...state.runs, [runId]: run }, runId);
+    }),
 
   updateRun: (event) =>
     set((state) => {
       const previous = state.runs[event.runId];
       if (!previous) return {};
-      const run = {
+      const timestamp = Date.now();
+      const nodeStatuses = event.nodeId ? { ...previous.nodeStatuses, [event.nodeId]: event.status } : previous.nodeStatuses;
+      const stageStatuses = event.stageId ? { ...previous.stageStatuses, [event.stageId]: event.status } : previous.stageStatuses;
+      const message = event.message !== undefined ? event.message : previous.message;
+      const outputPath = event.outputPath !== undefined ? event.outputPath : previous.outputPath;
+      const error = event.error !== undefined ? event.error : previous.error;
+      const nextDetails = { message, outputPath, error, nodeStatuses, stageStatuses };
+      const events = isMeaningfulRunEvent(previous, event, nextDetails)
+        ? [...previous.events, createRunLogEntry(event, timestamp)].slice(-MAX_RUN_EVENTS)
+        : previous.events.slice(-MAX_RUN_EVENTS);
+      const run: AutomationRunState = {
         ...previous,
         status: event.status,
         progress: event.progress ?? previous.progress,
-        message: event.message ?? previous.message,
-        nodeStatuses: { ...previous.nodeStatuses, [event.nodeId]: event.status },
+        automationId: previous.automationId || event.automationId,
+        message,
+        outputPath,
+        error,
+        nodeStatuses,
+        stageStatuses,
+        events,
+        updatedAt: timestamp,
       };
-      return { runs: { ...state.runs, [event.runId]: run } };
+      return pruneRuns({ ...state.runs, [event.runId]: run }, state.selectedRunId);
     }),
 }));

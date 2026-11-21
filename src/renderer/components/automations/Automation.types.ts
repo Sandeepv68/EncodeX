@@ -16,6 +16,15 @@ export interface AutomationToolbarProps {
   onExport: () => void;
   onSelectInput: () => void;
   onRun: () => void;
+  isRunning: boolean;
+  onCancel: () => void;
+}
+
+export interface AutomationRunPanelProps {
+  onCancel: (runId: string) => void;
+  onRerun: () => void;
+  onProbeInput: (path?: string) => void;
+  onSelectRuntimeInput: () => void;
 }
 
 export interface AutomationLibraryDrawerProps {

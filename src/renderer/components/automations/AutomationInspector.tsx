@@ -16,6 +16,7 @@ export default function AutomationInspector() {
   const activeDefinition = useAutomationStore((state) => state.activeDefinition);
   const selectedNodeId = useAutomationStore((state) => state.selectedNodeId);
   const updateNode = useAutomationStore((state) => state.updateNode);
+  const detectedMediaKind = useAutomationStore((state) => state.detectedMediaKind);
   const node = activeDefinition?.graph.nodes.find((item) => item.id === selectedNodeId);
 
   if (!node) {
@@ -48,6 +49,10 @@ export default function AutomationInspector() {
           value={inputData?.path ?? ''}
           onChange={(event) => updateNode(node.id, { data: { kind: AUTOMATION_KIND.INPUT, path: event.target.value } })}
         />
+      )}
+
+      {node.data.kind === AUTOMATION_KIND.INPUT && detectedMediaKind && detectedMediaKind !== 'unknown' && (
+        <PanelHint>{t('automations.detectedMediaKind', { mediaKind: t(`automations.mediaKind.${detectedMediaKind}`) })}</PanelHint>
       )}
 
       {node.data.kind === AUTOMATION_KIND.STAGE && (

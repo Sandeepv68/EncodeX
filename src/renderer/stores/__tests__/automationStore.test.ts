@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { useAutomationStore } from '../automationStore';
+import { currentAutomationRun, latestAutomationRun, useAutomationStore } from '../automationStore';
 import { AUTOMATION_KIND, AUTOMATION_RUN_STATUS } from '../../../shared/automations/types';
-import type { AutomationDefinition } from '../../../shared/automations/types';
-import { createAutomationDefinition } from '../../../shared/automations/defaults';
+import type { AutomationDefinition, AutomationProgressEvent } from '../../../shared/automations/types';
+import { AUTOMATION_BACKENDS, createAutomationDefinition } from '../../../shared/automations/defaults';
 
 const electronApi = window.electronAPI as unknown as Record<string, unknown>;
 const originalMethods = { ...electronApi };
@@ -15,6 +15,18 @@ function bridge(): Record<string, unknown> {
   return window.electronAPI as unknown as Record<string, unknown>;
 }
 
+function progressEvent(overrides: Partial<AutomationProgressEvent> = {}): AutomationProgressEvent {
+  return {
+    runId: 'run-1',
+    automationId: 'automation-1',
+    nodeId: 'node-1',
+    stageId: 'stage-1',
+    status: AUTOMATION_RUN_STATUS.RUNNING,
+    progress: 42,
+    ...overrides,
+  };
+}
+
 describe('automationStore', () => {
   beforeEach(() => {
     useAutomationStore.setState({
@@ -25,6 +37,13 @@ describe('automationStore', () => {
       isDirty: false,
       isInitialized: false,
       runs: {},
+      runtimeInputPath: null,
+      detectedMediaKind: null,
+      selectedRunId: null,
+      backendStatus: AUTOMATION_BACKENDS.reduce<Record<string, boolean>>(
+        (status, backend) => ({ ...status, [backend]: true }),
+        {},
+      ) as Record<(typeof AUTOMATION_BACKENDS)[number], boolean>,
     });
   });
 
@@ -108,6 +127,70 @@ describe('automationStore', () => {
     expect(run.status).toBe(AUTOMATION_RUN_STATUS.RUNNING);
     expect(run.progress).toBe(42);
     expect(run.nodeStatuses['node-1']).toBe(AUTOMATION_RUN_STATUS.RUNNING);
+  });
+
+  it('records run metadata, stage status, and meaningful log events', () => {
+    useAutomationStore.getState().newAutomation();
+    useAutomationStore.getState().startRun('run-1', 'auto-9', 'Pipeline');
+    useAutomationStore.getState().updateRun(progressEvent());
+    useAutomationStore.getState().updateRun(progressEvent({ progress: 43 }));
+
+    const state = useAutomationStore.getState();
+    const run = state.runs['run-1'];
+    expect(run).toMatchObject({
+      runId: 'run-1',
+      automationId: 'auto-9',
+      automationName: 'Pipeline',
+      status: AUTOMATION_RUN_STATUS.RUNNING,
+      progress: 43,
+    });
+    expect(state.selectedRunId).toBe('run-1');
+    expect(run.stageStatuses['stage-1']).toBe(AUTOMATION_RUN_STATUS.RUNNING);
+    expect(run.events).toEqual([expect.objectContaining({ stageId: 'stage-1', status: AUTOMATION_RUN_STATUS.RUNNING })]);
+  });
+
+  it('bounds run history to the latest 20 runs', () => {
+    for (let index = 0; index < 21; index += 1) {
+      useAutomationStore.getState().startRun(`run-${index}`, 'auto-1', 'Pipeline');
+    }
+    const state = useAutomationStore.getState();
+    expect(Object.keys(state.runs)).toHaveLength(20);
+    expect(state.runs['run-0']).toBeUndefined();
+    expect(state.runs['run-20']).toBeDefined();
+    expect(state.selectedRunId).toBe('run-20');
+  });
+
+  it('separates inspected run selection from the latest run', () => {
+    useAutomationStore.getState().startRun('run-old');
+    useAutomationStore.getState().startRun('run-new');
+    useAutomationStore.getState().selectRun('run-old');
+    const state = useAutomationStore.getState();
+
+    expect(currentAutomationRun(state)?.runId).toBe('run-old');
+    expect(latestAutomationRun(state)?.runId).toBe('run-new');
+  });
+
+  it('keeps active runs when clearing history', () => {
+    useAutomationStore.getState().startRun('run-active');
+    useAutomationStore.getState().startRun('run-complete');
+    useAutomationStore.getState().updateRun({
+      runId: 'run-complete',
+      automationId: 'automation-1',
+      nodeId: 'node-1',
+      status: AUTOMATION_RUN_STATUS.SUCCEEDED,
+      progress: 100,
+    });
+    useAutomationStore.getState().clearRuns();
+    const state = useAutomationStore.getState();
+
+    expect(Object.keys(state.runs)).toEqual(['run-active']);
+    expect(state.selectedRunId).toBeNull();
+  });
+
+  it('clears detected media when the runtime input path changes', () => {
+    useAutomationStore.getState().setDetectedMediaKind('audio');
+    useAutomationStore.getState().setRuntimeInputPath('/clip.png');
+    expect(useAutomationStore.getState().detectedMediaKind).toBeNull();
   });
 
   it('initializes the library from the bridge', async () => {
