@@ -1,6 +1,19 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useAutomationStore } from '../automationStore';
 import { AUTOMATION_KIND, AUTOMATION_RUN_STATUS } from '../../../shared/automations/types';
+import type { AutomationDefinition } from '../../../shared/automations/types';
+import { createAutomationDefinition } from '../../../shared/automations/defaults';
+
+const electronApi = window.electronAPI as unknown as Record<string, unknown>;
+const originalMethods = { ...electronApi };
+
+function definition(id: string, name: string): AutomationDefinition {
+  return createAutomationDefinition(id, name, 1);
+}
+
+function bridge(): Record<string, unknown> {
+  return window.electronAPI as unknown as Record<string, unknown>;
+}
 
 describe('automationStore', () => {
   beforeEach(() => {
@@ -10,8 +23,18 @@ describe('automationStore', () => {
       selectedNodeId: null,
       validationIssues: [],
       isDirty: false,
+      isInitialized: false,
       runs: {},
     });
+  });
+
+  afterEach(() => {
+    (globalThis as unknown as { electronAPI: unknown }).electronAPI = electronApi;
+    const current = bridge();
+    for (const key of Object.keys(current)) {
+      if (!(key in originalMethods)) delete current[key];
+    }
+    Object.assign(current, originalMethods);
   });
 
   it('creates a definition with default validation issues', () => {
@@ -85,5 +108,98 @@ describe('automationStore', () => {
     expect(run.status).toBe(AUTOMATION_RUN_STATUS.RUNNING);
     expect(run.progress).toBe(42);
     expect(run.nodeStatuses['node-1']).toBe(AUTOMATION_RUN_STATUS.RUNNING);
+  });
+
+  it('initializes the library from the bridge', async () => {
+    bridge().automationList = vi.fn().mockResolvedValue([definition('a', 'Alpha'), definition('b', 'Beta')]);
+    const definitions = await useAutomationStore.getState().initialize();
+    expect(definitions.map((item) => item.name)).toEqual(['Alpha', 'Beta']);
+    expect(useAutomationStore.getState().definitions.map((item) => item.name)).toEqual(['Alpha', 'Beta']);
+    expect(useAutomationStore.getState().isInitialized).toBe(true);
+  });
+
+  it('persists a save through the bridge and clears dirty state', async () => {
+    const persist = vi.fn().mockImplementation((candidate: AutomationDefinition) => Promise.resolve(candidate));
+    bridge().automationSave = persist;
+    useAutomationStore.getState().newAutomation();
+    useAutomationStore.getState().renameAutomation('Persisted');
+    const saved = await useAutomationStore.getState().saveAutomation();
+    expect(persist).toHaveBeenCalledWith(expect.objectContaining({ name: 'Persisted' }));
+    expect(saved?.name).toBe('Persisted');
+    expect(useAutomationStore.getState().activeDefinition?.name).toBe('Persisted');
+    expect(useAutomationStore.getState().definitions).toHaveLength(1);
+    expect(useAutomationStore.getState().isDirty).toBe(false);
+  });
+
+  it('restores dirty state when a bridge save rejects', async () => {
+    bridge().automationSave = vi.fn().mockRejectedValue(new Error('failed'));
+    useAutomationStore.getState().newAutomation();
+    useAutomationStore.getState().renameAutomation('Unsaved');
+    const saved = await useAutomationStore.getState().saveAutomation();
+    expect(saved).toBeNull();
+    expect(useAutomationStore.getState().definitions).toHaveLength(0);
+    expect(useAutomationStore.getState().activeDefinition?.name).toBe('Unsaved');
+    expect(useAutomationStore.getState().isDirty).toBe(true);
+  });
+
+  it('saves a copy under a new id and name', async () => {
+    const persist = vi.fn().mockImplementation((candidate: AutomationDefinition) => Promise.resolve(candidate));
+    bridge().automationSave = persist;
+    useAutomationStore.getState().setDefinitions([definition('a', 'Alpha')]);
+    useAutomationStore.getState().loadAutomation('a');
+    const originalId = useAutomationStore.getState().activeDefinition?.id;
+    const saved = await useAutomationStore.getState().saveAutomationAs('Alpha Copy');
+    expect(persist).toHaveBeenCalledWith(expect.objectContaining({ name: 'Alpha Copy' }));
+    expect(saved?.id).not.toBe(originalId);
+    expect(useAutomationStore.getState().activeDefinition?.name).toBe('Alpha Copy');
+    expect(useAutomationStore.getState().definitions.map((item) => item.name)).toEqual(['Alpha', 'Alpha Copy']);
+    expect(useAutomationStore.getState().isDirty).toBe(false);
+  });
+
+  it('loads the authoritative definition from the bridge', async () => {
+    bridge().automationGet = vi.fn().mockResolvedValue(definition('a', 'Remote Alpha'));
+    useAutomationStore.getState().newAutomation();
+    const loaded = await useAutomationStore.getState().loadAutomation('a');
+    expect(loaded?.name).toBe('Remote Alpha');
+    expect(useAutomationStore.getState().activeDefinition?.name).toBe('Remote Alpha');
+    expect(useAutomationStore.getState().definitions).toHaveLength(1);
+    expect(useAutomationStore.getState().isDirty).toBe(false);
+  });
+
+  it('adopts duplicated and imported definitions from the bridge', async () => {
+    bridge().automationDuplicate = vi.fn().mockResolvedValue(definition('copy', 'Alpha Copy'));
+    bridge().automationImport = vi.fn().mockResolvedValue(definition('imported', 'Imported'));
+    const duplicated = await useAutomationStore.getState().duplicateAutomation('a');
+    expect(duplicated?.name).toBe('Alpha Copy');
+    expect(useAutomationStore.getState().activeDefinition?.name).toBe('Alpha Copy');
+    expect(useAutomationStore.getState().isDirty).toBe(false);
+    const imported = await useAutomationStore.getState().importAutomation();
+    expect(imported?.name).toBe('Imported');
+    expect(useAutomationStore.getState().activeDefinition?.name).toBe('Imported');
+    expect(useAutomationStore.getState().definitions.map((item) => item.name)).toEqual(['Alpha Copy', 'Imported']);
+    expect(useAutomationStore.getState().isDirty).toBe(false);
+  });
+
+  it('exports and deletes through the bridge', async () => {
+    const remove = vi.fn().mockResolvedValue(true);
+    bridge().automationExport = vi.fn().mockResolvedValue('/tmp/alpha.json');
+    bridge().automationDelete = remove;
+    useAutomationStore.getState().setDefinitions([definition('a', 'Alpha')]);
+    await expect(useAutomationStore.getState().exportAutomation('a')).resolves.toBe('/tmp/alpha.json');
+    await expect(useAutomationStore.getState().deleteAutomation('a')).resolves.toBe(true);
+    expect(remove).toHaveBeenCalledWith('a');
+    expect(useAutomationStore.getState().definitions).toHaveLength(0);
+  });
+
+  it('returns safe values when the bridge is missing', async () => {
+    (globalThis as unknown as { electronAPI: unknown }).electronAPI = undefined;
+    useAutomationStore.getState().setDefinitions([]);
+    await expect(useAutomationStore.getState().initialize()).resolves.toEqual([]);
+    await expect(useAutomationStore.getState().saveAutomation()).resolves.toBeNull();
+    await expect(useAutomationStore.getState().loadAutomation('a')).resolves.toBeNull();
+    await expect(useAutomationStore.getState().deleteAutomation('a')).resolves.toBe(false);
+    await expect(useAutomationStore.getState().duplicateAutomation('a')).resolves.toBeNull();
+    await expect(useAutomationStore.getState().importAutomation()).resolves.toBeNull();
+    await expect(useAutomationStore.getState().exportAutomation('a')).resolves.toBeNull();
   });
 });

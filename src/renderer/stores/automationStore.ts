@@ -1,14 +1,15 @@
 /**
  * @fileoverview Zustand store for the Automations graph editor.
  *
- * Phase 1 keeps definitions, selection, validation results, and local run
- * state in memory. Persistence and native execution are wired in later phases
- * through the same actions, so pages and components do not change shape.
+ * Definitions, selection, validation results, and local run state live in
+ * memory; library persistence is routed through the preload bridge when it is
+ * available and falls back to the in-memory library otherwise.
  */
 
 import { create } from 'zustand';
 import { Logger } from '../../shared/logger';
-import type { AutomationState } from './types';
+import { bridgePromise } from '../utils/bridge-call';
+import type { AutomationBridge, AutomationState } from './types';
 import {
   AUTOMATION_BACKENDS,
   DEFAULT_AUTOMATION_NAME,
@@ -40,9 +41,31 @@ function cloneDefinition(definition: AutomationDefinition): AutomationDefinition
   return {
     ...definition,
     graph: {
-      nodes: definition.graph.nodes.map((node) => ({ ...node, position: { ...node.position } })),
+      nodes: definition.graph.nodes.map((node) => ({ ...node, position: { ...node.position }, data: { ...node.data } })),
       edges: definition.graph.edges.map((edge) => ({ ...edge })),
     },
+    settings: { ...definition.settings },
+  };
+}
+
+function automationBridge(): AutomationBridge | null {
+  if (typeof window === 'undefined') return null;
+  return (window as unknown as { electronAPI?: AutomationBridge }).electronAPI ?? null;
+}
+
+function upsertDefinition(definitions: AutomationDefinition[], definition: AutomationDefinition): AutomationDefinition[] {
+  const index = definitions.findIndex((item) => item.id === definition.id);
+  if (index === -1) return [...definitions, cloneDefinition(definition)];
+  return definitions.map((item) => (item.id === definition.id ? cloneDefinition(definition) : item));
+}
+
+function activationPatch(state: AutomationState, definition: AutomationDefinition, dirty: boolean): Partial<AutomationState> {
+  const activeDefinition = cloneDefinition(definition);
+  return {
+    activeDefinition,
+    selectedNodeId: null,
+    validationIssues: issuesFor(activeDefinition, state.backendStatus),
+    isDirty: dirty,
   };
 }
 
@@ -51,6 +74,8 @@ function issuesFor(definition: AutomationDefinition, backendStatus: Record<Autom
   const availableBackends = AUTOMATION_BACKENDS.filter((backend) => backendStatus[backend]);
   return validateAutomation(definition, { availableBackends });
 }
+
+let initialization: Promise<AutomationDefinition[]> | null = null;
 
 /** Produces the state patch shared by all graph mutations. */
 function graphPatch(
@@ -75,10 +100,39 @@ export const useAutomationStore = create<AutomationState>((set, get) => ({
   selectedNodeId: null,
   validationIssues: [],
   isDirty: false,
+  isInitialized: false,
   runs: {},
   backendStatus: initialBackendStatus(),
 
   setDefinitions: (definitions) => set({ definitions }),
+
+  initialize: () => {
+    if (initialization) return initialization;
+    const invoke = automationBridge()?.automationList;
+    const task = (async () => {
+      let definitions = get().definitions.map(cloneDefinition);
+      if (invoke) {
+        try {
+          const listed = await bridgePromise(() => invoke());
+          if (Array.isArray(listed)) definitions = listed.map(cloneDefinition);
+        } catch (err) {
+          log.debug('automationList failed', err);
+        }
+      }
+      set({ definitions, isInitialized: true });
+      return definitions;
+    })();
+    initialization = task;
+    void task.then(
+      () => {
+        if (initialization === task) initialization = null;
+      },
+      () => {
+        if (initialization === task) initialization = null;
+      },
+    );
+    return task;
+  },
 
   newAutomation: () => {
     const activeDefinition = createAutomationDefinition(newAutomationId(), DEFAULT_AUTOMATION_NAME);
@@ -86,29 +140,171 @@ export const useAutomationStore = create<AutomationState>((set, get) => ({
     set({ activeDefinition, selectedNodeId: null, validationIssues: issuesFor(activeDefinition, get().backendStatus), isDirty: true });
   },
 
-  loadAutomation: (id) => {
-    const saved = get().definitions.find((definition) => definition.id === id);
-    if (!saved) return;
-    const activeDefinition = cloneDefinition(saved);
-    set({
-      activeDefinition,
-      selectedNodeId: null,
-      validationIssues: issuesFor(activeDefinition, get().backendStatus),
-      isDirty: false,
-    });
+  loadAutomation: async (id) => {
+    const local = get().definitions.find((definition) => definition.id === id);
+    const fallback = local ? cloneDefinition(local) : null;
+    if (fallback) set(activationPatch(get(), fallback, false));
+    const invoke = automationBridge()?.automationGet;
+    if (!invoke) return fallback;
+    try {
+      const remote = await bridgePromise(() => invoke(id));
+      if (!remote) return fallback;
+      const definition = cloneDefinition(remote);
+      set((state) => ({ definitions: upsertDefinition(state.definitions, definition), ...activationPatch(state, definition, false) }));
+      return cloneDefinition(definition);
+    } catch (err) {
+      log.debug('automationGet failed', err);
+      return fallback;
+    }
   },
 
-  saveAutomation: () => {
-    const active = get().activeDefinition;
-    if (!active) return;
+  saveAutomation: async () => {
+    const previous = get();
+    const active = previous.activeDefinition;
+    if (!active) return null;
     const saved = { ...cloneDefinition(active), updatedAt: Date.now() };
-    set((state) => {
-      const index = state.definitions.findIndex((definition) => definition.id === saved.id);
-      const definitions =
-        index === -1 ? [...state.definitions, saved] : state.definitions.map((item) => (item.id === saved.id ? saved : item));
-      return { definitions, activeDefinition: saved, isDirty: false };
+    set({
+      definitions: upsertDefinition(previous.definitions, saved),
+      activeDefinition: cloneDefinition(saved),
+      isDirty: false,
     });
-    log.info(saved.id);
+    const invoke = automationBridge()?.automationSave;
+    if (!invoke) return cloneDefinition(saved);
+    try {
+      const persisted = await bridgePromise(() => invoke(cloneDefinition(saved)));
+      const definition = cloneDefinition(persisted);
+      set((state) => ({
+        definitions: upsertDefinition(state.definitions, definition),
+        activeDefinition: cloneDefinition(definition),
+        isDirty: false,
+      }));
+      log.info(definition.id);
+      return cloneDefinition(definition);
+    } catch (err) {
+      set({
+        definitions: previous.definitions,
+        activeDefinition: previous.activeDefinition,
+        selectedNodeId: previous.selectedNodeId,
+        validationIssues: previous.validationIssues,
+        isDirty: previous.isDirty,
+      });
+      log.debug('automationSave failed', err);
+      return null;
+    }
+  },
+
+  saveAutomationAs: async (name) => {
+    const trimmed = name.trim();
+    const previous = get();
+    const active = previous.activeDefinition;
+    if (!trimmed || !active) return null;
+    const now = Date.now();
+    const saved: AutomationDefinition = {
+      ...cloneDefinition(active),
+      id: newAutomationId(),
+      name: trimmed,
+      createdAt: now,
+      updatedAt: now,
+    };
+    set({
+      definitions: upsertDefinition(previous.definitions, saved),
+      activeDefinition: cloneDefinition(saved),
+      isDirty: false,
+    });
+    const invoke = automationBridge()?.automationSave;
+    if (!invoke) return cloneDefinition(saved);
+    try {
+      const persisted = await bridgePromise(() => invoke(cloneDefinition(saved)));
+      const definition = cloneDefinition(persisted);
+      set((state) => ({
+        definitions: upsertDefinition(state.definitions, definition),
+        activeDefinition: cloneDefinition(definition),
+        isDirty: false,
+      }));
+      return cloneDefinition(definition);
+    } catch (err) {
+      set({
+        definitions: previous.definitions,
+        activeDefinition: previous.activeDefinition,
+        selectedNodeId: previous.selectedNodeId,
+        validationIssues: previous.validationIssues,
+        isDirty: previous.isDirty,
+      });
+      log.debug('automationSaveAs failed', err);
+      return null;
+    }
+  },
+
+  deleteAutomation: async (id) => {
+    const invoke = automationBridge()?.automationDelete;
+    if (!invoke) return false;
+    try {
+      const deleted = await bridgePromise(() => invoke(id));
+      if (!deleted) return false;
+      set((state) => {
+        const definitions = state.definitions.filter((definition) => definition.id !== id);
+        if (state.activeDefinition?.id !== id) return { definitions };
+        const activeDefinition = createAutomationDefinition(newAutomationId(), DEFAULT_AUTOMATION_NAME);
+        return {
+          definitions,
+          activeDefinition,
+          selectedNodeId: null,
+          validationIssues: issuesFor(activeDefinition, state.backendStatus),
+          isDirty: true,
+        };
+      });
+      return true;
+    } catch (err) {
+      log.debug('automationDelete failed', err);
+      return false;
+    }
+  },
+
+  duplicateAutomation: async (id) => {
+    const invoke = automationBridge()?.automationDuplicate;
+    if (!invoke) return null;
+    try {
+      const duplicated = await bridgePromise(() => invoke({ id }));
+      if (!duplicated) return null;
+      const definition = cloneDefinition(duplicated);
+      set((state) => ({
+        definitions: upsertDefinition(state.definitions, definition),
+        ...activationPatch(state, definition, false),
+      }));
+      return cloneDefinition(definition);
+    } catch (err) {
+      log.debug('automationDuplicate failed', err);
+      return null;
+    }
+  },
+
+  importAutomation: async () => {
+    const invoke = automationBridge()?.automationImport;
+    if (!invoke) return null;
+    try {
+      const imported = await bridgePromise(() => invoke());
+      if (!imported) return null;
+      const definition = cloneDefinition(imported);
+      set((state) => ({
+        definitions: upsertDefinition(state.definitions, definition),
+        ...activationPatch(state, definition, false),
+      }));
+      return cloneDefinition(definition);
+    } catch (err) {
+      log.debug('automationImport failed', err);
+      return null;
+    }
+  },
+
+  exportAutomation: async (id) => {
+    const invoke = automationBridge()?.automationExport;
+    if (!invoke || !id) return null;
+    try {
+      return (await bridgePromise(() => invoke(id))) ?? null;
+    } catch (err) {
+      log.debug('automationExport failed', err);
+      return null;
+    }
   },
 
   renameAutomation: (name) =>

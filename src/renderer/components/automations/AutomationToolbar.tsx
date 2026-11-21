@@ -3,7 +3,17 @@
 import { useTranslation } from 'react-i18next';
 import { Button, Chip, TextField } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFolderOpen, faFolder, faFloppyDisk, faPlay, faPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCopy,
+  faDownload,
+  faFloppyDisk,
+  faFolder,
+  faFolderOpen,
+  faPlay,
+  faPlus,
+  faTrash,
+  faUpload,
+} from '@fortawesome/free-solid-svg-icons';
 import { ToolbarRow } from '../../styles/Automations.styles';
 import type { AutomationToolbarProps } from './Automation.types';
 
@@ -17,6 +27,11 @@ export default function AutomationToolbar({
   onNew,
   onOpenLibrary,
   onSave,
+  onSaveAs,
+  onDuplicate,
+  onDelete,
+  onImport,
+  onExport,
   onSelectInput,
   onRun,
 }: AutomationToolbarProps) {
@@ -44,6 +59,33 @@ export default function AutomationToolbar({
         disabled={!hasDefinition}
       >
         {t('automations.save')}
+      </Button>
+      <Button
+        size="small"
+        variant="outlined"
+        startIcon={<FontAwesomeIcon icon={faFloppyDisk} />}
+        onClick={onSaveAs}
+        disabled={!hasDefinition}
+      >
+        {t('automations.saveAs')}
+      </Button>
+      <Button size="small" variant="outlined" startIcon={<FontAwesomeIcon icon={faCopy} />} onClick={onDuplicate} disabled={!hasDefinition}>
+        {t('automations.duplicate')}
+      </Button>
+      <Button size="small" variant="outlined" startIcon={<FontAwesomeIcon icon={faTrash} />} onClick={onDelete} disabled={!hasDefinition}>
+        {t('automations.delete')}
+      </Button>
+      <Button size="small" variant="outlined" startIcon={<FontAwesomeIcon icon={faUpload} />} onClick={onImport}>
+        {t('automations.import')}
+      </Button>
+      <Button
+        size="small"
+        variant="outlined"
+        startIcon={<FontAwesomeIcon icon={faDownload} />}
+        onClick={onExport}
+        disabled={!hasDefinition}
+      >
+        {t('automations.export')}
       </Button>
       <Button
         size="small"

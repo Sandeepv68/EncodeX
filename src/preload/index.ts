@@ -97,6 +97,7 @@ import type { McpSettings } from '../shared/mcp-settings';
 import type { AiConnectTestResult, AiModelsListResult, AiSettingsUpdate, AiSettingsView } from '../shared/ai/settings';
 import type { AuditEntry } from '../shared/audit';
 import type { AnalyticsEvent } from '../shared/analytics/events';
+import type { AutomationDefinition, AutomationDuplicateRequest } from '../shared/automations/types';
 import {
   LOG_ARROW,
   LOG_CANCEL_CONVERSION_CALLED,
@@ -484,6 +485,15 @@ const api = {
    * @returns {Promise<BmfStatus>} Availability plus the names of any missing executables.
    */
   getBmfStatus: () => ipcRenderer.invoke(IPC.GET_BMF_STATUS) as Promise<BmfStatus>,
+  automationList: () => ipcRenderer.invoke(IPC.AUTOMATION_LIST) as Promise<AutomationDefinition[]>,
+  automationGet: (id: string) => ipcRenderer.invoke(IPC.AUTOMATION_GET, id) as Promise<AutomationDefinition | null>,
+  automationSave: (definition: AutomationDefinition) =>
+    ipcRenderer.invoke(IPC.AUTOMATION_SAVE, definition) as Promise<AutomationDefinition>,
+  automationDelete: (id: string) => ipcRenderer.invoke(IPC.AUTOMATION_DELETE, id) as Promise<boolean>,
+  automationDuplicate: (request: AutomationDuplicateRequest) =>
+    ipcRenderer.invoke(IPC.AUTOMATION_DUPLICATE, request) as Promise<AutomationDefinition | null>,
+  automationImport: () => ipcRenderer.invoke(IPC.AUTOMATION_IMPORT) as Promise<AutomationDefinition | null>,
+  automationExport: (id: string) => ipcRenderer.invoke(IPC.AUTOMATION_EXPORT, id) as Promise<string | null>,
   /**
    * Starts a single-file media conversion. Progress is reported asynchronously through
    * the `onConversionProgress` subscription; the returned promise settles only when the

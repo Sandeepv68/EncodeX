@@ -144,6 +144,18 @@ export interface AutomationDefinition {
   settings: AutomationSettings;
 }
 
+/** The versioned on-disk collection of automation definitions. */
+export interface AutomationStore {
+  version: 1;
+  automations: AutomationDefinition[];
+}
+
+/** Payload accepted by the duplicate-library operation. */
+export interface AutomationDuplicateRequest {
+  id: string;
+  name?: string;
+}
+
 /** A `{{nodeId.field}}` placeholder found inside an options payload. */
 export interface AutomationReference {
   field: string;

@@ -164,6 +164,12 @@ export const LibraryRow = styled(Stack)(({ theme }) => ({
   paddingBlock: theme.spacing(0.5),
 }));
 
+export const LibraryActions = styled(Stack)(({ theme }) => ({
+  flexDirection: 'row',
+  alignItems: 'center',
+  gap: theme.spacing(0.5),
+}));
+
 /** Run progress bar with a theme-derived accent. */
 export const RunProgress = styled(LinearProgress)(({ theme }) => ({
   height: theme.typography.pxToRem(6),

@@ -22,6 +22,7 @@ import type { ErrorCodeType, AppError } from './types';
  * @property {string} INPUT_NOT_SPECIFIED - No input file was provided.
  * @property {string} OUTPUT_EXISTS - The output file already exists and overwrite is disabled.
  * @property {string} INVALID_QUEUE_FILE - An imported queue file is missing, corrupt, or unsupported.
+ * @property {string} INVALID_AUTOMATION_FILE - An imported automation file is missing, corrupt, or unsupported.
  * @property {string} FILTERS_REQUIRE_RE_ENCODE - Video filters were combined with lossless stream-copy mode.
  * @property {string} INVALID_VIDEO_FILTERS - A video filter chain or preset is invalid.
  * @property {string} STREAM_NOT_FOUND - A `-map` spec matched no stream in the probed source.
@@ -49,6 +50,7 @@ export const ErrorCode = {
   INPUT_NOT_SPECIFIED: 'INPUT_NOT_SPECIFIED',
   OUTPUT_EXISTS: 'OUTPUT_EXISTS',
   INVALID_QUEUE_FILE: 'INVALID_QUEUE_FILE',
+  INVALID_AUTOMATION_FILE: 'INVALID_AUTOMATION_FILE',
   FILTERS_REQUIRE_RE_ENCODE: 'FILTERS_REQUIRE_RE_ENCODE',
   INVALID_VIDEO_FILTERS: 'INVALID_VIDEO_FILTERS',
   STREAM_NOT_FOUND: 'STREAM_NOT_FOUND',
@@ -141,6 +143,15 @@ export function invalidQueueFileError(detail?: string): AppError {
 }
 
 /**
+ * Creates an AppError representing an unreadable or invalid automation export file.
+ * @param {string} [detail] - Optional detail about why the file was rejected.
+ * @returns {AppError} An INVALID_AUTOMATION_FILE AppError instance.
+ */
+export function invalidAutomationFileError(detail?: string): AppError {
+  return createError(ErrorCode.INVALID_AUTOMATION_FILE, ERROR_MESSAGES[ErrorCode.INVALID_AUTOMATION_FILE], detail);
+}
+
+/**
  * Type guard that checks whether an unknown value is an AppError.
  * A value is considered an AppError when it is a non-null object with string
  * `code`, string `message`, and numeric `timestamp` properties.
@@ -181,6 +192,7 @@ export const ERROR_MESSAGES: Record<ErrorCodeType, string> = {
   INPUT_NOT_SPECIFIED: 'Please select an input file before starting the conversion.',
   OUTPUT_EXISTS: 'The output file already exists. Enable overwrite to replace it.',
   INVALID_QUEUE_FILE: 'The queue file could not be read. It may be corrupted or in an unsupported format.',
+  INVALID_AUTOMATION_FILE: 'The automation file could not be read. It may be corrupted or in an unsupported format.',
   FILTERS_REQUIRE_RE_ENCODE: 'Video filters require re-encoding. Disable lossless copy (stream copy) to apply filters.',
   INVALID_VIDEO_FILTERS: 'The video filter chain or preset is invalid. Check the filter expressions and preset names.',
   STREAM_NOT_FOUND: 'The requested stream does not exist in the source file. Check the stream selection.',
@@ -280,6 +292,7 @@ function inferErrorCode(message: string, err?: unknown): ErrorCodeType {
   if (m.includes('bmf') && (m.includes('not available') || m.includes('not installed'))) return ErrorCode.BMF_NOT_AVAILABLE;
   if (m.includes('cancelled') || m.includes('cancel') || m.includes('killed') || m.includes('sigkill')) return ErrorCode.CANCELLED;
   if (m.includes('probe') || m.includes('could not read')) return ErrorCode.PROBE_FAILED;
+  if (m.includes('automation file')) return ErrorCode.INVALID_AUTOMATION_FILE;
   if (m.includes('queue file') || m.includes('unsupported format')) return ErrorCode.INVALID_QUEUE_FILE;
   if (m.includes('format') || m.includes('unsupported')) return ErrorCode.INVALID_FORMAT;
   if (m.includes('queue')) return ErrorCode.QUEUE_ERROR;

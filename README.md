@@ -90,7 +90,7 @@ Conversion runs **locally on your computer** — no accounts, no media uploads, 
 - **🌍 56 Locales** — with RTL support (Arabic, Hebrew)
 - **⌨️ Keyboard Shortcuts** — 71 shortcuts in 11 help sections, with an in-app help dialog (`Ctrl+/`)
 - **🔄 In-App Updates** — Checks GitHub Releases, downloads the platform installer when you ask (never installed automatically), real-time progress
-- **🛡️ Error Handling** — 28 typed error codes, global snackbar, inline banners, React error boundaries
+- **🛡️ Error Handling** — 29 typed error codes, global snackbar, inline banners, React error boundaries
 - **🌗 Dark/Light Theme** — System-aware with manual toggle, persistent preferences
 
 See [docs/FEATURES.md](docs/FEATURES.md) for the full feature breakdown, supported formats, and codec lists.

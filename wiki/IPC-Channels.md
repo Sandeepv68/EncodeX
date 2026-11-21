@@ -1,6 +1,6 @@
 # 🔌 IPC Channels
 
-All channel names are centralized in `src/shared/ipc-channels.ts` (115 channels). <!-- drift: ipc-channels=115 --> The preload script (`src/preload/index.ts`) exposes everything through `window.electronAPI`.
+All channel names are centralized in `src/shared/ipc-channels.ts` (122 channels). <!-- drift: ipc-channels=122 --> The preload script (`src/preload/index.ts`) exposes everything through `window.electronAPI`.
 
 ## 📥 Requests (invoke from renderer)
 
@@ -82,6 +82,13 @@ All channel names are centralized in `src/shared/ipc-channels.ts` (115 channels)
 | `ai-settings-set`     | `AiSettingsUpdate`                       | `AiSettingsView` (sanitized)  |
 | `ai-connect-test`     | `candidate?`                             | `AiConnectTestResult`         |
 | `ai-models-list`      | `candidate?`                             | `AiModelsListResult`          |
+| `automation-list`     | —                                        | `AutomationDefinition[]`      |
+| `automation-get`      | `id`                                     | `AutomationDefinition \| null` |
+| `automation-save`     | `definition`                             | `AutomationDefinition`        |
+| `automation-delete`   | `id`                                     | `boolean`                     |
+| `automation-duplicate` | `{ id, name? }`                         | `AutomationDefinition \| null` |
+| `automation-import`   | —                                        | `AutomationDefinition \| null` (native dialog) |
+| `automation-export`   | `id`                                     | `string \| null` (path, native dialog) |
 | `dev-capture-screenshot` | —                                     | `string` (dev-mode only PNG path) |
 | `logs-history`         | —                                        | `LogEntry[]` (buffered history) |
 
@@ -178,6 +185,7 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `mcpGetSettings()` / `mcpSetSettings(settings)` — read/update embedded MCP server settings
 - `mcpUiCallTool({ name, args })` / `mcpUiListViews()` — in-app MCP App view bridge
 - `aiGetSettings()` / `aiSetSettings(update)` / `aiConnectTest(candidate?)` / `aiListModels(candidate?)` — read/update and probe the Copilot AI provider
+- `automationList()` / `automationGet(id)` / `automationSave(definition)` / `automationDelete(id)` / `automationDuplicate({ id, name? })` / `automationImport()` / `automationExport(id)` — manage the persisted automation library
 - `captureDevScreenshot()` — save a PNG of the window (dev mode only; rejects otherwise)
 - `checkForUpdates()` / `downloadUpdate()` / `installUpdate(path)` / `cancelDownload()` / `openReleaseNotes(url)`
 - `scheduleInstallOnRestart(path, version)` / `cancelRestartInstall()` / `getPendingInstall()` — manage a deferred update install

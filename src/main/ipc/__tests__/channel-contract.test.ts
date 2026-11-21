@@ -9,7 +9,8 @@
  *    `registerMcpSettingsIpc`) wired directly in `src/main/index.ts`.
  * 2. **Preload** - the `api` object handed to `contextBridge.exposeInMainWorld`,
  *    which is what the renderer can actually reach.
- * 3. **Types** - the `ElectronAPI` interface in `src/renderer/electron-api.d.ts`.
+ * 3. **Types** - the `ElectronAPI` interface in `src/renderer/electron-api.d.ts`,
+ *    plus the `AutomationElectronApi` module augmentation in `src/shared`.
  *
  * Nothing in the type system spans that boundary, so drift in either direction
  * is silent: a channel added to `IPC` and never registered fails only at
@@ -192,21 +193,34 @@ async function collectSurfaces(): Promise<{
   return { api, apiKeys };
 }
 
-/** Reads the `ElectronAPI` member names out of the ambient declaration. */
-function declaredApiKeys(): string[] {
-  const source = readFileSync(resolve(__dirname, '../../../renderer/electron-api.d.ts'), 'utf8');
-  const start = source.indexOf('export interface ElectronAPI {');
-  expect(start, 'ElectronAPI interface not found in electron-api.d.ts').toBeGreaterThan(-1);
-  const body = source.slice(start, source.indexOf('\n}', start));
+/** Reads method names out of one interface declaration in a TypeScript source string. */
+function interfaceMethodNames(source: string, interfaceName: string): string[] {
+  const marker = `interface ${interfaceName}`;
+  const start = source.indexOf(marker);
+  if (start < 0) return [];
+  const open = source.indexOf('{', start + marker.length);
+  const end = source.indexOf('\n}', open);
+  if (open < 0 || end < 0) return [];
   const keys: string[] = [];
-  for (const line of body.split('\n').slice(1)) {
+  for (const line of source.slice(open, end).split('\n').slice(1)) {
     const trimmed = line.trim();
-    // Skip doc comments and blank lines; keep `name(`/`name?(` member lines.
     if (trimmed === '' || trimmed.startsWith('*') || trimmed.startsWith('/*') || trimmed.startsWith('//')) continue;
     const match = /^(\w+)\??\s*\(/.exec(trimmed);
     if (match?.[1]) keys.push(match[1]);
   }
-  return keys.sort();
+  return keys;
+}
+
+/** Reads declared API members from the renderer declaration and shared augmentations. */
+function declaredApiKeys(): string[] {
+  const base = readFileSync(resolve(__dirname, '../../../renderer/electron-api.d.ts'), 'utf8');
+  const automation = readFileSync(resolve(__dirname, '../../../shared/automations/electron-api.types.ts'), 'utf8');
+  const baseKeys = interfaceMethodNames(base, 'ElectronAPI');
+  expect(baseKeys.length, 'ElectronAPI interface not found in electron-api.d.ts').toBeGreaterThan(0);
+  expect(interfaceMethodNames(automation, 'AutomationElectronApi').length, 'AutomationElectronApi augmentation not found').toBeGreaterThan(
+    0,
+  );
+  return [...new Set([...baseKeys, ...interfaceMethodNames(automation, 'AutomationElectronApi')])].sort();
 }
 
 /** Memoized so the registrars run once per file; i.mock is hoisted above. */

@@ -149,6 +149,38 @@ seedAiSettingsFromUserData();
 
 const noop = () => {};
 
+const MOCK_AUTOMATION_SETTINGS = {
+  defaultBackend: 'FFMPEG',
+  tempDirectoryMode: 'app-data',
+  keepIntermediateFiles: false,
+  conflictPolicy: 'unique-suffix',
+};
+
+let mockAutomationCounter = 1;
+
+function cloneMockValue(value) {
+  return value === undefined || value === null ? value : JSON.parse(JSON.stringify(value));
+}
+
+function newMockAutomationId() {
+  const id = 'automation-mock-' + Date.now().toString(36) + '-' + mockAutomationCounter;
+  mockAutomationCounter += 1;
+  return id;
+}
+
+function makeMockAutomation(name) {
+  const now = Date.now();
+  return {
+    id: newMockAutomationId(),
+    name,
+    version: 1,
+    createdAt: now,
+    updatedAt: now,
+    graph: { nodes: [], edges: [] },
+    settings: { ...MOCK_AUTOMATION_SETTINGS },
+  };
+}
+
 // Tier A specs opt out of the terms-of-use gate by default so the existing
 // suites can exercise the app without first accepting consent. The consent is
 // seeded from the compiled shared constants (dist/shared) so it always matches
@@ -188,6 +220,59 @@ const api = {
   getVideoPreview: () => Promise.resolve(state.videoPreviewResult),
   getCapabilities: () => Promise.resolve(state.capabilitiesResult),
   compressImage: () => Promise.resolve(state.compressImageResult),
+
+  automationList: () => Promise.resolve(cloneMockValue(state.automations)),
+  automationGet: (id) => Promise.resolve(cloneMockValue(state.automations.find((item) => item.id === id)) || null),
+  automationSave: (definition) => {
+    const now = Date.now();
+    const saved = {
+      ...cloneMockValue(definition),
+      id: definition && definition.id ? definition.id : newMockAutomationId(),
+      name: definition && definition.name ? definition.name : 'Automation',
+      version: 1,
+      createdAt: definition && definition.createdAt ? definition.createdAt : now,
+      updatedAt: now,
+      graph: definition && definition.graph ? cloneMockValue(definition.graph) : { nodes: [], edges: [] },
+      settings: definition && definition.settings ? cloneMockValue(definition.settings) : { ...MOCK_AUTOMATION_SETTINGS },
+    };
+    const index = state.automations.findIndex((item) => item.id === saved.id);
+    if (index === -1) state.automations.push(saved);
+    else state.automations[index] = saved;
+    return Promise.resolve(cloneMockValue(saved));
+  },
+  automationDelete: (id) => {
+    const before = state.automations.length;
+    state.automations = state.automations.filter((item) => item.id !== id);
+    return Promise.resolve(state.automations.length !== before);
+  },
+  automationDuplicate: (request) => {
+    const original = state.automations.find((item) => item.id === (request ? request.id : null));
+    if (!original) return Promise.resolve(null);
+    const now = Date.now();
+    const duplicate = {
+      ...cloneMockValue(original),
+      id: newMockAutomationId(),
+      name: request && request.name ? request.name : original.name + ' Copy',
+      createdAt: now,
+      updatedAt: now,
+    };
+    state.automations.push(duplicate);
+    return Promise.resolve(cloneMockValue(duplicate));
+  },
+  automationImport: () => {
+    const imported = state.automationImportResult
+      ? { ...cloneMockValue(state.automationImportResult), id: newMockAutomationId() }
+      : makeMockAutomation('Imported Automation');
+    state.automations.push(imported);
+    return Promise.resolve(cloneMockValue(imported));
+  },
+  automationExport: (id) => {
+    const definition = state.automations.find((item) => item.id === id);
+    if (!definition) return Promise.resolve(null);
+    const dir = userDataDir();
+    const fileName = definition.id + '.automation.json';
+    return Promise.resolve(dir ? require('path').join(dir, fileName) : fileName);
+  },
 
   // --- Single-file conversion ------------------------------------------------
   convertFile: () => {

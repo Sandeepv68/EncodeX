@@ -243,12 +243,22 @@ export interface QueueState {
   clearJobs: () => void;
 }
 
+export interface AutomationBridge {
+  automationList?: () => Promise<AutomationDefinition[]>;
+  automationGet?: (id: string) => Promise<AutomationDefinition | null>;
+  automationSave?: (definition: AutomationDefinition) => Promise<AutomationDefinition>;
+  automationDelete?: (id: string) => Promise<boolean>;
+  automationDuplicate?: (request: { id: string; name?: string }) => Promise<AutomationDefinition | null>;
+  automationImport?: () => Promise<AutomationDefinition | null>;
+  automationExport?: (id: string) => Promise<string | null>;
+}
+
 /**
  * State of the Automations graph editor store.
  *
  * Holds the saved definition library, the graph currently being edited,
- * validation issues, selection state, and local run progress. Persistence and
- * real execution arrive in later phases; Phase 1 keeps everything in memory.
+ * validation issues, selection state, and local run progress. Library
+ * operations are routed through the preload bridge with in-memory fallbacks.
  * @interface AutomationState
  */
 export interface AutomationState {
@@ -257,12 +267,19 @@ export interface AutomationState {
   selectedNodeId: string | null;
   validationIssues: AutomationIssue[];
   isDirty: boolean;
+  isInitialized: boolean;
   runs: Record<string, AutomationRunState>;
   backendStatus: Record<AutomationBackend, boolean>;
   setDefinitions: (definitions: AutomationDefinition[]) => void;
+  initialize: () => Promise<AutomationDefinition[]>;
   newAutomation: () => void;
-  loadAutomation: (id: string) => void;
-  saveAutomation: () => void;
+  loadAutomation: (id: string) => Promise<AutomationDefinition | null>;
+  saveAutomation: () => Promise<AutomationDefinition | null>;
+  saveAutomationAs: (name: string) => Promise<AutomationDefinition | null>;
+  deleteAutomation: (id: string) => Promise<boolean>;
+  duplicateAutomation: (id: string) => Promise<AutomationDefinition | null>;
+  importAutomation: () => Promise<AutomationDefinition | null>;
+  exportAutomation: (id: string) => Promise<string | null>;
   renameAutomation: (name: string) => void;
   selectNode: (id: string | null) => void;
   addNode: (kind: AutomationNodeKind, position: AutomationPosition, stageId?: string) => string;

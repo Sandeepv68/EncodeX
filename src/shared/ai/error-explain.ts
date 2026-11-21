@@ -88,6 +88,10 @@ const ERROR_HELP: Record<ErrorCodeType, { title: string; causes: string[] }> = {
     title: 'Invalid queue file',
     causes: ['The exported queue file is corrupt or from an incompatible version.'],
   },
+  INVALID_AUTOMATION_FILE: {
+    title: 'Invalid automation file',
+    causes: ['The exported automation file is corrupt or from an incompatible version.'],
+  },
   FILTERS_REQUIRE_RE_ENCODE: {
     title: 'Filters need re-encoding',
     causes: ['Video filters were combined with lossless stream copy (copy: true).'],

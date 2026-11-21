@@ -1,6 +1,6 @@
 # Automations Feature Plan — Visual Media Pipelines for EncodeX
 
-> **Status:** In progress — Phase 0 and Phase 1 implemented (Phase 1 static editor complete); Phase 2 not started
+> **Status:** In progress — Phase 0, Phase 1, and Phase 2 implemented (persisted automation library complete); Phase 3 not started
 > **Last updated:** 2026-11-21
 > **Owner:** EncodeX core
 > **Related docs:** [`ARCHITECTURE.md`](ARCHITECTURE.md), [`ARCHITECTURE_PROCESSES.md`](ARCHITECTURE_PROCESSES.md), [`ARCHITECTURE_RENDERER.md`](ARCHITECTURE_RENDERER.md), [`ARCHITECTURE_TRANSCODERS.md`](ARCHITECTURE_TRANSCODERS.md), [`IPC.md`](IPC.md), [`FEATURES.md`](FEATURES.md), [`TESTING.md`](TESTING.md), [`PROJECT_STRUCTURE.md`](PROJECT_STRUCTURE.md)
@@ -13,7 +13,7 @@
 |---|---|---|
 | Phase 0 — Foundation | **Complete** | `@xyflow/react` installed; shared automation model, defaults, references, validator, compiler, zod schema, and progress-event guard implemented with 42 passing unit tests. IPC channel constants intentionally deferred to the IPC-wiring phase (see note below). |
 | Phase 1 — Page shell and static editor | **Complete** | `/automations` route/nav/icon/skeleton/i18n and React Flow editor implemented with in-memory store, palette/canvas/inspector/toolbar/stage list/run panel/library drawer, validation display, and local run placeholder. |
-| Phase 2 — Save/load library | Not started | — |
+| Phase 2 — Save/load library | **Complete** | Persisted definition library with seven IPC channels, atomic JSON storage plus backup recovery, bounded schema validation, native import/export, Save As/Duplicate, dirty state, and toast feedback. |
 | Phase 3 — Runtime engine | Not started | — |
 | Phase 4 — Run UX and cascading stages | Not started | — |
 | Phase 5 — Hardening and release | Not started | — |
@@ -39,6 +39,16 @@
 - `npm run sync:locales` added 64 keys per locale; `validate:locale-usage` reports 1226 base keys with 0 unused and 0 unknown keys, and `validate:locales` reports 55 locales matching en-US.
 - Verification completed for Phase 1: `npm run format:check`, `npm run lint`, `npm run lint:types`, `npm run validate:locale-usage`, `npm run validate:locales`, `npm run typecheck`, `npm test -- --reporter=default` (**370 files / 5449 tests passing**), `npm run audit:gate`, and `npm run doc:drift` all pass.
 - Doc-drift markers were synced from `test-files=379` to `381`, `renderer-pages=13` to `14`, `renderer-components=72` to `84`, `renderer-stores=21` to `22`, and `renderer-styles=76` to `78`.
+
+### Phase 2 notes and deviations
+
+- Added seven Phase 2 IPC channels (`AUTOMATION_LIST`, `AUTOMATION_GET`, `AUTOMATION_SAVE`, `AUTOMATION_DELETE`, `AUTOMATION_DUPLICATE`, `AUTOMATION_IMPORT`, `AUTOMATION_EXPORT`). Runtime `START`, `CANCEL`, and progress channels remain deferred to Phase 3.
+- Added `src/main/automations/store.ts`: versioned JSON persistence under `userData/automations/definitions.json`, atomic writes, `.bak` recovery, bounded definition counts, and size guards.
+- Added shared limit constants and stricter schema parsing for every IPC argument, persisted file, and portable import envelope; invalid imports map to `INVALID_AUTOMATION_FILE`.
+- Renderer store/hook actions now bridge list/get/save/delete/duplicate/import/export with in-memory fallbacks, in addition to Save As and dirty-state handling.
+- Native file dialogs are used for import/export; the renderer shows success/error toasts for every library action.
+- `npm run sync:locales` added 23 keys per locale; `validate:locale-usage` reports 1249 base keys with 0 unused and 0 unknown keys, and `validate:locales` reports 55 locales matching en-US.
+- Verification completed for Phase 2: `npm run format:check`, `npm run lint`, `npm run lint:types`, `npm run validate:locale-usage`, `npm run validate:locales`, `npm run typecheck`, `npm test -- --reporter=default` (**372 files / 5487 tests passing**), `npm run audit:gate`, and `npm run doc:drift` all pass.
 
 ---
 
@@ -653,11 +663,11 @@ npm run build
 
 **Exit criteria:** users can visually build a graph in the UI without execution.
 
-### Phase 2 — Save/load library
+### Phase 2 — Save/load library ✅ Complete
 
-- Implement main-process persistence and IPC handlers.
-- Wire store/hooks to list/save/load/delete/import/export.
-- Add dirty state, Save As, and Duplicate.
+- [x] Implement main-process persistence and IPC handlers.
+- [x] Wire store/hooks to list/save/load/delete/import/export.
+- [x] Add dirty state, Save As, and Duplicate.
 
 **Exit criteria:** automations persist across app restarts and can be reopened.
 

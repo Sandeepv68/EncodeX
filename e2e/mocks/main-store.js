@@ -51,6 +51,8 @@ const defaults = {
     hwaccels: ['none', 'vaapi', 'nvenc'],
   },
   compressImageResult: null,
+  automations: [],
+  automationImportResult: null,
   convertBehavior: 'resolve',
   queueJobs: [],
   queueState: { paused: false, concurrency: 2 },

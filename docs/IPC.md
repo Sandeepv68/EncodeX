@@ -1,6 +1,6 @@
 # 🔌 IPC Channels & electronAPI
 
-<!-- drift: ipc-channels=115 -->
+<!-- drift: ipc-channels=122 -->
 
 All channel names are centralized in `src/shared/ipc-channels.ts`.
 
@@ -84,6 +84,13 @@ All channel names are centralized in `src/shared/ipc-channels.ts`.
 | `ai-settings-set`     | `update`                                 | `AiSettingsView`              |
 | `ai-connect-test`     | `candidate?`                             | `AiConnectTestResult`         |
 | `ai-models-list`      | `candidate?`                             | `AiModelsListResult`          |
+| `automation-list`     | —                                        | `AutomationDefinition[]`      |
+| `automation-get`      | `id`                                     | `AutomationDefinition \| null` |
+| `automation-save`     | `definition`                             | `AutomationDefinition`        |
+| `automation-delete`   | `id`                                     | `boolean`                     |
+| `automation-duplicate` | `{ id, name? }`                         | `AutomationDefinition \| null` |
+| `automation-import`   | —                                        | `AutomationDefinition \| null` (native dialog) |
+| `automation-export`   | `id`                                     | `string \| null` (path, native dialog) |
 | `dev-capture-screenshot` | —                                     | `string` (PNG path)           |
 | `logs-history`        | —                                        | `LogEntry[]`                  |
 
@@ -223,6 +230,13 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `aiSetSettings(update) -> Promise<AiSettingsView>`
 - `aiConnectTest(candidate?) -> Promise<AiConnectTestResult>`
 - `aiListModels(candidate?) -> Promise<AiModelsListResult>`
+- `automationList() -> Promise<AutomationDefinition[]>`
+- `automationGet(id) -> Promise<AutomationDefinition | null>`
+- `automationSave(definition) -> Promise<AutomationDefinition>`
+- `automationDelete(id) -> Promise<boolean>`
+- `automationDuplicate({ id, name? }) -> Promise<AutomationDefinition | null>`
+- `automationImport() -> Promise<AutomationDefinition | null>`
+- `automationExport(id) -> Promise<string | null>`
 - `captureDevScreenshot() -> Promise<string>`
 - `openLogsWindow() -> void`
 - `logsGetHistory() -> Promise<LogEntry[]>`

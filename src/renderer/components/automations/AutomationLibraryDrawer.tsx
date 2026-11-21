@@ -3,19 +3,25 @@
 import { useTranslation } from 'react-i18next';
 import { Button, Drawer, IconButton, List, ListItemButton, ListItemText, Typography } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { useAutomationStore } from '../../stores/automationStore';
-import { DrawerActions, DrawerHeader, LibraryRow } from '../../styles/Automations.styles';
+import { faCopy, faDownload, faFileExport, faFileImport, faPlus, faTrash, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { useAutomations } from '../../hooks/useAutomations';
+import { DrawerActions, DrawerHeader, LibraryActions, LibraryRow } from '../../styles/Automations.styles';
 import type { AutomationLibraryDrawerProps } from './Automation.types';
 
-/** Shows saved automations and exposes new/load/save actions. */
+/** Shows saved automations and exposes library actions. */
 export default function AutomationLibraryDrawer({ open, onClose }: AutomationLibraryDrawerProps) {
   const { t } = useTranslation();
-  const definitions = useAutomationStore((state) => state.definitions);
-  const activeDefinition = useAutomationStore((state) => state.activeDefinition);
-  const newAutomation = useAutomationStore((state) => state.newAutomation);
-  const loadAutomation = useAutomationStore((state) => state.loadAutomation);
-  const saveAutomation = useAutomationStore((state) => state.saveAutomation);
+  const {
+    definitions,
+    activeDefinition,
+    newAutomation,
+    saveAutomation,
+    loadAutomation,
+    duplicateAutomation,
+    deleteAutomation,
+    importAutomation,
+    exportAutomation,
+  } = useAutomations();
 
   return (
     <Drawer anchor="right" open={open} onClose={onClose} aria-label={t('automations.libraryTitle')}>
@@ -37,8 +43,20 @@ export default function AutomationLibraryDrawer({ open, onClose }: AutomationLib
         >
           {t('automations.new')}
         </Button>
-        <Button size="small" variant="contained" onClick={saveAutomation} disabled={!activeDefinition}>
+        <Button size="small" variant="contained" onClick={() => void saveAutomation()} disabled={!activeDefinition}>
           {t('automations.save')}
+        </Button>
+        <Button size="small" variant="outlined" startIcon={<FontAwesomeIcon icon={faFileImport} />} onClick={() => void importAutomation()}>
+          {t('automations.import')}
+        </Button>
+        <Button
+          size="small"
+          variant="outlined"
+          startIcon={<FontAwesomeIcon icon={faFileExport} />}
+          onClick={() => activeDefinition && void exportAutomation(activeDefinition.id)}
+          disabled={!activeDefinition}
+        >
+          {t('automations.export')}
         </Button>
       </DrawerActions>
       <List>
@@ -46,12 +64,27 @@ export default function AutomationLibraryDrawer({ open, onClose }: AutomationLib
           <LibraryRow key={definition.id}>
             <ListItemButton
               onClick={() => {
-                loadAutomation(definition.id);
+                void loadAutomation(definition.id);
                 onClose();
               }}
             >
               <ListItemText primary={definition.name} secondary={t('automations.libraryVersion', { version: definition.version })} />
             </ListItemButton>
+            <LibraryActions>
+              <IconButton size="small" aria-label={t('automations.duplicate')} onClick={() => void duplicateAutomation(definition.id)}>
+                <FontAwesomeIcon icon={faCopy} />
+              </IconButton>
+              <IconButton size="small" aria-label={t('automations.delete')} onClick={() => void deleteAutomation(definition.id)}>
+                <FontAwesomeIcon icon={faTrash} />
+              </IconButton>
+              <IconButton
+                size="small"
+                aria-label={t('automations.exportDefinition', { name: definition.name })}
+                onClick={() => void exportAutomation(definition.id)}
+              >
+                <FontAwesomeIcon icon={faDownload} />
+              </IconButton>
+            </LibraryActions>
           </LibraryRow>
         ))}
       </List>

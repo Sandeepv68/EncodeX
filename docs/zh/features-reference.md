@@ -1,6 +1,6 @@
 # 功能
 
-<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 builtin-profiles=115 profile-categories=8 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 error-codes=28 copilot-operations=13 video-filter-presets=8 mcp-tools=36 mcp-registrations=37 mcp-gui-tools=6 -->
+<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 builtin-profiles=115 profile-categories=8 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 error-codes=29 copilot-operations=13 video-filter-presets=8 mcp-tools=36 mcp-registrations=37 mcp-gui-tools=6 -->
 
 EncodeX 是一款跨平台多媒体转换工具，将 FFmpeg 的强大能力带入现代、直观的桌面界面。基于 Electron、React 和 TypeScript 构建，它让您可以在不同格式之间转换媒体、提取音频、剪切视频和压缩图像 — 全部通过简洁、灵敏的 UI 完成，并配备批处理队列、硬件加速、CLI 模式和完整的国际化。
 

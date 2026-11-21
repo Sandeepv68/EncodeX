@@ -9,6 +9,11 @@ export interface AutomationToolbarProps {
   onNew: () => void;
   onOpenLibrary: () => void;
   onSave: () => void;
+  onSaveAs: () => void;
+  onDuplicate: () => void;
+  onDelete: () => void;
+  onImport: () => void;
+  onExport: () => void;
   onSelectInput: () => void;
   onRun: () => void;
 }

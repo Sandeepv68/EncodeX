@@ -3,7 +3,7 @@ title: "Feature Reference — Supported Formats, Codecs & Capabilities"
 description: "Complete feature reference for EncodeX: supported media formats, codec tables, validation utilities, hardware acceleration, and conversion options."
 ---
 
-<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 builtin-profiles=115 profile-categories=8 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 error-codes=28 copilot-operations=13 video-filter-presets=8 mcp-tools=36 mcp-registrations=37 mcp-gui-tools=6 -->
+<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 builtin-profiles=115 profile-categories=8 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 error-codes=29 copilot-operations=13 video-filter-presets=8 mcp-tools=36 mcp-registrations=37 mcp-gui-tools=6 -->
 
 # Features
 
@@ -230,7 +230,7 @@ Custom update manager that checks GitHub Releases for new versions, notifies the
 
 ### Error Handling
 
-Structured error system with 28 typed error codes (`ErrorCode`), user-facing localized messages, a global error snackbar, inline error banners, toast notifications, nested React error boundaries, and an in-app error history (cap 50). All errors are normalized through `formatError()` and propagated across IPC.
+Structured error system with 29 typed error codes (`ErrorCode`), user-facing localized messages, a global error snackbar, inline error banners, toast notifications, nested React error boundaries, and an in-app error history (cap 50). All errors are normalized through `formatError()` and propagated across IPC.
 
 ## Supported Media Formats
 

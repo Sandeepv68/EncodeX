@@ -8,4 +8,5 @@ export * from './defaults';
 export * from './references';
 export * from './validate';
 export * from './compile';
+export * from './limits';
 export * from './schema';

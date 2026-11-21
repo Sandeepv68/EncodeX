@@ -1403,6 +1403,29 @@
       "succeeded": "Succeeded",
       "failed": "Failed",
       "cancelled": "Cancelled"
-    }
+    },
+    "saveAs": "Save as",
+    "saveAsTitle": "Save automation as",
+    "saveAsConfirm": "Save copy",
+    "cancel": "Cancel",
+    "duplicate": "Duplicate",
+    "delete": "Delete",
+    "import": "Import",
+    "export": "Export",
+    "saveSuccess": "Automation saved",
+    "saveFailed": "Could not save the automation",
+    "saveAsSuccess": "Saved as {{name}}",
+    "saveAsFailed": "Could not save a copy of the automation",
+    "loadSuccess": "Loaded {{name}}",
+    "loadFailed": "Could not load the automation",
+    "deleteSuccess": "Automation deleted",
+    "deleteFailed": "Could not delete the automation",
+    "duplicateSuccess": "Duplicated as {{name}}",
+    "duplicateFailed": "Could not duplicate the automation",
+    "importSuccess": "Imported {{name}}",
+    "importFailed": "Could not import the automation",
+    "exportSuccess": "Automation exported",
+    "exportFailed": "Could not export the automation",
+    "exportDefinition": "Export {{name}}"
   }
 }
