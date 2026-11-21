@@ -67,6 +67,9 @@ const SESSION_OPTIONS = { mock: false, env: { E2E_REAL: '1' } } as const;
 /** Every `IPC` member the built preload subscribes to with `ipcRenderer.on`. */
 const EXPECTED_PUSH_CONSTANTS = [
   'AUDIT_ENTRY',
+  'AUTOMATION_EVENT',
+  'AUTOMATION_PROGRESS',
+  'AUTOMATION_STATUS',
   'CONVERSION_PROGRESS',
   'LOG_MESSAGE',
   'LOGS_CLEARED',

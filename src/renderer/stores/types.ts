@@ -58,6 +58,7 @@ import type {
   AutomationPosition,
   AutomationProgressEvent,
   AutomationRunState,
+  AutomationStartRequest,
 } from '../../shared/automations/types';
 
 /**
@@ -251,6 +252,11 @@ export interface AutomationBridge {
   automationDuplicate?: (request: { id: string; name?: string }) => Promise<AutomationDefinition | null>;
   automationImport?: () => Promise<AutomationDefinition | null>;
   automationExport?: (id: string) => Promise<string | null>;
+  automationStart?: (request: AutomationStartRequest) => Promise<string>;
+  automationCancel?: (runId: string) => Promise<boolean>;
+  onAutomationStatus?: (cb: (event: AutomationProgressEvent) => void) => () => void;
+  onAutomationProgress?: (cb: (event: AutomationProgressEvent) => void) => () => void;
+  onAutomationEvent?: (cb: (event: AutomationProgressEvent) => void) => () => void;
 }
 
 /**

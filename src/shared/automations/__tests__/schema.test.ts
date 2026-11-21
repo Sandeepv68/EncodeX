@@ -1,7 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { createAutomationDefinition } from '../defaults';
 import { AUTOMATION_LIMITS, isBoundedAutomationJsonValue } from '../limits';
-import { isAutomationDefinition, parseAutomationDefinition, parseAutomationDuplicateRequest, parseAutomationStoreJson } from '../schema';
+import {
+  isAutomationDefinition,
+  parseAutomationCancelRequest,
+  parseAutomationDefinition,
+  parseAutomationDuplicateRequest,
+  parseAutomationStartRequest,
+  parseAutomationStoreJson,
+} from '../schema';
 
 describe('automation schema bounds', () => {
   const definition = createAutomationDefinition('auto-1', 'Valid', 1000);
@@ -74,5 +81,27 @@ describe('automation schema bounds', () => {
   it('rejects hostile duplicate requests with extra keys', () => {
     expect(parseAutomationDuplicateRequest({ id: 'auto-1', name: 'Copy' })).toEqual({ id: 'auto-1', name: 'Copy' });
     expect(() => parseAutomationDuplicateRequest({ id: 'auto-1', name: 'Copy', admin: true })).toThrow();
+  });
+
+  it('parses start/cancel runtime requests with bounded strings and enums', () => {
+    expect(
+      parseAutomationStartRequest({
+        definition,
+        runtime: {
+          inputPath: 'C:/in.mov',
+          outputPath: 'C:/out.mp4',
+          availableBackends: ['FFMPEG'],
+          mediaKind: 'video',
+          tempRoot: 'custom',
+        },
+      }),
+    ).toMatchObject({ definition, runtime: { mediaKind: 'video', tempRoot: 'custom' } });
+    expect(parseAutomationCancelRequest({ runId: 'run-1' })).toEqual({ runId: 'run-1' });
+
+    expect(() => parseAutomationStartRequest({ definition, runtime: { tempRoot: 'C:/tmp' } })).toThrow(/temp root/);
+    expect(() => parseAutomationStartRequest({ definition, runtime: { tempRoot: '../escape' } })).toThrow(/temp root/);
+    expect(() => parseAutomationStartRequest({ definition, runtime: { availableBackends: ['BAD'] } })).toThrow();
+    expect(() => parseAutomationStartRequest({ definition, runtime: { mediaKind: 'document' } })).toThrow();
+    expect(() => parseAutomationCancelRequest({ runId: 'run-1', extra: true })).toThrow();
   });
 });

@@ -188,6 +188,17 @@ export interface AutomationRuntime {
   tempRoot?: string;
 }
 
+/** Request payload for starting an automation run. */
+export interface AutomationStartRequest {
+  definition: AutomationDefinition;
+  runtime?: AutomationRuntime;
+}
+
+/** Request payload for cancelling an automation run. */
+export interface AutomationCancelRequest {
+  runId: string;
+}
+
 /** One normalized step in a compiled execution plan. */
 export interface AutomationStep {
   nodeId: string;

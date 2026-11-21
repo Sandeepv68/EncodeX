@@ -1426,6 +1426,11 @@
     "importFailed": "Could not import the automation",
     "exportSuccess": "Automation exported",
     "exportFailed": "Could not export the automation",
-    "exportDefinition": "Export {{name}}"
+    "exportDefinition": "Export {{name}}",
+    "runNoDefinition": "Select an automation to run",
+    "runUnavailable": "Automation execution is not available in this build",
+    "runFailed": "Could not start the automation run",
+    "cancelUnavailable": "Automation cancellation is not available in this build",
+    "cancelFailed": "Could not cancel the automation run"
   }
 }

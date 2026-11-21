@@ -123,8 +123,9 @@ const API_TABLE: Record<string, MethodEntry> = {
   aiGetSettings: { kind: 'invoke', params: [] },
   aiSetSettings: { kind: 'invoke', params: ['update'] },
   aiConnectTest: { kind: 'invoke', params: ['candidate'] },
-
   aiListModels: { kind: 'invoke', params: ['candidate'] },
+  automationStart: { kind: 'invoke', params: ['request'] },
+  automationCancel: { kind: 'invoke', params: ['runId'] },
   captureDevScreenshot: { kind: 'invoke', params: [] },
   checkForUpdates: { kind: 'invoke', params: [] },
   downloadUpdate: { kind: 'invoke', params: [] },
@@ -151,6 +152,9 @@ const SUBSCRIBERS: readonly string[] = [
   'onQueueProgress',
   'onQueueCancelled',
   'onQueueMoved',
+  'onAutomationStatus',
+  'onAutomationProgress',
+  'onAutomationEvent',
   'onMuxQueueAdded',
   'onMuxQueueRemoved',
   'onMuxQueueStatusChange',
@@ -302,6 +306,10 @@ function benignResolveFor(name: string): unknown {
       return { ok: false, message: '' };
     case 'aiListModels':
       return { ok: true, models: [] };
+    case 'automationStart':
+      return 'run-mock';
+    case 'automationCancel':
+      return true;
     default:
       return undefined;
   }

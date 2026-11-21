@@ -1,145 +1,150 @@
 # 🔌 IPC Channels & electronAPI
 
-<!-- drift: ipc-channels=122 -->
+<!-- drift: ipc-channels=127 -->
 
 All channel names are centralized in `src/shared/ipc-channels.ts`.
 
 ## 📥 Requests (invoke from renderer)
 
-| Channel               | Arguments                                | Returns                       |
-| --------------------- | ---------------------------------------- | ----------------------------- |
-| `select-file`         | `filters?`                               | `string \| null`              |
-| `select-files`        | `filters?`                               | `string[]`                    |
-| `select-folder-files` | —                                        | `string[]`                    |
-| `select-output`       | —                                        | `string \| null`              |
-| `select-directory`    | —                                        | `string \| null`              |
-| `expand-paths`        | `paths`                                  | `string[]`                    |
-| `get-media-info`      | `filePath, transcoderType`               | `MediaInfo`                   |
-| `get-image-info`      | `filePath`                               | `ImageExifData \| null`       |
-| `get-image-preview`   | `filePath`                               | `string \| null` (data URL)   |
-| `get-image-file-info` | `filePath`                               | `ImageFileInfo \| null`       |
-| `get-video-preview`   | `filePath`                               | `string \| null` (data URL)   |
-| `get-capabilities`    | —                                        | `EncoderCapabilities \| null` |
-| `get-bmf-status`      | —                                        | `BmfStatus`                   |
-| `copilot-plan`        | `CopilotPlanRequest`                     | `CopilotPlan`                 |
-| `convert-file`        | `input, output, options, transcoderType` | `void`                        |
-| `cancel-conversion`   | —                                        | `void`                        |
-| `pause-conversion`    | —                                        | `void`                        |
-| `resume-conversion`   | —                                        | `void`                        |
-| `queue-add`           | `input, output, options, transcoder`     | `string` (job id)             |
-| `queue-remove`        | `id`                                     | `void`                        |
-| `queue-list`          | —                                        | `QueueJob[]`                  |
-| `queue-get-state`     | —                                        | `{ paused, concurrency }`     |
-| `queue-cancel-all`    | —                                        | `void`                        |
-| `queue-clear-completed` | —                                      | `number` (count removed)      |
-| `queue-set-concurrency` | `concurrency`                           | `void`                        |
-| `queue-set-when-done` | `config`                                 | `void`                        |
-| `queue-move-to`       | `id, toPosition`                         | `boolean`                     |
-| `queue-update-options` | `id, options, output?`                  | `boolean`                     |
-| `queue-start`         | —                                        | `void`                        |
-| `queue-pause`         | —                                        | `void`                        |
-| `queue-resume`        | —                                        | `void`                        |
-| `queue-export`        | —                                        | `number` (count exported)     |
-| `queue-import`        | —                                        | `number` (count imported)     |
-| `mux-queue-add`       | `MuxQueueAddPayload`                     | `string` (job id)             |
-| `mux-queue-remove`    | `id`                                     | `void`                        |
-| `mux-queue-list`      | —                                        | `MuxQueueJob[]`               |
-| `mux-queue-get-state` | —                                        | `{ paused, concurrency }`     |
-| `mux-queue-start`     | —                                        | `void`                        |
-| `mux-queue-pause`     | —                                        | `void`                        |
-| `mux-queue-resume`    | —                                        | `void`                        |
-| `mux-queue-cancel-all` | —                                       | `void`                        |
-| `mux-queue-clear-completed` | —                                   | `number` (count removed)      |
-| `mux-queue-set-concurrency` | `concurrency`                       | `void`                        |
-| `mux-queue-move-to`   | `id, toPosition`                         | `boolean`                     |
-| `queue-reveal`        | `filePath`                               | `void`                        |
-| `set-launch-at-login` | `enabled`                                | `void`                        |
-| `notifications-get-settings` | —                                 | `DesktopNotificationsSettings` |
-| `notifications-set-enabled` | `enabled`                          | `DesktopNotificationsSettings` |
-| `player-open`         | `filePath`                               | `number` (generation token)   |
-| `player-seek`         | `time`                                   | `number` (generation token)   |
-| `player-close`        | —                                        | `void`                        |
-| `player-get-frame`    | —                                        | `PlayerFrame \| null`         |
-| `extract-waveform`    | `filePath, duration`                     | `WaveformData \| null`        |
-| `extract-thumbnails`  | `filePath, duration`                     | `ThumbnailStrip \| null`      |
-| `check-for-updates`   | —                                        | `void`                        |
-| `download-update`     | —                                        | `void`                        |
-| `install-update`      | `installerPath`                          | `void`                        |
-| `cancel-download`     | —                                        | `void`                        |
-| `open-release-notes`  | `url`                                    | `void`                        |
-| `schedule-install-on-restart` | `installerPath, version`       | `void`                        |
-| `cancel-install-on-restart` | —                               | `void`                        |
-| `get-pending-install` | —                                        | `PendingInstall \| null`      |
-| `monitoring-get-state` | —                                       | `{ enabled }`                 |
-| `monitoring-set-enabled` | `enabled`                             | `{ enabled, backend }`        |
-| `analytics-get-state` | —                                        | `{ enabled, backend }`        |
-| `analytics-set-enabled` | `enabled`                              | `{ enabled, backend }`        |
-| `analytics-track-event` | `event`                                | `void`                        |
-| `analytics-get-posthog-config` | —                                | `{ projectToken?, host? }`    |
-| `mcp-settings-get`    | —                                        | `McpSettings`                 |
-| `mcp-settings-set`    | `settings`                               | `McpSettings`                 |
-| `mcp-ui-call-tool`    | `{ name?, args? }`                       | `unknown`                     |
-| `mcp-ui-list-views`   | —                                        | `Array<{ viewId, uri, title }>` |
-| `ai-settings-get`     | —                                        | `AiSettingsView`              |
-| `ai-settings-set`     | `update`                                 | `AiSettingsView`              |
-| `ai-connect-test`     | `candidate?`                             | `AiConnectTestResult`         |
-| `ai-models-list`      | `candidate?`                             | `AiModelsListResult`          |
-| `automation-list`     | —                                        | `AutomationDefinition[]`      |
-| `automation-get`      | `id`                                     | `AutomationDefinition \| null` |
-| `automation-save`     | `definition`                             | `AutomationDefinition`        |
-| `automation-delete`   | `id`                                     | `boolean`                     |
-| `automation-duplicate` | `{ id, name? }`                         | `AutomationDefinition \| null` |
-| `automation-import`   | —                                        | `AutomationDefinition \| null` (native dialog) |
-| `automation-export`   | `id`                                     | `string \| null` (path, native dialog) |
-| `dev-capture-screenshot` | —                                     | `string` (PNG path)           |
-| `logs-history`        | —                                        | `LogEntry[]`                  |
+| Channel                        | Arguments                                | Returns                                        |
+| ------------------------------ | ---------------------------------------- | ---------------------------------------------- |
+| `select-file`                  | `filters?`                               | `string \| null`                               |
+| `select-files`                 | `filters?`                               | `string[]`                                     |
+| `select-folder-files`          | —                                        | `string[]`                                     |
+| `select-output`                | —                                        | `string \| null`                               |
+| `select-directory`             | —                                        | `string \| null`                               |
+| `expand-paths`                 | `paths`                                  | `string[]`                                     |
+| `get-media-info`               | `filePath, transcoderType`               | `MediaInfo`                                    |
+| `get-image-info`               | `filePath`                               | `ImageExifData \| null`                        |
+| `get-image-preview`            | `filePath`                               | `string \| null` (data URL)                    |
+| `get-image-file-info`          | `filePath`                               | `ImageFileInfo \| null`                        |
+| `get-video-preview`            | `filePath`                               | `string \| null` (data URL)                    |
+| `get-capabilities`             | —                                        | `EncoderCapabilities \| null`                  |
+| `get-bmf-status`               | —                                        | `BmfStatus`                                    |
+| `copilot-plan`                 | `CopilotPlanRequest`                     | `CopilotPlan`                                  |
+| `convert-file`                 | `input, output, options, transcoderType` | `void`                                         |
+| `cancel-conversion`            | —                                        | `void`                                         |
+| `pause-conversion`             | —                                        | `void`                                         |
+| `resume-conversion`            | —                                        | `void`                                         |
+| `queue-add`                    | `input, output, options, transcoder`     | `string` (job id)                              |
+| `queue-remove`                 | `id`                                     | `void`                                         |
+| `queue-list`                   | —                                        | `QueueJob[]`                                   |
+| `queue-get-state`              | —                                        | `{ paused, concurrency }`                      |
+| `queue-cancel-all`             | —                                        | `void`                                         |
+| `queue-clear-completed`        | —                                        | `number` (count removed)                       |
+| `queue-set-concurrency`        | `concurrency`                            | `void`                                         |
+| `queue-set-when-done`          | `config`                                 | `void`                                         |
+| `queue-move-to`                | `id, toPosition`                         | `boolean`                                      |
+| `queue-update-options`         | `id, options, output?`                   | `boolean`                                      |
+| `queue-start`                  | —                                        | `void`                                         |
+| `queue-pause`                  | —                                        | `void`                                         |
+| `queue-resume`                 | —                                        | `void`                                         |
+| `queue-export`                 | —                                        | `number` (count exported)                      |
+| `queue-import`                 | —                                        | `number` (count imported)                      |
+| `mux-queue-add`                | `MuxQueueAddPayload`                     | `string` (job id)                              |
+| `mux-queue-remove`             | `id`                                     | `void`                                         |
+| `mux-queue-list`               | —                                        | `MuxQueueJob[]`                                |
+| `mux-queue-get-state`          | —                                        | `{ paused, concurrency }`                      |
+| `mux-queue-start`              | —                                        | `void`                                         |
+| `mux-queue-pause`              | —                                        | `void`                                         |
+| `mux-queue-resume`             | —                                        | `void`                                         |
+| `mux-queue-cancel-all`         | —                                        | `void`                                         |
+| `mux-queue-clear-completed`    | —                                        | `number` (count removed)                       |
+| `mux-queue-set-concurrency`    | `concurrency`                            | `void`                                         |
+| `mux-queue-move-to`            | `id, toPosition`                         | `boolean`                                      |
+| `queue-reveal`                 | `filePath`                               | `void`                                         |
+| `set-launch-at-login`          | `enabled`                                | `void`                                         |
+| `notifications-get-settings`   | —                                        | `DesktopNotificationsSettings`                 |
+| `notifications-set-enabled`    | `enabled`                                | `DesktopNotificationsSettings`                 |
+| `player-open`                  | `filePath`                               | `number` (generation token)                    |
+| `player-seek`                  | `time`                                   | `number` (generation token)                    |
+| `player-close`                 | —                                        | `void`                                         |
+| `player-get-frame`             | —                                        | `PlayerFrame \| null`                          |
+| `extract-waveform`             | `filePath, duration`                     | `WaveformData \| null`                         |
+| `extract-thumbnails`           | `filePath, duration`                     | `ThumbnailStrip \| null`                       |
+| `check-for-updates`            | —                                        | `void`                                         |
+| `download-update`              | —                                        | `void`                                         |
+| `install-update`               | `installerPath`                          | `void`                                         |
+| `cancel-download`              | —                                        | `void`                                         |
+| `open-release-notes`           | `url`                                    | `void`                                         |
+| `schedule-install-on-restart`  | `installerPath, version`                 | `void`                                         |
+| `cancel-install-on-restart`    | —                                        | `void`                                         |
+| `get-pending-install`          | —                                        | `PendingInstall \| null`                       |
+| `monitoring-get-state`         | —                                        | `{ enabled }`                                  |
+| `monitoring-set-enabled`       | `enabled`                                | `{ enabled, backend }`                         |
+| `analytics-get-state`          | —                                        | `{ enabled, backend }`                         |
+| `analytics-set-enabled`        | `enabled`                                | `{ enabled, backend }`                         |
+| `analytics-track-event`        | `event`                                  | `void`                                         |
+| `analytics-get-posthog-config` | —                                        | `{ projectToken?, host? }`                     |
+| `mcp-settings-get`             | —                                        | `McpSettings`                                  |
+| `mcp-settings-set`             | `settings`                               | `McpSettings`                                  |
+| `mcp-ui-call-tool`             | `{ name?, args? }`                       | `unknown`                                      |
+| `mcp-ui-list-views`            | —                                        | `Array<{ viewId, uri, title }>`                |
+| `ai-settings-get`              | —                                        | `AiSettingsView`                               |
+| `ai-settings-set`              | `update`                                 | `AiSettingsView`                               |
+| `ai-connect-test`              | `candidate?`                             | `AiConnectTestResult`                          |
+| `ai-models-list`               | `candidate?`                             | `AiModelsListResult`                           |
+| `automation-list`              | —                                        | `AutomationDefinition[]`                       |
+| `automation-get`               | `id`                                     | `AutomationDefinition \| null`                 |
+| `automation-save`              | `definition`                             | `AutomationDefinition`                         |
+| `automation-delete`            | `id`                                     | `boolean`                                      |
+| `automation-duplicate`         | `{ id, name? }`                          | `AutomationDefinition \| null`                 |
+| `automation-import`            | —                                        | `AutomationDefinition \| null` (native dialog) |
+| `automation-export`            | `id`                                     | `string \| null` (path, native dialog)         |
+| `automation-start`             | `AutomationStartRequest`                 | `string` (run id)                              |
+| `automation-cancel`            | `{ runId }`                              | `boolean`                                      |
+| `dev-capture-screenshot`       | —                                        | `string` (PNG path)                            |
+| `logs-history`                 | —                                        | `LogEntry[]`                                   |
 
 ## 📤 Send-only (renderer to main)
 
-| Channel                    | Payload   |
-| -------------------------- | --------- |
-| `window-minimize`          | —         |
-| `window-maximize-toggle`   | —         |
-| `window-close`             | —         |
-| `window-confirm-close`     | —         |
-| `window-set-always-on-top` | `boolean` |
-| `terms-reject`             | —         |
-| `logs-window-open`         | —         |
+| Channel                    | Payload      |
+| -------------------------- | ------------ |
+| `window-minimize`          | —            |
+| `window-maximize-toggle`   | —            |
+| `window-close`             | —            |
+| `window-confirm-close`     | —            |
+| `window-set-always-on-top` | `boolean`    |
+| `terms-reject`             | —            |
+| `logs-window-open`         | —            |
 | `logs-publish`             | `LogEntry[]` |
-| `logs-clear`               | —         |
+| `logs-clear`               | —            |
 
 ## 📡 Events (main to renderer)
 
-| Channel                    | Payload                       |
-| -------------------------- | ----------------------------- |
-| `window-maximized-changed` | `boolean`                     |
-| `window-close-requested`   | —                             |
-| `conversion-progress`      | `{ input, output, progress }` |
-| `queue-added`              | `QueueJob`                    |
-| `queue-removed`            | `string` (job id)             |
-| `queue-status-change`      | `QueueJob`                    |
-| `queue-progress`           | `{ job, progress }`           |
-| `queue-cancelled`          | —                             |
-| `queue-moved`              | `{ id, toPosition }`          |
-| `mux-queue-added`          | `MuxQueueJob`                 |
-| `mux-queue-removed`        | `string` (job id)             |
-| `mux-queue-status-change`  | `MuxQueueJob`                 |
-| `mux-queue-progress`       | `{ job, progress }`           |
-| `mux-queue-cancelled`      | —                             |
-| `mux-queue-moved`          | `{ id, toPosition }`          |
-| `player-frame`             | `PlayerFrame`                 |
-| `player-audio`             | `PlayerAudioChunk`            |
-| `player-error`             | `string`                      |
-| `log-message`              | `LogEntry`                    |
-| `audit-entry`              | `AuditEntry`                  |
+| Channel                    | Payload                               |
+| -------------------------- | ------------------------------------- |
+| `window-maximized-changed` | `boolean`                             |
+| `window-close-requested`   | —                                     |
+| `conversion-progress`      | `{ input, output, progress }`         |
+| `queue-added`              | `QueueJob`                            |
+| `queue-removed`            | `string` (job id)                     |
+| `queue-status-change`      | `QueueJob`                            |
+| `queue-progress`           | `{ job, progress }`                   |
+| `queue-cancelled`          | —                                     |
+| `queue-moved`              | `{ id, toPosition }`                  |
+| `mux-queue-added`          | `MuxQueueJob`                         |
+| `mux-queue-removed`        | `string` (job id)                     |
+| `mux-queue-status-change`  | `MuxQueueJob`                         |
+| `mux-queue-progress`       | `{ job, progress }`                   |
+| `mux-queue-cancelled`      | —                                     |
+| `mux-queue-moved`          | `{ id, toPosition }`                  |
+| `player-frame`             | `PlayerFrame`                         |
+| `player-audio`             | `PlayerAudioChunk`                    |
+| `player-error`             | `string`                              |
+| `log-message`              | `LogEntry`                            |
+| `audit-entry`              | `AuditEntry`                          |
+| `automation-status`        | `AutomationProgressEvent`             |
+| `automation-progress`      | `AutomationProgressEvent`             |
+| `automation-event`         | `AutomationProgressEvent`             |
 | `logs-window-state`        | `number \| null` (detached window id) |
-| `logs-cleared`             | —                             |
-| `notifications-clicked`    | `{ target }`                  |
-| `update-available`         | `UpdateInfo`                  |
-| `update-not-available`     | —                             |
-| `update-progress`          | `UpdateProgress`              |
-| `update-downloaded`        | `string` (installer path)     |
-| `update-error`             | `string` (error message)      |
+| `logs-cleared`             | —                                     |
+| `notifications-clicked`    | `{ target }`                          |
+| `update-available`         | `UpdateInfo`                          |
+| `update-not-available`     | —                                     |
+| `update-progress`          | `UpdateProgress`                      |
+| `update-downloaded`        | `string` (installer path)             |
+| `update-error`             | `string` (error message)              |
 
 ## 🧩 `window.electronAPI` (contextBridge API)
 
@@ -237,6 +242,8 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `automationDuplicate({ id, name? }) -> Promise<AutomationDefinition | null>`
 - `automationImport() -> Promise<AutomationDefinition | null>`
 - `automationExport(id) -> Promise<string | null>`
+- `automationStart(request) -> Promise<string>`
+- `automationCancel(runId) -> Promise<boolean>`
 - `captureDevScreenshot() -> Promise<string>`
 - `openLogsWindow() -> void`
 - `logsGetHistory() -> Promise<LogEntry[]>`
@@ -254,6 +261,9 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `onQueueProgress(cb) -> () => void`
 - `onQueueCancelled(cb) -> () => void`
 - `onQueueMoved(cb) -> () => void`
+- `onAutomationStatus(cb) -> () => void`
+- `onAutomationProgress(cb) -> () => void`
+- `onAutomationEvent(cb) -> () => void`
 - `onMuxQueueAdded(cb) -> () => void`
 - `onMuxQueueRemoved(cb) -> () => void`
 - `onMuxQueueStatusChange(cb) -> () => void`
@@ -282,13 +292,13 @@ Queued remux/demux work now has its own mux queue (`mux-queue-*` invokes and eve
 
 ### New `ConversionOptions` fields
 
-| Field                 | Type              | Notes                                                                                                                                                    |
-| --------------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `map`                 | `string[]`        | Explicit `-map` specs for the primary input (index `0`), e.g. `['0:v:0', '0:a:1']`. Replaces FFmpeg's implicit best-stream selection.                       |
-| `additionalInputs`    | `RemuxInput[]`    | Extra inputs appended after the primary, each with its own `map` specs, optional `codec` (`-c:<kind>`), optional `disposition`, optional `syncOffsetSeconds` (`-itsoffset`), and `attachment` for cover art. |
-| `chaptersFile`        | `string`          | FFMETADATA chapters file; added as the last input and selected with `-map_chapters <index>`.                                                                 |
-| `copyChapters`        | `boolean`         | `true`/absent copies the source chapters (`-map_chapters 0`); `false` drops them (`-map_chapters -1`). Defaults to copy for remux-style jobs. Trimmed copies always drop the source chapters. |
-| `audioSyncSeconds`    | `number`          | Signed shift of the primary file's audio relative to its video, applied losslessly by re-reading the primary input and mapping only the shifted audio with `-itsoffset`. Positive = audio plays later. |
+| Field              | Type           | Notes                                                                                                                                                                                                        |
+| ------------------ | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `map`              | `string[]`     | Explicit `-map` specs for the primary input (index `0`), e.g. `['0:v:0', '0:a:1']`. Replaces FFmpeg's implicit best-stream selection.                                                                        |
+| `additionalInputs` | `RemuxInput[]` | Extra inputs appended after the primary, each with its own `map` specs, optional `codec` (`-c:<kind>`), optional `disposition`, optional `syncOffsetSeconds` (`-itsoffset`), and `attachment` for cover art. |
+| `chaptersFile`     | `string`       | FFMETADATA chapters file; added as the last input and selected with `-map_chapters <index>`.                                                                                                                 |
+| `copyChapters`     | `boolean`      | `true`/absent copies the source chapters (`-map_chapters 0`); `false` drops them (`-map_chapters -1`). Defaults to copy for remux-style jobs. Trimmed copies always drop the source chapters.                |
+| `audioSyncSeconds` | `number`       | Signed shift of the primary file's audio relative to its video, applied losslessly by re-reading the primary input and mapping only the shifted audio with `-itsoffset`. Positive = audio plays later.       |
 
 `RemuxInput` input-index contract: primary is `0`, `additionalInputs` occupy `1..N` in array order, and `chaptersFile` takes `N+1`. Remux always appends the audio re-read entry last so its index is deterministic.
 

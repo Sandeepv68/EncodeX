@@ -356,6 +356,10 @@ export const LOG_IPC_AUTOMATION_IMPORT = 'AUTOMATION_IMPORT called';
 export const LOG_IPC_AUTOMATION_LIST = 'AUTOMATION_LIST called';
 /** @const {string} Logged when AUTOMATION_SAVE is invoked. */
 export const LOG_IPC_AUTOMATION_SAVE = 'AUTOMATION_SAVE called';
+/** @const {string} Logged when AUTOMATION_START is invoked. */
+export const LOG_IPC_AUTOMATION_START = 'AUTOMATION_START called';
+/** @const {string} Logged when AUTOMATION_CANCEL is invoked. */
+export const LOG_IPC_AUTOMATION_CANCEL = 'AUTOMATION_CANCEL called';
 /** @const {string} Logged when the CANCEL_CONVERSION IPC message is received. */
 export const LOG_IPC_CANCEL_CONVERSION_CALLED = 'CANCEL_CONVERSION called';
 /** @const {string} Prefix when the CONVERT_FILE IPC message is received. */
@@ -529,6 +533,12 @@ export const LOG_ON_QUEUE_REMOVED = 'onQueueRemoved:';
 export const LOG_ON_QUEUE_STATUS_CHANGE = 'onQueueStatusChange:';
 /** @const {string} Prefix when a window-maximized-change event is received. */
 export const LOG_ON_WINDOW_MAXIMIZED_CHANGE = 'onWindowMaximizedChange:';
+/** @const {string} Prefix when an automation status event is received. */
+export const LOG_ON_AUTOMATION_STATUS = 'onAutomationStatus:';
+/** @const {string} Prefix when an automation progress event is received. */
+export const LOG_ON_AUTOMATION_PROGRESS = 'onAutomationProgress:';
+/** @const {string} Prefix when an automation event is received. */
+export const LOG_ON_AUTOMATION_EVENT = 'onAutomationEvent:';
 /** @const {string} Prefix when opening a file. */
 export const LOG_OPEN = 'open:';
 /**

@@ -53,5 +53,13 @@ describe('IPC channels', () => {
     expect(IPC.LOG_MESSAGE).toBe('log-message');
     expect(IPC.AUDIT_ENTRY).toBe('audit-entry');
     expect(IPC.WINDOW_CLOSE_REQUESTED).toBe('window-close-requested');
+    expect(IPC.AUTOMATION_STATUS).toBe('automation-status');
+    expect(IPC.AUTOMATION_PROGRESS).toBe('automation-progress');
+    expect(IPC.AUTOMATION_EVENT).toBe('automation-event');
+  });
+
+  it('defines automation request channels', () => {
+    expect(IPC.AUTOMATION_START).toBe('automation-start');
+    expect(IPC.AUTOMATION_CANCEL).toBe('automation-cancel');
   });
 });

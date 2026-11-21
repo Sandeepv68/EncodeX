@@ -1,9 +1,9 @@
-/**
- * @fileoverview IPC handlers for the automation definition library.
+﻿/**
+ * @fileoverview IPC handlers for the automation definition library and runtime.
  *
- * Every library mutation is validated with the shared automation schemas and
- * persisted through {@link AutomationStore}. The two file-transfer operations
- * use native dialogs and reject invalid documents with `AppError`s.
+ * Library mutations are validated with shared automation schemas and persisted
+ * through {@link AutomationStore}. Runtime handlers start/cancel runs through a
+ * process-wide {@link AutomationRunner} and forward runner events to IPC push channels.
  */
 
 import { BrowserWindow, app, dialog, ipcMain } from 'electron';
@@ -11,6 +11,7 @@ import { readFileSync, statSync, writeFileSync } from 'fs';
 import { formatError, invalidAutomationFileError } from '../../shared/errors';
 import {
   LOG_AUTOMATION_HANDLER_FAILED,
+  LOG_IPC_AUTOMATION_CANCEL,
   LOG_IPC_AUTOMATION_DELETE,
   LOG_IPC_AUTOMATION_DUPLICATE,
   LOG_IPC_AUTOMATION_EXPORT,
@@ -18,22 +19,27 @@ import {
   LOG_IPC_AUTOMATION_IMPORT,
   LOG_IPC_AUTOMATION_LIST,
   LOG_IPC_AUTOMATION_SAVE,
+  LOG_IPC_AUTOMATION_START,
 } from '../../shared/log-constants';
 import { IPC } from '../../shared/ipc-channels';
 import { Logger } from '../../shared/logger';
 import { AUTOMATION_LIMITS, AUTOMATION_STORE } from '../../shared/automations/limits';
 import {
+  parseAutomationCancelRequest,
   parseAutomationDefinition,
   parseAutomationDuplicateRequest,
   parseAutomationExportJson,
   parseAutomationId,
+  parseAutomationStartRequest,
 } from '../../shared/automations/schema';
-import type { AutomationDefinition } from '../../shared/automations/types';
 import { AutomationStore, buildAutomationExport } from '../automations/store';
+import { AutomationRunner, forwardAutomationEvents } from '../automations';
+import type { IpcSender } from './types';
 
 const log = new Logger('main/ipc/automations');
 
 let store: AutomationStore | null = null;
+let runner: AutomationRunner | null = null;
 
 /** Returns the process-wide automation store, created on first use. */
 export function getAutomationStore(): AutomationStore {
@@ -44,6 +50,19 @@ export function getAutomationStore(): AutomationStore {
 /** Clears the cached store; intended for isolated tests. */
 export function resetAutomationStore(): void {
   store = null;
+}
+
+/** Returns the process-wide automation runner, created on first use. */
+export function getAutomationRunner(): AutomationRunner {
+  if (!runner) {
+    runner = new AutomationRunner({ userDataDir: app.getPath('userData') });
+  }
+  return runner;
+}
+
+/** Clears the cached runner; intended for isolated tests. */
+export function resetAutomationRunner(): void {
+  runner = null;
 }
 
 async function guarded<T>(channel: string, run: () => T | Promise<T>): Promise<T> {
@@ -63,8 +82,11 @@ function safeExportName(name: string): string {
   return `${base || 'automation'}.json`;
 }
 
-/** Registers the seven Phase 2 automation library handlers. */
-export function registerAutomationHandlers(win: BrowserWindow): void {
+/** Registers automation library and runtime handlers. */
+export function registerAutomationHandlers(win: BrowserWindow, send: IpcSender): void {
+  const automationRunner = getAutomationRunner();
+  forwardAutomationEvents(automationRunner, send);
+
   ipcMain.handle(IPC.AUTOMATION_LIST, async () =>
     guarded(IPC.AUTOMATION_LIST, () => {
       log.info(LOG_IPC_AUTOMATION_LIST);
@@ -136,6 +158,22 @@ export function registerAutomationHandlers(win: BrowserWindow): void {
       const envelope = buildAutomationExport(definition);
       writeFileSync(result.filePath, JSON.stringify(envelope, null, 2), 'utf8');
       return result.filePath;
+    }),
+  );
+
+  ipcMain.handle(IPC.AUTOMATION_START, async (_event, request: unknown) =>
+    guarded(IPC.AUTOMATION_START, () => {
+      log.info(LOG_IPC_AUTOMATION_START);
+      const parsed = parseAutomationStartRequest(request);
+      return automationRunner.start(parsed.definition, parsed.runtime);
+    }),
+  );
+
+  ipcMain.handle(IPC.AUTOMATION_CANCEL, async (_event, request: unknown) =>
+    guarded(IPC.AUTOMATION_CANCEL, () => {
+      log.info(LOG_IPC_AUTOMATION_CANCEL);
+      const parsed = parseAutomationCancelRequest(request);
+      return automationRunner.cancel(parsed.runId);
     }),
   );
 }

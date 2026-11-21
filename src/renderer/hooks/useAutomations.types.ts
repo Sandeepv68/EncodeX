@@ -21,6 +21,6 @@ export type UseAutomationsResult = Omit<
   importAutomation: () => Promise<AutomationDefinition | null>;
   exportAutomation: (id: string) => Promise<string | null>;
   selectInput: () => Promise<void>;
-  run: () => string | null;
-  cancel: (runId: string) => void;
+  run: () => Promise<string | null>;
+  cancel: (runId: string) => Promise<boolean>;
 };

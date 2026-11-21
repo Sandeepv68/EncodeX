@@ -83,6 +83,21 @@ describe('preload', () => {
     createdAt: 0,
   } as const;
 
+  const AUTOMATION_EVENT_FIXTURE = {
+    runId: 'run-1',
+    automationId: 'auto-1',
+    nodeId: 'node-1',
+    stageId: 'stage-1',
+    status: 'running',
+    progress: 42,
+    message: 'Working',
+  } as const;
+
+  const AUTOMATION_START_REQUEST = {
+    definition: { id: 'auto-1', name: 'Pipeline' },
+    runtime: { inputPath: '/in.mp4' },
+  } as const;
+
   const UPDATE_INFO_FIXTURE = {
     version: '1.0.1',
     releaseNotes: 'Fixes everything',
@@ -141,6 +156,7 @@ describe('preload', () => {
     ['automationDuplicate', IPC.AUTOMATION_DUPLICATE, [{ id: 'auto-1' }]],
     ['automationImport', IPC.AUTOMATION_IMPORT, []],
     ['automationExport', IPC.AUTOMATION_EXPORT, ['auto-1']],
+    ['automationStart', IPC.AUTOMATION_START, [AUTOMATION_START_REQUEST]],
     ['convertFile', IPC.CONVERT_FILE, ['in.mp4', 'out.mp4', {}, 'FFMPEG']],
     ['pauseConversion', IPC.PAUSE_CONVERSION, []],
     ['resumeConversion', IPC.RESUME_CONVERSION, []],
@@ -193,6 +209,13 @@ describe('preload', () => {
     expect(result).toBe('ok');
   });
 
+  it('automationCancel wraps the run id in the cancel request payload', async () => {
+    ipcRendererMock.invoke.mockResolvedValue(true);
+    const result = await (api.automationCancel as (runId: string) => Promise<boolean>)('run-1');
+    expect(ipcRendererMock.invoke).toHaveBeenCalledWith(IPC.AUTOMATION_CANCEL, { runId: 'run-1' });
+    expect(result).toBe(true);
+  });
+
   it.each([
     [
       'onConversionProgress',
@@ -203,6 +226,9 @@ describe('preload', () => {
         progress: { percent: 10, time: '00:00:01', fps: 30, speed: '1.0x', eta: '00:00:09', bitrate: '2000k' },
       },
     ],
+    ['onAutomationStatus', IPC.AUTOMATION_STATUS, { ...AUTOMATION_EVENT_FIXTURE }],
+    ['onAutomationProgress', IPC.AUTOMATION_PROGRESS, { ...AUTOMATION_EVENT_FIXTURE, progress: 55 }],
+    ['onAutomationEvent', IPC.AUTOMATION_EVENT, { ...AUTOMATION_EVENT_FIXTURE, status: 'succeeded' }],
     ['onQueueAdded', IPC.QUEUE_ADDED, { ...QUEUE_JOB_FIXTURE }],
     ['onQueueRemoved', IPC.QUEUE_REMOVED, 'id-1'],
     ['onQueueStatusChange', IPC.QUEUE_STATUS_CHANGE, { ...QUEUE_JOB_FIXTURE, status: 'running' }],
@@ -253,6 +279,10 @@ describe('preload', () => {
     // verbatim, which meant the *consumer* dereferenced them - and an `on*` channel has no rejection
     // path, so a bad payload ended the renderer rather than failing one call. The Phase 3.3 harness
     // (`e2e/specs/ipc-events.spec.ts`) found this by pushing `null` down `conversion-progress`.
+    ['onAutomationStatus', IPC.AUTOMATION_STATUS, null],
+    ['onAutomationStatus', IPC.AUTOMATION_STATUS, { ...AUTOMATION_EVENT_FIXTURE, nodeId: 7 }],
+    ['onAutomationProgress', IPC.AUTOMATION_PROGRESS, { ...AUTOMATION_EVENT_FIXTURE, progress: '42' }],
+    ['onAutomationEvent', IPC.AUTOMATION_EVENT, { ...AUTOMATION_EVENT_FIXTURE, status: 'unknown' }],
     ['onConversionProgress', IPC.CONVERSION_PROGRESS, null],
     ['onConversionProgress', IPC.CONVERSION_PROGRESS, { input: 'in.mp4', output: 'out.mp4' }],
     // `percent` is the field the preload's own log line calls `.toFixed(1)` on.

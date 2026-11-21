@@ -61,7 +61,7 @@ export function registerIpcHandlers(win: BrowserWindow): void {
   registerConversionHandlers(win, send);
   registerQueueHandlers(win, send);
   registerMuxQueueHandlers(win, send);
-  registerAutomationHandlers(win);
+  registerAutomationHandlers(win, send);
   registerSystemHandlers(win);
   registerPlayerHandlers(win, send);
   registerWindowHandlers(win);

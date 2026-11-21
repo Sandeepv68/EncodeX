@@ -69,9 +69,20 @@ describe('compileAutomation', () => {
     expect(plan.issues.map((issue) => issue.code)).toContain('empty_graph');
   });
 
-  it('builds deterministic temp paths', () => {
+  it('builds deterministic temp paths and sanitizes intermediate extensions', () => {
     expect(automationTempPath({ tempRoot: 'tmp/' }, 'node-1', 2)).toBe('tmp/step-002-node-1.bin');
+    expect(automationTempPath({ tempRoot: 'tmp/' }, 'node-1', 2, 'mp4')).toBe('tmp/step-002-node-1.mp4');
+    expect(automationTempPath({ tempRoot: 'tmp/' }, 'node-1', 2, '.MKV')).toBe('tmp/step-002-node-1.mkv');
+    expect(automationTempPath({ tempRoot: 'tmp/' }, 'node-1', 2, '../bad')).toBe('tmp/step-002-node-1.bin');
     expect(automationTempPath({}, 'node-1', 0)).toBe('automations/step-000-node-1.bin');
+  });
+
+  it('uses the sanitized output-node extension for intermediate step outputs', () => {
+    const definition = twoStageDefinition();
+    definition.graph.nodes.find((node) => node.id === 'output-1')!.data = { kind: 'output', path: 'C:/final.m4a', extension: 'M4A' };
+    const plan = compileAutomation(definition, { tempRoot: 'C:/tmp/automations' });
+    expect(plan.steps[0].outputPath).toBe('C:/tmp/automations/step-000-op-1.m4a');
+    expect(plan.steps[1].outputPath).toBe('C:/final.m4a');
   });
 });
 

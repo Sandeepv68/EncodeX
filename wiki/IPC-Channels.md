@@ -1,6 +1,6 @@
 # 🔌 IPC Channels
 
-All channel names are centralized in `src/shared/ipc-channels.ts` (122 channels). <!-- drift: ipc-channels=122 --> The preload script (`src/preload/index.ts`) exposes everything through `window.electronAPI`.
+All channel names are centralized in `src/shared/ipc-channels.ts` (122 channels). <!-- drift:ipc-channels=127 --> The preload script (`src/preload/index.ts`) exposes everything through `window.electronAPI`.
 
 ## 📥 Requests (invoke from renderer)
 

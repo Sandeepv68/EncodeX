@@ -8,14 +8,22 @@ import { isExecutableAutomationNodeKind } from './node-kinds';
 import { resolveAutomationReferences } from './references';
 import { topologicalNodeOrder, validateAutomation } from './validate';
 
-/** Extension used for intermediate media files. */
-const INTERMEDIATE_EXTENSION = 'bin';
+const DEFAULT_INTERMEDIATE_EXTENSION = 'bin';
+const EXTENSION_RE = /^[a-z0-9]{1,10}$/;
+
+/** Sanitizes an output-node extension for intermediate temp files. */
+export function sanitizeAutomationExtension(extension: unknown): string {
+  if (typeof extension !== 'string') return DEFAULT_INTERMEDIATE_EXTENSION;
+  const normalized = extension.trim().toLowerCase().replace(/^\.+/, '');
+  return EXTENSION_RE.test(normalized) ? normalized : DEFAULT_INTERMEDIATE_EXTENSION;
+}
 
 /** Builds a deterministic intermediate output path for a compiled step. */
-export function automationTempPath(runtime: AutomationRuntime, nodeId: string, index: number): string {
+export function automationTempPath(runtime: AutomationRuntime, nodeId: string, index: number, extension?: string): string {
   const root = runtime.tempRoot ?? 'automations';
   const separator = root.endsWith('/') || root.endsWith('\\') ? '' : '/';
-  return `${root}${separator}step-${String(index).padStart(3, '0')}-${nodeId}.${INTERMEDIATE_EXTENSION}`;
+  const ext = sanitizeAutomationExtension(extension);
+  return `${root}${separator}step-${String(index).padStart(3, '0')}-${nodeId}.${ext}`;
 }
 
 /** Resolves the source input path from runtime override or input nodes. */
@@ -56,6 +64,8 @@ export function compileAutomation(definition: AutomationDefinition, runtime: Aut
   const order = topologicalNodeOrder(definition);
   const byId = new Map(definition.graph.nodes.map((node) => [node.id, node]));
   const finalOutputPath = resolveOutputPath(definition, runtime) as string;
+  const outputNode = definition.graph.nodes.find((node) => node.kind === 'output');
+  const intermediateExtension = (outputNode?.data as { extension?: string } | undefined)?.extension;
   const steps: AutomationStep[] = [];
   const outputs = new Map<string, Record<string, unknown>>();
   let previousRef = '{{previous.output}}';
@@ -65,7 +75,7 @@ export function compileAutomation(definition: AutomationDefinition, runtime: Aut
     if (!node || !isExecutableAutomationNodeKind(node.kind)) continue;
     const data = node.data as { backend?: string; options?: Record<string, unknown>; outputTemplate?: string };
     const options = resolveAutomationReferences(data.options ?? {}, Object.fromEntries(outputs)) as Record<string, unknown>;
-    const outputPath = automationTempPath(runtime, id, steps.length);
+    const outputPath = automationTempPath(runtime, id, steps.length, intermediateExtension);
     const step: AutomationStep = {
       nodeId: node.id,
       stageId: node.stageId,

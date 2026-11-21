@@ -1,6 +1,6 @@
 # Automations Feature Plan — Visual Media Pipelines for EncodeX
 
-> **Status:** In progress — Phase 0, Phase 1, and Phase 2 implemented (persisted automation library complete); Phase 3 not started
+> **Status:** In progress — Phase 0, Phase 1, Phase 2, and Phase 3 implemented (runtime engine complete); Phase 4 not started
 > **Last updated:** 2026-11-21
 > **Owner:** EncodeX core
 > **Related docs:** [`ARCHITECTURE.md`](ARCHITECTURE.md), [`ARCHITECTURE_PROCESSES.md`](ARCHITECTURE_PROCESSES.md), [`ARCHITECTURE_RENDERER.md`](ARCHITECTURE_RENDERER.md), [`ARCHITECTURE_TRANSCODERS.md`](ARCHITECTURE_TRANSCODERS.md), [`IPC.md`](IPC.md), [`FEATURES.md`](FEATURES.md), [`TESTING.md`](TESTING.md), [`PROJECT_STRUCTURE.md`](PROJECT_STRUCTURE.md)
@@ -14,7 +14,7 @@
 | Phase 0 — Foundation | **Complete** | `@xyflow/react` installed; shared automation model, defaults, references, validator, compiler, zod schema, and progress-event guard implemented with 42 passing unit tests. IPC channel constants intentionally deferred to the IPC-wiring phase (see note below). |
 | Phase 1 — Page shell and static editor | **Complete** | `/automations` route/nav/icon/skeleton/i18n and React Flow editor implemented with in-memory store, palette/canvas/inspector/toolbar/stage list/run panel/library drawer, validation display, and local run placeholder. |
 | Phase 2 — Save/load library | **Complete** | Persisted definition library with seven IPC channels, atomic JSON storage plus backup recovery, bounded schema validation, native import/export, Save As/Duplicate, dirty state, and toast feedback. |
-| Phase 3 — Runtime engine | Not started | — |
+| Phase 3 — Runtime engine | **Complete** | Sequential main-process runner, FFmpeg/FFTool/BMF step execution, five runtime IPC channels, progress/status events, cancellation, run-scoped temp files, and renderer start/cancel wiring. |
 | Phase 4 — Run UX and cascading stages | Not started | — |
 | Phase 5 — Hardening and release | Not started | — |
 
@@ -49,6 +49,16 @@
 - Native file dialogs are used for import/export; the renderer shows success/error toasts for every library action.
 - `npm run sync:locales` added 23 keys per locale; `validate:locale-usage` reports 1249 base keys with 0 unused and 0 unknown keys, and `validate:locales` reports 55 locales matching en-US.
 - Verification completed for Phase 2: `npm run format:check`, `npm run lint`, `npm run lint:types`, `npm run validate:locale-usage`, `npm run validate:locales`, `npm run typecheck`, `npm test -- --reporter=default` (**372 files / 5487 tests passing**), `npm run audit:gate`, and `npm run doc:drift` all pass.
+
+### Phase 3 notes and deviations
+
+- Added five runtime IPC channels (`AUTOMATION_START`, `AUTOMATION_CANCEL`, `AUTOMATION_STATUS`, `AUTOMATION_PROGRESS`, `AUTOMATION_EVENT`) with request schemas, log constants, channel-contract coverage, preload guards, and E2E mock updates.
+- Added `src/main/automations/runner.ts`, `step-executors.ts`, `temp-files.ts`, `events.ts`, `types.ts`, and an `index.ts` barrel. The runner validates and compiles definitions again in main, checks BMF availability, executes sequential steps, cancels the active transcoder, forwards status/progress/event pushes, and cleans intermediate files.
+- Intermediate outputs are isolated under a per-run temp directory; runtime `tempRoot` overrides are limited to relative directory names and constrained by main to stay inside the app-owned automation temp area.
+- Renderer `useAutomations` now subscribes once to runtime events, buffers events emitted before a run record exists, applies runtime input/output/path overrides, and exposes `run`/`startRun` plus `cancel`.
+- Strengthened `isAutomationProgressEvent` to reject wrong-typed `message`, `error`, and `outputPath` fields in addition to routing keys, status, progress, and `stageId`.
+- `npm run sync:locales` added 5 keys per locale; `validate:locale-usage` reports 1254 base keys with 0 unused and 0 unknown keys, and `validate:locales` reports 55 locales matching en-US.
+- Verification completed for Phase 3: `npm run format:check`, `npm run lint`, `npm run lint:types`, `npm run validate:locale-usage`, `npm run validate:locales`, `npm run typecheck`, `npm test -- --reporter=default` (**374 files / 5513 tests passing**), `npm run audit:gate`, `npm run doc:drift` (facts: 26, doc files: 168, markers: 629), and `git diff --check` all pass.
 
 ---
 
@@ -671,11 +681,11 @@ npm run build
 
 **Exit criteria:** automations persist across app restarts and can be reopened.
 
-### Phase 3 — Runtime engine
+### Phase 3 — Runtime engine ✅ Complete
 
-- Implement main-process runner, step executors, temp files, events.
-- Wire `AUTOMATION_START`, cancel, and progress events.
-- Integrate FFmpeg/FFTool/BMF backends and availability checks.
+- [x] Implement main-process runner, step executors, temp files, events.
+- [x] Wire `AUTOMATION_START`, cancel, and progress events.
+- [x] Integrate FFmpeg/FFTool/BMF backends and availability checks.
 
 **Exit criteria:** a two-stage pipeline executes end to end with progress events.
 

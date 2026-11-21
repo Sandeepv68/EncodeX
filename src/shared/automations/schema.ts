@@ -6,7 +6,15 @@
  */
 
 import * as z from 'zod';
-import type { AutomationDefinition, AutomationDuplicateRequest, AutomationExport, AutomationStore } from './types';
+import type {
+  AutomationCancelRequest,
+  AutomationDefinition,
+  AutomationDuplicateRequest,
+  AutomationExport,
+  AutomationRuntime,
+  AutomationStartRequest,
+  AutomationStore,
+} from './types';
 import { AUTOMATION_NODE_KINDS } from './node-kinds';
 import { AUTOMATION_BACKENDS } from './defaults';
 import { AUTOMATION_LIMITS, isBoundedAutomationJsonValue } from './limits';
@@ -14,6 +22,13 @@ import { AUTOMATION_LIMITS, isBoundedAutomationJsonValue } from './limits';
 const requiredText = (max: number): z.ZodString => z.string().min(1).max(max);
 const optionalText = (max: number): z.ZodOptional<z.ZodString> => z.string().max(max).optional();
 const timestampSchema = z.number().finite().min(0).max(AUTOMATION_LIMITS.maxTimestamp);
+
+function isRelativeAutomationTempRoot(value: string): boolean {
+  const normalized = value.trim();
+  if (normalized.length === 0 || /^[a-zA-Z]:/.test(normalized) || normalized.includes('\0')) return false;
+  const segments = normalized.split(/[\\/]+/);
+  return segments.every((segment) => segment.length > 0 && segment !== '.' && segment !== '..');
+}
 
 /** Schema for the reusable conversion options payload. */
 export const conversionOptionsSchema = z
@@ -125,11 +140,44 @@ export const automationExportSchema = z.preprocess(
 /** Schema for the id argument of library operations. */
 export const automationIdSchema = requiredText(AUTOMATION_LIMITS.maxIdLength);
 
+/** Schema for runtime overrides supplied at execution time. */
+export const automationRuntimeSchema = z
+  .strictObject({
+    inputPath: optionalText(AUTOMATION_LIMITS.maxStringLength),
+    outputPath: optionalText(AUTOMATION_LIMITS.maxStringLength),
+    availableBackends: z
+      .array(z.enum(AUTOMATION_BACKENDS as [string, ...string[]]))
+      .max(AUTOMATION_BACKENDS.length)
+      .optional(),
+    mediaKind: z.enum(['video', 'audio', 'image', 'unknown']).optional(),
+    tempRoot: requiredText(AUTOMATION_LIMITS.maxStringLength)
+      .refine(isRelativeAutomationTempRoot, { message: 'Automation temp root must be a relative directory name' })
+      .optional(),
+  })
+  .refine(isBoundedAutomationJsonValue, { message: 'Automation runtime exceeds the automation JSON bounds' });
+
 /** Schema for the duplicate-library argument. */
 export const automationDuplicateRequestSchema = z.strictObject({
   id: automationIdSchema,
   name: requiredText(AUTOMATION_LIMITS.maxNameLength).optional(),
 });
+
+/** Schema for the start-run IPC request. */
+export const automationStartRequestSchema = z.preprocess(
+  rejectUnboundedAutomationJson,
+  z.strictObject({
+    definition: automationDefinitionSchema,
+    runtime: automationRuntimeSchema.optional(),
+  }),
+);
+
+/** Schema for the cancel-run IPC request. */
+export const automationCancelRequestSchema = z.preprocess(
+  rejectUnboundedAutomationJson,
+  z.strictObject({
+    runId: automationIdSchema,
+  }),
+);
 
 function parseBoundedJson(raw: string): unknown {
   if (typeof raw !== 'string' || raw.length > AUTOMATION_LIMITS.maxJsonChars) {
@@ -171,6 +219,16 @@ export function parseAutomationId(value: unknown): string {
 /** Parses a duplicate-library argument. */
 export function parseAutomationDuplicateRequest(value: unknown): AutomationDuplicateRequest {
   return automationDuplicateRequestSchema.parse(value) as AutomationDuplicateRequest;
+}
+
+/** Parses a start-run IPC request. */
+export function parseAutomationStartRequest(value: unknown): AutomationStartRequest {
+  return automationStartRequestSchema.parse(value) as AutomationStartRequest;
+}
+
+/** Parses a cancel-run IPC request. */
+export function parseAutomationCancelRequest(value: unknown): AutomationCancelRequest {
+  return automationCancelRequestSchema.parse(value) as AutomationCancelRequest;
 }
 
 /** True when an unknown value is a valid automation definition. */

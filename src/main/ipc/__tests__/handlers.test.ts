@@ -71,7 +71,7 @@ describe('registerIpcHandlers', () => {
     expect(registerConversionHandlersMock).toHaveBeenCalledWith(win, sendSpy);
     expect(registerQueueHandlersMock).toHaveBeenCalledWith(win, sendSpy);
     expect(registerMuxQueueHandlersMock).toHaveBeenCalledWith(win, sendSpy);
-    expect(registerAutomationHandlersMock).toHaveBeenCalledWith(win);
+    expect(registerAutomationHandlersMock).toHaveBeenCalledWith(win, sendSpy);
     expect(registerPlayerHandlersMock).toHaveBeenCalledWith(win, sendSpy);
     expect(registerWindowHandlersMock).toHaveBeenCalledWith(win);
     expect(registerSystemHandlersMock).toHaveBeenCalledWith(win);

@@ -273,6 +273,15 @@ const api = {
     const fileName = definition.id + '.automation.json';
     return Promise.resolve(dir ? require('path').join(dir, fileName) : fileName);
   },
+  automationStart: (request) => {
+    if (state.automationStartBehavior === 'reject') return Promise.reject(new Error('mock automation start failed'));
+    return Promise.resolve(state.automationStartRunId);
+  },
+  automationCancel: (runId) => {
+    const id = typeof runId === 'string' ? runId : runId && runId.runId;
+    state.automationCancelCalls.push(id);
+    return Promise.resolve(state.automationCancelResult !== false);
+  },
 
   // --- Single-file conversion ------------------------------------------------
   convertFile: () => {
@@ -610,6 +619,9 @@ const api = {
   onQueueProgress: (cb) => subscribe('queue-progress', cb),
   onQueueCancelled: (cb) => subscribe('queue-cancelled', cb),
   onQueueMoved: (cb) => subscribe('queue-moved', cb),
+  onAutomationStatus: (cb) => subscribe('automation-status', cb),
+  onAutomationProgress: (cb) => subscribe('automation-progress', cb),
+  onAutomationEvent: (cb) => subscribe('automation-event', cb),
   onMuxQueueAdded: (cb) => subscribe('mux-queue-added', cb),
   onMuxQueueRemoved: (cb) => subscribe('mux-queue-removed', cb),
   onMuxQueueStatusChange: (cb) => subscribe('mux-queue-status-change', cb),
@@ -737,6 +749,15 @@ const api = {
     setThumbnails: (v) => {
       state.thumbnailsResult = v;
     },
+    setAutomationStartRunId: (v) => {
+      state.automationStartRunId = v;
+    },
+    setAutomationStartBehavior: (v) => {
+      state.automationStartBehavior = v;
+    },
+    setAutomationCancelResult: (v) => {
+      state.automationCancelResult = v;
+    },
     emit: (channel, payload) => emit(channel, payload),
     setPendingInstall: (v) => {
       state.pendingInstallResult = v;
@@ -778,6 +799,7 @@ const api = {
         mcpUiToolCalls,
         aiSetCalls,
         aiModelsResult,
+        automationCancelCalls,
       } = state;
       return {
         windowCalls,
@@ -791,6 +813,7 @@ const api = {
         mcpUiToolCalls,
         aiSetCalls,
         aiModelsResult,
+        automationCancelCalls,
       };
     },
   },

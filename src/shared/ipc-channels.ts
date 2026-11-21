@@ -269,6 +269,16 @@ export const IPC = {
   AUTOMATION_DUPLICATE: 'automation-duplicate',
   AUTOMATION_IMPORT: 'automation-import',
   AUTOMATION_EXPORT: 'automation-export',
+  /** Start executing an automation definition. */
+  AUTOMATION_START: 'automation-start',
+  /** Cancel an active automation run. */
+  AUTOMATION_CANCEL: 'automation-cancel',
+  /** Push automation run status changes to the renderer. */
+  AUTOMATION_STATUS: 'automation-status',
+  /** Push per-node automation progress updates to the renderer. */
+  AUTOMATION_PROGRESS: 'automation-progress',
+  /** Push generic automation lifecycle events to the renderer. */
+  AUTOMATION_EVENT: 'automation-event',
 
   DEV_CAPTURE_SCREENSHOT: 'dev-capture-screenshot',
 } as const;

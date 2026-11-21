@@ -198,6 +198,9 @@ export function isAutomationProgressEvent(value: unknown): value is AutomationPr
   if (!isRecord(value)) return false;
   if ('stageId' in value && value.stageId !== undefined && !isString(value.stageId)) return false;
   if ('progress' in value && value.progress !== undefined && !isFiniteNumber(value.progress)) return false;
+  if ('message' in value && value.message !== undefined && !isString(value.message)) return false;
+  if ('error' in value && value.error !== undefined && !isString(value.error)) return false;
+  if ('outputPath' in value && value.outputPath !== undefined && !isString(value.outputPath)) return false;
   return (
     isString(value.runId) &&
     isString(value.automationId) &&

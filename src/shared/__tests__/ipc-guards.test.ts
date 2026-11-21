@@ -150,6 +150,9 @@ describe('event envelope guards', () => {
     expect(isAutomationProgressEvent({ ...event, runId: 1 })).toBe(false);
     expect(isAutomationProgressEvent({ ...event, progress: '50' })).toBe(false);
     expect(isAutomationProgressEvent({ ...event, stageId: 3 })).toBe(false);
+    expect(isAutomationProgressEvent({ ...event, message: 42 })).toBe(false);
+    expect(isAutomationProgressEvent({ ...event, error: {} })).toBe(false);
+    expect(isAutomationProgressEvent({ ...event, outputPath: false })).toBe(false);
     expect(isAutomationProgressEvent(null)).toBe(false);
   });
 });

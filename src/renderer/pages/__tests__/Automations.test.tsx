@@ -4,7 +4,8 @@ import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { renderPage } from '../../../test-utils/page-render';
 import { useAutomationStore } from '../../stores/automationStore';
 import { useToastStore } from '../../stores/toastStore';
-import { createAutomationDefinition } from '../../../shared/automations/defaults';
+import { createAutomationDefinition, createAutomationEdge, createAutomationNode } from '../../../shared/automations/defaults';
+import { AUTOMATION_KIND, AUTOMATION_RUN_STATUS } from '../../../shared/automations/types';
 import type { AutomationDefinition } from '../../../shared/automations/types';
 
 const electronApi = window.electronAPI as unknown as Record<string, unknown>;
@@ -12,6 +13,32 @@ const originalMethods = { ...electronApi };
 
 function definition(id: string, name: string): AutomationDefinition {
   return createAutomationDefinition(id, name, 1);
+}
+
+function runnableDefinition(): AutomationDefinition {
+  const candidate = definition('a', 'Alpha');
+  candidate.graph = {
+    nodes: [
+      createAutomationNode(
+        'n1',
+        AUTOMATION_KIND.INPUT,
+        { x: 0, y: 0 },
+        {
+          data: { kind: AUTOMATION_KIND.INPUT, path: '/in.mp4', mediaKind: 'video' },
+        },
+      ),
+      createAutomationNode(
+        'n2',
+        AUTOMATION_KIND.OUTPUT,
+        { x: 1, y: 0 },
+        {
+          data: { kind: AUTOMATION_KIND.OUTPUT, path: '/out.mp4' },
+        },
+      ),
+    ],
+    edges: [createAutomationEdge('n1', 'n2')],
+  };
+  return candidate;
 }
 
 function bridge(): Record<string, unknown> {
@@ -41,6 +68,8 @@ describe('Automations page', () => {
     bridge().automationDuplicate = vi.fn().mockResolvedValue(null);
     bridge().automationImport = vi.fn().mockResolvedValue(null);
     bridge().automationExport = vi.fn().mockResolvedValue(null);
+    bridge().automationStart = vi.fn().mockResolvedValue('run-page');
+    bridge().automationCancel = vi.fn().mockResolvedValue(true);
   });
 
   afterEach(() => {
@@ -177,6 +206,18 @@ describe('Automations page', () => {
     renderPage('Automations');
     fireEvent.click(screen.getByRole('button', { name: 'automations.export' }));
     await waitFor(() => expect(hasToast('automations.exportFailed')).toBe(true));
+  });
+
+  it('starts a run from the toolbar and records it in the run panel', async () => {
+    const start = vi.fn().mockResolvedValue('run-page');
+    bridge().automationStart = start;
+    useAutomationStore.setState({ activeDefinition: runnableDefinition() });
+    renderPage('Automations');
+
+    fireEvent.click(screen.getByRole('button', { name: 'automations.run' }));
+    await waitFor(() => expect(start).toHaveBeenCalledWith(expect.objectContaining({ definition: expect.any(Object) })));
+    await waitFor(() => expect(useAutomationStore.getState().runs['run-page']?.status).toBe(AUTOMATION_RUN_STATUS.QUEUED));
+    expect(hasToast('automations.runQueued')).toBe(true);
   });
 
   it('deletes a definition from the library', async () => {
