@@ -23,6 +23,7 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import '@fortawesome/fontawesome-svg-core/styles.css';
+import '@xyflow/react/dist/style.css';
 import { Logger } from '../shared/logger';
 import { addMonitoringBreadcrumb, captureException, initMonitoring } from '../shared/monitoring/MonitoringService';
 import type { MonitoringConfig } from '../shared/monitoring/types';

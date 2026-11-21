@@ -55,11 +55,21 @@ const emptyRect = {
 Range.prototype.getBoundingClientRect = () => emptyRect;
 Range.prototype.getClientRects = () => ({ length: 0, item: () => null, [Symbol.iterator]: function* () {} }) as unknown as DOMRectList;
 
+class ResizeObserverStub implements ResizeObserver {
+  observe(): void {}
+  unobserve(): void {}
+  disconnect(): void {}
+}
+if (typeof globalThis.ResizeObserver === 'undefined') {
+  globalThis.ResizeObserver = ResizeObserverStub as unknown as typeof ResizeObserver;
+}
+
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string, opts?: Record<string, string | number>) => {
       const map: Record<string, string> = {
         'app.searchLanguage': 'Search languages',
+        'automations.runStatusAnnouncement': 'Run status: {{status}}',
         'progress.time': 'Time',
         'progress.speed': 'Speed',
         'progress.eta': 'ETA',
@@ -168,6 +178,18 @@ Object.defineProperty(globalThis, 'electronAPI', {
     getImageFileInfo: vi.fn().mockResolvedValue(null),
     getVideoPreview: vi.fn().mockResolvedValue(null),
     getCapabilities: vi.fn().mockResolvedValue(null),
+    automationList: vi.fn().mockResolvedValue([]),
+    automationGet: vi.fn().mockResolvedValue(null),
+    automationSave: vi.fn().mockImplementation((definition) => Promise.resolve(definition)),
+    automationDelete: vi.fn().mockResolvedValue(false),
+    automationDuplicate: vi.fn().mockResolvedValue(null),
+    automationImport: vi.fn().mockResolvedValue(null),
+    automationExport: vi.fn().mockResolvedValue(null),
+    automationStart: vi.fn().mockResolvedValue('run-mock'),
+    automationCancel: vi.fn().mockResolvedValue(true),
+    onAutomationStatus: vi.fn(() => vi.fn()),
+    onAutomationProgress: vi.fn(() => vi.fn()),
+    onAutomationEvent: vi.fn(() => vi.fn()),
     convertFile: vi.fn().mockResolvedValue(undefined),
     pauseConversion: vi.fn().mockResolvedValue(undefined),
     resumeConversion: vi.fn().mockResolvedValue(undefined),

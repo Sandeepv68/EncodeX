@@ -1,6 +1,6 @@
 # आर्किटेक्चर
 
-<!-- drift: error-codes=28 mcp-tools=36 mcp-registrations=37 -->
+<!-- drift: error-codes=29 mcp-tools=36 mcp-registrations=37 -->
 
 EncodeX FFmpeg, React, TypeScript और Electron पर बना एक क्रॉस-प्लेटफ़ॉर्म मल्टीमीडिया रूपांतरण उपकरण है। यह उन डेवलपर्स के लिए है जो योगदान देने से पहले यह समझना चाहते हैं कि विभिन्न हिस्से आपस में कैसे जुड़ते हैं।
 

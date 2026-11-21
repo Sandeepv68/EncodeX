@@ -56,6 +56,7 @@ import { coalescingSubscription } from './coalesce';
 import { IPC } from '../shared/ipc-channels';
 import type { CopilotPlan, CopilotPlanRequest } from '../shared/copilot';
 import {
+  isAutomationProgressEvent,
   isBoolean,
   isConversionProgressEvent,
   isAuditEntry,
@@ -97,6 +98,13 @@ import type { McpSettings } from '../shared/mcp-settings';
 import type { AiConnectTestResult, AiModelsListResult, AiSettingsUpdate, AiSettingsView } from '../shared/ai/settings';
 import type { AuditEntry } from '../shared/audit';
 import type { AnalyticsEvent } from '../shared/analytics/events';
+import type {
+  AutomationCancelRequest,
+  AutomationDefinition,
+  AutomationDuplicateRequest,
+  AutomationProgressEvent,
+  AutomationStartRequest,
+} from '../shared/automations/types';
 import {
   LOG_ARROW,
   LOG_CANCEL_CONVERSION_CALLED,
@@ -191,6 +199,11 @@ import {
   LOG_IPC_AI_SET_SETTINGS,
   LOG_IPC_AI_CONNECT_TEST,
   LOG_IPC_AI_LIST_MODELS,
+  LOG_IPC_AUTOMATION_START,
+  LOG_IPC_AUTOMATION_CANCEL,
+  LOG_ON_AUTOMATION_STATUS,
+  LOG_ON_AUTOMATION_PROGRESS,
+  LOG_ON_AUTOMATION_EVENT,
   LOG_LOGS_WINDOW_OPEN,
   LOG_LOGS_GET_HISTORY,
   LOG_LOGS_PUBLISH,
@@ -227,6 +240,7 @@ const log = new Logger('preload');
 const EVENT_COALESCE_INTERVALS = {
   conversionProgress: 50,
   queueProgress: 50,
+  automationProgress: 50,
   playerFrame: 16,
   playerAudio: 10,
 } as const;
@@ -484,6 +498,24 @@ const api = {
    * @returns {Promise<BmfStatus>} Availability plus the names of any missing executables.
    */
   getBmfStatus: () => ipcRenderer.invoke(IPC.GET_BMF_STATUS) as Promise<BmfStatus>,
+  automationList: () => ipcRenderer.invoke(IPC.AUTOMATION_LIST) as Promise<AutomationDefinition[]>,
+  automationGet: (id: string) => ipcRenderer.invoke(IPC.AUTOMATION_GET, id) as Promise<AutomationDefinition | null>,
+  automationSave: (definition: AutomationDefinition) =>
+    ipcRenderer.invoke(IPC.AUTOMATION_SAVE, definition) as Promise<AutomationDefinition>,
+  automationDelete: (id: string) => ipcRenderer.invoke(IPC.AUTOMATION_DELETE, id) as Promise<boolean>,
+  automationDuplicate: (request: AutomationDuplicateRequest) =>
+    ipcRenderer.invoke(IPC.AUTOMATION_DUPLICATE, request) as Promise<AutomationDefinition | null>,
+  automationImport: () => ipcRenderer.invoke(IPC.AUTOMATION_IMPORT) as Promise<AutomationDefinition | null>,
+  automationExport: (id: string) => ipcRenderer.invoke(IPC.AUTOMATION_EXPORT, id) as Promise<string | null>,
+  automationStart: (request: AutomationStartRequest) => {
+    log.debug(LOG_IPC_AUTOMATION_START, request?.definition?.id);
+    return ipcRenderer.invoke(IPC.AUTOMATION_START, request) as Promise<string>;
+  },
+  automationCancel: (runId: string) => {
+    const request: AutomationCancelRequest = { runId };
+    log.debug(LOG_IPC_AUTOMATION_CANCEL, runId);
+    return ipcRenderer.invoke(IPC.AUTOMATION_CANCEL, request) as Promise<boolean>;
+  },
   /**
    * Starts a single-file media conversion. Progress is reported asynchronously through
    * the `onConversionProgress` subscription; the returned promise settles only when the
@@ -1476,6 +1508,63 @@ const api = {
     };
     ipcRenderer.on(IPC.QUEUE_MOVED, handler);
     return () => ipcRenderer.removeListener(IPC.QUEUE_MOVED, handler);
+  },
+  onAutomationStatus: (cb: (event: AutomationProgressEvent) => void) => {
+    const handler = (_event: IpcRendererEvent, data: unknown) => {
+      if (!isAutomationProgressEvent(data)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.AUTOMATION_STATUS,
+          observed: typeof data,
+        });
+        return;
+      }
+      log.debug(LOG_ON_AUTOMATION_STATUS, data.runId, data.status);
+      cb(data);
+    };
+    ipcRenderer.on(IPC.AUTOMATION_STATUS, handler);
+    return () => ipcRenderer.removeListener(IPC.AUTOMATION_STATUS, handler);
+  },
+  onAutomationProgress: (cb: (event: AutomationProgressEvent) => void) =>
+    coalescingSubscription((deliver: (event: AutomationProgressEvent) => void) => {
+      const handler = (_event: IpcRendererEvent, data: unknown) => {
+        if (!isAutomationProgressEvent(data)) {
+          logDroppedPayload({
+            log,
+            constant: LOG_EVENT_PAYLOAD_INVALID,
+            summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+            channel: IPC.AUTOMATION_PROGRESS,
+            observed: typeof data,
+          });
+          return;
+        }
+        deliver(data);
+      };
+      ipcRenderer.on(IPC.AUTOMATION_PROGRESS, handler);
+      return () => ipcRenderer.removeListener(IPC.AUTOMATION_PROGRESS, handler);
+    }, EVENT_COALESCE_INTERVALS.automationProgress)((event: AutomationProgressEvent) => {
+      log.debug(LOG_ON_AUTOMATION_PROGRESS, event.runId, event.nodeId, event.progress);
+      cb(event);
+    }),
+  onAutomationEvent: (cb: (event: AutomationProgressEvent) => void) => {
+    const handler = (_event: IpcRendererEvent, data: unknown) => {
+      if (!isAutomationProgressEvent(data)) {
+        logDroppedPayload({
+          log,
+          constant: LOG_EVENT_PAYLOAD_INVALID,
+          summaryConstant: LOG_EVENT_PAYLOAD_INVALID_SUPPRESSED,
+          channel: IPC.AUTOMATION_EVENT,
+          observed: typeof data,
+        });
+        return;
+      }
+      log.debug(LOG_ON_AUTOMATION_EVENT, data.runId, data.status);
+      cb(data);
+    };
+    ipcRenderer.on(IPC.AUTOMATION_EVENT, handler);
+    return () => ipcRenderer.removeListener(IPC.AUTOMATION_EVENT, handler);
   },
   /**
    * Subscribes to job-added events from the mux queue, pushed over

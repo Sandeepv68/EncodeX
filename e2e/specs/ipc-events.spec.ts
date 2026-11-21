@@ -67,6 +67,9 @@ const SESSION_OPTIONS = { mock: false, env: { E2E_REAL: '1' } } as const;
 /** Every `IPC` member the built preload subscribes to with `ipcRenderer.on`. */
 const EXPECTED_PUSH_CONSTANTS = [
   'AUDIT_ENTRY',
+  'AUTOMATION_EVENT',
+  'AUTOMATION_PROGRESS',
+  'AUTOMATION_STATUS',
   'CONVERSION_PROGRESS',
   'LOG_MESSAGE',
   'LOGS_CLEARED',
@@ -113,6 +116,7 @@ const ROUTES = [
   { path: '/remux', testId: 'nav-item-remux' },
   { path: '/demux', testId: 'nav-item-demux' },
   { path: '/batch', testId: 'nav-item-batch' },
+  { path: '/automations', testId: 'nav-item-automations' },
   { path: '/logs', testId: 'nav-item-logs' },
   { path: '/settings', testId: 'nav-item-settings' },
   { path: '/about', testId: 'nav-item-about' },
@@ -266,6 +270,7 @@ const INTERACTIVE_BUDGET_MS = 2_000;
  * scheduling jitter on the queue route.
  */
 const ROUTE_BUDGET_MS: Record<string, number> = {
+  '/automations': 3_000,
   '/batch': 3_000,
   '/logs': 6_000,
 };

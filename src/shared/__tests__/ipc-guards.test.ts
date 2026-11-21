@@ -9,6 +9,7 @@ import { describe, it, expect } from 'vitest';
 import {
   isArrayBuffer,
   isAuditEntry,
+  isAutomationProgressEvent,
   isBoolean,
   isConversionProgress,
   isConversionProgressEvent,
@@ -140,5 +141,18 @@ describe('event envelope guards', () => {
     expect(isQueueMovedEvent({ id: '1', toPosition: 2 })).toBe(true);
     expect(isQueueMovedEvent({ id: '1', toPosition: '2' })).toBe(false);
     expect(isQueueMovedEvent(null)).toBe(false);
+  });
+
+  it('isAutomationProgressEvent checks routing keys and status', () => {
+    const event = { runId: 'run-1', automationId: 'auto-1', nodeId: 'node-1', status: 'running', progress: 50 };
+    expect(isAutomationProgressEvent(event)).toBe(true);
+    expect(isAutomationProgressEvent({ ...event, status: 'bogus' })).toBe(false);
+    expect(isAutomationProgressEvent({ ...event, runId: 1 })).toBe(false);
+    expect(isAutomationProgressEvent({ ...event, progress: '50' })).toBe(false);
+    expect(isAutomationProgressEvent({ ...event, stageId: 3 })).toBe(false);
+    expect(isAutomationProgressEvent({ ...event, message: 42 })).toBe(false);
+    expect(isAutomationProgressEvent({ ...event, error: {} })).toBe(false);
+    expect(isAutomationProgressEvent({ ...event, outputPath: false })).toBe(false);
+    expect(isAutomationProgressEvent(null)).toBe(false);
   });
 });

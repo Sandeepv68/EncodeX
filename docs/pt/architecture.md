@@ -1,6 +1,6 @@
 # Arquitetura
 
-<!-- drift: error-codes=28 mcp-tools=36 mcp-registrations=37 -->
+<!-- drift: error-codes=29 mcp-tools=36 mcp-registrations=37 -->
 
 O EncodeX é uma ferramenta multimídia de conversão multiplataforma construída sobre FFmpeg, React, TypeScript e Electron. É destinada a desenvolvedores que desejam entender como as peças se encaixam antes de contribuir.
 

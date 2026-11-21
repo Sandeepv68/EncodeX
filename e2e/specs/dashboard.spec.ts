@@ -28,6 +28,7 @@ const FEATURE_CARDS: { route: string; title: string }[] = [
   { route: '/remux', title: 'Remux' },
   { route: '/demux', title: 'Demux' },
   { route: '/batch', title: 'Batch Queue' },
+  { route: '/automations', title: 'Automations' },
   { route: '/copilot', title: 'Copilot' },
 ];
 

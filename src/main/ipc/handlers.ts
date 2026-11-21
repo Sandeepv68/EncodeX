@@ -4,7 +4,7 @@
  * renderer processes. It first creates the main→renderer sender via
  * createSender() (see src/main/ipc/send.ts), then delegates to each
  * per-domain registration module: dialogs, capabilities, conversion, queue,
- * player, window, image and timeline. The main process is expected to call
+ * automations, player, window, image and timeline. The main process is expected to call
  * registerIpcHandlers() once at startup with the main BrowserWindow so all
  * channel handlers exist before the renderer issues any IPC request. Note
  * that ipcMain handlers are registered globally on Electron's singleton
@@ -19,6 +19,7 @@ import { registerDialogHandlers } from './dialogs';
 import { registerConversionHandlers } from './conversion';
 import { registerQueueHandlers } from './queue';
 import { registerMuxQueueHandlers } from './mux-queue';
+import { registerAutomationHandlers } from './automations';
 import { registerSystemHandlers } from './system';
 import { registerPlayerHandlers } from './player';
 import { registerWindowHandlers } from './window';
@@ -60,6 +61,7 @@ export function registerIpcHandlers(win: BrowserWindow): void {
   registerConversionHandlers(win, send);
   registerQueueHandlers(win, send);
   registerMuxQueueHandlers(win, send);
+  registerAutomationHandlers(win, send);
   registerSystemHandlers(win);
   registerPlayerHandlers(win, send);
   registerWindowHandlers(win);

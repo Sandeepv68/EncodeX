@@ -48,6 +48,19 @@ import type { AuditEntry } from '../../shared/audit';
 import type { AiSettingsView } from '../../shared/ai/settings';
 import type { AIProviderId } from '../../shared/ai/types';
 import type { ConversationMessage } from '../components/copilot/types';
+import type {
+  AutomationBackend,
+  AutomationDefinition,
+  AutomationEdge,
+  AutomationIssue,
+  AutomationMediaKind,
+  AutomationNode,
+  AutomationNodeKind,
+  AutomationPosition,
+  AutomationProgressEvent,
+  AutomationRunState,
+  AutomationStartRequest,
+} from '../../shared/automations/types';
 
 /**
  * Persisted hardware acceleration settings.
@@ -230,6 +243,70 @@ export interface QueueState {
   updateJob: (job: QueueJob) => void;
   updateProgress: (id: string, data: ConversionProgress) => void;
   clearJobs: () => void;
+}
+
+export interface AutomationBridge {
+  automationList?: () => Promise<AutomationDefinition[]>;
+  automationGet?: (id: string) => Promise<AutomationDefinition | null>;
+  automationSave?: (definition: AutomationDefinition) => Promise<AutomationDefinition>;
+  automationDelete?: (id: string) => Promise<boolean>;
+  automationDuplicate?: (request: { id: string; name?: string }) => Promise<AutomationDefinition | null>;
+  automationImport?: () => Promise<AutomationDefinition | null>;
+  automationExport?: (id: string) => Promise<string | null>;
+  automationStart?: (request: AutomationStartRequest) => Promise<string>;
+  automationCancel?: (runId: string) => Promise<boolean>;
+  onAutomationStatus?: (cb: (event: AutomationProgressEvent) => void) => () => void;
+  onAutomationProgress?: (cb: (event: AutomationProgressEvent) => void) => () => void;
+  onAutomationEvent?: (cb: (event: AutomationProgressEvent) => void) => () => void;
+}
+
+/**
+ * State of the Automations graph editor store.
+ *
+ * Holds the saved definition library, the graph currently being edited,
+ * validation issues, selection state, and local run progress. Library
+ * operations are routed through the preload bridge with in-memory fallbacks.
+ * @interface AutomationState
+ */
+export interface AutomationState {
+  definitions: AutomationDefinition[];
+  activeDefinition: AutomationDefinition | null;
+  selectedNodeId: string | null;
+  validationIssues: AutomationIssue[];
+  isDirty: boolean;
+  isInitialized: boolean;
+  runs: Record<string, AutomationRunState>;
+  runtimeInputPath: string | null;
+  detectedMediaKind: AutomationMediaKind | null;
+  selectedRunId: string | null;
+  backendStatus: Record<AutomationBackend, boolean>;
+  setDefinitions: (definitions: AutomationDefinition[]) => void;
+  initialize: () => Promise<AutomationDefinition[]>;
+  newAutomation: () => void;
+  loadAutomation: (id: string) => Promise<AutomationDefinition | null>;
+  saveAutomation: () => Promise<AutomationDefinition | null>;
+  saveAutomationAs: (name: string) => Promise<AutomationDefinition | null>;
+  deleteAutomation: (id: string) => Promise<boolean>;
+  duplicateAutomation: (id: string) => Promise<AutomationDefinition | null>;
+  importAutomation: () => Promise<AutomationDefinition | null>;
+  exportAutomation: (id: string) => Promise<string | null>;
+  renameAutomation: (name: string) => void;
+  selectNode: (id: string | null) => void;
+  addNode: (kind: AutomationNodeKind, position: AutomationPosition, stageId?: string) => string;
+  removeNode: (id: string) => void;
+  updateNode: (id: string, patch: Partial<AutomationNode>) => void;
+  addEdge: (edge: AutomationEdge) => void;
+  removeEdge: (id: string) => void;
+  addStage: (name: string) => string;
+  renameStage: (id: string, name: string) => void;
+  validate: () => AutomationIssue[];
+  setBackendStatus: (backend: AutomationBackend, available: boolean) => void;
+  setRuntimeInputPath: (path: string | null) => void;
+  setDetectedMediaKind: (mediaKind: AutomationMediaKind | null) => void;
+  selectRun: (runId: string | null) => void;
+  clearRuns: () => void;
+  startRun: (runId: string, automationId?: string, automationName?: string) => void;
+  updateRun: (event: AutomationProgressEvent) => void;
 }
 
 /**

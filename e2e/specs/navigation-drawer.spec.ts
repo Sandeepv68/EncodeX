@@ -33,6 +33,7 @@ const NAV_ROWS: { id: string; label: string }[] = [
   { id: 'audio-extract', label: 'Audio' },
   { id: 'image-compress', label: 'Image' },
   { id: 'batch', label: 'Batch Queue' },
+  { id: 'automations', label: 'Automations' },
   { id: 'media-info', label: 'Media Info' },
   { id: 'settings', label: 'Settings' },
   { id: 'about', label: 'About' },

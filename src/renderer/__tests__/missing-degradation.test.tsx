@@ -41,6 +41,7 @@ const TITLES: Record<string, string | RegExp> = {
   Remux: 'remux.title',
   Demux: 'demux.title',
   BatchQueue: 'batchQueue.title',
+  Automations: 'automations.title',
   Copilot: /copilot\.welcome/,
   Logs: 'logs.noEntries',
   Settings: 'settings.title',
@@ -112,7 +113,7 @@ describe('5.2 missing-degradation (preload failure: window.electronAPI undefined
   });
 
   it('declares a non-empty page inventory, or the loop below is vacuous', () => {
-    expect(PAGE_ROUTES).toHaveLength(13);
+    expect(PAGE_ROUTES).toHaveLength(14);
   });
 
   it.each(PAGE_ROUTES)('$name still mounts without the preload bridge', (spec) => {

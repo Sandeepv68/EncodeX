@@ -1,6 +1,6 @@
 # ✨ Features
 
-<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 builtin-profiles=115 profile-categories=8 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 error-codes=28 copilot-operations=13 video-filter-presets=8 mcp-tools=36 mcp-registrations=37 mcp-gui-tools=6 -->
+<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 builtin-profiles=115 profile-categories=8 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 error-codes=29 copilot-operations=13 video-filter-presets=8 mcp-tools=36 mcp-registrations=37 mcp-gui-tools=6 -->
 
 EncodeX is a cross-platform multimedia conversion tool that brings the power of FFmpeg to a modern, intuitive desktop interface. Built with Electron, React, and TypeScript, it lets you convert media between formats, remux streams losslessly, demux them into separate files, extract audio, cut videos, and compress images — all through a clean, responsive UI with a batch queue, hardware acceleration, CLI mode, and full internationalization.
 
@@ -138,6 +138,16 @@ Process multiple files with configurable operations (transcode, remux, demux, ex
 - **When-done power actions** — optionally shut down, sleep, or hibernate the machine when the queue drains (`shutdown`, `pmset`, or `systemctl` per platform; Windows honors a force-close flag).
 - **Live feedback** — real-time per-job progress (percent, time, speed, ETA) streamed over IPC, per-job error handling, and a nav count badge showing outstanding work.
 
+### Automations
+
+Build and run multi-stage media pipelines visually at `/automations`. Drag nodes from the palette onto a React Flow canvas, connect them into a directed graph, and configure each operation in the inspector. The graph supports an **Input** node, **Stage** grouping nodes, six executable operations — **Transcode**, **Extract Audio**, **Cut**, **Remux**, **Demux**, and **Compress Image** — and an **Output** node. Each operation can select the FFmpeg API, FFmpeg CLI, or BMF backend (when installed), and the palette disables operations that cannot handle the probed input media kind.
+
+Definitions are versioned JSON documents persisted in `userData/automations/definitions.json`. The library drawer offers New, Open, Save, Save As, Duplicate, Delete, Import, and Export, with a durable backup and bounded JSON validation on every read and write. Live validation reports missing input/output nodes, cycles, disconnected nodes, unknown dependencies, unsupported media operations, and unavailable backends before a run is allowed.
+
+A run executes sequentially in the main process and streams run-level and node-level status, progress, messages, and errors over IPC into a stage timeline, node badges, and a run console. Runtime input overrides, cancel, rerun, and a bounded in-session run history are supported. Each run gets its own temp directory under `app-data/automations/tmp` or the system temp directory; intermediate files are removed on completion unless **keep intermediate files** is enabled.
+
+> **Screenshot placeholder:** add a capture of the `/automations` editor showing the node palette, canvas, inspector, and run panel to the feature gallery when release screenshots are regenerated.
+
 ### Multiple Transcoder Cores
 
 - **FFmpeg API** — fluent-ffmpeg Node.js bindings with programmatic progress events
@@ -249,7 +259,7 @@ Custom update manager that checks GitHub Releases for new versions, notifies the
 
 ### Error Handling
 
-Structured error system with 28 typed error codes (`ErrorCode`), user-facing localized messages, a global error snackbar, inline error banners, toast notifications, nested React error boundaries, and an in-app error history (cap 50). All errors are normalized through `formatError()` and propagated across IPC.
+Structured error system with 29 typed error codes (`ErrorCode`), user-facing localized messages, a global error snackbar, inline error banners, toast notifications, nested React error boundaries, and an in-app error history (cap 50). All errors are normalized through `formatError()` and propagated across IPC.
 
 ## 🎞️ Supported Media Formats
 

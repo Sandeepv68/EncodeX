@@ -628,6 +628,35 @@ export function MediaInfoSkeleton() {
   );
 }
 
+export function AutomationsSkeleton() {
+  return (
+    <SkeletonStatus>
+      <PageRoot $hasAside={false} $fill>
+        <PageBody $fill>
+          <SkeletonCopilotLayout>
+            <SkeletonChatArea>
+              <Bone width={240} height={30} />
+              <Bone width={420} height={14} />
+              <SkeletonChipRow>
+                <Bone width={160} height={32} />
+                <Bone width={160} height={32} />
+                <Bone width={160} height={32} />
+              </SkeletonChipRow>
+            </SkeletonChatArea>
+            <SkeletonComposer>
+              <SkeletonFieldGrid>
+                <Bone width={180} height={40} />
+                <Bone width={180} height={40} />
+                <Bone width={180} height={40} />
+              </SkeletonFieldGrid>
+            </SkeletonComposer>
+          </SkeletonCopilotLayout>
+        </PageBody>
+      </PageRoot>
+    </SkeletonStatus>
+  );
+}
+
 export function CopilotSkeleton() {
   return (
     <SkeletonStatus>

@@ -1,6 +1,6 @@
 # Características
 
-<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 builtin-profiles=115 profile-categories=8 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 error-codes=28 copilot-operations=13 video-filter-presets=8 mcp-tools=36 mcp-registrations=37 mcp-gui-tools=6 -->
+<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 builtin-profiles=115 profile-categories=8 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 error-codes=29 copilot-operations=13 video-filter-presets=8 mcp-tools=36 mcp-registrations=37 mcp-gui-tools=6 -->
 
 EncodeX es una herramienta multiplataforma de conversión multimedia que lleva la potencia de FFmpeg a una interfaz de escritorio moderna e intuitiva. Construida con Electron, React y TypeScript, permite convertir medios entre formatos, extraer audio, cortar vídeos y comprimir imágenes — todo mediante una UI limpia y receptiva con cola por lotes, aceleración por hardware, modo CLI e internacionalización completa.
 

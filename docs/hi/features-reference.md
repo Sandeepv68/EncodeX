@@ -1,6 +1,6 @@
 # फ़ीचर्स
 
-<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 builtin-profiles=115 profile-categories=8 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 error-codes=28 copilot-operations=13 video-filter-presets=8 mcp-tools=36 mcp-registrations=37 mcp-gui-tools=6 -->
+<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 builtin-profiles=115 profile-categories=8 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 error-codes=29 copilot-operations=13 video-filter-presets=8 mcp-tools=36 mcp-registrations=37 mcp-gui-tools=6 -->
 
 EncodeX एक क्रॉस-प्लेटफ़ॉर्म मल्टीमीडिया रूपांतरण उपकरण है जो FFmpeg की शक्ति को एक आधुनिक, सहज desktop interface में लाता है। Electron, React, और TypeScript के साथ built, यह आपको formats के बीच media convert करने, audio extract करने, videos cut करने, और images compress करने देता है — सब कुछ एक clean, responsive UI के माध्यम से batch queue, hardware acceleration, CLI mode, और full internationalization के साथ।
 
@@ -207,7 +207,7 @@ Custom update manager जो GitHub Releases check करता है new versi
 
 ### Error handling
 
-28 typed error codes (`ErrorCode`), user-facing localized messages, global error snackbar, inline error banners, toast notifications, nested React error boundaries, और in-app error history (cap 50) के साथ structured error system। सभी errors `formatError()` के माध्यम से normalize होते हैं और IPC across propagate होते हैं।
+29 typed error codes (`ErrorCode`), user-facing localized messages, global error snackbar, inline error banners, toast notifications, nested React error boundaries, और in-app error history (cap 50) के साथ structured error system। सभी errors `formatError()` के माध्यम से normalize होते हैं और IPC across propagate होते हैं।
 
 ### MCP Apps and local models
 
