@@ -67,12 +67,13 @@ export default function AutomationRunPanel({ onCancel, onRerun, onProbeInput, on
 
   return (
     <EditorPanel role="region" aria-label={t('automations.runPanelLabel')}>
-      <PanelTitle variant="subtitle1">{t('automations.runPanelTitle')}</PanelTitle>
+      <PanelTitle variant="h2">{t('automations.runPanelTitle')}</PanelTitle>
       <ConsoleSection>
         <RunControlRow>
           <FormControl size="small">
             <InputLabel id="automation-run-history-label">{t('automations.runHistory')}</InputLabel>
             <Select
+              data-testid="automation-run-history"
               labelId="automation-run-history-label"
               label={t('automations.runHistory')}
               value={currentRun?.runId ?? ''}
@@ -87,6 +88,7 @@ export default function AutomationRunPanel({ onCancel, onRerun, onProbeInput, on
             </Select>
           </FormControl>
           <Button
+            data-testid="automation-cancel-run-panel"
             size="small"
             variant="outlined"
             color="error"
@@ -97,6 +99,7 @@ export default function AutomationRunPanel({ onCancel, onRerun, onProbeInput, on
             {t('automations.cancelRun')}
           </Button>
           <Button
+            data-testid="automation-rerun"
             size="small"
             variant="outlined"
             startIcon={<FontAwesomeIcon icon={faRotateRight} />}
@@ -106,6 +109,7 @@ export default function AutomationRunPanel({ onCancel, onRerun, onProbeInput, on
             {t('automations.rerun')}
           </Button>
           <Button
+            data-testid="automation-clear-history"
             size="small"
             variant="text"
             startIcon={<FontAwesomeIcon icon={faTrashCan} />}
@@ -117,16 +121,18 @@ export default function AutomationRunPanel({ onCancel, onRerun, onProbeInput, on
         </RunControlRow>
         <RuntimeInputRow>
           <TextField
+            data-testid="automation-runtime-input"
             size="small"
             fullWidth
             label={t('automations.runtimeInputPath')}
             value={runtimeInputPath ?? ''}
             onChange={(event) => setRuntimeInputPath(event.target.value || null)}
           />
-          <Button size="small" variant="outlined" onClick={onSelectRuntimeInput}>
+          <Button data-testid="automation-browse-runtime-input" size="small" variant="outlined" onClick={onSelectRuntimeInput}>
             {t('automations.browse')}
           </Button>
           <Button
+            data-testid="automation-probe-input"
             size="small"
             variant="outlined"
             startIcon={<FontAwesomeIcon icon={faMagnifyingGlass} />}
@@ -142,10 +148,18 @@ export default function AutomationRunPanel({ onCancel, onRerun, onProbeInput, on
       {currentRun && (
         <ConsoleSection>
           <StatusChip label={t(`automations.status.${currentRun.status}`)} $status={currentRun.status} variant="outlined" />
-          <RunProgress variant="determinate" value={currentRun.progress} aria-label={t('automations.runProgress')} />
-          {currentRun.message && <PanelHint>{currentRun.message}</PanelHint>}
+          <Typography data-testid="automation-run-status-live" role="status" aria-live="polite" variant="body2">
+            {t('automations.runStatusAnnouncement', { status: t(`automations.status.${currentRun.status}`) })}
+          </Typography>
+          <RunProgress
+            data-testid="automation-run-progress"
+            variant="determinate"
+            value={currentRun.progress}
+            aria-label={t('automations.runProgress')}
+          />
+          {currentRun.message && <PanelHint data-testid="automation-run-message">{currentRun.message}</PanelHint>}
           {currentRun.runtimeInputPath && (
-            <DetailRow>
+            <DetailRow data-testid="automation-run-input-path">
               <Typography variant="body2" component="span">
                 {t('automations.runtimeInputPath')}:
               </Typography>
@@ -155,7 +169,7 @@ export default function AutomationRunPanel({ onCancel, onRerun, onProbeInput, on
             </DetailRow>
           )}
           {currentRun.outputPath && (
-            <DetailRow>
+            <DetailRow data-testid="automation-run-output-path">
               <Typography variant="body2" component="span">
                 {t('automations.outputPath')}:
               </Typography>
@@ -165,7 +179,7 @@ export default function AutomationRunPanel({ onCancel, onRerun, onProbeInput, on
             </DetailRow>
           )}
           {currentRun.error && (
-            <DetailRow $error>
+            <DetailRow data-testid="automation-run-error" $error>
               <Typography variant="body2" component="span">
                 {t('automations.error')}:
               </Typography>
@@ -182,7 +196,7 @@ export default function AutomationRunPanel({ onCancel, onRerun, onProbeInput, on
           <PanelTitle variant="body2">{t('automations.stageTimeline')}</PanelTitle>
           {timeline.length === 0 && <PanelHint>{t('automations.noStages')}</PanelHint>}
           {timeline.map((stage) => (
-            <TimelineRow key={stage.id}>
+            <TimelineRow key={stage.id} data-testid={`automation-stage-${stage.id}`}>
               <Typography variant="body2">{stage.name}</Typography>
               <StatusChip
                 label={t(`automations.status.${stage.status ?? AUTOMATION_RUN_STATUS.QUEUED}`)}
@@ -199,7 +213,7 @@ export default function AutomationRunPanel({ onCancel, onRerun, onProbeInput, on
           <PanelTitle variant="body2">{t('automations.runEvents')}</PanelTitle>
           {runEvents.length === 0 && <PanelHint>{t('automations.noRunEvents')}</PanelHint>}
           {runEvents.map((event, index) => (
-            <EventRow key={`${eventTime(event)}-${index}`}>
+            <EventRow key={`${eventTime(event)}-${index}`} data-testid={`automation-event-${index}`}>
               <EventTime>{eventTime(event)}</EventTime>
               <StatusChip label={t(`automations.status.${event.status}`)} $status={event.status} variant="outlined" />
               <Typography variant="body2">{event.message ?? ''}</Typography>
@@ -210,7 +224,7 @@ export default function AutomationRunPanel({ onCancel, onRerun, onProbeInput, on
 
       <ConsoleSection>
         {validationIssues.map((issue, index) => (
-          <IssueRow key={`${issue.code}-${issue.nodeId ?? index}`}>
+          <IssueRow key={`${issue.code}-${issue.nodeId ?? index}`} data-testid={`automation-issue-${issue.code}`}>
             <IssueCode>{issue.code}</IssueCode>
             <Typography variant="body2">{issue.message}</Typography>
           </IssueRow>

@@ -1,8 +1,11 @@
-﻿import { describe, expect, it } from 'vitest';
+﻿import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { EventEmitter } from 'events';
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'fs';
+import { tmpdir } from 'os';
+import { join } from 'path';
 import { createAutomationDefinition, createAutomationEdge, createAutomationNode } from '../../../shared/automations/defaults';
 import { expectAppLog } from '../../../test-utils/crash-tripwire';
-import { AutomationRunner } from '../runner';
+import { AutomationRunner, cancelAllAutomationRuns } from '../index';
 import { AutomationEventBus } from '../events';
 import type { AutomationProgressEvent } from '../../../shared/automations/types';
 import type { ConversionProgress, TranscoderType } from '../../../shared/types';
@@ -13,6 +16,7 @@ class FakeTranscoder implements ITranscoder {
   readonly emitter = new EventEmitter();
   readonly calls: Array<{ input: string; output: string; options: Record<string, unknown> }> = [];
   cancelled = false;
+  cancelCount = 0;
   constructor(private readonly behavior: 'succeed' | 'fail' | 'wait' = 'succeed') {
     FakeTranscoder.instances.push(this);
   }
@@ -36,6 +40,7 @@ class FakeTranscoder implements ITranscoder {
   }
   cancel(): void {
     this.cancelled = true;
+    this.cancelCount += 1;
     this.emitter.emit('error', Object.assign(new Error('cancelled'), { code: 'CANCELLED' }));
   }
   pause(): void {}
@@ -60,6 +65,10 @@ function waitFor(predicate: () => boolean, timeoutMs = 2000): Promise<void> {
   });
 }
 
+function availableBmf(): { available: boolean; missing: string[] } {
+  return { available: true, missing: [] };
+}
+
 function twoStageDefinition() {
   return createAutomationDefinition('auto-1', 'Two stage', 1, {
     graph: {
@@ -75,90 +84,232 @@ function twoStageDefinition() {
 }
 
 describe('AutomationRunner', () => {
-  it('runs a two-stage pipeline and emits progress/status events', async () => {
-    expectAppLog('warn', 'main/transcoders/bmf-availability');
+  let userDataDir: string;
+  let events: AutomationProgressEvent[];
+  let bus: AutomationEventBus;
+
+  beforeEach(() => {
+    userDataDir = mkdtempSync(join(tmpdir(), 'encodex-automation-runner-'));
     FakeTranscoder.instances = [];
-    const events: AutomationProgressEvent[] = [];
-    const bus = new AutomationEventBus();
+    events = [];
+    bus = new AutomationEventBus();
     bus.on('status', (event: AutomationProgressEvent) => events.push(event));
+  });
+
+  afterEach(() => {
+    rmSync(userDataDir, { recursive: true, force: true });
+  });
+
+  function runDirectory(runId: string, tempRoot?: string): string {
+    return join(userDataDir, 'automations', 'tmp', ...(tempRoot ? [tempRoot] : []), runId);
+  }
+
+  function writeRunSentinel(directory: string): void {
+    writeFileSync(join(directory, 'sentinel.bin'), 'data', 'utf8');
+  }
+
+  function hasRunStatus(status: AutomationProgressEvent['status']): boolean {
+    return events.some((event) => event.nodeId === '' && event.status === status);
+  }
+
+  it('runs a two-stage pipeline, emits progress/status events, and removes the run directory', async () => {
     const runner = new AutomationRunner({
-      userDataDir: 'C:/tmp/user',
+      userDataDir,
       eventBus: bus,
+      checkBmfAvailability: availableBmf,
       transcoderFactory: (_type: TranscoderType) => new FakeTranscoder('succeed'),
       runIdGenerator: () => 'run-1',
     });
+    const directory = runDirectory('run-1', 'custom');
 
+    bus.on('status', (event: AutomationProgressEvent) => {
+      if (event.nodeId === '' && event.status === 'running') writeRunSentinel(directory);
+    });
     const runId = runner.start(twoStageDefinition(), { tempRoot: 'custom' });
     expect(runId).toBe('run-1');
-    await waitFor(() => events.some((e) => e.nodeId === '' && e.status === 'succeeded'));
+    await waitFor(() => hasRunStatus('succeeded'));
+    await waitFor(() => !existsSync(directory));
 
     expect(FakeTranscoder.instances).toHaveLength(2);
-    expect(FakeTranscoder.instances[0].calls[0].output.replace(/\\/g, '/')).toBe(
-      'C:/tmp/user/automations/tmp/custom/run-1/step-000-op-1.m4a',
-    );
-    expect(FakeTranscoder.instances[1].calls[0].input.replace(/\\/g, '/')).toBe(
-      'C:/tmp/user/automations/tmp/custom/run-1/step-000-op-1.m4a',
-    );
+    expect(FakeTranscoder.instances[0].calls[0].output.replace(/\\/g, '/')).toBe(`${directory.replace(/\\/g, '/')}/step-000-op-1.m4a`);
+    expect(FakeTranscoder.instances[1].calls[0].input.replace(/\\/g, '/')).toBe(`${directory.replace(/\\/g, '/')}/step-000-op-1.m4a`);
     expect(FakeTranscoder.instances[1].calls[0].output).toBe('C:/final.m4a');
-    expect(events.some((e) => e.nodeId === 'op-1' && e.status === 'running' && typeof e.progress === 'number')).toBe(true);
-    expect(events.some((e) => e.nodeId === 'op-2' && e.status === 'succeeded')).toBe(true);
+    expect(events.some((event) => event.nodeId === 'op-1' && event.status === 'running' && typeof event.progress === 'number')).toBe(true);
+    expect(events.some((event) => event.nodeId === 'op-2' && event.status === 'succeeded')).toBe(true);
   });
 
-  it('fails clearly when BMF is unavailable', async () => {
+  it('keeps the whole run directory when intermediate files are retained', async () => {
     const runner = new AutomationRunner({
-      userDataDir: 'C:/tmp/user',
+      userDataDir,
+      eventBus: bus,
+      checkBmfAvailability: availableBmf,
+      transcoderFactory: () => new FakeTranscoder('succeed'),
+      runIdGenerator: () => 'run-keep',
+    });
+    const directory = runDirectory('run-keep');
+    const definition = twoStageDefinition();
+    definition.settings.keepIntermediateFiles = true;
+    bus.on('status', (event: AutomationProgressEvent) => {
+      if (event.nodeId === '' && event.status === 'running') writeRunSentinel(directory);
+    });
+
+    runner.start(definition);
+    await waitFor(() => hasRunStatus('succeeded'));
+
+    expect(existsSync(join(directory, 'sentinel.bin'))).toBe(true);
+  });
+
+  it('does not create a temp root for an invalid plan', () => {
+    const runner = new AutomationRunner({
+      userDataDir,
+      checkBmfAvailability: availableBmf,
+      transcoderFactory: () => new FakeTranscoder('succeed'),
+      runIdGenerator: () => 'run-invalid',
+    });
+    const definition = twoStageDefinition();
+    definition.graph.nodes = definition.graph.nodes.filter((node) => node.kind !== 'input');
+
+    expect(() => runner.start(definition)).toThrow();
+    expect(existsSync(join(userDataDir, 'automations', 'tmp'))).toBe(false);
+  });
+
+  it('fails clearly and does not create a temp root when BMF is unavailable', () => {
+    const runner = new AutomationRunner({
+      userDataDir,
       checkBmfAvailability: () => ({ available: false, missing: ['bmf_ffmpeg'] }),
       transcoderFactory: () => new FakeTranscoder('succeed'),
     });
-    const def = twoStageDefinition();
-    def.settings.defaultBackend = 'BMF';
-    expect(() => runner.start(def)).toThrow(/BMF/);
+    const definition = twoStageDefinition();
+    definition.settings.defaultBackend = 'BMF';
+
+    expect(() => runner.start(definition)).toThrow(/BMF/);
+    expect(existsSync(join(userDataDir, 'automations', 'tmp'))).toBe(false);
   });
 
   it('rejects a temp root that escapes the automation temp directory', () => {
     const runner = new AutomationRunner({
-      userDataDir: 'C:/tmp/user',
+      userDataDir,
+      checkBmfAvailability: availableBmf,
       transcoderFactory: () => new FakeTranscoder('succeed'),
       runIdGenerator: () => 'run-escape',
     });
+
     expect(() => runner.start(twoStageDefinition(), { tempRoot: '../escape' })).toThrow(/temp root/);
+    expect(existsSync(join(userDataDir, 'automations', 'tmp'))).toBe(false);
   });
 
-  it('cancels the active transcoder and emits cancelled statuses', async () => {
-    expectAppLog('warn', 'main/transcoders/bmf-availability');
-    FakeTranscoder.instances = [];
-    const events: AutomationProgressEvent[] = [];
-    const bus = new AutomationEventBus();
-    bus.on('status', (e: AutomationProgressEvent) => events.push(e));
+  it('cancels the active transcoder, emits cancelled statuses, and removes the run directory', async () => {
     const runner = new AutomationRunner({
-      userDataDir: 'C:/tmp/user',
+      userDataDir,
       eventBus: bus,
+      checkBmfAvailability: availableBmf,
       transcoderFactory: () => new FakeTranscoder('wait'),
       runIdGenerator: () => 'run-cancel',
     });
+    const directory = runDirectory('run-cancel');
+
     runner.start(twoStageDefinition());
     await waitFor(() => FakeTranscoder.instances.length === 1);
+    writeRunSentinel(directory);
     expect(runner.cancel('run-cancel')).toBe(true);
-    await waitFor(() => events.some((e) => e.nodeId === '' && e.status === 'cancelled'));
-    expect(FakeTranscoder.instances[0].cancelled).toBe(true);
-    expect(events.some((e) => e.nodeId === 'op-2' && e.status === 'cancelled')).toBe(true);
+
+    await waitFor(() => hasRunStatus('cancelled'));
+    await waitFor(() => !existsSync(directory));
+    expect(FakeTranscoder.instances[0].cancelCount).toBe(1);
+    expect(events.some((event) => event.nodeId === 'op-2' && event.status === 'cancelled')).toBe(true);
   });
 
-  it('marks run failed on step error', async () => {
-    expectAppLog('warn', 'main/transcoders/bmf-availability');
-    expectAppLog('error', 'main/automations/runner');
-    FakeTranscoder.instances = [];
-    const events: AutomationProgressEvent[] = [];
-    const bus = new AutomationEventBus();
-    bus.on('status', (e: AutomationProgressEvent) => events.push(e));
+  it('treats repeated cancels as idempotent and ignores late cancels after a terminal state', async () => {
     const runner = new AutomationRunner({
-      userDataDir: 'C:/tmp/user',
+      userDataDir,
       eventBus: bus,
+      checkBmfAvailability: availableBmf,
+      transcoderFactory: () => new FakeTranscoder('wait'),
+      runIdGenerator: () => 'run-idempotent',
+    });
+
+    runner.start(twoStageDefinition());
+    await waitFor(() => FakeTranscoder.instances.length === 1);
+    expect(runner.cancel('run-idempotent')).toBe(true);
+    expect(runner.cancel('run-idempotent')).toBe(true);
+    await waitFor(() => hasRunStatus('cancelled'));
+
+    expect(FakeTranscoder.instances[0].cancelCount).toBe(1);
+    expect(runner.cancel('run-idempotent')).toBe(false);
+    expect(events.filter((event) => event.nodeId === '' && event.status === 'cancelled')).toHaveLength(1);
+    expect(hasRunStatus('failed')).toBe(false);
+  });
+
+  it('ignores a cancel raised synchronously from a terminal event listener', async () => {
+    const runner = new AutomationRunner({
+      userDataDir,
+      eventBus: bus,
+      checkBmfAvailability: availableBmf,
+      transcoderFactory: () => new FakeTranscoder('succeed'),
+      runIdGenerator: () => 'run-late',
+    });
+    let lateCancelResult: boolean | undefined;
+    bus.on('status', (event: AutomationProgressEvent) => {
+      if (event.nodeId === '' && event.status === 'succeeded') lateCancelResult = runner.cancel('run-late');
+    });
+
+    runner.start(twoStageDefinition());
+    await waitFor(() => lateCancelResult !== undefined);
+
+    expect(lateCancelResult).toBe(false);
+    expect(FakeTranscoder.instances.every((instance) => instance.cancelCount === 0)).toBe(true);
+  });
+
+  it('removes the run directory after a failed run', async () => {
+    expectAppLog('error', 'main/automations/runner');
+    const runner = new AutomationRunner({
+      userDataDir,
+      eventBus: bus,
+      checkBmfAvailability: availableBmf,
       transcoderFactory: () => new FakeTranscoder('fail'),
       runIdGenerator: () => 'run-fail',
     });
+    const directory = runDirectory('run-fail');
+    bus.on('status', (event: AutomationProgressEvent) => {
+      if (event.nodeId === '' && event.status === 'running') writeRunSentinel(directory);
+    });
+
     runner.start(twoStageDefinition());
-    await waitFor(() => events.some((e) => e.nodeId === '' && e.status === 'failed'));
-    expect(events.some((e) => e.nodeId === 'op-1' && e.status === 'failed')).toBe(true);
+    await waitFor(() => hasRunStatus('failed'));
+    await waitFor(() => !existsSync(directory));
+
+    expect(events.some((event) => event.nodeId === 'op-1' && event.status === 'failed')).toBe(true);
+  });
+
+  it('cancels all active runs on one runner and process-wide', async () => {
+    const runnerA = new AutomationRunner({
+      userDataDir,
+      eventBus: bus,
+      checkBmfAvailability: availableBmf,
+      transcoderFactory: () => new FakeTranscoder('wait'),
+      runIdGenerator: () => 'run-all-a',
+    });
+    const eventsB: AutomationProgressEvent[] = [];
+    const busB = new AutomationEventBus();
+    busB.on('status', (event: AutomationProgressEvent) => eventsB.push(event));
+    const runnerB = new AutomationRunner({
+      userDataDir,
+      eventBus: busB,
+      checkBmfAvailability: availableBmf,
+      transcoderFactory: () => new FakeTranscoder('wait'),
+      runIdGenerator: () => 'run-all-b',
+    });
+
+    runnerA.start(twoStageDefinition());
+    runnerB.start(twoStageDefinition());
+    await waitFor(() => FakeTranscoder.instances.length === 2);
+
+    expect(runnerA.cancelAll()).toBe(1);
+    await waitFor(() => !existsSync(runDirectory('run-all-a')));
+    expect(cancelAllAutomationRuns()).toBe(1);
+    await waitFor(() => eventsB.some((event) => event.nodeId === '' && event.status === 'cancelled'));
+    await waitFor(() => !existsSync(runDirectory('run-all-b')));
+    expect(cancelAllAutomationRuns()).toBe(0);
+    expect(FakeTranscoder.instances.map((instance) => instance.cancelCount)).toEqual([1, 1]);
   });
 });

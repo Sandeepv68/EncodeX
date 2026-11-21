@@ -70,6 +70,15 @@ describe.runIf(IS_E2E)('Shell', () => {
       'onQueueProgress',
       'onQueueCancelled',
       'onPlayerFrame',
+      'getBmfStatus',
+      'automationList',
+      'automationGet',
+      'automationSave',
+      'automationStart',
+      'automationCancel',
+      'onAutomationStatus',
+      'onAutomationProgress',
+      'onAutomationEvent',
     ];
     for (const name of expected) expect(methods).toContain(name);
   });

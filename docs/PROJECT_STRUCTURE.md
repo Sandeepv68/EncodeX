@@ -1,6 +1,6 @@
 ﻿# 🗂️ Project Structure
 
-<!-- drift:renderer-components=84 renderer-components-top=54 renderer-styles=78 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 renderer-pages=14 renderer-stores=22 log-constants=596 builtin-profiles=115 profile-categories=8 e2e-specs=34 -->
+<!-- drift:renderer-components=84 renderer-components-top=54 renderer-styles=78 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 renderer-pages=14 renderer-stores=22 log-constants=596 builtin-profiles=115 profile-categories=8 e2e-specs=35 -->
 
 ```
 src/
@@ -51,12 +51,22 @@ src/
 │   │   ├── image.ts                   # image info / preview / file info
 │   │   ├── capabilities.ts            # get-capabilities / get-bmf-status
 │   │   ├── copilot.ts                 # copilot-plan
+│   │   ├── automations.ts             # automation library CRUD/import/export + start/cancel + event forwarding
 │   │   ├── dev.ts                     # dev-capture-screenshot
 │   │   ├── window.ts                  # minimize / maximize / close / always-on-top
 │   │   ├── updater.ts                 # check / download / install / schedule-on-restart
 │   │   ├── system.ts                  # queue-reveal / set-launch-at-login
 │   │   ├── send.ts                    # Event broadcast helpers
 │   │   └── types.ts                   # Type-safe main->renderer sender signature
+│   ├── automations/                   # Versioned automation library + main-process pipeline runner
+│   │   ├── events.ts                  # Typed status/progress/event bus
+│   │   ├── index.ts                   # Public runtime exports
+│   │   ├── runner.ts                  # Parse/compile/execute plan, cancel, temp cleanup
+│   │   ├── step-executors.ts          # Node kind -> ConversionOptions -> ITranscoder call
+│   │   ├── store.ts                   # Bounded definitions.json persistence with backup
+│   │   ├── temp-files.ts              # Per-run temp root/path resolution and cleanup
+│   │   ├── types.ts                   # Runner, event bus and factory contracts
+│   │   └── __tests__/                 # runner, store, temp-file tests
 │   ├── player/
 │   │   ├── frame-decoder.ts           # Rawvideo frame + PCM audio pipe decoder
 │   │   └── types.ts                   # Decoded frame/audio structures + config types
@@ -149,6 +159,17 @@ src/
 │   │   ├── UpdateDialog.tsx           # In-app update dialog (check/download/install)
 │   │   ├── VideoFiltersSection.tsx    # Curated video-filter presets editor
 │   │   ├── VideoTimeline.tsx          # Zoomable waveform + thumbnail timeline
+│   │   ├── automations/               # Visual pipeline editor components
+│   │   │   ├── AutomationCanvas.tsx   # React Flow canvas with custom nodes/edges
+│   │   │   ├── AutomationInspector.tsx # Selected node options + backend editor
+│   │   │   ├── AutomationLibraryDrawer.tsx # Saved-definition library drawer
+│   │   │   ├── AutomationNodePalette.tsx   # Drag-and-drop node palette
+│   │   │   ├── AutomationOperationFields.tsx # Per-operation option fields
+│   │   │   ├── AutomationRunPanel.tsx # Stage timeline, node badges, run console
+│   │   │   ├── AutomationStageList.tsx # Stage grouping list
+│   │   │   ├── AutomationToolbar.tsx  # Save/load/run/cancel toolbar
+│   │   │   ├── nodes/                 # Input, stage, operation, output node renderers
+│   │   │   └── types.ts               # Automation component/view-model types
 │   │   ├── copilot/                   # Copilot chat, plan, and saved-chat components
 │   │   │   └── types.ts               # Copilot component prop shapes
 │   │   ├── settings/                  # Theme, MCP, and AI-provider settings sections
@@ -159,6 +180,8 @@ src/
 │   │   ├── useFormErrors.ts           # Field-level validation errors
 │   │   ├── useCapabilities.ts         # Encoder capability fetching + filtering
 │   │   ├── useMediaTask.ts            # Shared media-task lifecycle (info -> run -> progress)
+│   │   ├── useAutomations.ts          # Automation editor actions + run-event subscription
+│   │   ├── useAutomations.types.ts    # Automation hook result contracts
 │   │   └── types.ts                   # Codec option + progress subset types
 │   ├── i18n/
 │   │   ├── config.ts                  # i18next init with 56 locale resources
@@ -176,6 +199,7 @@ src/
 │   │   ├── Remux.tsx                  # Container change with stream copy
 │   │   ├── Demux.tsx                  # Per-stream extraction
 │   │   ├── BatchQueue.tsx             # Batch job management
+│   │   ├── Automations.tsx            # Visual pipeline editor (/automations)
 │   │   ├── Copilot.tsx                # Natural-language planning + AI providers
 │   │   ├── Logs.tsx                   # Log viewer (filter / clear / download)
 │   │   ├── Settings.tsx               # Theme, telemetry, MCP, AI, hwaccel settings
@@ -186,6 +210,8 @@ src/
 │   │   ├── audioExtractStore.ts       # Audio extraction form state (Zustand)
 │   │   ├── errorStore.ts              # Error state + history (cap 50)
 │   │   ├── queueStore.ts              # Batch queue job state (Zustand)
+│   │   ├── muxQueueStore.ts           # Remux/demux queue job state (Zustand)
+│   │   ├── automationStore.ts         # Automation editor + run state (Zustand)
 │   │   ├── settingsStore.ts           # Settings state + localStorage persistence
 │   │   ├── logStore.ts                # Aggregated log entries (cap 2000)
 │   │   ├── toastStore.ts              # Toast queue
@@ -203,7 +229,9 @@ src/
 │   │   ├── batchConfig.ts             # Batch encoding config persistence
 │   │   ├── dismissedAlertsStore.ts    # Dismissed alert banners (Zustand)
 │   │   └── types.ts                   # Zustand store state shapes + actions
-│   ├── styles/                        # Extracted MUI style constants per component (76 modules)
+│   ├── styles/                        # Extracted MUI style constants per component (78 modules)
+│   │   ├── Automations.styles.ts      # Automation editor grid/layout styles
+│   │   ├── Automations.styles.types.ts # Automation style slot contracts
 │   │   └── UpdateDialog.styles.ts     # Styled components for the update dialog
 │   └── utils/
 │       ├── formatters.ts              # Duration/bitrate/stream formatting helpers
@@ -216,6 +244,18 @@ src/
     ├── constants.ts                   # Numeric/string constants (timeline, waveform, window, ...)
     ├── app-constants.ts               # app/window layout, nav items, storage keys
     ├── copilot.ts                     # Copilot plan request/result contracts
+    ├── automations/                   # Automation model shared by renderer, preload and main
+    │   ├── types.ts                   # Definition, plan, step, run-event types
+    │   ├── schema.ts                  # zod schemas + parse helpers for all IPC/disk payloads
+    │   ├── limits.ts                  # Bounded JSON limits + store paths
+    │   ├── validate.ts                # Graph validation + topological ordering
+    │   ├── compile.ts                 # Validator -> ordered steps + temp path compiler
+    │   ├── references.ts              # {{nodeId.field}} reference resolution
+    │   ├── defaults.ts                # Empty graphs, default settings and ids
+    │   ├── node-kinds.ts              # Node kinds, executable kinds, media compatibility
+    │   ├── electron-api.types.ts      # Renderer bridge typings
+    │   ├── index.ts                   # Public shared-model exports
+    │   └── __tests__/                 # model, schema, validate, compile tests
     ├── mcp-ui.ts                      # MCP Apps contract: extension id, view URIs, payload types
     ├── theme/                         # The design system, shared with the MCP App views
     │   ├── colors.ts                  # The eight palettes and the semantic color constants
@@ -273,13 +313,14 @@ e2e/
 │   ├── mcp-apps.spec.ts               # MCP Apps UI bridge
 │   ├── vscode-client.spec.ts          # VS Code client integration
 │   └── vscode-ui.spec.ts              # VS Code UI integration
-└── specs/                             # 34 page/feature E2E specs
+└── specs/                             # 35 page/feature E2E specs
     ├── shell.spec.ts                  # App shell, navigation, window controls
     ├── convert.spec.ts                # Media conversion page
     ├── remux-demux-filters.spec.ts    # Remux, demux, and video filters
     ├── copilot.spec.ts                # Copilot planning
     ├── copilot-saved-chats.spec.ts    # Saved Copilot conversations
     ├── batch.spec.ts                  # Batch queue page
+    ├── automations.spec.ts            # Visual automation editor and runtime
     ├── audio-extract.spec.ts          # Audio extraction page
     ├── image-compress.spec.ts         # Image compression page
     ├── media-info.spec.ts             # Media information page

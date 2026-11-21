@@ -1452,6 +1452,18 @@
     "error": "Error",
     "detectedMediaKind": "Detected media kind: {{mediaKind}}",
     "paletteFilteredHint": "Showing operations compatible with {{mediaKind}}.",
-    "noStages": "No stages yet."
+    "noStages": "No stages yet.",
+    "runStatusAnnouncement": "Run status: {{status}}",
+    "canvasControlsLabel": "Automation canvas controls",
+    "canvasZoomIn": "Zoom in",
+    "canvasZoomOut": "Zoom out",
+    "canvasFitView": "Fit view",
+    "canvasInteractive": "Toggle canvas interactivity",
+    "canvasMiniMapLabel": "Automation canvas minimap",
+    "canvasNodeDescription": "Press enter or space to select a node. Press delete to remove it and escape to cancel.",
+    "canvasNodeKeyboardDescription": "Press enter or space to select a node. You can then use the arrow keys to move the node around. Press delete to remove it and escape to cancel.",
+    "canvasNodeMove": "Moved selected node {{direction}}. New position, x: {{x}}, y: {{y}}",
+    "canvasEdgeDescription": "Press enter or space to select an edge. You can then press delete to remove it or escape to cancel.",
+    "canvasHandleLabel": "Handle"
   }
 }

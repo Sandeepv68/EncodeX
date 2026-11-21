@@ -22,7 +22,7 @@ export default function AutomationInspector() {
   if (!node) {
     return (
       <EditorPanel role="complementary" aria-label={t('automations.inspectorLabel')}>
-        <PanelTitle variant="subtitle1">{t('automations.inspectorTitle')}</PanelTitle>
+        <PanelTitle variant="h2">{t('automations.inspectorTitle')}</PanelTitle>
         <PanelHint>{t('automations.inspectorEmpty')}</PanelHint>
       </EditorPanel>
     );
@@ -33,8 +33,9 @@ export default function AutomationInspector() {
 
   return (
     <EditorPanel role="complementary" aria-label={t('automations.inspectorLabel')}>
-      <PanelTitle variant="subtitle1">{t('automations.inspectorTitle')}</PanelTitle>
+      <PanelTitle variant="h2">{t('automations.inspectorTitle')}</PanelTitle>
       <TextField
+        data-testid="automation-node-label"
         size="small"
         label={t('automations.fields.label')}
         value={node.label}
@@ -44,6 +45,7 @@ export default function AutomationInspector() {
 
       {node.data.kind === AUTOMATION_KIND.INPUT && (
         <TextField
+          data-testid="automation-input-path"
           size="small"
           label={t('automations.fields.inputPath')}
           value={inputData?.path ?? ''}
@@ -57,6 +59,7 @@ export default function AutomationInspector() {
 
       {node.data.kind === AUTOMATION_KIND.STAGE && (
         <TextField
+          data-testid="automation-stage-name"
           size="small"
           label={t('automations.fields.stageName')}
           value={node.data.name}
@@ -67,12 +70,14 @@ export default function AutomationInspector() {
       {node.data.kind === AUTOMATION_KIND.OUTPUT && (
         <>
           <TextField
+            data-testid="automation-output-path"
             size="small"
             label={t('automations.fields.outputPath')}
             value={outputData?.path ?? ''}
             onChange={(event) => updateNode(node.id, { data: { kind: AUTOMATION_KIND.OUTPUT, path: event.target.value } })}
           />
           <TextField
+            data-testid="automation-output-extension"
             size="small"
             label={t('automations.fields.extension')}
             value={outputData?.extension ?? ''}
@@ -93,6 +98,7 @@ export default function AutomationInspector() {
         <FormControl size="small" fullWidth>
           <InputLabel id="automation-media-kind-label">{t('automations.fields.mediaKind')}</InputLabel>
           <Select
+            data-testid="automation-media-kind"
             labelId="automation-media-kind-label"
             label={t('automations.fields.mediaKind')}
             value={inputData?.mediaKind ?? 'unknown'}

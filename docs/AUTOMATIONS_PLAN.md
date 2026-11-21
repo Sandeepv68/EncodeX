@@ -1,6 +1,6 @@
 # Automations Feature Plan — Visual Media Pipelines for EncodeX
 
-> **Status:** In progress — Phases 0 through 4 implemented (run UX complete); Phase 5 not started
+> **Status:** Complete — Phases 0 through 5 implemented and verified
 > **Last updated:** 2026-11-21
 > **Owner:** EncodeX core
 > **Related docs:** [`ARCHITECTURE.md`](ARCHITECTURE.md), [`ARCHITECTURE_PROCESSES.md`](ARCHITECTURE_PROCESSES.md), [`ARCHITECTURE_RENDERER.md`](ARCHITECTURE_RENDERER.md), [`ARCHITECTURE_TRANSCODERS.md`](ARCHITECTURE_TRANSCODERS.md), [`IPC.md`](IPC.md), [`FEATURES.md`](FEATURES.md), [`TESTING.md`](TESTING.md), [`PROJECT_STRUCTURE.md`](PROJECT_STRUCTURE.md)
@@ -16,7 +16,7 @@
 | Phase 2 — Save/load library | **Complete** | Persisted definition library with seven IPC channels, atomic JSON storage plus backup recovery, bounded schema validation, native import/export, Save As/Duplicate, dirty state, and toast feedback. |
 | Phase 3 — Runtime engine | **Complete** | Sequential main-process runner, FFmpeg/FFTool/BMF step execution, five runtime IPC channels, progress/status events, cancellation, run-scoped temp files, and renderer start/cancel wiring. |
 | Phase 4 — Run UX and cascading stages | **Complete** | Interactive run console with bounded history, stage timeline, node badges, error/output details, cancel/rerun, runtime input override, media probing, and media-aware operation filtering. |
-| Phase 5 — Hardening and release | Not started | — |
+| Phase 5 — Hardening and release | **Complete** | Hardened temp cleanup and cancellation, added a11y/route/E2E coverage, synced docs/i18n, and passed the full verification command set. |
 
 ### Phase 0 notes and deviations
 
@@ -69,6 +69,16 @@
 - Added cancel/rerun controls in both the toolbar and run console, plus history selection and clearing; persisted history remains deferred to Phase 5.
 - `npm run sync:locales` added 21 keys per locale; `validate:locale-usage` reports 1275 base keys with 0 unused and 0 unknown keys, and `validate:locales` reports 55 locales matching en-US.
 - Verification completed for Phase 4: `npm run format:check`, `npm run lint`, `npm run lint:types`, `npm run validate:locale-usage`, `npm run validate:locales`, `npm run typecheck`, `npm test -- --reporter=default` (**374 files / 5527 tests passing**), `npm run audit:gate`, `npm run doc:drift` (facts: 26, doc files: 168, markers: 629), and `git diff --check` all pass.
+
+### Phase 5 notes and deviations
+
+- Hardened the runner so temp paths are resolved before validation/BMF checks, each run uses an isolated `tempRoot/<runId>` directory, intermediate files are recursively removed in `finally` unless `keepIntermediateFiles` is set, and shutdown calls `cancelAllAutomationRuns()` after clearing active directories.
+- Cancellation is idempotent: callbacks are cleared before invocation and on settle/terminal events, late or terminal cancels are ignored, post-terminal node events are suppressed, and `AutomationRunner.cancelAll()` covers active runs.
+- Added stable `data-testid` hooks and aria-live run status/progress announcements, keyboard/a11y renderer coverage, `/automations` route/navigation/focus/E2E matrix coverage, and a dedicated automations E2E spec for build/save/reopen/rerun, progress events, and BMF-unavailable handling.
+- Fixed the toolbar so React click events are not passed into `run()`.
+- `npm run sync:locales` added 12 a11y keys per locale; `validate:locale-usage` reports 1287 base keys with 0 unused and 0 unknown keys, and `validate:locales` reports 55 locales matching en-US.
+- Documentation and drift markers were updated across wiki/site/localized docs; test counts now report `src=386`, `e2e=43`, `perf=12`, total `429`.
+- Verification completed for Phase 5: `npm run format:check`, `npm run lint`, `npm run lint:types`, `npm run validate:locale-usage`, `npm run validate:locales`, `npm run typecheck`, `npm test` (**375 files / 5540 tests passing**), `npm run test:route-changes` (1 file / 1 test passing), `npm run test:a11y` (1 file / 7 tests passing), `npm run test:locale-matrix`, `npm run doc:drift` (facts: 26, doc files: 168, markers: 629), `npm run build`, and `git diff --check` all pass.
 
 ---
 
@@ -708,11 +718,11 @@ npm run build
 
 **Exit criteria:** users can build, run, monitor, and rerun staged automations fully in the UI.
 
-### Phase 5 — Hardening and release
+### Phase 5 — Hardening and release ✅ Complete
 
-- Complete docs, i18n sync, a11y, route matrices, and E2E coverage.
-- Clean up temp files and cancellation edge cases.
-- Run full verification command set.
+- [x] Complete docs, i18n sync, a11y, route matrices, and E2E coverage.
+- [x] Clean up temp files and cancellation edge cases.
+- [x] Run full verification command set.
 
 **Exit criteria:** feature passes the same quality gates as existing pages.
 

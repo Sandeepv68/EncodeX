@@ -1,12 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { StrictMode } from 'react';
-import { fireEvent, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { renderPage } from '../../../test-utils/page-render';
 import { useAutomationStore } from '../../stores/automationStore';
 import { useToastStore } from '../../stores/toastStore';
-import { createAutomationDefinition, createAutomationEdge, createAutomationNode } from '../../../shared/automations/defaults';
+import {
+  AUTOMATION_BACKENDS,
+  createAutomationDefinition,
+  createAutomationEdge,
+  createAutomationNode,
+} from '../../../shared/automations/defaults';
 import { AUTOMATION_KIND, AUTOMATION_RUN_STATUS } from '../../../shared/automations/types';
-import type { AutomationDefinition } from '../../../shared/automations/types';
+import type { AutomationBackend, AutomationDefinition, AutomationProgressEvent } from '../../../shared/automations/types';
 import type { MediaInfo } from '../../../shared/types';
 
 const electronApi = window.electronAPI as unknown as Record<string, unknown>;
@@ -51,6 +57,16 @@ function runnableDefinition(): AutomationDefinition {
   return candidate;
 }
 
+function bmfDefinition(): AutomationDefinition {
+  const candidate = runnableDefinition();
+  const transcode = createAutomationNode('n3', 'transcode', { x: 1, y: 0 }, { data: { kind: 'transcode', backend: 'BMF', options: {} } });
+  const output = candidate.graph.nodes.find((node) => node.kind === AUTOMATION_KIND.OUTPUT);
+  if (output) output.position = { x: 2, y: 0 };
+  candidate.graph.nodes.splice(1, 0, transcode);
+  candidate.graph.edges = [createAutomationEdge('n1', 'n3'), createAutomationEdge('n3', 'n2')];
+  return candidate;
+}
+
 function bridge(): Record<string, unknown> {
   return window.electronAPI as unknown as Record<string, unknown>;
 }
@@ -72,8 +88,16 @@ describe('Automations page', () => {
       runtimeInputPath: null,
       detectedMediaKind: null,
       selectedRunId: null,
+      backendStatus: AUTOMATION_BACKENDS.reduce<Record<AutomationBackend, boolean>>(
+        (status, backend) => {
+          status[backend] = true;
+          return status;
+        },
+        {} as Record<AutomationBackend, boolean>,
+      ),
     });
     useToastStore.setState({ toasts: [] });
+    bridge().getBmfStatus = vi.fn().mockResolvedValue({ available: true, missing: [] });
     bridge().automationList = vi.fn().mockResolvedValue([]);
     bridge().automationGet = vi.fn().mockResolvedValue(null);
     bridge().automationSave = vi.fn().mockImplementation((candidate: AutomationDefinition) => Promise.resolve(candidate));
@@ -92,6 +116,9 @@ describe('Automations page', () => {
     }
     Object.assign(current, originalMethods);
     getMediaInfoMock.mockReset().mockResolvedValue(defaultMediaInfo);
+    vi.mocked(window.electronAPI.onAutomationProgress)
+      .mockReset()
+      .mockImplementation(() => vi.fn());
   });
 
   it('renders the editor shell and creates an empty definition', async () => {
@@ -337,5 +364,70 @@ describe('Automations page', () => {
     expect(useAutomationStore.getState().definitions).toHaveLength(0);
     expect(useAutomationStore.getState().activeDefinition?.id).not.toBe('a');
     expect(useAutomationStore.getState().isDirty).toBe(true);
+  });
+
+  it('exposes translated canvas controls and supports keyboard activation', async () => {
+    const user = userEvent.setup();
+    renderPage('Automations');
+    await waitFor(() => expect(useAutomationStore.getState().activeDefinition).not.toBeNull());
+
+    const canvas = screen.getByTestId('automation-canvas');
+    const controls = within(canvas).getByTestId('rf__controls');
+    expect(controls).toHaveAttribute('aria-label', 'automations.canvasControlsLabel');
+
+    const zoomIn = within(controls).getByRole('button', { name: 'automations.canvasZoomIn' });
+    const zoomOut = within(controls).getByRole('button', { name: 'automations.canvasZoomOut' });
+    const fitView = within(controls).getByRole('button', { name: 'automations.canvasFitView' });
+
+    zoomIn.focus();
+    expect(zoomIn).toHaveFocus();
+    await user.keyboard('{Enter}');
+    await user.tab();
+    expect(zoomOut).toHaveFocus();
+    await user.tab();
+    expect(fitView).toHaveFocus();
+    expect(within(canvas).getByLabelText('automations.canvasMiniMapLabel')).toBeInTheDocument();
+  });
+
+  it('announces run status and progress in an aria-live region', async () => {
+    const listeners: Array<(event: AutomationProgressEvent) => void> = [];
+    vi.mocked(window.electronAPI.onAutomationProgress).mockImplementation((callback) => {
+      listeners.push(callback);
+      return () => {};
+    });
+    useAutomationStore.setState({ activeDefinition: runnableDefinition() });
+    renderPage('Automations');
+    await waitFor(() => expect(listeners.length).toBeGreaterThan(0));
+
+    fireEvent.click(screen.getByTestId('automation-run'));
+    await waitFor(() => expect(useAutomationStore.getState().runs['run-page']?.status).toBe(AUTOMATION_RUN_STATUS.QUEUED));
+    const live = await screen.findByTestId('automation-run-status-live');
+    expect(live).toHaveAttribute('aria-live', 'polite');
+    expect(live).toHaveTextContent('Run status: automations.status.queued');
+
+    act(() => {
+      listeners[listeners.length - 1]({
+        runId: 'run-page',
+        automationId: 'a',
+        nodeId: '',
+        status: AUTOMATION_RUN_STATUS.RUNNING,
+        progress: 50,
+        message: 'halfway',
+      });
+    });
+    await waitFor(() => expect(live).toHaveTextContent('Run status: automations.status.running'));
+    expect(screen.getByTestId('automation-run-progress')).toHaveAttribute('aria-valuenow', '50');
+    expect(screen.getByTestId('automation-run-message')).toHaveTextContent('halfway');
+  });
+
+  it('disables an unavailable BMF backend during validation', async () => {
+    bridge().getBmfStatus = vi.fn().mockResolvedValue({ available: false, missing: ['bmf_ffmpeg'] });
+    useAutomationStore.setState({ activeDefinition: bmfDefinition() });
+    renderPage('Automations');
+    await waitFor(() => expect(useAutomationStore.getState().backendStatus.BMF).toBe(false));
+
+    fireEvent.click(screen.getByTestId('automation-run'));
+    await waitFor(() => expect(screen.getByTestId('automation-issue-backend_unavailable')).toBeInTheDocument());
+    expect(bridge().automationStart).not.toHaveBeenCalled();
   });
 });

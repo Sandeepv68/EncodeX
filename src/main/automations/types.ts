@@ -17,7 +17,10 @@ export interface AutomationBusEvent {
 export interface ActiveAutomationRun {
   runId: string;
   automationId: string;
+  runDirectory: string;
+  keepIntermediateFiles: boolean;
   cancelled: boolean;
+  terminal: boolean;
   cancelCurrent?: () => void;
 }
 

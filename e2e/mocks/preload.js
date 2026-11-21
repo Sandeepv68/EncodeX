@@ -220,10 +220,12 @@ const api = {
   getVideoPreview: () => Promise.resolve(state.videoPreviewResult),
   getCapabilities: () => Promise.resolve(state.capabilitiesResult),
   compressImage: () => Promise.resolve(state.compressImageResult),
+  getBmfStatus: () => Promise.resolve(cloneMockValue(state.automationBmfStatus)),
 
   automationList: () => Promise.resolve(cloneMockValue(state.automations)),
   automationGet: (id) => Promise.resolve(cloneMockValue(state.automations.find((item) => item.id === id)) || null),
   automationSave: (definition) => {
+    state.automationSaveCalls.push(cloneMockValue(definition));
     const now = Date.now();
     const saved = {
       ...cloneMockValue(definition),
@@ -274,6 +276,7 @@ const api = {
     return Promise.resolve(dir ? require('path').join(dir, fileName) : fileName);
   },
   automationStart: (request) => {
+    state.automationStartCalls.push(cloneMockValue(request));
     if (state.automationStartBehavior === 'reject') return Promise.reject(new Error('mock automation start failed'));
     return Promise.resolve(state.automationStartRunId);
   },
@@ -749,6 +752,12 @@ const api = {
     setThumbnails: (v) => {
       state.thumbnailsResult = v;
     },
+    setAutomations: (v) => {
+      state.automations = cloneMockValue(v || []);
+    },
+    setBmfStatus: (v) => {
+      state.automationBmfStatus = cloneMockValue(v || { available: true, missing: [] });
+    },
     setAutomationStartRunId: (v) => {
       state.automationStartRunId = v;
     },
@@ -799,6 +808,10 @@ const api = {
         mcpUiToolCalls,
         aiSetCalls,
         aiModelsResult,
+        automations,
+        automationBmfStatus,
+        automationSaveCalls,
+        automationStartCalls,
         automationCancelCalls,
       } = state;
       return {
@@ -813,6 +826,10 @@ const api = {
         mcpUiToolCalls,
         aiSetCalls,
         aiModelsResult,
+        automations,
+        automationBmfStatus,
+        automationSaveCalls,
+        automationStartCalls,
         automationCancelCalls,
       };
     },

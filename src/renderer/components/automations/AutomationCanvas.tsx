@@ -120,7 +120,7 @@ export default function AutomationCanvas() {
   );
 
   return (
-    <CanvasSurface>
+    <CanvasSurface data-testid="automation-canvas">
       <ReactFlow<AutomationFlowNode>
         nodes={nodes}
         edges={edges}
@@ -136,10 +136,23 @@ export default function AutomationCanvas() {
         deleteKeyCode={null}
         proOptions={{ hideAttribution: true }}
         aria-label={t('automations.canvasLabel')}
+        ariaLabelConfig={{
+          'node.a11yDescription.default': t('automations.canvasNodeDescription'),
+          'node.a11yDescription.keyboardDisabled': t('automations.canvasNodeKeyboardDescription'),
+          'node.a11yDescription.ariaLiveMessage': ({ direction, x, y }) => t('automations.canvasNodeMove', { direction, x, y }),
+          'edge.a11yDescription.default': t('automations.canvasEdgeDescription'),
+          'controls.ariaLabel': t('automations.canvasControlsLabel'),
+          'controls.zoomIn.ariaLabel': t('automations.canvasZoomIn'),
+          'controls.zoomOut.ariaLabel': t('automations.canvasZoomOut'),
+          'controls.fitView.ariaLabel': t('automations.canvasFitView'),
+          'controls.interactive.ariaLabel': t('automations.canvasInteractive'),
+          'minimap.ariaLabel': t('automations.canvasMiniMapLabel'),
+          'handle.ariaLabel': t('automations.canvasHandleLabel'),
+        }}
       >
         <Background />
         <Controls />
-        <MiniMap />
+        <MiniMap ariaLabel={t('automations.canvasMiniMapLabel')} />
       </ReactFlow>
     </CanvasSurface>
   );

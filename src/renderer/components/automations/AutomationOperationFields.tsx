@@ -27,6 +27,7 @@ export default function AutomationOperationFields({ node, defaultBackend }: Auto
       <FormControl size="small" fullWidth>
         <InputLabel id="automation-backend-label">{t('automations.fields.backend')}</InputLabel>
         <Select
+          data-testid="automation-backend"
           labelId="automation-backend-label"
           label={t('automations.fields.backend')}
           value={currentBackend}

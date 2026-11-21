@@ -94,6 +94,14 @@ Process multiple files with configurable operations (transcode, extract audio, c
 - **When-done power actions** — optionally shut down, sleep, or hibernate the machine when the queue drains (`shutdown`, `pmset`, or `systemctl` per platform; Windows honors a force-close flag).
 - **Live feedback** — real-time per-job progress (percent, time, speed, ETA) streamed over IPC, per-job error handling, and a nav count badge showing outstanding work.
 
+### Automations
+
+The `/automations` page builds multi-stage media pipelines visually. Drag nodes from the palette onto a React Flow canvas, connect them, and configure each operation in the inspector. A graph has an Input node, Stage grouping nodes, six executable operations (Transcode, Extract Audio, Cut, Remux, Demux, Compress Image), and an Output node. Each operation can select the FFmpeg API, FFmpeg CLI, or BMF backend (when installed), and incompatible operations are hidden for the probed input media kind.
+
+Definitions are versioned JSON documents persisted in `userData/automations/definitions.json`, with a library drawer for New, Open, Save, Save As, Duplicate, Delete, Import, and Export. Live validation reports missing input/output nodes, cycles, disconnected nodes, unknown dependencies, unsupported operations, and unavailable backends before a run is allowed. Runs execute sequentially in the main process and stream run- and node-level status, progress, and errors over IPC into a stage timeline, node badges, and a run console, with runtime input overrides, cancel, rerun, and a bounded session history.
+
+> **Screenshot placeholder:** add a capture of the `/automations` editor showing the palette, canvas, inspector, and run panel when release screenshots are regenerated.
+
 ### Multiple Transcoder Cores
 
 - **FFmpeg API** — fluent-ffmpeg Node.js bindings with programmatic progress events

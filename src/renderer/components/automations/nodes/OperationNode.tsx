@@ -9,10 +9,15 @@ import type { AutomationFlowNode } from '../AutomationNode.types';
 import { KindBadge, NodeCard, NodeHeader, StatusChip } from '../../../styles/Automations.styles';
 
 /** Renders an executable automation operation node. */
-export default function OperationNode({ data, selected }: NodeProps<AutomationFlowNode>) {
+export default function OperationNode({ id, data, selected }: NodeProps<AutomationFlowNode>) {
   const { t } = useTranslation();
   return (
-    <NodeCard $selected={selected} $status={data.status} $hasIssue={data.issueCodes.length > 0}>
+    <NodeCard
+      data-testid={`automation-canvas-node-${id}`}
+      $selected={selected}
+      $status={data.status}
+      $hasIssue={data.issueCodes.length > 0}
+    >
       <Handle type="target" position={Position.Left} />
       <Handle type="source" position={Position.Right} />
       <NodeHeader>

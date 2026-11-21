@@ -39,7 +39,7 @@ export default function AutomationNodePalette() {
 
   return (
     <EditorPanel role="complementary" aria-label={t('automations.paletteLabel')}>
-      <PanelTitle variant="subtitle1">{t('automations.paletteTitle')}</PanelTitle>
+      <PanelTitle variant="h2">{t('automations.paletteTitle')}</PanelTitle>
       <PanelHint>{t('automations.paletteHint')}</PanelHint>
       {isFiltered && (
         <PanelHint>{t('automations.paletteFilteredHint', { mediaKind: t(`automations.mediaKind.${effectiveMediaKind}`) })}</PanelHint>
@@ -47,6 +47,7 @@ export default function AutomationNodePalette() {
       {visibleKinds.map((kind) => (
         <PaletteItem
           key={kind}
+          data-testid={`automation-palette-${kind}`}
           draggable
           variant="text"
           onDragStart={(event) => handleDragStart(event, kind)}

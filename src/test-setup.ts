@@ -69,6 +69,7 @@ vi.mock('react-i18next', () => ({
     t: (key: string, opts?: Record<string, string | number>) => {
       const map: Record<string, string> = {
         'app.searchLanguage': 'Search languages',
+        'automations.runStatusAnnouncement': 'Run status: {{status}}',
         'progress.time': 'Time',
         'progress.speed': 'Speed',
         'progress.eta': 'ETA',

@@ -19,7 +19,9 @@ import type {
   QueueJob,
   ThumbnailStrip,
   WaveformData,
+  BmfStatus,
 } from '../../src/shared/types';
+import type { AutomationDefinition, AutomationProgressEvent, AutomationStartRequest } from '../../src/shared/automations/types';
 import type { McpSettings } from '../../src/shared/mcp-settings';
 import type { CopilotPlan } from '../../src/shared/copilot';
 import type { AiConnectTestResult, AiModelsListResult, AiSettingsUpdate, AiSettingsView } from '../../src/shared/ai/settings';
@@ -35,6 +37,11 @@ export interface TestSnapshot {
   mcpSetCalls: McpSettings[];
   mcpUiToolCalls: Array<{ name: string; args: Record<string, unknown> }>;
   aiSetCalls: AiSettingsUpdate[];
+  automations: AutomationDefinition[];
+  automationBmfStatus: BmfStatus;
+  automationSaveCalls: AutomationDefinition[];
+  automationStartCalls: AutomationStartRequest[];
+  automationCancelCalls: string[];
 }
 
 function invoke(page: Page, method: string, args: unknown[]): Promise<unknown> {
@@ -67,6 +74,16 @@ export const mockApi = {
   setImageFileInfo: (page: Page, v: ImageFileInfo | null) => invoke(page, 'setImageFileInfo', [v]),
   setVideoPreview: (page: Page, v: string | null) => invoke(page, 'setVideoPreview', [v]),
   setCapabilities: (page: Page, v: EncoderCapabilities | null) => invoke(page, 'setCapabilities', [v]),
+  setAutomations: (page: Page, v: AutomationDefinition[]) => invoke(page, 'setAutomations', [v]),
+  setBmfStatus: (page: Page, v: BmfStatus) => invoke(page, 'setBmfStatus', [v]),
+  setAutomationStartRunId: (page: Page, v: string) => invoke(page, 'setAutomationStartRunId', [v]),
+  setAutomationStartBehavior: (page: Page, v: 'resolve' | 'reject') => invoke(page, 'setAutomationStartBehavior', [v]),
+  setAutomationCancelResult: (page: Page, v: boolean) => invoke(page, 'setAutomationCancelResult', [v]),
+  getAutomationSaveCalls: (page: Page) => invoke(page, 'get', []).then((snapshot) => (snapshot as TestSnapshot).automationSaveCalls ?? []),
+  getAutomationStartCalls: (page: Page) =>
+    invoke(page, 'get', []).then((snapshot) => (snapshot as TestSnapshot).automationStartCalls ?? []),
+  getAutomationCancelCalls: (page: Page) =>
+    invoke(page, 'get', []).then((snapshot) => (snapshot as TestSnapshot).automationCancelCalls ?? []),
   setCompressImageResult: (page: Page, v: { savingPath: string; originalSizeBytes: number; compressedSizeBytes: number } | null) =>
     invoke(page, 'setCompressImageResult', [v]),
   setConvertBehavior: (page: Page, v: 'resolve' | 'reject' | 'hold') => invoke(page, 'setConvertBehavior', [v]),
@@ -158,6 +175,10 @@ export function emitMuxQueueProgress(page: Page, job: MuxQueueJob, progress: Par
  * dropped, so the mock has to stamp it too.
  */
 let logSeq = 0;
+
+export function emitAutomationProgress(page: Page, event: AutomationProgressEvent) {
+  return mockApi.emit(page, 'automation-progress', event);
+}
 
 /** Emits a log message entry to the renderer log panel. */
 export function emitLogMessage(page: Page, entry: Partial<LogEntry>) {

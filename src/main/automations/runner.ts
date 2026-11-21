@@ -2,7 +2,6 @@
  * @fileoverview Executes compiled automation plans in the main process.
  */
 
-import * as path from 'path';
 import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';
 import { aggregateProgress } from '../queue/mux-job-runner';
@@ -21,10 +20,11 @@ import type {
 } from '../../shared/automations/types';
 import { AutomationEventBus } from './events';
 import { executeAutomationStep } from './step-executors';
-import { cleanupAutomationIntermediates, ensureAutomationTempRoot } from './temp-files';
+import { cleanupAutomationRunDirectory, ensureAutomationRunDirectory, resolveAutomationRunDirectory } from './temp-files';
 import type { ActiveAutomationRun, AutomationForwardSender, AutomationRunnerOptions, AutomationTranscoderFactory } from './types';
 
 const log = new Logger('main/automations/runner');
+const activeRunners = new Set<AutomationRunner>();
 
 function runEvent(
   runId: string,
@@ -72,12 +72,13 @@ export class AutomationRunner {
   start(definition: AutomationDefinition, runtime: AutomationRuntime = {}): string {
     const parsed = parseAutomationDefinition(definition);
     const runId = this.runIdGenerator();
-    const tempRoot = ensureAutomationTempRoot({
+    const tempContext = {
       userDataDir: this.options.userDataDir,
       settings: parsed.settings,
       runtimeTempRoot: runtime.tempRoot,
-    });
-    const plan = compileAutomation(parsed, { ...runtime, tempRoot: path.join(tempRoot, runId) });
+    };
+    const runDirectory = resolveAutomationRunDirectory(tempContext, runId);
+    const plan = compileAutomation(parsed, { ...runtime, tempRoot: runDirectory });
     if (!plan.valid) {
       throw formatPlanError(plan);
     }
@@ -92,25 +93,54 @@ export class AutomationRunner {
       );
     }
 
-    const active: ActiveAutomationRun = { runId, automationId: parsed.id, cancelled: false };
+    ensureAutomationRunDirectory(tempContext, runId);
+    const active: ActiveAutomationRun = {
+      runId,
+      automationId: parsed.id,
+      runDirectory,
+      keepIntermediateFiles: parsed.settings.keepIntermediateFiles,
+      cancelled: false,
+      terminal: false,
+    };
     this.activeRuns.set(runId, active);
+    activeRunners.add(this);
 
     this.eventBus.emitStatus(runEvent(runId, parsed.id, 'queued'));
     this.eventBus.emitProgress(runEvent(runId, parsed.id, 'queued', '', { progress: 0 }));
 
-    void this.executePlan(active, parsed, plan).finally(() => {
-      this.activeRuns.delete(runId);
-    });
+    void this.executePlan(active, parsed, plan)
+      .catch((err) => {
+        log.error('Automation run crashed', err);
+      })
+      .finally(() => {
+        active.terminal = true;
+        active.cancelCurrent = undefined;
+        this.activeRuns.delete(runId);
+        if (this.activeRuns.size === 0) activeRunners.delete(this);
+      });
 
     return runId;
   }
 
   cancel(runId: string): boolean {
     const active = this.activeRuns.get(runId);
-    if (!active) return false;
+    if (!active || active.terminal) return false;
+    if (active.cancelled) return true;
     active.cancelled = true;
-    active.cancelCurrent?.();
+    const cancelCurrent = active.cancelCurrent;
+    active.cancelCurrent = undefined;
+    cancelCurrent?.();
     return true;
+  }
+
+  cancelAll(): number {
+    let count = 0;
+    for (const active of [...this.activeRuns.values()]) {
+      if (this.cancel(active.runId)) count += 1;
+      cleanupAutomationRunDirectory(active.runDirectory, active.keepIntermediateFiles);
+    }
+    if (this.activeRuns.size === 0) activeRunners.delete(this);
+    return count;
   }
 
   private emitRun(active: ActiveAutomationRun, status: AutomationRunStatus, extra: Partial<AutomationProgressEvent> = {}): void {
@@ -125,16 +155,22 @@ export class AutomationRunner {
     status: AutomationRunStatus,
     extra: Partial<AutomationProgressEvent> = {},
   ): void {
+    if (active.terminal) return;
     const payload = runEvent(active.runId, active.automationId, status, step.nodeId, { stageId: step.stageId, ...extra });
     this.eventBus.emitStatus(payload);
     this.eventBus.emitProgress(payload);
   }
 
+  private finishRun(active: ActiveAutomationRun, status: AutomationRunStatus, extra: Partial<AutomationProgressEvent> = {}): void {
+    if (active.terminal) return;
+    active.terminal = true;
+    active.cancelCurrent = undefined;
+    this.emitRun(active, status, extra);
+  }
+
   private async executePlan(active: ActiveAutomationRun, definition: AutomationDefinition, plan: AutomationPlan): Promise<void> {
-    const intermediates: string[] = [];
     const completedOutputs = new Map<string, string>();
     let currentInput = plan.inputPath;
-    let failed = false;
     let cancelled = false;
 
     this.emitRun(active, 'running', { progress: 0, message: 'Running automation' });
@@ -185,7 +221,6 @@ export class AutomationRunner {
         }
 
         completedOutputs.set(step.nodeId, step.outputPath);
-        if (index < plan.steps.length - 1) intermediates.push(step.outputPath);
         currentInput = step.outputPath;
         const percent = aggregateProgress(index, plan.steps.length, 100);
         this.emitNode(active, step, 'succeeded', { progress: percent, outputPath: step.outputPath });
@@ -193,23 +228,21 @@ export class AutomationRunner {
       }
 
       if (cancelled || active.cancelled) {
-        this.emitRun(active, 'cancelled', { message: 'Automation cancelled' });
+        this.finishRun(active, 'cancelled', { message: 'Automation cancelled' });
         return;
       }
 
-      this.emitRun(active, 'succeeded', { progress: 100, outputPath: plan.outputPath, message: 'Automation completed' });
+      this.finishRun(active, 'succeeded', { progress: 100, outputPath: plan.outputPath, message: 'Automation completed' });
     } catch (err) {
-      failed = true;
       const formatted = formatError(err);
       const wasCancelled = active.cancelled || isCancelledError(err) || isCancelledError(formatted);
       if (wasCancelled) {
-        const currentIndex = plan.steps.findIndex((step) => !completedOutputs.has(step.nodeId) && step.outputPath !== currentInput);
         for (const step of plan.steps) {
           if (!completedOutputs.has(step.nodeId)) {
             this.emitNode(active, step, 'cancelled', { message: 'Cancelled' });
           }
         }
-        this.emitRun(active, 'cancelled', { message: 'Automation cancelled', error: formatted.message });
+        this.finishRun(active, 'cancelled', { message: 'Automation cancelled', error: formatted.message });
         return;
       }
 
@@ -223,15 +256,20 @@ export class AutomationRunner {
           status === 'failed' ? { error: formatted.message, message: formatted.message } : { message: 'Cancelled' },
         );
       }
-      this.emitRun(active, 'failed', { error: formatted.message, message: formatted.message });
+      this.finishRun(active, 'failed', { error: formatted.message, message: formatted.message });
       log.error('Automation run failed', formatted);
     } finally {
-      cleanupAutomationIntermediates(intermediates, definition.settings.keepIntermediateFiles);
-      if (failed) {
-        // intermediates already cleaned; final output may be partial by design of transcoder.
-      }
+      cleanupAutomationRunDirectory(active.runDirectory, definition.settings.keepIntermediateFiles);
     }
   }
+}
+
+export function cancelAllAutomationRuns(): number {
+  let count = 0;
+  for (const runner of [...activeRunners]) {
+    count += runner.cancelAll();
+  }
+  return count;
 }
 
 /** Forwards runner events to IPC push channels. */

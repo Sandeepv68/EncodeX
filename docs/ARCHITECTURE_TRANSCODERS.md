@@ -123,6 +123,23 @@ Demux is the inverse: `buildDemuxTargets` (`src/shared/codec-containers.ts`) exp
 - **FfmpegCore** (fluent-ffmpeg): maps are emitted as `outputOptions('-map', spec)`, added inputs as chained `input()` calls with `-itsoffset` in `inputOptions`, cover art as `outputOptions('-attach', …)`, disposition as `outputOptions('-disposition:v:<n>', …)`, chapters as `outputOptions('-map_chapters', index)`.
 - **FFToolCore / BmfCore**: identical flags via the shared `buildFfmpegArgs`, so the CLI (`encodex remux`, `encodex demux`) and the MCP tools (`remux_media`, `demux_media`) produce the same command as the GUI. BMF has no separate remux/demux code path — availability of its binaries remains the only BMF-specific failure mode (`BMF_NOT_AVAILABLE`).
 
+## 🤖 Automation Node → Backend Mapping
+
+The compiler reduces an automation graph to an ordered `AutomationStep[]`; `src/main/automations/step-executors.ts` is the only place that turns a step into a transcoder call. It guards `step.options` with `isConversionOptionsLike` (invalid options raise `INVALID_FORMAT`) and then normalizes the options by node kind:
+
+| Node kind       | Options passed to `ITranscoder.convert()`                              | Backend resolution                                     |
+| --------------- | ---------------------------------------------------------------------- | ------------------------------------------------------ |
+| `input` / `stage` / `output` | Not executable; omitted from the compiled step list        | —                                                      |
+| `transcode`     | Node options unchanged                                                 | `step.backend` → definition default → `FFMPEG`         |
+| `cut`           | Node options unchanged (time cut flags still come from `buildFfmpegArgs`/fluent-ffmpeg) | `step.backend` → definition default → `FFMPEG` |
+| `extractAudio`  | `audio: true`, `video: false`, `copy: false`, `audioCodec` defaults to `mp3` | `step.backend` → definition default → `FFMPEG` |
+| `remux`         | Forces `copy: true` (lossless stream copy)                            | `step.backend` → definition default → `FFMPEG`         |
+| `demux`         | Forces `copy: true`; per-stream targets were resolved before the run  | `step.backend` → definition default → `FFMPEG`         |
+| `compressImage` | `video: false`, `audio: false`                                         | `step.backend` → definition default → `FFMPEG`         |
+
+`step.backend` is the node's selected `AutomationBackend` (`FFMPEG`, `FFTOOL`, or `BMF`) and falls back to `settings.defaultBackend`; the runner injects `createTranscoder` as the factory, so all three cores in this document are reachable from an automation node. A run that selects BMF is preflighted with `checkBmfAvailable` and fails with `BMF_NOT_AVAILABLE` before any step starts if the CLI tools are missing.
+
+Each step streams `progress`/`end`/`error` from its `EventEmitter` into the runner, which aggregates the step percent with `aggregateProgress` and pushes node/run status over the `automation-*` IPC channels. The runner chains steps by feeding each step's temp output path into the next step's `input`, and the final step writes the output node's path; intermediate files are cleaned up after the run unless `keepIntermediateFiles` is enabled. Cancellation calls the active transcoder's `cancel()`, which uses the same OS-level kill/resume mechanics described for the individual cores above.
 
 ## ⚡ Hardware Acceleration
 

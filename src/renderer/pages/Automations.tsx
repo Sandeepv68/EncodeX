@@ -118,10 +118,18 @@ export default function Automations() {
         />
       </EditorLayout>
       <AutomationLibraryDrawer open={libraryOpen} onClose={() => setLibraryOpen(false)} />
-      <Dialog open={saveAsOpen} onClose={() => setSaveAsOpen(false)} aria-labelledby="automation-save-as-title" fullWidth maxWidth="xs">
+      <Dialog
+        data-testid="automation-save-as-dialog"
+        open={saveAsOpen}
+        onClose={() => setSaveAsOpen(false)}
+        aria-labelledby="automation-save-as-title"
+        fullWidth
+        maxWidth="xs"
+      >
         <DialogTitle id="automation-save-as-title">{t('automations.saveAsTitle')}</DialogTitle>
         <DialogContent>
           <TextField
+            data-testid="automation-save-as-name"
             fullWidth
             size="small"
             label={t('automations.fields.name')}
@@ -130,8 +138,15 @@ export default function Automations() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setSaveAsOpen(false)}>{t('automations.cancel')}</Button>
-          <Button variant="contained" onClick={() => void confirmSaveAs()} disabled={!saveAsName.trim()}>
+          <Button data-testid="automation-save-as-cancel" onClick={() => setSaveAsOpen(false)}>
+            {t('automations.cancel')}
+          </Button>
+          <Button
+            data-testid="automation-save-as-confirm"
+            variant="contained"
+            onClick={() => void confirmSaveAs()}
+            disabled={!saveAsName.trim()}
+          >
             {t('automations.saveAsConfirm')}
           </Button>
         </DialogActions>

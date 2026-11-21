@@ -21,9 +21,10 @@ export default function AutomationStageList() {
 
   return (
     <EditorPanel role="complementary" aria-label={t('automations.stagesLabel')}>
-      <PanelTitle variant="subtitle1">{t('automations.stagesTitle')}</PanelTitle>
+      <PanelTitle variant="h2">{t('automations.stagesTitle')}</PanelTitle>
       <PanelHint>{t('automations.stagesHint')}</PanelHint>
       <Button
+        data-testid="automation-add-stage"
         size="small"
         variant="outlined"
         startIcon={<FontAwesomeIcon icon={faPlus} />}

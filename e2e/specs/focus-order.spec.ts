@@ -203,6 +203,19 @@ describe('5.3 focus order: real Tab navigation on the shipped renderer', () => {
     console.log(`remux focus chain: ${fmtStops(stops)}`);
   });
 
+  it('tabs the Automations toolbar controls inside main without losing focus (light 1440)', { timeout: 120_000 }, async () => {
+    await gotoRoute(session, 'nav-item-automations', '/automations');
+    await session.page.locator('[data-testid="automation-run"]').waitFor({ state: 'visible', timeout: 15_000 });
+    await session.page.setViewportSize({ width: 1440, height: HEIGHT });
+    await session.page.waitForTimeout(200);
+    await resetFocus(session);
+
+    const run = await tabUntil(session, (s) => s.testid === 'automation-run', 40);
+    expect(run.reached, `Automations run button must be keyboard-addressable (${fmtStops(run.stops)})`).toBe(true);
+    assertNoLostFocus(run.stops, 'automations Tab');
+    expect(run.stops.filter((s) => s.landmark === 'main').length).toBeGreaterThanOrEqual(2);
+  });
+
   it('keeps condensed mobile focus inside the open temporary drawer nav after a dark-theme reload', { timeout: 120_000 }, async () => {
     await session.page.setViewportSize({ width: 320, height: HEIGHT });
     await session.page.evaluate(({ key, value }) => localStorage.setItem(key, value), { key: THEME_STORAGE_KEY, value: 'dark' });

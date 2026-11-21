@@ -26,7 +26,9 @@ export default function AutomationLibraryDrawer({ open, onClose }: AutomationLib
   return (
     <Drawer anchor="right" open={open} onClose={onClose} aria-label={t('automations.libraryTitle')}>
       <DrawerHeader>
-        <Typography variant="subtitle1">{t('automations.libraryTitle')}</Typography>
+        <Typography component="h2" variant="subtitle1">
+          {t('automations.libraryTitle')}
+        </Typography>
         <IconButton size="small" onClick={onClose} aria-label={t('automations.close')}>
           <FontAwesomeIcon icon={faXmark} />
         </IconButton>
@@ -61,8 +63,9 @@ export default function AutomationLibraryDrawer({ open, onClose }: AutomationLib
       </DrawerActions>
       <List>
         {definitions.map((definition) => (
-          <LibraryRow key={definition.id}>
+          <LibraryRow key={definition.id} data-testid={`automation-library-${definition.id}`}>
             <ListItemButton
+              data-testid={`automation-library-open-${definition.id}`}
               onClick={() => {
                 void loadAutomation(definition.id);
                 onClose();

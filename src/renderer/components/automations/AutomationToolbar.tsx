@@ -42,19 +42,28 @@ export default function AutomationToolbar({
   return (
     <ToolbarRow>
       <TextField
+        data-testid="automation-name"
         size="small"
         label={t('automations.fields.name')}
         value={name}
         onChange={(event) => onRename(event.target.value)}
         disabled={!hasDefinition}
+        slotProps={{ htmlInput: { 'data-testid': 'automation-name-input' } }}
       />
-      <Button size="small" variant="outlined" startIcon={<FontAwesomeIcon icon={faPlus} />} onClick={onNew}>
+      <Button data-testid="automation-new" size="small" variant="outlined" startIcon={<FontAwesomeIcon icon={faPlus} />} onClick={onNew}>
         {t('automations.new')}
       </Button>
-      <Button size="small" variant="outlined" startIcon={<FontAwesomeIcon icon={faFolderOpen} />} onClick={onOpenLibrary}>
+      <Button
+        data-testid="automation-open-library"
+        size="small"
+        variant="outlined"
+        startIcon={<FontAwesomeIcon icon={faFolderOpen} />}
+        onClick={onOpenLibrary}
+      >
         {t('automations.openLibrary')}
       </Button>
       <Button
+        data-testid="automation-save"
         size="small"
         variant="outlined"
         startIcon={<FontAwesomeIcon icon={faFloppyDisk} />}
@@ -64,6 +73,7 @@ export default function AutomationToolbar({
         {t('automations.save')}
       </Button>
       <Button
+        data-testid="automation-save-as"
         size="small"
         variant="outlined"
         startIcon={<FontAwesomeIcon icon={faFloppyDisk} />}
@@ -72,16 +82,37 @@ export default function AutomationToolbar({
       >
         {t('automations.saveAs')}
       </Button>
-      <Button size="small" variant="outlined" startIcon={<FontAwesomeIcon icon={faCopy} />} onClick={onDuplicate} disabled={!hasDefinition}>
+      <Button
+        data-testid="automation-duplicate"
+        size="small"
+        variant="outlined"
+        startIcon={<FontAwesomeIcon icon={faCopy} />}
+        onClick={onDuplicate}
+        disabled={!hasDefinition}
+      >
         {t('automations.duplicate')}
       </Button>
-      <Button size="small" variant="outlined" startIcon={<FontAwesomeIcon icon={faTrash} />} onClick={onDelete} disabled={!hasDefinition}>
+      <Button
+        data-testid="automation-delete"
+        size="small"
+        variant="outlined"
+        startIcon={<FontAwesomeIcon icon={faTrash} />}
+        onClick={onDelete}
+        disabled={!hasDefinition}
+      >
         {t('automations.delete')}
       </Button>
-      <Button size="small" variant="outlined" startIcon={<FontAwesomeIcon icon={faUpload} />} onClick={onImport}>
+      <Button
+        data-testid="automation-import"
+        size="small"
+        variant="outlined"
+        startIcon={<FontAwesomeIcon icon={faUpload} />}
+        onClick={onImport}
+      >
         {t('automations.import')}
       </Button>
       <Button
+        data-testid="automation-export"
         size="small"
         variant="outlined"
         startIcon={<FontAwesomeIcon icon={faDownload} />}
@@ -91,6 +122,7 @@ export default function AutomationToolbar({
         {t('automations.export')}
       </Button>
       <Button
+        data-testid="automation-select-input"
         size="small"
         variant="outlined"
         startIcon={<FontAwesomeIcon icon={faFolder} />}
@@ -99,10 +131,18 @@ export default function AutomationToolbar({
       >
         {t('automations.selectInput')}
       </Button>
-      <Button size="small" variant="contained" startIcon={<FontAwesomeIcon icon={faPlay} />} onClick={onRun} disabled={!hasDefinition}>
+      <Button
+        data-testid="automation-run"
+        size="small"
+        variant="contained"
+        startIcon={<FontAwesomeIcon icon={faPlay} />}
+        onClick={() => onRun()}
+        disabled={!hasDefinition}
+      >
         {t('automations.run')}
       </Button>
       <Button
+        data-testid="automation-cancel-run"
         size="small"
         variant="outlined"
         color="error"
@@ -113,12 +153,13 @@ export default function AutomationToolbar({
         {t('automations.cancelRun')}
       </Button>
       <Chip
+        data-testid="automation-issue-count"
         size="small"
         color={issueCount > 0 ? 'error' : 'success'}
         label={t('automations.issueCount', { count: issueCount })}
         aria-label={t('automations.issueCount', { count: issueCount })}
       />
-      {isDirty && <Chip size="small" label={t('automations.unsaved')} variant="outlined" />}
+      {isDirty && <Chip data-testid="automation-unsaved" size="small" label={t('automations.unsaved')} variant="outlined" />}
     </ToolbarRow>
   );
 }

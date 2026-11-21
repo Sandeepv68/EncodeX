@@ -99,6 +99,8 @@ export const ToolbarRow = styled(Stack)(({ theme }) => ({
 /** Panel heading. */
 export const PanelTitle = styled(Typography)(({ theme }) => ({
   fontWeight: theme.typography.fontWeightMedium,
+  fontSize: theme.typography.subtitle1.fontSize,
+  lineHeight: theme.typography.subtitle1.lineHeight,
 }));
 
 /** Muted helper text under headings. */
