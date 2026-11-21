@@ -79,6 +79,7 @@ const navKeyMap: Record<string, string> = {
   '/audio-extract': 'audio',
   '/image-compress': 'image',
   '/batch': 'batchQueue',
+  '/automations': 'automations',
   '/media-info': 'mediaInfo',
   '/settings': 'settings',
   '/about': 'about',

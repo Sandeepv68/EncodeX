@@ -30,7 +30,8 @@
     },
     "remux": "Remux",
     "demux": "Demux",
-    "copilot": "Copilot"
+    "copilot": "Copilot",
+    "automations": "Automations"
   },
   "dashboard": {
     "welcome": "EncodeX मा स्वागत छ",
@@ -44,7 +45,8 @@
     "shortcutsFooter": "किबोर्ड सर्टकटका लागि {{shortcut}} थिच्नुहोस्",
     "descRemux": "स्ट्रिमहरूलाई हानिरहित रूपमा नयाँ कन्टेनरमा सार्नुहोस्",
     "descDemux": "फाइलका स्ट्रिमहरूलाई छुट्टाछुट्टै आउटपुट फाइलहरूमा अलग गर्नुहोस्",
-    "descCopilot": "लक्ष्य वर्णन गरेर रूपान्तरणहरू योजना गर्नुहोस्"
+    "descCopilot": "लक्ष्य वर्णन गरेर रूपान्तरणहरू योजना गर्नुहोस्",
+    "descAutomations": "Build reusable conversion pipelines on a visual canvas"
   },
   "gettingStarted": {
     "hint": "यहाँ नयाँ हुनुहुन्छ?",
@@ -1330,5 +1332,77 @@
     "muxJobFailedBody": "{{fileName}} असफल भयो।",
     "muxQueueCompletedTitle": "रिमक्स/डिमक्स कतार पूरा भयो",
     "muxQueueCompletedBody": "{{succeeded}} सफल, {{failed}} असफल।"
+  },
+  "automations": {
+    "title": "Automations",
+    "new": "New",
+    "save": "Save",
+    "close": "Close",
+    "openLibrary": "Open library",
+    "selectInput": "Select input",
+    "run": "Run",
+    "unsaved": "Unsaved changes",
+    "issueCount": "{{count}} issues",
+    "validationFailed": "Fix {{count}} validation issues before running",
+    "runQueued": "Automation run queued",
+    "runCancelled": "Automation run cancelled",
+    "runQueuedHint": "Execution is wired in a later phase; this run is a local placeholder.",
+    "canvasLabel": "Automation pipeline canvas",
+    "paletteLabel": "Node palette",
+    "paletteTitle": "Nodes",
+    "paletteHint": "Drag a node onto the canvas or click to add it.",
+    "inspectorLabel": "Node inspector",
+    "inspectorTitle": "Properties",
+    "inspectorEmpty": "Select a node to edit its properties.",
+    "stagesLabel": "Stage list",
+    "stagesTitle": "Stages",
+    "stagesHint": "Stages group operations in the pipeline.",
+    "addStage": "Add stage",
+    "newStage": "New Stage",
+    "runPanelLabel": "Validation and run status",
+    "runPanelTitle": "Console",
+    "runProgress": "Automation run progress",
+    "noIssues": "No validation issues.",
+    "libraryTitle": "Saved automations",
+    "libraryVersion": "Version {{version}}",
+    "fields": {
+      "name": "Automation name",
+      "label": "Label",
+      "inputPath": "Input path",
+      "stageName": "Stage name",
+      "outputPath": "Output path",
+      "extension": "Extension",
+      "backend": "Backend",
+      "videoCodec": "Video codec",
+      "audioCodec": "Audio codec",
+      "startTime": "Start time",
+      "endTime": "End time",
+      "copy": "Copy streams",
+      "mediaKind": "Media kind"
+    },
+    "node": {
+      "input": "Input",
+      "stage": "Stage",
+      "transcode": "Transcode",
+      "extractAudio": "Extract Audio",
+      "cut": "Cut",
+      "remux": "Remux",
+      "demux": "Demux",
+      "compressImage": "Compress Image",
+      "output": "Output"
+    },
+    "mediaKind": {
+      "unknown": "Unknown",
+      "video": "Video",
+      "audio": "Audio",
+      "image": "Image"
+    },
+    "status": {
+      "queued": "Queued",
+      "running": "Running",
+      "succeeded": "Succeeded",
+      "failed": "Failed",
+      "cancelled": "Cancelled"
+    }
   }
 }

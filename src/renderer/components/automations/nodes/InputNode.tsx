@@ -1,0 +1,28 @@
+/** Input node rendered on the Automations React Flow canvas. */
+
+import { Handle, Position } from '@xyflow/react';
+import type { NodeProps } from '@xyflow/react';
+import { Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { AUTOMATION_RUN_STATUS } from '../../../../shared/automations/types';
+import type { AutomationFlowNode } from '../AutomationNode.types';
+import { KindBadge, NodeCard, NodeHeader, StatusChip } from '../../../styles/Automations.styles';
+
+/** Renders an automation input node. */
+export default function InputNode({ data, selected }: NodeProps<AutomationFlowNode>) {
+  const { t } = useTranslation();
+  return (
+    <NodeCard $selected={selected} $status={data.status} $hasIssue={data.issueCodes.length > 0}>
+      <Handle type="source" position={Position.Right} />
+      <NodeHeader>
+        <Typography variant="subtitle2">{data.label}</Typography>
+        <StatusChip
+          label={t(`automations.status.${data.status ?? AUTOMATION_RUN_STATUS.QUEUED}`)}
+          $status={data.status ?? AUTOMATION_RUN_STATUS.QUEUED}
+          variant="outlined"
+        />
+      </NodeHeader>
+      <KindBadge $code={data.issueCodes[0]}>{t('automations.node.input')}</KindBadge>
+    </NodeCard>
+  );
+}

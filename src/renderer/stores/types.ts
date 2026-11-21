@@ -48,6 +48,17 @@ import type { AuditEntry } from '../../shared/audit';
 import type { AiSettingsView } from '../../shared/ai/settings';
 import type { AIProviderId } from '../../shared/ai/types';
 import type { ConversationMessage } from '../components/copilot/types';
+import type {
+  AutomationBackend,
+  AutomationDefinition,
+  AutomationEdge,
+  AutomationIssue,
+  AutomationNode,
+  AutomationNodeKind,
+  AutomationPosition,
+  AutomationProgressEvent,
+  AutomationRunState,
+} from '../../shared/automations/types';
 
 /**
  * Persisted hardware acceleration settings.
@@ -230,6 +241,41 @@ export interface QueueState {
   updateJob: (job: QueueJob) => void;
   updateProgress: (id: string, data: ConversionProgress) => void;
   clearJobs: () => void;
+}
+
+/**
+ * State of the Automations graph editor store.
+ *
+ * Holds the saved definition library, the graph currently being edited,
+ * validation issues, selection state, and local run progress. Persistence and
+ * real execution arrive in later phases; Phase 1 keeps everything in memory.
+ * @interface AutomationState
+ */
+export interface AutomationState {
+  definitions: AutomationDefinition[];
+  activeDefinition: AutomationDefinition | null;
+  selectedNodeId: string | null;
+  validationIssues: AutomationIssue[];
+  isDirty: boolean;
+  runs: Record<string, AutomationRunState>;
+  backendStatus: Record<AutomationBackend, boolean>;
+  setDefinitions: (definitions: AutomationDefinition[]) => void;
+  newAutomation: () => void;
+  loadAutomation: (id: string) => void;
+  saveAutomation: () => void;
+  renameAutomation: (name: string) => void;
+  selectNode: (id: string | null) => void;
+  addNode: (kind: AutomationNodeKind, position: AutomationPosition, stageId?: string) => string;
+  removeNode: (id: string) => void;
+  updateNode: (id: string, patch: Partial<AutomationNode>) => void;
+  addEdge: (edge: AutomationEdge) => void;
+  removeEdge: (id: string) => void;
+  addStage: (name: string) => string;
+  renameStage: (id: string, name: string) => void;
+  validate: () => AutomationIssue[];
+  setBackendStatus: (backend: AutomationBackend, available: boolean) => void;
+  startRun: (runId: string) => void;
+  updateRun: (event: AutomationProgressEvent) => void;
 }
 
 /**

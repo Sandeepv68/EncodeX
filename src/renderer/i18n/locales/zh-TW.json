@@ -30,7 +30,8 @@
     },
     "remux": "重新封裝",
     "demux": "解封裝",
-    "copilot": "Copilot"
+    "copilot": "Copilot",
+    "automations": "Automations"
   },
   "dashboard": {
     "welcome": "歡迎使用 EncodeX",
@@ -44,7 +45,8 @@
     "shortcutsFooter": "按 {{shortcut}} 查看鍵盤快速鍵",
     "descRemux": "將串流無損轉移到新的容器",
     "descDemux": "將檔案的各個串流拆分成個別的輸出檔案",
-    "descCopilot": "透過描述目標來規劃轉換"
+    "descCopilot": "透過描述目標來規劃轉換",
+    "descAutomations": "Build reusable conversion pipelines on a visual canvas"
   },
   "gettingStarted": {
     "hint": "第一次來？",
@@ -1330,5 +1332,77 @@
     "muxJobFailedBody": "{{fileName}} 失败。",
     "muxQueueCompletedTitle": "混流/分离队列完成",
     "muxQueueCompletedBody": "成功 {{succeeded}} 个，失败 {{failed}} 个。"
+  },
+  "automations": {
+    "title": "Automations",
+    "new": "New",
+    "save": "Save",
+    "close": "Close",
+    "openLibrary": "Open library",
+    "selectInput": "Select input",
+    "run": "Run",
+    "unsaved": "Unsaved changes",
+    "issueCount": "{{count}} issues",
+    "validationFailed": "Fix {{count}} validation issues before running",
+    "runQueued": "Automation run queued",
+    "runCancelled": "Automation run cancelled",
+    "runQueuedHint": "Execution is wired in a later phase; this run is a local placeholder.",
+    "canvasLabel": "Automation pipeline canvas",
+    "paletteLabel": "Node palette",
+    "paletteTitle": "Nodes",
+    "paletteHint": "Drag a node onto the canvas or click to add it.",
+    "inspectorLabel": "Node inspector",
+    "inspectorTitle": "Properties",
+    "inspectorEmpty": "Select a node to edit its properties.",
+    "stagesLabel": "Stage list",
+    "stagesTitle": "Stages",
+    "stagesHint": "Stages group operations in the pipeline.",
+    "addStage": "Add stage",
+    "newStage": "New Stage",
+    "runPanelLabel": "Validation and run status",
+    "runPanelTitle": "Console",
+    "runProgress": "Automation run progress",
+    "noIssues": "No validation issues.",
+    "libraryTitle": "Saved automations",
+    "libraryVersion": "Version {{version}}",
+    "fields": {
+      "name": "Automation name",
+      "label": "Label",
+      "inputPath": "Input path",
+      "stageName": "Stage name",
+      "outputPath": "Output path",
+      "extension": "Extension",
+      "backend": "Backend",
+      "videoCodec": "Video codec",
+      "audioCodec": "Audio codec",
+      "startTime": "Start time",
+      "endTime": "End time",
+      "copy": "Copy streams",
+      "mediaKind": "Media kind"
+    },
+    "node": {
+      "input": "Input",
+      "stage": "Stage",
+      "transcode": "Transcode",
+      "extractAudio": "Extract Audio",
+      "cut": "Cut",
+      "remux": "Remux",
+      "demux": "Demux",
+      "compressImage": "Compress Image",
+      "output": "Output"
+    },
+    "mediaKind": {
+      "unknown": "Unknown",
+      "video": "Video",
+      "audio": "Audio",
+      "image": "Image"
+    },
+    "status": {
+      "queued": "Queued",
+      "running": "Running",
+      "succeeded": "Succeeded",
+      "failed": "Failed",
+      "cancelled": "Cancelled"
+    }
   }
 }

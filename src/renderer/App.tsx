@@ -35,6 +35,7 @@ import { NavigationGuardProvider, useNavigationGuard } from './NavigationGuardCo
 import { ErrorBoundary } from './components/ErrorBoundary';
 import {
   AboutSkeleton,
+  AutomationsSkeleton,
   AudioExtractSkeleton,
   BatchQueueSkeleton,
   ConvertSkeleton,
@@ -97,6 +98,8 @@ const loadRemux: PageLoader = () => import('./pages/Remux');
 const loadDemux: PageLoader = () => import('./pages/Demux');
 /** Loads the BatchQueue page chunk (the '/batch' route). @const {PageLoader} */
 const loadBatchQueue: PageLoader = () => import('./pages/BatchQueue');
+/** Loads the Automations page chunk (the '/automations' route). @const {PageLoader} */
+const loadAutomations: PageLoader = () => import('./pages/Automations');
 /** Loads the Copilot page chunk (the '/copilot' route). @const {PageLoader} */
 const loadCopilot: PageLoader = () => import('./pages/Copilot');
 /** Loads the Logs page chunk (the '/logs' route). @const {PageLoader} */
@@ -363,6 +366,7 @@ function AppLayout() {
       { path: '/remux', element: <RouteLoader load={loadRemux} skeleton={<RemuxSkeleton />} /> },
       { path: '/demux', element: <RouteLoader load={loadDemux} skeleton={<DemuxSkeleton />} /> },
       { path: '/batch', element: <RouteLoader load={loadBatchQueue} skeleton={<BatchQueueSkeleton />} /> },
+      { path: '/automations', element: <RouteLoader load={loadAutomations} skeleton={<AutomationsSkeleton />} /> },
       { path: '/copilot', element: <RouteLoader load={loadCopilot} skeleton={<CopilotSkeleton />} /> },
       { path: '/logs', element: <RouteLoader load={loadLogs} skeleton={<LogsSkeleton />} /> },
       { path: '/settings', element: <RouteLoader load={loadSettings} skeleton={<SettingsSkeleton />} /> },
@@ -396,7 +400,7 @@ function AppLayout() {
           </PermanentDrawer>
         )}
         <ColumnLayout>
-          <MainContent ref={mainContentRef} $flush={location.pathname === '/copilot'}>
+          <MainContent ref={mainContentRef} $flush={location.pathname === '/copilot' || location.pathname === '/automations'}>
             {isMobile && !detached && (
               <MobileMenuButton onClick={() => setMobileOpen(true)} aria-label={t('app.menu')} data-testid="mobile-menu-button">
                 <FontAwesomeIcon icon={faBars} />

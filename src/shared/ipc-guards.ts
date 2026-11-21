@@ -40,6 +40,7 @@
 
 import type { ConversionProgress, LogEntry, PlayerAudioChunk, PlayerFrame, QueueJob, UpdateInfo, UpdateProgress } from './types';
 import type { AuditEntry } from './audit';
+import type { AutomationProgressEvent } from './automations/types';
 
 /** Narrow an unknown value to a plain (non-null, non-array) object. */
 export function isRecord(value: unknown): value is Record<string, unknown> {
@@ -185,4 +186,26 @@ export function isQueueProgressEvent(value: unknown): value is { job: QueueJob; 
 export function isQueueMovedEvent(value: unknown): value is { id: string; toPosition: number } {
   if (!isRecord(value)) return false;
   return isString(value.id) && isFiniteNumber(value.toPosition);
+}
+
+/**
+ * Guards an `automation-progress` payload. `runId`, `automationId`, `nodeId`
+ * and `status` are all used as map keys or branch discriminators by the
+ * renderer, so a wrong type would corrupt run state rather than just render
+ * a bad caption.
+ */
+export function isAutomationProgressEvent(value: unknown): value is AutomationProgressEvent {
+  if (!isRecord(value)) return false;
+  if ('stageId' in value && value.stageId !== undefined && !isString(value.stageId)) return false;
+  if ('progress' in value && value.progress !== undefined && !isFiniteNumber(value.progress)) return false;
+  return (
+    isString(value.runId) &&
+    isString(value.automationId) &&
+    isString(value.nodeId) &&
+    (value.status === 'queued' ||
+      value.status === 'running' ||
+      value.status === 'succeeded' ||
+      value.status === 'failed' ||
+      value.status === 'cancelled')
+  );
 }

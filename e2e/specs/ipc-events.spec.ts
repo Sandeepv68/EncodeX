@@ -113,6 +113,7 @@ const ROUTES = [
   { path: '/remux', testId: 'nav-item-remux' },
   { path: '/demux', testId: 'nav-item-demux' },
   { path: '/batch', testId: 'nav-item-batch' },
+  { path: '/automations', testId: 'nav-item-automations' },
   { path: '/logs', testId: 'nav-item-logs' },
   { path: '/settings', testId: 'nav-item-settings' },
   { path: '/about', testId: 'nav-item-about' },
@@ -266,6 +267,7 @@ const INTERACTIVE_BUDGET_MS = 2_000;
  * scheduling jitter on the queue route.
  */
 const ROUTE_BUDGET_MS: Record<string, number> = {
+  '/automations': 3_000,
   '/batch': 3_000,
   '/logs': 6_000,
 };

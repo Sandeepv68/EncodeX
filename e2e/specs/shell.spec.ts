@@ -12,6 +12,7 @@ const NAV_ROUTES = [
   ['audio-extract', '/audio-extract'],
   ['video-cut', '/video-cut'],
   ['batch', '/batch'],
+  ['automations', '/automations'],
   ['logs', '/logs'],
   ['settings', '/settings'],
   ['about', '/about'],

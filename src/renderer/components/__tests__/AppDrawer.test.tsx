@@ -147,6 +147,7 @@ describe('AppDrawer', () => {
     expect(screen.getByText('nav.remux')).toBeInTheDocument();
     expect(screen.getByText('nav.demux')).toBeInTheDocument();
     expect(screen.getByText('nav.batchQueue')).toBeInTheDocument();
+    expect(screen.getByText('nav.automations')).toBeInTheDocument();
     expect(screen.getByText('nav.settings')).toBeInTheDocument();
   });
 

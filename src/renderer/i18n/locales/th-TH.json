@@ -30,7 +30,8 @@
     },
     "remux": "เปลี่ยนคอนเทนเนอร์",
     "demux": "แยกสตรีม",
-    "copilot": "คอปิล็อต"
+    "copilot": "คอปิล็อต",
+    "automations": "Automations"
   },
   "dashboard": {
     "welcome": "ยินดีต้อนรับสู่ EncodeX",
@@ -44,7 +45,8 @@
     "shortcutsFooter": "กด {{shortcut}} สำหรับแป้นพิมพ์ลัด",
     "descRemux": "ย้ายสตรีมแบบไม่สูญเสียไปยังคอนเทนเนอร์ใหม่",
     "descDemux": "แยกสตรีมของไฟล์ออกเป็นไฟล์ผลลัพธ์แยกกัน",
-    "descCopilot": "วางแผนการแปลงโดยการอธิบายเป้าหมาย"
+    "descCopilot": "วางแผนการแปลงโดยการอธิบายเป้าหมาย",
+    "descAutomations": "Build reusable conversion pipelines on a visual canvas"
   },
   "gettingStarted": {
     "hint": "ใหม่ที่นี่หรือ?",
@@ -1330,5 +1332,77 @@
     "muxJobFailedBody": "{{fileName}} ล้มเหลว",
     "muxQueueCompletedTitle": "คิวรีมักซ์/ดีมักซ์เสร็จสมบูรณ์",
     "muxQueueCompletedBody": "สำเร็จ {{succeeded}} รายการ ล้มเหลว {{failed}} รายการ"
+  },
+  "automations": {
+    "title": "Automations",
+    "new": "New",
+    "save": "Save",
+    "close": "Close",
+    "openLibrary": "Open library",
+    "selectInput": "Select input",
+    "run": "Run",
+    "unsaved": "Unsaved changes",
+    "issueCount": "{{count}} issues",
+    "validationFailed": "Fix {{count}} validation issues before running",
+    "runQueued": "Automation run queued",
+    "runCancelled": "Automation run cancelled",
+    "runQueuedHint": "Execution is wired in a later phase; this run is a local placeholder.",
+    "canvasLabel": "Automation pipeline canvas",
+    "paletteLabel": "Node palette",
+    "paletteTitle": "Nodes",
+    "paletteHint": "Drag a node onto the canvas or click to add it.",
+    "inspectorLabel": "Node inspector",
+    "inspectorTitle": "Properties",
+    "inspectorEmpty": "Select a node to edit its properties.",
+    "stagesLabel": "Stage list",
+    "stagesTitle": "Stages",
+    "stagesHint": "Stages group operations in the pipeline.",
+    "addStage": "Add stage",
+    "newStage": "New Stage",
+    "runPanelLabel": "Validation and run status",
+    "runPanelTitle": "Console",
+    "runProgress": "Automation run progress",
+    "noIssues": "No validation issues.",
+    "libraryTitle": "Saved automations",
+    "libraryVersion": "Version {{version}}",
+    "fields": {
+      "name": "Automation name",
+      "label": "Label",
+      "inputPath": "Input path",
+      "stageName": "Stage name",
+      "outputPath": "Output path",
+      "extension": "Extension",
+      "backend": "Backend",
+      "videoCodec": "Video codec",
+      "audioCodec": "Audio codec",
+      "startTime": "Start time",
+      "endTime": "End time",
+      "copy": "Copy streams",
+      "mediaKind": "Media kind"
+    },
+    "node": {
+      "input": "Input",
+      "stage": "Stage",
+      "transcode": "Transcode",
+      "extractAudio": "Extract Audio",
+      "cut": "Cut",
+      "remux": "Remux",
+      "demux": "Demux",
+      "compressImage": "Compress Image",
+      "output": "Output"
+    },
+    "mediaKind": {
+      "unknown": "Unknown",
+      "video": "Video",
+      "audio": "Audio",
+      "image": "Image"
+    },
+    "status": {
+      "queued": "Queued",
+      "running": "Running",
+      "succeeded": "Succeeded",
+      "failed": "Failed",
+      "cancelled": "Cancelled"
+    }
   }
 }

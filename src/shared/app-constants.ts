@@ -134,6 +134,7 @@ export const NAV_ITEMS = [
   { to: '/audio-extract', label: 'Audio' },
   { to: '/image-compress', label: 'Image' },
   { to: '/batch', label: 'Batch Queue' },
+  { to: '/automations', label: 'Automations' },
   { to: '/media-info', label: 'Media Info' },
   { to: '/settings', label: 'Settings' },
   { to: '/about', label: 'About' },
