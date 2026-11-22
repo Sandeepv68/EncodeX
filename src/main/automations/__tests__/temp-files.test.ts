@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'fs';
+import { closeSync, existsSync, mkdirSync, mkdtempSync, openSync, rmSync, writeFileSync, writeSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import {
@@ -10,6 +10,15 @@ import {
   resolveAutomationTempRoot,
 } from '../temp-files';
 import type { AutomationTempContext } from '../types';
+
+function writeFixture(filePath: string, contents: string): void {
+  const fd = openSync(filePath, 'wx', 0o600);
+  try {
+    writeSync(fd, Buffer.from(contents, 'utf8'));
+  } finally {
+    closeSync(fd);
+  }
+}
 
 describe('automation temp files', () => {
   let userDataDir: string;
@@ -44,7 +53,7 @@ describe('automation temp files', () => {
   it('removes the whole run directory on cleanup', () => {
     const runDirectory = ensureAutomationRunDirectory(context, 'run-clean');
     mkdirSync(join(runDirectory, 'nested'), { recursive: true });
-    writeFileSync(join(runDirectory, 'nested', 'artifact.bin'), 'data', 'utf8');
+    writeFixture(join(runDirectory, 'nested', 'artifact.bin'), 'data');
     expect(existsSync(runDirectory)).toBe(true);
 
     cleanupAutomationRunDirectory(runDirectory, false);
@@ -55,7 +64,7 @@ describe('automation temp files', () => {
 
   it('keeps the whole run directory when intermediates are retained', () => {
     const runDirectory = ensureAutomationRunDirectory(context, 'run-keep');
-    writeFileSync(join(runDirectory, 'artifact.bin'), 'data', 'utf8');
+    writeFixture(join(runDirectory, 'artifact.bin'), 'data');
 
     cleanupAutomationRunDirectory(runDirectory, true);
 

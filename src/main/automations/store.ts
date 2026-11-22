@@ -124,13 +124,25 @@ export class AutomationStore {
 
   private readCandidate(filePath: string): AutomationStoreData | null {
     try {
-      if (!fs.existsSync(filePath)) return null;
-      const stat = fs.statSync(filePath);
-      if (!stat.isFile() || stat.size > AUTOMATION_LIMITS.maxFileBytes) {
-        throw new Error('automation definitions file is not a bounded regular file');
+      const fd = fs.openSync(filePath, 'r');
+      try {
+        const stat = fs.fstatSync(fd);
+        if (!stat.isFile() || stat.size > AUTOMATION_LIMITS.maxFileBytes) {
+          throw new Error('automation definitions file is not a bounded regular file');
+        }
+        const buffer = Buffer.alloc(stat.size);
+        let offset = 0;
+        while (offset < buffer.length) {
+          const bytesRead = fs.readSync(fd, buffer, offset, buffer.length - offset, offset);
+          if (bytesRead === 0) break;
+          offset += bytesRead;
+        }
+        return parseAutomationStoreJson(buffer.subarray(0, offset).toString('utf8'));
+      } finally {
+        fs.closeSync(fd);
       }
-      return parseAutomationStoreJson(fs.readFileSync(filePath, 'utf8'));
     } catch (err) {
+      if (err instanceof Error && 'code' in err && (err.code === 'ENOENT' || err.code === 'ENOTDIR')) return null;
       log.warn(LOG_AUTOMATION_STORE_CORRUPT, filePath, describeError(err));
       return null;
     }

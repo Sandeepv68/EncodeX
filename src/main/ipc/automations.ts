@@ -7,7 +7,7 @@
  */
 
 import { BrowserWindow, app, dialog, ipcMain } from 'electron';
-import { readFileSync, statSync, writeFileSync } from 'fs';
+import { closeSync, fstatSync, openSync, readSync, writeFileSync } from 'fs';
 import { formatError, invalidAutomationFileError } from '../../shared/errors';
 import {
   LOG_AUTOMATION_HANDLER_FAILED,
@@ -82,6 +82,26 @@ function safeExportName(name: string): string {
   return `${base || 'automation'}.json`;
 }
 
+function readBoundedImportFile(filePath: string): string {
+  const fd = openSync(filePath, 'r');
+  try {
+    const stat = fstatSync(fd);
+    if (!stat.isFile() || stat.size > AUTOMATION_LIMITS.maxFileBytes) {
+      throw new Error('not a bounded regular file');
+    }
+    const buffer = Buffer.alloc(stat.size);
+    let offset = 0;
+    while (offset < buffer.length) {
+      const bytesRead = readSync(fd, buffer, offset, buffer.length - offset, offset);
+      if (bytesRead === 0) break;
+      offset += bytesRead;
+    }
+    return buffer.subarray(0, offset).toString('utf8');
+  } finally {
+    closeSync(fd);
+  }
+}
+
 /** Registers automation library and runtime handlers. */
 export function registerAutomationHandlers(win: BrowserWindow, send: IpcSender): void {
   const automationRunner = getAutomationRunner();
@@ -132,11 +152,7 @@ export function registerAutomationHandlers(win: BrowserWindow, send: IpcSender):
       if (result.canceled || result.filePaths.length === 0) return null;
       const filePath = result.filePaths[0];
       try {
-        const stat = statSync(filePath);
-        if (!stat.isFile() || stat.size > AUTOMATION_LIMITS.maxFileBytes) {
-          throw new Error('not a bounded regular file');
-        }
-        const envelope = parseAutomationExportJson(readFileSync(filePath, 'utf8'));
+        const envelope = parseAutomationExportJson(readBoundedImportFile(filePath));
         return getAutomationStore().importDefinition(envelope.automation);
       } catch (err) {
         throw invalidAutomationFileError(err instanceof Error ? err.message : String(err));
