@@ -34,7 +34,7 @@ Funciona no Windows, Mac e Linux, é totalmente grátis e fala mais de 56 idioma
 
 ## Mudar formatos de vídeo e áudio
 
-<img src="/images/convert.webp" alt="Conversão de mídia" width="1600" height="1057" loading="lazy">
+<ThemeImage light="/images/convert.webp" dark="/images/convert_dark.webp" alt="Conversão de mídia" />
 
 **O problema:** alguém mandou um vídeo, mas seu celular, TV ou editor não abre.
 
@@ -52,7 +52,7 @@ Se você usa as mesmas configurações sempre, salve-as como seu próprio perfil
 
 ## Extrair só o áudio de um vídeo
 
-<img src="/images/extract_audio.webp" alt="Extração de áudio" width="1600" height="1054" loading="lazy">
+<ThemeImage light="/images/extract_audio.webp" dark="/images/extract_audio_dark.webp" alt="Extração de áudio" />
 
 Achou uma aula, podcast, entrevista ou show em vídeo e quer só o som? Arraste o vídeo, escolha MP3 (ou outro formato de áudio) e receba um arquivo de música para ouvir onde quiser.
 
@@ -60,7 +60,7 @@ Se o vídeo tiver várias faixas de áudio (como idiomas diferentes), você esco
 
 ## Cortar vídeos
 
-<img src="/images/cut_video.webp" alt="Corte de vídeo" width="1600" height="1267" loading="lazy">
+<ThemeImage light="/images/cut_video.webp" dark="/images/cut_video_dark.webp" alt="Corte de vídeo" />
 
 Corte as partes chatas. O EncodeX mostra o vídeo com uma linha do tempo embaixo: arraste os controles marcando onde começa e termina o trecho bom, confira na prévia e salve.
 
@@ -68,7 +68,7 @@ Dá para dar zoom na linha do tempo para ser preciso até frações de segundo, 
 
 ## Diminuir o tamanho das fotos
 
-<img src="/images/image_compress.webp" alt="Compressão de imagens" width="1600" height="1060" loading="lazy">
+<ThemeImage light="/images/image_compress.webp" dark="/images/image_compress_dark.webp" alt="Compressão de imagens" />
 
 Fotos grandes são ótimas... até precisar enviar. O EncodeX reduz o tamanho para pesar menos e subir mais rápido, com prévia ao vivo antes de salvar.
 
@@ -76,7 +76,7 @@ Formatos comuns suportados: JPG, PNG, WebP, GIF, BMP, TIFF e mais. Também dá p
 
 ## Girar vídeos e corrigir clipes tortos
 
-<img src="/images/convert.webp" alt="Rotação e espelhamento" width="1600" height="1057" loading="lazy">
+<ThemeImage light="/images/convert.webp" dark="/images/convert_dark.webp" alt="Rotação e espelhamento" />
 
 Gravou um vídeo com o celular na posição errada? O EncodeX gira qualquer vídeo ou foto em 90°, 180° ou 270° no sentido horário e espelha horizontal ou verticalmente — clipes tortos, selfies invertidas ou vídeo vertical que você quer em paisagem são corrigidos com um clique.
 
@@ -84,7 +84,7 @@ Se mantiver o mesmo formato MP4, MOV ou MKV, a rotação é salva como metadados
 
 ## Converter muitos arquivos de uma vez
 
-<img src="/images/batch_process.webp" alt="Fila em lote" width="1600" height="1360" loading="lazy">
+<ThemeImage light="/images/batch_process.webp" dark="/images/batch_process_dark.webp" alt="Fila em lote" />
 
 Tem 50 vídeos? Não converta um por um. Arraste todos para a fila — o EncodeX processa automaticamente mostrando o progresso de cada arquivo.
 
@@ -115,7 +115,7 @@ Em ambos os modos, o servidor expõe **36 ferramentas**, **3 recursos** (perfis,
 
 ## Espiar dentro de qualquer arquivo
 
-<img src="/images/media_info.webp" alt="Informações de mídia" width="1600" height="1058" loading="lazy">
+<ThemeImage light="/images/media_info.webp" dark="/images/media_info_dark.webp" alt="Informações de mídia" />
 
 Curioso sobre um arquivo? O EncodeX conta tudo em termos claros: duração, resolução (como 1080p), tamanho, quadros por segundo, canais de áudio e mais. Útil quando um arquivo não abre e você quer saber por quê.
 

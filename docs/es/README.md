@@ -137,6 +137,16 @@ Consulta [Referencia de características](./features-reference.md) para conocer 
       <strong>ℹ️ Información multimedia</strong>
     </td>
   </tr>
+  <tr>
+    <td align="center">
+      <img src="../../site/public/images/copilot.webp" alt="Copilot" /><br />
+      <strong>🤖 Copilot</strong>
+    </td>
+    <td align="center">
+      <img src="../../site/public/images/batch_queue_mux.webp" alt="Cola de multiplexación" /><br />
+      <strong>🎬 Cola de multiplexación</strong>
+    </td>
+  </tr>
 </table>
 
 ## 📌 Requisitos previos

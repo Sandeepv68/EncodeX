@@ -137,6 +137,16 @@ AI असिस्टेंट से काम करवाना चाहत�
       <strong>ℹ️ मीडिया जानकारी</strong>
     </td>
   </tr>
+  <tr>
+    <td align="center">
+      <img src="../../site/public/images/copilot.webp" alt="Copilot" /><br />
+      <strong>🤖 Copilot</strong>
+    </td>
+    <td align="center">
+      <img src="../../site/public/images/batch_queue_mux.webp" alt="मक्स क्यू" /><br />
+      <strong>🎬 मक्स क्यू</strong>
+    </td>
+  </tr>
 </table>
 
 ## 📌 आवश्यकताएँ

@@ -135,6 +135,16 @@ See [docs/FEATURES.md](docs/FEATURES.md) for the full feature breakdown, support
       <strong>ℹ️ Media Info</strong>
     </td>
   </tr>
+  <tr>
+    <td align="center">
+      <img src="site/public/images/copilot.webp" alt="Copilot" /><br />
+      <strong>🤖 Copilot</strong>
+    </td>
+    <td align="center">
+      <img src="site/public/images/batch_queue_mux.webp" alt="Mux Queue" /><br />
+      <strong>🎬 Mux Queue</strong>
+    </td>
+  </tr>
 </table>
 
 ## 💻 CLI Usage

@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Features — Video Conversion, Audio Extraction, Trimming & More"
 description: "Explore all EncodeX features: convert video and audio formats, extract MP3 from video, trim clips, compress images, batch process files, hardware-accelerated encoding, and a built-in MCP server for AI assistants."
 ---
@@ -32,7 +32,7 @@ It works on Windows, Mac, and Linux, it's completely free, and its interface is 
 
 ## Change Video & Audio Formats
 
-<img src="/images/convert.webp" alt="Media Conversion" width="1600" height="1057" loading="lazy">
+<ThemeImage light="/images/convert.webp" dark="/images/convert_dark.webp" alt="Media Conversion" />
 
 **The problem:** someone sends you a video, but your phone, TV, or editing app won't open it.
 
@@ -50,7 +50,7 @@ If you find yourself using the same custom settings over and over, save them as 
 
 ## Save Just the Audio From a Video
 
-<img src="/images/extract_audio.webp" alt="Audio Extraction" width="1600" height="1054" loading="lazy">
+<ThemeImage light="/images/extract_audio.webp" dark="/images/extract_audio_dark.webp" alt="Audio Extraction" />
 
 Found a lecture, podcast, interview, or concert video and only want the sound? Drop the video in, choose MP3 (or another audio type), and you'll get a music file you can listen to anywhere — even with the screen off.
 
@@ -58,7 +58,7 @@ If a video has several audio tracks (like different languages), you can pick whi
 
 ## Trim Videos
 
-<img src="/images/cut_video.webp" alt="Video Cutting" width="1600" height="1267" loading="lazy">
+<ThemeImage light="/images/cut_video.webp" dark="/images/cut_video_dark.webp" alt="Video Cutting" />
 
 Cut out the boring parts. EncodeX shows you the video with a timeline underneath — drag the handles to mark where the good part starts and ends, watch a preview to double-check, then save.
 
@@ -66,7 +66,7 @@ You can zoom into the timeline to be precise down to a fraction of a second, and
 
 ## Make Photos Smaller
 
-<img src="/images/image_compress.webp" alt="Image Compression" width="1600" height="1060" loading="lazy">
+<ThemeImage light="/images/image_compress.webp" dark="/images/image_compress_dark.webp" alt="Image Compression" />
 
 Big photos are great until you have to send one. EncodeX shrinks photos so they take up less space and upload faster — with a live preview so you can see exactly how the smaller version will look before saving.
 
@@ -74,7 +74,7 @@ Works with all the common photo types: JPG, PNG, WebP, GIF, BMP, TIFF, and more.
 
 ## Rotate Videos and Fix Sideways Clips
 
-<img src="/images/convert.webp" alt="Rotation and Mirror" width="1600" height="1057" loading="lazy">
+<ThemeImage light="/images/convert.webp" dark="/images/convert_dark.webp" alt="Rotation and Mirror" />
 
 Shot a video with your phone held the wrong way? EncodeX rotates any video or photo 90°, 180°, or 270° clockwise and mirrors it horizontally or vertically — sideways clips, flipped selfies, and portrait video you want in landscape are fixed in a click.
 
@@ -86,7 +86,7 @@ Beyond rotation, EncodeX includes 8 video filter presets: crop, frame rate, dein
 
 ## Convert Many Files at Once
 
-<img src="/images/batch_process.webp" alt="Batch Queue" width="1600" height="1360" loading="lazy">
+<ThemeImage light="/images/batch_process.webp" dark="/images/batch_process_dark.webp" alt="Batch Queue" />
 
 Have 50 videos to convert? Don't do them one by one. Drag them all into the queue, and EncodeX works through them automatically — showing progress for each file as it goes.
 
@@ -101,9 +101,19 @@ Need a different container, not a different encoding? **Remux** copies the exist
 
 Set up a remux or demux and **Add to Queue** instead of starting it right away. Your job waits in the **Mux Queue** tab next to the batch queue, where you can see the progress of every remux and demux at once, reorder them, and start them together when you're ready. The Remux and Demux pages always show you what's already queued, so you can queue a second variant of the same file without losing the first one.
 
+<ThemeImage light="/images/remux.webp" dark="/images/remux_dark.webp" alt="Remux page" />
+
+<ThemeImage light="/images/demux.webp" dark="/images/demux_dark.webp" alt="Demux page" />
+
+<ThemeImage light="/images/batch_queue_mux.webp" dark="/images/batch_queue_mux_dark.webp" alt="Mux Queue with queued remux and demux jobs" />
+
 ## Ask Copilot
 
 The built-in **Copilot** page takes a plain-language request and turns it into EncodeX jobs. It can queue conversions, remux, demux, extract audio, compress images, and cut videos, and it can analyze, summarize, or translate media. It works offline by default with a built-in rules router. You can optionally connect OpenAI, Anthropic, Gemini, or a local model.
+
+<ThemeImage light="/images/copilot.webp" dark="/images/copilot_dark.webp" alt="Copilot chat page" />
+
+<ThemeImage light="/images/copilot_progress.webp" dark="/images/copilot_progress_dark.webp" alt="Copilot job progress" />
 
 ## Let an AI Assistant Drive
 
@@ -127,7 +137,7 @@ The standalone server exposes **36 tools**; the embedded server exposes **42** (
 
 ## Peek Inside Any Media File
 
-<img src="/images/media_info.webp" alt="Media Information" width="1600" height="1058" loading="lazy">
+<ThemeImage light="/images/media_info.webp" dark="/images/media_info_dark.webp" alt="Media Information" />
 
 Curious about a file? EncodeX can tell you everything about it in plain terms — how long it is, its resolution (like 1080p), file size, frame rate, audio channels, and more. Handy when a file won't play and you want to know why.
 
@@ -141,6 +151,20 @@ On computers with a supported GPU, EncodeX detects the hardware encoders availab
 - **56 locales** — including Spanish, French, German, Hindi, Chinese, Japanese, Arabic, and Hebrew (with proper right-to-left layout)
 - **Keyboard shortcuts** — for those who prefer not to touch the mouse
 - **Keeps you up to date** — EncodeX checks GitHub Releases and tells you when a new version is ready. You choose to download and install it, or install on the next restart. Updates are not installed automatically.
+
+## Logs and Settings
+
+Every job is recorded in the **Logs** window, which you can detach into its own window to keep an eye on background work. **Settings** covers general behavior, AI providers, and advanced options — including hardware acceleration, updates, and the embedded MCP server.
+
+<ThemeImage light="/images/logs.webp" dark="/images/logs_dark.webp" alt="Logs window" />
+
+<ThemeImage light="/images/settings_general.webp" dark="/images/settings_general_dark.webp" alt="General settings" />
+
+<ThemeImage light="/images/settings_ai_provider.webp" dark="/images/settings_ai_provider_dark.webp" alt="AI provider settings" />
+
+<ThemeImage light="/images/settings_ai.webp" dark="/images/settings_ai_dark.webp" alt="AI settings" />
+
+<ThemeImage light="/images/settings_advanced.webp" dark="/images/settings_advanced_dark.webp" alt="Advanced settings" />
 
 ## Private by Design
 

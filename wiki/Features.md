@@ -26,6 +26,8 @@ EncodeX is a cross-platform multimedia conversion tool that brings the power of 
 
 Convert between video/audio formats with granular controls over codec selection (51 video codecs across software and hardware encoder families, 27 audio codecs), bitrate, output resolution (with optional aspect-ratio preservation), pixel format (56 formats grouped by bit depth), quality scale (qscale), audio track inclusion, and transcoder core selection. Multiple files can be queued through the Batch Queue (see below). <!-- drift: video-codecs=51 --> <!-- drift: audio-codecs=27 --> <!-- drift: pixel-formats=56 -->
 
+![Convert page](images/convert.webp)
+
 ### Media Rotation & Mirroring
 
 Rotate videos and images by 90°, 180°, or 270° clockwise and mirror them (horizontal/vertical flip) from both the Convert page and the Batch Queue (transcode and compress-image panels, plus the per-job options dialog). Rotation uses FFmpeg's `transpose` filter (`transpose=1` / `transpose=2,transpose=2` / `transpose=2`) combined with `hflip`/`vflip` into a single `-vf` filter chain alongside `scale`; mirrors always re-encode. In stream-copy mode, rotation is stored losslessly as `-metadata:s:v rotate=N` for MP4/MOV/MKV outputs only; other containers and image outputs always take the pixel (re-encode) path.
@@ -68,6 +70,10 @@ Stream-copy video or audio tracks without re-encoding (`-c copy`). Useful for fa
 - **Remux** — change the container while stream-copying the selected tracks. You can add external subtitle and audio tracks, embed cover art, import or drop chapters, and apply sync offsets without re-encoding. The one exception is a video filter chain, which forces a re-encode of the video stream.
 - **Demux** — split a file into per-stream outputs (video, audio, subtitles), with optional per-kind conversion: re-encode video into another container, re-encode audio with a chosen encoder, or convert text subtitles to another format. Stream-copied video targets ignore video filters and report a warning.
 
+![Remux page](images/remux.webp)
+
+![Demux page](images/demux.webp)
+
 ### Video Filters
 
 Apply up to 8 curated filter presets or a custom FFmpeg filter chain (200 characters per entry) during conversion. <!-- drift: video-filter-presets=8 --> The presets are crop, framerate, deinterlace, denoise, sharpen, color, grayscale, and blur; custom `videoFilters` expressions run after scale and rotation. Filters require re-encoding and cannot be combined with stream copy.
@@ -80,17 +86,25 @@ Hardware-accelerated encoding with auto-detection of available encoder families.
 
 Probe media files and inspect detailed per-stream information: codec, profile, level, resolution, display aspect ratio, pixel format, bit depth, color range/space/transfer/primaries, frame rate, bitrate, sample rate, sample format, channel count/layout, duration, start time, frame count, language, and tags. Works with video, audio, and subtitle streams.
 
+![Media Information page](images/media_info.webp)
+
 ### Image Compression
 
 Compress images (JPEG, PNG, WebP, BMP, GIF, TIFF, PPM, PGM, PBM) with configurable quality scale and resolution scaling using FFmpeg's image codecs. Includes a live preview, a file-size readout, and — for JPEG/PNG/WebP inputs — a full EXIF metadata panel with RGB and luma histograms.
+
+![Image Compression page](images/image_compress.webp)
 
 ### Audio Extraction
 
 Extract audio tracks from video files. Output as AAC, MP3, AC3, FLAC, WAV, Vorbis, Opus, ALAC, or any of the 27 supported audio codecs. The source audio stream is selectable when multiple tracks are present.
 
+![Audio Extraction page](images/extract_audio.webp)
+
 ### Video Cutting
 
 Preview and cut video segments with frame-accurate start/end time or duration selection. Includes a built-in player that decodes video frames (via an FFmpeg rawvideo pipe to an HTML Canvas element) and audio (via a separate S16LE PCM pipe converted to float and fed to the Web Audio API) in lockstep, with a zoomable multi-track timeline: video thumbnail montage, audio waveform, keep/dim region shading, drag-to-trim handles, and a scrubbing playhead.
+
+![Video Cutting page](images/cut_video.webp)
 
 ### Batch Queue
 
@@ -107,6 +121,12 @@ Process multiple files with five configurable operations (transcode, extract aud
 - **When-done power actions** — optionally shut down, sleep, or hibernate the machine when the queue drains (`shutdown`, `pmset`, or `systemctl` per platform; Windows honors a force-close flag).
 - **Live feedback** — real-time per-job progress (percent, time, speed, ETA) streamed over IPC, per-job error handling, and a nav count badge showing outstanding work.
 
+![Batch Queue](images/batch_process.webp)
+
+Remux and demux jobs use a dedicated **Mux Queue** tab alongside the batch queue.
+
+![Mux Queue](images/batch_queue_mux.webp)
+
 ### Multiple Transcoder Cores
 
 - **FFmpeg API** — fluent-ffmpeg Node.js bindings with programmatic progress events
@@ -118,6 +138,24 @@ Process multiple files with five configurable operations (transcode, extract aud
 The Copilot page turns a goal into a reviewable plan and can run it against the same media engine. It supports 13 operations: six queue-backed actions (convert, remux, demux, extract audio, compress image, cut) and seven read-only intelligence actions (analyze, transcribe, summarize, chapters, search transcript, translate, find similar). <!-- drift: copilot-operations=13 -->
 
 AI providers are rules (the deterministic offline router and default), OpenAI, Anthropic, Gemini, and a local model runtime. OpenAI, Anthropic, and Gemini require an API key; the local provider runs on-device. Every plan is a proposal — nothing is queued until you confirm it.
+
+![Copilot page](images/copilot.webp)
+
+![Copilot job progress](images/copilot_progress.webp)
+
+### Logs & Settings
+
+Background jobs are recorded in the **Logs** page, which can be detached into its own window. Settings cover general behavior, AI providers, and advanced options.
+
+![Logs](images/logs.webp)
+
+![General settings](images/settings_general.webp)
+
+![AI provider settings](images/settings_ai_provider.webp)
+
+![AI settings](images/settings_ai.webp)
+
+![Advanced settings](images/settings_advanced.webp)
 
 ### MCP Server
 
