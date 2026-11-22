@@ -270,7 +270,7 @@ const INTERACTIVE_BUDGET_MS = 2_000;
  * scheduling jitter on the queue route.
  */
 const ROUTE_BUDGET_MS: Record<string, number> = {
-  '/automations': 3_000,
+  '/automations': 6_000,
   '/batch': 3_000,
   '/logs': 6_000,
 };
@@ -622,8 +622,9 @@ async function burst(
           windowGone = true;
           break;
         }
+        const payload = build(shapeId, cycle);
         for (const channel of channelNames) {
-          send.send(channel, build(shapeId, cycle));
+          send.send(channel, payload);
           emitted += 1;
         }
         cycle += 1;
