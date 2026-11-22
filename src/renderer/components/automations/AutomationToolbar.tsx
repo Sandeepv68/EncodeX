@@ -15,7 +15,7 @@ import {
   faUpload,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import { ToolbarRow } from '../../styles/Automations.styles';
+import { IssueCountChip, ToolbarActionButton, ToolbarRow } from '../../styles/Automations.styles';
 import type { AutomationToolbarProps } from './Automation.types';
 
 /** Renders the primary Automations actions and current validation badge. */
@@ -50,10 +50,16 @@ export default function AutomationToolbar({
         disabled={!hasDefinition}
         slotProps={{ htmlInput: { 'data-testid': 'automation-name-input' } }}
       />
-      <Button data-testid="automation-new" size="small" variant="outlined" startIcon={<FontAwesomeIcon icon={faPlus} />} onClick={onNew}>
+      <ToolbarActionButton
+        data-testid="automation-new"
+        size="small"
+        variant="outlined"
+        startIcon={<FontAwesomeIcon icon={faPlus} />}
+        onClick={onNew}
+      >
         {t('automations.new')}
-      </Button>
-      <Button
+      </ToolbarActionButton>
+      <ToolbarActionButton
         data-testid="automation-open-library"
         size="small"
         variant="outlined"
@@ -61,8 +67,8 @@ export default function AutomationToolbar({
         onClick={onOpenLibrary}
       >
         {t('automations.openLibrary')}
-      </Button>
-      <Button
+      </ToolbarActionButton>
+      <ToolbarActionButton
         data-testid="automation-save"
         size="small"
         variant="outlined"
@@ -71,8 +77,8 @@ export default function AutomationToolbar({
         disabled={!hasDefinition}
       >
         {t('automations.save')}
-      </Button>
-      <Button
+      </ToolbarActionButton>
+      <ToolbarActionButton
         data-testid="automation-save-as"
         size="small"
         variant="outlined"
@@ -81,8 +87,8 @@ export default function AutomationToolbar({
         disabled={!hasDefinition}
       >
         {t('automations.saveAs')}
-      </Button>
-      <Button
+      </ToolbarActionButton>
+      <ToolbarActionButton
         data-testid="automation-duplicate"
         size="small"
         variant="outlined"
@@ -91,8 +97,8 @@ export default function AutomationToolbar({
         disabled={!hasDefinition}
       >
         {t('automations.duplicate')}
-      </Button>
-      <Button
+      </ToolbarActionButton>
+      <ToolbarActionButton
         data-testid="automation-delete"
         size="small"
         variant="outlined"
@@ -101,8 +107,8 @@ export default function AutomationToolbar({
         disabled={!hasDefinition}
       >
         {t('automations.delete')}
-      </Button>
-      <Button
+      </ToolbarActionButton>
+      <ToolbarActionButton
         data-testid="automation-import"
         size="small"
         variant="outlined"
@@ -110,8 +116,8 @@ export default function AutomationToolbar({
         onClick={onImport}
       >
         {t('automations.import')}
-      </Button>
-      <Button
+      </ToolbarActionButton>
+      <ToolbarActionButton
         data-testid="automation-export"
         size="small"
         variant="outlined"
@@ -120,8 +126,8 @@ export default function AutomationToolbar({
         disabled={!hasDefinition}
       >
         {t('automations.export')}
-      </Button>
-      <Button
+      </ToolbarActionButton>
+      <ToolbarActionButton
         data-testid="automation-select-input"
         size="small"
         variant="outlined"
@@ -130,7 +136,7 @@ export default function AutomationToolbar({
         disabled={!hasDefinition}
       >
         {t('automations.selectInput')}
-      </Button>
+      </ToolbarActionButton>
       <Button
         data-testid="automation-run"
         size="small"
@@ -152,7 +158,7 @@ export default function AutomationToolbar({
       >
         {t('automations.cancelRun')}
       </Button>
-      <Chip
+      <IssueCountChip
         data-testid="automation-issue-count"
         size="small"
         color={issueCount > 0 ? 'error' : 'success'}

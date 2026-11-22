@@ -124,6 +124,13 @@ const API_TABLE: Record<string, MethodEntry> = {
   aiSetSettings: { kind: 'invoke', params: ['update'] },
   aiConnectTest: { kind: 'invoke', params: ['candidate'] },
   aiListModels: { kind: 'invoke', params: ['candidate'] },
+  automationList: { kind: 'invoke', params: [] },
+  automationGet: { kind: 'invoke', params: ['id'] },
+  automationSave: { kind: 'invoke', params: ['definition'] },
+  automationDelete: { kind: 'invoke', params: ['id'] },
+  automationDuplicate: { kind: 'invoke', params: ['request'] },
+  automationImport: { kind: 'invoke', params: [] },
+  automationExport: { kind: 'invoke', params: ['id'] },
   automationStart: { kind: 'invoke', params: ['request'] },
   automationCancel: { kind: 'invoke', params: ['runId'] },
   captureDevScreenshot: { kind: 'invoke', params: [] },
@@ -245,7 +252,7 @@ function garbageFor(name: string): unknown {
  * stand-in for "main answered", matching the defaults the test-setup stub
  * returns so pages mount the same content they do in every other unit test.
  */
-function benignResolveFor(name: string): unknown {
+function benignResolveFor(name: string, args: readonly unknown[]): unknown {
   switch (name) {
     case 'selectFile':
     case 'selectOutput':
@@ -306,6 +313,20 @@ function benignResolveFor(name: string): unknown {
       return { ok: false, message: '' };
     case 'aiListModels':
       return { ok: true, models: [] };
+    case 'automationList':
+      return [];
+    case 'automationGet':
+      return null;
+    case 'automationSave':
+      return args[0];
+    case 'automationDelete':
+      return false;
+    case 'automationDuplicate':
+      return null;
+    case 'automationImport':
+      return null;
+    case 'automationExport':
+      return null;
     case 'automationStart':
       return 'run-mock';
     case 'automationCancel':
@@ -367,15 +388,15 @@ export function createHostileElectronAPI(initialMode: string = 'healthy'): Hosti
     return failures === null || failures.has(name);
   }
 
-  function respond(name: string): unknown {
-    if (!interferes(name)) return Promise.resolve(benignResolveFor(name));
+  function respond(name: string, args: readonly unknown[]): unknown {
+    if (!interferes(name)) return Promise.resolve(benignResolveFor(name, args));
     if (mode === 'reject-sync') throw syncFailureFor(name, mode);
     if (mode === 'reject-async') return Promise.reject(rejectionFor(name, mode));
     if (mode === 'never') return new Promise(() => {});
     if (mode === 'wrong-type') return Promise.resolve(wrongTypeFor(name));
     if (mode === 'garbage') return Promise.resolve(garbageFor(name));
     if (mode === 'partial' && bucketOf(name) < 70) return Promise.reject(rejectionFor(name, mode));
-    return Promise.resolve(benignResolveFor(name));
+    return Promise.resolve(benignResolveFor(name, args));
   }
 
   const api: Record<string, (...args: unknown[]) => unknown> = {};
@@ -396,7 +417,7 @@ export function createHostileElectronAPI(initialMode: string = 'healthy'): Hosti
         }
         return undefined;
       }
-      return respond(name);
+      return respond(name, args);
     };
   }
 

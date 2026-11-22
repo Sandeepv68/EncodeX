@@ -96,6 +96,10 @@ export const ToolbarRow = styled(Stack)(({ theme }) => ({
   gap: theme.spacing(1),
 }));
 
+export const ToolbarActionButton = styled(Button)(({ theme }) => ({
+  color: theme.palette.mode === 'dark' ? theme.palette.primary.light : theme.palette.primary.dark,
+}));
+
 /** Panel heading. */
 export const PanelTitle = styled(Typography)(({ theme }) => ({
   fontWeight: theme.typography.fontWeightMedium,
@@ -149,6 +153,12 @@ export const StatusChip = styled(Chip, {
   borderColor: statusColor(theme, $status),
 }));
 
+export const IssueCountChip = styled(Chip)(({ theme }) => ({
+  '&.MuiChip-colorError': {
+    color: theme.palette.mode === 'dark' ? theme.palette.error.light : theme.palette.error.dark,
+  },
+}));
+
 /** One validation issue row in the bottom console. */
 export const IssueRow = styled(Stack)(({ theme }) => ({
   flexDirection: 'row',
@@ -182,7 +192,7 @@ export const RunProgress = styled(LinearProgress)(({ theme }) => ({
 export const IssueCode = styled(Typography)(({ theme }) => ({
   fontFamily: 'monospace',
   fontSize: theme.typography.pxToRem(11),
-  color: theme.palette.error.main,
+  color: theme.palette.mode === 'dark' ? theme.palette.error.light : theme.palette.error.dark,
 }));
 
 /** Small kind badge shown in node headers. */
