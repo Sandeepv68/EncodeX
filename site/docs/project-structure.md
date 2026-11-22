@@ -154,14 +154,14 @@ src/
 │   │   ├── views/                     # Batch, Capabilities, Confirm, Convert, Error, Inspector, Job, Lab, MediaInfo, Plan, Profiles, Queue, Workflow
 │   │   ├── kit/                       # Shared view primitives
 │   │   └── standalone/                # Entry external hosts run in their iframe
-│   ├── components/                    # Shared UI components (72 modules: 54 top-level + copilot/ and settings/ subfolders) <!-- drift:renderer-components=72 --> <!-- drift:renderer-components-top=54 -->
+│   ├── components/                    # Shared UI components (72 modules: 54 top-level + copilot/ and settings/ subfolders) <!-- drift:renderer-components=84 --> <!-- drift:renderer-components-top=54 -->
 │   ├── constants/
 │   │   └── shortcuts.ts               # 71 keyboard shortcuts registry (11 sections) + tooltip hints <!-- drift:shortcuts=71 --> <!-- drift:shortcut-sections=11 -->
 │   ├── hooks/                         # useConversion, useErrorHandler, useFormErrors, useMediaTask, useCapabilities, useHotkeys, useFieldId
 │   ├── i18n/                          # i18next config, RTL provider, 56 locales (36 base language subtags) <!-- drift:locales=56 --> <!-- drift:locale-subtags=36 -->
-│   ├── pages/                         # 13 code-split page components (Convert, Remux, Demux, Copilot, BatchQueue, Dashboard, MediaInfo, ImageCompress, AudioExtract, VideoCut, Settings, Logs, About) <!-- drift:renderer-pages=13 -->
-│   ├── stores/                        # 21 Zustand stores (queue, conversion, settings, profile, terms, batchConfig, audioExtract, videoCut, logs, errors, toasts, update, task, dismissedAlerts, aiSettings, aiConnection, audit, copilotChats, remux, demux) <!-- drift:renderer-stores=21 -->
-│   ├── styles/                        # Extracted MUI style constants per component (76 modules + Copilot/Settings subfolders) <!-- drift:renderer-styles=76 -->
+│   ├── pages/                         # 13 code-split page components (Convert, Remux, Demux, Copilot, BatchQueue, Dashboard, MediaInfo, ImageCompress, AudioExtract, VideoCut, Settings, Logs, About) <!-- drift:renderer-pages=14 -->
+│   ├── stores/                        # 21 Zustand stores (queue, conversion, settings, profile, terms, batchConfig, audioExtract, videoCut, logs, errors, toasts, update, task, dismissedAlerts, aiSettings, aiConnection, audit, copilotChats, remux, demux) <!-- drift:renderer-stores=22 -->
+│   ├── styles/                        # Extracted MUI style constants per component (76 modules + Copilot/Settings subfolders) <!-- drift:renderer-styles=78 -->
 │   └── utils/                         # formatters, preview cache helpers, easter egg dates, batch options
 └── shared/                            # Code shared between processes
     ├── app-constants.ts               # App-wide constants
@@ -259,10 +259,11 @@ e2e/                                  # Playwright-based end-to-end tests
 │   ├── vscode-client.spec.ts          # VS Code MCP client configuration
 │   └── vscode-ui.spec.ts              # VS Code UI integration
 ├── quarantine/                        # Quarantined spec bodies (see quarantine.json)
-└── specs/                             # 34 E2E spec files (41 e2e files total) <!-- drift:e2e-specs=34 -->
+└── specs/                             # 35 E2E spec files (43 e2e files total) <!-- drift:e2e-specs=35 -->
     ├── shell.spec.ts
     ├── convert.spec.ts
     ├── batch.spec.ts
+    ├── automations.spec.ts
     ├── audio-extract.spec.ts
     ├── image-compress.spec.ts
     ├── media-info.spec.ts

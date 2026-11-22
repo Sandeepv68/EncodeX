@@ -4,7 +4,7 @@
 
 ### Render tree
 
-All thirteen pages are code-split with a dynamic `import()` and loaded under a per-page `ErrorBoundary`. While a page chunk is in flight, the route renders that page's own loading skeleton:
+All fourteen pages are code-split with a dynamic `import()` and loaded under a per-page `ErrorBoundary`. While a page chunk is in flight, the route renders that page's own loading skeleton:
 
 | Page            | Route          | Purpose                                                        |
 | --------------- | -------------- | -------------------------------------------------------------- |
@@ -17,6 +17,7 @@ All thirteen pages are code-split with a dynamic `import()` and loaded under a p
 | Remux           | `/remux`       | Container change with stream copy + added streams/chapters     |
 | Demux           | `/demux`       | Per-stream extraction with optional per-kind conversion        |
 | BatchQueue      | `/batch`       | Queue management (add/remove/cancel-all)                       |
+| Automations     | `/automations` | Visual pipeline editor (palette, canvas, inspector, run panel) |
 | Copilot         | `/copilot`     | Natural-language planning with optional AI providers           |
 | Logs            | `/logs`        | Live log viewer with level filter + download                   |
 | Settings        | `/settings`    | Tabbed: General (theme), Advanced (hwaccel, telemetry), AI     |
@@ -29,6 +30,7 @@ All thirteen pages are code-split with a dynamic `import()` and loaded under a p
 - `useErrorHandler` — error handling utilities.
 - `useFormErrors` — field-level validation errors.
 - `useCapabilities` — fetches encoder capabilities and applies encoder-type / hwaccel filters to the codec pickers.
+- `useAutomations` — single action surface for the Automations editor: graph edits, validation, library IPC, run start/cancel/rerun, media probing, and progress-event subscription.
 
 ## 📦 State Management
 
@@ -40,6 +42,7 @@ Zustand stores in `src/renderer/stores/`:
 | `audioExtractStore` | Audio extraction form state                                       |
 | `errorStore`      | `currentError` + `errorHistory` (cap 50), `showError`, `showErrorMessage`, clear actions |
 | `queueStore`      | Mirrors batch queue jobs from main-process events                   |
+| `automationStore` | Active automation definition, graph edits, validation, backend availability, run history and per-node/stage statuses |
 | `settingsStore`   | Settings + `localStorage` persistence (`encodex-theme`, etc.)       |
 | `logStore`        | Aggregated log entries (cap 2000), filter state, download           |
 | `toastStore`      | Toast queue                                                         |
@@ -67,6 +70,14 @@ The Copilot page (`pages/Copilot.tsx`) turns a natural-language goal over files 
 - `cancelJob` cancels a job's transcoder and removes it; `cancelAll` cancels every active transcoder, clears the queue, and emits `cancelled`. The queue also supports pause/resume, move-to reordering, option editing for queued jobs, export/import, clear-completed, when-done power actions, and durable persistence to `queue-state.json` (`src/main/queue/persistence.ts`).
 
 The IPC layer (`ipc/queue.ts`) simply forwards queue events to the renderer over `queue-added`, `queue-removed`, `queue-status-change`, `queue-progress`, and `queue-cancelled`, and the `queueStore` mirrors them into React state.
+
+## 🔀 Automations Editor
+
+`pages/Automations.tsx` renders the `/automations` route inside a `ReactFlowProvider`. `components/automations/` supplies `AutomationToolbar` (library, save, run/cancel), `AutomationNodePalette` (drag source), `AutomationCanvas` (React Flow canvas with custom edge), the four custom node renderers in `nodes/` (input, stage, operation, output), `AutomationInspector` (node options and backend), `AutomationStageList`, `AutomationRunPanel` (stage timeline, node badges, run console, rerun and runtime input override), and `AutomationLibraryDrawer`. Layout/grid styles live in `styles/Automations.styles.ts`.
+
+`hooks/useAutomations.ts` wraps `automationStore` edits with validation and bridge calls, converts failures into toasts/app errors, and subscribes to `onAutomationStatus` / `onAutomationProgress` / `onAutomationEvent`. Progress for a run that has not been registered locally yet is buffered (bounded per run and per run id) and flushed when `startRun` creates the run record. `probeInput` calls `getMediaInfo` to infer a media kind for dynamic operation filtering, and BMF is disabled when `getBmfStatus()` reports the tools missing.
+
+`stores/automationStore.ts` holds the active definition, dirty state, validation issues, backend availability, and a bounded run history with per-node and per-stage status maps; `updateRun()` folds every `AutomationProgressEvent` into that state. Definitions themselves are persisted in the main process, not in `localStorage`.
 
 ## 🎬 Video Player
 
@@ -158,6 +169,13 @@ flowchart LR
 ```mermaid
 flowchart LR
     A["QueueJob card"] --> B["electronAPI.queueAdd"] --> C["JobQueue.addJob"] --> D4["processNext()"] --> E["transcoder.convert()"] --> F["progress / end / error events"] --> G["queue events"] --> H["IPC events"] --> I["queueStore"] --> J["QueueJobCard"]
+```
+
+### Automation run
+
+```mermaid
+flowchart LR
+    A["Automations page"] --> B["useAutomations + automationStore"] --> C["automationSave / automationStart"] --> D["ipc/automations.ts<br/>AutomationStore + AutomationRunner"] --> E["executeAutomationStep<br/>ITranscoder.convert()"] --> F["AutomationEventBus<br/>status / progress / event"] --> G["automation-status / automation-progress / automation-event"] --> H["onAutomation* listeners<br/>updateRun"] --> I["node badges / stage timeline / run console"]
 ```
 
 ### Video playback

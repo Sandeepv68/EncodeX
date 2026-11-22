@@ -129,6 +129,16 @@ Consulte a [Referência de recursos](./features-reference.md) para ver o detalha
       <strong>ℹ️ Informações de Mídia</strong>
     </td>
   </tr>
+  <tr>
+    <td align="center">
+      <img src="../../site/public/images/copilot.webp" alt="Copilot" /><br />
+      <strong>🤖 Copilot</strong>
+    </td>
+    <td align="center">
+      <img src="../../site/public/images/batch_queue_mux.webp" alt="Fila de mux" /><br />
+      <strong>🎬 Fila de mux</strong>
+    </td>
+  </tr>
 </table>
 
 ## 📌 Pré-requisitos

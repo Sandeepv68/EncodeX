@@ -34,6 +34,7 @@ import {
 import type { McpSettings } from '../shared/mcp-settings';
 import type { AiConnectTestResult, AiModelsListResult, AiSettingsUpdate, AiSettingsView } from '../shared/ai/settings';
 import type { AuditEntry } from '../shared/audit';
+import type { AutomationProgressEvent, AutomationStartRequest } from '../shared/automations/types';
 import type { CopilotPlan, CopilotPlanRequest } from '../shared/copilot';
 import type { AnalyticsEvent } from '../shared/analytics/events';
 
@@ -706,6 +707,11 @@ export interface ElectronAPI {
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
   onQueueMoved(cb: (data: { id: string; toPosition: number }) => void): () => void;
+  automationStart(request: AutomationStartRequest): Promise<string>;
+  automationCancel(runId: string): Promise<boolean>;
+  onAutomationStatus(cb: (event: AutomationProgressEvent) => void): () => void;
+  onAutomationProgress(cb: (event: AutomationProgressEvent) => void): () => void;
+  onAutomationEvent(cb: (event: AutomationProgressEvent) => void): () => void;
   /**
    * Subscribes to job-added events from the mux queue, pushed from the main
    * process over `IPC.MUX_QUEUE_ADDED` ('mux-queue-added').

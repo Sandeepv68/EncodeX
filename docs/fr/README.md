@@ -137,6 +137,16 @@ Consultez la [Référence des fonctionnalités](./features-reference.md) pour la
       <strong>ℹ️ Informations média</strong>
     </td>
   </tr>
+  <tr>
+    <td align="center">
+      <img src="../../site/public/images/copilot.webp" alt="Copilot" /><br />
+      <strong>🤖 Copilot</strong>
+    </td>
+    <td align="center">
+      <img src="../../site/public/images/batch_queue_mux.webp" alt="File de mux" /><br />
+      <strong>🎬 File de mux</strong>
+    </td>
+  </tr>
 </table>
 
 ## 📌 Prérequis

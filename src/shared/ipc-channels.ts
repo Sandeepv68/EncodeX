@@ -128,6 +128,13 @@
  * @property {string} AI_SETTINGS_SET - Update the AI provider settings (key encrypted in main).
  * @property {string} AI_CONNECT_TEST - Test connectivity to the configured AI provider.
  * @property {string} AI_MODELS_LIST - List the models a provider's API reports (key never crosses IPC).
+ * @property {string} AUTOMATION_LIST - List persisted automation definitions.
+ * @property {string} AUTOMATION_GET - Read one persisted automation definition.
+ * @property {string} AUTOMATION_SAVE - Create or update a persisted automation definition.
+ * @property {string} AUTOMATION_DELETE - Delete a persisted automation definition.
+ * @property {string} AUTOMATION_DUPLICATE - Duplicate a persisted automation definition.
+ * @property {string} AUTOMATION_IMPORT - Import a portable automation JSON export.
+ * @property {string} AUTOMATION_EXPORT - Export one automation definition to JSON.
  * @property {string} DEV_CAPTURE_SCREENSHOT - Dev-only: capture the window and save a PNG.
  */
 export const IPC = {
@@ -254,6 +261,24 @@ export const IPC = {
   AI_SETTINGS_SET: 'ai-settings-set',
   AI_CONNECT_TEST: 'ai-connect-test',
   AI_MODELS_LIST: 'ai-models-list',
+
+  AUTOMATION_LIST: 'automation-list',
+  AUTOMATION_GET: 'automation-get',
+  AUTOMATION_SAVE: 'automation-save',
+  AUTOMATION_DELETE: 'automation-delete',
+  AUTOMATION_DUPLICATE: 'automation-duplicate',
+  AUTOMATION_IMPORT: 'automation-import',
+  AUTOMATION_EXPORT: 'automation-export',
+  /** Start executing an automation definition. */
+  AUTOMATION_START: 'automation-start',
+  /** Cancel an active automation run. */
+  AUTOMATION_CANCEL: 'automation-cancel',
+  /** Push automation run status changes to the renderer. */
+  AUTOMATION_STATUS: 'automation-status',
+  /** Push per-node automation progress updates to the renderer. */
+  AUTOMATION_PROGRESS: 'automation-progress',
+  /** Push generic automation lifecycle events to the renderer. */
+  AUTOMATION_EVENT: 'automation-event',
 
   DEV_CAPTURE_SCREENSHOT: 'dev-capture-screenshot',
 } as const;

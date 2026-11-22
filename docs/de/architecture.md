@@ -1,6 +1,6 @@
 # Architektur
 
-<!-- drift: error-codes=28 mcp-tools=36 mcp-registrations=37 -->
+<!-- drift: error-codes=29 mcp-tools=36 mcp-registrations=37 -->
 
 EncodeX ist ein plattformübergreifendes Multimedia-Konvertierungstool auf Basis von FFmpeg, React, TypeScript und Electron. Es richtet sich an Entwickler, die verstehen möchten, wie die Bausteine zusammenspielen, bevor sie beitragen.
 
@@ -33,7 +33,7 @@ Die vollständige Architektur ist in fokussierte Dokumente aufgeteilt:
 | [Funktionsreferenz](/de/docs/features-reference) | Funktionen, unterstützte Medienformate, Codec-Tabellen, Validierungs-Utilities |
 | [CLI-Nutzung](/de/docs/cli) | CLI-Nutzung, Subcommands, alle Optionstabellen |
 | [IPC-Kanäle](/de/docs/ipc) | IPC-Kanäle (Request/Send-only/Events), electronAPI-Brücke |
-| [Tests](/de/docs/testing) | Testsuite (375 Test-/Spezifikationsdateien unter `src/`, 41 E2E-Test-/Spezifikationsdateien, 11 Perf-Suites), Test-Setup, E2E-Specs |
+| [Tests](/de/docs/testing) | Testsuite (386 Test-/Spezifikationsdateien unter `src/`, 43 E2E-Test-/Spezifikationsdateien, 12 Perf-Suites), Test-Setup, E2E-Specs |
 | [Projektstruktur](/de/docs/project-structure) | Vollständiger Verzeichnisbaum mit Annotationen |
 | [Update-Manager](/de/docs/update-manager) | Implementierung des integrierten Update-Managers |
 

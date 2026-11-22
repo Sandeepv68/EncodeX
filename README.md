@@ -90,7 +90,7 @@ Conversion runs **locally on your computer** — no accounts, no media uploads, 
 - **🌍 56 Locales** — with RTL support (Arabic, Hebrew)
 - **⌨️ Keyboard Shortcuts** — 71 shortcuts in 11 help sections, with an in-app help dialog (`Ctrl+/`)
 - **🔄 In-App Updates** — Checks GitHub Releases, downloads the platform installer when you ask (never installed automatically), real-time progress
-- **🛡️ Error Handling** — 28 typed error codes, global snackbar, inline banners, React error boundaries
+- **🛡️ Error Handling** — 29 typed error codes, global snackbar, inline banners, React error boundaries
 - **🌗 Dark/Light Theme** — System-aware with manual toggle, persistent preferences
 
 See [docs/FEATURES.md](docs/FEATURES.md) for the full feature breakdown, supported formats, and codec lists.
@@ -133,6 +133,16 @@ See [docs/FEATURES.md](docs/FEATURES.md) for the full feature breakdown, support
     <td align="center">
       <img src="site/public/images/media_info.webp" alt="Media Info" /><br />
       <strong>ℹ️ Media Info</strong>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="site/public/images/copilot.webp" alt="Copilot" /><br />
+      <strong>🤖 Copilot</strong>
+    </td>
+    <td align="center">
+      <img src="site/public/images/batch_queue_mux.webp" alt="Mux Queue" /><br />
+      <strong>🎬 Mux Queue</strong>
     </td>
   </tr>
 </table>

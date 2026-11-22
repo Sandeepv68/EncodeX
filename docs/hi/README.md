@@ -94,7 +94,7 @@ AI असिस्टेंट से काम करवाना चाहत�
 - **🛡️ बंद करने की पुष्टि** — jobs चलते समय window बंद करने से पहले चेतावनी देता है
 - **🎉 ईस्टर एग्स** — विशेष तिथियों पर holiday-themed app logos
 - **🔄 ऐप के भीतर अपडेट** — GitHub Releases की जाँच करता है, जब आप चाहें तब platform installer डाउनलोड करता है (अपडेट कभी अपने-आप install नहीं होते), real-time progress
-- **🛡️ एरर हैंडलिंग** — 28 typed error codes, global snackbar, inline banners, React error boundaries
+- **🛡️ एरर हैंडलिंग** — 29 typed error codes, global snackbar, inline banners, React error boundaries
 - **🌗 डार्क/लाइट थीम** — manual toggle के साथ system-aware, persistent preferences
 
 पूरी फ़ीचर सूची, समर्थित formats और codec सूचियों के लिए [फ़ीचर्स](features-reference.md) देखें।
@@ -135,6 +135,16 @@ AI असिस्टेंट से काम करवाना चाहत�
     <td align="center">
       <img src="../../site/public/images/media_info.webp" alt="मीडिया जानकारी" /><br />
       <strong>ℹ️ मीडिया जानकारी</strong>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../../site/public/images/copilot.webp" alt="Copilot" /><br />
+      <strong>🤖 Copilot</strong>
+    </td>
+    <td align="center">
+      <img src="../../site/public/images/batch_queue_mux.webp" alt="मक्स क्यू" /><br />
+      <strong>🎬 मक्स क्यू</strong>
     </td>
   </tr>
 </table>

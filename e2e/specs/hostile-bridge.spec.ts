@@ -88,6 +88,7 @@ const ROUTES = [
   { path: '/remux', testId: 'nav-item-remux' },
   { path: '/demux', testId: 'nav-item-demux' },
   { path: '/batch', testId: 'nav-item-batch' },
+  { path: '/automations', testId: 'nav-item-automations' },
   { path: '/logs', testId: 'nav-item-logs' },
   { path: '/settings', testId: 'nav-item-settings' },
   { path: '/about', testId: 'nav-item-about' },
@@ -231,7 +232,7 @@ describe('hostile preload: renderer survives a bridge that fails every call', ()
         session = sessions.get(mode)!;
       });
 
-      it('survives all thirteen routes with no unhandled error and a mounted route each time', async () => {
+      it('survives all fourteen routes with no unhandled error and a mounted route each time', async () => {
         const session = await ensureLiveSession(sessions.get(mode)!, sessionOptions(mode));
         sessions.set(mode, session);
         await ensureTermsAccepted(session.page);

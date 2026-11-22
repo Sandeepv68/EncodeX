@@ -32,6 +32,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { format as formatArgs } from 'util';
 import { registerIpcHandlers } from './ipc/handlers';
+import { cancelAllAutomationRuns } from './automations';
 import { initNotifier } from './notifications/notifier';
 import { resolvePreloadPath, resolveRendererEntryPath } from './paths';
 import { logHub } from './logs/log-hub';
@@ -686,6 +687,7 @@ if (process.argv.includes('--mcp')) {
     });
     // Stop the embedded MCP HTTP server and its sessions.
     void stopEmbeddedMcpServer();
+    cancelAllAutomationRuns();
   });
 }
 

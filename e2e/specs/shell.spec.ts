@@ -12,6 +12,7 @@ const NAV_ROUTES = [
   ['audio-extract', '/audio-extract'],
   ['video-cut', '/video-cut'],
   ['batch', '/batch'],
+  ['automations', '/automations'],
   ['logs', '/logs'],
   ['settings', '/settings'],
   ['about', '/about'],
@@ -69,6 +70,15 @@ describe.runIf(IS_E2E)('Shell', () => {
       'onQueueProgress',
       'onQueueCancelled',
       'onPlayerFrame',
+      'getBmfStatus',
+      'automationList',
+      'automationGet',
+      'automationSave',
+      'automationStart',
+      'automationCancel',
+      'onAutomationStatus',
+      'onAutomationProgress',
+      'onAutomationEvent',
     ];
     for (const name of expected) expect(methods).toContain(name);
   });

@@ -29,13 +29,13 @@
  *  - onMouseEnter / onMouseLeave: forwarded to the popover paper.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography } from '@mui/material';
+import { Tab, Typography } from '@mui/material';
 import ProgressBar from './ProgressBar';
 import { getPreviewThumbnail, getResolvedPreviewThumbnail } from '../utils/preview-cache';
 import { basenameOrEmpty as basename } from '../utils/path-utils';
-import type { NavJobPopoverProps } from './types';
+import type { NavJobPopoverContent, NavJobPopoverProps, NavJobPopoverTabId } from './types';
 import {
   NavJobPopoverRoot,
   POPOVER_PAPER_PADDING,
@@ -51,6 +51,9 @@ import {
   PopoverPileThumb,
   PopoverProgress,
   PopoverStatusRow,
+  PopoverTabCount,
+  PopoverTabLabel,
+  PopoverTabs,
   PopoverTextColumn,
   PopoverThumb,
   PopoverTitle,
@@ -152,22 +155,102 @@ function PileThumb({ input, index }: { input: string; index: number }) {
   );
 }
 
-/**
- * Renders the navigation job popover card.
- *
- * When `active` and `content` are set, mounts a Popover anchored to the
- * activity blip showing the job status and a determinate progress bar (or a
- * localized "starting" caption while progress is not yet available). A paused
- * job is annotated with the localized paused label and passed through to the
- * ProgressBar for paused styling. `data-testid="nav-job-popover"` marks the
- * card for tests.
- *
- * @param {NavJobPopoverProps} props - Component props.
- * @returns {JSX.Element | null} The popover, or null when closed.
- */
-export default function NavJobPopover({ active, anchorEl, onClose, content, onMouseEnter, onMouseLeave }: NavJobPopoverProps) {
+function JobPreview({ content, showTitle = true }: { content: NavJobPopoverContent; showTitle?: boolean }) {
   const { t } = useTranslation();
-  const open = active !== null && Boolean(anchorEl) && Boolean(content);
+
+  return (
+    <>
+      <PopoverArrow data-testid="nav-job-popover-arrow" />
+      {showTitle && (
+        <PopoverTitle variant="subtitle2" component="div">
+          {content.title}
+        </PopoverTitle>
+      )}
+      <PopoverBody>
+        <Thumbnail key={content.input} input={content.input} />
+        <PopoverTextColumn>
+          <PopoverStatusRow>
+            <Typography variant="caption" color="text.secondary" noWrap>
+              {content.status}
+            </Typography>
+            <PopoverBadges>
+              {content.parallel && content.parallel > 1 && (
+                <PopoverParallelBadge title={t('nav.blip.parallel', { count: content.parallel })}>
+                  {'\u00d7'}
+                  {content.parallel}
+                </PopoverParallelBadge>
+              )}
+              {content.paused && (
+                <PopoverPausedText variant="caption" color="text.secondary">
+                  {t('nav.blip.paused')}
+                </PopoverPausedText>
+              )}
+            </PopoverBadges>
+          </PopoverStatusRow>
+          {content.fileName && (
+            <PopoverFileName variant="caption" color="text.secondary" title={content.fileName} noWrap>
+              {content.fileName}
+            </PopoverFileName>
+          )}
+        </PopoverTextColumn>
+      </PopoverBody>
+      <PopoverProgress>
+        {content.progress ? (
+          <ProgressBar
+            key={content.jobId ?? content.input}
+            percent={content.progress.percent}
+            time={content.progress.time}
+            speed={content.progress.speed}
+            eta={content.progress.eta}
+            paused={content.paused}
+            minimal
+            shadowed
+          />
+        ) : (
+          <Typography variant="caption" color="text.secondary">
+            {t('nav.blip.starting')}
+          </Typography>
+        )}
+      </PopoverProgress>
+      {content.pendingThumbnails && content.pendingThumbnails.length > 0 && (
+        <PopoverPile data-testid="nav-job-popover-pile">
+          {content.pendingThumbnails.slice(0, PILE_CAPACITY).map((input, index) => (
+            <PileThumb key={input} input={input} index={index} />
+          ))}
+          {content.pendingThumbnails.length > PILE_CAPACITY && (
+            <PopoverPileCount variant="caption" color="text.secondary" data-testid="nav-job-popover-pile-count">
+              +{content.pendingThumbnails.length - PILE_CAPACITY}
+            </PopoverPileCount>
+          )}
+        </PopoverPile>
+      )}
+    </>
+  );
+}
+
+export default function NavJobPopover({
+  active,
+  anchorEl,
+  onClose,
+  content,
+  tabs,
+  defaultTab,
+  onMouseEnter,
+  onMouseLeave,
+}: NavJobPopoverProps) {
+  const { t } = useTranslation();
+  const initialTab = defaultTab ?? tabs?.[0]?.id ?? 'general';
+  const [selectedTab, setSelectedTab] = useState<NavJobPopoverTabId>(initialTab);
+  const previousActive = useRef(active);
+  const activeContent = tabs?.length ? (tabs.find((tab) => tab.id === selectedTab)?.content ?? tabs[0].content) : content;
+  const open = active !== null && Boolean(anchorEl) && Boolean(activeContent);
+
+  useEffect(() => {
+    if (previousActive.current !== active) {
+      setSelectedTab(initialTab);
+      previousActive.current = active;
+    }
+  }, [active, initialTab]);
 
   return (
     <NavJobPopoverRoot
@@ -186,70 +269,31 @@ export default function NavJobPopover({ active, anchorEl, onClose, content, onMo
         },
       }}
     >
-      {content && (
+      {activeContent && (
         <>
-          <PopoverArrow data-testid="nav-job-popover-arrow" />
-          <PopoverTitle variant="subtitle2" component="div">
-            {content.title}
-          </PopoverTitle>
-          <PopoverBody>
-            <Thumbnail key={content.input} input={content.input} />
-            <PopoverTextColumn>
-              <PopoverStatusRow>
-                <Typography variant="caption" color="text.secondary" noWrap>
-                  {content.status}
-                </Typography>
-                <PopoverBadges>
-                  {content.parallel && content.parallel > 1 && (
-                    <PopoverParallelBadge title={t('nav.blip.parallel', { count: content.parallel })}>
-                      {'\u00d7'}
-                      {content.parallel}
-                    </PopoverParallelBadge>
-                  )}
-                  {content.paused && (
-                    <PopoverPausedText variant="caption" color="text.secondary">
-                      {t('nav.blip.paused')}
-                    </PopoverPausedText>
-                  )}
-                </PopoverBadges>
-              </PopoverStatusRow>
-              {content.fileName && (
-                <PopoverFileName variant="caption" color="text.secondary" title={content.fileName} noWrap>
-                  {content.fileName}
-                </PopoverFileName>
-              )}
-            </PopoverTextColumn>
-          </PopoverBody>
-          <PopoverProgress>
-            {content.progress ? (
-              <ProgressBar
-                key={content.jobId ?? content.input}
-                percent={content.progress.percent}
-                time={content.progress.time}
-                speed={content.progress.speed}
-                eta={content.progress.eta}
-                paused={content.paused}
-                minimal
-                shadowed
-              />
-            ) : (
-              <Typography variant="caption" color="text.secondary">
-                {t('nav.blip.starting')}
-              </Typography>
-            )}
-          </PopoverProgress>
-          {content.pendingThumbnails && content.pendingThumbnails.length > 0 && (
-            <PopoverPile data-testid="nav-job-popover-pile">
-              {content.pendingThumbnails.slice(0, PILE_CAPACITY).map((input, index) => (
-                <PileThumb key={input} input={input} index={index} />
+          {tabs && tabs.length > 0 && (
+            <PopoverTabs
+              value={selectedTab}
+              onChange={(_event, value: NavJobPopoverTabId) => setSelectedTab(value)}
+              aria-label={t('nav.batchQueue')}
+              data-testid="nav-job-popover-tabs"
+            >
+              {tabs.map((tab) => (
+                <Tab
+                  key={tab.id}
+                  value={tab.id}
+                  data-testid={`nav-job-popover-tab-${tab.id}`}
+                  label={
+                    <PopoverTabLabel>
+                      {tab.label}
+                      <PopoverTabCount label={tab.count} size="small" data-testid={`nav-job-popover-tab-count-${tab.id}`} />
+                    </PopoverTabLabel>
+                  }
+                />
               ))}
-              {content.pendingThumbnails.length > PILE_CAPACITY && (
-                <PopoverPileCount variant="caption" color="text.secondary" data-testid="nav-job-popover-pile-count">
-                  +{content.pendingThumbnails.length - PILE_CAPACITY}
-                </PopoverPileCount>
-              )}
-            </PopoverPile>
+            </PopoverTabs>
           )}
+          <JobPreview content={activeContent} showTitle={!tabs?.length} />
         </>
       )}
     </NavJobPopoverRoot>

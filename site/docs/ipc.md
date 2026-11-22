@@ -3,7 +3,7 @@ title: "IPC Channels & electronAPI — EncodeX Developer Reference"
 description: "EncodeX IPC channel reference: request channels, event channels, electronAPI bridge, file dialogs, conversion progress, and media probing."
 ---
 
-<!-- drift: ipc-channels=115 -->
+<!-- drift:ipc-channels=127 -->
 
 # IPC Channels & electronAPI
 

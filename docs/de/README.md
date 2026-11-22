@@ -134,6 +134,16 @@ Eine vollständige Aufschlüsselung der Funktionen, unterstützten Formate und C
       <strong>ℹ️ Medieninfo</strong>
     </td>
   </tr>
+  <tr>
+    <td align="center">
+      <img src="../../site/public/images/copilot.webp" alt="Copilot" /><br />
+      <strong>🤖 Copilot</strong>
+    </td>
+    <td align="center">
+      <img src="../../site/public/images/batch_queue_mux.webp" alt="Mux Queue" /><br />
+      <strong>🎬 Mux-Warteschlange</strong>
+    </td>
+  </tr>
 </table>
 
 ## 📌 Voraussetzungen

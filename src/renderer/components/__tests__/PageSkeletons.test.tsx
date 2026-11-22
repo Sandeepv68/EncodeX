@@ -9,6 +9,7 @@ import { render } from '@testing-library/react';
 import { ColorModeProvider } from '../../ColorModeContext';
 import {
   AboutSkeleton,
+  AutomationsSkeleton,
   AudioExtractSkeleton,
   BatchQueueSkeleton,
   ConvertSkeleton,
@@ -30,6 +31,7 @@ const SKELETONS: Array<[string, ComponentType]> = [
   ['ImageCompress', ImageCompressSkeleton],
   ['VideoCut', VideoCutSkeleton],
   ['BatchQueue', BatchQueueSkeleton],
+  ['Automations', AutomationsSkeleton],
   ['Logs', LogsSkeleton],
   ['Settings', SettingsSkeleton],
   ['About', AboutSkeleton],

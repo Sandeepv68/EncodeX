@@ -3,7 +3,7 @@ title: "Architecture Overview — How EncodeX Is Built"
 description: "Technical architecture of EncodeX: Electron, React, TypeScript, FFmpeg integration, three-process model, IPC channels, and design principles."
 ---
 
-<!-- drift: error-codes=28 mcp-tools=36 mcp-registrations=37 -->
+<!-- drift: error-codes=29 mcp-tools=36 mcp-registrations=37 -->
 
 # Architecture
 
@@ -38,7 +38,7 @@ The full architecture is split into focused documents:
 | [Feature Reference](/docs/features-reference) | Features, supported media formats, codec tables, validation utilities |
 | [CLI Usage](/docs/cli) | CLI usage, subcommands, all option tables |
 | [IPC Channels](/docs/ipc) | IPC channels (request/send-only/events), electronAPI bridge |
-| [Testing](/docs/testing) | Test suite (375 `src/` test files, 41 E2E test/spec files, 11 perf suites), test setup, E2E specs |
+| [Testing](/docs/testing) | Test suite (386 `src/` test files, 43 E2E test/spec files, 12 perf suites), test setup, E2E specs |
 | [Project Structure](/docs/project-structure) | Full directory tree with annotations |
 | [Update Manager](/docs/update-manager) | In-app update manager implementation |
 

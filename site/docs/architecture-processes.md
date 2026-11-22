@@ -3,7 +3,7 @@ title: "Processes, Build System & Startup — EncodeX Architecture"
 description: "How EncodeX manages Electron processes (main, preload, renderer), build system, binary resolution, CLI mode, and startup sequence."
 ---
 
-<!-- drift: video-codecs=51 audio-codecs=27 pixel-formats=56 log-constants=581 -->
+<!-- drift:video-codecs=51 audio-codecs=27 pixel-formats=56 log-constants=596 -->
 
 # Processes, Build System & Startup
 

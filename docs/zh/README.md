@@ -137,6 +137,16 @@ EncodeX 是一款免费、开源的 FFmpeg 图形界面，将 FFmpeg 的全部�
       <strong>ℹ️ 媒体信息</strong>
     </td>
   </tr>
+  <tr>
+    <td align="center">
+      <img src="../../site/public/images/copilot.webp" alt="Copilot" /><br />
+      <strong>🤖 Copilot</strong>
+    </td>
+    <td align="center">
+      <img src="../../site/public/images/batch_queue_mux.webp" alt="Mux 队列" /><br />
+      <strong>🎬 Mux 队列</strong>
+    </td>
+  </tr>
 </table>
 
 ## 📌 环境要求

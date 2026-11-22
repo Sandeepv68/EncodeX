@@ -68,6 +68,7 @@ const descKeys: Record<string, string> = {
   '/remux': 'descRemux',
   '/demux': 'descDemux',
   '/batch': 'descBatch',
+  '/automations': 'descAutomations',
   '/copilot': 'descCopilot',
 };
 
@@ -214,7 +215,7 @@ export default function Dashboard() {
                   <CardBody>
                     <CardTitleText variant="h6" component="h2">
                       {t(
-                        `nav.${item.to === '/convert' ? 'convert' : item.to === '/media-info' ? 'mediaInfo' : item.to === '/image-compress' ? 'image' : item.to === '/audio-extract' ? 'audio' : item.to === '/video-cut' ? 'cut' : item.to === '/remux' ? 'remux' : item.to === '/demux' ? 'demux' : item.to === '/copilot' ? 'copilot' : 'batchQueue'}`,
+                        `nav.${item.to === '/convert' ? 'convert' : item.to === '/media-info' ? 'mediaInfo' : item.to === '/image-compress' ? 'image' : item.to === '/audio-extract' ? 'audio' : item.to === '/video-cut' ? 'cut' : item.to === '/remux' ? 'remux' : item.to === '/demux' ? 'demux' : item.to === '/automations' ? 'automations' : item.to === '/copilot' ? 'copilot' : 'batchQueue'}`,
                       )}
                     </CardTitleText>
                     <CardDescription variant="body2" color="text.secondary">

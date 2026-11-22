@@ -29,7 +29,7 @@ Es läuft auf Windows, Mac und Linux, ist vollständig kostenlos und seine Oberf
 
 ## Video- und Audioformate ändern
 
-<img src="/images/convert.webp" alt="Medienkonvertierung" width="1600" height="1057" loading="lazy">
+<ThemeImage light="/images/convert.webp" dark="/images/convert_dark.webp" alt="Medienkonvertierung" />
 
 **Das Problem:** Jemand schickt Ihnen ein Video, aber Ihr Handy, Fernseher oder Bearbeitungsprogramm öffnet es nicht.
 
@@ -47,7 +47,7 @@ Wenn Sie immer wieder dieselben benutzerdefinierten Einstellungen nutzen, speich
 
 ## Nur den Ton aus einem Video holen
 
-<img src="/images/extract_audio.webp" alt="Audioextraktion" width="1600" height="1054" loading="lazy">
+<ThemeImage light="/images/extract_audio.webp" dark="/images/extract_audio_dark.webp" alt="Audioextraktion" />
 
 Eine Vorlesung, ein Podcast, ein Interview oder ein Konzert als Video gefunden — aber Sie wollen nur den Sound? Ziehen Sie das Video hinein, wählen Sie MP3 (oder ein anderes Audioformat) und erhalten eine Musikdatei zum Anhören überall.
 
@@ -55,7 +55,7 @@ Hat ein Video mehrere Tonspuren (z. B. verschiedene Sprachen), können Sie ausw�
 
 ## Videos zuschneiden
 
-<img src="/images/cut_video.webp" alt="Videoschnitt" width="1600" height="1267" loading="lazy">
+<ThemeImage light="/images/cut_video.webp" dark="/images/cut_video_dark.webp" alt="Videoschnitt" />
 
 Entfernen Sie die langweiligen Stellen. EncodeX zeigt das Video mit einer Zeitleiste darunter: Schieben Sie zwei Regler auf Anfang und Ende des gewünschten Teils, prüfen Sie die Vorschau und speichern.
 
@@ -63,7 +63,7 @@ Die Zeitleiste lässt sich vergrößern, um auf Sekundenbruchteile genau zu arbe
 
 ## Fotos verkleinern
 
-<img src="/images/image_compress.webp" alt="Bildkomprimierung" width="1600" height="1060" loading="lazy">
+<ThemeImage light="/images/image_compress.webp" dark="/images/image_compress_dark.webp" alt="Bildkomprimierung" />
 
 Große Fotos sind wunderbar ... bis man sie verschicken muss. EncodeX verkleinert sie, sodass sie weniger wiegen und schneller hochladen — mit Live-Vorschau des Ergebnisses vor dem Speichern.
 
@@ -71,7 +71,7 @@ Unterstützte Formate: JPG, PNG, WebP, GIF, BMP, TIFF und mehr. Außerdem könne
 
 ## Videos drehen und seitliche Aufnahmen korrigieren
 
-<img src="/images/convert.webp" alt="Drehung und Spiegelung" width="1600" height="1057" loading="lazy">
+<ThemeImage light="/images/convert.webp" dark="/images/convert_dark.webp" alt="Drehung und Spiegelung" />
 
 Ein Video mit dem Handy falsch herum aufgenommen? EncodeX dreht Videos und Fotos um 90°, 180° oder 270° im Uhrzeigersinn und spiegelt sie horizontal oder vertikal — seitliche Clips, gespiegelte Selfies oder Hochformat-Videos fürs Querformat sind mit einem Klick korrigiert.
 
@@ -83,7 +83,7 @@ Im Stream-Copy-Modus wird die Drehung bei MP4-, MOV- oder MKV-Dateien als verlus
 
 ## Viele Dateien gleichzeitig konvertieren
 
-<img src="/images/batch_process.webp" alt="Stapelverarbeitung" width="1600" height="1360" loading="lazy">
+<ThemeImage light="/images/batch_process.webp" dark="/images/batch_process_dark.webp" alt="Stapelverarbeitung" />
 
 50 Videos? Nicht einzeln konvertieren. Ziehen Sie alle in die Warteschlange — EncodeX arbeitet sie automatisch ab und zeigt den Fortschritt jeder Datei.
 
@@ -122,7 +122,7 @@ Der eigenständige Server stellt **36 Werkzeuge** bereit; der eingebettete Serve
 
 ## In jede Datei hineinschauen
 
-<img src="/images/media_info.webp" alt="Medieninfos" width="1600" height="1058" loading="lazy">
+<ThemeImage light="/images/media_info.webp" dark="/images/media_info_dark.webp" alt="Medieninfos" />
 
 Neugierig, was in einer Datei steckt? EncodeX erzählt es Ihnen in klaren Worten: Länge, Auflösung (z. B. 1080p), Größe, Bilder pro Sekunde, Audiokanäle und mehr. Praktisch, wenn eine Datei nicht abgespielt wird und Sie herausfinden wollen, warum.
 

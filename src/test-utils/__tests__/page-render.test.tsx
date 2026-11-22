@@ -55,9 +55,9 @@ afterEach(() => {
 });
 
 describe('PAGE_ROUTES', () => {
-  it('covers all thirteen pages', () => {
-    expect(PAGE_ROUTES).toHaveLength(13);
-    expect(new Set(PAGE_ROUTES.map((s) => s.name)).size).toBe(13);
+  it('covers all fourteen pages', () => {
+    expect(PAGE_ROUTES).toHaveLength(14);
+    expect(new Set(PAGE_ROUTES.map((s) => s.name)).size).toBe(14);
   });
 
   it('declares no duplicate route paths', () => {
@@ -70,7 +70,7 @@ describe('PAGE_ROUTES', () => {
     const declared = [...source.matchAll(/\{\s*path:\s*'([^']+)'\s*,\s*element:/g)].map((m) => m[1]);
     // Non-vacuity: a regex that stopped matching would make this `[]`, and an
     // empty array trivially "matches" nothing it could disagree with.
-    expect(declared.length, 'the App.tsx route regex matched nothing - the guard below would be vacuous').toBe(13);
+    expect(declared.length, 'the App.tsx route regex matched nothing - the guard below would be vacuous').toBe(14);
     expect(PAGE_ROUTES.map((s) => s.path).sort()).toEqual([...declared].sort());
   });
 });

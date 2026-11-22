@@ -57,6 +57,12 @@ export const LOG_BMF_PROCESS_KILLED = 'BMF process killed';
 export const LOG_BMF_SPAWN_ERROR = 'BMF spawn error:';
 /** @const {string} Logged when the queue is being cleared by cancelAll. */
 export const LOG_CANCEL_ALL_CLEARING = 'cancelAll - clearing';
+/** @const {string} Logged when an automation IPC handler rejects. */
+export const LOG_AUTOMATION_HANDLER_FAILED = 'automation IPC handler failed:';
+/** @const {string} Logged when the persisted automation file is invalid. */
+export const LOG_AUTOMATION_STORE_CORRUPT = 'automation definitions file is invalid:';
+/** @const {string} Logged when automation definitions are recovered from backup. */
+export const LOG_AUTOMATION_STORE_RECOVERED = 'automation definitions recovered from backup';
 /** @const {string} Logged when cancelConversion is invoked. */
 export const LOG_CANCEL_CONVERSION_CALLED = 'cancelConversion called';
 /** @const {string} Logged when an extraction (waveform/thumbnail) is cancelled. */
@@ -336,6 +342,24 @@ export const LOG_HOTKEY_UNKNOWN_ID = 'Hotkey unknown id:';
 export const LOG_IMAGE_INFO_RETRIEVED = 'Image info retrieved:';
 /** @const {string} Logged when '--info' is used without an input file. */
 export const LOG_INFO_REQUIRES_AN_INPUT_FILE = '--info requires an input file';
+/** @const {string} Logged when AUTOMATION_DELETE is invoked. */
+export const LOG_IPC_AUTOMATION_DELETE = 'AUTOMATION_DELETE called';
+/** @const {string} Logged when AUTOMATION_DUPLICATE is invoked. */
+export const LOG_IPC_AUTOMATION_DUPLICATE = 'AUTOMATION_DUPLICATE called';
+/** @const {string} Logged when AUTOMATION_EXPORT is invoked. */
+export const LOG_IPC_AUTOMATION_EXPORT = 'AUTOMATION_EXPORT called';
+/** @const {string} Logged when AUTOMATION_GET is invoked. */
+export const LOG_IPC_AUTOMATION_GET = 'AUTOMATION_GET called';
+/** @const {string} Logged when AUTOMATION_IMPORT is invoked. */
+export const LOG_IPC_AUTOMATION_IMPORT = 'AUTOMATION_IMPORT called';
+/** @const {string} Logged when AUTOMATION_LIST is invoked. */
+export const LOG_IPC_AUTOMATION_LIST = 'AUTOMATION_LIST called';
+/** @const {string} Logged when AUTOMATION_SAVE is invoked. */
+export const LOG_IPC_AUTOMATION_SAVE = 'AUTOMATION_SAVE called';
+/** @const {string} Logged when AUTOMATION_START is invoked. */
+export const LOG_IPC_AUTOMATION_START = 'AUTOMATION_START called';
+/** @const {string} Logged when AUTOMATION_CANCEL is invoked. */
+export const LOG_IPC_AUTOMATION_CANCEL = 'AUTOMATION_CANCEL called';
 /** @const {string} Logged when the CANCEL_CONVERSION IPC message is received. */
 export const LOG_IPC_CANCEL_CONVERSION_CALLED = 'CANCEL_CONVERSION called';
 /** @const {string} Prefix when the CONVERT_FILE IPC message is received. */
@@ -509,6 +533,12 @@ export const LOG_ON_QUEUE_REMOVED = 'onQueueRemoved:';
 export const LOG_ON_QUEUE_STATUS_CHANGE = 'onQueueStatusChange:';
 /** @const {string} Prefix when a window-maximized-change event is received. */
 export const LOG_ON_WINDOW_MAXIMIZED_CHANGE = 'onWindowMaximizedChange:';
+/** @const {string} Prefix when an automation status event is received. */
+export const LOG_ON_AUTOMATION_STATUS = 'onAutomationStatus:';
+/** @const {string} Prefix when an automation progress event is received. */
+export const LOG_ON_AUTOMATION_PROGRESS = 'onAutomationProgress:';
+/** @const {string} Prefix when an automation event is received. */
+export const LOG_ON_AUTOMATION_EVENT = 'onAutomationEvent:';
 /** @const {string} Prefix when opening a file. */
 export const LOG_OPEN = 'open:';
 /**

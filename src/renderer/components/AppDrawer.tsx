@@ -48,7 +48,7 @@ import { createAnalyticsEvent } from '../../shared/analytics/events';
 import { basenameOrEmpty as basenameOf } from '../utils/path-utils';
 import { callBridgeVoid } from '../utils/bridge-call';
 import { isJobActive } from '../utils/queue-job-utils';
-import type { AppDrawerProps, NavBlipId, NavJobPopoverContent } from './types';
+import type { AppDrawerProps, NavBlipId, NavJobPopoverContent, NavJobPopoverTab, NavJobPopoverTabId, NavJobQueueJob } from './types';
 import type { ConversionProgress } from '../../shared/types';
 import {
   DrawerDivider,
@@ -79,6 +79,7 @@ const navKeyMap: Record<string, string> = {
   '/audio-extract': 'audio',
   '/image-compress': 'image',
   '/batch': 'batchQueue',
+  '/automations': 'automations',
   '/media-info': 'mediaInfo',
   '/settings': 'settings',
   '/about': 'about',
@@ -99,6 +100,10 @@ const POPOVER_CLOSE_DELAY_MS = 150;
  * @const {Record<string, ConversionProgress>} NO_QUEUE_PROGRESS
  */
 const NO_QUEUE_PROGRESS: Record<string, ConversionProgress> = {};
+
+function countQueueStatus(jobs: NavJobQueueJob[], status: string): number {
+  return jobs.filter((job) => job.status === status).length;
+}
 
 /**
  * Renders the application navigation drawer.
@@ -145,6 +150,7 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
   const cutProgress = useVideoCutStore((s) => s.progress);
   const queueJobs = useQueueStore((s) => s.jobs);
   const muxQueueJobs = useMuxQueueStore((s) => s.jobs);
+  const muxQueueConcurrency = useMuxQueueStore((s) => s.concurrency);
   const [popoverBlip, setPopoverBlip] = useState<NavBlipId>(null);
   // The queue progress maps change several times per second while a job runs.
   // The drawer is mounted app-wide, so it must not subscribe to them: it would
@@ -159,15 +165,66 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
   );
   const queueConcurrency = useSettingsStore((s) => s.queueConcurrency);
 
-  /**
-   * Counts the jobs in either queue that carry the given status.
-   * @param {string} status - The queue status to count.
-   * @returns {number} The number of matching jobs across both queues.
-   */
-  const countByStatus = useCallback(
-    (status: string): number =>
-      queueJobs.filter((j) => j.status === status).length + muxQueueJobs.filter((j) => j.status === status).length,
-    [queueJobs, muxQueueJobs],
+  const buildQueueContent = useCallback(
+    (
+      jobs: NavJobQueueJob[],
+      progressMap: Record<string, ConversionProgress>,
+      statsKey: string,
+      concurrency?: number,
+    ): NavJobPopoverContent => {
+      const active = jobs.find((job) => job.status === QUEUE_STATUS.RUNNING) ?? jobs.find(isJobActive);
+      const snapshot = active ? progressMap[active.id] : undefined;
+      return {
+        title: t('nav.batchQueue'),
+        status: t(statsKey, {
+          queued: countQueueStatus(jobs, QUEUE_STATUS.QUEUED),
+          running: countQueueStatus(jobs, QUEUE_STATUS.RUNNING),
+          done: countQueueStatus(jobs, QUEUE_STATUS.DONE),
+          failed: countQueueStatus(jobs, QUEUE_STATUS.ERROR),
+        }),
+        fileName: active ? basenameOf(active.input) : '',
+        progress: active
+          ? {
+              percent: active.progress,
+              time: snapshot?.time ?? '',
+              speed: snapshot?.speed ?? '',
+              eta: snapshot?.eta ?? '',
+            }
+          : null,
+        paused: active?.paused,
+        input: active?.input ?? '',
+        jobId: active?.id,
+        parallel: concurrency && concurrency > 1 ? concurrency : undefined,
+        pendingThumbnails: jobs.filter((job) => job.status === QUEUE_STATUS.QUEUED).map((job) => job.input),
+      };
+    },
+    [t],
+  );
+
+  const batchTabs = useMemo<NavJobPopoverTab[]>(
+    () =>
+      batchJobCount === 0
+        ? []
+        : [
+            {
+              id: 'general',
+              label: t('muxQueue.tabGeneral'),
+              count: queueJobs.length,
+              content: buildQueueContent(queueJobs, queueProgress, 'batchQueue.stats', queueConcurrency),
+            },
+            {
+              id: 'mux',
+              label: t('muxQueue.tabMux'),
+              count: muxQueueJobs.length,
+              content: buildQueueContent(muxQueueJobs, muxProgress, 'muxQueue.stats', muxQueueConcurrency),
+            },
+          ],
+    [batchJobCount, buildQueueContent, muxProgress, muxQueueConcurrency, muxQueueJobs, queueConcurrency, queueProgress, queueJobs, t],
+  );
+
+  const batchDefaultTab = useMemo<NavJobPopoverTabId>(
+    () => (queueJobs.some(isJobActive) ? 'general' : muxQueueJobs.some(isJobActive) ? 'mux' : 'general'),
+    [muxQueueJobs, queueJobs],
   );
 
   const [logsWindowOpen, setLogsWindowOpen] = useState(false);
@@ -302,38 +359,8 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
               input: cutInput ?? '',
             }
           : null;
-      case 'batch': {
-        if (batchJobCount === 0) return null;
-        const active =
-          queueJobs.find((j) => j.status === QUEUE_STATUS.RUNNING) ??
-          queueJobs.find(isJobActive) ??
-          muxQueueJobs.find((j) => j.status === QUEUE_STATUS.RUNNING) ??
-          muxQueueJobs.find(isJobActive);
-        const snapshot = active ? (queueProgress[active.id] ?? muxProgress[active.id]) : undefined;
-        return {
-          title: t('nav.batchQueue'),
-          status: t('batchQueue.stats', {
-            queued: countByStatus(QUEUE_STATUS.QUEUED),
-            running: countByStatus(QUEUE_STATUS.RUNNING),
-            done: countByStatus(QUEUE_STATUS.DONE),
-            failed: countByStatus(QUEUE_STATUS.ERROR),
-          }),
-          fileName: active ? basenameOf(active.input) : '',
-          progress: active
-            ? {
-                percent: active.progress,
-                time: snapshot?.time ?? '',
-                speed: snapshot?.speed ?? '',
-                eta: snapshot?.eta ?? '',
-              }
-            : null,
-          paused: active?.paused,
-          input: active?.input ?? '',
-          jobId: active?.id,
-          parallel: queueConcurrency > 1 ? queueConcurrency : undefined,
-          pendingThumbnails: queueJobs.filter((j) => j.status === QUEUE_STATUS.QUEUED).map((j) => j.input),
-        };
-      }
+      case 'batch':
+        return null;
       default:
         return null;
     }
@@ -434,6 +461,8 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
         anchorEl={popoverAnchor}
         onClose={closePopover}
         content={popoverContent}
+        tabs={popoverBlip === 'batch' ? batchTabs : null}
+        defaultTab={batchDefaultTab}
         onMouseEnter={cancelPendingClose}
         onMouseLeave={scheduleClose}
       />

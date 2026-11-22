@@ -34,7 +34,7 @@ Il fonctionne sur Windows, Mac et Linux, est entièrement gratuit, et son interf
 
 ## Changer le format des vidéos et des audios
 
-<img src="/images/convert.webp" alt="Conversion multimédia" width="1600" height="1057" loading="lazy">
+<ThemeImage light="/images/convert.webp" dark="/images/convert_dark.webp" alt="Conversion multimédia" />
 
 **Le problème :** on vous a envoyé une vidéo, mais votre téléphone, TV ou logiciel de montage refuse de l'ouvrir.
 
@@ -52,7 +52,7 @@ Si vous utilisez les mêmes paramètres en boucle, enregistrez-les comme profil 
 
 ## Extraire uniquement le son d'une vidéo
 
-<img src="/images/extract_audio.webp" alt="Extraction audio" width="1600" height="1054" loading="lazy">
+<ThemeImage light="/images/extract_audio.webp" dark="/images/extract_audio_dark.webp" alt="Extraction audio" />
 
 Un cours, un podcast, une interview ou un concert filmé — et vous ne voulez que le son ? Glissez la vidéo, choisissez MP3 (ou un autre format audio) et récupérez un fichier musical à écouter partout.
 
@@ -60,7 +60,7 @@ Si une vidéo contient plusieurs pistes audio (plusieurs langues, par exemple), 
 
 ## Couper des vidéos
 
-<img src="/images/cut_video.webp" alt="Découpe vidéo" width="1600" height="1267" loading="lazy">
+<ThemeImage light="/images/cut_video.webp" dark="/images/cut_video_dark.webp" alt="Découpe vidéo" />
 
 Supprimez les passages ennuyeux. EncodeX affiche la vidéo avec une timeline dessous : déplacez deux curseurs pour marquer début et fin du passage voulu, vérifiez l'aperçu et enregistrez.
 
@@ -68,7 +68,7 @@ Vous pouvez zoomer sur la timeline pour être précis à la fraction de seconde 
 
 ## Alléger vos photos
 
-<img src="/images/image_compress.webp" alt="Compression d'images" width="1600" height="1060" loading="lazy">
+<ThemeImage light="/images/image_compress.webp" dark="/images/image_compress_dark.webp" alt="Compression d'images" />
 
 Les photos en haute qualité sont formidables... jusqu'à ce qu'il faille les envoyer. EncodeX les réduit pour qu'elles pèsent moins et se téléversent plus vite, avec un aperçu en direct avant d'enregistrer.
 
@@ -76,7 +76,7 @@ Formats courants pris en charge : JPG, PNG, WebP, GIF, BMP, TIFF et plus. Vous p
 
 ## Faire pivoter les vidéos et corriger les clips de travers
 
-<img src="/images/convert.webp" alt="Rotation et miroir" width="1600" height="1057" loading="lazy">
+<ThemeImage light="/images/convert.webp" dark="/images/convert_dark.webp" alt="Rotation et miroir" />
 
 Vous avez filmé une vidéo avec le téléphone tenu de travers ? EncodeX fait pivoter n'importe quelle vidéo ou photo de 90°, 180° ou 270° dans le sens horaire et la retourne horizontalement ou verticalement — clips de travers, selfies inversés ou vidéo verticale à passer en paysage se règlent en un clic.
 
@@ -88,7 +88,7 @@ Au-delà de la rotation, EncodeX propose 8 préréglages de filtres : recadrage,
 
 ## Convertir plusieurs fichiers à la fois
 
-<img src="/images/batch_process.webp" alt="File d'attente par lots" width="1600" height="1360" loading="lazy">
+<ThemeImage light="/images/batch_process.webp" dark="/images/batch_process_dark.webp" alt="File d'attente par lots" />
 
 Cinquante vidéos ? Ne les convertissez pas une par une. Glissez-les toutes dans la file et EncodeX s'en occupe automatiquement, avec la progression de chaque fichier visible.
 
@@ -127,7 +127,7 @@ Le serveur autonome expose **36 outils**, le serveur intégré **42** (les même
 
 ## Espionner l'intérieur d'un fichier
 
-<img src="/images/media_info.webp" alt="Infos média" width="1600" height="1058" loading="lazy">
+<ThemeImage light="/images/media_info.webp" dark="/images/media_info_dark.webp" alt="Infos média" />
 
 Curieux de savoir ce que contient un fichier ? EncodeX vous le dit en termes clairs : durée, résolution (1080p, par exemple), taille, images par seconde, canaux audio et plus. Pratique quand un fichier refuse de se lire et que vous cherchez pourquoi.
 

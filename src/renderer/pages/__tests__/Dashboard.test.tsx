@@ -34,6 +34,7 @@ describe('Dashboard', () => {
     expect(screen.getByText('nav.remux')).toBeInTheDocument();
     expect(screen.getByText('nav.demux')).toBeInTheDocument();
     expect(screen.getByText('nav.batchQueue')).toBeInTheDocument();
+    expect(screen.getByText('nav.automations')).toBeInTheDocument();
     expect(screen.queryByText('nav.logs')).not.toBeInTheDocument();
     expect(screen.queryByText('nav.settings')).not.toBeInTheDocument();
     expect(screen.queryByText('nav.about')).not.toBeInTheDocument();
@@ -63,6 +64,7 @@ describe('Dashboard', () => {
     expect(screen.getByText('dashboard.descRemux')).toBeInTheDocument();
     expect(screen.getByText('dashboard.descDemux')).toBeInTheDocument();
     expect(screen.getByText('dashboard.descBatch')).toBeInTheDocument();
+    expect(screen.getByText('dashboard.descAutomations')).toBeInTheDocument();
   });
 
   it('navigates to the convert page when 1 is pressed', () => {
