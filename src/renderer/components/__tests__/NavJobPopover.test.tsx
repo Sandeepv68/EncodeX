@@ -247,6 +247,7 @@ describe('NavJobPopover', () => {
     expect(screen.getByTestId('nav-job-popover-tab-count-mux')).toHaveTextContent('3');
     expect(popover).toHaveTextContent('general.mp4');
     expect(popover).not.toHaveTextContent('mux.mkv');
+    expect(popover).not.toHaveTextContent('nav.batchQueue');
   });
 
   it('switches the popover preview when another queue tab is selected', () => {
@@ -286,5 +287,6 @@ describe('NavJobPopover', () => {
   it('does not render tabs for a single-job popover', () => {
     render(<Host content={{ title: 'Convert', status: 'Converting', fileName: 'video.mp4', progress: null }} />);
     expect(screen.queryByTestId('nav-job-popover-tabs')).not.toBeInTheDocument();
+    expect(screen.getByText('Convert')).toBeInTheDocument();
   });
 });

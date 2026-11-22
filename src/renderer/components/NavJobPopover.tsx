@@ -155,15 +155,17 @@ function PileThumb({ input, index }: { input: string; index: number }) {
   );
 }
 
-function JobPreview({ content }: { content: NavJobPopoverContent }) {
+function JobPreview({ content, showTitle = true }: { content: NavJobPopoverContent; showTitle?: boolean }) {
   const { t } = useTranslation();
 
   return (
     <>
       <PopoverArrow data-testid="nav-job-popover-arrow" />
-      <PopoverTitle variant="subtitle2" component="div">
-        {content.title}
-      </PopoverTitle>
+      {showTitle && (
+        <PopoverTitle variant="subtitle2" component="div">
+          {content.title}
+        </PopoverTitle>
+      )}
       <PopoverBody>
         <Thumbnail key={content.input} input={content.input} />
         <PopoverTextColumn>
@@ -291,7 +293,7 @@ export default function NavJobPopover({
               ))}
             </PopoverTabs>
           )}
-          <JobPreview content={activeContent} />
+          <JobPreview content={activeContent} showTitle={!tabs?.length} />
         </>
       )}
     </NavJobPopoverRoot>

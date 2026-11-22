@@ -600,7 +600,7 @@ describe('AppDrawer', () => {
     renderDrawer();
     fireEvent.mouseEnter(screen.getByTestId('nav-batch-blip'));
     const popover = screen.getByTestId('nav-job-popover');
-    expect(popover).toHaveTextContent('nav.batchQueue');
+    expect(popover).not.toHaveTextContent('nav.batchQueue');
     expect(popover).toHaveTextContent('1 queued, 1 running, 1 done, 0 failed');
     expect(popover).toHaveTextContent('run.mp4');
     expect(within(popover).getByRole('progressbar')).toBeInTheDocument();
@@ -689,6 +689,7 @@ describe('AppDrawer', () => {
     expect(popover).toHaveTextContent('1 queued, 1 running, 1 done, 0 failed');
     expect(popover).toHaveTextContent('general-run.mp4');
     expect(popover).not.toHaveTextContent('mux-run.mkv');
+    expect(popover).not.toHaveTextContent('nav.batchQueue');
 
     fireEvent.click(screen.getByTestId('nav-job-popover-tab-mux'));
     expect(popover).toHaveTextContent('mux-run.mkv');
