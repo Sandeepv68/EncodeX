@@ -82,6 +82,23 @@ export interface NavJobPopoverContent {
   pendingThumbnails?: string[];
 }
 
+export type NavJobPopoverTabId = 'general' | 'mux';
+
+export interface NavJobPopoverTab {
+  id: NavJobPopoverTabId;
+  label: string;
+  count: number;
+  content: NavJobPopoverContent;
+}
+
+export interface NavJobQueueJob {
+  id: string;
+  input: string;
+  status: string;
+  progress: number;
+  paused?: boolean;
+}
+
 /**
  * Props for the navigation blip job popover.
  * @interface NavJobPopoverProps
@@ -100,6 +117,8 @@ export interface NavJobPopoverProps {
   anchorEl: HTMLElement | null;
   onClose: () => void;
   content: NavJobPopoverContent | null;
+  tabs?: NavJobPopoverTab[] | null;
+  defaultTab?: NavJobPopoverTabId;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
 }

@@ -610,6 +610,113 @@ describe('AppDrawer', () => {
     expect(pileThumbs[0]).toHaveAttribute('title', 'queued.mp4');
   });
 
+  it('shows both queue tabs and per-queue previews in the batch popover', () => {
+    const muxJobs: MuxQueueJob[] = [
+      {
+        id: 'mux-running',
+        kind: 'remux',
+        input: '/in/mux-run.mkv',
+        output: '/out/mux-run.mkv',
+        targets: [{ output: '/out/mux-run.mkv', options: {} }],
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.RUNNING,
+        progress: 35,
+        createdAt: 1,
+      },
+      {
+        id: 'mux-queued',
+        kind: 'demux',
+        input: '/in/mux-queued.mkv',
+        output: '/out/mux-queued',
+        targets: [{ output: '/out/mux-queued/video.mkv', options: {} }],
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.QUEUED,
+        progress: 0,
+        createdAt: 2,
+      },
+      {
+        id: 'mux-done',
+        kind: 'remux',
+        input: '/in/mux-done.mkv',
+        output: '/out/mux-done.mkv',
+        targets: [{ output: '/out/mux-done.mkv', options: {} }],
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.DONE,
+        progress: 100,
+        createdAt: 3,
+      },
+    ];
+    useQueueStore.getState().setJobs([
+      {
+        id: 'general-running',
+        input: '/in/general-run.mp4',
+        output: '/out/general-run.mp4',
+        options: {},
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.RUNNING,
+        progress: 60,
+        createdAt: 1,
+      },
+      {
+        id: 'general-queued',
+        input: '/in/general-queued.mp4',
+        output: '/out/general-queued.mp4',
+        options: {},
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.QUEUED,
+        progress: 0,
+        createdAt: 2,
+      },
+      {
+        id: 'general-done',
+        input: '/in/general-done.mp4',
+        output: '/out/general-done.mp4',
+        options: {},
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.DONE,
+        progress: 100,
+        createdAt: 3,
+      },
+    ]);
+    useMuxQueueStore.getState().setJobs(muxJobs);
+    renderDrawer();
+    fireEvent.mouseEnter(screen.getByTestId('nav-batch-blip'));
+    const popover = screen.getByTestId('nav-job-popover');
+    expect(screen.getByTestId('nav-job-popover-tab-general')).toHaveTextContent('muxQueue.tabGeneral');
+    expect(screen.getByTestId('nav-job-popover-tab-mux')).toHaveTextContent('muxQueue.tabMux');
+    expect(screen.getByTestId('nav-job-popover-tab-count-general')).toHaveTextContent('3');
+    expect(screen.getByTestId('nav-job-popover-tab-count-mux')).toHaveTextContent('3');
+    expect(popover).toHaveTextContent('1 queued, 1 running, 1 done, 0 failed');
+    expect(popover).toHaveTextContent('general-run.mp4');
+    expect(popover).not.toHaveTextContent('mux-run.mkv');
+
+    fireEvent.click(screen.getByTestId('nav-job-popover-tab-mux'));
+    expect(popover).toHaveTextContent('mux-run.mkv');
+    expect(popover).not.toHaveTextContent('general-run.mp4');
+    const pile = within(popover).getByTestId('nav-job-popover-pile');
+    expect(within(pile).getAllByTestId('nav-job-popover-pile-thumb')[0]).toHaveAttribute('title', 'mux-queued.mkv');
+  });
+
+  it('opens the mux queue tab by default when no general jobs are active', () => {
+    useMuxQueueStore.getState().setJobs([
+      {
+        id: 'mux-running',
+        kind: 'remux',
+        input: '/in/mux-run.mkv',
+        output: '/out/mux-run.mkv',
+        targets: [{ output: '/out/mux-run.mkv', options: {} }],
+        transcoder: 'FFMPEG',
+        status: QUEUE_STATUS.RUNNING,
+        progress: 25,
+        createdAt: 1,
+      },
+    ]);
+    renderDrawer();
+    fireEvent.mouseEnter(screen.getByTestId('nav-batch-blip'));
+    expect(screen.getByTestId('nav-job-popover-tab-mux')).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByTestId('nav-job-popover')).toHaveTextContent('mux-run.mkv');
+  });
+
   it('does not open the batch popover when only finished jobs remain', () => {
     useQueueStore.getState().setJobs([
       {

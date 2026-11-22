@@ -1,11 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useState } from 'react';
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import NavJobPopover from '../NavJobPopover';
 import { clearPreviewCache } from '../../utils/preview-cache';
-import type { NavBlipId, NavJobPopoverContent } from '../types';
+import type { NavBlipId, NavJobPopoverContent, NavJobPopoverTab, NavJobPopoverTabId } from '../types';
 
-function Host({ content, active }: { content: NavJobPopoverContent | null; active?: NavBlipId }) {
+function Host({
+  content,
+  active,
+  tabs,
+  defaultTab,
+}: {
+  content: NavJobPopoverContent | null;
+  active?: NavBlipId;
+  tabs?: NavJobPopoverTab[] | null;
+  defaultTab?: NavJobPopoverTabId;
+}) {
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   return (
     <>
@@ -17,6 +27,8 @@ function Host({ content, active }: { content: NavJobPopoverContent | null; activ
         anchorEl={anchor}
         onClose={vi.fn()}
         content={content}
+        tabs={tabs}
+        defaultTab={defaultTab}
       />
     </>
   );
@@ -199,5 +211,80 @@ describe('NavJobPopover', () => {
       />,
     );
     expect(screen.queryByText('×1')).not.toBeInTheDocument();
+  });
+
+  it('renders queue tabs with per-queue badges and the default tab content', () => {
+    const tabs: NavJobPopoverTab[] = [
+      {
+        id: 'general',
+        label: 'muxQueue.tabGeneral',
+        count: 2,
+        content: {
+          title: 'nav.batchQueue',
+          status: '1 queued, 1 running, 0 done, 0 failed',
+          fileName: 'general.mp4',
+          progress: null,
+        },
+      },
+      {
+        id: 'mux',
+        label: 'muxQueue.tabMux',
+        count: 3,
+        content: {
+          title: 'nav.batchQueue',
+          status: 'muxQueue.stats',
+          fileName: 'mux.mkv',
+          progress: null,
+        },
+      },
+    ];
+    render(<Host content={null} active="batch" tabs={tabs} />);
+    const popover = screen.getByTestId('nav-job-popover');
+    expect(within(popover).getByRole('tablist')).toBeInTheDocument();
+    expect(screen.getByTestId('nav-job-popover-tab-general')).toHaveTextContent('muxQueue.tabGeneral');
+    expect(screen.getByTestId('nav-job-popover-tab-mux')).toHaveTextContent('muxQueue.tabMux');
+    expect(screen.getByTestId('nav-job-popover-tab-count-general')).toHaveTextContent('2');
+    expect(screen.getByTestId('nav-job-popover-tab-count-mux')).toHaveTextContent('3');
+    expect(popover).toHaveTextContent('general.mp4');
+    expect(popover).not.toHaveTextContent('mux.mkv');
+  });
+
+  it('switches the popover preview when another queue tab is selected', () => {
+    const tabs: NavJobPopoverTab[] = [
+      {
+        id: 'general',
+        label: 'muxQueue.tabGeneral',
+        count: 1,
+        content: {
+          title: 'nav.batchQueue',
+          status: 'batchQueue.stats',
+          fileName: 'general.mp4',
+          progress: null,
+        },
+      },
+      {
+        id: 'mux',
+        label: 'muxQueue.tabMux',
+        count: 4,
+        content: {
+          title: 'nav.batchQueue',
+          status: 'muxQueue.stats',
+          fileName: 'mux.mkv',
+          progress: { percent: 40, time: '00:00:10', speed: '2x', eta: '15' },
+        },
+      },
+    ];
+    render(<Host content={null} active="batch" tabs={tabs} />);
+    fireEvent.click(screen.getByTestId('nav-job-popover-tab-mux'));
+    const popover = screen.getByTestId('nav-job-popover');
+    expect(popover).toHaveTextContent('mux.mkv');
+    expect(popover).toHaveTextContent('muxQueue.stats');
+    expect(popover).not.toHaveTextContent('general.mp4');
+    expect(within(popover).getByRole('progressbar')).toBeInTheDocument();
+  });
+
+  it('does not render tabs for a single-job popover', () => {
+    render(<Host content={{ title: 'Convert', status: 'Converting', fileName: 'video.mp4', progress: null }} />);
+    expect(screen.queryByTestId('nav-job-popover-tabs')).not.toBeInTheDocument();
   });
 });

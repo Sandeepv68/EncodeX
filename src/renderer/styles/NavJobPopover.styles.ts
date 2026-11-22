@@ -4,7 +4,7 @@
 
 import { styled, keyframes } from '@mui/material/styles';
 import type { Theme } from '@mui/material/styles';
-import { alpha, Box, Popover, Typography } from '@mui/material';
+import { alpha, Box, Chip, Popover, Tabs, Typography } from '@mui/material';
 import { SHADOWS } from '../../shared/theme/colors';
 
 /**
@@ -69,6 +69,41 @@ export const PopoverParallelBadge = styled(Box)(({ theme }) => ({
   fontWeight: 700,
   lineHeight: 1,
   flexShrink: 0,
+}));
+
+export const PopoverTabs = styled(Tabs)(({ theme }) => ({
+  minHeight: theme.typography.pxToRem(32),
+  marginBottom: theme.spacing(1),
+  borderBottom: `${theme.typography.pxToRem(1)} solid ${theme.palette.divider}`,
+  '& .MuiTabs-indicator': {
+    height: theme.typography.pxToRem(2),
+  },
+  '& .MuiTab-root': {
+    minWidth: 0,
+    minHeight: theme.typography.pxToRem(32),
+    padding: theme.spacing(0.5, 1),
+    fontSize: theme.typography.pxToRem(11),
+    lineHeight: 1.2,
+    textTransform: 'none',
+  },
+}));
+
+export const PopoverTabLabel = styled('span')(({ theme }) => ({
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: theme.spacing(0.5),
+}));
+
+export const PopoverTabCount = styled(Chip)(({ theme }) => ({
+  height: theme.spacing(2),
+  minWidth: theme.spacing(2),
+  color: theme.palette.text.secondary,
+  backgroundColor: alpha(theme.palette.text.secondary, 0.12),
+  '& .MuiChip-label': {
+    paddingInline: theme.spacing(0.5),
+    fontSize: theme.typography.pxToRem(10),
+    fontWeight: theme.typography.fontWeightBold,
+  },
 }));
 
 /**
