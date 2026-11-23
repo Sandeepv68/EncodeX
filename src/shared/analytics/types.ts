@@ -39,6 +39,11 @@ export interface AnalyticsExceptionPayload {
   context?: AnalyticsExceptionContext;
 }
 
+export interface BufferedException {
+  error: unknown;
+  context?: AnalyticsExceptionContext;
+}
+
 /**
  * Configuration accepted by {@link AnalyticsProvider.init}. Providers ignore
  * fields they do not understand so new options can be added without breaking

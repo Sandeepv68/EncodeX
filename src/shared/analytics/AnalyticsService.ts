@@ -53,6 +53,7 @@ import type {
   AnalyticsExceptionContext,
   AnalyticsProvider,
   AnalyticsProviderFactory,
+  BufferedException,
 } from './types';
 
 /** Per-module logger for the analytics facade. @const {Logger} */
@@ -72,11 +73,6 @@ let preInitBuffer: AnalyticsEvent[] = [];
 
 /** Cap on buffered pre-init events so a boot-loop can never grow unboundedly. @const {number} */
 const PRE_INIT_BUFFER_LIMIT = 100;
-
-interface BufferedException {
-  error: unknown;
-  context?: AnalyticsExceptionContext;
-}
 
 const PRE_INIT_EXCEPTION_BUFFER_LIMIT = 25;
 let preInitExceptionBuffer: BufferedException[] = [];
