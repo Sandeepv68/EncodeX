@@ -136,7 +136,7 @@
     "@opentelemetry/sdk-logs": "^3.0.0",
     "@opentelemetry/sdk-node": "^0.300.0",
     "@sentry/electron": "^7.17.0",
-    "@tanstack/react-virtual": "^3.14.22",
+    "@tanstack/react-virtual": "^3.14.26",
     "@xyflow/react": "^13.0.2",
     "chalk": "4.1.2",
     "cli-progress": "3.12.0",
