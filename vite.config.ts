@@ -1,11 +1,10 @@
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig, loadEnv, type PluginOption } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import { codecovVitePlugin } from '@codecov/vite-plugin';
-import posthogRollupPlugin from '@posthog/rollup-plugin';
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(async ({ mode }) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd(), '') };
 
   /**
@@ -24,19 +23,27 @@ export default defineConfig(({ mode }) => {
 
   const posthogApiKey = process.env.POSTHOG_API_KEY;
   const shouldUploadPosthogSourcemaps = Boolean(posthogApiKey && process.env.POSTHOG_PROJECT_ID);
+  const posthogPlugins: PluginOption[] = [];
 
-  return {
-    plugins: [
-      react(),
+  if (shouldUploadPosthogSourcemaps) {
+    const { default: posthogRollupPlugin } = await import('@posthog/rollup-plugin');
+    posthogPlugins.push(
       posthogRollupPlugin({
         personalApiKey: posthogApiKey ?? '',
         projectId: process.env.POSTHOG_PROJECT_ID,
         host: process.env.POSTHOG_HOST,
         sourcemaps: {
-          enabled: shouldUploadPosthogSourcemaps,
+          enabled: true,
           deleteAfterUpload: true,
         },
       }),
+    );
+  }
+
+  return {
+    plugins: [
+      react(),
+      ...posthogPlugins,
       ...(shouldUploadSourcemaps
         ? [
             sentryVitePlugin({
