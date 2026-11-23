@@ -135,7 +135,7 @@
     "@opentelemetry/resources": "^3.0.0",
     "@opentelemetry/sdk-logs": "^3.0.0",
     "@opentelemetry/sdk-node": "^0.300.0",
-    "@sentry/electron": "^7.17.0",
+    "@sentry/electron": "^8.4.0",
     "@tanstack/react-virtual": "^3.14.22",
     "@xyflow/react": "^13.0.2",
     "chalk": "4.1.2",
