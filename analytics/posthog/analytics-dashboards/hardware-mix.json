@@ -1,0 +1,282 @@
+{
+  "schemaVersion": 1,
+  "projectId": 709196,
+  "dashboard": {
+    "id": 2399425,
+    "name": "EncodeX — Hardware & transcoder mix",
+    "description": "Production changes in transcoder, hardware acceleration mode, and encoder type, segmented by platform.",
+    "url": "https://us.posthog.com/project/709196/dashboard/2399425",
+    "pinned": false,
+    "tags": [
+      "encodex",
+      "cp2"
+    ]
+  },
+  "sharedFilters": {
+    "channel": [
+      "prod"
+    ],
+    "excludedCohortId": 689593,
+    "filterTestAccounts": true
+  },
+  "insights": [
+    {
+      "id": 14528208,
+      "shortId": "d5gqMfEL",
+      "name": "EncodeX — Transcoder changes by platform",
+      "description": "Production transcoder change events grouped by platform over the selected period.",
+      "url": "https://us.posthog.com/project/709196/insights/d5gqMfEL",
+      "tileId": 16087363,
+      "layout": {
+        "h": 6,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "tags": [
+        "encodex",
+        "cp2",
+        "hardware"
+      ],
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "transcoder_changed"
+            }
+          ],
+          "interval": "week",
+          "dateRange": {
+            "date_from": "-90d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "channel",
+              "type": "event",
+              "value": [
+                "prod"
+              ],
+              "operator": "exact"
+            },
+            {
+              "key": "id",
+              "type": "cohort",
+              "value": 689593,
+              "operator": "not_in"
+            }
+          ],
+          "trendsFilter": {
+            "display": "ActionsBarValue",
+            "showLegend": true,
+            "hideWeekends": false,
+            "metricSummary": "total",
+            "legendPosition": "bottom",
+            "yAxisScaleType": "linear",
+            "showAnnotations": true,
+            "metricShowChange": true,
+            "yAxisStartAtZero": true,
+            "showMultipleYAxes": false,
+            "showValuesOnSeries": false,
+            "smoothingIntervals": 1,
+            "showPercentStackView": false,
+            "stackBreakdownValues": false,
+            "aggregationAxisFormat": "numeric",
+            "resultCustomizationBy": "value",
+            "excludeBoxPlotOutliers": true,
+            "metricColorByDirection": false,
+            "showAlertThresholdLines": false
+          },
+          "breakdownFilter": {
+            "breakdowns": [
+              {
+                "type": "event",
+                "property": "platform"
+              }
+            ],
+            "breakdown_type": "event"
+          },
+          "filterTestAccounts": true,
+          "version": 4
+        }
+      }
+    },
+    {
+      "id": 14528209,
+      "shortId": "K98nVO28",
+      "name": "EncodeX — HW accel mode changes by platform",
+      "description": "Production hardware acceleration mode changes grouped by platform over the selected period.",
+      "url": "https://us.posthog.com/project/709196/insights/K98nVO28",
+      "tileId": 16087364,
+      "layout": {
+        "h": 6,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
+      "tags": [
+        "encodex",
+        "cp2",
+        "hardware"
+      ],
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "hwaccel_mode_changed"
+            }
+          ],
+          "interval": "week",
+          "dateRange": {
+            "date_from": "-90d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "channel",
+              "type": "event",
+              "value": [
+                "prod"
+              ],
+              "operator": "exact"
+            },
+            {
+              "key": "id",
+              "type": "cohort",
+              "value": 689593,
+              "operator": "not_in"
+            }
+          ],
+          "trendsFilter": {
+            "display": "ActionsBarValue",
+            "showLegend": true,
+            "hideWeekends": false,
+            "metricSummary": "total",
+            "legendPosition": "bottom",
+            "yAxisScaleType": "linear",
+            "showAnnotations": true,
+            "metricShowChange": true,
+            "yAxisStartAtZero": true,
+            "showMultipleYAxes": false,
+            "showValuesOnSeries": false,
+            "smoothingIntervals": 1,
+            "showPercentStackView": false,
+            "stackBreakdownValues": false,
+            "aggregationAxisFormat": "numeric",
+            "resultCustomizationBy": "value",
+            "excludeBoxPlotOutliers": true,
+            "metricColorByDirection": false,
+            "showAlertThresholdLines": false
+          },
+          "breakdownFilter": {
+            "breakdowns": [
+              {
+                "type": "event",
+                "property": "platform"
+              }
+            ],
+            "breakdown_type": "event"
+          },
+          "filterTestAccounts": true,
+          "version": 4
+        }
+      }
+    },
+    {
+      "id": 14528210,
+      "shortId": "dsfeJvXj",
+      "name": "EncodeX — Encoder type changes by platform",
+      "description": "Production encoder type changes grouped by platform over the selected period.",
+      "url": "https://us.posthog.com/project/709196/insights/dsfeJvXj",
+      "tileId": 16087365,
+      "layout": {
+        "h": 6,
+        "w": 4,
+        "x": 8,
+        "y": 0
+      },
+      "tags": [
+        "encodex",
+        "cp2",
+        "hardware"
+      ],
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "encoder_type_changed"
+            }
+          ],
+          "interval": "week",
+          "dateRange": {
+            "date_from": "-90d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "channel",
+              "type": "event",
+              "value": [
+                "prod"
+              ],
+              "operator": "exact"
+            },
+            {
+              "key": "id",
+              "type": "cohort",
+              "value": 689593,
+              "operator": "not_in"
+            }
+          ],
+          "trendsFilter": {
+            "display": "ActionsBarValue",
+            "showLegend": true,
+            "hideWeekends": false,
+            "metricSummary": "total",
+            "legendPosition": "bottom",
+            "yAxisScaleType": "linear",
+            "showAnnotations": true,
+            "metricShowChange": true,
+            "yAxisStartAtZero": true,
+            "showMultipleYAxes": false,
+            "showValuesOnSeries": false,
+            "smoothingIntervals": 1,
+            "showPercentStackView": false,
+            "stackBreakdownValues": false,
+            "aggregationAxisFormat": "numeric",
+            "resultCustomizationBy": "value",
+            "excludeBoxPlotOutliers": true,
+            "metricColorByDirection": false,
+            "showAlertThresholdLines": false
+          },
+          "breakdownFilter": {
+            "breakdowns": [
+              {
+                "type": "event",
+                "property": "platform"
+              }
+            ],
+            "breakdown_type": "event"
+          },
+          "filterTestAccounts": true,
+          "version": 4
+        }
+      }
+    }
+  ]
+}

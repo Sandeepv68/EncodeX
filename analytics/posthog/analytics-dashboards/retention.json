@@ -1,0 +1,332 @@
+{
+  "schemaVersion": 1,
+  "projectId": 709196,
+  "dashboard": {
+    "id": 2399420,
+    "name": "EncodeX — Retention",
+    "description": "Daily and weekly return behavior for production launches, including active-user trends and first-seen version cohorts.",
+    "url": "https://us.posthog.com/project/709196/dashboard/2399420",
+    "pinned": false,
+    "tags": [
+      "encodex",
+      "cp2"
+    ]
+  },
+  "sharedFilters": {
+    "channel": [
+      "prod"
+    ],
+    "excludedCohortId": 689593,
+    "filterTestAccounts": true
+  },
+  "insights": [
+    {
+      "id": 14528152,
+      "shortId": "oq6uVdbB",
+      "name": "EncodeX — App launch retention (daily)",
+      "description": "Daily first-time launch cohorts with return counts through day thirty for production users.",
+      "url": "https://us.posthog.com/project/709196/insights/oq6uVdbB",
+      "tileId": 16087281,
+      "layout": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "tags": [
+        "encodex",
+        "cp2",
+        "retention"
+      ],
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "RetentionQuery",
+          "dateRange": {
+            "date_from": "-60d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "channel",
+              "type": "event",
+              "value": [
+                "prod"
+              ],
+              "operator": "exact"
+            },
+            {
+              "key": "id",
+              "type": "cohort",
+              "value": 689593,
+              "operator": "not_in"
+            }
+          ],
+          "retentionFilter": {
+            "period": "Day",
+            "cumulative": false,
+            "targetEntity": {
+              "id": "app_launched",
+              "name": "app_launched",
+              "type": "events"
+            },
+            "retentionType": "retention_first_time",
+            "totalIntervals": 31,
+            "aggregationType": "count",
+            "returningEntity": {
+              "id": "app_launched",
+              "name": "app_launched",
+              "type": "events"
+            },
+            "retentionReference": "total",
+            "cohortLabelStartIndex": 0,
+            "aggregationPropertyType": "event"
+          },
+          "filterTestAccounts": true,
+          "version": 2
+        }
+      }
+    },
+    {
+      "id": 14528153,
+      "shortId": "3twBmxZS",
+      "name": "EncodeX — Weekly active launch users",
+      "description": "Weekly unique production users who launched the app, shown as a trend.",
+      "url": "https://us.posthog.com/project/709196/insights/3twBmxZS",
+      "tileId": 16087282,
+      "layout": {
+        "h": 6,
+        "w": 6,
+        "x": 0,
+        "y": 8
+      },
+      "tags": [
+        "encodex",
+        "cp2",
+        "retention"
+      ],
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "math": "weekly_active",
+              "event": "app_launched"
+            }
+          ],
+          "interval": "week",
+          "dateRange": {
+            "date_from": "-90d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "channel",
+              "type": "event",
+              "value": [
+                "prod"
+              ],
+              "operator": "exact"
+            },
+            {
+              "key": "id",
+              "type": "cohort",
+              "value": 689593,
+              "operator": "not_in"
+            }
+          ],
+          "trendsFilter": {
+            "display": "ActionsLineGraph",
+            "showLegend": true,
+            "hideWeekends": false,
+            "metricSummary": "total",
+            "legendPosition": "bottom",
+            "yAxisScaleType": "linear",
+            "showAnnotations": true,
+            "metricShowChange": true,
+            "yAxisStartAtZero": true,
+            "showMultipleYAxes": false,
+            "showValuesOnSeries": false,
+            "smoothingIntervals": 1,
+            "showPercentStackView": false,
+            "stackBreakdownValues": false,
+            "aggregationAxisFormat": "numeric",
+            "resultCustomizationBy": "value",
+            "excludeBoxPlotOutliers": true,
+            "metricColorByDirection": false,
+            "showAlertThresholdLines": false
+          },
+          "filterTestAccounts": true,
+          "version": 4
+        }
+      }
+    },
+    {
+      "id": 14528154,
+      "shortId": "KMMGodcy",
+      "name": "EncodeX — Monthly active launch users",
+      "description": "Monthly unique production users who launched the app, shown as a trend.",
+      "url": "https://us.posthog.com/project/709196/insights/KMMGodcy",
+      "tileId": 16087283,
+      "layout": {
+        "h": 6,
+        "w": 6,
+        "x": 6,
+        "y": 8
+      },
+      "tags": [
+        "encodex",
+        "cp2",
+        "retention"
+      ],
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "math": "monthly_active",
+              "event": "app_launched"
+            }
+          ],
+          "interval": "month",
+          "dateRange": {
+            "date_from": "-180d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "channel",
+              "type": "event",
+              "value": [
+                "prod"
+              ],
+              "operator": "exact"
+            },
+            {
+              "key": "id",
+              "type": "cohort",
+              "value": 689593,
+              "operator": "not_in"
+            }
+          ],
+          "trendsFilter": {
+            "display": "ActionsLineGraph",
+            "showLegend": true,
+            "hideWeekends": false,
+            "metricSummary": "total",
+            "legendPosition": "bottom",
+            "yAxisScaleType": "linear",
+            "showAnnotations": true,
+            "metricShowChange": true,
+            "yAxisStartAtZero": true,
+            "showMultipleYAxes": false,
+            "showValuesOnSeries": false,
+            "smoothingIntervals": 1,
+            "showPercentStackView": false,
+            "stackBreakdownValues": false,
+            "aggregationAxisFormat": "numeric",
+            "resultCustomizationBy": "value",
+            "excludeBoxPlotOutliers": true,
+            "metricColorByDirection": false,
+            "showAlertThresholdLines": false
+          },
+          "filterTestAccounts": true,
+          "version": 4
+        }
+      }
+    },
+    {
+      "id": 14528155,
+      "shortId": "VHTS7f99",
+      "name": "EncodeX — Weekly active users by first-seen version",
+      "description": "Weekly active production users broken down by their first-seen app version.",
+      "url": "https://us.posthog.com/project/709196/insights/VHTS7f99",
+      "tileId": 16087284,
+      "layout": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 14
+      },
+      "tags": [
+        "encodex",
+        "cp2",
+        "retention"
+      ],
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "math": "weekly_active",
+              "event": "app_launched"
+            }
+          ],
+          "interval": "week",
+          "dateRange": {
+            "date_from": "-90d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "channel",
+              "type": "event",
+              "value": [
+                "prod"
+              ],
+              "operator": "exact"
+            },
+            {
+              "key": "id",
+              "type": "cohort",
+              "value": 689593,
+              "operator": "not_in"
+            }
+          ],
+          "trendsFilter": {
+            "display": "ActionsLineGraph",
+            "showLegend": true,
+            "hideWeekends": false,
+            "metricSummary": "total",
+            "legendPosition": "bottom",
+            "yAxisScaleType": "linear",
+            "showAnnotations": true,
+            "metricShowChange": true,
+            "yAxisStartAtZero": true,
+            "showMultipleYAxes": false,
+            "showValuesOnSeries": false,
+            "smoothingIntervals": 1,
+            "showPercentStackView": false,
+            "stackBreakdownValues": false,
+            "aggregationAxisFormat": "numeric",
+            "resultCustomizationBy": "value",
+            "excludeBoxPlotOutliers": true,
+            "metricColorByDirection": false,
+            "showAlertThresholdLines": false
+          },
+          "breakdownFilter": {
+            "breakdowns": [
+              {
+                "type": "person",
+                "property": "first_seen_version"
+              }
+            ],
+            "breakdown_type": "event"
+          },
+          "filterTestAccounts": true,
+          "version": 4
+        }
+      }
+    }
+  ]
+}

@@ -35,6 +35,8 @@ export interface AnalyticsState {
 export interface AiGeneration {
   /** Trace id shared by every generation in a Copilot turn. */
   traceId: string;
+  spanId?: string;
+  parentSpanId?: string;
   /** Provider that produced the generation (for example, `openai`). */
   provider: string;
   /** Model id supplied to the provider. */
@@ -50,6 +52,17 @@ export interface AiGeneration {
   /** Wall-clock generation latency in seconds. */
   latency: number;
   /** Whether the provider request failed. */
+  isError?: boolean;
+}
+
+export type AiSpanName = 'copilot.route' | 'copilot.llm';
+
+export interface AiSpan {
+  traceId: string;
+  spanId: string;
+  name: AiSpanName;
+  latency: number;
+  parentSpanId?: string;
   isError?: boolean;
 }
 
@@ -123,6 +136,8 @@ export interface AnalyticsProvider {
    * Product-only backends intentionally omit this optional capability.
    */
   captureAiGeneration?(generation: AiGeneration): void | Promise<void>;
+
+  captureAiSpan?(span: AiSpan): void | Promise<void>;
 
   /**
    * Evaluates a feature flag. Returns the resolved boolean, or `undefined`

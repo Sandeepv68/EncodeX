@@ -32,6 +32,18 @@ describe('posthogSurveys', () => {
     expect(posthog.init).not.toHaveBeenCalled();
   });
 
+  it('does nothing when the survey gate is disabled', async () => {
+    (window as unknown as { electronAPI: unknown }).electronAPI = {
+      analyticsGetPosthogConfig: vi
+        .fn()
+        .mockResolvedValue({ projectToken: 'phc_test', host: 'https://us.i.posthog.com', surveysEnabled: false }),
+    };
+    const posthog = (await import('posthog-js')).default as unknown as { init: ReturnType<typeof vi.fn> };
+    const { initPosthogSurveys } = await import('../posthogSurveys');
+    await initPosthogSurveys(true);
+    expect(posthog.init).not.toHaveBeenCalled();
+  });
+
   it('swallows a failing config lookup', async () => {
     (window as unknown as { electronAPI: unknown }).electronAPI = {
       analyticsGetPosthogConfig: vi.fn().mockRejectedValue(new Error('boom')),
@@ -43,7 +55,9 @@ describe('posthogSurveys', () => {
 
   it('initialises when consent is on and config is available', async () => {
     (window as unknown as { electronAPI: unknown }).electronAPI = {
-      analyticsGetPosthogConfig: vi.fn().mockResolvedValue({ projectToken: 'phc_test', host: 'https://us.i.posthog.com' }),
+      analyticsGetPosthogConfig: vi
+        .fn()
+        .mockResolvedValue({ projectToken: 'phc_test', host: 'https://us.i.posthog.com', surveysEnabled: true }),
     };
     const posthog = (await import('posthog-js')).default as unknown as { init: ReturnType<typeof vi.fn> };
     const { initPosthogSurveys } = await import('../posthogSurveys');

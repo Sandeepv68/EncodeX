@@ -28,7 +28,8 @@ export async function initPosthogSurveys(consent: boolean): Promise<void> {
   if (initialised || !consent) return;
   if (typeof window === 'undefined' || !window.electronAPI?.analyticsGetPosthogConfig) return;
   try {
-    const { projectToken, host } = await window.electronAPI.analyticsGetPosthogConfig();
+    const { projectToken, host, surveysEnabled } = await window.electronAPI.analyticsGetPosthogConfig();
+    if (surveysEnabled !== true) return;
     if (!projectToken || !host) return;
     posthog.init(projectToken, {
       api_host: host,

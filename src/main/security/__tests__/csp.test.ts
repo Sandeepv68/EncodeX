@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { CONTENT_SECURITY_POLICY, DEV_CONTENT_SECURITY_POLICY } from '../../../shared/csp';
+import { CONTENT_SECURITY_POLICY, DEV_CONTENT_SECURITY_POLICY, buildContentSecurityPolicy } from '../../../shared/csp';
 import { CSP_HEADER_NAME, installContentSecurityPolicy } from '../csp';
 
 /**
  * Captures the `onHeadersReceived` handler registered on a fake session so tests can drive it like
  * Electron does, with `(details, callback)`.
  */
-function openSession(options?: { dev?: boolean }) {
+function openSession(options?: { dev?: boolean; posthogHost?: string }) {
   let handler: ((details: { responseHeaders?: Record<string, string[]> }, callback: (input?: unknown) => void) => void) | undefined;
   const onHeadersReceived = vi.fn((listener: typeof handler) => {
     handler = listener as typeof handler;
@@ -96,5 +96,19 @@ describe('installContentSecurityPolicy', () => {
         .map((part) => part.trim())
         .filter((part) => !part.startsWith('script-src'));
     expect(stripScriptSrc(DEV_CONTENT_SECURITY_POLICY)).toEqual(stripScriptSrc(CONTENT_SECURITY_POLICY));
+  });
+
+  it('allows only the configured PostHog origin in connect-src', () => {
+    const { fire } = openSession({ posthogHost: 'https://us.i.posthog.com/survey' });
+    expect(fire({}).mock.calls[0][0]).toEqual({
+      responseHeaders: { [CSP_HEADER_NAME]: [buildContentSecurityPolicy('https://us.i.posthog.com')] },
+    });
+  });
+
+  it('ignores non-http PostHog hosts in connect-src', () => {
+    const { fire } = openSession({ posthogHost: 'javascript:alert(1)' });
+    expect(fire({}).mock.calls[0][0]).toEqual({
+      responseHeaders: { [CSP_HEADER_NAME]: [CONTENT_SECURITY_POLICY] },
+    });
   });
 });

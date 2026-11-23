@@ -637,7 +637,10 @@ if (process.argv.includes('--mcp')) {
     // advisory sees it; it must be registered before any window loads a document. Development mode
     // needs the relaxed variant: Vite's inline React-refresh preamble is blocked by
     // `script-src 'self'`, which kills the module graph and leaves a blank window.
-    installContentSecurityPolicy(session.defaultSession, { dev: isDevMode() });
+    installContentSecurityPolicy(session.defaultSession, {
+      dev: isDevMode(),
+      posthogHost: process.env.POSTHOG_HOST ?? POSTHOG_BUILD_CONFIG.host,
+    });
     recordAppInstalledOnce(app.getPath('userData'));
     recordAnalyticsEvent(
       createAnalyticsEvent('app_launched', {

@@ -4,8 +4,8 @@
  *
  * Computes the canonical event schema from `src/shared/analytics/events.ts`
  * (event name, group, tier) and compares it against the committed snapshot at
- * `docs/analytics-dashboards/data-schema.json`. Exits non-zero when they differ,
- * so CI catches taxonomy drift. Regenerate the snapshot with `--write`.
+ * `analytics/posthog/analytics-dashboards/data-schema.json`. Exits non-zero
+ * when they differ, so CI catches taxonomy drift. Regenerate with `--write`.
  *
  * Usage:
  *   node scripts/check-analytics-schema.mjs          # verify
@@ -18,7 +18,7 @@ import path from 'path';
 
 const ROOT = process.cwd();
 const EVENTS_FILE = path.join(ROOT, 'src/shared/analytics/events.ts');
-const SCHEMA_FILE = path.join(ROOT, 'docs/analytics-dashboards/data-schema.json');
+const SCHEMA_FILE = path.join(ROOT, 'analytics/posthog/analytics-dashboards/data-schema.json');
 
 function parseEvents(source) {
   const groupMap = {};

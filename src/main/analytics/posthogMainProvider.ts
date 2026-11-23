@@ -22,7 +22,7 @@ import { LOG_ANALYTICS_CLOSE_FAILED, LOG_ANALYTICS_INIT_FAILED, LOG_ANALYTICS_TR
 import { ANALYTICS_EVENT_GROUP, type AnalyticsEvent } from '../../shared/analytics/events';
 import { sanitizeAnalyticsProps } from '../../shared/analytics/sanitize';
 import { filterPersonProperties } from '../../shared/analytics/personProperties';
-import type { AiGeneration, AnalyticsConfig, AnalyticsProvider } from '../../shared/analytics/types';
+import type { AiGeneration, AiSpan, AnalyticsConfig, AnalyticsProvider } from '../../shared/analytics/types';
 import { resolveGroupGate } from './groupGate';
 import { coerceProfileKind, coerceHardwareClass } from './groups';
 import { FEATURE_FLAG_DEFAULTS } from './flags';
@@ -125,7 +125,10 @@ export class PostHogMainProvider implements AnalyticsProvider {
             new BatchLogRecordProcessor({
               exporter: new OTLPLogExporter({
                 url: logUrl,
-                headers: { Authorization: `Bearer ${projectToken}` },
+                headers: {
+                  Authorization: `Bearer ${projectToken}`,
+                  'Content-Type': 'application/json',
+                },
               }),
             }),
           ],
@@ -301,8 +304,23 @@ export class PostHogMainProvider implements AnalyticsProvider {
   private async refreshFlags(): Promise<void> {
     if (!this.client || typeof this.client.getAllFlags !== 'function') return;
     try {
+      const client = this.client;
       const result = await Promise.race([
-        this.client.getAllFlags(this.distinctId),
+        (async () => {
+          const allFlags = await client.getAllFlags(this.distinctId);
+          const exposures: Record<string, boolean | string | number> = {};
+          if (typeof client.getFeatureFlag === 'function') {
+            await Promise.all(
+              Object.keys(FEATURE_FLAG_DEFAULTS).map(async (key) => {
+                const value = await client.getFeatureFlag(key, this.distinctId, { sendFeatureFlagEvents: true });
+                if (typeof value === 'boolean' || typeof value === 'string' || typeof value === 'number') {
+                  exposures[key] = value;
+                }
+              }),
+            );
+          }
+          return { ...allFlags, ...exposures };
+        })(),
         new Promise<undefined>((resolve) => setTimeout(() => resolve(undefined), 2000)),
       ]);
       if (result && typeof result === 'object') {
@@ -364,6 +382,8 @@ export class PostHogMainProvider implements AnalyticsProvider {
         properties: {
           $ai_trace_id: generation.traceId,
           $ai_session_id: this.distinctId,
+          ...(generation.spanId ? { $ai_span_id: generation.spanId, $ai_span_name: 'llm_generation' } : {}),
+          ...(generation.parentSpanId ? { $ai_parent_id: generation.parentSpanId } : {}),
           $ai_model: generation.model,
           $ai_provider: generation.provider,
           $ai_latency: generation.latency,
@@ -382,6 +402,32 @@ export class PostHogMainProvider implements AnalyticsProvider {
         severityText: generation.isError ? 'error' : 'info',
         body: 'posthog_ai_generation_forwarded',
         attributes: { 'ai.provider': generation.provider, 'ai.is_error': generation.isError === true },
+      });
+    } catch (err) {
+      log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
+    }
+  }
+
+  captureAiSpan(span: AiSpan): void {
+    if (!this.active || !this.client) return;
+    try {
+      this.client.capture({
+        distinctId: this.distinctId,
+        event: '$ai_span',
+        properties: {
+          $ai_trace_id: span.traceId,
+          $ai_session_id: this.distinctId,
+          $ai_span_id: span.spanId,
+          $ai_span_name: span.name,
+          ...(span.parentSpanId ? { $ai_parent_id: span.parentSpanId } : {}),
+          $ai_latency: span.latency,
+          ...(span.isError ? { $ai_is_error: true } : {}),
+        },
+      });
+      this.posthogLog?.emit({
+        severityText: span.isError ? 'error' : 'info',
+        body: 'posthog_ai_span_forwarded',
+        attributes: { 'ai.span_name': span.name, 'ai.is_error': span.isError === true },
       });
     } catch (err) {
       log.debug(LOG_ANALYTICS_TRACK_FAILED, err);

@@ -1,0 +1,181 @@
+{
+  "dashboard": {
+    "id": 2399517,
+    "name": "EncodeX — AI observability",
+    "description": "AI generation volume, spend, error rate, provider mix, and summary-event volume. AI events do not carry channel; test-account filtering applies.",
+    "url": "https://us.posthog.com/project/709196/dashboard/2399517",
+    "tags": ["ai", "encodex", "quota", "remove-by:2027-01-01"]
+  },
+  "sharedFilters": {
+    "filterTestAccounts": true,
+    "excludedCohortId": 689593,
+    "cohortFilter": {
+      "type": "cohort",
+      "key": "id",
+      "operator": "not_in",
+      "value": [689593]
+    },
+    "note": "The channel super property is not present on $ai_generation events, so it is not part of these saved filters."
+  },
+  "insights": [
+    {
+      "id": 14529003,
+      "shortId": "Qpj7ptqo",
+      "name": "EncodeX — AI generations",
+      "tileId": 16088596,
+      "query": {
+        "kind": "TrendsQuery",
+        "dateRange": { "date_from": "-30d" },
+        "interval": "day",
+        "filterTestAccounts": true,
+        "properties": [
+          {
+            "type": "cohort",
+            "key": "id",
+            "operator": "not_in",
+            "value": [689593]
+          }
+        ],
+        "series": [
+          {
+            "kind": "EventsNode",
+            "event": "$ai_generation",
+            "math": "total"
+          }
+        ]
+      }
+    },
+    {
+      "id": 14529004,
+      "shortId": "TMY8RcZH",
+      "name": "EncodeX — AI spend",
+      "tileId": 16088597,
+      "query": {
+        "kind": "TrendsQuery",
+        "dateRange": { "date_from": "-30d" },
+        "interval": "day",
+        "filterTestAccounts": true,
+        "properties": [
+          {
+            "type": "cohort",
+            "key": "id",
+            "operator": "not_in",
+            "value": [689593]
+          }
+        ],
+        "series": [
+          {
+            "kind": "EventsNode",
+            "event": "$ai_generation",
+            "math": "sum",
+            "mathProperty": "$ai_total_cost_usd"
+          }
+        ]
+      }
+    },
+    {
+      "id": 14529005,
+      "shortId": "NhFZWtMu",
+      "name": "EncodeX — AI error rate",
+      "query": {
+        "kind": "TrendsQuery",
+        "dateRange": { "date_from": "-30d" },
+        "interval": "day",
+        "filterTestAccounts": true,
+        "properties": [
+          {
+            "type": "cohort",
+            "key": "id",
+            "operator": "not_in",
+            "value": [689593]
+          }
+        ],
+        "series": [
+          {
+            "kind": "EventsNode",
+            "event": "$ai_generation",
+            "math": "total"
+          },
+          {
+            "kind": "EventsNode",
+            "event": "$ai_generation",
+            "math": "total",
+            "properties": [
+              {
+                "key": "$ai_is_error",
+                "operator": "exact",
+                "type": "event",
+                "value": ["true"]
+              }
+            ]
+          }
+        ],
+        "trendsFilter": {
+          "formula": "B / A",
+          "formulaNodes": [
+            { "type": "data", "var": "A" },
+            { "type": "data", "var": "B" },
+            { "type": "operation", "operator": "/", "values": ["B", "A"] }
+          ]
+        }
+      }
+    },
+    {
+      "id": 14529006,
+      "shortId": "BcjbGEec",
+      "name": "EncodeX — AI provider mix",
+      "tileId": 16088599,
+      "query": {
+        "kind": "TrendsQuery",
+        "dateRange": { "date_from": "-30d" },
+        "interval": "day",
+        "filterTestAccounts": true,
+        "properties": [
+          {
+            "type": "cohort",
+            "key": "id",
+            "operator": "not_in",
+            "value": [689593]
+          }
+        ],
+        "series": [
+          {
+            "kind": "EventsNode",
+            "event": "$ai_generation",
+            "math": "total"
+          }
+        ],
+        "breakdownFilter": {
+          "breakdown_type": "event",
+          "breakdown": "$ai_provider"
+        }
+      }
+    },
+    {
+      "id": 14529007,
+      "shortId": "WCRjWOym",
+      "name": "EncodeX — AI summary events",
+      "query": {
+        "kind": "TrendsQuery",
+        "dateRange": { "date_from": "-30d" },
+        "interval": "day",
+        "filterTestAccounts": true,
+        "properties": [
+          {
+            "type": "cohort",
+            "key": "id",
+            "operator": "not_in",
+            "value": [689593]
+          }
+        ],
+        "series": [
+          {
+            "kind": "EventsNode",
+            "event": "$ai_generation_summary",
+            "math": "total"
+          }
+        ]
+      }
+    }
+  ]
+}

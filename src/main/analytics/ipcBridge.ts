@@ -33,6 +33,15 @@ let userDataDir: string | null = null;
 /** Whether consent was granted at bootstrap. @type {boolean} */
 let bootConsent = true;
 
+function resolveSurveysEnabled(): boolean {
+  const value = process.env.POSTHOG_SURVEYS_ENABLED;
+  if (value === undefined) return POSTHOG_BUILD_CONFIG.surveysEnabled;
+  const normalized = value.trim().toLowerCase();
+  if (normalized === 'true' || normalized === '1') return true;
+  if (normalized === 'false' || normalized === '0') return false;
+  return POSTHOG_BUILD_CONFIG.surveysEnabled;
+}
+
 /**
  * Registers the analytics IPC channels. Call once during app startup after
  * analytics itself has been initialized.
@@ -67,9 +76,9 @@ export function registerAnalyticsIpcBridge(options: { userDataDir: string; conse
     trackRelayedAnalyticsEvent(event);
   });
 
-  ipcMain.handle(IPC.ANALYTICS_GET_POSTHOG_CONFIG, (): { projectToken?: string; host?: string } => {
+  ipcMain.handle(IPC.ANALYTICS_GET_POSTHOG_CONFIG, (): { projectToken?: string; host?: string; surveysEnabled?: boolean } => {
     const token = process.env.POSTHOG_PROJECT_TOKEN ?? POSTHOG_BUILD_CONFIG.projectToken;
     const host = process.env.POSTHOG_HOST ?? POSTHOG_BUILD_CONFIG.host;
-    return { projectToken: token, host };
+    return { projectToken: token, host, surveysEnabled: resolveSurveysEnabled() };
   });
 }

@@ -1168,7 +1168,7 @@ const api = {
     return ipcRenderer.invoke(IPC.ANALYTICS_TRACK_EVENT, event) as Promise<void>;
   },
   analyticsGetPosthogConfig: () =>
-    ipcRenderer.invoke(IPC.ANALYTICS_GET_POSTHOG_CONFIG) as Promise<{ projectToken?: string; host?: string }>,
+    ipcRenderer.invoke(IPC.ANALYTICS_GET_POSTHOG_CONFIG) as Promise<{ projectToken?: string; host?: string; surveysEnabled?: boolean }>,
 
   /**
    * Queries the stored embedded MCP server settings from the main process. Logs

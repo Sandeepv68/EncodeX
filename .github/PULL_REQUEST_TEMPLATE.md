@@ -15,3 +15,4 @@ Fixes # (issue)
 - [ ] UI strings use `t()` from react-i18next
 - [ ] Locale files updated if UI strings changed
 - [ ] Constants used instead of hardcoded values
+- [ ] Analytics privacy checklist answered (`docs/analytics-privacy-checklist.md`)

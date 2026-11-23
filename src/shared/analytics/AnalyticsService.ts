@@ -46,7 +46,7 @@ import {
 import type { AnalyticsEvent } from './events';
 import { ANALYTICS_EVENT_GROUP } from './events';
 import { NoopProvider } from './noopProvider';
-import type { AiGeneration, AnalyticsConfig, AnalyticsProvider, AnalyticsProviderFactory } from './types';
+import type { AiGeneration, AiSpan, AnalyticsConfig, AnalyticsProvider, AnalyticsProviderFactory } from './types';
 
 /** Per-module logger for the analytics facade. @const {Logger} */
 const log = new Logger('shared/analytics');
@@ -303,6 +303,15 @@ export function captureAiGeneration(generation: AiGeneration): void {
   try {
     if (!bootstrapped || !activeProvider.isEnabled()) return;
     activeProvider.captureAiGeneration?.(generation);
+  } catch (err) {
+    log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
+  }
+}
+
+export function captureAiSpan(span: AiSpan): void {
+  try {
+    if (!bootstrapped || !activeProvider.isEnabled()) return;
+    activeProvider.captureAiSpan?.(span);
   } catch (err) {
     log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
   }

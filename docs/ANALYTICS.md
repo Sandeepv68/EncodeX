@@ -52,7 +52,9 @@ backend delivery happens on the main side.
 > `src/shared/csp.ts`, injected as a `Content-Security-Policy` response header
 > by `src/main/security/csp.ts`) includes `connect-src 'self' aptabase-ipc` —
 > otherwise renderer events are silently dropped (the adapter's fetch is
-> rejected and logged as a `TypeError: Failed to fetch`).
+> rejected and logged as a `TypeError: Failed to fetch`). When surveys are
+> enabled, the origin of `POSTHOG_HOST` is also added to `connect-src`; invalid
+> or non-HTTP hosts are ignored.
 
 ## Configuration
 
@@ -60,6 +62,8 @@ backend delivery happens on the main side.
 | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `POSTHOG_PROJECT_TOKEN`        | Enables PostHog when present (main process only). Public project token; for packaged releases it is baked in at build time via `npm run gen:posthog-config` (runs on `npm install` and `npm run build`); runtime env wins. Never enters the renderer bundle.                            |
 | `POSTHOG_HOST`                 | PostHog ingestion host (for example `https://us.i.posthog.com`). Required when PostHog is the active backend.                                                                                                                                                                          |
+| `POSTHOG_SURVEYS_ENABLED`      | Boots the renderer survey SDK only when set to `true`/`1` and telemetry consent is on. Defaults to `false`/`0`; set it for release builds that should display the live survey. Baked into packaged builds by `npm run gen:posthog-config`.                                                     |
+| `POSTHOG_WEB_ANALYTICS_ENABLED`| Set to `true`/`1` during the VitePress build to inject the cookieless PostHog page-view snippet on `encodex.in`. Requires `POSTHOG_PROJECT_TOKEN` and `POSTHOG_HOST`; defaults to off.                                                                                                    |
 | `POSTHOG_AI_CAPTURE_CONTENT`   | Set to `true` to send AI prompt/completion content to PostHog AI Observability. Defaults to metadata-only (model, latency, token counts, errors).                                                                                                                                      |
 | `APTABASE_APP_KEY`             | Enables Aptabase when present (main process only). Loaded from `.env` via dotenv or baked in via `npm run gen:aptabase-config`; runtime env wins. Keys look like `A-{US\|EU\|DEV\|SH}-...`.                                                                                               |
 | `APTABASE_HOST`                | **Only for self-hosted** Aptabase API endpoints (`A-SH-...` keys). Leave empty on cloud.                                                                                                                                                                                              |
@@ -70,6 +74,22 @@ backend delivery happens on the main side.
 
 Groups: `lifecycle`, `onboarding`, `nav`, `convert`, `image`, `audio`, `cut`,
 `queue`, `profiles`, `settings`, `mcp`, `updates`, `hw`, `cli`, `ux`.
+
+## Site web analytics
+
+The VitePress site at `encodex.in` reuses PostHog project `709196` for aggregate
+page views. The snippet is injected at build time only when
+`POSTHOG_WEB_ANALYTICS_ENABLED`, `POSTHOG_PROJECT_TOKEN`, and `POSTHOG_HOST` are
+all present; set those same values in the hosting provider before deploying.
+The token is never committed, and the desktop app still sends only categorical
+events through the main-process provider.
+
+Site capture is deliberately minimal: `autocapture`, session recording,
+surveys, and page-leave events are disabled, and SDK storage uses memory rather
+than cookies. This keeps the website event stream to `$pageview` only; it does
+not enable replay, heatmaps, or desktop-app pageviews. See the
+[PostHog web analytics installation docs](https://posthog.com/docs/web-analytics/installation/html-snippet)
+for the snippet source.
 
 ## Troubleshooting: no events arrive
 
@@ -116,6 +136,77 @@ duplicate entry silently overrides a good one.
   carry model, provider, latency, token counts, and error status. Prompt and
   completion content is sent only when `POSTHOG_AI_CAPTURE_CONTENT=true` is
   explicitly configured; otherwise it is never attached.
+
+## Surveys
+
+The renderer boots `posthog-js` only for surveys, only with telemetry consent,
+and only when `POSTHOG_SURVEYS_ENABLED` is true. The SDK runs with autocapture,
+pageviews, and session replay disabled and uses memory-only persistence. Survey
+questions and displayed copy are public content; keep them categorical and free
+of user identifiers.
+
+`EncodeX product feedback` (`01a20809-2a1a-0000-3d9b-4076a5323850`) is live as a
+one-time popover started `2026-11-23T12:01:54.605873Z`. It triggers on the first
+`conversion_completed` event on Desktop, asks the NPS and product-area questions,
+has partial responses enabled, and is limited to `1000` responses. Internal
+targeting flag `1120431` is active and prevents repeat display to dismissed or
+responding users. Delivery still requires a consented app run with the survey
+gate enabled.
+
+The configured survey gate is baked into packaged builds by
+`npm run gen:posthog-config`. Set `POSTHOG_SURVEYS_ENABLED=true` in the release
+build environment (or at runtime) to display the live survey; runtime values win
+over the baked value, and absent or unrecognized values fall back to the baked
+default (`false`).
+
+## Retention, deletion, and quota monitoring
+
+PostHog cloud settings remain the source of truth for retention and deletion.
+The current project uses default 14-day log retention with custom retention
+off. No user identity is attached to events, so deletion requests are handled
+by a project administrator in PostHog rather than through an app-side account
+flow; confirm scope with the privacy owner before deleting project data.
+
+Free-tier guardrails to watch: 1M analytics events/month, 100K AI events/month,
+1,500 survey responses/month, 10GB logs/month, and 5K session replays/month.
+The `EncodeX — AI observability` dashboard tracks generation volume, spend,
+error rate, provider mix, and summary-event volume. Review at 50%, 80%, and
+95% of any limit.
+
+Three enabled daily alerts check conversion failures above 10%, AI error rate above
+10%, and all-event volume below 50% of the trailing 7-day baseline at 09:00 UTC;
+they email user `844296`. Alert IDs are
+`01a20846-cc85-7689-a9b9-e65b72ebf341`,
+`01a20846-cdcf-7755-98f4-b30de2b64900`, and
+`01a20846-d247-7da1-94ac-d376cd0399d8`. The high-severity log alert
+`01a20809-59ae-7c9c-8ee0-e46109d4d6ca` is enabled for `error`/`fatal` logs above
+zero in a 5-minute window and is intentionally left silent by owner choice until
+a notification destination is requested.
+
+Governance baseline: [EncodeX — PostHog governance baseline](https://us.posthog.com/project/709196/notebooks/Vl1aPIvR).
+A quarterly reminder is configured to review this notebook on 1 January,
+1 April, 1 July, and 1 October at 09:00 UTC.
+
+## AI content opt-in procedure
+
+1. Keep `POSTHOG_AI_CAPTURE_CONTENT` unset or `false` for normal development and
+   release builds.
+2. For a temporary debugging session, set `POSTHOG_AI_CAPTURE_CONTENT=true` in
+   the local environment only, restart the app, and record why and for how long
+   content capture is enabled.
+3. Do not include prompts, completions, credentials, or customer content in
+   tests, issues, or dashboard annotations.
+4. Unset the variable and restart when the session ends; verify that subsequent
+   `$ai_generation` events carry metadata only.
+
+## AI trace hierarchy
+
+Copilot AI routing emits metadata-only AI Observability events using PostHog's
+[manual capture properties](https://posthog.com/docs/ai-observability/installation/manual-capture):
+one `$ai_trace_id` per plan request, a `copilot.route` `$ai_span` for the router
+step, and `$ai_generation` events with `$ai_span_id` and `$ai_parent_id` for each
+provider call. Span input/output state is never sent, so goals, prompts,
+completions, file names, and paths stay out of analytics payloads.
 
 ## What gets recorded
 

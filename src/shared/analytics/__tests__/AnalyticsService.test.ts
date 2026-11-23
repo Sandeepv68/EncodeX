@@ -9,7 +9,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ANALYTICS_SCHEMA_VERSION, createAnalyticsEvent } from '../events';
 import type { AnalyticsEvent } from '../events';
-import type { AnalyticsProvider, AiGeneration } from '../types';
+import type { AnalyticsProvider, AiGeneration, AiSpan } from '../types';
 
 import {
   AnalyticsService,
@@ -23,6 +23,7 @@ import {
   getAnalyticsBackendName,
   trackRelayedAnalyticsEvent,
   captureAiGeneration,
+  captureAiSpan,
   isFeatureFlagEnabled,
   getAllFeatureFlags,
 } from '../AnalyticsService';
@@ -35,6 +36,7 @@ class FakeProvider implements AnalyticsProvider {
   inits = 0;
   closes = 0;
   generations: AiGeneration[] = [];
+  spans: AiSpan[] = [];
   flags: Record<string, boolean | string | number> = { alpha: true, beta: 'x' };
 
   init(): void {
@@ -47,6 +49,10 @@ class FakeProvider implements AnalyticsProvider {
 
   captureAiGeneration(generation: AiGeneration): void {
     this.generations.push(generation);
+  }
+
+  captureAiSpan(span: AiSpan): void {
+    this.spans.push(span);
   }
 
   isFeatureFlagEnabled(flag: string): boolean | undefined {
@@ -76,6 +82,9 @@ class ThrowingProvider implements AnalyticsProvider {
   }
   captureAiGeneration(): void {
     throw new Error('generation boom');
+  }
+  captureAiSpan(): void {
+    throw new Error('span boom');
   }
   isFeatureFlagEnabled(): boolean | undefined {
     throw new Error('flag boom');
@@ -287,6 +296,21 @@ describe('AnalyticsService', () => {
     expect(provider.generations).toHaveLength(0);
   });
 
+  it('forwards AI spans to the provider', async () => {
+    resetAnalyticsForTests();
+    await initAnalytics({ enabled: true, provider: 'fake' }, () => provider);
+    const span: AiSpan = { traceId: 't1', spanId: 's1', name: 'copilot.route', latency: 0.2 };
+    captureAiSpan(span);
+    expect(provider.spans).toEqual([span]);
+  });
+
+  it('ignores AI spans when consent is off', async () => {
+    resetAnalyticsForTests();
+    await initAnalytics({ enabled: false, provider: 'fake' }, () => provider);
+    captureAiSpan({ traceId: 't1', spanId: 's1', name: 'copilot.route', latency: 0.2 });
+    expect(provider.spans).toHaveLength(0);
+  });
+
   it('resolves feature flags through the provider', async () => {
     resetAnalyticsForTests();
     await initAnalytics({ enabled: true, provider: 'fake' }, () => provider);
@@ -307,6 +331,7 @@ describe('AnalyticsService', () => {
     await initAnalytics({ enabled: true, provider: 'throwing' }, () => new ThrowingProvider());
     expect(() => trackRelayedAnalyticsEvent(createAnalyticsEvent('tool_opened', { route: '/convert' }))).not.toThrow();
     expect(() => captureAiGeneration({ traceId: 't', provider: 'p', model: 'm', input: [], latency: 1 })).not.toThrow();
+    expect(() => captureAiSpan({ traceId: 't', spanId: 's', name: 'copilot.route', latency: 1 })).not.toThrow();
     expect(() => isFeatureFlagEnabled('alpha')).not.toThrow();
     expect(() => getAllFeatureFlags()).not.toThrow();
   });

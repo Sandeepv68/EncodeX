@@ -29,6 +29,7 @@ import { addMonitoringBreadcrumb, captureException, initMonitoring } from '../sh
 import type { MonitoringConfig } from '../shared/monitoring/types';
 import { initAnalytics } from '../shared/analytics/AnalyticsService';
 import type { AnalyticsConfig } from '../shared/analytics/types';
+import { initPosthogSurveys } from './surveys/posthogSurveys';
 import { resolveRendererMonitorProvider } from './monitoring/providerFactory';
 import { resolveRendererAnalyticsProvider } from './analytics/providerFactory';
 import App from './App';
@@ -248,6 +249,7 @@ async function bootstrapRendererAnalytics(): Promise<void> {
     } satisfies AnalyticsConfig,
     resolveRendererAnalyticsProvider,
   );
+  await initPosthogSurveys(enabled);
 }
 
 /**

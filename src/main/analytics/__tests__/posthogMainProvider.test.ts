@@ -31,13 +31,17 @@ const shutdown = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
 const identify = vi.hoisted(() => vi.fn());
 const groupIdentify = vi.hoisted(() => vi.fn());
 const getAllFlags = vi.hoisted(() => vi.fn().mockResolvedValue({}));
+const getFeatureFlag = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
 const posthogCtor = vi.hoisted(() =>
   vi.fn(function () {
     if (knobs.ctorThrows) throw new Error('ctor boom');
     const client: Record<string, unknown> = { capture, flush, shutdown };
     if (!knobs.omitIdentify) client.identify = identify;
     if (!knobs.omitGroupIdentify) client.groupIdentify = groupIdentify;
-    if (!knobs.omitGetAllFlags) client.getAllFlags = getAllFlags;
+    if (!knobs.omitGetAllFlags) {
+      client.getAllFlags = getAllFlags;
+      client.getFeatureFlag = getFeatureFlag;
+    }
     return client;
   }),
 );
@@ -96,6 +100,7 @@ describe('PostHogMainProvider', () => {
     identify.mockImplementation(() => undefined);
     groupIdentify.mockImplementation(() => undefined);
     getAllFlags.mockResolvedValue({});
+    getFeatureFlag.mockResolvedValue(undefined);
     delete process.env.ANALYTICS_GROUPS;
     delete process.env.POSTHOG_AI_CAPTURE_CONTENT;
   });
@@ -314,6 +319,23 @@ describe('PostHogMainProvider', () => {
     expect(provider.getAllFeatureFlags()).toMatchObject({ alpha: true, beta: 3 });
   });
 
+  it('sends exposure events for declared flags', async () => {
+    getFeatureFlag.mockResolvedValue(false);
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig());
+    await (provider as unknown as { refreshFlags: () => Promise<void> }).refreshFlags();
+    expect(getFeatureFlag).toHaveBeenCalledWith('analytics_group_convert', expect.any(String), {
+      sendFeatureFlagEvents: true,
+    });
+    expect(getFeatureFlag).toHaveBeenCalledWith('analytics_group_queue', expect.any(String), {
+      sendFeatureFlagEvents: true,
+    });
+    expect(getFeatureFlag).toHaveBeenCalledWith('mcp_server_default_on', expect.any(String), {
+      sendFeatureFlagEvents: true,
+    });
+    expect(provider.isFeatureFlagEnabled('mcp_server_default_on')).toBe(false);
+  });
+
   it('uses the cached flags when the remote lookup fails', async () => {
     fs.writeFileSync(path.join(knobs.userDataDir, 'analytics-flags.json'), JSON.stringify({ alpha: false }));
     getAllFlags.mockRejectedValue(new Error('flags boom'));
@@ -327,6 +349,7 @@ describe('PostHogMainProvider', () => {
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig());
     expect(getAllFlags).not.toHaveBeenCalled();
+    expect(getFeatureFlag).not.toHaveBeenCalled();
     expect(provider.isFeatureFlagEnabled('analytics_group_convert')).toBe(true);
   });
 
@@ -382,9 +405,56 @@ describe('PostHogMainProvider', () => {
     expect(properties.$ai_output_choices).toEqual([{ role: 'assistant', content: 'world' }]);
   });
 
-  it('ignores AI generations while inactive', () => {
+  it('includes span hierarchy metadata on AI generations', async () => {
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig());
+    provider.captureAiGeneration({
+      traceId: 't1',
+      spanId: 'g1',
+      parentSpanId: 's1',
+      provider: 'openai',
+      model: 'gpt',
+      input: [],
+      latency: 1.2,
+    });
+    const properties = capture.mock.calls[0][0].properties as Record<string, unknown>;
+    expect(properties.$ai_trace_id).toBe('t1');
+    expect(properties.$ai_span_id).toBe('g1');
+    expect(properties.$ai_span_name).toBe('llm_generation');
+    expect(properties.$ai_parent_id).toBe('s1');
+  });
+
+  it('captures metadata-only AI spans', async () => {
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig());
+    provider.captureAiSpan({
+      traceId: 't1',
+      spanId: 's1',
+      parentSpanId: 'root',
+      name: 'copilot.route',
+      latency: 0.25,
+      isError: true,
+    });
+    expect(capture).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: '$ai_span',
+        properties: expect.objectContaining({
+          $ai_trace_id: 't1',
+          $ai_session_id: expect.any(String),
+          $ai_span_id: 's1',
+          $ai_span_name: 'copilot.route',
+          $ai_parent_id: 'root',
+          $ai_latency: 0.25,
+          $ai_is_error: true,
+        }),
+      }),
+    );
+  });
+
+  it('ignores AI generations and spans while inactive', () => {
     const provider = new PostHogMainProvider();
     provider.captureAiGeneration({ traceId: 't', provider: 'p', model: 'm', input: [], latency: 1 });
+    provider.captureAiSpan({ traceId: 't', spanId: 's', name: 'copilot.route', latency: 1 });
     expect(capture).not.toHaveBeenCalled();
   });
 
@@ -433,13 +503,14 @@ describe('PostHogMainProvider', () => {
     expect(provider.isEnabled()).toBe(true);
   });
 
-  it('survives an AI generation that cannot be captured', async () => {
+  it('survives AI events that cannot be captured', async () => {
     capture.mockImplementation(() => {
       throw new Error('capture boom');
     });
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig());
     provider.captureAiGeneration({ traceId: 't', provider: 'p', model: 'm', input: [], latency: 1 });
+    provider.captureAiSpan({ traceId: 't', spanId: 's', name: 'copilot.route', latency: 1 });
     expect(provider.isEnabled()).toBe(true);
   });
 
