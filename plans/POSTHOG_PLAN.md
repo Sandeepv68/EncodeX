@@ -200,9 +200,10 @@ stand; the error-tracking exclusion was explicitly reversed by ADR-0002.
    alerts and the high-severity log alert are enabled with email subscriber `844296`;
    the owner chose to leave the log alert without a notification destination for now.
    Saved log views remain uncreated.
-3. **Starter-insight hygiene is fixed locally in PostHog.** Eight `$pageview`-based
-   starter insights are relabeled `[Starter]` and tagged `non-production-sample`;
-   their queries are unchanged because they use sample web analytics events.
+3. **Starter-insight hygiene is fixed locally in PostHog.** Eight starter insights
+   are relabeled `[Starter]` and tagged `non-production-sample`; their queries now
+   use real `app_launched`/`tool_opened` events, while synthetic `$pageview`/`$screen`
+   route events populate the generic Product Analytics overview cards.
 4. **The survey is live; the experiment remains a draft.** Survey
    `01a20809-2a1a-0000-3d9b-4076a5323850` started `2026-11-23T12:01:54.605873Z` with
    first-conversion Desktop targeting; experiment `629482` has saved metrics but no
@@ -277,9 +278,11 @@ HogQL wrappers, then export dashboards to `analytics/posthog/analytics-dashboard
       enabled daily at 09:00 UTC with email subscriber `844296` (alert IDs
       `01a20846-cc85-7689-a9b9-e65b72ebf341`, `01a20846-d247-7da1-94ac-d376cd0399d8`,
       `01a20846-cdcf-7755-98f4-b30de2b64900`).
-- [x] Relabel the 8 starter insights that rely on `$pageview` (EncodeX emits no
-      pageviews) with `[Starter]` and `non-production-sample`; keep the 5 wizard
-      insights as a separate "wizard" area.
+- [x] Relabel and repoint the 8 starter insights that relied on `$pageview` to real
+      `app_launched`/`tool_opened` events, keeping `[Starter]` and
+      `non-production-sample`; keep the 5 wizard insights separate.
+- [x] Emit synthetic `$pageview`/`$screen` route events from the desktop app so the
+      generic Product Analytics overview cards have sessionized traffic.
 - [x] Export each dashboard to JSON from saved definitions locally; never in CI.
 - **Exit gate:** six dashboards exist in PostHog, six JSON files committed, README
   lists question + query notes, every saved insight filters `channel = prod`.
@@ -456,7 +459,7 @@ Newest first.
 | 2026-11-23 | CP7 | Added additive PostHog exception capture | - | Sentry remains primary; main/renderer/site exceptions now reach PostHog under the single consent switch with sanitized context, bounded pre-init buffering, Node SDK dedupe, and no-throw adapters; ADR-0002 supersedes the Sentry-only ADR; live `$exception` verification remains |
 | 2026-11-23 | CP7 | Enabled scoped site heatmaps and saved heatmaps | - | Project `709196` already had `heatmaps_opt_in: true`; the VitePress snippet now enables `capture_heatmaps` and `capture_pageleave` with autocapture limited to `/`, `/download`, and `/video-converter`; saved heatmaps `6otWQYCW`, `gwYwhE7F`, and `bU3wMrlM` completed at 375/768/1440 px; desktop replay/heatmaps/autocapture remain off; live capture still needs deploy env vars and the UI-only Heatmap capture URL selection; lint, full typecheck, format, doc:drift, analytics:schema-check, docs:build, and diff check pass |
 | 2026-11-23 | CP2/CP5/CP6 | Launched survey, enabled alerts, and synced rollout docs | - | Created event-volume insight `14531023` and enabled daily alerts `01a20846-cc85-7689-a9b9-e65b72ebf341` (conversion failures >10%), `01a20846-cdcf-7755-98f4-b30de2b64900` (AI errors >10%), `01a20846-d247-7da1-94ac-d376cd0399d8` (volume <50% of trailing 7 days); enabled log alert `01a20809-59ae-7c9c-8ee0-e46109d4d6ca` (intentionally silent by owner choice); launched survey `01a20809-2a1a-0000-3d9b-4076a5323850` at `2026-11-23T12:01:54.605873Z` and enabled targeting flag `1120431`; full typecheck, format, lint, doc:drift, analytics:schema-check, docs:build, and diff check pass |
-| 2026-11-23 | CP2/CP4/CP7 | Added experiment metrics, starter relabeling, and site web analytics | - | Experiment `629482` now has 1 primary + 3 secondary metrics on dedicated flag `mcp_server_default_on_experiment` (flag id `1120584`); 8 starter insights relabeled and tagged; VitePress site uses env-gated cookieless `$pageview` snippet; full typecheck, format, lint, doc:drift, analytics:schema-check, docs:build, and diff check pass |
+| 2026-11-23 | CP2/CP4/CP7 | Added experiment metrics, starter relabeling, and site web analytics | - | Experiment `629482` now has 1 primary + 3 secondary metrics on dedicated flag `mcp_server_default_on_experiment` (flag id `1120584`); 8 starter insights relabeled, retagged, and repointed to real EncodeX events; desktop emits synthetic `$pageview`/`$screen` route events; VitePress site uses env-gated cookieless `$pageview` snippet; full typecheck, format, lint, doc:drift, analytics:schema-check, docs:build, and diff check pass |
 | 2026-11-23 | CP6 | Added metadata-only AI trace hierarchy | - | `$ai_generation` now carries `$ai_span_id`/`$ai_parent_id`; Copilot routing emits a `copilot.route` `$ai_span` with one `$ai_trace_id` per plan request; capability inventory refreshed from PostHog docs; full typecheck and full test suite (5,616 tests) pass |
 | 2026-11-23 | CP4/CP6/CP7/CP8 | Added AI observability artifacts and governance docs | - | AI dashboard 2399517 + 5 insights + `ai-observability.json`; draft survey `01a20809-2a1a-0000-3d9b-4076a5323850`; governance notebook `Vl1aPIvR`; disabled logs alert `01a20809-59ae-7c9c-8ee0-e46109d4d6ca`; quarterly reminder `01a20809-5afd-7f33-a101-c9689a27acfb`; ADR + experiment pre-registration + retention/quota/opt-in docs; analytics-schema CI guard added; format, lint, full typecheck, 58 focused tests, doc:drift, schema-check, and diff check pass |
 | 2026-11-23 | CP5 | Survey gate, CSP host plumbing, and local bootstrap | - | `POSTHOG_SURVEYS_ENABLED` defaults off; `initPosthogSurveys(consent)` wired; `POSTHOG_HOST` origin added to `connect-src` with invalid-host rejection; 22 focused tests pass |

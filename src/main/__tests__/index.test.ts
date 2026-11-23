@@ -171,7 +171,10 @@ vi.mock('posthog-node', () => ({
     };
   }),
 }));
-vi.mock('@opentelemetry/api-logs', () => ({ logs: { getLogger: () => ({ emit: vi.fn() }) } }));
+vi.mock('@opentelemetry/api', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@opentelemetry/api')>();
+  return { ...actual, logs: { getLogger: () => ({ emit: vi.fn() }) } };
+});
 vi.mock('@opentelemetry/exporter-logs-otlp-http', () => ({ OTLPLogExporter: vi.fn() }));
 vi.mock('@opentelemetry/resources', () => ({ resourceFromAttributes: vi.fn(() => ({})) }));
 vi.mock('@opentelemetry/sdk-node', () => ({

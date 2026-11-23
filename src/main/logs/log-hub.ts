@@ -22,7 +22,7 @@
 
 import { LOG_MAX_ENTRIES } from '../../shared/constants';
 import type { LogEntry } from '../../shared/types';
-import type { LogSubscriber } from './log-hub.types';
+import type { LogObserver, LogSubscriber } from './log-hub.types';
 
 /**
  * The shared log history and its broadcast fan-out.
@@ -43,6 +43,10 @@ export class LogHub {
 
   /** The identity handed to the next subscription. @type {number} */
   private nextSubscriberId = 1;
+
+  private observers = new Map<number, LogObserver>();
+
+  private nextObserverId = 1;
 
   /**
    * Publishes one entry: stamps it with the next sequence number, appends it
@@ -68,6 +72,11 @@ export class LogHub {
       if (originId !== undefined && subscriber.webContentsId === originId) continue;
       if (subscriber.isDestroyed()) continue;
       subscriber.send(published);
+    }
+    for (const observer of this.observers.values()) {
+      try {
+        observer(published);
+      } catch {}
     }
     return published;
   }
@@ -122,6 +131,21 @@ export class LogHub {
    */
   unsubscribe(id: number): void {
     this.subscribers.delete(id);
+  }
+
+  addObserver(observer: LogObserver): number {
+    const id = this.nextObserverId;
+    this.nextObserverId += 1;
+    this.observers.set(id, observer);
+    return id;
+  }
+
+  removeObserver(id: number): void {
+    this.observers.delete(id);
+  }
+
+  observerCount(): number {
+    return this.observers.size;
   }
 
   /**

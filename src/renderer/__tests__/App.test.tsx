@@ -14,7 +14,14 @@ import { DRAWER_CONDENSED_STORAGE_KEY, DEFAULT_DRAWER_CONDENSED } from '../../sh
 import { stubScrollIntoView } from '../../test-utils/page-render';
 import type { LogEntry } from '../../shared/types';
 import type { AuditEntry } from '../../shared/audit';
+import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 
+vi.mock('../../shared/analytics/AnalyticsService', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../shared/analytics/AnalyticsService')>();
+  return { ...actual, recordAnalyticsEvent: vi.fn() };
+});
+
+const recordAnalyticsEventMock = vi.mocked(recordAnalyticsEvent);
 const onLogMessageMock = vi.mocked(window.electronAPI.onLogMessage);
 const onAuditEntryMock = vi.mocked(window.electronAPI.onAuditEntry);
 
@@ -59,6 +66,16 @@ describe('App', () => {
     expect(screen.queryByText('app.name')).not.toBeInTheDocument();
     expect(await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 })).toBeInTheDocument();
   });
+
+  it('records page views for the initial route and navigation', async () => {
+    renderApp();
+    await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
+    expect(recordAnalyticsEventMock).toHaveBeenCalledWith(expect.objectContaining({ name: 'page_viewed', props: { path: '/' } }));
+
+    fireEvent.click(screen.getByTestId('nav-item-convert'));
+    expect(await screen.findByText('convert.title', {}, { timeout: 20000 })).toBeInTheDocument();
+    expect(recordAnalyticsEventMock).toHaveBeenCalledWith(expect.objectContaining({ name: 'page_viewed', props: { path: '/convert' } }));
+  }, 30000);
 
   it('renders the footer with the app name and version', async () => {
     renderApp();

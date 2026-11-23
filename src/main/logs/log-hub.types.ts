@@ -28,3 +28,5 @@ export interface LogSubscriber {
   isDestroyed: () => boolean;
   send: (entry: LogEntry) => void;
 }
+
+export type LogObserver = (entry: LogEntry) => void;

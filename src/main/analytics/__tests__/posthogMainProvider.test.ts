@@ -60,7 +60,10 @@ vi.mock('electron', () => ({
 }));
 
 vi.mock('posthog-node', () => ({ PostHog: posthogCtor }));
-vi.mock('@opentelemetry/api-logs', () => ({ logs: { getLogger: () => ({ emit: logEmit }) } }));
+vi.mock('@opentelemetry/api', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@opentelemetry/api')>();
+  return { ...actual, logs: { getLogger: () => ({ emit: logEmit }) } };
+});
 vi.mock('@opentelemetry/exporter-logs-otlp-http', () => ({ OTLPLogExporter: vi.fn() }));
 vi.mock('@opentelemetry/resources', () => ({ resourceFromAttributes: vi.fn(() => ({})) }));
 vi.mock('@opentelemetry/sdk-node', () => ({
@@ -74,6 +77,7 @@ vi.mock('@opentelemetry/sdk-logs', () => ({ BatchLogRecordProcessor: vi.fn() }))
 const { PostHogMainProvider } = await import('../posthogMainProvider');
 import { createAnalyticsEvent } from '../../../shared/analytics/events';
 import type { AnalyticsConfig } from '../../../shared/analytics/types';
+import { logHub } from '../../logs/log-hub';
 
 const baseConfig = (overrides: Partial<AnalyticsConfig> = {}): AnalyticsConfig => ({
   enabled: true,
@@ -108,6 +112,7 @@ describe('PostHogMainProvider', () => {
   });
 
   afterEach(() => {
+    vi.restoreAllMocks();
     if (ORIGINAL_GROUPS === undefined) delete process.env.ANALYTICS_GROUPS;
     else process.env.ANALYTICS_GROUPS = ORIGINAL_GROUPS;
     if (ORIGINAL_CAPTURE === undefined) delete process.env.POSTHOG_AI_CAPTURE_CONTENT;
@@ -196,6 +201,27 @@ describe('PostHogMainProvider', () => {
     if (process.versions.electron) {
       expect(properties.electron_version).toEqual(expect.any(String));
     }
+  });
+
+  it('maps page_viewed to PostHog page and screen events', async () => {
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig());
+    provider.track(createAnalyticsEvent('page_viewed', { path: '/convert' }));
+    expect(capture).toHaveBeenCalledTimes(2);
+    const expectedProperties = expect.objectContaining({
+      path: '/convert',
+      $current_url: 'electron://encodex/convert',
+      $pathname: '/convert',
+      $host: 'encodex.app',
+      $screen_name: '/convert',
+      $browser: 'Electron',
+      $device_type: 'Desktop',
+      $os: process.platform,
+      $session_id: expect.any(String),
+    });
+    expect(capture).toHaveBeenCalledWith(expect.objectContaining({ event: '$pageview', properties: expectedProperties }));
+    expect(capture).toHaveBeenCalledWith(expect.objectContaining({ event: '$screen', properties: expectedProperties }));
+    expect(capture.mock.calls.some((call) => call[0].event === 'page_viewed')).toBe(false);
   });
 
   it('identifies the person once with allowlisted properties', async () => {
@@ -552,5 +578,82 @@ describe('PostHogMainProvider', () => {
     await provider.init(baseConfig());
     await expect(provider.flush()).resolves.toBe(false);
     await expect(provider.close()).resolves.toBe(false);
+  });
+
+  it('forwards real log hub entries through OpenTelemetry', async () => {
+    const addObserver = vi.spyOn(logHub, 'addObserver').mockReturnValue(42);
+    const removeObserver = vi.spyOn(logHub, 'removeObserver');
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig({ appVersion: '1.2.3', environment: 'test' }));
+    expect(addObserver).toHaveBeenCalledTimes(1);
+
+    logEmit.mockClear();
+    const observer = addObserver.mock.calls[0][0];
+    observer({
+      timestamp: '2026-01-01T00:00:00.000Z',
+      level: 'ERROR',
+      text: 'first line\nsecond line',
+      source: 'renderer',
+      seq: 7,
+    });
+
+    expect(logEmit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severityText: 'error',
+        body: 'first line second line',
+        attributes: expect.objectContaining({
+          'app.version': '1.2.3',
+          'app.environment': 'test',
+          posthogDistinctId: expect.any(String),
+          sessionId: expect.any(String),
+          'log.source': 'renderer',
+          'log.seq': 7,
+          'log.timestamp': '2026-01-01T00:00:00.000Z',
+        }),
+      }),
+    );
+
+    await provider.close();
+    expect(removeObserver).toHaveBeenCalledWith(42);
+  });
+
+  it('does not capture app logs when log capture is disabled', async () => {
+    const addObserver = vi.spyOn(logHub, 'addObserver');
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig({ posthogLogsEnabled: false }));
+    expect(addObserver).not.toHaveBeenCalled();
+    expect(logEmit).not.toHaveBeenCalled();
+    await provider.close();
+  });
+
+  it('detaches the log observer when consent is turned off and reattaches it when restored', async () => {
+    const addObserver = vi.spyOn(logHub, 'addObserver').mockReturnValueOnce(1).mockReturnValueOnce(2);
+    const removeObserver = vi.spyOn(logHub, 'removeObserver');
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig());
+    expect(addObserver).toHaveBeenCalledTimes(1);
+
+    provider.setEnabled(false);
+    expect(removeObserver).toHaveBeenCalledWith(1);
+
+    provider.setEnabled(true);
+    expect(addObserver).toHaveBeenCalledTimes(2);
+    await provider.close();
+  });
+
+  it('truncates oversized app log bodies', async () => {
+    const addObserver = vi.spyOn(logHub, 'addObserver').mockReturnValue(7);
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig());
+    logEmit.mockClear();
+    const observer = addObserver.mock.calls[0][0];
+    observer({
+      timestamp: '2026-01-01T00:00:00.000Z',
+      level: 'INFO',
+      text: 'x'.repeat(5000),
+      source: 'main',
+    });
+    expect(logEmit.mock.calls[0][0].body).toHaveLength(4000);
+    await provider.close();
   });
 });

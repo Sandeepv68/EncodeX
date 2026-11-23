@@ -63,6 +63,27 @@ describe('LogHub', () => {
     expect(b.send).toHaveBeenCalledTimes(1);
   });
 
+  it('notifies observers without counting them as subscribers', () => {
+    const observer = vi.fn();
+    const id = hub.addObserver(observer);
+    hub.publish(entry('hello'));
+    expect(observer).toHaveBeenCalledWith(expect.objectContaining({ text: 'hello', seq: 1 }));
+    expect(hub.observerCount()).toBe(1);
+    expect(hub.subscriberCount()).toBe(0);
+    hub.removeObserver(id);
+    expect(hub.observerCount()).toBe(0);
+  });
+
+  it('keeps publishing when an observer throws', () => {
+    const sub = subscriber(1);
+    hub.subscribe(sub);
+    hub.addObserver(() => {
+      throw new Error('observer boom');
+    });
+    expect(() => hub.publish(entry('hello'))).not.toThrow();
+    expect(sub.send).toHaveBeenCalledTimes(1);
+  });
+
   it('excludes the publishing window from the broadcast', () => {
     const origin = subscriber(1);
     const other = subscriber(2);

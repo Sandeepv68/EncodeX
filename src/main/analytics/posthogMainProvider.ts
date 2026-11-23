@@ -11,7 +11,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { app } from 'electron';
-import { logs, type Logger as OpenTelemetryLogger } from '@opentelemetry/api-logs';
+import { logs, type Logger as OpenTelemetryLogger } from '@opentelemetry/api';
 import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import { NodeSDK } from '@opentelemetry/sdk-node';
@@ -28,6 +28,8 @@ import { ANALYTICS_EVENT_GROUP, type AnalyticsEvent } from '../../shared/analyti
 import { sanitizeAnalyticsProps, sanitizeExceptionContext } from '../../shared/analytics/sanitize';
 import { filterPersonProperties } from '../../shared/analytics/personProperties';
 import type { AiGeneration, AiSpan, AnalyticsConfig, AnalyticsExceptionContext, AnalyticsProvider } from '../../shared/analytics/types';
+import type { LogEntry } from '../../shared/types';
+import { logHub } from '../logs/log-hub';
 import { resolveGroupGate } from './groupGate';
 import { coerceProfileKind, coerceHardwareClass } from './groups';
 import { FEATURE_FLAG_DEFAULTS } from './flags';
@@ -36,6 +38,18 @@ const log = new Logger('main/analytics/posthogMainProvider');
 
 /** Events that do not need a person profile update (CP1.5). */
 const NO_PERSON_PROFILE_EVENTS = new Set<string>(['ui_error_shown']);
+
+const APP_LOG_BODY_MAX_LENGTH = 4000;
+
+function sanitizeAppLogBody(value: string): string {
+  return (
+    value
+      .replace(/[\r\n\u2028\u2029]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, APP_LOG_BODY_MAX_LENGTH) || '(empty log message)'
+  );
+}
 
 /** PostHog-backed analytics provider for the long-lived Electron main process. */
 export class PostHogMainProvider implements AnalyticsProvider {
@@ -55,6 +69,10 @@ export class PostHogMainProvider implements AnalyticsProvider {
   private seenGroups = new Set<string>();
   private flags: Record<string, boolean | string | number> = { ...FEATURE_FLAG_DEFAULTS };
   private flagsLoaded = false;
+  private logsEnabled = true;
+  private logObserverId: number | null = null;
+  private exportingAppLog = false;
+  private appLogAttributes: Record<string, string | number | boolean> = {};
 
   /**
    * AI prompt/completion content is only sent when the operator explicitly
@@ -93,6 +111,14 @@ export class PostHogMainProvider implements AnalyticsProvider {
         enableExceptionAutocapture: true,
       });
       this.active = true;
+      this.logsEnabled = config.posthogLogsEnabled !== false;
+      this.appLogAttributes = {
+        'app.version': config.appVersion ?? 'unknown',
+        'app.channel': config.channel ?? 'unknown',
+        'app.environment': config.environment ?? (config.channel === 'dev' ? 'development' : 'production'),
+        posthogDistinctId: this.distinctId,
+        sessionId: this.sessionId,
+      };
       log.info('PostHog analytics active.', { host: phHost });
 
       // Load cached flags immediately so offline starts have values.
@@ -126,14 +152,17 @@ export class PostHogMainProvider implements AnalyticsProvider {
       try {
         const logUrl = new URL('/i/v1/logs', phHost).toString();
         this.logSdk = new NodeSDK({
-          resource: resourceFromAttributes({ 'service.name': 'encodex-electron-main' }),
+          resource: resourceFromAttributes({
+            'service.name': 'encodex-electron-main',
+            'service.version': config.appVersion ?? 'unknown',
+            'deployment.environment': config.environment ?? (config.channel === 'dev' ? 'development' : 'production'),
+          }),
           logRecordProcessors: [
             new BatchLogRecordProcessor({
               exporter: new OTLPLogExporter({
                 url: logUrl,
                 headers: {
                   Authorization: `Bearer ${projectToken}`,
-                  'Content-Type': 'application/json',
                 },
               }),
             }),
@@ -141,14 +170,14 @@ export class PostHogMainProvider implements AnalyticsProvider {
         });
         this.logSdk.start();
         this.posthogLog = logs.getLogger('encodex.posthog.log-capture');
-        try {
-          this.posthogLog.emit({
-            severityText: 'info',
-            body: 'posthog_log_capture_started',
-            attributes: { 'service.component': 'analytics' },
-          });
-        } catch (e) {}
+        this.emitPosthogLog({
+          severityText: 'info',
+          body: 'posthog_log_capture_started',
+          attributes: { 'service.component': 'analytics' },
+        });
+        this.startAppLogCapture();
       } catch (err) {
+        this.stopAppLogCapture();
         this.logSdk = null;
         this.posthogLog = null;
         log.warn('PostHog log capture initialization failed:', err);
@@ -161,6 +190,45 @@ export class PostHogMainProvider implements AnalyticsProvider {
 
   isEnabled(): boolean {
     return this.active;
+  }
+
+  private emitPosthogLog(record: Parameters<OpenTelemetryLogger['emit']>[0]): void {
+    if (!this.logsEnabled || !this.posthogLog) return;
+    try {
+      this.posthogLog.emit(record);
+    } catch {}
+  }
+
+  private startAppLogCapture(): void {
+    if (!this.active || !this.logsEnabled || !this.posthogLog || this.logObserverId !== null) return;
+    this.logObserverId = logHub.addObserver((entry) => this.exportAppLog(entry));
+  }
+
+  private stopAppLogCapture(): void {
+    if (this.logObserverId === null) return;
+    logHub.removeObserver(this.logObserverId);
+    this.logObserverId = null;
+  }
+
+  private exportAppLog(entry: LogEntry): void {
+    if (!this.active || !this.logsEnabled || !this.posthogLog || this.exportingAppLog) return;
+    this.exportingAppLog = true;
+    try {
+      this.posthogLog.emit({
+        severityText: entry.level.toLowerCase(),
+        body: sanitizeAppLogBody(entry.text),
+        attributes: {
+          ...this.appLogAttributes,
+          'log.source': entry.source,
+          'log.seq': entry.seq ?? -1,
+          'log.timestamp': entry.timestamp,
+        },
+      });
+    } catch (err) {
+      log.debug('PostHog app log export failed:', err);
+    } finally {
+      this.exportingAppLog = false;
+    }
   }
 
   track(event: AnalyticsEvent): void {
@@ -183,37 +251,41 @@ export class PostHogMainProvider implements AnalyticsProvider {
     this.lastActivity = Date.now();
     try {
       const sanitized = sanitizeAnalyticsProps(event.props) ?? {};
-      const properties: Record<string, unknown> = {
-        ...this.superProperties,
-        ...sanitized,
-      };
-      if (NO_PERSON_PROFILE_EVENTS.has(event.name)) {
-        properties.$process_person_profile = false;
-      }
+      if (event.name === 'page_viewed') {
+        this.capturePageView(sanitized);
+      } else {
+        const properties: Record<string, unknown> = {
+          ...this.superProperties,
+          ...sanitized,
+        };
+        if (NO_PERSON_PROFILE_EVENTS.has(event.name)) {
+          properties.$process_person_profile = false;
+        }
 
-      // Group analytics (CP3): attach bounded group keys and identify groups
-      // the first time they are seen.
-      const groups: Record<string, string> = {};
-      const profileCategory = typeof sanitized.category === 'string' ? sanitized.category : undefined;
-      if (event.name === 'profile_applied' || event.name === 'batch_profile_applied') {
-        const kind = coerceProfileKind(profileCategory);
-        groups.profile_kind = kind;
-        this.identifyGroupOnce('profile_kind', kind, { category: kind });
-      }
-      if (event.name === 'hw_accel_detected' || typeof sanitized.hwAccel === 'boolean') {
-        const hwAccel = typeof sanitized.hwAccel === 'boolean' ? sanitized.hwAccel : this.superProperties.hw_accel_available === true;
-        const hwClass = coerceHardwareClass(hwAccel);
-        groups.hardware_class = hwClass;
-        this.identifyGroupOnce('hardware_class', hwClass, { hw_accel: hwClass });
-      }
+        // Group analytics (CP3): attach bounded group keys and identify groups
+        // the first time they are seen.
+        const groups: Record<string, string> = {};
+        const profileCategory = typeof sanitized.category === 'string' ? sanitized.category : undefined;
+        if (event.name === 'profile_applied' || event.name === 'batch_profile_applied') {
+          const kind = coerceProfileKind(profileCategory);
+          groups.profile_kind = kind;
+          this.identifyGroupOnce('profile_kind', kind, { category: kind });
+        }
+        if (event.name === 'hw_accel_detected' || typeof sanitized.hwAccel === 'boolean') {
+          const hwAccel = typeof sanitized.hwAccel === 'boolean' ? sanitized.hwAccel : this.superProperties.hw_accel_available === true;
+          const hwClass = coerceHardwareClass(hwAccel);
+          groups.hardware_class = hwClass;
+          this.identifyGroupOnce('hardware_class', hwClass, { hw_accel: hwClass });
+        }
 
-      this.client.capture({
-        distinctId: this.distinctId,
-        event: event.name,
-        properties,
-        ...(Object.keys(groups).length > 0 ? { groups } : {}),
-      });
-      this.posthogLog?.emit({
+        this.client.capture({
+          distinctId: this.distinctId,
+          event: event.name,
+          properties,
+          ...(Object.keys(groups).length > 0 ? { groups } : {}),
+        });
+      }
+      this.emitPosthogLog({
         severityText: 'info',
         body: 'posthog_product_event_forwarded',
         attributes: { 'analytics.event_name': event.name },
@@ -221,6 +293,24 @@ export class PostHogMainProvider implements AnalyticsProvider {
     } catch (err) {
       log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
     }
+  }
+
+  private capturePageView(properties: Record<string, string | number | boolean>): void {
+    if (!this.client) return;
+    const path = typeof properties.path === 'string' && properties.path.startsWith('/') ? properties.path : '/';
+    const viewProperties: Record<string, unknown> = {
+      ...this.superProperties,
+      ...properties,
+      $current_url: `electron://encodex${path}`,
+      $pathname: path,
+      $host: 'encodex.app',
+      $screen_name: path,
+      $browser: 'Electron',
+      $device_type: 'Desktop',
+      $os: process.platform,
+    };
+    this.client.capture({ distinctId: this.distinctId, event: '$pageview', properties: viewProperties });
+    this.client.capture({ distinctId: this.distinctId, event: '$screen', properties: viewProperties });
   }
 
   /**
@@ -404,7 +494,7 @@ export class PostHogMainProvider implements AnalyticsProvider {
             : {}),
         },
       });
-      this.posthogLog?.emit({
+      this.emitPosthogLog({
         severityText: generation.isError ? 'error' : 'info',
         body: 'posthog_ai_generation_forwarded',
         attributes: { 'ai.provider': generation.provider, 'ai.is_error': generation.isError === true },
@@ -430,7 +520,7 @@ export class PostHogMainProvider implements AnalyticsProvider {
           ...(span.isError ? { $ai_is_error: true } : {}),
         },
       });
-      this.posthogLog?.emit({
+      this.emitPosthogLog({
         severityText: span.isError ? 'error' : 'info',
         body: 'posthog_ai_span_forwarded',
         attributes: { 'ai.span_name': span.name, 'ai.is_error': span.isError === true },
@@ -462,7 +552,11 @@ export class PostHogMainProvider implements AnalyticsProvider {
   }
 
   setEnabled(enabled: boolean): void {
-    this.active = enabled && this.client !== null;
+    const next = enabled && this.client !== null;
+    if (next === this.active) return;
+    this.active = next;
+    if (next) this.startAppLogCapture();
+    else this.stopAppLogCapture();
   }
 
   async flush(): Promise<boolean> {
@@ -477,13 +571,15 @@ export class PostHogMainProvider implements AnalyticsProvider {
 
   async close(): Promise<boolean> {
     try {
+      this.stopAppLogCapture();
       await this.client?.shutdown();
-      this.posthogLog?.emit({ severityText: 'info', body: 'posthog_log_capture_stopping' });
+      this.emitPosthogLog({ severityText: 'info', body: 'posthog_log_capture_stopping' });
       await this.logSdk?.shutdown();
       this.client = null;
       this.logSdk = null;
       this.posthogLog = null;
       this.active = false;
+      this.logsEnabled = false;
       return true;
     } catch (err) {
       log.warn(LOG_ANALYTICS_CLOSE_FAILED, err);

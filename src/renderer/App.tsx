@@ -62,6 +62,8 @@ import { useHotkeys } from './hooks/useHotkeys';
 import { useDevScreenshot } from './dev/useDevScreenshot';
 import { SHORTCUTS } from './constants/shortcuts';
 import { THEMES } from '../shared/theme/colors';
+import { recordAnalyticsEvent } from '../shared/analytics/AnalyticsService';
+import { createAnalyticsEvent } from '../shared/analytics/events';
 import { useErrorStore } from './stores/errorStore';
 import { isDetachedMode, subscribeSharedLogFeed } from './logs/detached';
 import { useAuditStore } from './stores/auditStore';
@@ -267,6 +269,10 @@ function AppLayout() {
     const mainContent = mainContentRef.current!;
     mainContent.scrollTop = 0;
     mainContent.scrollLeft = 0;
+  }, [location.pathname]);
+
+  useEffect(() => {
+    recordAnalyticsEvent(createAnalyticsEvent('page_viewed', { path: location.pathname || '/' }));
   }, [location.pathname]);
 
   useEffect(() => {

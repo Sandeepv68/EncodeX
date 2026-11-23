@@ -20,8 +20,9 @@ the project has a small beta population.
 - No `$feature_flag_called` traffic before this change because startup used
   `getAllFlags()`, which does not emit exposure events. `refreshFlags()` now
   reads declared flags through `getFeatureFlag(..., { sendFeatureFlagEvents: true })`.
-- No `$pageview` or `$exception` traffic; expected for an Electron desktop app
-  without web analytics or `$exception` capture wired in.
+- No `$pageview`, `$screen`, or `$exception` traffic at snapshot time. Since then,
+  exception capture and synthetic desktop `$pageview`/`$screen` route events have
+  been wired; live arrival remains pending.
 - No `$ai_span`, `$ai_trace`, or `$ai_feedback` traffic at snapshot time; only
   `$ai_generation` plus SDK summaries had arrived. The code now emits metadata-only
   `$ai_span` events and span IDs on `$ai_generation`; runtime arrival is pending.

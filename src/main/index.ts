@@ -186,6 +186,15 @@ async function bootstrapMonitoring(): Promise<void> {
   }
 }
 
+function resolvePostHogLogsEnabled(): boolean {
+  const value = process.env.POSTHOG_LOGS_ENABLED;
+  if (value === undefined) return POSTHOG_BUILD_CONFIG.logsEnabled;
+  const normalized = value.trim().toLowerCase();
+  if (normalized === 'true' || normalized === '1') return true;
+  if (normalized === 'false' || normalized === '0') return false;
+  return POSTHOG_BUILD_CONFIG.logsEnabled;
+}
+
 /**
  * Initializes the analytics subsystem as early as possible in the main
  * process (both GUI and CLI modes share this path).
@@ -213,6 +222,7 @@ async function bootstrapAnalytics(): Promise<void> {
       appKey: process.env.APTABASE_APP_KEY ?? APTABASE_BUILD_CONFIG.appKey,
       host: process.env.APTABASE_HOST ?? APTABASE_BUILD_CONFIG.host,
       posthogHost: process.env.POSTHOG_HOST ?? POSTHOG_BUILD_CONFIG.host,
+      posthogLogsEnabled: resolvePostHogLogsEnabled(),
       projectToken: process.env.POSTHOG_PROJECT_TOKEN ?? POSTHOG_BUILD_CONFIG.projectToken,
       installId: resolveAnalyticsInstallId(app.getPath('userData')),
       environment:

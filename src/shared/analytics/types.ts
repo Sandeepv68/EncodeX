@@ -98,6 +98,7 @@ export interface AnalyticsConfig {
   host?: string;
   /** PostHog ingest endpoint (for example `https://us.i.posthog.com`). */
   posthogHost?: string;
+  posthogLogsEnabled?: boolean;
 
   /** Master switch reflecting user consent. Providers must respect it. */
   enabled: boolean;
@@ -249,6 +250,7 @@ export type AnalyticsEventName =
   | 'onboarding_dismissed'
   | 'dashboard_card_clicked'
   | 'dashboard_shortcut_used'
+  | 'page_viewed'
   | 'tool_opened'
   | 'locale_changed'
   | 'convert_input_selected'
@@ -394,6 +396,7 @@ export interface AnalyticsEventPayloadMap {
   onboarding_dismissed: { version: string };
   dashboard_card_clicked: { route: string };
   dashboard_shortcut_used: { shortcutId: string };
+  page_viewed: { path: string };
 
   tool_opened: { route: string };
   locale_changed: { language: string; rtl: boolean };
