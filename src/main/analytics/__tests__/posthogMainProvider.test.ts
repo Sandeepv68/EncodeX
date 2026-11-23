@@ -26,6 +26,7 @@ const knobs = vi.hoisted(() => ({
 }));
 
 const capture = vi.hoisted(() => vi.fn());
+const captureException = vi.hoisted(() => vi.fn());
 const flush = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
 const shutdown = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
 const identify = vi.hoisted(() => vi.fn());
@@ -35,7 +36,7 @@ const getFeatureFlag = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
 const posthogCtor = vi.hoisted(() =>
   vi.fn(function () {
     if (knobs.ctorThrows) throw new Error('ctor boom');
-    const client: Record<string, unknown> = { capture, flush, shutdown };
+    const client: Record<string, unknown> = { capture, captureException, flush, shutdown };
     if (!knobs.omitIdentify) client.identify = identify;
     if (!knobs.omitGroupIdentify) client.groupIdentify = groupIdentify;
     if (!knobs.omitGetAllFlags) {
@@ -95,6 +96,7 @@ describe('PostHogMainProvider', () => {
     knobs.getPathThrows = false;
     knobs.userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'encodex-posthog-'));
     capture.mockImplementation(() => undefined);
+    captureException.mockImplementation(() => undefined);
     flush.mockResolvedValue(undefined);
     shutdown.mockResolvedValue(undefined);
     identify.mockImplementation(() => undefined);
@@ -145,6 +147,7 @@ describe('PostHogMainProvider', () => {
     expect(posthogCtor).toHaveBeenCalledWith('phc_test', {
       host: 'https://us.i.posthog.com',
       privacyMode: true,
+      enableExceptionAutocapture: true,
     });
     expect(provider.isEnabled()).toBe(true);
   });
@@ -449,6 +452,21 @@ describe('PostHogMainProvider', () => {
         }),
       }),
     );
+  });
+
+  it('captures exceptions with sanitized context props', async () => {
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig());
+    const error = new Error('boom');
+    provider.captureException(error, {
+      tags: { handler: 'window.error', path: '/secret', email: 'user@example.com' },
+      extra: { process: 'renderer', file: 'a.mp4', nested: { secret: true }, reason: 'clean-exit' },
+    });
+    expect(captureException).toHaveBeenCalledWith(error, expect.any(String), {
+      'error_tag.handler': 'window.error',
+      'error_extra.process': 'renderer',
+      'error_extra.reason': 'clean-exit',
+    });
   });
 
   it('ignores AI generations and spans while inactive', () => {

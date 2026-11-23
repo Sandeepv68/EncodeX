@@ -488,6 +488,7 @@ const api = {
     return Promise.resolve({ enabled: !!enabled, backend: 'noop' });
   },
   analyticsTrackEvent: () => Promise.resolve(),
+  analyticsCaptureException: () => Promise.resolve(),
   analyticsGetPosthogConfig: () => Promise.resolve({ projectToken: '', host: '' }),
 
   // --- Desktop notifications ---------------------------------------------------

@@ -98,6 +98,7 @@ import type { McpSettings } from '../shared/mcp-settings';
 import type { AiConnectTestResult, AiModelsListResult, AiSettingsUpdate, AiSettingsView } from '../shared/ai/settings';
 import type { AuditEntry } from '../shared/audit';
 import type { AnalyticsEvent } from '../shared/analytics/events';
+import type { AnalyticsExceptionPayload } from '../shared/analytics/types';
 import type {
   AutomationCancelRequest,
   AutomationDefinition,
@@ -192,6 +193,7 @@ import {
   LOG_IPC_NOTIFICATIONS_SET_ENABLED,
   LOG_ON_NOTIFICATION_CLICKED,
   LOG_IPC_ANALYTICS_TRACK_EVENT,
+  LOG_IPC_ANALYTICS_CAPTURE_EXCEPTION,
   LOG_IPC_MCP_GET_SETTINGS,
   LOG_IPC_MCP_SET_SETTINGS,
   LOG_IPC_MCP_UI_CALL_TOOL,
@@ -1166,6 +1168,10 @@ const api = {
   analyticsTrackEvent: (event: AnalyticsEvent) => {
     log.debug(LOG_IPC_ANALYTICS_TRACK_EVENT, { event: event?.name });
     return ipcRenderer.invoke(IPC.ANALYTICS_TRACK_EVENT, event) as Promise<void>;
+  },
+  analyticsCaptureException: (payload: AnalyticsExceptionPayload) => {
+    log.debug(LOG_IPC_ANALYTICS_CAPTURE_EXCEPTION);
+    return ipcRenderer.invoke(IPC.ANALYTICS_CAPTURE_EXCEPTION, payload) as Promise<void>;
   },
   analyticsGetPosthogConfig: () =>
     ipcRenderer.invoke(IPC.ANALYTICS_GET_POSTHOG_CONFIG) as Promise<{ projectToken?: string; host?: string; surveysEnabled?: boolean }>,

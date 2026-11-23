@@ -82,8 +82,6 @@ import {
   LOG_MAIN_WINDOW_READY_SHOWING,
   LOG_SPLASH_WINDOW_CLOSED,
   LOG_STARTING_IN_CLI_MODE_ARGV,
-  LOG_MONITORING_UNCAUGHT_EXCEPTION,
-  LOG_MONITORING_UNHANDLED_REJECTION,
   LOG_MONITORING_RENDER_PROCESS_GONE,
   LOG_MONITORING_CHILD_PROCESS_GONE,
   LOG_MCP_EMBEDDED_STARTING,
@@ -237,22 +235,13 @@ async function bootstrapAnalytics(): Promise<void> {
 }
 
 /**
- * Registers process-level crash handlers so uncaught exceptions, unhandled
- * promise rejections, and unexpected child-process deaths are reported through
- * the monitoring facade. Installed immediately at module load; events raised
- * before a backend finishes initializing are absorbed by the facade's no-op.
+ * Reports unexpected Electron child-process deaths through the monitoring
+ * facade. Node-level uncaught exceptions and unhandled rejections are left to
+ * the active SDKs' built-in global handlers so each crash is captured once.
  *
  * @returns {void}
  */
-function registerProcessCrashHandlers(): void {
-  process.on('uncaughtException', (err) => {
-    log.error(LOG_MONITORING_UNCAUGHT_EXCEPTION, err);
-    captureException(err, { tags: { handler: 'uncaughtException', process: 'main' } });
-  });
-  process.on('unhandledRejection', (reason) => {
-    log.error(LOG_MONITORING_UNHANDLED_REJECTION, reason);
-    captureException(reason, { tags: { handler: 'unhandledRejection', process: 'main' } });
-  });
+function registerChildProcessCrashHandler(): void {
   app.on('child-process-gone', (_event, details) => {
     if (details.reason === 'clean-exit') return;
     log.warn(LOG_MONITORING_CHILD_PROCESS_GONE, details.type, details.reason);
@@ -273,7 +262,7 @@ void bootstrapMonitoring().finally(() => {
   // its custom protocol scheme synchronously inside initialize().
   void bootstrapAnalytics();
 });
-registerProcessCrashHandlers();
+registerChildProcessCrashHandler();
 
 /**
  * Determines whether the app should start in CLI mode based on process args.

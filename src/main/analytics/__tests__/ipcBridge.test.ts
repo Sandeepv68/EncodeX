@@ -19,11 +19,13 @@ vi.mock('electron', () => ({
 const setEnabledMock = vi.hoisted(() => vi.fn());
 const getBackendNameMock = vi.hoisted(() => vi.fn());
 const trackRelayedMock = vi.hoisted(() => vi.fn());
+const captureAnalyticsExceptionMock = vi.hoisted(() => vi.fn());
 
 vi.mock('../../../shared/analytics/AnalyticsService', () => ({
   setAnalyticsEnabled: setEnabledMock,
   getAnalyticsBackendName: getBackendNameMock,
   trackRelayedAnalyticsEvent: trackRelayedMock,
+  captureAnalyticsException: captureAnalyticsExceptionMock,
 }));
 
 import { IPC } from '../../../shared/ipc-channels';
@@ -52,9 +54,15 @@ describe('registerAnalyticsIpcBridge', () => {
     vi.clearAllMocks();
   });
 
-  it('registers exactly the four analytics channels', () => {
+  it('registers exactly the five analytics channels', () => {
     expect([...handlers.keys()].sort()).toEqual(
-      [IPC.ANALYTICS_GET_STATE, IPC.ANALYTICS_SET_ENABLED, IPC.ANALYTICS_TRACK_EVENT, IPC.ANALYTICS_GET_POSTHOG_CONFIG].sort(),
+      [
+        IPC.ANALYTICS_GET_STATE,
+        IPC.ANALYTICS_SET_ENABLED,
+        IPC.ANALYTICS_TRACK_EVENT,
+        IPC.ANALYTICS_CAPTURE_EXCEPTION,
+        IPC.ANALYTICS_GET_POSTHOG_CONFIG,
+      ].sort(),
     );
   });
 
@@ -62,6 +70,16 @@ describe('registerAnalyticsIpcBridge', () => {
     const event = { schema: 2, name: 'tool_opened', props: { route: '/convert' } };
     handlers.get(IPC.ANALYTICS_TRACK_EVENT)!({}, event);
     expect(trackRelayedMock).toHaveBeenCalledWith(event);
+  });
+
+  it('relays renderer exceptions to the analytics facade', () => {
+    handlers.get(IPC.ANALYTICS_CAPTURE_EXCEPTION)!(
+      {},
+      { name: 'TypeError', message: 'boom', stack: 'stack', context: { tags: { handler: 'window.error' } } },
+    );
+    expect(captureAnalyticsExceptionMock).toHaveBeenCalledWith(expect.objectContaining({ name: 'TypeError', message: 'boom' }), {
+      tags: { handler: 'window.error' },
+    });
   });
 
   it('reports bootstrap consent and the active backend name', () => {

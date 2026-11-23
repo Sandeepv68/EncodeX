@@ -32,7 +32,7 @@ describe('posthogSurveys', () => {
     expect(posthog.init).not.toHaveBeenCalled();
   });
 
-  it('does nothing when the survey gate is disabled', async () => {
+  it('initialises error tracking when the survey gate is disabled', async () => {
     (window as unknown as { electronAPI: unknown }).electronAPI = {
       analyticsGetPosthogConfig: vi
         .fn()
@@ -41,7 +41,7 @@ describe('posthogSurveys', () => {
     const posthog = (await import('posthog-js')).default as unknown as { init: ReturnType<typeof vi.fn> };
     const { initPosthogSurveys } = await import('../posthogSurveys');
     await initPosthogSurveys(true);
-    expect(posthog.init).not.toHaveBeenCalled();
+    expect(posthog.init).toHaveBeenCalledWith('phc_test', expect.objectContaining({ capture_exceptions: true }));
   });
 
   it('swallows a failing config lookup', async () => {

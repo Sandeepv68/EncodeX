@@ -25,7 +25,7 @@ import '@fontsource/roboto/700.css';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import '@xyflow/react/dist/style.css';
 import { Logger } from '../shared/logger';
-import { addMonitoringBreadcrumb, captureException, initMonitoring } from '../shared/monitoring/MonitoringService';
+import { addMonitoringBreadcrumb, initMonitoring } from '../shared/monitoring/MonitoringService';
 import type { MonitoringConfig } from '../shared/monitoring/types';
 import { initAnalytics } from '../shared/analytics/AnalyticsService';
 import type { AnalyticsConfig } from '../shared/analytics/types';
@@ -187,11 +187,10 @@ function getOrCreateRoot(): ReactRoot {
  * Initializes renderer-side monitoring before React mounts so early errors
  * are covered. The backend choice mirrors the main process (which owns the
  * DSN) via `window.electronAPI.monitoringGetState()`; consent is enforced
- * centrally by the facade. Global `error` / `unhandledrejection` listeners
- * route crashes through the provider-agnostic facade (Sentry's own automatic
- * global-handler integration is disabled in its adapter to avoid duplicates).
+ * centrally by the facade. Each configured SDK installs its own global error
+ * handlers, avoiding duplicate listeners and duplicate exception events.
  *
- * @returns {Promise<void>} Resolves once init and handler wiring settle.
+ * @returns {Promise<void>} Resolves once monitoring initialization settles.
  */
 async function bootstrapRendererMonitoring(): Promise<void> {
   let backend = 'noop';
@@ -199,7 +198,7 @@ async function bootstrapRendererMonitoring(): Promise<void> {
   try {
     const state = await withBridgeTimeout(window.electronAPI?.monitoringGetState(), MONITORING_BOOT_TIMEOUT_MS, undefined);
     backend = state?.backend ?? 'noop';
-    enabled = state?.enabled === true && backend !== 'noop';
+    enabled = state?.enabled === true;
   } catch (err) {
     log.warn('monitoringGetState failed, continuing without monitoring:', err);
   }
@@ -211,13 +210,6 @@ async function bootstrapRendererMonitoring(): Promise<void> {
     } satisfies MonitoringConfig,
     resolveRendererMonitorProvider,
   );
-
-  window.addEventListener('error', (event) => {
-    captureException(event.error ?? event.message, { tags: { handler: 'window.error', process: 'renderer' } });
-  });
-  window.addEventListener('unhandledrejection', (event) => {
-    captureException(event.reason, { tags: { handler: 'unhandledrejection', process: 'renderer' } });
-  });
 
   addMonitoringBreadcrumb({ category: 'app', message: 'renderer monitoring ready' });
 }

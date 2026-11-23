@@ -8,10 +8,10 @@
  */
 
 import { Logger } from '../../shared/logger';
-import { LOG_ANALYTICS_INIT_FAILED, LOG_ANALYTICS_TRACK_FAILED } from '../../shared/log-constants';
-import { sanitizeAnalyticsProps } from '../../shared/analytics/sanitize';
+import { LOG_ANALYTICS_EXCEPTION_CAPTURE_FAILED, LOG_ANALYTICS_INIT_FAILED, LOG_ANALYTICS_TRACK_FAILED } from '../../shared/log-constants';
+import { createAnalyticsExceptionPayload, sanitizeAnalyticsProps } from '../../shared/analytics/sanitize';
 import type { AnalyticsEvent } from '../../shared/analytics/events';
-import type { AnalyticsConfig, AnalyticsProvider } from '../../shared/analytics/types';
+import type { AnalyticsConfig, AnalyticsExceptionContext, AnalyticsProvider } from '../../shared/analytics/types';
 
 /** Per-module logger for the renderer PostHog adapter. @const {Logger} */
 const log = new Logger('renderer/analytics/posthogRendererProvider');
@@ -69,6 +69,20 @@ export class PostHogRendererProvider implements AnalyticsProvider {
       });
     } catch (err) {
       log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
+    }
+  }
+
+  captureException(error: unknown, context?: AnalyticsExceptionContext): void {
+    if (!this.active) return;
+    if (typeof window === 'undefined') return;
+    const relay = window.electronAPI?.analyticsCaptureException;
+    if (!relay) return;
+    try {
+      void relay(createAnalyticsExceptionPayload(error, context)).catch((err) => {
+        log.debug(LOG_ANALYTICS_EXCEPTION_CAPTURE_FAILED, err);
+      });
+    } catch (err) {
+      log.debug(LOG_ANALYTICS_EXCEPTION_CAPTURE_FAILED, err);
     }
   }
 

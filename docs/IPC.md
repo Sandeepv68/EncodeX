@@ -1,6 +1,6 @@
 # 🔌 IPC Channels & electronAPI
 
-<!-- drift: ipc-channels=127 -->
+<!-- drift: ipc-channels=128 -->
 
 All channel names are centralized in `src/shared/ipc-channels.ts`.
 
@@ -75,6 +75,7 @@ All channel names are centralized in `src/shared/ipc-channels.ts`.
 | `analytics-get-state`          | —                                        | `{ enabled, backend }`                         |
 | `analytics-set-enabled`        | `enabled`                                | `{ enabled, backend }`                         |
 | `analytics-track-event`        | `event`                                  | `void`                                         |
+| `analytics-capture-exception`  | `payload`                                | `void`                                         |
 | `analytics-get-posthog-config` | —                                        | `{ projectToken?, host? }`                     |
 | `mcp-settings-get`             | —                                        | `McpSettings`                                  |
 | `mcp-settings-set`             | `settings`                               | `McpSettings`                                  |
@@ -226,6 +227,7 @@ The preload script exposes all IPC via `window.electronAPI` (typed in `src/rende
 - `analyticsGetState() -> Promise<{ enabled, backend }>`
 - `analyticsSetEnabled(enabled) -> Promise<{ enabled, backend }>`
 - `analyticsTrackEvent(event) -> Promise<void>`
+- `analyticsCaptureException(payload) -> Promise<void>`
 - `analyticsGetPosthogConfig() -> Promise<{ projectToken?, host? }>`
 - `mcpGetSettings() -> Promise<McpSettings>`
 - `mcpSetSettings(settings) -> Promise<McpSettings>`

@@ -27,6 +27,18 @@ export interface AnalyticsState {
   backend: string;
 }
 
+export interface AnalyticsExceptionContext {
+  tags?: Record<string, string | number | boolean>;
+  extra?: Record<string, unknown>;
+}
+
+export interface AnalyticsExceptionPayload {
+  name?: string;
+  message?: string;
+  stack?: string;
+  context?: AnalyticsExceptionContext;
+}
+
 /**
  * Configuration accepted by {@link AnalyticsProvider.init}. Providers ignore
  * fields they do not understand so new options can be added without breaking
@@ -138,6 +150,8 @@ export interface AnalyticsProvider {
   captureAiGeneration?(generation: AiGeneration): void | Promise<void>;
 
   captureAiSpan?(span: AiSpan): void | Promise<void>;
+
+  captureException?(error: unknown, context?: AnalyticsExceptionContext): void | string | undefined;
 
   /**
    * Evaluates a feature flag. Returns the resolved boolean, or `undefined`

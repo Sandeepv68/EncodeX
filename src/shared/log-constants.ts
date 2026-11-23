@@ -1056,6 +1056,7 @@ export const LOG_ANALYTICS_PROVIDER_ACTIVE = 'Analytics provider active:';
 export const LOG_ANALYTICS_SET_ENABLED = 'Analytics set enabled:';
 /** @const {string} Prefix when an analytics track call fails. */
 export const LOG_ANALYTICS_TRACK_FAILED = 'Analytics track failed:';
+export const LOG_ANALYTICS_EXCEPTION_CAPTURE_FAILED = 'Analytics exception capture failed:';
 /** @const {string} Prefix when flushing the analytics backend fails. */
 export const LOG_ANALYTICS_FLUSH_FAILED = 'Analytics flush failed:';
 /** @const {string} Prefix when closing the analytics backend fails. */
@@ -1066,6 +1067,7 @@ export const LOG_IPC_ANALYTICS_GET_STATE = 'ANALYTICS_GET_STATE called';
 export const LOG_IPC_ANALYTICS_SET_ENABLED = 'ANALYTICS_SET_ENABLED:';
 /** @const {string} Prefix when the ANALYTICS_TRACK_EVENT IPC message is received. */
 export const LOG_IPC_ANALYTICS_TRACK_EVENT = 'ANALYTICS_TRACK_EVENT:';
+export const LOG_IPC_ANALYTICS_CAPTURE_EXCEPTION = 'ANALYTICS_CAPTURE_EXCEPTION:';
 /** @const {string} Prefix when reading the stored analytics consent fails. */
 export const LOG_FAILED_TO_READ_STORED_ANALYTICS_CONSENT = 'Failed to read stored analytics consent:';
 /** @const {string} Prefix when persisting analytics consent fails. */

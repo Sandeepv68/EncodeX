@@ -1,8 +1,12 @@
 # ADR-0001: Error tracking stays Sentry-only
 
-- Status: Accepted
+- Status: Superseded by [ADR-0002](0002-additive-posthog-error-tracking.md)
 - Date: 2026-11-23
 - Owners: EncodeX maintainers
+
+> This ADR is retained as the original decision record. The Sentry-only
+> constraint was explicitly reversed on 2026-11-23; see ADR-0002 for the current
+> decision.
 
 ## Context
 

@@ -4,6 +4,7 @@ import type { Plugin } from 'vite';
 import packageJson from '../../package.json';
 
 const SITE_URL = 'https://encodex.in';
+const SITE_HEATMAP_URLS = [`${SITE_URL}/`, `${SITE_URL}/download`, `${SITE_URL}/video-converter`];
 
 const SITE_VERSION: string = (packageJson as { version?: string }).version || '1.0.0-beta.8';
 
@@ -30,31 +31,30 @@ function isHttpsOrigin(value: string): boolean {
 }
 
 const posthogWebAnalyticsConfigured: boolean =
-  POSTHOG_WEB_ANALYTICS_ENABLED &&
-  POSTHOG_SITE_TOKEN.length > 0 &&
-  isHttpsOrigin(POSTHOG_SITE_HOST);
+  POSTHOG_WEB_ANALYTICS_ENABLED && POSTHOG_SITE_TOKEN.length > 0 && isHttpsOrigin(POSTHOG_SITE_HOST);
 
-const posthogWebAnalyticsHead: [string, Record<string, string | boolean>][] =
-  posthogWebAnalyticsConfigured
-    ? [
-        ['link', { rel: 'dns-prefetch', href: POSTHOG_SITE_HOST }],
-        [
-          'script',
-          {},
-          `!function(t,e){var o,n,p,r;e.__SV||(window.posthog && window.posthog.__loaded)||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}p||((p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",p.onerror=function(){p=null},(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r));var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],Object.defineProperty(u,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e}}),Object.defineProperty(u.people,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(){return u.toString(1)+".people (stub)"}}),o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagResult isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+const posthogWebAnalyticsHead: [string, Record<string, string | boolean>][] = posthogWebAnalyticsConfigured
+  ? [
+      ['link', { rel: 'dns-prefetch', href: POSTHOG_SITE_HOST }],
+      [
+        'script',
+        {},
+        `!function(t,e){var o,n,p,r;e.__SV||(window.posthog && window.posthog.__loaded)||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}p||((p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",p.onerror=function(){p=null},(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r));var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],Object.defineProperty(u,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e}}),Object.defineProperty(u.people,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(){return u.toString(1)+".people (stub)"}}),o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagResult isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
           posthog.init(${JSON.stringify(POSTHOG_SITE_TOKEN)}, {
             api_host: ${JSON.stringify(POSTHOG_SITE_HOST)},
             defaults: '2026-08-30',
-            autocapture: false,
+            autocapture: { url_allowlist: ${JSON.stringify(SITE_HEATMAP_URLS)} },
             capture_pageview: true,
-            capture_pageleave: false,
+            capture_pageleave: true,
+            capture_exceptions: { capture_unhandled_errors: true, capture_unhandled_rejections: true, capture_console_errors: false },
+            capture_heatmaps: true,
             disable_session_recording: true,
             disable_surveys: true,
             persistence: 'memory',
           });`,
-        ],
-      ]
-    : [];
+      ],
+    ]
+  : [];
 
 const localeLangMap: Record<string, string> = {
   '': 'en',
@@ -1284,7 +1284,7 @@ const seoFAQ: Record<string, { q: string; a: string }[]> = {
     },
     {
       q: 'Does EncodeX support AV1 encoding?',
-      a: "Yes. EncodeX offers software AV1 encoders (libaom, SVT-AV1, rav1e) plus AV1 hardware encoders where your GPU provides them.",
+      a: 'Yes. EncodeX offers software AV1 encoders (libaom, SVT-AV1, rav1e) plus AV1 hardware encoders where your GPU provides them.',
     },
     {
       q: 'Is AV1 encoding slow?',
@@ -1368,7 +1368,7 @@ const seoFAQ: Record<string, { q: string; a: string }[]> = {
     },
     {
       q: 'Does EncodeX support hardware acceleration on Linux?',
-      a: "Yes. EncodeX supports VAAPI on Linux - no matter the GPU brand - plus NVENC on NVIDIA GPUs.",
+      a: 'Yes. EncodeX supports VAAPI on Linux - no matter the GPU brand - plus NVENC on NVIDIA GPUs.',
     },
     {
       q: 'Can I use EncodeX on a headless Linux server?',
@@ -2307,7 +2307,7 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         a: 'Sí. Toda la conversión ocurre localmente en tu computadora, así que tus archivos nunca salen de tu dispositivo.',
       },
     ],
-    'mcp': [
+    mcp: [
       {
         q: '¿El servidor MCP de EncodeX es gratuito?',
         a: 'Sí. El servidor MCP está integrado en EncodeX, que es gratuito y de código abierto (MIT); no necesita licencia ni suscripción adicional.',
@@ -2548,7 +2548,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: '¿Perderé calidad al convertir AVI a MP4?',
         a: 'No. EncodeX mantiene intacta la calidad de tu video y audio mientras produce un MP4 moderno y compatible.',
       },
-      { q: '¿Puedo convertir muchos archivos AVI a la vez?', a: 'Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos AVI a MP4.' },
+      {
+        q: '¿Puedo convertir muchos archivos AVI a la vez?',
+        a: 'Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos AVI a MP4.',
+      },
     ],
     'convert/mov-to-mp4': [
       {
@@ -2559,7 +2562,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: '¿Perderé calidad al convertir MOV a MP4?',
         a: 'No. Por defecto, EncodeX re-empaqueta (remux) los flujos de video y audio existentes, por lo que la calidad permanece exactamente igual y la conversión es muy rápida.',
       },
-      { q: '¿Puedo convertir muchos archivos MOV a la vez?', a: 'Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos MOV a MP4.' },
+      {
+        q: '¿Puedo convertir muchos archivos MOV a la vez?',
+        a: 'Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos MOV a MP4.',
+      },
     ],
     'convert/m4v-to-mp4': [
       {
@@ -2570,7 +2576,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: '¿EncodeX elimina el DRM de los archivos M4V?',
         a: 'Si un archivo tiene DRM y no se abre en otras apps, reprodúcelo primero en tu biblioteca con licencia. EncodeX convierte el video desbloqueado al que ya tienes acceso en un MP4 abierto.',
       },
-      { q: '¿Puedo convertir en lote archivos M4V a la vez?', a: 'Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos M4V a MP4.' },
+      {
+        q: '¿Puedo convertir en lote archivos M4V a la vez?',
+        a: 'Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos M4V a MP4.',
+      },
     ],
     'convert/flv-to-mp4': [
       {
@@ -2581,7 +2590,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: '¿Perderé calidad al convertir FLV a MP4?',
         a: 'No. EncodeX re-codifica tu FLV a MP4 de forma limpia, conservando la calidad de tu video mientras moderniza el formato.',
       },
-      { q: '¿Puedo convertir muchos archivos FLV a la vez?', a: 'Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos FLV a MP4.' },
+      {
+        q: '¿Puedo convertir muchos archivos FLV a la vez?',
+        a: 'Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos FLV a MP4.',
+      },
     ],
     'convert/wmv-to-mp4': [
       {
@@ -2592,7 +2604,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: '¿Perderé calidad al convertir WMV a MP4?',
         a: 'No. EncodeX convierte tu WMV a MP4 de forma limpia conservando la calidad de tu video.',
       },
-      { q: '¿Puedo convertir muchos archivos WMV a la vez?', a: 'Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos WMV a MP4.' },
+      {
+        q: '¿Puedo convertir muchos archivos WMV a la vez?',
+        a: 'Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos WMV a MP4.',
+      },
     ],
     'convert/webm-to-mp4': [
       {
@@ -2603,7 +2618,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: '¿Perderé calidad al convertir WebM a MP4?',
         a: 'No. EncodeX convierte tu WebM a un MP4 altamente compatible conservando la calidad de tu video.',
       },
-      { q: '¿Puedo convertir muchos archivos WebM a la vez?', a: 'Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos WebM a MP4.' },
+      {
+        q: '¿Puedo convertir muchos archivos WebM a la vez?',
+        a: 'Sí. EncodeX admite la conversión por lotes de una carpeta entera de archivos WebM a MP4.',
+      },
     ],
     'codecs/h264': [
       {
@@ -2747,7 +2765,7 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         a: 'Oui. Toute la conversion se fait localement sur votre ordinateur, vos fichiers ne quittent donc jamais votre appareil.',
       },
     ],
-    'mcp': [
+    mcp: [
       {
         q: 'Le serveur MCP d\u2019EncodeX est-il gratuit ?',
         a: 'Oui. Le serveur MCP est intégré à EncodeX, qui est gratuit et open source (MIT) — aucune licence ni abonnement supplémentaire.',
@@ -2991,7 +3009,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'Vais-je perdre de la qualité en convertissant AVI en MP4 ?',
         a: 'Non. EncodeX conserve intacte la qualité de votre vidéo et de votre audio tout en produisant un MP4 moderne et compatible.',
       },
-      { q: 'Puis-je convertir plusieurs fichiers AVI à la fois ?', a: 'Oui. EncodeX prend en charge la conversion par lots de tout un dossier de fichiers AVI en MP4.' },
+      {
+        q: 'Puis-je convertir plusieurs fichiers AVI à la fois ?',
+        a: 'Oui. EncodeX prend en charge la conversion par lots de tout un dossier de fichiers AVI en MP4.',
+      },
     ],
     'convert/mov-to-mp4': [
       {
@@ -3002,7 +3023,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'Vais-je perdre de la qualité en convertissant MOV en MP4 ?',
         a: 'Non. Par défaut, EncodeX remuxe les flux vidéo et audio existants : la qualité reste exactement la même et la conversion est très rapide.',
       },
-      { q: 'Puis-je convertir plusieurs fichiers MOV à la fois ?', a: 'Oui. EncodeX prend en charge la conversion par lots de tout un dossier de fichiers MOV en MP4.' },
+      {
+        q: 'Puis-je convertir plusieurs fichiers MOV à la fois ?',
+        a: 'Oui. EncodeX prend en charge la conversion par lots de tout un dossier de fichiers MOV en MP4.',
+      },
     ],
     'convert/m4v-to-mp4': [
       {
@@ -3013,7 +3037,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'EncodeX supprime-t-il le DRM des fichiers M4V ?',
         a: 'Si un fichier est verrouillé par DRM et ne s\u2019ouvre pas dans d\u2019autres applications, lisez-le d\u2019abord dans votre bibliothèque sous licence. EncodeX convertit la vidéo déverrouillée à laquelle vous avez déjà accès en MP4 ouvert.',
       },
-      { q: 'Puis-je convertir plusieurs fichiers M4V à la fois ?', a: 'Oui. EncodeX prend en charge la conversion par lots de tout un dossier de fichiers M4V en MP4.' },
+      {
+        q: 'Puis-je convertir plusieurs fichiers M4V à la fois ?',
+        a: 'Oui. EncodeX prend en charge la conversion par lots de tout un dossier de fichiers M4V en MP4.',
+      },
     ],
     'convert/flv-to-mp4': [
       {
@@ -3024,7 +3051,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'Vais-je perdre de la qualité en convertissant FLV en MP4 ?',
         a: 'Non. EncodeX ré-encode proprement votre FLV en MP4, en conservant la qualité de votre vidéo tout en modernisant le format.',
       },
-      { q: 'Puis-je convertir plusieurs fichiers FLV à la fois ?', a: 'Oui. EncodeX prend en charge la conversion par lots de tout un dossier de fichiers FLV en MP4.' },
+      {
+        q: 'Puis-je convertir plusieurs fichiers FLV à la fois ?',
+        a: 'Oui. EncodeX prend en charge la conversion par lots de tout un dossier de fichiers FLV en MP4.',
+      },
     ],
     'convert/wmv-to-mp4': [
       {
@@ -3035,7 +3065,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'Vais-je perdre de la qualité en convertissant WMV en MP4 ?',
         a: 'Non. EncodeX convertit proprement votre WMV en MP4 en conservant la qualité de votre vidéo.',
       },
-      { q: 'Puis-je convertir plusieurs fichiers WMV à la fois ?', a: 'Oui. EncodeX prend en charge la conversion par lots de tout un dossier de fichiers WMV en MP4.' },
+      {
+        q: 'Puis-je convertir plusieurs fichiers WMV à la fois ?',
+        a: 'Oui. EncodeX prend en charge la conversion par lots de tout un dossier de fichiers WMV en MP4.',
+      },
     ],
     'convert/webm-to-mp4': [
       {
@@ -3046,7 +3079,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'Vais-je perdre de la qualité en convertissant WebM en MP4 ?',
         a: 'Non. EncodeX convertit votre WebM en un MP4 très compatible en conservant la qualité de votre vidéo.',
       },
-      { q: 'Puis-je convertir plusieurs fichiers WebM à la fois ?', a: 'Oui. EncodeX prend en charge la conversion par lots de tout un dossier de fichiers WebM en MP4.' },
+      {
+        q: 'Puis-je convertir plusieurs fichiers WebM à la fois ?',
+        a: 'Oui. EncodeX prend en charge la conversion par lots de tout un dossier de fichiers WebM en MP4.',
+      },
     ],
     'codecs/h264': [
       {
@@ -3190,7 +3226,7 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         a: 'Ja. Die gesamte Konvertierung findet lokal auf Ihrem Computer statt, Ihre Dateien verlassen also nie Ihr Gerät.',
       },
     ],
-    'mcp': [
+    mcp: [
       {
         q: 'Ist der MCP-Server von EncodeX kostenlos?',
         a: 'Ja. Der MCP-Server ist in EncodeX integriert, das kostenlos und Open Source (MIT) ist — kein zusätzliches Lizenz- oder Abo-Modell.',
@@ -3434,7 +3470,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'Verliere ich beim Konvertieren von AVI zu MP4 an Qualität?',
         a: 'Nein. EncodeX erhält die Qualität Ihrer Video- und Audiodaten und erzeugt zugleich eine moderne, kompatible MP4-Datei.',
       },
-      { q: 'Kann ich viele AVI-Dateien auf einmal konvertieren?', a: 'Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners AVI-Dateien in MP4.' },
+      {
+        q: 'Kann ich viele AVI-Dateien auf einmal konvertieren?',
+        a: 'Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners AVI-Dateien in MP4.',
+      },
     ],
     'convert/mov-to-mp4': [
       {
@@ -3445,7 +3484,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'Verliere ich beim Konvertieren von MOV zu MP4 an Qualität?',
         a: 'Nein. Standardmäßig remuxt EncodeX die vorhandenen Video- und Audiostreams, sodass die Qualität exakt gleich bleibt und die Konvertierung sehr schnell ist.',
       },
-      { q: 'Kann ich viele MOV-Dateien auf einmal konvertieren?', a: 'Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners MOV-Dateien in MP4.' },
+      {
+        q: 'Kann ich viele MOV-Dateien auf einmal konvertieren?',
+        a: 'Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners MOV-Dateien in MP4.',
+      },
     ],
     'convert/m4v-to-mp4': [
       {
@@ -3456,7 +3498,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'Entfernt EncodeX DRM aus M4V-Dateien?',
         a: 'Wenn eine Datei DRM-gesperrt ist und in anderen Apps nicht geöffnet wird, spielen Sie sie zuerst in Ihrer lizenzierten Bibliothek ab. EncodeX konvertiert das bereits entsperrte Video, auf das Sie Zugriff haben, in ein offenes MP4.',
       },
-      { q: 'Kann ich M4V-Dateien in einem Rutsch stapelweise konvertieren?', a: 'Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners M4V-Dateien in MP4.' },
+      {
+        q: 'Kann ich M4V-Dateien in einem Rutsch stapelweise konvertieren?',
+        a: 'Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners M4V-Dateien in MP4.',
+      },
     ],
     'convert/flv-to-mp4': [
       {
@@ -3467,7 +3512,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'Verliere ich beim Konvertieren von FLV zu MP4 an Qualität?',
         a: 'Nein. EncodeX codiert Ihre FLV sauber in MP4 um, erhält die Videoqualität und modernisiert zugleich das Format.',
       },
-      { q: 'Kann ich viele FLV-Dateien auf einmal konvertieren?', a: 'Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners FLV-Dateien in MP4.' },
+      {
+        q: 'Kann ich viele FLV-Dateien auf einmal konvertieren?',
+        a: 'Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners FLV-Dateien in MP4.',
+      },
     ],
     'convert/wmv-to-mp4': [
       {
@@ -3478,7 +3526,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'Verliere ich beim Konvertieren von WMV zu MP4 an Qualität?',
         a: 'Nein. EncodeX konvertiert Ihre WMV sauber in MP4 und erhält dabei die Qualität Ihres Videos.',
       },
-      { q: 'Kann ich viele WMV-Dateien auf einmal konvertieren?', a: 'Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners WMV-Dateien in MP4.' },
+      {
+        q: 'Kann ich viele WMV-Dateien auf einmal konvertieren?',
+        a: 'Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners WMV-Dateien in MP4.',
+      },
     ],
     'convert/webm-to-mp4': [
       {
@@ -3489,7 +3540,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'Verliere ich beim Konvertieren von WebM zu MP4 an Qualität?',
         a: 'Nein. EncodeX konvertiert Ihr WebM in ein hochkompatibles MP4 und erhält dabei die Qualität Ihres Videos.',
       },
-      { q: 'Kann ich viele WebM-Dateien auf einmal konvertieren?', a: 'Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners WebM-Dateien in MP4.' },
+      {
+        q: 'Kann ich viele WebM-Dateien auf einmal konvertieren?',
+        a: 'Ja. EncodeX unterstützt die Stapelkonvertierung eines ganzen Ordners WebM-Dateien in MP4.',
+      },
     ],
     'codecs/h264': [
       {
@@ -3633,7 +3687,7 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         a: 'Sim. Toda a conversão acontece localmente no seu computador, então seus arquivos nunca saem do seu dispositivo.',
       },
     ],
-    'mcp': [
+    mcp: [
       {
         q: 'O servidor MCP do EncodeX é gratuito?',
         a: 'Sim. O servidor MCP está integrado ao EncodeX, que é gratuito e open source (MIT) — sem licença ou assinatura extra.',
@@ -3877,7 +3931,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'Vou perder qualidade convertendo AVI para MP4?',
         a: 'Não. O EncodeX mantém a qualidade do vídeo e do áudio ao produzir um MP4 moderno e compatível.',
       },
-      { q: 'Posso converter muitos arquivos AVI de uma vez?', a: 'Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos AVI para MP4.' },
+      {
+        q: 'Posso converter muitos arquivos AVI de uma vez?',
+        a: 'Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos AVI para MP4.',
+      },
     ],
     'convert/mov-to-mp4': [
       {
@@ -3888,7 +3945,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'Vou perder qualidade convertendo MOV para MP4?',
         a: 'Não. Por padrão, o EncodeX remuxa os fluxos de vídeo e áudio existentes, então a qualidade permanece exatamente a mesma e a conversão é muito rápida.',
       },
-      { q: 'Posso converter muitos arquivos MOV de uma vez?', a: 'Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos MOV para MP4.' },
+      {
+        q: 'Posso converter muitos arquivos MOV de uma vez?',
+        a: 'Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos MOV para MP4.',
+      },
     ],
     'convert/m4v-to-mp4': [
       {
@@ -3899,7 +3959,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'O EncodeX remove o DRM de arquivos M4V?',
         a: 'Se um arquivo estiver bloqueado por DRM e não abrir em outros apps, reproduza-o primeiro na sua biblioteca licenciada. O EncodeX converte o vídeo desbloqueado ao qual você já tem acesso em um MP4 aberto.',
       },
-      { q: 'Posso converter vários arquivos M4V de uma vez?', a: 'Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos M4V para MP4.' },
+      {
+        q: 'Posso converter vários arquivos M4V de uma vez?',
+        a: 'Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos M4V para MP4.',
+      },
     ],
     'convert/flv-to-mp4': [
       {
@@ -3910,7 +3973,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'Vou perder qualidade convertendo FLV para MP4?',
         a: 'Não. O EncodeX re-codifica seu FLV em MP4 de forma limpa, mantendo a qualidade do vídeo enquanto moderniza o formato.',
       },
-      { q: 'Posso converter muitos arquivos FLV de uma vez?', a: 'Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos FLV para MP4.' },
+      {
+        q: 'Posso converter muitos arquivos FLV de uma vez?',
+        a: 'Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos FLV para MP4.',
+      },
     ],
     'convert/wmv-to-mp4': [
       {
@@ -3921,7 +3987,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'Vou perder qualidade convertendo WMV para MP4?',
         a: 'Não. O EncodeX converte seu WMV em MP4 de forma limpa, mantendo a qualidade do vídeo.',
       },
-      { q: 'Posso converter muitos arquivos WMV de uma vez?', a: 'Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos WMV para MP4.' },
+      {
+        q: 'Posso converter muitos arquivos WMV de uma vez?',
+        a: 'Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos WMV para MP4.',
+      },
     ],
     'convert/webm-to-mp4': [
       {
@@ -3932,7 +4001,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'Vou perder qualidade convertendo WebM para MP4?',
         a: 'Não. O EncodeX converte seu WebM em um MP4 altamente compatível, mantendo a qualidade do vídeo.',
       },
-      { q: 'Posso converter muitos arquivos WebM de uma vez?', a: 'Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos WebM para MP4.' },
+      {
+        q: 'Posso converter muitos arquivos WebM de uma vez?',
+        a: 'Sim. O EncodeX suporta conversão em lote de uma pasta inteira de arquivos WebM para MP4.',
+      },
     ],
     'codecs/h264': [
       {
@@ -4015,13 +4087,13 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
       },
       {
         q: 'O EncodeX é uma interface gráfica gratuita para FFmpeg?',
-        a: 'Sim. O EncodeX é gratuito para sempre e open source (MIT), sem marcas d\'água, sem contas e sem plano pago.',
+        a: "Sim. O EncodeX é gratuito para sempre e open source (MIT), sem marcas d'água, sem contas e sem plano pago.",
       },
     ],
     'ffmpeg-gui/windows': [
       {
         q: 'Existe uma interface gráfica gratuita para FFmpeg no Windows?',
-        a: 'Sim. O EncodeX é uma interface gráfica gratuita e open source para FFmpeg no Windows 10 e mais recente, sem marcas d\'água e sem plano pago.',
+        a: "Sim. O EncodeX é uma interface gráfica gratuita e open source para FFmpeg no Windows 10 e mais recente, sem marcas d'água e sem plano pago.",
       },
       {
         q: 'O EncodeX usa aceleração de hardware no Windows?',
@@ -4073,7 +4145,7 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
       },
       { q: 'EncodeX 可以离线工作吗？', a: '是的。所有转换都在您的计算机本地进行，因此您的文件绝不会离开您的设备。' },
     ],
-    'mcp': [
+    mcp: [
       {
         q: 'EncodeX 的 MCP 服务器免费吗？',
         a: '免费。MCP 服务器内置在免费、开源的（MIT）EncodeX 中，无需额外许可或订阅。',
@@ -4429,7 +4501,7 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         a: 'हाँ। सभी रूपांतरण आपके कंप्यूटर पर स्थानीय रूप से होते हैं, इसलिए आपकी फ़ाइलें कभी आपके डिवाइस से बाहर नहीं जातीं।',
       },
     ],
-    'mcp': [
+    mcp: [
       {
         q: 'क्या EncodeX का MCP सर्वर मुफ़्त है?',
         a: 'हाँ। MCP सर्वर मुफ़्त, ओपन-सोर्स (MIT) EncodeX ऐप में बिल्ट-इन है — कोई अतिरिक्त लाइसेंस या सब्सक्रिप्शन नहीं।',
@@ -4673,7 +4745,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'क्या AVI से MP4 बदलने में गुणवत्ता घटेगी?',
         a: 'नहीं। EncodeX आधुनिक, कंपैटिबल MP4 फ़ाइल बनाते हुए आपके वीडियो और ऑडियो की गुणवत्ता बरकरार रखता है।',
       },
-      { q: 'क्या मैं एक साथ कई AVI फ़ाइलें बदल सकता हूँ?', a: 'हाँ। EncodeX AVI फ़ाइलों के पूरे फ़ोल्डर को MP4 में बैच कनवर्ट करने का समर्थन करता है।' },
+      {
+        q: 'क्या मैं एक साथ कई AVI फ़ाइलें बदल सकता हूँ?',
+        a: 'हाँ। EncodeX AVI फ़ाइलों के पूरे फ़ोल्डर को MP4 में बैच कनवर्ट करने का समर्थन करता है।',
+      },
     ],
     'convert/mov-to-mp4': [
       {
@@ -4684,7 +4759,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'क्या MOV से MP4 बदलने में गुणवत्ता घटेगी?',
         a: 'नहीं। डिफ़ॉल्ट रूप से EncodeX मौजूदा वीडियो और ऑडियो स्ट्रीम को रीमक्स करता है, इसलिए गुणवत्ता बिल्कुल समान रहती है और रूपांतरण बहुत तेज़ है।',
       },
-      { q: 'क्या मैं एक साथ कई MOV फ़ाइलें बदल सकता हूँ?', a: 'हाँ। EncodeX MOV फ़ाइलों के पूरे फ़ोल्डर को MP4 में बैच कनवर्ट करने का समर्थन करता है।' },
+      {
+        q: 'क्या मैं एक साथ कई MOV फ़ाइलें बदल सकता हूँ?',
+        a: 'हाँ। EncodeX MOV फ़ाइलों के पूरे फ़ोल्डर को MP4 में बैच कनवर्ट करने का समर्थन करता है।',
+      },
     ],
     'convert/m4v-to-mp4': [
       {
@@ -4695,7 +4773,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'क्या EncodeX M4V फ़ाइलों से DRM हटाता है?',
         a: 'यदि कोई फ़ाइल DRM-लॉक है और दूसरी ऐप्स में नहीं खुलती, तो पहले उसे अपनी लाइसेंस वाली लाइब्रेरी में चलाएँ। EncodeX उस अनलॉक किए गए वीडियो को, जिसे आप पहले से एक्सेस कर सकते हैं, ओपन MP4 में बदलता है।',
       },
-      { q: 'क्या मैं एक साथ कई M4V फ़ाइलें बदल सकता हूँ?', a: 'हाँ। EncodeX M4V फ़ाइलों के पूरे फ़ोल्डर को MP4 में बैच कनवर्ट करने का समर्थन करता है।' },
+      {
+        q: 'क्या मैं एक साथ कई M4V फ़ाइलें बदल सकता हूँ?',
+        a: 'हाँ। EncodeX M4V फ़ाइलों के पूरे फ़ोल्डर को MP4 में बैच कनवर्ट करने का समर्थन करता है।',
+      },
     ],
     'convert/flv-to-mp4': [
       {
@@ -4706,7 +4787,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'क्या FLV से MP4 बदलने में गुणवत्ता घटेगी?',
         a: 'नहीं। EncodeX आपके FLV को साफ़-सुथरा MP4 में री-कोड करता है, प्रारूप को आधुनिक बनाते हुए वीडियो गुणवत्ता बनाए रखता है।',
       },
-      { q: 'क्या मैं एक साथ कई FLV फ़ाइलें बदल सकता हूँ?', a: 'हाँ। EncodeX FLV फ़ाइलों के पूरे फ़ोल्डर को MP4 में बैच कनवर्ट करने का समर्थन करता है।' },
+      {
+        q: 'क्या मैं एक साथ कई FLV फ़ाइलें बदल सकता हूँ?',
+        a: 'हाँ। EncodeX FLV फ़ाइलों के पूरे फ़ोल्डर को MP4 में बैच कनवर्ट करने का समर्थन करता है।',
+      },
     ],
     'convert/wmv-to-mp4': [
       {
@@ -4717,7 +4801,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'क्या WMV से MP4 बदलने में गुणवत्ता घटेगी?',
         a: 'नहीं। EncodeX आपके WMV को साफ़-सुथरा MP4 में बदलता है और वीडियो की गुणवत्ता बनाए रखता है।',
       },
-      { q: 'क्या मैं एक साथ कई WMV फ़ाइलें बदल सकता हूँ?', a: 'हाँ। EncodeX WMV फ़ाइलों के पूरे फ़ोल्डर को MP4 में बैच कनवर्ट करने का समर्थन करता है।' },
+      {
+        q: 'क्या मैं एक साथ कई WMV फ़ाइलें बदल सकता हूँ?',
+        a: 'हाँ। EncodeX WMV फ़ाइलों के पूरे फ़ोल्डर को MP4 में बैच कनवर्ट करने का समर्थन करता है।',
+      },
     ],
     'convert/webm-to-mp4': [
       {
@@ -4728,7 +4815,10 @@ const seoFAQTranslations: Record<string, Record<string, { q: string; a: string }
         q: 'क्या WebM से MP4 बदलने में गुणवत्ता घटेगी?',
         a: 'नहीं। EncodeX आपके WebM को अत्यधिक कंपैटिबल MP4 में बदलता है और वीडियो की गुणवत्ता बनाए रखता है।',
       },
-      { q: 'क्या मैं एक साथ कई WebM फ़ाइलें बदल सकता हूँ?', a: 'हाँ। EncodeX WebM फ़ाइलों के पूरे फ़ोल्डर को MP4 में बैच कनवर्ट करने का समर्थन करता है।' },
+      {
+        q: 'क्या मैं एक साथ कई WebM फ़ाइलें बदल सकता हूँ?',
+        a: 'हाँ। EncodeX WebM फ़ाइलों के पूरे फ़ोल्डर को MP4 में बैच कनवर्ट करने का समर्थन करता है।',
+      },
     ],
     'codecs/h264': [
       {
@@ -4911,9 +5001,7 @@ export default defineConfig({
         .map((item) => ({
           ...item,
           url: withTrailingSlash(item.url),
-          links: item.links
-            ?.filter((link) => !isNoIndexLocaleDoc(link.url))
-            .map((link) => ({ ...link, url: withTrailingSlash(link.url) })),
+          links: item.links?.filter((link) => !isNoIndexLocaleDoc(link.url)).map((link) => ({ ...link, url: withTrailingSlash(link.url) })),
         }));
     },
   },

@@ -18,8 +18,20 @@
 import { ipcMain } from 'electron';
 import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';
-import { LOG_IPC_ANALYTICS_GET_STATE, LOG_IPC_ANALYTICS_SET_ENABLED, LOG_IPC_ANALYTICS_TRACK_EVENT } from '../../shared/log-constants';
-import { getAnalyticsBackendName, setAnalyticsEnabled, trackRelayedAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import {
+  LOG_ANALYTICS_EXCEPTION_CAPTURE_FAILED,
+  LOG_IPC_ANALYTICS_CAPTURE_EXCEPTION,
+  LOG_IPC_ANALYTICS_GET_STATE,
+  LOG_IPC_ANALYTICS_SET_ENABLED,
+  LOG_IPC_ANALYTICS_TRACK_EVENT,
+} from '../../shared/log-constants';
+import {
+  captureAnalyticsException,
+  getAnalyticsBackendName,
+  setAnalyticsEnabled,
+  trackRelayedAnalyticsEvent,
+} from '../../shared/analytics/AnalyticsService';
+import { createErrorFromAnalyticsExceptionPayload, parseAnalyticsExceptionPayload } from '../../shared/analytics/sanitize';
 import type { AnalyticsState } from '../../shared/analytics/types';
 import { writeAnalyticsConsent } from './consent';
 import { POSTHOG_BUILD_CONFIG } from '../generated/posthogBuildConfig';
@@ -74,6 +86,17 @@ export function registerAnalyticsIpcBridge(options: { userDataDir: string; conse
   ipcMain.handle(IPC.ANALYTICS_TRACK_EVENT, (_event, event: unknown): void => {
     log.debug(LOG_IPC_ANALYTICS_TRACK_EVENT);
     trackRelayedAnalyticsEvent(event);
+  });
+
+  ipcMain.handle(IPC.ANALYTICS_CAPTURE_EXCEPTION, (_event, payload: unknown): void => {
+    log.debug(LOG_IPC_ANALYTICS_CAPTURE_EXCEPTION);
+    try {
+      const parsed = parseAnalyticsExceptionPayload(payload);
+      if (!parsed) return;
+      captureAnalyticsException(createErrorFromAnalyticsExceptionPayload(parsed), parsed.context);
+    } catch (err) {
+      log.debug(LOG_ANALYTICS_EXCEPTION_CAPTURE_FAILED, err);
+    }
   });
 
   ipcMain.handle(IPC.ANALYTICS_GET_POSTHOG_CONFIG, (): { projectToken?: string; host?: string; surveysEnabled?: boolean } => {

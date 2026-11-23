@@ -8,6 +8,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { MonitorProvider, MonitorContext } from '../types';
 
+const captureAnalyticsExceptionMock = vi.hoisted(() => vi.fn());
+
+vi.mock('../../analytics/AnalyticsService', () => ({
+  captureAnalyticsException: captureAnalyticsExceptionMock,
+}));
+
 async function loadFresh() {
   vi.resetModules();
   return import('../MonitoringService');
@@ -45,6 +51,7 @@ describe('MonitoringService facade', () => {
   beforeEach(async () => {
     svc = await loadFresh();
     svc.resetMonitoringForTests();
+    captureAnalyticsExceptionMock.mockClear();
   });
 
   it('is a safe no-op before init (no throws, undefined ids)', async () => {
@@ -84,6 +91,27 @@ describe('MonitoringService facade', () => {
     expect(provider.setTag).toHaveBeenCalledWith('os', 'win');
     expect(provider.setUser).toHaveBeenCalledWith({ id: 'u1' });
     expect(provider.addBreadcrumb).toHaveBeenCalledWith({ message: 'step' });
+  });
+
+  it('fans out exceptions with the enabled noop provider (PostHog-only mode)', async () => {
+    await svc.initMonitoring({ enabled: true }, () => undefined);
+    const error = new Error('posthog-only');
+    expect(svc.captureException(error, ctx)).toBeUndefined();
+    expect(captureAnalyticsExceptionMock).toHaveBeenCalledWith(error, ctx);
+  });
+
+  it('fans out exceptions to analytics only while monitoring is enabled', async () => {
+    const provider = createMockProvider('sentry');
+    await svc.initMonitoring({ enabled: true }, () => provider);
+    const error = new Error('fan out');
+
+    expect(svc.captureException(error, ctx)).toBe('event-1');
+    expect(captureAnalyticsExceptionMock).toHaveBeenCalledWith(error, ctx);
+
+    await svc.setMonitoringEnabled(false);
+    captureAnalyticsExceptionMock.mockClear();
+    expect(svc.captureException(new Error('quiet'))).toBeUndefined();
+    expect(captureAnalyticsExceptionMock).not.toHaveBeenCalled();
   });
 
   it('never throws when the provider throws', async () => {

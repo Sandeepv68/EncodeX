@@ -24,6 +24,7 @@ import {
   trackRelayedAnalyticsEvent,
   captureAiGeneration,
   captureAiSpan,
+  captureAnalyticsException,
   isFeatureFlagEnabled,
   getAllFeatureFlags,
 } from '../AnalyticsService';
@@ -37,6 +38,7 @@ class FakeProvider implements AnalyticsProvider {
   closes = 0;
   generations: AiGeneration[] = [];
   spans: AiSpan[] = [];
+  exceptions: Array<{ error: unknown; context?: unknown }> = [];
   flags: Record<string, boolean | string | number> = { alpha: true, beta: 'x' };
 
   init(): void {
@@ -53,6 +55,10 @@ class FakeProvider implements AnalyticsProvider {
 
   captureAiSpan(span: AiSpan): void {
     this.spans.push(span);
+  }
+
+  captureException(error: unknown, context?: unknown): void {
+    this.exceptions.push({ error, context });
   }
 
   isFeatureFlagEnabled(flag: string): boolean | undefined {
@@ -85,6 +91,9 @@ class ThrowingProvider implements AnalyticsProvider {
   }
   captureAiSpan(): void {
     throw new Error('span boom');
+  }
+  captureException(): void {
+    throw new Error('exception boom');
   }
   isFeatureFlagEnabled(): boolean | undefined {
     throw new Error('flag boom');
@@ -311,6 +320,30 @@ describe('AnalyticsService', () => {
     expect(provider.spans).toHaveLength(0);
   });
 
+  it('buffers pre-init exceptions and replays them after init', async () => {
+    resetAnalyticsForTests();
+    const error = new Error('early boom');
+    captureAnalyticsException(error, { tags: { handler: 'window.error' } });
+    await initAnalytics({ enabled: true, provider: 'fake' }, () => provider);
+    expect(provider.exceptions).toEqual([{ error, context: { tags: { handler: 'window.error' } } }]);
+  });
+
+  it('forwards exceptions to the provider after init', async () => {
+    resetAnalyticsForTests();
+    await initAnalytics({ enabled: true, provider: 'fake' }, () => provider);
+    const error = new Error('boom');
+    captureAnalyticsException(error);
+    expect(provider.exceptions).toEqual([{ error, context: undefined }]);
+  });
+
+  it('drops exceptions captured while consent is off', async () => {
+    resetAnalyticsForTests();
+    await initAnalytics({ enabled: false, provider: 'fake' }, () => provider);
+    captureAnalyticsException(new Error('quiet'));
+    await setAnalyticsEnabled(true);
+    expect(provider.exceptions).toHaveLength(0);
+  });
+
   it('resolves feature flags through the provider', async () => {
     resetAnalyticsForTests();
     await initAnalytics({ enabled: true, provider: 'fake' }, () => provider);
@@ -332,6 +365,7 @@ describe('AnalyticsService', () => {
     expect(() => trackRelayedAnalyticsEvent(createAnalyticsEvent('tool_opened', { route: '/convert' }))).not.toThrow();
     expect(() => captureAiGeneration({ traceId: 't', provider: 'p', model: 'm', input: [], latency: 1 })).not.toThrow();
     expect(() => captureAiSpan({ traceId: 't', spanId: 's', name: 'copilot.route', latency: 1 })).not.toThrow();
+    expect(() => captureAnalyticsException(new Error('boom'))).not.toThrow();
     expect(() => isFeatureFlagEnabled('alpha')).not.toThrow();
     expect(() => getAllFeatureFlags()).not.toThrow();
   });

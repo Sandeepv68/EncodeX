@@ -248,6 +248,7 @@ Object.defineProperty(globalThis, 'electronAPI', {
     analyticsGetState: vi.fn().mockResolvedValue({ enabled: true, backend: 'noop' }),
     analyticsSetEnabled: vi.fn().mockResolvedValue({ enabled: true, backend: 'noop' }),
     analyticsTrackEvent: vi.fn().mockResolvedValue(undefined),
+    analyticsCaptureException: vi.fn().mockResolvedValue(undefined),
     analyticsGetPosthogConfig: vi
       .fn()
       .mockResolvedValue({ projectToken: 'phc_test', host: 'https://us.i.posthog.com', surveysEnabled: false }),

@@ -37,6 +37,7 @@ import type { AuditEntry } from '../shared/audit';
 import type { AutomationProgressEvent, AutomationStartRequest } from '../shared/automations/types';
 import type { CopilotPlan, CopilotPlanRequest } from '../shared/copilot';
 import type { AnalyticsEvent } from '../shared/analytics/events';
+import type { AnalyticsExceptionPayload } from '../shared/analytics/types';
 
 /**
  * The bridge API exposed to the renderer as `window.electronAPI`.
@@ -572,6 +573,7 @@ export interface ElectronAPI {
    * @returns {Promise<void>} Resolves once main has accepted the event.
    */
   analyticsTrackEvent(event: AnalyticsEvent): Promise<void>;
+  analyticsCaptureException(payload: AnalyticsExceptionPayload): Promise<void>;
   analyticsGetPosthogConfig(): Promise<{ projectToken?: string; host?: string; surveysEnabled?: boolean }>;
   /**
    * Queries the stored embedded MCP server settings from the main process over

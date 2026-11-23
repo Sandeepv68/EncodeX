@@ -106,6 +106,7 @@ const API_TABLE = {
   analyticsGetState: { kind: 'invoke', channel: IPC.ANALYTICS_GET_STATE, params: [] },
   analyticsSetEnabled: { kind: 'invoke', channel: IPC.ANALYTICS_SET_ENABLED, params: ['enabled'] },
   analyticsTrackEvent: { kind: 'invoke', channel: IPC.ANALYTICS_TRACK_EVENT, params: ['event'] },
+  analyticsCaptureException: { kind: 'invoke', channel: IPC.ANALYTICS_CAPTURE_EXCEPTION, params: ['payload'] },
   analyticsGetPosthogConfig: { kind: 'invoke', channel: IPC.ANALYTICS_GET_POSTHOG_CONFIG, params: [] },
   mcpGetSettings: { kind: 'invoke', channel: IPC.MCP_SETTINGS_GET, params: [] },
   mcpSetSettings: { kind: 'invoke', channel: IPC.MCP_SETTINGS_SET, params: ['settings'] },

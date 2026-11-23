@@ -4,10 +4,9 @@
  *
  * This is the ONLY module in the renderer allowed to import
  * `@sentry/electron/renderer`. It is initialized with the SDK's default
- * integrations EXCEPT its automatic global handlers (which are replaced by
- * explicit facade calls in `main.tsx` so a future backend swap keeps working).
- * Events flow to the main process over the SDK's own IPC transport, so the
- * DSN never enters the renderer bundle.
+ * integrations, including its automatic global handlers. Events flow to the
+ * main process over the SDK's own IPC transport, so the DSN never enters the
+ * renderer bundle.
  */
 
 import { Logger } from '../../shared/logger';
@@ -25,13 +24,6 @@ import type { MappedUser, SentryRendererSdk } from './types';
 
 /** Per-module logger for the renderer Sentry adapter. @const {Logger} */
 const log = new Logger('renderer/monitoring/sentryRendererProvider');
-
-/**
- * Default integration names whose behavior this adapter replaces with
- * provider-agnostic equivalents (explicit handlers calling the facade).
- * @const {string[]}
- */
-const REPLACED_DEFAULT_INTEGRATIONS = ['GlobalHandlers'];
 
 /**
  * Maps an optional {@link MonitorUser} onto the backend user record.
@@ -98,9 +90,8 @@ export class SentryRendererProvider implements MonitorProvider {
   }
 
   /**
-   * Initializes the renderer SDK. Tracing stays enabled; automatic global
-   * handlers are disabled (see {@link REPLACED_DEFAULT_INTEGRATIONS}) because
-   * `main.tsx` wires equivalent handlers through the facade explicitly.
+   * Initializes the renderer SDK with its default integrations, including its
+   * built-in global error handlers.
    *
    * @param {MonitoringConfig} config - Resolved config (dsn/release/environment ignored here;
    *   they live only in the main process by design).
@@ -113,8 +104,6 @@ export class SentryRendererProvider implements MonitorProvider {
         debug: config.debug ?? false,
         tracesSampleRate: config.tracesSampleRate ?? 1.0,
         attachStacktrace: true,
-        integrations: (defaults: Array<Record<string, unknown>>) =>
-          defaults.filter((integration) => !REPLACED_DEFAULT_INTEGRATIONS.includes(String(integration.name))),
       });
       this.sdk = mod;
       this.lastConfig = config;

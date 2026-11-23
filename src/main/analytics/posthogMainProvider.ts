@@ -18,11 +18,16 @@ import { NodeSDK } from '@opentelemetry/sdk-node';
 import { BatchLogRecordProcessor } from '@opentelemetry/sdk-logs';
 import { PostHog } from 'posthog-node';
 import { Logger } from '../../shared/logger';
-import { LOG_ANALYTICS_CLOSE_FAILED, LOG_ANALYTICS_INIT_FAILED, LOG_ANALYTICS_TRACK_FAILED } from '../../shared/log-constants';
+import {
+  LOG_ANALYTICS_CLOSE_FAILED,
+  LOG_ANALYTICS_EXCEPTION_CAPTURE_FAILED,
+  LOG_ANALYTICS_INIT_FAILED,
+  LOG_ANALYTICS_TRACK_FAILED,
+} from '../../shared/log-constants';
 import { ANALYTICS_EVENT_GROUP, type AnalyticsEvent } from '../../shared/analytics/events';
-import { sanitizeAnalyticsProps } from '../../shared/analytics/sanitize';
+import { sanitizeAnalyticsProps, sanitizeExceptionContext } from '../../shared/analytics/sanitize';
 import { filterPersonProperties } from '../../shared/analytics/personProperties';
-import type { AiGeneration, AiSpan, AnalyticsConfig, AnalyticsProvider } from '../../shared/analytics/types';
+import type { AiGeneration, AiSpan, AnalyticsConfig, AnalyticsExceptionContext, AnalyticsProvider } from '../../shared/analytics/types';
 import { resolveGroupGate } from './groupGate';
 import { coerceProfileKind, coerceHardwareClass } from './groups';
 import { FEATURE_FLAG_DEFAULTS } from './flags';
@@ -85,6 +90,7 @@ export class PostHogMainProvider implements AnalyticsProvider {
       this.client = new PostHog(projectToken, {
         host: phHost,
         privacyMode: !this.aiContentCaptureEnabled,
+        enableExceptionAutocapture: true,
       });
       this.active = true;
       log.info('PostHog analytics active.', { host: phHost });
@@ -431,6 +437,27 @@ export class PostHogMainProvider implements AnalyticsProvider {
       });
     } catch (err) {
       log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
+    }
+  }
+
+  captureException(error: unknown, context?: AnalyticsExceptionContext): void {
+    if (!this.active || !this.client || typeof this.client.captureException !== 'function') return;
+    try {
+      const properties: Record<string, string | number | boolean> = {};
+      const sanitized = sanitizeExceptionContext(context);
+      if (sanitized?.tags) {
+        for (const [key, value] of Object.entries(sanitized.tags)) properties[`error_tag.${key}`] = value;
+      }
+      if (sanitized?.extra) {
+        for (const [key, value] of Object.entries(sanitized.extra)) {
+          if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+            properties[`error_extra.${key}`] = value;
+          }
+        }
+      }
+      this.client.captureException(error, this.distinctId, properties);
+    } catch (err) {
+      log.debug(LOG_ANALYTICS_EXCEPTION_CAPTURE_FAILED, err);
     }
   }
 
