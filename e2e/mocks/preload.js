@@ -14,6 +14,11 @@
 const { contextBridge } = require('electron');
 const { state, subscribe, emit } = require('./main-store');
 
+contextBridge.exposeInMainWorld(
+  '__ENCODEX_E2E__',
+  process.env.E2E === 'true' || process.env.E2E_REAL === '1' || process.env.ENCODEX_TEST_MODE === '1' || process.env.ENCODEX_HOSTILE_MODE !== undefined,
+);
+
 const MCP_SETTINGS_FILENAME = 'mcp-settings.json';
 const AI_SETTINGS_FILENAME = 'ai-settings.json';
 
@@ -481,7 +486,7 @@ const api = {
   },
 
   // --- Usage analytics consent -------------------------------------------------
-  analyticsGetState: () => Promise.resolve({ enabled: true, backend: 'noop' }),
+  analyticsGetState: () => Promise.resolve({ enabled: true, backend: 'noop', featureFlags: { automations_page: true } }),
   analyticsSetEnabled: (enabled) => {
     state.analyticsCalls = state.analyticsCalls || [];
     state.analyticsCalls.push(!!enabled);

@@ -865,5 +865,6 @@ export interface ElectronAPI {
 declare global {
   interface Window {
     electronAPI: ElectronAPI;
+    __ENCODEX_E2E__?: boolean;
   }
 }

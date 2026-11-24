@@ -221,6 +221,14 @@ import {
  */
 const log = new Logger('preload');
 
+contextBridge.exposeInMainWorld(
+  '__ENCODEX_E2E__',
+  process.env.E2E === 'true' ||
+    process.env.E2E_REAL === '1' ||
+    process.env.ENCODEX_TEST_MODE === '1' ||
+    process.env.ENCODEX_HOSTILE_MODE !== undefined,
+);
+
 /**
  * Coalescing window, in milliseconds, per high-frequency push channel.
  *

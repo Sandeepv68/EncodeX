@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 
+const E2E_FLAGS: Record<string, boolean | string | number> = window.__ENCODEX_E2E__ === true ? { automations_page: true } : {};
+
 const DEFAULT_FLAGS: Record<string, boolean | string | number> = {
-  automations_page: import.meta.env.DEV,
+  automations_page: import.meta.env.DEV || window.__ENCODEX_E2E__ === true,
 };
 
 let cachedFlags: Record<string, boolean | string | number> | null = null;
@@ -13,7 +15,7 @@ async function loadFeatureFlags(): Promise<Record<string, boolean | string | num
   inflight = (async () => {
     try {
       const state = await window.electronAPI?.analyticsGetState?.();
-      cachedFlags = { ...DEFAULT_FLAGS, ...(state?.featureFlags ?? {}) };
+      cachedFlags = { ...DEFAULT_FLAGS, ...(state?.featureFlags ?? {}), ...E2E_FLAGS };
     } catch {
       cachedFlags = { ...DEFAULT_FLAGS };
     } finally {

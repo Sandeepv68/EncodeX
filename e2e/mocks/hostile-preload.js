@@ -26,6 +26,11 @@ const { IPC } = require('../../dist/shared/ipc-channels.js');
 /** @type {string} The failure mode injected into every method. */
 const MODE = process.env.ENCODEX_HOSTILE_MODE || 'healthy';
 
+contextBridge.exposeInMainWorld(
+  '__ENCODEX_E2E__',
+  process.env.E2E === 'true' || process.env.E2E_REAL === '1' || process.env.ENCODEX_TEST_MODE === '1' || process.env.ENCODEX_HOSTILE_MODE !== undefined,
+);
+
 /** Modes that make a method fail rather than pass through to main. */
 const HOSTILE_MODES = ['reject-sync', 'reject-async', 'never', 'wrong-type', 'garbage', 'partial'];
 

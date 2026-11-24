@@ -5,6 +5,7 @@ import { resetFeatureFlagsForTests, useFeatureFlag, useFeatureFlags } from '../u
 describe('useFeatureFlag', () => {
   beforeEach(() => {
     resetFeatureFlagsForTests();
+    delete (window as any).__ENCODEX_E2E__;
     (window as any).electronAPI = {
       analyticsGetState: vi.fn().mockResolvedValue({ enabled: true, backend: 'posthog', featureFlags: { automations_page: false } }),
     };
@@ -23,6 +24,14 @@ describe('useFeatureFlag', () => {
     const { result } = renderHook(() => useFeatureFlags());
     await waitFor(() => {
       expect(result.current).toEqual({ automations_page: import.meta.env.DEV });
+    });
+  });
+
+  it('enables automations in E2E builds even when the bridge reports it off', async () => {
+    (window as any).__ENCODEX_E2E__ = true;
+    const { result } = renderHook(() => useFeatureFlag('automations_page'));
+    await waitFor(() => {
+      expect(result.current).toBe(true);
     });
   });
 });
