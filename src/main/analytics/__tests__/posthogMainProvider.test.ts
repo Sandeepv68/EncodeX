@@ -370,16 +370,34 @@ describe('PostHogMainProvider', () => {
   it('sends exposure events for declared flags', async () => {
     getFeatureFlag.mockResolvedValue(false);
     const provider = new PostHogMainProvider();
-    await provider.init(baseConfig());
+    await provider.init(baseConfig({ appVersion: '1.0.0', channel: 'dev', mode: 'gui', locale: 'en', environment: 'development' }));
+    getAllFlags.mockClear();
+    getFeatureFlag.mockClear();
     await (provider as unknown as { refreshFlags: () => Promise<void> }).refreshFlags();
+    const personProperties = expect.objectContaining({
+      app_version: '1.0.0',
+      channel: 'dev',
+      mode: 'gui',
+      locale: 'en',
+      environment: 'development',
+      platform: process.platform,
+      arch: process.arch,
+      os_version: os.release(),
+      node_version: process.versions.node,
+      $session_id: expect.any(String),
+    });
+    expect(getAllFlags).toHaveBeenCalledWith(expect.any(String), { personProperties });
     expect(getFeatureFlag).toHaveBeenCalledWith('analytics_group_convert', expect.any(String), {
       sendFeatureFlagEvents: true,
+      personProperties,
     });
     expect(getFeatureFlag).toHaveBeenCalledWith('analytics_group_queue', expect.any(String), {
       sendFeatureFlagEvents: true,
+      personProperties,
     });
     expect(getFeatureFlag).toHaveBeenCalledWith('mcp_server_default_on', expect.any(String), {
       sendFeatureFlagEvents: true,
+      personProperties,
     });
     expect(provider.isFeatureFlagEnabled('mcp_server_default_on')).toBe(false);
   });
