@@ -372,75 +372,77 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
     <>
       <DrawerNav component="nav" aria-label={t('app.navigation')}>
         <NavList>
-          {NAV_ITEMS.filter((item) => !(logsWindowOpen && item.to === '/logs') && (automationsEnabled || item.to !== '/automations')).map((item, index) => {
-            const label = t(`nav.${navKeyMap[item.to]}`);
-            // The job popover already names the page it is anchored to and pins to
-            // the same edge of the drawer, so the row tooltip stands down while
-            // that popover is open instead of stacking two cards on top of
-            // each other.
-            const tooltipTitle = condensed && !(popoverBlip !== null && blipForRoute(item.to) === popoverBlip) ? label : '';
-            return (
-              <Tooltip key={item.to} title={tooltipTitle} placement="right">
-                <NavItemButton
-                  $condensed={condensed}
-                  data-testid={`nav-item-${item.to === '/' ? 'dashboard' : item.to.slice(1)}`}
-                  selected={location.pathname === item.to}
-                  $index={index}
-                  onMouseLeave={scheduleClose}
-                  onFocus={(e) => openPopover(e, item.to)}
-                  onBlur={scheduleClose}
-                  onClick={() => {
-                    closePopover();
-                    navigate(item.to);
-                    // Journey anchor (D9): every interaction is attributed to the tool
-                    // it happened in via the route badge stamped on subsequent events.
-                    recordAnalyticsEvent(createAnalyticsEvent('tool_opened', { route: item.to }));
-                    setAnalyticsContext({ route: item.to, jobKind: item.to === '/batch' ? 'batch' : undefined });
-                    if (isMobile) onNavigate();
-                  }}
-                >
-                  <NavItemIcon $active={location.pathname === item.to} $condensed={condensed}>
-                    {pageIcons[item.to]}
-                  </NavItemIcon>
-                  {!condensed && <NavItemText primary={label} />}
-                  {item.to === '/convert' && isConverting && (
-                    <NavBlip
-                      $condensed={condensed}
-                      aria-hidden="true"
-                      data-testid="nav-convert-blip"
-                      onMouseEnter={(e) => openPopover(e, item.to)}
-                    />
-                  )}
-                  {item.to === '/audio-extract' && isExtractingAudio && (
-                    <NavBlip
-                      $condensed={condensed}
-                      aria-hidden="true"
-                      data-testid="nav-audio-extract-blip"
-                      onMouseEnter={(e) => openPopover(e, item.to)}
-                    />
-                  )}
-                  {item.to === '/video-cut' && isCutting && (
-                    <NavBlip
-                      $condensed={condensed}
-                      aria-hidden="true"
-                      data-testid="nav-video-cut-blip"
-                      onMouseEnter={(e) => openPopover(e, item.to)}
-                    />
-                  )}
-                  {item.to === '/batch' && batchJobCount > 0 && (
-                    <NavCountBadge
-                      $condensed={condensed}
-                      data-testid="nav-batch-blip"
-                      aria-label={t('batchQueue.badgeCount', { count: batchJobCount })}
-                      onMouseEnter={(e) => openPopover(e, item.to)}
-                    >
-                      {batchJobCount}
-                    </NavCountBadge>
-                  )}
-                </NavItemButton>
-              </Tooltip>
-            );
-          })}
+          {NAV_ITEMS.filter((item) => !(logsWindowOpen && item.to === '/logs') && (automationsEnabled || item.to !== '/automations')).map(
+            (item, index) => {
+              const label = t(`nav.${navKeyMap[item.to]}`);
+              // The job popover already names the page it is anchored to and pins to
+              // the same edge of the drawer, so the row tooltip stands down while
+              // that popover is open instead of stacking two cards on top of
+              // each other.
+              const tooltipTitle = condensed && !(popoverBlip !== null && blipForRoute(item.to) === popoverBlip) ? label : '';
+              return (
+                <Tooltip key={item.to} title={tooltipTitle} placement="right">
+                  <NavItemButton
+                    $condensed={condensed}
+                    data-testid={`nav-item-${item.to === '/' ? 'dashboard' : item.to.slice(1)}`}
+                    selected={location.pathname === item.to}
+                    $index={index}
+                    onMouseLeave={scheduleClose}
+                    onFocus={(e) => openPopover(e, item.to)}
+                    onBlur={scheduleClose}
+                    onClick={() => {
+                      closePopover();
+                      navigate(item.to);
+                      // Journey anchor (D9): every interaction is attributed to the tool
+                      // it happened in via the route badge stamped on subsequent events.
+                      recordAnalyticsEvent(createAnalyticsEvent('tool_opened', { route: item.to }));
+                      setAnalyticsContext({ route: item.to, jobKind: item.to === '/batch' ? 'batch' : undefined });
+                      if (isMobile) onNavigate();
+                    }}
+                  >
+                    <NavItemIcon $active={location.pathname === item.to} $condensed={condensed}>
+                      {pageIcons[item.to]}
+                    </NavItemIcon>
+                    {!condensed && <NavItemText primary={label} />}
+                    {item.to === '/convert' && isConverting && (
+                      <NavBlip
+                        $condensed={condensed}
+                        aria-hidden="true"
+                        data-testid="nav-convert-blip"
+                        onMouseEnter={(e) => openPopover(e, item.to)}
+                      />
+                    )}
+                    {item.to === '/audio-extract' && isExtractingAudio && (
+                      <NavBlip
+                        $condensed={condensed}
+                        aria-hidden="true"
+                        data-testid="nav-audio-extract-blip"
+                        onMouseEnter={(e) => openPopover(e, item.to)}
+                      />
+                    )}
+                    {item.to === '/video-cut' && isCutting && (
+                      <NavBlip
+                        $condensed={condensed}
+                        aria-hidden="true"
+                        data-testid="nav-video-cut-blip"
+                        onMouseEnter={(e) => openPopover(e, item.to)}
+                      />
+                    )}
+                    {item.to === '/batch' && batchJobCount > 0 && (
+                      <NavCountBadge
+                        $condensed={condensed}
+                        data-testid="nav-batch-blip"
+                        aria-label={t('batchQueue.badgeCount', { count: batchJobCount })}
+                        onMouseEnter={(e) => openPopover(e, item.to)}
+                      >
+                        {batchJobCount}
+                      </NavCountBadge>
+                    )}
+                  </NavItemButton>
+                </Tooltip>
+              );
+            },
+          )}
         </NavList>
         <DrawerDivider />
         <NavFooter>
