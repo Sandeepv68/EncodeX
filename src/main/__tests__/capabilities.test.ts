@@ -118,4 +118,16 @@ describe('getEncoderCapabilities', () => {
     });
     expect(getEncoderCapabilities(true)).toBeNull();
   });
+
+  it('returns null when spawnSync reports an error', () => {
+    spawnSyncMock.mockReturnValue({ error: new Error('spawn error'), status: null, stdout: '' });
+    expect(getEncoderCapabilities(true)).toBeNull();
+  });
+
+  it('treats missing stdout as empty ffmpeg output', () => {
+    spawnSyncMock
+      .mockReturnValueOnce({ error: null, status: 0, stdout: undefined })
+      .mockReturnValueOnce({ error: null, status: 0, stdout: undefined });
+    expect(getEncoderCapabilities(true)).toEqual({ videoEncoders: [], audioEncoders: [], hwaccels: [] });
+  });
 });

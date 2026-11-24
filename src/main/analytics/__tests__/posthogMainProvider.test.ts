@@ -102,6 +102,7 @@ describe('PostHogMainProvider', () => {
     knobs.userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'encodex-posthog-'));
     capture.mockImplementation(() => undefined);
     captureException.mockImplementation(() => undefined);
+    logEmit.mockImplementation(() => undefined);
     flush.mockResolvedValue(undefined);
     shutdown.mockResolvedValue(undefined);
     identify.mockImplementation(() => undefined);
@@ -535,6 +536,15 @@ describe('PostHogMainProvider', () => {
     });
   });
 
+  it('survives a client whose captureException throws', async () => {
+    captureException.mockImplementation(() => {
+      throw new Error('exception capture boom');
+    });
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig());
+    expect(() => provider.captureException(new Error('boom'))).not.toThrow();
+  });
+
   it('ignores AI generations and spans while inactive', () => {
     const provider = new PostHogMainProvider();
     provider.captureAiGeneration({ traceId: 't', provider: 'p', model: 'm', input: [], latency: 1 });
@@ -659,6 +669,28 @@ describe('PostHogMainProvider', () => {
 
     await provider.close();
     expect(removeObserver).toHaveBeenCalledWith(42);
+  });
+
+  it('survives an app log exporter that throws', async () => {
+    const addObserver = vi.spyOn(logHub, 'addObserver').mockReturnValue(11);
+    const removeObserver = vi.spyOn(logHub, 'removeObserver');
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig());
+    logEmit.mockImplementation(() => {
+      throw new Error('log export boom');
+    });
+    const observer = addObserver.mock.calls[0][0];
+    expect(() =>
+      observer({
+        timestamp: '2026-01-01T00:00:00.000Z',
+        level: 'INFO',
+        text: 'hello',
+        source: 'main',
+      }),
+    ).not.toThrow();
+    expect(logEmit).toHaveBeenCalled();
+    await provider.close();
+    expect(removeObserver).toHaveBeenCalledWith(11);
   });
 
   it('does not capture app logs when log capture is disabled', async () => {

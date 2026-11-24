@@ -39,6 +39,17 @@ describe('exception sanitization', () => {
     expect(payload.stack).toEqual(expect.any(String));
   });
 
+  it('serializes string exceptions', () => {
+    expect(createAnalyticsExceptionPayload('boom')).toEqual({ message: 'boom' });
+  });
+
+  it('serializes record-shaped exceptions', () => {
+    expect(createAnalyticsExceptionPayload({ name: 'CustomError', message: 'record boom' })).toEqual({
+      name: 'CustomError',
+      message: 'record boom',
+    });
+  });
+
   it('bounds hostile IPC exception payloads', () => {
     const payload = parseAnalyticsExceptionPayload({
       name: 'A'.repeat(500),

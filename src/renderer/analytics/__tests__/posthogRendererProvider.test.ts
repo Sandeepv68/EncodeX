@@ -67,6 +67,33 @@ describe('PostHogRendererProvider', () => {
     );
   });
 
+  it('swallows exception relay rejections', async () => {
+    const failing = vi.fn().mockRejectedValue(new Error('boom'));
+    Object.defineProperty(globalThis, 'window', {
+      configurable: true,
+      value: { electronAPI: { analyticsCaptureException: failing } },
+    });
+    const provider = new PostHogRendererProvider();
+    await provider.init({ enabled: true });
+    provider.captureException(new Error('boom'));
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(failing).toHaveBeenCalled();
+  });
+
+  it('swallows an exception relay that throws synchronously', async () => {
+    const throwing = vi.fn(() => {
+      throw new Error('sync boom');
+    });
+    Object.defineProperty(globalThis, 'window', {
+      configurable: true,
+      value: { electronAPI: { analyticsCaptureException: throwing } },
+    });
+    const provider = new PostHogRendererProvider();
+    await provider.init({ enabled: true });
+    expect(() => provider.captureException(new Error('boom'))).not.toThrow();
+    expect(throwing).toHaveBeenCalled();
+  });
+
   it('does not relay exceptions after consent is disabled', async () => {
     const provider = new PostHogRendererProvider();
     await provider.init({ enabled: true });

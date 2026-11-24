@@ -15,6 +15,8 @@ import { stubScrollIntoView } from '../../test-utils/page-render';
 import type { LogEntry } from '../../shared/types';
 import type { AuditEntry } from '../../shared/audit';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import { expectCrash } from '../../test-utils/crash-tripwire';
+import { resetFeatureFlagsForTests } from '../hooks/useFeatureFlags';
 
 vi.mock('../../shared/analytics/AnalyticsService', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../shared/analytics/AnalyticsService')>();
@@ -300,5 +302,32 @@ describe('App', () => {
     renderApp();
     await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
     expect(screen.queryByTestId('nav-video-cut-blip')).not.toBeInTheDocument();
+  });
+
+  it('records a root page view when the location has no pathname', async () => {
+    expectCrash('consoleWarn', /relative pathnames are not supported in memory history/);
+    render(
+      <MemoryRouter initialEntries={[{ pathname: '', search: '', hash: '' }]}>
+        <App />
+      </MemoryRouter>,
+    );
+
+    await waitFor(() =>
+      expect(recordAnalyticsEventMock).toHaveBeenCalledWith(expect.objectContaining({ name: 'page_viewed', props: { path: '/' } })),
+    );
+  });
+
+  it('redirects away from automations when the feature flag is disabled', async () => {
+    vi.mocked(window.electronAPI.analyticsGetState).mockResolvedValue({
+      enabled: true,
+      backend: 'noop',
+      featureFlags: { automations_page: false },
+    });
+    resetFeatureFlagsForTests();
+
+    renderApp(['/automations']);
+
+    expect(await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 })).toBeInTheDocument();
+    expect(screen.queryByText('automations.title')).not.toBeInTheDocument();
   });
 });

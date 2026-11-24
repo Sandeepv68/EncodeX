@@ -105,6 +105,20 @@ describe('renderer Content-Security-Policy', () => {
     expect(configured.get('connect-src')).toContain('https://us-assets.i.posthog.com');
   });
 
+  it('maps the managed PostHog host to the US assets origin', () => {
+    const configured = parseCsp(buildContentSecurityPolicy('https://app.posthog.com'));
+    expect(configured.get('script-src')).toContain('https://us-assets.i.posthog.com');
+    expect(configured.get('connect-src')).toContain('https://app.posthog.com');
+    expect(configured.get('connect-src')).toContain('https://us-assets.i.posthog.com');
+  });
+
+  it('ignores invalid and unsupported PostHog hosts', () => {
+    expect(parseCsp(buildContentSecurityPolicy('not a url')).get('connect-src')).not.toContain('https://us-assets.i.posthog.com');
+    expect(parseCsp(buildContentSecurityPolicy('ftp://us.i.posthog.com')).get('connect-src')).not.toContain(
+      'https://us-assets.i.posthog.com',
+    );
+  });
+
   it('keeps inline scripts blocked in the production policy', () => {
     expect(directives.get('script-src')).not.toContain("'unsafe-inline'");
   });

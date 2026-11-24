@@ -328,6 +328,12 @@ describe('AnalyticsService', () => {
     expect(provider.exceptions).toEqual([{ error, context: { tags: { handler: 'window.error' } } }]);
   });
 
+  it('survives a throwing provider while replaying pre-init exceptions', async () => {
+    resetAnalyticsForTests();
+    captureAnalyticsException(new Error('early boom'));
+    await expect(initAnalytics({ enabled: true, provider: 'throwing' }, () => new ThrowingProvider())).resolves.toBeUndefined();
+  });
+
   it('forwards exceptions to the provider after init', async () => {
     resetAnalyticsForTests();
     await initAnalytics({ enabled: true, provider: 'fake' }, () => provider);
