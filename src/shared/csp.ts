@@ -39,11 +39,25 @@ function safeHttpOrigin(host?: string): string | null {
   }
 }
 
+function posthogAssetOrigin(host?: string): string | null {
+  const origin = safeHttpOrigin(host);
+  if (!origin) return null;
+  const url = new URL(origin);
+  const hostname = url.hostname;
+  if (hostname === 'app.posthog.com') return 'https://us-assets.i.posthog.com';
+  const match = /^(us|eu|us-assets|eu-assets)\.i\.posthog\.com$/.exec(hostname);
+  if (!match) return null;
+  const region = match[1].startsWith('us') ? 'us' : 'eu';
+  return `${url.protocol}//${region}-assets.i.posthog.com`;
+}
+
 export function buildContentSecurityPolicy(posthogHost?: string, dev = false): string {
   const origin = safeHttpOrigin(posthogHost);
+  const assetOrigin = posthogAssetOrigin(posthogHost);
   const allowPosthog = origin ? ` ${origin}` : '';
-  const scriptSrc = dev ? "script-src 'self' 'unsafe-inline'" : "script-src 'self'";
-  return `${POLICY_PREFIX}; ${scriptSrc}; ${POLICY_SUFFIX} connect-src 'self' aptabase-ipc:${allowPosthog}`;
+  const allowPosthogAssets = assetOrigin ? ` ${assetOrigin}` : '';
+  const scriptSrc = `${dev ? "script-src 'self' 'unsafe-inline'" : "script-src 'self'"}${allowPosthogAssets}`;
+  return `${POLICY_PREFIX}; ${scriptSrc}; ${POLICY_SUFFIX} connect-src 'self' aptabase-ipc:${allowPosthog}${allowPosthogAssets}`;
 }
 
 /** The strict policy shipped in production builds. @const {string} */

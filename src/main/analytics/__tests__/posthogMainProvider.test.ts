@@ -33,10 +33,11 @@ const identify = vi.hoisted(() => vi.fn());
 const groupIdentify = vi.hoisted(() => vi.fn());
 const getAllFlags = vi.hoisted(() => vi.fn().mockResolvedValue({}));
 const getFeatureFlag = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
+const register = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
 const posthogCtor = vi.hoisted(() =>
   vi.fn(function () {
     if (knobs.ctorThrows) throw new Error('ctor boom');
-    const client: Record<string, unknown> = { capture, captureException, flush, shutdown };
+    const client: Record<string, unknown> = { capture, captureException, flush, shutdown, register };
     if (!knobs.omitIdentify) client.identify = identify;
     if (!knobs.omitGroupIdentify) client.groupIdentify = groupIdentify;
     if (!knobs.omitGetAllFlags) {
@@ -105,6 +106,7 @@ describe('PostHogMainProvider', () => {
     shutdown.mockResolvedValue(undefined);
     identify.mockImplementation(() => undefined);
     groupIdentify.mockImplementation(() => undefined);
+    register.mockResolvedValue(undefined);
     getAllFlags.mockResolvedValue({});
     getFeatureFlag.mockResolvedValue(undefined);
     delete process.env.ANALYTICS_GROUPS;
@@ -146,13 +148,14 @@ describe('PostHogMainProvider', () => {
     expect(provider.isEnabled()).toBe(false);
   });
 
-  it('constructs a privacy-first client with the configured token and host', async () => {
+  it('constructs a privacy-first client with GeoIP enabled', async () => {
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig());
     expect(posthogCtor).toHaveBeenCalledWith('phc_test', {
       host: 'https://us.i.posthog.com',
       privacyMode: true,
       enableExceptionAutocapture: true,
+      disableGeoip: false,
     });
     expect(provider.isEnabled()).toBe(true);
   });
@@ -183,6 +186,17 @@ describe('PostHogMainProvider', () => {
   it('attaches environment details as super properties', async () => {
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig({ appVersion: '1.0.0', channel: 'prod', mode: 'gui', locale: 'en', environment: 'production' }));
+    expect(register).toHaveBeenCalledWith(
+      expect.objectContaining({
+        app_version: '1.0.0',
+        channel: 'prod',
+        mode: 'gui',
+        locale: 'en',
+        environment: 'production',
+        platform: process.platform,
+        arch: process.arch,
+      }),
+    );
     provider.track(createAnalyticsEvent('tool_opened', { route: '/convert' }));
     const properties = capture.mock.calls[0][0].properties as Record<string, unknown>;
     expect(properties).toMatchObject({
@@ -206,6 +220,7 @@ describe('PostHogMainProvider', () => {
   it('maps page_viewed to PostHog page and screen events', async () => {
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig());
+    capture.mockClear();
     provider.track(createAnalyticsEvent('page_viewed', { path: '/convert' }));
     expect(capture).toHaveBeenCalledTimes(2);
     const expectedProperties = expect.objectContaining({
@@ -226,26 +241,28 @@ describe('PostHogMainProvider', () => {
 
   it('identifies the person once with allowlisted properties', async () => {
     const provider = new PostHogMainProvider();
-    await provider.init(baseConfig({ appVersion: '1.0.0', channel: 'prod', mode: 'gui', locale: 'en' }));
-    expect(identify).toHaveBeenCalledTimes(1);
-    const payload = identify.mock.calls[0][0] as {
-      properties: { $set: Record<string, unknown>; $set_once: Record<string, unknown> };
+    await provider.init(baseConfig({ appVersion: '1.0.0', channel: 'prod', mode: 'gui', locale: 'en', environment: 'production' }));
+    const identifyCall = capture.mock.calls.find((call) => call[0].event === '$identify');
+    expect(identifyCall).toBeTruthy();
+    const payload = identifyCall![0] as {
+      properties: Record<string, unknown> & { $set: Record<string, unknown>; $set_once: Record<string, unknown> };
     };
+    expect(payload.properties).toMatchObject({
+      app_version: '1.0.0',
+      channel: 'prod',
+      mode: 'gui',
+      locale: 'en',
+      environment: 'production',
+      platform: process.platform,
+      arch: process.arch,
+    });
     expect(payload.properties.$set).toMatchObject({ app_version: '1.0.0', os: process.platform });
     expect(payload.properties.$set_once).toEqual({ first_seen_version: '1.0.0' });
   });
 
-  it('skips identify when the client does not support it', async () => {
-    knobs.omitIdentify = true;
-    const provider = new PostHogMainProvider();
-    await provider.init(baseConfig({ appVersion: '1.0.0' }));
-    expect(identify).not.toHaveBeenCalled();
-    expect(provider.isEnabled()).toBe(true);
-  });
-
-  it('survives a client whose identify throws', async () => {
-    identify.mockImplementation(() => {
-      throw new Error('identify boom');
+  it('survives a client whose identify capture throws', async () => {
+    capture.mockImplementation((payload: { event?: string }) => {
+      if (payload.event === '$identify') throw new Error('identify boom');
     });
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig({ appVersion: '1.0.0' }));
@@ -269,6 +286,7 @@ describe('PostHogMainProvider', () => {
     process.env.ANALYTICS_GROUPS = 'lifecycle,settings';
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig());
+    capture.mockClear();
 
     provider.track(createAnalyticsEvent('conversion_started', { jobKind: 'single', transcoder: 'ffmpeg', hwAccel: false }));
     expect(capture).not.toHaveBeenCalled();
@@ -283,6 +301,7 @@ describe('PostHogMainProvider', () => {
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig());
     await (provider as unknown as { refreshFlags: () => Promise<void> }).refreshFlags();
+    capture.mockClear();
     provider.track(createAnalyticsEvent('tool_opened', { route: '/convert' }));
     expect(capture).not.toHaveBeenCalled();
   });
@@ -402,6 +421,7 @@ describe('PostHogMainProvider', () => {
   it('omits AI prompt and completion content by default', async () => {
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig());
+    capture.mockClear();
     provider.captureAiGeneration({
       traceId: 't1',
       provider: 'openai',
@@ -420,6 +440,7 @@ describe('PostHogMainProvider', () => {
     process.env.POSTHOG_AI_CAPTURE_CONTENT = 'true';
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig());
+    capture.mockClear();
     provider.captureAiGeneration({
       traceId: 't1',
       provider: 'openai',
@@ -437,6 +458,7 @@ describe('PostHogMainProvider', () => {
   it('includes span hierarchy metadata on AI generations', async () => {
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig());
+    capture.mockClear();
     provider.captureAiGeneration({
       traceId: 't1',
       spanId: 'g1',
@@ -505,6 +527,7 @@ describe('PostHogMainProvider', () => {
   it('drops events after setEnabled(false)', async () => {
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig());
+    capture.mockClear();
     provider.setEnabled(false);
     provider.track(createAnalyticsEvent('tool_opened', { route: '/convert' }));
     expect(capture).not.toHaveBeenCalled();
@@ -522,10 +545,13 @@ describe('PostHogMainProvider', () => {
   it('identifies the person only once', async () => {
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig({ appVersion: '1.0.0' }));
+    const before = capture.mock.calls.filter((call) => call[0].event === '$identify').length;
     await (provider as unknown as { identifyPerson: (config: AnalyticsConfig) => void }).identifyPerson(
       baseConfig({ appVersion: '1.0.0' }),
     );
-    expect(identify).toHaveBeenCalledTimes(1);
+    const after = capture.mock.calls.filter((call) => call[0].event === '$identify').length;
+    expect(before).toBe(1);
+    expect(after).toBe(1);
   });
 
   it('falls back to the cached flags when the remote lookup times out', async () => {

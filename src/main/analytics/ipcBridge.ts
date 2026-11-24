@@ -99,9 +99,31 @@ export function registerAnalyticsIpcBridge(options: { userDataDir: string; conse
     }
   });
 
-  ipcMain.handle(IPC.ANALYTICS_GET_POSTHOG_CONFIG, (): { projectToken?: string; host?: string; surveysEnabled?: boolean } => {
-    const token = process.env.POSTHOG_PROJECT_TOKEN ?? POSTHOG_BUILD_CONFIG.projectToken;
-    const host = process.env.POSTHOG_HOST ?? POSTHOG_BUILD_CONFIG.host;
-    return { projectToken: token, host, surveysEnabled: resolveSurveysEnabled() };
-  });
+  ipcMain.handle(
+    IPC.ANALYTICS_GET_POSTHOG_CONFIG,
+    (): {
+      projectToken?: string;
+      host?: string;
+      surveysEnabled?: boolean;
+      environment?: string;
+      channel?: string;
+      appVersion?: string;
+      platform?: string;
+      arch?: string;
+      hwAccelAvailable?: boolean;
+    } => {
+      const token = process.env.POSTHOG_PROJECT_TOKEN ?? POSTHOG_BUILD_CONFIG.projectToken;
+      const host = process.env.POSTHOG_HOST ?? POSTHOG_BUILD_CONFIG.host;
+      return {
+        projectToken: token,
+        host,
+        surveysEnabled: resolveSurveysEnabled(),
+        environment: process.env.NODE_ENV === 'development' ? 'development' : 'production',
+        channel: process.env.NODE_ENV === 'development' ? 'dev' : 'prod',
+        appVersion: process.env.npm_package_version,
+        platform: process.platform,
+        arch: process.arch,
+      };
+    },
+  );
 }

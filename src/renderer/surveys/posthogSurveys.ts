@@ -26,14 +26,21 @@ export async function initPosthogSurveys(consent: boolean): Promise<void> {
   if (initialised || !consent) return;
   if (typeof window === 'undefined' || !window.electronAPI?.analyticsGetPosthogConfig) return;
   try {
-    const { projectToken, host } = await window.electronAPI.analyticsGetPosthogConfig();
-    if (!projectToken || !host) return;
-    posthog.init(projectToken, {
-      api_host: host,
+    const config = await window.electronAPI.analyticsGetPosthogConfig();
+    if (!config.projectToken || !config.host) return;
+    posthog.init(config.projectToken, {
+      api_host: config.host,
       autocapture: false,
       capture_pageview: false,
       capture_exceptions: true,
       persistence: 'memory',
+    });
+    posthog.register({
+      ...(config.environment ? { environment: config.environment } : {}),
+      ...(config.channel ? { channel: config.channel } : {}),
+      ...(config.appVersion ? { app_version: config.appVersion } : {}),
+      ...(config.platform ? { platform: config.platform } : {}),
+      ...(config.arch ? { arch: config.arch } : {}),
     });
     initialised = true;
   } catch (err) {

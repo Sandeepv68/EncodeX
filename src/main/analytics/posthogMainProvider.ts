@@ -109,6 +109,7 @@ export class PostHogMainProvider implements AnalyticsProvider {
         host: phHost,
         privacyMode: !this.aiContentCaptureEnabled,
         enableExceptionAutocapture: true,
+        disableGeoip: false,
       });
       this.active = true;
       this.logsEnabled = config.posthogLogsEnabled !== false;
@@ -142,6 +143,9 @@ export class PostHogMainProvider implements AnalyticsProvider {
       if (config.environment) superProps.environment = config.environment;
       if (config.hwAccelAvailable !== undefined) superProps.hw_accel_available = config.hwAccelAvailable;
       this.superProperties = superProps;
+      if (typeof this.client.register === 'function') {
+        void this.client.register(superProps as Parameters<PostHog['register']>[0]);
+      }
 
       this.identifyPerson(config);
 
@@ -257,6 +261,7 @@ export class PostHogMainProvider implements AnalyticsProvider {
         const properties: Record<string, unknown> = {
           ...this.superProperties,
           ...sanitized,
+          environment: this.superProperties.environment,
         };
         if (NO_PERSON_PROFILE_EVENTS.has(event.name)) {
           properties.$process_person_profile = false;
@@ -335,7 +340,6 @@ export class PostHogMainProvider implements AnalyticsProvider {
    */
   private identifyPerson(config: AnalyticsConfig): void {
     if (!this.client || this.identified) return;
-    if (typeof this.client.identify !== 'function') return;
     try {
       const personProperties: Record<string, unknown> = {};
       if (config.appVersion) personProperties.app_version = config.appVersion;
@@ -350,9 +354,11 @@ export class PostHogMainProvider implements AnalyticsProvider {
       personProperties.node_version = process.versions.node;
       if (config.mode) personProperties.mode = config.mode;
       const filtered = filterPersonProperties(personProperties);
-      this.client.identify({
+      this.client.capture({
         distinctId: this.distinctId,
+        event: '$identify',
         properties: {
+          ...this.superProperties,
           $set: filtered,
           $set_once: { first_seen_version: config.appVersion },
         },
@@ -476,6 +482,7 @@ export class PostHogMainProvider implements AnalyticsProvider {
         distinctId: this.distinctId,
         event: '$ai_generation',
         properties: {
+          ...this.superProperties,
           $ai_trace_id: generation.traceId,
           $ai_session_id: this.distinctId,
           ...(generation.spanId ? { $ai_span_id: generation.spanId, $ai_span_name: 'llm_generation' } : {}),
@@ -511,6 +518,7 @@ export class PostHogMainProvider implements AnalyticsProvider {
         distinctId: this.distinctId,
         event: '$ai_span',
         properties: {
+          ...this.superProperties,
           $ai_trace_id: span.traceId,
           $ai_session_id: this.distinctId,
           $ai_span_id: span.spanId,

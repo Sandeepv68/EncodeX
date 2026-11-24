@@ -98,11 +98,33 @@ describe('installContentSecurityPolicy', () => {
     expect(stripScriptSrc(DEV_CONTENT_SECURITY_POLICY)).toEqual(stripScriptSrc(CONTENT_SECURITY_POLICY));
   });
 
-  it('allows only the configured PostHog origin in connect-src', () => {
+  it('passes the configured PostHog host to the policy builder', () => {
     const { fire } = openSession({ posthogHost: 'https://us.i.posthog.com/survey' });
     expect(fire({}).mock.calls[0][0]).toEqual({
       responseHeaders: { [CSP_HEADER_NAME]: [buildContentSecurityPolicy('https://us.i.posthog.com')] },
     });
+  });
+
+  it('allows the PostHog assets origin in script-src and connect-src', () => {
+    const policy = buildContentSecurityPolicy('https://us.i.posthog.com');
+    expect(policy).toContain("script-src 'self' https://us-assets.i.posthog.com");
+    expect(policy).toContain("connect-src 'self' aptabase-ipc: https://us.i.posthog.com https://us-assets.i.posthog.com");
+  });
+
+  it('allows the PostHog assets origin in the dev policy too', () => {
+    const policy = buildContentSecurityPolicy('https://us.i.posthog.com', true);
+    expect(policy).toContain("script-src 'self' 'unsafe-inline' https://us-assets.i.posthog.com");
+    expect(policy).toContain("connect-src 'self' aptabase-ipc: https://us.i.posthog.com https://us-assets.i.posthog.com");
+  });
+
+  it('derives the EU assets origin from the EU ingestion host', () => {
+    expect(buildContentSecurityPolicy('https://eu.i.posthog.com')).toContain('https://eu-assets.i.posthog.com');
+  });
+
+  it('does not add an assets origin for self-hosted PostHog hosts', () => {
+    const policy = buildContentSecurityPolicy('https://posthog.example.com');
+    expect(policy).toContain('https://posthog.example.com');
+    expect(policy).not.toContain('assets.i.posthog.com');
   });
 
   it('ignores non-http PostHog hosts in connect-src', () => {

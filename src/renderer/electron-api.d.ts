@@ -574,7 +574,16 @@ export interface ElectronAPI {
    */
   analyticsTrackEvent(event: AnalyticsEvent): Promise<void>;
   analyticsCaptureException(payload: AnalyticsExceptionPayload): Promise<void>;
-  analyticsGetPosthogConfig(): Promise<{ projectToken?: string; host?: string; surveysEnabled?: boolean }>;
+  analyticsGetPosthogConfig(): Promise<{
+    projectToken?: string;
+    host?: string;
+    surveysEnabled?: boolean;
+    environment?: string;
+    channel?: string;
+    appVersion?: string;
+    platform?: string;
+    arch?: string;
+  }>;
   /**
    * Queries the stored embedded MCP server settings from the main process over
    * `IPC.MCP_SETTINGS_GET` ('mcp-settings-get').
