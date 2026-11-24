@@ -4,7 +4,7 @@ EncodeX is a cross-platform multimedia conversion tool that brings the power of 
 
 ![EncodeX dashboard](images/home_dashboard.webp)
 
-> **Status:** `1.0.0-beta.8` — the 1.0 production-readiness phase (release hardening, blocking audit gate, coverage/mutation ratchets). The embedded MCP server and the local-model / speech-to-text / translation runtimes are the newest subsystems and remain opt-in.
+> **Status:** `1.0.0-beta.9` — the 1.0 production-readiness phase (release hardening, blocking audit gate, coverage/mutation ratchets). The embedded MCP server and the local-model / speech-to-text / translation runtimes are the newest subsystems and remain opt-in.
 
 ## 🚀 Getting Started
 

@@ -11,6 +11,11 @@ EncodeX आपके कंप्यूटर के लिए एक मुफ�
 
 ---
 
+## 1.0.0-beta.9 में नया
+
+- **PostHog rollout** — privacy-aware product events, pageviews, exceptions और logs अब consent-gated analytics pipeline से चलते हैं।
+- **केवल-production portal** — dashboards, insights, cohorts, replays, survey targeting और log alerts production तक filtered हैं और test accounts को exclude करते हैं।
+
 ## 1.0.0-beta.8 में नया
 
 - **अपडेटर फ़िक्स** — उपलब्ध अपडेट अब renderer को भेजा जाता है, जिससे **अपडेट जाँचें** "अपडेट जाँच रहा है" पर नहीं अटकता।

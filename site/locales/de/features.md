@@ -11,6 +11,11 @@ Es läuft auf Windows, Mac und Linux, ist vollständig kostenlos und seine Oberf
 
 ---
 
+## Neu in 1.0.0-beta.9
+
+- **PostHog-Rollout** — Datenschutzfreundliche Produkt-Ereignisse, Pageviews, Ausnahmen und Logs laufen jetzt über die zustimmungspflichtige Analytics-Pipeline.
+- **Nur-Produktions-Portal** — Dashboards, Insights, Kohorten, Replays, Survey-Zielgruppen und Log-Alarme sind auf Produktion gefiltert und schließen Testkonten aus.
+
 ## Neu in 1.0.0-beta.8
 
 - **Updater-Fix** — ein verfügbares Update wird jetzt an den Renderer weitergeleitet, sodass **Nach Updates suchen** nicht mehr auf „Updates werden geprüft" hängen bleibt.

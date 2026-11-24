@@ -14,6 +14,11 @@ EncodeX is a free app for your computer that fixes common file problems in a few
 
 It works on Windows, Mac, and Linux, it's completely free, and its interface is available in 56 locales.
 
+## New in 1.0.0-beta.9
+
+- **PostHog rollout** — privacy-aware product events, pageviews, exception capture and logs now run through the consent-gated analytics pipeline.
+- **Production-only analytics portal** — dashboards, insights, cohorts, replays, survey targeting and log alerts are filtered to production and exclude test accounts.
+
 ## New in 1.0.0-beta.8
 
 - **Updater fix** — an available update is now forwarded to the renderer, so **Check for Updates** no longer gets stuck on "Checking for updates".

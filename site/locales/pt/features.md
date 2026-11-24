@@ -16,6 +16,11 @@ Funciona no Windows, Mac e Linux, é totalmente grátis e fala mais de 56 idioma
 
 ---
 
+## Novo em 1.0.0-beta.9
+
+- **Rollout do PostHog** — eventos de produto, pageviews, exceções e logs agora passam pelo pipeline de analytics com consentimento.
+- **Portal apenas de produção** — painéis, insights, cohorts, replays, segmentação de pesquisas e alertas de logs são filtrados para produção e excluem contas de teste.
+
 ## Novo em 1.0.0-beta.8
 
 - **Correção do atualizador** — uma atualização disponível agora é encaminhada ao renderer, de modo que **Check for Updates** não fica mais preso em "Verificando atualizações".

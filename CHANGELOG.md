@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.9] - 2026-11-24
+
+### Added
+
+- Completed the PostHog rollout with privacy-aware product events, pageviews, exception capture, logs and survey targeting behind the existing consent/telemetry controls.
+
+### Fixed
+
+- PostHog portal views now filter to the production environment and exclude test accounts across dashboards, saved insights, cohorts, session recordings, surveys and log alerts.
+- Renderer PostHog configuration now derives `environment` and `channel` the same way as main, so packaged builds report production data correctly.
+
+### Documentation
+
+- Reorganized analytics reports and dialog-planning documents under `analytics/posthog/` and `plans/`.
+- Version references synced to `1.0.0-beta.9` across the README, docs, wiki, website, release posts and supported-version policy.
+
 ## [1.0.0-beta.8] - 2026-11-20
 
 ### Fixed
@@ -235,7 +251,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Architecture and feature documentation restructured; community files (code of conduct, contributing) added.
 
-[Unreleased]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.8...HEAD
+[Unreleased]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.9...HEAD
+[1.0.0-beta.9]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.8...v1.0.0-beta.9
 [1.0.0-beta.8]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.7...v1.0.0-beta.8
 [1.0.0-beta.7]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.6...v1.0.0-beta.7
 [1.0.0-beta.6]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.5...v1.0.0-beta.6
