@@ -15,7 +15,7 @@
  * shared facade so future backends require no IPC changes.
  */
 
-import { ipcMain } from 'electron';
+import { app, ipcMain } from 'electron';
 import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';
 import {
@@ -35,6 +35,7 @@ import {
 import { createErrorFromAnalyticsExceptionPayload, parseAnalyticsExceptionPayload } from '../../shared/analytics/sanitize';
 import type { AnalyticsState } from '../../shared/analytics/types';
 import { writeAnalyticsConsent } from './consent';
+import { APTABASE_BUILD_CONFIG } from '../generated/aptabaseBuildConfig';
 import { POSTHOG_BUILD_CONFIG } from '../generated/posthogBuildConfig';
 
 /** Per-module logger for the analytics IPC bridge. @const {Logger} */
@@ -115,12 +116,14 @@ export function registerAnalyticsIpcBridge(options: { userDataDir: string; conse
     } => {
       const token = process.env.POSTHOG_PROJECT_TOKEN ?? POSTHOG_BUILD_CONFIG.projectToken;
       const host = process.env.POSTHOG_HOST ?? POSTHOG_BUILD_CONFIG.host;
+      const isDevelopment = process.env.NODE_ENV === 'development' || !app.isPackaged;
       return {
         projectToken: token,
         host,
         surveysEnabled: resolveSurveysEnabled(),
-        environment: process.env.NODE_ENV === 'development' ? 'development' : 'production',
-        channel: process.env.NODE_ENV === 'development' ? 'dev' : 'prod',
+        environment:
+          process.env.APTABASE_ENVIRONMENT || APTABASE_BUILD_CONFIG.environment || (isDevelopment ? 'development' : 'production'),
+        channel: isDevelopment ? 'dev' : 'prod',
         appVersion: process.env.npm_package_version,
         platform: process.platform,
         arch: process.arch,

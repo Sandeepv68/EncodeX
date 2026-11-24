@@ -11,8 +11,10 @@ import * as os from 'os';
 import * as path from 'path';
 
 const handleSpy = vi.hoisted(() => vi.fn());
+const appMock = vi.hoisted(() => ({ isPackaged: true }));
 
 vi.mock('electron', () => ({
+  app: appMock,
   ipcMain: { handle: handleSpy },
 }));
 
@@ -130,6 +132,7 @@ describe('registerAnalyticsIpcBridge', () => {
     const originalToken = process.env.POSTHOG_PROJECT_TOKEN;
     const originalHost = process.env.POSTHOG_HOST;
     const originalNodeEnv = process.env.NODE_ENV;
+    const originalAptabaseEnvironment = process.env.APTABASE_ENVIRONMENT;
     const readConfig = () =>
       handlers.get(IPC.ANALYTICS_GET_POSTHOG_CONFIG)!() as {
         projectToken?: string;
@@ -140,7 +143,8 @@ describe('registerAnalyticsIpcBridge', () => {
       };
 
     delete process.env.POSTHOG_SURVEYS_ENABLED;
-    process.env.NODE_ENV = 'production';
+    delete process.env.NODE_ENV;
+    process.env.APTABASE_ENVIRONMENT = 'production';
     const fallback = readConfig();
     expect(fallback.surveysEnabled).toBe(false);
     expect(fallback.environment).toBe('production');
@@ -151,6 +155,7 @@ describe('registerAnalyticsIpcBridge', () => {
       process.env.POSTHOG_HOST = 'https://eu.i.posthog.com';
       process.env.POSTHOG_SURVEYS_ENABLED = ' TRUE ';
       process.env.NODE_ENV = 'development';
+      process.env.APTABASE_ENVIRONMENT = 'development';
       const enabled = readConfig();
       expect(enabled.projectToken).toBe('runtime-token');
       expect(enabled.host).toBe('https://eu.i.posthog.com');
@@ -175,6 +180,28 @@ describe('registerAnalyticsIpcBridge', () => {
       else process.env.POSTHOG_HOST = originalHost;
       if (originalNodeEnv === undefined) delete process.env.NODE_ENV;
       else process.env.NODE_ENV = originalNodeEnv;
+      if (originalAptabaseEnvironment === undefined) delete process.env.APTABASE_ENVIRONMENT;
+      else process.env.APTABASE_ENVIRONMENT = originalAptabaseEnvironment;
+    }
+  });
+
+  it('labels unpackaged runs as development even without NODE_ENV', () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    const originalAptabaseEnvironment = process.env.APTABASE_ENVIRONMENT;
+    delete process.env.NODE_ENV;
+    delete process.env.APTABASE_ENVIRONMENT;
+    appMock.isPackaged = false;
+
+    try {
+      const config = handlers.get(IPC.ANALYTICS_GET_POSTHOG_CONFIG)!() as { environment?: string; channel?: string };
+      expect(config.environment).toBe('development');
+      expect(config.channel).toBe('dev');
+    } finally {
+      appMock.isPackaged = true;
+      if (originalNodeEnv === undefined) delete process.env.NODE_ENV;
+      else process.env.NODE_ENV = originalNodeEnv;
+      if (originalAptabaseEnvironment === undefined) delete process.env.APTABASE_ENVIRONMENT;
+      else process.env.APTABASE_ENVIRONMENT = originalAptabaseEnvironment;
     }
   });
 });

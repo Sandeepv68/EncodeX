@@ -5,9 +5,14 @@ These dashboards are the PostHog-side rendering of the analytics questions in
 saved dashboard and insight definitions. All seven exports are checked in below
 alongside `data-schema.json`, `cohorts.json`, and `event-traffic-audit.md`.
 
-Every product-event insight **must** filter `channel = prod` (PD13: one project,
-env separated by super property). AI observability events do not carry
-`channel`; the AI export uses test-account filtering only and says so explicitly.
+Every dashboard and saved insight is filtered by the person property
+`environment = production` with test-account filtering enabled, so development
+capture stays on but only production users appear in the PostHog portal.
+Production-only filtering is also applied to EncodeX cohorts, session recording
+playlists, survey targeting, and log alerts. `Internal / Test users` stays
+unfiltered because saved insights reference it with `not_in` to exclude test
+accounts. Product-event insights also keep `channel = prod` (PD13: one project,
+env separated by super property).
 
 ## Dashboards
 
@@ -67,8 +72,9 @@ failing?
 - `$ai_generation` volume, `$ai_total_cost_usd` spend, and `$ai_is_error` rate.
 - Provider mix by `$ai_provider`.
 - `$ai_generation_summary` volume.
-- No `channel` filter because the property is absent on AI events; internal/test
-  cohort exclusion and `filterTestAccounts: true` still apply.
+- No `channel` filter because the property is absent on AI events; the saved
+  person-property filter `environment = production`, internal/test cohort
+  exclusion, and `filterTestAccounts: true` still apply.
 
 ## Cohorts (`cohorts.json`)
 
