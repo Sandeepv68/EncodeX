@@ -133,6 +133,13 @@ describe('createLLMOperationRouter', () => {
     expect(connector.complete).toHaveBeenCalledOnce();
   });
 
+  it('reuses supplied trace and parent span ids', async () => {
+    const connector = fakeConnector('{"operation":"remux","fields":{}}');
+    const router = createLLMOperationRouter(connector, 'openai');
+    await router({ ...request('remux this'), aiTraceId: 'trace-1', aiParentSpanId: 'span-1' });
+    expect(connector.complete).toHaveBeenCalledWith(expect.objectContaining({ aiTraceId: 'trace-1', aiParentSpanId: 'span-1' }));
+  });
+
   it('returns undefined when the transport throws', async () => {
     const connector: AIConnector = {
       id: 'openai',

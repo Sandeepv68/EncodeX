@@ -18,12 +18,16 @@ vi.mock('electron', () => ({
 
 const setEnabledMock = vi.hoisted(() => vi.fn());
 const getBackendNameMock = vi.hoisted(() => vi.fn());
+const getAllFeatureFlagsMock = vi.hoisted(() => vi.fn());
 const trackRelayedMock = vi.hoisted(() => vi.fn());
+const captureAnalyticsExceptionMock = vi.hoisted(() => vi.fn());
 
 vi.mock('../../../shared/analytics/AnalyticsService', () => ({
   setAnalyticsEnabled: setEnabledMock,
   getAnalyticsBackendName: getBackendNameMock,
+  getAllFeatureFlags: getAllFeatureFlagsMock,
   trackRelayedAnalyticsEvent: trackRelayedMock,
+  captureAnalyticsException: captureAnalyticsExceptionMock,
 }));
 
 import { IPC } from '../../../shared/ipc-channels';
@@ -44,6 +48,7 @@ describe('registerAnalyticsIpcBridge', () => {
     handleSpy.mockImplementation((channel: string, handler: (...args: unknown[]) => unknown) => handlers.set(channel, handler));
     setEnabledMock.mockResolvedValue(undefined);
     getBackendNameMock.mockReturnValue('aptabase');
+    getAllFeatureFlagsMock.mockReturnValue({ automations_page: false });
     registerAnalyticsIpcBridge({ userDataDir: dir, consentEnabled: true });
   });
 
@@ -52,9 +57,15 @@ describe('registerAnalyticsIpcBridge', () => {
     vi.clearAllMocks();
   });
 
-  it('registers exactly the four analytics channels', () => {
+  it('registers exactly the five analytics channels', () => {
     expect([...handlers.keys()].sort()).toEqual(
-      [IPC.ANALYTICS_GET_STATE, IPC.ANALYTICS_SET_ENABLED, IPC.ANALYTICS_TRACK_EVENT, IPC.ANALYTICS_GET_POSTHOG_CONFIG].sort(),
+      [
+        IPC.ANALYTICS_GET_STATE,
+        IPC.ANALYTICS_SET_ENABLED,
+        IPC.ANALYTICS_TRACK_EVENT,
+        IPC.ANALYTICS_CAPTURE_EXCEPTION,
+        IPC.ANALYTICS_GET_POSTHOG_CONFIG,
+      ].sort(),
     );
   });
 
@@ -64,9 +75,19 @@ describe('registerAnalyticsIpcBridge', () => {
     expect(trackRelayedMock).toHaveBeenCalledWith(event);
   });
 
+  it('relays renderer exceptions to the analytics facade', () => {
+    handlers.get(IPC.ANALYTICS_CAPTURE_EXCEPTION)!(
+      {},
+      { name: 'TypeError', message: 'boom', stack: 'stack', context: { tags: { handler: 'window.error' } } },
+    );
+    expect(captureAnalyticsExceptionMock).toHaveBeenCalledWith(expect.objectContaining({ name: 'TypeError', message: 'boom' }), {
+      tags: { handler: 'window.error' },
+    });
+  });
+
   it('reports bootstrap consent and the active backend name', () => {
     const state = handlers.get(IPC.ANALYTICS_GET_STATE)!() as AnalyticsState;
-    expect(state).toEqual({ enabled: true, backend: 'aptabase' });
+    expect(state).toEqual({ enabled: true, backend: 'aptabase', featureFlags: { automations_page: false } });
   });
 
   it('persists opt-out, toggles the facade, and reports the new state', async () => {
@@ -75,8 +96,12 @@ describe('registerAnalyticsIpcBridge', () => {
 
     expect(readConsentFile()).toEqual({ enabled: false });
     expect(setEnabledMock).toHaveBeenCalledWith(false);
-    expect(state).toEqual({ enabled: false, backend: 'aptabase' });
-    expect(handlers.get(IPC.ANALYTICS_GET_STATE)!()).toEqual({ enabled: false, backend: 'aptabase' });
+    expect(state).toEqual({ enabled: false, backend: 'aptabase', featureFlags: { automations_page: false } });
+    expect(handlers.get(IPC.ANALYTICS_GET_STATE)!()).toEqual({
+      enabled: false,
+      backend: 'aptabase',
+      featureFlags: { automations_page: false },
+    });
   });
 
   it('round-trips back to enabled', async () => {
@@ -98,5 +123,58 @@ describe('registerAnalyticsIpcBridge', () => {
     await setter({}, true);
     expect(readConsentFile()).toEqual({ enabled: true });
     expect(setEnabledMock).toHaveBeenLastCalledWith(true);
+  });
+
+  it('reads PostHog config overrides and survey flags', () => {
+    const originalSurveys = process.env.POSTHOG_SURVEYS_ENABLED;
+    const originalToken = process.env.POSTHOG_PROJECT_TOKEN;
+    const originalHost = process.env.POSTHOG_HOST;
+    const originalNodeEnv = process.env.NODE_ENV;
+    const readConfig = () =>
+      handlers.get(IPC.ANALYTICS_GET_POSTHOG_CONFIG)!() as {
+        projectToken?: string;
+        host?: string;
+        surveysEnabled?: boolean;
+        environment?: string;
+        channel?: string;
+      };
+
+    delete process.env.POSTHOG_SURVEYS_ENABLED;
+    process.env.NODE_ENV = 'production';
+    const fallback = readConfig();
+    expect(fallback.surveysEnabled).toBe(false);
+    expect(fallback.environment).toBe('production');
+    expect(fallback.channel).toBe('prod');
+
+    try {
+      process.env.POSTHOG_PROJECT_TOKEN = 'runtime-token';
+      process.env.POSTHOG_HOST = 'https://eu.i.posthog.com';
+      process.env.POSTHOG_SURVEYS_ENABLED = ' TRUE ';
+      process.env.NODE_ENV = 'development';
+      const enabled = readConfig();
+      expect(enabled.projectToken).toBe('runtime-token');
+      expect(enabled.host).toBe('https://eu.i.posthog.com');
+      expect(enabled.surveysEnabled).toBe(true);
+      expect(enabled.environment).toBe('development');
+      expect(enabled.channel).toBe('dev');
+
+      process.env.POSTHOG_SURVEYS_ENABLED = '1';
+      expect(readConfig().surveysEnabled).toBe(true);
+      process.env.POSTHOG_SURVEYS_ENABLED = 'FALSE';
+      expect(readConfig().surveysEnabled).toBe(false);
+      process.env.POSTHOG_SURVEYS_ENABLED = '0';
+      expect(readConfig().surveysEnabled).toBe(false);
+      process.env.POSTHOG_SURVEYS_ENABLED = 'maybe';
+      expect(readConfig().surveysEnabled).toBe(false);
+    } finally {
+      if (originalSurveys === undefined) delete process.env.POSTHOG_SURVEYS_ENABLED;
+      else process.env.POSTHOG_SURVEYS_ENABLED = originalSurveys;
+      if (originalToken === undefined) delete process.env.POSTHOG_PROJECT_TOKEN;
+      else process.env.POSTHOG_PROJECT_TOKEN = originalToken;
+      if (originalHost === undefined) delete process.env.POSTHOG_HOST;
+      else process.env.POSTHOG_HOST = originalHost;
+      if (originalNodeEnv === undefined) delete process.env.NODE_ENV;
+      else process.env.NODE_ENV = originalNodeEnv;
+    }
   });
 });

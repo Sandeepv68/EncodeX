@@ -50,11 +50,7 @@ describe('SentryRendererProvider', () => {
     expect(options.debug).toBe(true);
     expect(options.tracesSampleRate).toBe(0.5);
     expect(options.attachStacktrace).toBe(true);
-
-    // GlobalHandlers should be filtered out by the integrations function
-    const integrations = options.integrations as (defaults: Array<Record<string, unknown>>) => unknown[];
-    const result = integrations([{ name: 'GlobalHandlers' }, { name: 'OtherIntegration' }]);
-    expect(result).toEqual([{ name: 'OtherIntegration' }]);
+    expect(options.integrations).toBeUndefined();
   });
 
   it('defaults debug and tracesSampleRate', async () => {

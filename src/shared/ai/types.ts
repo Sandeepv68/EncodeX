@@ -561,6 +561,7 @@ export interface ConnectorRequest {
   temperature?: number;
   signal?: AbortSignal;
   aiTraceId?: string;
+  aiParentSpanId?: string;
 }
 
 /**
@@ -918,6 +919,8 @@ export interface OperationRoutingRequest {
   files: MediaFacts[];
   profiles: ConversionProfile[];
   capabilities: EncoderCapabilities;
+  aiTraceId?: string;
+  aiParentSpanId?: string;
 }
 
 /* ---------------------------------------------------------------- provider */

@@ -26,18 +26,24 @@ const knobs = vi.hoisted(() => ({
 }));
 
 const capture = vi.hoisted(() => vi.fn());
+const captureException = vi.hoisted(() => vi.fn());
 const flush = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
 const shutdown = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
 const identify = vi.hoisted(() => vi.fn());
 const groupIdentify = vi.hoisted(() => vi.fn());
 const getAllFlags = vi.hoisted(() => vi.fn().mockResolvedValue({}));
+const getFeatureFlag = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
+const register = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
 const posthogCtor = vi.hoisted(() =>
   vi.fn(function () {
     if (knobs.ctorThrows) throw new Error('ctor boom');
-    const client: Record<string, unknown> = { capture, flush, shutdown };
+    const client: Record<string, unknown> = { capture, captureException, flush, shutdown, register };
     if (!knobs.omitIdentify) client.identify = identify;
     if (!knobs.omitGroupIdentify) client.groupIdentify = groupIdentify;
-    if (!knobs.omitGetAllFlags) client.getAllFlags = getAllFlags;
+    if (!knobs.omitGetAllFlags) {
+      client.getAllFlags = getAllFlags;
+      client.getFeatureFlag = getFeatureFlag;
+    }
     return client;
   }),
 );
@@ -55,7 +61,10 @@ vi.mock('electron', () => ({
 }));
 
 vi.mock('posthog-node', () => ({ PostHog: posthogCtor }));
-vi.mock('@opentelemetry/api-logs', () => ({ logs: { getLogger: () => ({ emit: logEmit }) } }));
+vi.mock('@opentelemetry/api', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@opentelemetry/api')>();
+  return { ...actual, logs: { getLogger: () => ({ emit: logEmit }) } };
+});
 vi.mock('@opentelemetry/exporter-logs-otlp-http', () => ({ OTLPLogExporter: vi.fn() }));
 vi.mock('@opentelemetry/resources', () => ({ resourceFromAttributes: vi.fn(() => ({})) }));
 vi.mock('@opentelemetry/sdk-node', () => ({
@@ -69,6 +78,7 @@ vi.mock('@opentelemetry/sdk-logs', () => ({ BatchLogRecordProcessor: vi.fn() }))
 const { PostHogMainProvider } = await import('../posthogMainProvider');
 import { createAnalyticsEvent } from '../../../shared/analytics/events';
 import type { AnalyticsConfig } from '../../../shared/analytics/types';
+import { logHub } from '../../logs/log-hub';
 
 const baseConfig = (overrides: Partial<AnalyticsConfig> = {}): AnalyticsConfig => ({
   enabled: true,
@@ -91,16 +101,21 @@ describe('PostHogMainProvider', () => {
     knobs.getPathThrows = false;
     knobs.userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'encodex-posthog-'));
     capture.mockImplementation(() => undefined);
+    captureException.mockImplementation(() => undefined);
+    logEmit.mockImplementation(() => undefined);
     flush.mockResolvedValue(undefined);
     shutdown.mockResolvedValue(undefined);
     identify.mockImplementation(() => undefined);
     groupIdentify.mockImplementation(() => undefined);
+    register.mockResolvedValue(undefined);
     getAllFlags.mockResolvedValue({});
+    getFeatureFlag.mockResolvedValue(undefined);
     delete process.env.ANALYTICS_GROUPS;
     delete process.env.POSTHOG_AI_CAPTURE_CONTENT;
   });
 
   afterEach(() => {
+    vi.restoreAllMocks();
     if (ORIGINAL_GROUPS === undefined) delete process.env.ANALYTICS_GROUPS;
     else process.env.ANALYTICS_GROUPS = ORIGINAL_GROUPS;
     if (ORIGINAL_CAPTURE === undefined) delete process.env.POSTHOG_AI_CAPTURE_CONTENT;
@@ -134,12 +149,14 @@ describe('PostHogMainProvider', () => {
     expect(provider.isEnabled()).toBe(false);
   });
 
-  it('constructs a privacy-first client with the configured token and host', async () => {
+  it('constructs a privacy-first client with GeoIP enabled', async () => {
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig());
     expect(posthogCtor).toHaveBeenCalledWith('phc_test', {
       host: 'https://us.i.posthog.com',
       privacyMode: true,
+      enableExceptionAutocapture: true,
+      disableGeoip: false,
     });
     expect(provider.isEnabled()).toBe(true);
   });
@@ -170,6 +187,17 @@ describe('PostHogMainProvider', () => {
   it('attaches environment details as super properties', async () => {
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig({ appVersion: '1.0.0', channel: 'prod', mode: 'gui', locale: 'en', environment: 'production' }));
+    expect(register).toHaveBeenCalledWith(
+      expect.objectContaining({
+        app_version: '1.0.0',
+        channel: 'prod',
+        mode: 'gui',
+        locale: 'en',
+        environment: 'production',
+        platform: process.platform,
+        arch: process.arch,
+      }),
+    );
     provider.track(createAnalyticsEvent('tool_opened', { route: '/convert' }));
     const properties = capture.mock.calls[0][0].properties as Record<string, unknown>;
     expect(properties).toMatchObject({
@@ -190,28 +218,52 @@ describe('PostHogMainProvider', () => {
     }
   });
 
+  it('maps page_viewed to PostHog page and screen events', async () => {
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig());
+    capture.mockClear();
+    provider.track(createAnalyticsEvent('page_viewed', { path: '/convert' }));
+    expect(capture).toHaveBeenCalledTimes(2);
+    const expectedProperties = expect.objectContaining({
+      path: '/convert',
+      $current_url: 'electron://encodex/convert',
+      $pathname: '/convert',
+      $host: 'encodex.app',
+      $screen_name: '/convert',
+      $browser: 'Electron',
+      $device_type: 'Desktop',
+      $os: process.platform,
+      $session_id: expect.any(String),
+    });
+    expect(capture).toHaveBeenCalledWith(expect.objectContaining({ event: '$pageview', properties: expectedProperties }));
+    expect(capture).toHaveBeenCalledWith(expect.objectContaining({ event: '$screen', properties: expectedProperties }));
+    expect(capture.mock.calls.some((call) => call[0].event === 'page_viewed')).toBe(false);
+  });
+
   it('identifies the person once with allowlisted properties', async () => {
     const provider = new PostHogMainProvider();
-    await provider.init(baseConfig({ appVersion: '1.0.0', channel: 'prod', mode: 'gui', locale: 'en' }));
-    expect(identify).toHaveBeenCalledTimes(1);
-    const payload = identify.mock.calls[0][0] as {
-      properties: { $set: Record<string, unknown>; $set_once: Record<string, unknown> };
+    await provider.init(baseConfig({ appVersion: '1.0.0', channel: 'prod', mode: 'gui', locale: 'en', environment: 'production' }));
+    const identifyCall = capture.mock.calls.find((call) => call[0].event === '$identify');
+    expect(identifyCall).toBeTruthy();
+    const payload = identifyCall![0] as {
+      properties: Record<string, unknown> & { $set: Record<string, unknown>; $set_once: Record<string, unknown> };
     };
+    expect(payload.properties).toMatchObject({
+      app_version: '1.0.0',
+      channel: 'prod',
+      mode: 'gui',
+      locale: 'en',
+      environment: 'production',
+      platform: process.platform,
+      arch: process.arch,
+    });
     expect(payload.properties.$set).toMatchObject({ app_version: '1.0.0', os: process.platform });
     expect(payload.properties.$set_once).toEqual({ first_seen_version: '1.0.0' });
   });
 
-  it('skips identify when the client does not support it', async () => {
-    knobs.omitIdentify = true;
-    const provider = new PostHogMainProvider();
-    await provider.init(baseConfig({ appVersion: '1.0.0' }));
-    expect(identify).not.toHaveBeenCalled();
-    expect(provider.isEnabled()).toBe(true);
-  });
-
-  it('survives a client whose identify throws', async () => {
-    identify.mockImplementation(() => {
-      throw new Error('identify boom');
+  it('survives a client whose identify capture throws', async () => {
+    capture.mockImplementation((payload: { event?: string }) => {
+      if (payload.event === '$identify') throw new Error('identify boom');
     });
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig({ appVersion: '1.0.0' }));
@@ -235,6 +287,7 @@ describe('PostHogMainProvider', () => {
     process.env.ANALYTICS_GROUPS = 'lifecycle,settings';
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig());
+    capture.mockClear();
 
     provider.track(createAnalyticsEvent('conversion_started', { jobKind: 'single', transcoder: 'ffmpeg', hwAccel: false }));
     expect(capture).not.toHaveBeenCalled();
@@ -249,6 +302,7 @@ describe('PostHogMainProvider', () => {
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig());
     await (provider as unknown as { refreshFlags: () => Promise<void> }).refreshFlags();
+    capture.mockClear();
     provider.track(createAnalyticsEvent('tool_opened', { route: '/convert' }));
     expect(capture).not.toHaveBeenCalled();
   });
@@ -314,6 +368,41 @@ describe('PostHogMainProvider', () => {
     expect(provider.getAllFeatureFlags()).toMatchObject({ alpha: true, beta: 3 });
   });
 
+  it('sends exposure events for declared flags', async () => {
+    getFeatureFlag.mockResolvedValue(false);
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig({ appVersion: '1.0.0', channel: 'dev', mode: 'gui', locale: 'en', environment: 'development' }));
+    getAllFlags.mockClear();
+    getFeatureFlag.mockClear();
+    await (provider as unknown as { refreshFlags: () => Promise<void> }).refreshFlags();
+    const personProperties = expect.objectContaining({
+      app_version: '1.0.0',
+      channel: 'dev',
+      mode: 'gui',
+      locale: 'en',
+      environment: 'development',
+      platform: process.platform,
+      arch: process.arch,
+      os_version: os.release(),
+      node_version: process.versions.node,
+      $session_id: expect.any(String),
+    });
+    expect(getAllFlags).toHaveBeenCalledWith(expect.any(String), { personProperties });
+    expect(getFeatureFlag).toHaveBeenCalledWith('analytics_group_convert', expect.any(String), {
+      sendFeatureFlagEvents: true,
+      personProperties,
+    });
+    expect(getFeatureFlag).toHaveBeenCalledWith('analytics_group_queue', expect.any(String), {
+      sendFeatureFlagEvents: true,
+      personProperties,
+    });
+    expect(getFeatureFlag).toHaveBeenCalledWith('mcp_server_default_on', expect.any(String), {
+      sendFeatureFlagEvents: true,
+      personProperties,
+    });
+    expect(provider.isFeatureFlagEnabled('mcp_server_default_on')).toBe(false);
+  });
+
   it('uses the cached flags when the remote lookup fails', async () => {
     fs.writeFileSync(path.join(knobs.userDataDir, 'analytics-flags.json'), JSON.stringify({ alpha: false }));
     getAllFlags.mockRejectedValue(new Error('flags boom'));
@@ -327,13 +416,14 @@ describe('PostHogMainProvider', () => {
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig());
     expect(getAllFlags).not.toHaveBeenCalled();
+    expect(getFeatureFlag).not.toHaveBeenCalled();
     expect(provider.isFeatureFlagEnabled('analytics_group_convert')).toBe(true);
   });
 
-  it('returns undefined for flags while inactive', () => {
+  it('returns defaults for flags while inactive', () => {
     const provider = new PostHogMainProvider();
-    expect(provider.isFeatureFlagEnabled('alpha')).toBeUndefined();
-    expect(provider.getAllFeatureFlags()).toBeUndefined();
+    expect(provider.isFeatureFlagEnabled('mcp_server_default_on')).toBe(false);
+    expect(provider.getAllFeatureFlags()).toMatchObject({ mcp_server_default_on: false });
   });
 
   it('emits app_release once per version', async () => {
@@ -350,6 +440,7 @@ describe('PostHogMainProvider', () => {
   it('omits AI prompt and completion content by default', async () => {
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig());
+    capture.mockClear();
     provider.captureAiGeneration({
       traceId: 't1',
       provider: 'openai',
@@ -368,6 +459,7 @@ describe('PostHogMainProvider', () => {
     process.env.POSTHOG_AI_CAPTURE_CONTENT = 'true';
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig());
+    capture.mockClear();
     provider.captureAiGeneration({
       traceId: 't1',
       provider: 'openai',
@@ -382,15 +474,88 @@ describe('PostHogMainProvider', () => {
     expect(properties.$ai_output_choices).toEqual([{ role: 'assistant', content: 'world' }]);
   });
 
-  it('ignores AI generations while inactive', () => {
+  it('includes span hierarchy metadata on AI generations', async () => {
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig());
+    capture.mockClear();
+    provider.captureAiGeneration({
+      traceId: 't1',
+      spanId: 'g1',
+      parentSpanId: 's1',
+      provider: 'openai',
+      model: 'gpt',
+      input: [],
+      latency: 1.2,
+    });
+    const properties = capture.mock.calls[0][0].properties as Record<string, unknown>;
+    expect(properties.$ai_trace_id).toBe('t1');
+    expect(properties.$ai_span_id).toBe('g1');
+    expect(properties.$ai_span_name).toBe('llm_generation');
+    expect(properties.$ai_parent_id).toBe('s1');
+  });
+
+  it('captures metadata-only AI spans', async () => {
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig());
+    provider.captureAiSpan({
+      traceId: 't1',
+      spanId: 's1',
+      parentSpanId: 'root',
+      name: 'copilot.route',
+      latency: 0.25,
+      isError: true,
+    });
+    expect(capture).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: '$ai_span',
+        properties: expect.objectContaining({
+          $ai_trace_id: 't1',
+          $ai_session_id: expect.any(String),
+          $ai_span_id: 's1',
+          $ai_span_name: 'copilot.route',
+          $ai_parent_id: 'root',
+          $ai_latency: 0.25,
+          $ai_is_error: true,
+        }),
+      }),
+    );
+  });
+
+  it('captures exceptions with sanitized context props', async () => {
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig());
+    const error = new Error('boom');
+    provider.captureException(error, {
+      tags: { handler: 'window.error', path: '/secret', email: 'user@example.com' },
+      extra: { process: 'renderer', file: 'a.mp4', nested: { secret: true }, reason: 'clean-exit' },
+    });
+    expect(captureException).toHaveBeenCalledWith(error, expect.any(String), {
+      'error_tag.handler': 'window.error',
+      'error_extra.process': 'renderer',
+      'error_extra.reason': 'clean-exit',
+    });
+  });
+
+  it('survives a client whose captureException throws', async () => {
+    captureException.mockImplementation(() => {
+      throw new Error('exception capture boom');
+    });
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig());
+    expect(() => provider.captureException(new Error('boom'))).not.toThrow();
+  });
+
+  it('ignores AI generations and spans while inactive', () => {
     const provider = new PostHogMainProvider();
     provider.captureAiGeneration({ traceId: 't', provider: 'p', model: 'm', input: [], latency: 1 });
+    provider.captureAiSpan({ traceId: 't', spanId: 's', name: 'copilot.route', latency: 1 });
     expect(capture).not.toHaveBeenCalled();
   });
 
   it('drops events after setEnabled(false)', async () => {
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig());
+    capture.mockClear();
     provider.setEnabled(false);
     provider.track(createAnalyticsEvent('tool_opened', { route: '/convert' }));
     expect(capture).not.toHaveBeenCalled();
@@ -408,10 +573,13 @@ describe('PostHogMainProvider', () => {
   it('identifies the person only once', async () => {
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig({ appVersion: '1.0.0' }));
+    const before = capture.mock.calls.filter((call) => call[0].event === '$identify').length;
     await (provider as unknown as { identifyPerson: (config: AnalyticsConfig) => void }).identifyPerson(
       baseConfig({ appVersion: '1.0.0' }),
     );
-    expect(identify).toHaveBeenCalledTimes(1);
+    const after = capture.mock.calls.filter((call) => call[0].event === '$identify').length;
+    expect(before).toBe(1);
+    expect(after).toBe(1);
   });
 
   it('falls back to the cached flags when the remote lookup times out', async () => {
@@ -433,13 +601,14 @@ describe('PostHogMainProvider', () => {
     expect(provider.isEnabled()).toBe(true);
   });
 
-  it('survives an AI generation that cannot be captured', async () => {
+  it('survives AI events that cannot be captured', async () => {
     capture.mockImplementation(() => {
       throw new Error('capture boom');
     });
     const provider = new PostHogMainProvider();
     await provider.init(baseConfig());
     provider.captureAiGeneration({ traceId: 't', provider: 'p', model: 'm', input: [], latency: 1 });
+    provider.captureAiSpan({ traceId: 't', spanId: 's', name: 'copilot.route', latency: 1 });
     expect(provider.isEnabled()).toBe(true);
   });
 
@@ -463,5 +632,104 @@ describe('PostHogMainProvider', () => {
     await provider.init(baseConfig());
     await expect(provider.flush()).resolves.toBe(false);
     await expect(provider.close()).resolves.toBe(false);
+  });
+
+  it('forwards real log hub entries through OpenTelemetry', async () => {
+    const addObserver = vi.spyOn(logHub, 'addObserver').mockReturnValue(42);
+    const removeObserver = vi.spyOn(logHub, 'removeObserver');
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig({ appVersion: '1.2.3', environment: 'test' }));
+    expect(addObserver).toHaveBeenCalledTimes(1);
+
+    logEmit.mockClear();
+    const observer = addObserver.mock.calls[0][0];
+    observer({
+      timestamp: '2026-01-01T00:00:00.000Z',
+      level: 'ERROR',
+      text: 'first line\nsecond line',
+      source: 'renderer',
+      seq: 7,
+    });
+
+    expect(logEmit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severityText: 'error',
+        body: 'first line second line',
+        attributes: expect.objectContaining({
+          'app.version': '1.2.3',
+          'app.environment': 'test',
+          posthogDistinctId: expect.any(String),
+          sessionId: expect.any(String),
+          'log.source': 'renderer',
+          'log.seq': 7,
+          'log.timestamp': '2026-01-01T00:00:00.000Z',
+        }),
+      }),
+    );
+
+    await provider.close();
+    expect(removeObserver).toHaveBeenCalledWith(42);
+  });
+
+  it('survives an app log exporter that throws', async () => {
+    const addObserver = vi.spyOn(logHub, 'addObserver').mockReturnValue(11);
+    const removeObserver = vi.spyOn(logHub, 'removeObserver');
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig());
+    logEmit.mockImplementation(() => {
+      throw new Error('log export boom');
+    });
+    const observer = addObserver.mock.calls[0][0];
+    expect(() =>
+      observer({
+        timestamp: '2026-01-01T00:00:00.000Z',
+        level: 'INFO',
+        text: 'hello',
+        source: 'main',
+      }),
+    ).not.toThrow();
+    expect(logEmit).toHaveBeenCalled();
+    await provider.close();
+    expect(removeObserver).toHaveBeenCalledWith(11);
+  });
+
+  it('does not capture app logs when log capture is disabled', async () => {
+    const addObserver = vi.spyOn(logHub, 'addObserver');
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig({ posthogLogsEnabled: false }));
+    expect(addObserver).not.toHaveBeenCalled();
+    expect(logEmit).not.toHaveBeenCalled();
+    await provider.close();
+  });
+
+  it('detaches the log observer when consent is turned off and reattaches it when restored', async () => {
+    const addObserver = vi.spyOn(logHub, 'addObserver').mockReturnValueOnce(1).mockReturnValueOnce(2);
+    const removeObserver = vi.spyOn(logHub, 'removeObserver');
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig());
+    expect(addObserver).toHaveBeenCalledTimes(1);
+
+    provider.setEnabled(false);
+    expect(removeObserver).toHaveBeenCalledWith(1);
+
+    provider.setEnabled(true);
+    expect(addObserver).toHaveBeenCalledTimes(2);
+    await provider.close();
+  });
+
+  it('truncates oversized app log bodies', async () => {
+    const addObserver = vi.spyOn(logHub, 'addObserver').mockReturnValue(7);
+    const provider = new PostHogMainProvider();
+    await provider.init(baseConfig());
+    logEmit.mockClear();
+    const observer = addObserver.mock.calls[0][0];
+    observer({
+      timestamp: '2026-01-01T00:00:00.000Z',
+      level: 'INFO',
+      text: 'x'.repeat(5000),
+      source: 'main',
+    });
+    expect(logEmit.mock.calls[0][0].body).toHaveLength(4000);
+    await provider.close();
   });
 });

@@ -37,6 +37,7 @@ import type { AuditEntry } from '../shared/audit';
 import type { AutomationProgressEvent, AutomationStartRequest } from '../shared/automations/types';
 import type { CopilotPlan, CopilotPlanRequest } from '../shared/copilot';
 import type { AnalyticsEvent } from '../shared/analytics/events';
+import type { AnalyticsExceptionPayload } from '../shared/analytics/types';
 
 /**
  * The bridge API exposed to the renderer as `window.electronAPI`.
@@ -555,7 +556,7 @@ export interface ElectronAPI {
    * @returns {Promise<{ enabled: boolean; backend: string }>} Consent flag and
    *   active backend adapter name in main ('posthog' | 'aptabase' | 'noop').
    */
-  analyticsGetState(): Promise<{ enabled: boolean; backend: string }>;
+  analyticsGetState(): Promise<{ enabled: boolean; backend: string; featureFlags?: Record<string, boolean | string | number> }>;
   /**
    * Updates the usage-analytics consent (Settings toggle). Persists the new
    * state in the main process and live-toggles the backend over
@@ -563,7 +564,11 @@ export interface ElectronAPI {
    * @param {boolean} enabled - true to enable usage analytics, false to disable.
    * @returns {Promise<{ enabled: boolean; backend: string }>}> The resulting state.
    */
-  analyticsSetEnabled(enabled: boolean): Promise<{ enabled: boolean; backend: string }>;
+  analyticsSetEnabled(enabled: boolean): Promise<{
+    enabled: boolean;
+    backend: string;
+    featureFlags?: Record<string, boolean | string | number>;
+  }>;
   /**
    * Relays one renderer analytics event to the active main-process backend over
    * `IPC.ANALYTICS_TRACK_EVENT` ('analytics-track-event'). Backend credentials
@@ -572,7 +577,17 @@ export interface ElectronAPI {
    * @returns {Promise<void>} Resolves once main has accepted the event.
    */
   analyticsTrackEvent(event: AnalyticsEvent): Promise<void>;
-  analyticsGetPosthogConfig(): Promise<{ projectToken?: string; host?: string }>;
+  analyticsCaptureException(payload: AnalyticsExceptionPayload): Promise<void>;
+  analyticsGetPosthogConfig(): Promise<{
+    projectToken?: string;
+    host?: string;
+    surveysEnabled?: boolean;
+    environment?: string;
+    channel?: string;
+    appVersion?: string;
+    platform?: string;
+    arch?: string;
+  }>;
   /**
    * Queries the stored embedded MCP server settings from the main process over
    * `IPC.MCP_SETTINGS_GET` ('mcp-settings-get').
@@ -850,5 +865,6 @@ export interface ElectronAPI {
 declare global {
   interface Window {
     electronAPI: ElectronAPI;
+    __ENCODEX_E2E__?: boolean;
   }
 }

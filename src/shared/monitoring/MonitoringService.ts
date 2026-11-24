@@ -16,6 +16,7 @@
  *    regardless of what the underlying adapter does.
  */
 
+import { captureAnalyticsException } from '../analytics/AnalyticsService';
 import { Logger, registerLoggerSink } from '../logger';
 import type { LoggerLogLevel } from '../logger';
 import {
@@ -168,12 +169,18 @@ export function getMonitoringBackendName(): string {
  * @returns {string | undefined} Backend event id when captured, else undefined.
  */
 export function captureException(error: unknown, context?: MonitorContext): string | undefined {
+  let eventId: string | undefined;
   try {
-    return activeProvider.captureException(error, context);
+    eventId = activeProvider.captureException(error, context);
   } catch (err) {
     log.debug(LOG_MONITORING_CAPTURE_FAILED, err);
-    return undefined;
   }
+  try {
+    if (activeProvider.isEnabled()) captureAnalyticsException(error, context);
+  } catch (err) {
+    log.debug(LOG_MONITORING_CAPTURE_FAILED, err);
+  }
+  return eventId;
 }
 
 /**

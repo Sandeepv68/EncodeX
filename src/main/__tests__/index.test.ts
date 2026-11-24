@@ -171,7 +171,10 @@ vi.mock('posthog-node', () => ({
     };
   }),
 }));
-vi.mock('@opentelemetry/api-logs', () => ({ logs: { getLogger: () => ({ emit: vi.fn() }) } }));
+vi.mock('@opentelemetry/api', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@opentelemetry/api')>();
+  return { ...actual, logs: { getLogger: () => ({ emit: vi.fn() }) } };
+});
 vi.mock('@opentelemetry/exporter-logs-otlp-http', () => ({ OTLPLogExporter: vi.fn() }));
 vi.mock('@opentelemetry/resources', () => ({ resourceFromAttributes: vi.fn(() => ({})) }));
 vi.mock('@opentelemetry/sdk-node', () => ({
@@ -206,6 +209,17 @@ const ORIGINAL_PLATFORM = process.platform;
 const ORIGINAL_LOG = console.log;
 const ORIGINAL_WARN = console.warn;
 const ORIGINAL_ERROR = console.error;
+const ANALYTICS_ENV_KEYS = [
+  'POSTHOG_LOGS_ENABLED',
+  'SENTRY_ENVIRONMENT',
+  'APTABASE_ENVIRONMENT',
+  'APTABASE_APP_KEY',
+  'APTABASE_HOST',
+  'POSTHOG_PROJECT_TOKEN',
+  'POSTHOG_HOST',
+] as const;
+const ORIGINAL_ANALYTICS_ENV: Record<string, string | undefined> = {};
+for (const key of ANALYTICS_ENV_KEYS) ORIGINAL_ANALYTICS_ENV[key] = process.env[key];
 
 const getMainWindows = () => registerIpcHandlersMock.mock.calls.map((call) => call[0]);
 
@@ -304,6 +318,11 @@ describe('main/index', () => {
     delete process.env.NODE_ENV;
     delete process.env.ENCODEX_HOSTILE_MODE;
     delete process.env.ENCODEX_TEST_MODE;
+    for (const key of ANALYTICS_ENV_KEYS) {
+      const value = ORIGINAL_ANALYTICS_ENV[key];
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
     // Tests that point userData at a temp directory must not leak that path
     // into the next test: `vi.clearAllMocks()` keeps mock implementations.
     appMock.getPath.mockImplementation((_name: string) => 'C:\\tmp\\encodex-userdata');
@@ -657,6 +676,49 @@ describe('main/index', () => {
       fs.rmSync(userDataDir, { recursive: true, force: true });
     }
     expect(marker).toBe('1.0.0');
+  });
+
+  it('reuses the persisted analytics installation id', async () => {
+    const userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'encodex-install-id-'));
+    const installIdPath = path.join(userDataDir, 'analytics-install-id.txt');
+    fs.writeFileSync(installIdPath, 'persisted-id', 'utf8');
+    appMock.getPath.mockImplementation((name: string) => (name === 'userData' ? userDataDir : 'C:\\tmp\\encodex-userdata'));
+    process.argv = ['node', 'x.js'];
+
+    try {
+      await importIndex();
+      await triggerStartup();
+      expect(fs.readFileSync(installIdPath, 'utf8')).toBe('persisted-id');
+    } finally {
+      fs.rmSync(userDataDir, { recursive: true, force: true });
+    }
+  });
+
+  it.each([
+    ['true', true],
+    ['1', true],
+    ['false', false],
+    ['0', false],
+    ['unknown', true],
+  ])('normalizes POSTHOG_LOGS_ENABLED=%s', async (value) => {
+    process.env.POSTHOG_LOGS_ENABLED = value;
+    await importIndex();
+    await triggerStartup();
+    expect(getMainWindows()).toHaveLength(1);
+  });
+
+  it('honors runtime analytics and monitoring environment overrides', async () => {
+    process.env.SENTRY_ENVIRONMENT = 'sentry-env';
+    process.env.APTABASE_ENVIRONMENT = 'aptabase-env';
+    process.env.APTABASE_APP_KEY = 'A-RUNTIME-KEY';
+    process.env.APTABASE_HOST = 'https://eu.aptabase.com';
+    process.env.POSTHOG_PROJECT_TOKEN = 'phc_runtime';
+    process.env.POSTHOG_HOST = 'https://eu.i.posthog.com';
+    process.env.NODE_ENV = 'development';
+
+    await importIndex();
+    await triggerStartup();
+    expect(getMainWindows()).toHaveLength(1);
   });
 
   it('starts the MCP server in --mcp mode and exits cleanly', async () => {

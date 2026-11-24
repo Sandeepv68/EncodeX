@@ -18,8 +18,21 @@
 import { ipcMain } from 'electron';
 import { Logger } from '../../shared/logger';
 import { IPC } from '../../shared/ipc-channels';
-import { LOG_IPC_ANALYTICS_GET_STATE, LOG_IPC_ANALYTICS_SET_ENABLED, LOG_IPC_ANALYTICS_TRACK_EVENT } from '../../shared/log-constants';
-import { getAnalyticsBackendName, setAnalyticsEnabled, trackRelayedAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
+import {
+  LOG_ANALYTICS_EXCEPTION_CAPTURE_FAILED,
+  LOG_IPC_ANALYTICS_CAPTURE_EXCEPTION,
+  LOG_IPC_ANALYTICS_GET_STATE,
+  LOG_IPC_ANALYTICS_SET_ENABLED,
+  LOG_IPC_ANALYTICS_TRACK_EVENT,
+} from '../../shared/log-constants';
+import {
+  captureAnalyticsException,
+  getAllFeatureFlags,
+  getAnalyticsBackendName,
+  setAnalyticsEnabled,
+  trackRelayedAnalyticsEvent,
+} from '../../shared/analytics/AnalyticsService';
+import { createErrorFromAnalyticsExceptionPayload, parseAnalyticsExceptionPayload } from '../../shared/analytics/sanitize';
 import type { AnalyticsState } from '../../shared/analytics/types';
 import { writeAnalyticsConsent } from './consent';
 import { POSTHOG_BUILD_CONFIG } from '../generated/posthogBuildConfig';
@@ -32,6 +45,15 @@ let userDataDir: string | null = null;
 
 /** Whether consent was granted at bootstrap. @type {boolean} */
 let bootConsent = true;
+
+function resolveSurveysEnabled(): boolean {
+  const value = process.env.POSTHOG_SURVEYS_ENABLED;
+  if (value === undefined) return POSTHOG_BUILD_CONFIG.surveysEnabled;
+  const normalized = value.trim().toLowerCase();
+  if (normalized === 'true' || normalized === '1') return true;
+  if (normalized === 'false' || normalized === '0') return false;
+  return POSTHOG_BUILD_CONFIG.surveysEnabled;
+}
 
 /**
  * Registers the analytics IPC channels. Call once during app startup after
@@ -48,7 +70,7 @@ export function registerAnalyticsIpcBridge(options: { userDataDir: string; conse
 
   ipcMain.handle(IPC.ANALYTICS_GET_STATE, (): AnalyticsState => {
     log.info(LOG_IPC_ANALYTICS_GET_STATE);
-    return { enabled: bootConsent, backend: getAnalyticsBackendName() };
+    return { enabled: bootConsent, backend: getAnalyticsBackendName(), featureFlags: getAllFeatureFlags() };
   });
 
   ipcMain.handle(IPC.ANALYTICS_SET_ENABLED, async (_event, enabled: unknown): Promise<AnalyticsState> => {
@@ -59,7 +81,7 @@ export function registerAnalyticsIpcBridge(options: { userDataDir: string; conse
       writeAnalyticsConsent(userDataDir, next);
     }
     await setAnalyticsEnabled(next);
-    return { enabled: next, backend: getAnalyticsBackendName() };
+    return { enabled: next, backend: getAnalyticsBackendName(), featureFlags: getAllFeatureFlags() };
   });
 
   ipcMain.handle(IPC.ANALYTICS_TRACK_EVENT, (_event, event: unknown): void => {
@@ -67,9 +89,42 @@ export function registerAnalyticsIpcBridge(options: { userDataDir: string; conse
     trackRelayedAnalyticsEvent(event);
   });
 
-  ipcMain.handle(IPC.ANALYTICS_GET_POSTHOG_CONFIG, (): { projectToken?: string; host?: string } => {
-    const token = process.env.POSTHOG_PROJECT_TOKEN ?? POSTHOG_BUILD_CONFIG.projectToken;
-    const host = process.env.POSTHOG_HOST ?? POSTHOG_BUILD_CONFIG.host;
-    return { projectToken: token, host };
+  ipcMain.handle(IPC.ANALYTICS_CAPTURE_EXCEPTION, (_event, payload: unknown): void => {
+    log.debug(LOG_IPC_ANALYTICS_CAPTURE_EXCEPTION);
+    try {
+      const parsed = parseAnalyticsExceptionPayload(payload);
+      if (!parsed) return;
+      captureAnalyticsException(createErrorFromAnalyticsExceptionPayload(parsed), parsed.context);
+    } catch (err) {
+      log.debug(LOG_ANALYTICS_EXCEPTION_CAPTURE_FAILED, err);
+    }
   });
+
+  ipcMain.handle(
+    IPC.ANALYTICS_GET_POSTHOG_CONFIG,
+    (): {
+      projectToken?: string;
+      host?: string;
+      surveysEnabled?: boolean;
+      environment?: string;
+      channel?: string;
+      appVersion?: string;
+      platform?: string;
+      arch?: string;
+      hwAccelAvailable?: boolean;
+    } => {
+      const token = process.env.POSTHOG_PROJECT_TOKEN ?? POSTHOG_BUILD_CONFIG.projectToken;
+      const host = process.env.POSTHOG_HOST ?? POSTHOG_BUILD_CONFIG.host;
+      return {
+        projectToken: token,
+        host,
+        surveysEnabled: resolveSurveysEnabled(),
+        environment: process.env.NODE_ENV === 'development' ? 'development' : 'production',
+        channel: process.env.NODE_ENV === 'development' ? 'dev' : 'prod',
+        appVersion: process.env.npm_package_version,
+        platform: process.platform,
+        arch: process.arch,
+      };
+    },
+  );
 }

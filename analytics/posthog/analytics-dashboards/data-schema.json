@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "eventCount": 129,
+  "eventCount": 130,
   "events": [
     {
       "name": "always_on_top_toggled",
@@ -430,6 +430,11 @@
     {
       "name": "onboarding_started",
       "group": "onboarding",
+      "tier": null
+    },
+    {
+      "name": "page_viewed",
+      "group": "nav",
       "tier": null
     },
     {

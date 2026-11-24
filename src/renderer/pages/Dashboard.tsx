@@ -25,6 +25,7 @@ import { pageIcons } from '../pageIcons';
 import { resolveDashboardAppIcon } from '../utils/easter-egg-assets';
 import { useHotkeys } from '../hooks/useHotkeys';
 import { SHORTCUTS, SHORTCUT_BY_ID, formatShortcut } from '../constants/shortcuts';
+import { useFeatureFlag } from '../hooks/useFeatureFlags';
 
 import {
   WelcomeTitle,
@@ -158,6 +159,7 @@ function cardRings(key: string): RingGroup[] {
 export default function Dashboard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const automationsEnabled = useFeatureFlag('automations_page', import.meta.env.DEV);
   const appIcon = resolveDashboardAppIcon(new Date());
 
   /**
@@ -192,41 +194,46 @@ export default function Dashboard() {
       <DashboardSubtitle color="text.secondary">{t('dashboard.subtitle')}</DashboardSubtitle>
       <GettingStartedCard />
       <FeatureGrid container spacing={2}>
-        {NAV_ITEMS.filter((item) => item.to !== '/' && item.to !== '/logs' && item.to !== '/settings' && item.to !== '/about').map(
-          (item, index) => (
-            <FeatureGridItem size={{ xs: 12, sm: 6, md: 4 }} key={item.to}>
-              <FeatureCard gradientAngle={index * 60} $animationDelay={`${0.3 + index * 0.08}s`}>
-                <CardBackgroundSvg aria-hidden="true" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice">
-                  {cardRings(item.to).map((ring) => (
-                    <g key={ring.id} fill="none" stroke="currentColor" strokeWidth={1} vectorEffect="non-scaling-stroke">
-                      {ring.radii.map((r) => (
-                        <circle key={r} cx={ring.cx} cy={ring.cy} r={r} />
-                      ))}
-                    </g>
-                  ))}
-                </CardBackgroundSvg>
-                <CardLink
-                  onClick={() => {
-                    recordAnalyticsEvent(createAnalyticsEvent('dashboard_card_clicked', { route: item.to }));
-                    navigate(item.to);
-                  }}
-                >
-                  <FeatureIconBox>{pageIcons[item.to]}</FeatureIconBox>
-                  <CardBody>
-                    <CardTitleText variant="h6" component="h2">
-                      {t(
-                        `nav.${item.to === '/convert' ? 'convert' : item.to === '/media-info' ? 'mediaInfo' : item.to === '/image-compress' ? 'image' : item.to === '/audio-extract' ? 'audio' : item.to === '/video-cut' ? 'cut' : item.to === '/remux' ? 'remux' : item.to === '/demux' ? 'demux' : item.to === '/automations' ? 'automations' : item.to === '/copilot' ? 'copilot' : 'batchQueue'}`,
-                      )}
-                    </CardTitleText>
-                    <CardDescription variant="body2" color="text.secondary">
-                      {t(`dashboard.${descKeys[item.to]}`)}
-                    </CardDescription>
-                  </CardBody>
-                </CardLink>
-              </FeatureCard>
-            </FeatureGridItem>
-          ),
-        )}
+        {NAV_ITEMS.filter(
+          (item) =>
+            item.to !== '/' &&
+            item.to !== '/logs' &&
+            item.to !== '/settings' &&
+            item.to !== '/about' &&
+            (automationsEnabled || item.to !== '/automations'),
+        ).map((item, index) => (
+          <FeatureGridItem size={{ xs: 12, sm: 6, md: 4 }} key={item.to}>
+            <FeatureCard gradientAngle={index * 60} $animationDelay={`${0.3 + index * 0.08}s`}>
+              <CardBackgroundSvg aria-hidden="true" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice">
+                {cardRings(item.to).map((ring) => (
+                  <g key={ring.id} fill="none" stroke="currentColor" strokeWidth={1} vectorEffect="non-scaling-stroke">
+                    {ring.radii.map((r) => (
+                      <circle key={r} cx={ring.cx} cy={ring.cy} r={r} />
+                    ))}
+                  </g>
+                ))}
+              </CardBackgroundSvg>
+              <CardLink
+                onClick={() => {
+                  recordAnalyticsEvent(createAnalyticsEvent('dashboard_card_clicked', { route: item.to }));
+                  navigate(item.to);
+                }}
+              >
+                <FeatureIconBox>{pageIcons[item.to]}</FeatureIconBox>
+                <CardBody>
+                  <CardTitleText variant="h6" component="h2">
+                    {t(
+                      `nav.${item.to === '/convert' ? 'convert' : item.to === '/media-info' ? 'mediaInfo' : item.to === '/image-compress' ? 'image' : item.to === '/audio-extract' ? 'audio' : item.to === '/video-cut' ? 'cut' : item.to === '/remux' ? 'remux' : item.to === '/demux' ? 'demux' : item.to === '/automations' ? 'automations' : item.to === '/copilot' ? 'copilot' : 'batchQueue'}`,
+                    )}
+                  </CardTitleText>
+                  <CardDescription variant="body2" color="text.secondary">
+                    {t(`dashboard.${descKeys[item.to]}`)}
+                  </CardDescription>
+                </CardBody>
+              </CardLink>
+            </FeatureCard>
+          </FeatureGridItem>
+        ))}
       </FeatureGrid>
       <DashboardFooter variant="caption" color="text.secondary" data-testid="dashboard-shortcuts-hint">
         {t('dashboard.shortcutsFooter', { shortcut: formatShortcut(SHORTCUT_BY_ID['global.help'].keys) })}

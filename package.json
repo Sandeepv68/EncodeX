@@ -199,6 +199,9 @@
     "vitest": "^4.1.10",
     "wait-on": "^9.1.0"
   },
+  "optionalDependencies": {
+    "@posthog/rollup-plugin": "^1.6.4"
+  },
   "overrides": {
     "@docsearch/react": "^3.9.0"
   },

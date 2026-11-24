@@ -98,6 +98,7 @@ import type { McpSettings } from '../shared/mcp-settings';
 import type { AiConnectTestResult, AiModelsListResult, AiSettingsUpdate, AiSettingsView } from '../shared/ai/settings';
 import type { AuditEntry } from '../shared/audit';
 import type { AnalyticsEvent } from '../shared/analytics/events';
+import type { AnalyticsExceptionPayload } from '../shared/analytics/types';
 import type {
   AutomationCancelRequest,
   AutomationDefinition,
@@ -192,6 +193,7 @@ import {
   LOG_IPC_NOTIFICATIONS_SET_ENABLED,
   LOG_ON_NOTIFICATION_CLICKED,
   LOG_IPC_ANALYTICS_TRACK_EVENT,
+  LOG_IPC_ANALYTICS_CAPTURE_EXCEPTION,
   LOG_IPC_MCP_GET_SETTINGS,
   LOG_IPC_MCP_SET_SETTINGS,
   LOG_IPC_MCP_UI_CALL_TOOL,
@@ -218,6 +220,14 @@ import {
  * @const {Logger} log
  */
 const log = new Logger('preload');
+
+contextBridge.exposeInMainWorld(
+  '__ENCODEX_E2E__',
+  process.env.E2E === 'true' ||
+    process.env.E2E_REAL === '1' ||
+    process.env.ENCODEX_TEST_MODE === '1' ||
+    process.env.ENCODEX_HOSTILE_MODE !== undefined,
+);
 
 /**
  * Coalescing window, in milliseconds, per high-frequency push channel.
@@ -1139,7 +1149,11 @@ const api = {
    */
   analyticsGetState: () => {
     log.debug(LOG_IPC_ANALYTICS_GET_STATE);
-    return ipcRenderer.invoke(IPC.ANALYTICS_GET_STATE) as Promise<{ enabled: boolean; backend: string }>;
+    return ipcRenderer.invoke(IPC.ANALYTICS_GET_STATE) as Promise<{
+      enabled: boolean;
+      backend: string;
+      featureFlags?: Record<string, boolean | string | number>;
+    }>;
   },
 
   /**
@@ -1152,7 +1166,11 @@ const api = {
    */
   analyticsSetEnabled: (enabled: boolean) => {
     log.debug(LOG_IPC_ANALYTICS_SET_ENABLED, { enabled });
-    return ipcRenderer.invoke(IPC.ANALYTICS_SET_ENABLED, enabled) as Promise<{ enabled: boolean; backend: string }>;
+    return ipcRenderer.invoke(IPC.ANALYTICS_SET_ENABLED, enabled) as Promise<{
+      enabled: boolean;
+      backend: string;
+      featureFlags?: Record<string, boolean | string | number>;
+    }>;
   },
 
   /**
@@ -1167,8 +1185,21 @@ const api = {
     log.debug(LOG_IPC_ANALYTICS_TRACK_EVENT, { event: event?.name });
     return ipcRenderer.invoke(IPC.ANALYTICS_TRACK_EVENT, event) as Promise<void>;
   },
+  analyticsCaptureException: (payload: AnalyticsExceptionPayload) => {
+    log.debug(LOG_IPC_ANALYTICS_CAPTURE_EXCEPTION);
+    return ipcRenderer.invoke(IPC.ANALYTICS_CAPTURE_EXCEPTION, payload) as Promise<void>;
+  },
   analyticsGetPosthogConfig: () =>
-    ipcRenderer.invoke(IPC.ANALYTICS_GET_POSTHOG_CONFIG) as Promise<{ projectToken?: string; host?: string }>,
+    ipcRenderer.invoke(IPC.ANALYTICS_GET_POSTHOG_CONFIG) as Promise<{
+      projectToken?: string;
+      host?: string;
+      surveysEnabled?: boolean;
+      environment?: string;
+      channel?: string;
+      appVersion?: string;
+      platform?: string;
+      arch?: string;
+    }>,
 
   /**
    * Queries the stored embedded MCP server settings from the main process. Logs

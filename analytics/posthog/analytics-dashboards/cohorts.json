@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "projectId": 709196,
+  "cohorts": [
+    {
+      "id": 689593,
+      "name": "Internal / Test users",
+      "url": "https://us.posthog.com/project/709196/cohorts/689593",
+      "kind": "person_property",
+      "definition": "$internal_or_test_user is true",
+      "use": "Project test-account filter; excluded from all saved insights"
+    },
+    {
+      "id": 751458,
+      "name": "EncodeX — Power users (10 conversions / 7d)",
+      "url": "https://us.posthog.com/project/709196/cohorts/751458",
+      "kind": "behavioral",
+      "definition": "At least 10 conversion_completed events in the last 7 days",
+      "filterTestAccounts": true
+    },
+    {
+      "id": 751459,
+      "name": "EncodeX — MCP users (toggle on ever)",
+      "url": "https://us.posthog.com/project/709196/cohorts/751459",
+      "kind": "behavioral",
+      "definition": "At least one mcp_server_toggled event with enabled = true in the last 3650 days",
+      "filterTestAccounts": true
+    },
+    {
+      "id": 751460,
+      "name": "EncodeX — Batch users (3 queues / 30d)",
+      "url": "https://us.posthog.com/project/709196/cohorts/751460",
+      "kind": "behavioral",
+      "definition": "At least 3 batch_queue_started events in the last 30 days",
+      "filterTestAccounts": true
+    },
+    {
+      "id": 751461,
+      "name": "EncodeX — Churn risk (active 14–28d, idle 14d)",
+      "url": "https://us.posthog.com/project/709196/cohorts/751461",
+      "kind": "behavioral",
+      "definition": "At least one app_launched event 14–28 days ago AND zero app_launched events in the last 14 days",
+      "filterTestAccounts": true
+    }
+  ]
+}

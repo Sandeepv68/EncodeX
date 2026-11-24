@@ -1,0 +1,354 @@
+{
+  "schemaVersion": 1,
+  "projectId": 709196,
+  "dashboard": {
+    "id": 2399423,
+    "name": "EncodeX — Reliability",
+    "description": "Failure rates for production media operations plus categorical UI error breakdowns by route and category.",
+    "url": "https://us.posthog.com/project/709196/dashboard/2399423",
+    "pinned": false,
+    "tags": [
+      "encodex",
+      "cp2"
+    ]
+  },
+  "sharedFilters": {
+    "channel": [
+      "prod"
+    ],
+    "excludedCohortId": 689593,
+    "filterTestAccounts": true
+  },
+  "insights": [
+    {
+      "id": 14528187,
+      "shortId": "AkAjVLyB",
+      "name": "EncodeX — Conversion failure rate",
+      "description": "Weekly ratio of failed conversions to started conversions for production users.",
+      "url": "https://us.posthog.com/project/709196/insights/AkAjVLyB",
+      "tileId": 16087331,
+      "layout": {
+        "h": 6,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "tags": [
+        "encodex",
+        "cp2",
+        "reliability"
+      ],
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "conversion_started",
+              "custom_name": "Started"
+            },
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "conversion_failed",
+              "custom_name": "Failed"
+            }
+          ],
+          "interval": "week",
+          "dateRange": {
+            "date_from": "-90d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "channel",
+              "type": "event",
+              "value": [
+                "prod"
+              ],
+              "operator": "exact"
+            },
+            {
+              "key": "id",
+              "type": "cohort",
+              "value": 689593,
+              "operator": "not_in"
+            }
+          ],
+          "trendsFilter": {
+            "display": "ActionsLineGraph",
+            "showLegend": true,
+            "formulaNodes": [
+              {
+                "formula": "B/A",
+                "custom_name": "Conversion failure rate"
+              }
+            ],
+            "hideWeekends": false,
+            "metricSummary": "total",
+            "legendPosition": "bottom",
+            "yAxisScaleType": "linear",
+            "showAnnotations": true,
+            "metricShowChange": true,
+            "yAxisStartAtZero": true,
+            "showMultipleYAxes": false,
+            "showValuesOnSeries": false,
+            "smoothingIntervals": 1,
+            "showPercentStackView": false,
+            "stackBreakdownValues": false,
+            "aggregationAxisFormat": "percentage_scaled",
+            "resultCustomizationBy": "value",
+            "excludeBoxPlotOutliers": true,
+            "metricColorByDirection": false,
+            "showAlertThresholdLines": false
+          },
+          "filterTestAccounts": true,
+          "version": 4
+        }
+      }
+    },
+    {
+      "id": 14528189,
+      "shortId": "yYDNtYOM",
+      "name": "EncodeX — Media operation failure rate",
+      "description": "Weekly failure ratio across conversion, remux, demux, compress, audio, and cut operations.",
+      "url": "https://us.posthog.com/project/709196/insights/yYDNtYOM",
+      "tileId": 16087333,
+      "layout": {
+        "h": 6,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
+      "tags": [
+        "encodex",
+        "cp2",
+        "reliability"
+      ],
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "conversion_started",
+              "custom_name": "Conversion started"
+            },
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "remux_started",
+              "custom_name": "Remux started"
+            },
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "demux_started",
+              "custom_name": "Demux started"
+            },
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "compress_started",
+              "custom_name": "Compress started"
+            },
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "audio_extract_started",
+              "custom_name": "Audio started"
+            },
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "video_cut_started",
+              "custom_name": "Cut started"
+            },
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "conversion_failed",
+              "custom_name": "Conversion failed"
+            },
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "remux_failed",
+              "custom_name": "Remux failed"
+            },
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "demux_failed",
+              "custom_name": "Demux failed"
+            },
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "compress_failed",
+              "custom_name": "Compress failed"
+            },
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "audio_extract_failed",
+              "custom_name": "Audio failed"
+            },
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "video_cut_failed",
+              "custom_name": "Cut failed"
+            }
+          ],
+          "interval": "week",
+          "dateRange": {
+            "date_from": "-90d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "channel",
+              "type": "event",
+              "value": [
+                "prod"
+              ],
+              "operator": "exact"
+            },
+            {
+              "key": "id",
+              "type": "cohort",
+              "value": 689593,
+              "operator": "not_in"
+            }
+          ],
+          "trendsFilter": {
+            "display": "ActionsLineGraph",
+            "showLegend": true,
+            "formulaNodes": [
+              {
+                "formula": "(G+H+I+J+K+L)/(A+B+C+D+E+F)",
+                "custom_name": "Media failure rate"
+              }
+            ],
+            "hideWeekends": false,
+            "metricSummary": "total",
+            "legendPosition": "bottom",
+            "yAxisScaleType": "linear",
+            "showAnnotations": true,
+            "metricShowChange": true,
+            "yAxisStartAtZero": true,
+            "showMultipleYAxes": false,
+            "showValuesOnSeries": false,
+            "smoothingIntervals": 1,
+            "showPercentStackView": false,
+            "stackBreakdownValues": false,
+            "aggregationAxisFormat": "percentage_scaled",
+            "resultCustomizationBy": "value",
+            "excludeBoxPlotOutliers": true,
+            "metricColorByDirection": false,
+            "showAlertThresholdLines": false
+          },
+          "filterTestAccounts": true,
+          "version": 4
+        }
+      }
+    },
+    {
+      "id": 14528190,
+      "shortId": "Y5bNeXOy",
+      "name": "EncodeX — UI errors by route and category",
+      "description": "Categorical production UI error counts by route and error category, without free text.",
+      "url": "https://us.posthog.com/project/709196/insights/Y5bNeXOy",
+      "tileId": 16087334,
+      "layout": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 6
+      },
+      "tags": [
+        "encodex",
+        "cp2",
+        "reliability"
+      ],
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "ui_error_shown"
+            }
+          ],
+          "interval": "week",
+          "dateRange": {
+            "date_from": "-90d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "channel",
+              "type": "event",
+              "value": [
+                "prod"
+              ],
+              "operator": "exact"
+            },
+            {
+              "key": "id",
+              "type": "cohort",
+              "value": 689593,
+              "operator": "not_in"
+            }
+          ],
+          "trendsFilter": {
+            "display": "ActionsBarValue",
+            "showLegend": true,
+            "hideWeekends": false,
+            "metricSummary": "total",
+            "legendPosition": "bottom",
+            "yAxisScaleType": "linear",
+            "showAnnotations": true,
+            "metricShowChange": true,
+            "yAxisStartAtZero": true,
+            "showMultipleYAxes": false,
+            "showValuesOnSeries": false,
+            "smoothingIntervals": 1,
+            "showPercentStackView": false,
+            "stackBreakdownValues": false,
+            "aggregationAxisFormat": "numeric",
+            "resultCustomizationBy": "value",
+            "excludeBoxPlotOutliers": true,
+            "metricColorByDirection": false,
+            "showAlertThresholdLines": false
+          },
+          "breakdownFilter": {
+            "breakdowns": [
+              {
+                "type": "event",
+                "property": "ctx.route"
+              },
+              {
+                "type": "event",
+                "property": "category"
+              }
+            ],
+            "breakdown_type": "event"
+          },
+          "filterTestAccounts": true,
+          "version": 4
+        }
+      }
+    }
+  ]
+}

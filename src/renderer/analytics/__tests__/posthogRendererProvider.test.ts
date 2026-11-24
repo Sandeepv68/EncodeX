@@ -12,14 +12,16 @@ import { createAnalyticsEvent } from '../../../shared/analytics/events';
 import type { AnalyticsConfig } from '../../../shared/analytics/types';
 
 const relay = vi.fn().mockResolvedValue(undefined);
+const relayException = vi.fn().mockResolvedValue(undefined);
 
 describe('PostHogRendererProvider', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     relay.mockResolvedValue(undefined);
+    relayException.mockResolvedValue(undefined);
     Object.defineProperty(globalThis, 'window', {
       configurable: true,
-      value: { electronAPI: { analyticsTrackEvent: relay } },
+      value: { electronAPI: { analyticsTrackEvent: relay, analyticsCaptureException: relayException } },
     });
   });
 
@@ -46,6 +48,58 @@ describe('PostHogRendererProvider', () => {
         props: { route: '/convert' },
       }),
     );
+  });
+
+  it('relays sanitized exception payloads over IPC', async () => {
+    const provider = new PostHogRendererProvider();
+    await provider.init({ enabled: true });
+    provider.captureException(new Error('boom'), {
+      tags: { handler: 'window.error', file: 'secret.js' },
+      extra: { process: 'renderer', path: '/secret' },
+    });
+    expect(relayException).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'Error',
+        message: 'boom',
+        stack: expect.any(String),
+        context: { tags: { handler: 'window.error' }, extra: { process: 'renderer' } },
+      }),
+    );
+  });
+
+  it('swallows exception relay rejections', async () => {
+    const failing = vi.fn().mockRejectedValue(new Error('boom'));
+    Object.defineProperty(globalThis, 'window', {
+      configurable: true,
+      value: { electronAPI: { analyticsCaptureException: failing } },
+    });
+    const provider = new PostHogRendererProvider();
+    await provider.init({ enabled: true });
+    provider.captureException(new Error('boom'));
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(failing).toHaveBeenCalled();
+  });
+
+  it('swallows an exception relay that throws synchronously', async () => {
+    const throwing = vi.fn(() => {
+      throw new Error('sync boom');
+    });
+    Object.defineProperty(globalThis, 'window', {
+      configurable: true,
+      value: { electronAPI: { analyticsCaptureException: throwing } },
+    });
+    const provider = new PostHogRendererProvider();
+    await provider.init({ enabled: true });
+    expect(() => provider.captureException(new Error('boom'))).not.toThrow();
+    expect(throwing).toHaveBeenCalled();
+  });
+
+  it('does not relay exceptions after consent is disabled', async () => {
+    const provider = new PostHogRendererProvider();
+    await provider.init({ enabled: true });
+    provider.setEnabled(false);
+    provider.captureException(new Error('boom'));
+    expect(relayException).not.toHaveBeenCalled();
   });
 
   it('does nothing when no relay is available', async () => {

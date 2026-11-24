@@ -22,7 +22,7 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, it, expect } from 'vitest';
-import { CONTENT_SECURITY_POLICY, DEV_CONTENT_SECURITY_POLICY } from '../../shared/csp';
+import { CONTENT_SECURITY_POLICY, DEV_CONTENT_SECURITY_POLICY, buildContentSecurityPolicy } from '../../shared/csp';
 
 const RENDERER_DIR = join(__dirname, '..', '..', 'renderer');
 
@@ -97,6 +97,26 @@ describe('renderer Content-Security-Policy', () => {
     // under `connect-src`. Without this entry every analytics event is silently dropped with a
     // `TypeError: Failed to fetch`.
     expect(directives.get('connect-src')).toContain('aptabase-ipc:');
+  });
+
+  it('permits the PostHog assets origin for lazy-loaded renderer bundles', () => {
+    const configured = parseCsp(buildContentSecurityPolicy('https://us.i.posthog.com'));
+    expect(configured.get('script-src')).toContain('https://us-assets.i.posthog.com');
+    expect(configured.get('connect-src')).toContain('https://us-assets.i.posthog.com');
+  });
+
+  it('maps the managed PostHog host to the US assets origin', () => {
+    const configured = parseCsp(buildContentSecurityPolicy('https://app.posthog.com'));
+    expect(configured.get('script-src')).toContain('https://us-assets.i.posthog.com');
+    expect(configured.get('connect-src')).toContain('https://app.posthog.com');
+    expect(configured.get('connect-src')).toContain('https://us-assets.i.posthog.com');
+  });
+
+  it('ignores invalid and unsupported PostHog hosts', () => {
+    expect(parseCsp(buildContentSecurityPolicy('not a url')).get('connect-src')).not.toContain('https://us-assets.i.posthog.com');
+    expect(parseCsp(buildContentSecurityPolicy('ftp://us.i.posthog.com')).get('connect-src')).not.toContain(
+      'https://us-assets.i.posthog.com',
+    );
   });
 
   it('keeps inline scripts blocked in the production policy', () => {

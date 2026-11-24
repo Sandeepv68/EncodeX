@@ -117,6 +117,7 @@ const API_TABLE: Record<string, MethodEntry> = {
   analyticsGetState: { kind: 'invoke', params: [] },
   analyticsSetEnabled: { kind: 'invoke', params: ['enabled'] },
   analyticsTrackEvent: { kind: 'invoke', params: ['event'] },
+  analyticsCaptureException: { kind: 'invoke', params: ['payload'] },
   analyticsGetPosthogConfig: { kind: 'invoke', params: [] },
   mcpGetSettings: { kind: 'invoke', params: [] },
   mcpSetSettings: { kind: 'invoke', params: ['settings'] },

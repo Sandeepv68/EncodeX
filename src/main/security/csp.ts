@@ -14,7 +14,7 @@
  */
 
 import type { Session } from 'electron';
-import { CONTENT_SECURITY_POLICY, DEV_CONTENT_SECURITY_POLICY } from '../../shared/csp';
+import { buildContentSecurityPolicy } from '../../shared/csp';
 
 /** Response header that carries the renderer policy. @const {string} */
 export const CSP_HEADER_NAME = 'Content-Security-Policy';
@@ -30,8 +30,8 @@ export const CSP_HEADER_NAME = 'Content-Security-Policy';
  *   production `script-src 'self'` would block (blank window).
  * @returns {() => void} A cleanup that removes the registered handler.
  */
-export function installContentSecurityPolicy(session: Session, options: { dev?: boolean } = {}): () => void {
-  const policy = options.dev ? DEV_CONTENT_SECURITY_POLICY : CONTENT_SECURITY_POLICY;
+export function installContentSecurityPolicy(session: Session, options: { dev?: boolean; posthogHost?: string } = {}): () => void {
+  const policy = buildContentSecurityPolicy(options.posthogHost, options.dev === true);
   session.webRequest.onHeadersReceived((details, callback) => {
     callback({
       responseHeaders: {

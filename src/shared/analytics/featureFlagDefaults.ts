@@ -1,0 +1,16 @@
+export const FEATURE_FLAG_DEFAULTS: Record<string, boolean | string | number> = {
+  analytics_group_convert: true,
+  analytics_group_queue: true,
+  analytics_group_audio: true,
+  analytics_group_video: true,
+  analytics_group_remux: true,
+  analytics_group_demux: true,
+  analytics_group_batch: true,
+  analytics_group_logs: true,
+  analytics_group_settings: true,
+  analytics_group_copilot: true,
+  analytics_group_about: true,
+  analytics_group_app: true,
+  mcp_server_default_on: false,
+  automations_page: process.env.NODE_ENV === 'development',
+};

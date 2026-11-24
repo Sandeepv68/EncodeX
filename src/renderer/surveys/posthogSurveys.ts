@@ -1,14 +1,12 @@
 /**
- * @fileoverview Optional PostHog surveys in the renderer.
+ * @fileoverview PostHog browser SDK initialization for renderer error tracking
+ * and optional surveys.
  *
- * Surveys are the only reason `posthog-js` runs in the renderer. It is
- * initialised with autocapture, pageview capture, and session replay disabled,
- * so no element text, URLs, or media content are collected. The project token
- * is fetched from the main process over IPC (it is a public token, but it is
- * never baked into the renderer bundle).
- *
- * Survey targeting and display are handled by PostHog's own rules; this module
- * only boots the SDK so surveys can render.
+ * Exception autocapture uses the SDK's built-in global handlers. Existing
+ * product analytics continues to flow through the main-process relay, so
+ * autocapture and pageview capture remain disabled here. The public project
+ * token is fetched from the main process over IPC and is never baked into the
+ * renderer bundle.
  */
 
 import posthog from 'posthog-js';
@@ -28,13 +26,21 @@ export async function initPosthogSurveys(consent: boolean): Promise<void> {
   if (initialised || !consent) return;
   if (typeof window === 'undefined' || !window.electronAPI?.analyticsGetPosthogConfig) return;
   try {
-    const { projectToken, host } = await window.electronAPI.analyticsGetPosthogConfig();
-    if (!projectToken || !host) return;
-    posthog.init(projectToken, {
-      api_host: host,
+    const config = await window.electronAPI.analyticsGetPosthogConfig();
+    if (!config.projectToken || !config.host) return;
+    posthog.init(config.projectToken, {
+      api_host: config.host,
       autocapture: false,
       capture_pageview: false,
+      capture_exceptions: true,
       persistence: 'memory',
+    });
+    posthog.register({
+      ...(config.environment ? { environment: config.environment } : {}),
+      ...(config.channel ? { channel: config.channel } : {}),
+      ...(config.appVersion ? { app_version: config.appVersion } : {}),
+      ...(config.platform ? { platform: config.platform } : {}),
+      ...(config.arch ? { arch: config.arch } : {}),
     });
     initialised = true;
   } catch (err) {

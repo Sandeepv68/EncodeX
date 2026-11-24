@@ -181,6 +181,8 @@ function captureGeneration(
 ): void {
   captureAiGeneration({
     traceId: request.aiTraceId ?? randomUUID(),
+    spanId: randomUUID(),
+    ...(request.aiParentSpanId ? { parentSpanId: request.aiParentSpanId } : {}),
     provider,
     model,
     input: request.messages,

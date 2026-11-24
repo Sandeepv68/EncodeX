@@ -26,10 +26,42 @@
  * Keep the guard in `src/renderer/__tests__/csp.test.ts` green when this string changes.
  */
 const POLICY_PREFIX = "default-src 'self'";
-const POLICY_SUFFIX = "style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; connect-src 'self' aptabase-ipc:";
+const POLICY_SUFFIX = "style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:;";
+
+function safeHttpOrigin(host?: string): string | null {
+  if (!host) return null;
+  try {
+    const url = new URL(host);
+    if (url.protocol !== 'https:' && url.protocol !== 'http:') return null;
+    return url.origin;
+  } catch {
+    return null;
+  }
+}
+
+function posthogAssetOrigin(host?: string): string | null {
+  const origin = safeHttpOrigin(host);
+  if (!origin) return null;
+  const url = new URL(origin);
+  const hostname = url.hostname;
+  if (hostname === 'app.posthog.com') return 'https://us-assets.i.posthog.com';
+  const match = /^(us|eu|us-assets|eu-assets)\.i\.posthog\.com$/.exec(hostname);
+  if (!match) return null;
+  const region = match[1].startsWith('us') ? 'us' : 'eu';
+  return `${url.protocol}//${region}-assets.i.posthog.com`;
+}
+
+export function buildContentSecurityPolicy(posthogHost?: string, dev = false): string {
+  const origin = safeHttpOrigin(posthogHost);
+  const assetOrigin = posthogAssetOrigin(posthogHost);
+  const allowPosthog = origin ? ` ${origin}` : '';
+  const allowPosthogAssets = assetOrigin ? ` ${assetOrigin}` : '';
+  const scriptSrc = `${dev ? "script-src 'self' 'unsafe-inline'" : "script-src 'self'"}${allowPosthogAssets}`;
+  return `${POLICY_PREFIX}; ${scriptSrc}; ${POLICY_SUFFIX} connect-src 'self' aptabase-ipc:${allowPosthog}${allowPosthogAssets}`;
+}
 
 /** The strict policy shipped in production builds. @const {string} */
-export const CONTENT_SECURITY_POLICY = `${POLICY_PREFIX}; script-src 'self'; ${POLICY_SUFFIX}`;
+export const CONTENT_SECURITY_POLICY = buildContentSecurityPolicy();
 
 /**
  * The development policy: identical to the production one except that
@@ -37,4 +69,4 @@ export const CONTENT_SECURITY_POLICY = `${POLICY_PREFIX}; script-src 'self'; ${P
  * requires. Never used outside development mode.
  * @const {string}
  */
-export const DEV_CONTENT_SECURITY_POLICY = `${POLICY_PREFIX}; script-src 'self' 'unsafe-inline'; ${POLICY_SUFFIX}`;
+export const DEV_CONTENT_SECURITY_POLICY = buildContentSecurityPolicy(undefined, true);

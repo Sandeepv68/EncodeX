@@ -14,10 +14,12 @@
  * call and a CLI command produce identical output.
  */
 
+import { randomUUID } from 'crypto';
 import { ipcMain } from 'electron';
 import { readdirSync, statSync } from 'fs';
 import { extname, join } from 'path';
 import { Logger } from '../../shared/logger';
+import { captureAiSpan } from '../../shared/analytics/AnalyticsService';
 import { IPC } from '../../shared/ipc-channels';
 import { createTranscoder } from '../transcoders/factory';
 import { getEncoderCapabilities } from '../capabilities';
@@ -223,17 +225,33 @@ async function routeOperation(
   entries: ProbedEntry[],
   capabilities: EncoderCapabilities,
   inputExt: string,
+  aiTraceId: string,
 ): Promise<RouteDecision> {
   if (forced) return { routed: routeOperationDeterministic({ goal, operation: forced, inputExt }), aiFallback: false };
   const router = await resolveLLMOperationRouter();
   if (router) {
-    const routed = await router({
-      goal,
-      operation: null,
-      files: entries.map((entry) => entry.facts),
-      profiles: BUILTIN_PROFILES,
-      capabilities,
-    });
+    const spanId = randomUUID();
+    const startedAt = Date.now();
+    let routed: Awaited<ReturnType<typeof router>> | undefined;
+    try {
+      routed = await router({
+        goal,
+        operation: null,
+        files: entries.map((entry) => entry.facts),
+        profiles: BUILTIN_PROFILES,
+        capabilities,
+        aiTraceId,
+        aiParentSpanId: spanId,
+      });
+    } finally {
+      captureAiSpan({
+        traceId: aiTraceId,
+        spanId,
+        name: 'copilot.route',
+        latency: (Date.now() - startedAt) / 1000,
+        isError: routed === undefined,
+      });
+    }
     if (routed) return { routed, aiFallback: false };
     return { routed: routeOperationDeterministic({ goal, operation: null, inputExt }), aiFallback: true };
   }
@@ -311,6 +329,7 @@ export function registerCopilotHandlers(): void {
       if (!goal) throw createError(ErrorCode.INPUT_NOT_SPECIFIED, 'A goal is required to build a Copilot plan.');
       if (inputs.length === 0)
         throw createError(ErrorCode.INPUT_NOT_SPECIFIED, 'At least one file or folder is required to build a Copilot plan.');
+      const aiTraceId = randomUUID();
 
       const files = scanMedia(inputs, recursive, maxFiles);
       if (files.length === 0) throw createError(ErrorCode.FILE_NOT_FOUND, 'No media files matched the given inputs.');
@@ -329,7 +348,7 @@ export function registerCopilotHandlers(): void {
 
       const capabilities = getEncoderCapabilities() ?? EMPTY_CAPABILITIES;
       const inputExt = extname(entries[0].file).slice(1).toLowerCase() || 'mp4';
-      const { routed, aiFallback } = await routeOperation(goal, forced, entries, capabilities, inputExt);
+      const { routed, aiFallback } = await routeOperation(goal, forced, entries, capabilities, inputExt, aiTraceId);
       const routingWarning = aiFallback ? AI_FALLBACK_WARNING : undefined;
       if (typeof request?.query === 'string' && request.query.trim()) routed.fields.query = request.query.trim();
       if (typeof request?.targetLanguage === 'string' && request.targetLanguage.trim()) {

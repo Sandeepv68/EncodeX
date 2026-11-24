@@ -1,361 +1,475 @@
-# PostHog Product Analytics Plan - EncodeX
+# PostHog Integration Plan — EncodeX
 
-> Status legend: `[ ]` pending · `[~]` in progress · `[x]` done · `[!]` blocked · `[-]` dropped
+> Prepared 2026-11-23. Sources: repository audit (`package.json`, `src/**`, `docs/**`, `plans/**`)
+> plus live inspection of the connected PostHog project through the PostHog MCP
+> (`project-get`, `execute-sql` over `system.*`, `read-data-schema`) and current
+> [PostHog docs](https://posthog.com/pricing).
 >
-> **Goal:** Turn the existing PostHog integration (main-process capture, `$ai_generation`,
-> OTel logs, consent gate, sanitizer) into a full product-analytics program: person and group
-> analytics, saved funnels and retention, feature flags and experiments, in-app surveys,
-> error tracking as an opt-in, and governance that keeps the taxonomy and PostHog in sync.
+> Status legend: `[ ]` pending · `[~]` in progress · `[x]` done · `[!]` blocked · `[-]` dropped.
 >
-> **Non-negotiable constraints (carried over from `docs/ANALYTICS.md`):**
-> 1. Payloads stay **categorical-only**: no file names, paths, media content, or free text.
-> 2. No backend credential enters the renderer. The personal API key (secret) stays in main.
-> 3. Consent is central. Every new capability respects the single telemetry switch.
-> 4. Adapters never throw. Analytics must never take the app down.
-> 5. Prompt and completion content stays opt-in (`POSTHOG_AI_CAPTURE_CONTENT=true`).
->
-> Companion docs: `docs/ANALYTICS.md` (current design), `plans/APTABASE_ANALYTICS_PLAN.md`
-> (original provider-agnostic design), `plans/SENTRY_MONITORING_PLAN.md` (error monitoring),
-> `plans/PRODUCT_LAUNCH_GROWTH_PLAN.md` (KPI tracker).
+> This file is the single source of truth for the integration. It replaces the stale
+> baseline in the earlier revision of this plan (items marked "Missing" there are now
+> implemented in code); prior decisions and the progress log are preserved below.
+
+<!-- POSTHOG_PLAN_PROGRESS v1 — update table, phase header markers, checkboxes and log together -->
+
+## 0. Progress tracker
+
+> Last updated: 2026-11-23 · Overall: **46 / 60 items (77%)**
+> Legend: `[ ]` pending · `[~]` in progress · `[x]` done · `[!]` blocked · `[-]` dropped.
+> A checkpoint is `[x]` only when its exit gate is demonstrated (insight link or
+> screenshot + passing checks referenced in the progress log).
+
+| Checkpoint | Scope | Items | Status | Exit gate |
+| ---------- | ----- | ----- | ------ | --------- |
+| **CP0** | Baseline and decisions | 4 / 4 · 100% | `[x]` | Live baseline and PD1–PD15 recorded here |
+| **CP1** | Harden existing instrumentation | 6 / 7 · 86% | `[!]` | Traffic/group/test-account/log checks verified live; release annotation blocked on personal key |
+| **CP2** | Saved analytics and dashboards | 9 / 9 · 100% | `[x]` | 6 dashboards + JSON exports + starter relabel + 3 enabled metric alerts |
+| **CP3** | Groups and cohorts | 6 / 7 · 86% | `[~]` | 4 cohorts saved and exported |
+| **CP4** | Feature flags and experiments | 3 / 7 · 43% | `[~]` | 3 declared flags + dedicated experiment flag; experiment draft with 1 primary/3 secondary metrics; runtime, kill switch, bucketing, and launch tests remain |
+| **CP5** | Surveys | 3 / 4 · 75% | `[~]` | Survey launched for first `conversion_completed` on Desktop; consent gate/CSP done; live delivery remains |
+| **CP6** | AI observability, logs, alerts | 4 / 6 · 67% | `[~]` | AI dashboard + metadata-only trace/span hierarchy + opt-in docs + enabled log alert; feedback, saved log views, and notification destination remain |
+| **CP7** | Non-goals and site analytics | 6 / 6 · 100% | `[x]` | ADR merged; site analytics and scoped site heatmaps use project `709196` |
+| **CP8** | Governance and data quality | 5 / 6 · 83% | `[~]` | Schema-check + CI guard + deletion/quota docs; payload-key/live-flag schema remains |
+| **CP9** | Deferred / optional | 0 / 4 · 0% | `[ ]` | Revisit only on a recorded trigger |
+
+**Active now:** CP1 release annotation, CP3 UI group-profile check, CP4 flag runtime/kill-switch and experiment bucketing/launch, CP5 live survey delivery, CP6 saved log views and AI feedback UI, CP8 schema payload keys, and web analytics/heatmap deploy and live verification. Alert configuration is complete; all three metric alerts and the high-severity log alert are enabled, with the log alert intentionally silent by owner choice.
+Each implemented item must flip its checkbox, refresh this table, and append a
+progress-log row in the same change.
 
 ---
 
-## 0. Progress Dashboard
+## 1. Scope and non-negotiables
 
-| Checkpoint | Scope | Status | Exit gate |
-| ---------- | ----- | ------ | --------- |
-| **CP0** | Baseline and governance groundwork | `[x]` | Taxonomy snapshot, instrumentation audit, and open decisions recorded here. |
-| **CP1** | Foundations: identity, super properties, release tracking | `[x]` | Person profiles, global properties, and release annotations verified in PostHog. |
-| **CP2** | Saved analytics: funnels, retention, dashboards as code | `[~]` | Five dashboards exist in PostHog and are exported to `docs/analytics-dashboards/`. |
-| **CP3** | Group analytics and cohorts | `[x]` | Group events appear with bounded cardinality; cohorts saved. |
-| **CP4** | Feature flags (remote kill switches and rollouts) | `[x]` | Group gate and one feature rollout controlled remotely, with offline fallback tested. |
-| **CP5** | Experiments and in-app surveys | `[~]` | One experiment with a pre-registered metric; one survey live with consent gating. |
-| **CP6** | Error tracking decision and AI observability expansion | `[x]` | Decision recorded (ADR); AI traces and span hierarchy verified. |
-| **CP7** | Governance: schema sync, CI guard, privacy review | `[~]` | CI fails on taxonomy drift; privacy review checklist enforced in PRs. |
+Goal: turn the already-working PostHog SDK integration into a **complete PostHog
+program** — saved analytics, cohorts, flags, experiments, surveys, AI observability,
+logs, governance — without weakening the privacy contract.
 
-Update this table as checkpoints close. A checkpoint is `[x]` only when its exit gate is
-demonstrated (screenshot or saved-insight link in the PR, plus passing tests).
+1. Payloads stay **categorical-only**: no file names, paths, media content, or free text
+   in analytics events.
+2. No backend credential enters the renderer. The public project token is fetched over
+   IPC; personal/secret keys stay in main, local scripts, or CI secrets only.
+3. One consent switch governs analytics and monitoring; no capability bypasses it.
+4. Adapters never throw; analytics must never take the app down.
+5. Prompt/completion content stays opt-in (`POSTHOG_AI_CAPTURE_CONTENT=true`).
+6. Every saved insight filters `channel = prod` and honors the test-account cohort.
 
----
-
-## 1. Current State (Baseline, verified in code)
-
-| Area | Status | Where |
-| ---- | ------ | ----- |
-| Typed event taxonomy (~120 events, groups, schema v1) | Present | `src/shared/analytics/events.ts` |
-| Main-process capture via `posthog-node` | Present | `src/main/analytics/posthogMainProvider.ts` |
-| Renderer relay over IPC (no token in renderer) | Present | `src/renderer/analytics/posthogRendererProvider.ts`, `ipcBridge.ts` |
-| Consent gate (single switch, two stores) | Present | `src/main/analytics/consent.ts`, `AnalyticsService.ts` |
-| Per-group emission gate (`ANALYTICS_GROUPS`) | Present (env only) | `src/main/analytics/groupGate.ts` |
-| Prop sanitizer (primitives only) | Present | `src/shared/analytics/sanitize.ts` |
-| Anonymous install id as `distinctId` | Present | `src/main/index.ts` (`analytics-install-id.txt`) |
-| AI generations as `$ai_generation` (metadata by default) | Present | `src/main/ai/connectors.ts` |
-| OTel log export to `/i/v1/logs` | Present (markers only) | `posthogMainProvider.ts` |
-| Wiring test: every event has a call site | Present | `src/shared/analytics/__tests__/AnalyticsWiring.test.ts` |
-| `identify` / person properties | **Missing** | - |
-| Super properties (`app_version`, `platform`, `arch`) | **Missing** | - |
-| Groups on events (`groups`, `groupIdentify`) | **Missing** | - |
-| Feature flags, experiments | **Missing** | - |
-| Surveys | **Missing** (renderer SDK removed) | - |
-| Saved dashboards, funnels, cohorts, alerts | **Missing from repo** (exist only ad hoc) | - |
-| Error tracking in PostHog | **Off** (Sentry covers errors) | - |
-| Session identifiers | **Missing** | - |
-| Taxonomy ↔ PostHog sync check | **Missing** | - |
-
-### 1.1 Relevant `posthog-node` capabilities (verify against the installed version before use)
-
-Installed: `posthog-node@5.61.2`, `@posthog/core` (shared). Confirm each API against
-`node_modules/posthog-node/dist/*.d.ts` before implementing; the list below is the intended
-surface, not a guarantee.
-
-- `capture({ distinctId, event, properties, groups, timestamp })`: per-event properties and group keys.
-- `identify({ distinctId, properties: { $set, $set_once } })`: person properties.
-- `groupIdentify({ groupType, groupKey, properties })`: group profiles.
-- `getFeatureFlag` / `isFeatureEnabled` / `getAllFlags`: server-side flag evaluation.
-  Local evaluation (no network per call) needs a personal API key, which must stay in main.
-- `privacyMode` (already set): suppresses `$ai_input` / `$ai_output_choices` unless opted in.
-- `enableExceptionAutocapture` / `captureException`: error tracking (currently removed).
-- `shutdown()` / `flush()`: already wrapped by the adapter's `close()` / `flush()`.
-- Super properties: **not a client feature in posthog-node**. Implement in the adapter by
-  merging a registry into every `capture` call (see Phase 1.2).
-- Sessions: `$session_id` passed as a property; the adapter manages its own session id.
+Companion docs: `docs/ANALYTICS.md`, `docs/ARCHITECTURE.md`,
+`analytics/posthog/analytics-dashboards/README.md`, `docs/analytics-privacy-checklist.md`,
+`plans/SENTRY_MONITORING_PLAN.md`.
 
 ---
 
-## 2. Decisions
+## 2. Verified current state
+
+### 2.1 Application and SDK integration (from code)
+
+| Area | State | Evidence |
+| ---- | ----- | -------- |
+| Stack | Electron 43 + React 19 + TypeScript + Vite 8, npm, single root; main / preload / renderer split; CLI and embedded MCP entry points | `package.json:2-11,111-200`; `docs/ARCHITECTURE.md:9-17` |
+| SDKs | `posthog-js@^1.445.3`, `posthog-node@^5.61.2` | `package.json:153-154` |
+| Main client | Single `posthog-node` client, consent gate, host validation, super properties, release event, OTel log exporter | `src/main/analytics/posthogMainProvider.ts:62-151,157-215` |
+| Renderer | `posthog-js` exists only for surveys; normal events relay via `IPC.ANALYTICS_TRACK_EVENT`, token never in renderer bundle | `src/renderer/analytics/posthogRendererProvider.ts:37-73`; `src/renderer/surveys/posthogSurveys.ts:27-43` |
+| Facade | `AnalyticsService` buffers pre-init events, enforces consent, never throws | `src/shared/analytics/AnalyticsService.ts:109-189,241-309` |
+| Taxonomy | Schema v2, ~129 event names in 15 groups with tier map; sanitizer strips non-primitives | `src/shared/analytics/events.ts:38-322`; `src/shared/analytics/sanitize.ts` |
+| Identity | Persistent anonymous install id (UUID) is `distinctId`; no account/email/name; allowlisted person properties | `src/main/index.ts:125-154`; `src/shared/analytics/personProperties.ts:12-39` |
+| Sessions | Own UUID with 30-minute inactivity rotation, attached as `$session_id` | `posthogMainProvider.ts:169-174` |
+| Groups | `profile_kind` and `hardware_class` enums with cardinality guard and `groupIdentify` | `src/main/analytics/groups.ts:8-31`; `posthogMainProvider.ts:185-199,221-265` |
+| Flags | Three flags registered with defaults/owners; remote fetch at startup, 2 s timeout, disk cache, group gate integration | `src/main/analytics/flags.ts:12-38`; `posthogMainProvider.ts:93-95,267-324` |
+| AI observability | `$ai_generation` with model/provider/tokens/latency/errors across OpenAI-compatible, Anthropic, Gemini connectors; content opt-in | `src/main/ai/connectors.ts:174-190,311-474`; `posthogMainProvider.ts:357-389` |
+| Logs | OTel log exporter to `/i/v1/logs`; markers only | `posthogMainProvider.ts:120-146` |
+| Consent UI | Settings toggle drives analytics + monitoring | `src/renderer/stores/settingsStore.ts:426-458`; `AdvancedSettingsTab.tsx:104-114` |
+| Config generation | `npm run gen:posthog-config` bakes public token/host into main; `.env.example:36-52` documents names | `scripts/generate-posthog-config.mjs:26-45` |
+| Tests | Vitest unit/integration, `npm run typecheck:*`, lint, `npm run doc:drift`, `npm run analytics:schema-check`, e2e | `package.json:30-100`; `docs/TESTING.md:7-31` |
+
+### 2.2 PostHog project (live MCP inspection)
+
+| Property | Value |
+| -------- | ----- |
+| Project | `EncodeX`, id `709196` (US Cloud, `https://us.i.posthog.com`), timezone UTC |
+| Person-on-events | Enabled |
+| Group types | `hardware_class` (index 0), `profile_kind` (index 1) |
+| Test accounts | Cohort `689593` "Internal / Test users" applied as project test-account filter |
+| Products enabled | Product analytics, web analytics, session replay, flags, experiments, surveys, error tracking, logs, AI observability, workflows, metrics, endpoints, MCP analytics available; only privacy-compatible products are used, with exception capture as the documented non-categorical exception |
+| Saved insights | 34 (5 wizard + 8 starter + 15 CP2 + 5 AI observability + 1 alert-source volume insight `14531023`) |
+| Dashboards | 9 (2 starter/wizard + 7 owned: activation, retention, feature adoption, reliability, batch health, hardware mix, AI observability) |
+| Cohorts | 5 (test-account exclusion + 4 behavioral) |
+| Feature flags | 3 declared live (100% / 100% / 0%) plus 1 experiment-only 0% rollout flag (`mcp_server_default_on_experiment`) and 1 active survey-targeting flag (`1120431`) |
+| Experiments / surveys / annotations | 1 draft experiment (`629482`, 1 primary + 3 secondary metrics); 1 launched survey (`01a20809-2a1a-0000-3d9b-4076a5323850`, started `2026-11-23T12:01:54.605873Z`); 0 annotations |
+| Governance artifacts | 1 notebook, 3 enabled daily insight alerts, 1 enabled high-severity log alert, 1 quarterly reminder, 7 dashboard exports, cohort export, traffic audit |
+| Billing posture | Free tier: 1M events, 1M flag requests, 100K AI events, 1,500 survey responses, 100K exceptions, 10 GB logs, 5K replays, 1M warehouse rows ([pricing](https://posthog.com/pricing)) |
+
+### 2.3 Live data flow (last 7 days)
+
+`read-data-schema` confirms 70+ custom events arriving, including `app_launched`,
+`app_installed`, `$identify`, `$groupidentify`, `app_release`, `tool_opened`,
+`onboarding_started`, `conversion_started/completed/failed`, `remux_*`, `demux_*`,
+`batch_completed`, `mcp_server_toggled`, `codec_changed`, `hw_accel_detected`,
+`ui_error_shown`, `$ai_generation`, and CLI events. Top volume: `tool_opened` 295,
+`$identify` 218, `app_launched` 135, `app_installed` 111, `app_release` 111; about
+106 distinct persons. At audit time `$ai_span`, `$ai_feedback`, `$feature_flag_called`,
+`$pageview`, and `$exception` had **no** traffic. The code now emits metadata-only
+`$ai_span` events, span IDs on `$ai_generation`, and additive `$exception` events;
+runtime arrival still needs a consented app run. `$ai_trace` remains a PostHog
+pseudo-trace created from child events unless an explicit trace event is later
+required.
+
+Conclusion: ingestion, identity, groups, releases, AI generation capture, alerts,
+and survey launch work end-to-end in PostHog. Remaining work is live delivery and
+notification routing, experiment/flag runtime checks, web analytics deploy
+verification, and live `$exception` confirmation.
+
+---
+
+## 3. What is possible to set up in PostHog (capability inventory)
+
+| Product / capability | Fit for EncodeX | Current state | Phase |
+| -------------------- | --------------- | ------------- | ----- |
+| Product analytics: events, trends, funnels, retention, stickiness, paths, lifecycle | Core — ~129 typed events already flow | 15 owned insights across 6 dashboards; starter/wizard charts still mixed in | 2 |
+| Dashboards, saved insights, subscriptions, metric alerts | Core | 7 owned dashboards; 3 enabled daily metric alerts with email subscriber `844296` | 2, 8 |
+| Person profiles and group analytics (`profile_kind`, `hardware_class`) | Core | Working; group profile UI check remains | 3 |
+| Behavioral cohorts (power/MCP/batch/churn) | Core | 4 saved and exported | 3 |
+| Feature flags: kill switches, staged rollouts, multivariate, payloads | Core — 3 flags declared in code | 3 live; runtime and kill-switch checks remain | 4 |
+| Experiments with pre-registered metrics | High — one pilot | 1 draft pre-registration; launch/bucketing blocked | 4 |
+| Surveys (NPS/PMF/CSAT, event-triggered) | Medium — renderer module wired and CSP-ready | 1 launched event-triggered survey; live delivery still needs a consented app run | 5 |
+| AI Observability: generations, traces, spans, costs, dashboards | High — Copilot + three AI connectors | Generation capture, metadata-only spans, 5 insights, 1 dashboard; feedback UI absent | 6 |
+| AI evaluations / PostHog AI | Optional — team productivity, not desktop instrumentation | Available in PostHog; no app-side eval harness | 9 (optional) |
+| Logs / OTel / distributed tracing / APM | Medium — exporter already sends logs | 1 enabled high-severity log alert, intentionally silent by owner choice; no saved log views; APM spans not emitted | 6, 9 |
+| Error tracking | Medium — second triage signal alongside Sentry | Additive `$exception` capture implemented with sanitized context and one consent switch; live arrival pending | 7 (exception to prior exclusion) |
+| Session replay, heatmaps, autocapture, dead-click detection, web vitals | Excluded on desktop — screens show media names/paths; pageviews not emitted | No desktop replays/heatmaps/autocapture/pageviews; site heatmaps scoped to 3 allowlisted pages with saved heatmaps | 7 (keep off on desktop) |
+| Web analytics / marketing analytics | Optional for the VitePress site, separate project | Reuses project `709196` for page views and scoped heatmaps; GA4 remains in place | 7 |
+| Data warehouse, sources, CDP, realtime destinations, batch exports | Deferred — free-tier rows are tight | No sources or pipelines | 9 (deferred) |
+| Workflows, transactional messaging, Inbox | Not applicable today — no outbound email/SMS path | None | 9 (deferred) |
+| Replay Vision | Not applicable without session replay | Available in product but blocked by replay exclusion | 7 (keep off) |
+| Endpoints, MCP tooling, PostHog AI apps (web/Slack/MCP/CLI) | Optional team productivity | MCP used for setup/analysis; no public endpoints created | 9 (optional) |
+| Activity logs / audit trail | Governance only — PostHog records who changed project resources | Available in PostHog; not an app-side user activity feed | 8 |
+| Schema sync, privacy checklist, CI guard, deletion procedure | Core governance | Schema check, CI guard, checklist, retention/quota docs, governance notebook, reminder present | 8 |
+
+Docs for the main surfaces: [all products](https://posthog.com/docs),
+[product analytics](https://posthog.com/docs/product-analytics),
+[feature flags](https://posthog.com/docs/feature-flags),
+[retention](https://posthog.com/docs/product-analytics/retention),
+[AI traces/spans](https://posthog.com/docs/ai-observability/traces),
+[manual AI capture](https://posthog.com/docs/ai-observability/installation/manual-capture),
+[session replay privacy](https://posthog.com/docs/session-replay/privacy),
+[activity logs](https://posthog.com/docs/settings/activity-logs),
+[web analytics](https://posthog.com/docs/web-analytics), [pricing](https://posthog.com/pricing).
+
+---
+
+## 4. Decisions and constraints
 
 | # | Decision | Choice | Status |
 | - | -------- | ------ | ------ |
-| PD1 | Person model | Anonymous `distinctId` only (install id). No account, email, or name ever sent. | `[x]` decided (already in code) |
-| PD2 | Person properties allowlist | `app_version`, `os`, `arch`, `locale`, `channel`, `hw_accel_available` (bool), `first_seen_version`. All coarse, no PII. | `[ ]` approved (Q3 yes); implementation in CP1 |
-| PD3 | Super properties | `app_version`, `platform`, `arch`, `channel`, `mode` (`gui`/`cli`/`mcp`), `session_id`. Attached in the adapter, never in call sites. | `[ ]` |
-| PD4 | Group types | `profile_kind` (built-in profile category), `hardware_class` (bucketed: `cpu`, `gpu_hw`, `gpu_sw`). Group keys are fixed enums, never user-defined names. | `[ ]` |
-| PD5 | Remote flags transport | Main process only. Flag values cached on disk; offline default = the value compiled in. Startup request with 2 s timeout. | `[ ]` approved (Q2 yes); implementation in CP4 |
-| PD6 | Local flag evaluation | **Not enabled** by default: it needs a personal API key in main. Revisit only if per-call flag latency matters. | `[x]` decided |
-| PD7 | Renderer SDK (`posthog-js`) | Re-add for surveys (Q4 yes). Opt-in only, no autocapture, no session replay, no pageview capture, CSP limited to the PostHog host. | `[ ]` approved (Q4 yes); implementation in CP5 |
-| PD8 | Error tracking | **Sentry stays the sole error tool** (Q5). PostHog error tracking is not enabled in the app. | `[x]` decided (Q5 keep Sentry) |
-| PD9 | Session replay | **Excluded.** Screens show media names and paths; violates the zero-PII contract. | `[x]` decided |
-| PD10 | Autocapture (clicks, pageviews) | **Excluded.** Captures element text and URLs. | `[x]` decided |
-| PD11 | Dashboards as code | Exported JSON under `docs/analytics-dashboards/`, plus a README. The source of truth is the repo; PostHog is the rendering target. | `[ ]` |
-| PD12 | Data warehouse export | **Out of scope.** Free tier includes only 1M warehouse rows via Sources and no alerts guarantee; revisit if usage grows. | `[-]` dropped for now |
-| PD13 | Project topology | **One PostHog project** (free tier allows one project). Environments are separated by a `channel` super property (`dev` / `prod`), and dashboards filter to `channel = prod`. Replaces the two-project plan in task 0.4. | `[x]` decided (Q1 free tier) |
-| PD14 | Quota behavior | Free tier drops events past 1M/month and returns default values for flags past the request quota. Client code must treat both as normal, not as errors. Track our own event volume so we notice before the cap. | `[x]` decided |
+| PD1 | Person model | Anonymous install id only; no account, email, or name | `[x]` in code |
+| PD2 | Person properties | Allowlisted coarse fields only (`app_version`, `os`, `arch`, `locale`, `channel`, `mode`, `hw_accel_available`, `first_seen_version`) | `[x]` in code |
+| PD3 | Super properties / sessions | Adapter-merged registry; `$session_id` with 30-min rotation | `[x]` in code |
+| PD4 | Group types | `profile_kind`, `hardware_class`; enum-only keys | `[x]` in code; `[~]` PostHog-side cohorts |
+| PD5 | Flag transport | Main process only, remote eval, 2 s startup timeout, disk cache, compiled defaults | `[x]` in code and PostHog; runtime verification remains |
+| PD6 | Local flag evaluation | Not enabled (would require a secret key in main); revisit only if latency matters | `[x]` |
+| PD7 | Renderer `posthog-js` | Surveys only: opt-in, no autocapture/replay/pageviews, CSP scoped to PostHog host | `[x]` in code; survey launched, live delivery pending |
+| PD8 | Error tracking | Sentry remains primary; PostHog captures exceptions additively under the same consent switch (ADR-0002 supersedes ADR-0001) | `[x]` in code; live verification pending |
+| PD9 | Session replay | Excluded — screens expose media names/paths | `[x]` |
+| PD10 | Autocapture | Excluded on desktop; site web only on the 3 heatmap allowlist URLs | `[x]` |
+| PD11 | Dashboards as code | JSON exports in `analytics/posthog/analytics-dashboards/`; repo is source of truth | `[x]` |
+| PD12 | Data warehouse export | Out of scope for now (free-tier row budget) | `[-]` |
+| PD13 | Project topology | One project; dev/prod separated by `channel`; all insights filter `channel = prod` | `[x]` |
+| PD14 | Quota behavior | Free-tier overages drop events / return flag defaults; app treats both as normal | `[x]` |
+| PD15 | Source of truth for this plan | This file; the previous stale baseline is superseded | `[x]` |
 
-### Open decisions (owner input required)
-
-| Q | Question | Answer | Effect on plan |
-| - | -------- | ------ | -------------- |
-| Q1 | Which PostHog plan tier? | **Free tier.** One project; 1M events/month; 1M flag requests/month; 5K replays; 100K exceptions; 1,500 survey responses; 100K AI events shared with evaluations; 10 GB logs; 1-year retention. Over-limit events are dropped; flags return defaults. | PD13, PD14. Task 0.4 replaced. Warehouse export dropped (PD12). Experiments are billed with flags, so they fit free tier. |
-| Q2 | May the app make a flag request at startup? | **Yes.** | PD5 approved; CP4 unblocked. |
-| Q3 | Are `os`, `arch`, `app_version`, `locale` on the person acceptable? | **Yes.** | PD2 approved; CP1 unblocked. |
-| Q4 | Re-add `posthog-js` in the renderer for surveys? | **Yes.** | PD7 approved; CP5 renderer work unblocked under the PD7 constraints. |
-| Q5 | Keep Sentry as sole error tool, or trial PostHog error tracking? | **Keep Sentry.** | PD8 decided. CP6 narrowed to AI observability and log review; error-tracking ADR is closed. |
-| Q6 | File location for this plan | **Yes**: `plans/POSTHOG_PLAN.md`. | None. |
-
-All open questions are answered. Remaining gates are sequencing, not decisions.
-
----
-
-## 3. Phase Details
-
-### Phase 0 - Baseline and governance groundwork (CP0)
-
-- [x] **0.1** Snapshot the taxonomy: 120+ names, groups, and schema version recorded in
-      `events.ts` (source of truth).
-- [x] **0.2** Audit instrumentation: confirmed wiring for every event (AnalyticsWiring test).
-- [x] **0.3** Record open decisions Q1–Q6 and default positions (this file, section 2).
-- [x] **0.4** Project topology (replaces the two-project plan, PD13): keep **one** PostHog project
-      on the free tier. Dev and prod are separated by the `channel` super property (Phase 1.2).
-      Dashboards and cohorts filter `channel = prod`. Dev builds still send events, so the filter is
-      mandatory on every saved insight (checked in CP7).
-- [x] **0.5** Plan tier documented: **free** (Q1). Limits recorded in section 2 (Q1 row) and PD14.
-
-### Phase 1 - Foundations (CP1)
-
-**1.1 Person identity** (PD1, PD2)
-- [x] Add `identify()` once per install, at init, with `$set` for mutable fields
-      (`app_version`, `os`, `arch`, `locale`, `channel`, `hw_accel_available`) and
-      `$set_once` for `first_seen_version`.
-- [x] Re-identify on app version change and on locale change (not on every launch).
-- [x] Add a `person_properties` allowlist in `src/shared/analytics/` so new fields need review.
-- [x] Test: identify called once per boot, payload contains only allowlisted keys.
-
-**1.2 Super properties** (PD3)
-- [x] Add a registry in the main adapter: `registerSuperProperties({ app_version, platform, arch, channel, mode })`.
-- [x] Merge the registry into every `capture` call. Event props override super props on collision
-      only for keys in an explicit allowlist; otherwise the event wins and a debug log is emitted.
-- [x] Set `mode` at startup from the entry point (`gui` / `cli` / `mcp`).
-- [x] Test: every captured event carries the super properties; no duplicate keys.
-
-**1.3 Sessions** (PD3)
-- [x] Generate a `session_id` (UUID) per process; rotate after 30 minutes of inactivity.
-- [x] Attach `$session_id` to every event via super properties.
-- [x] Verify PostHog session grouping in the UI with a manual run.
-
-**1.4 Release tracking**
-- [x] On each version bump, send one `app_release` event with `app_version`, `channel`, `build_date`.
-- [x] Add a PostHog annotation via the API from the release workflow (`.github/workflows`), using a
-      personal key held in CI secrets only, never in the app.
-- [x] Test: release workflow dry-run produces an annotation payload.
-
-**1.5 Event hygiene**
-- [x] Set `$process_person_profile: false` on high-volume events that do not need a person
-      (for example `ui_error_shown` bursts, log events) to control cost.
-- [x] Document the list in `docs/ANALYTICS.md`.
-
-**CP1 exit gate:** persons show `app_version`, `os`, `arch`, `first_seen_version` in the UI; every
-event carries super properties; one release annotation visible.
-
-### Phase 2 - Saved analytics (CP2)
-
-**2.1 Activation funnel** (saved insight)
-- [ ] `app_launched` → `onboarding_started` → `onboarding_goal_selected` → `conversion_started` → `conversion_completed`.
-- [ ] Breakdown by `mode` and `channel`. Window: 7 days.
-
-**2.2 Retention**
-- [ ] D1 / D7 / D30 retention on `app_launched`, cohort = `first_seen_version` week.
-- [ ] Stickiness (WAU / MAU) on `app_launched`.
-
-**2.3 Feature adoption trends**
-- [ ] Unique users per event group (`convert`, `image`, `audio`, `cut`, `queue`, `mcp`) per week.
-- [ ] Breakdown by `platform`.
-
-**2.4 Reliability**
-- [ ] Failure rate per tool: `*_failed` / `*_started` (conversion, remux, demux, compress, audio, cut).
-- [ ] `ui_error_shown` count by route and error code (no free text).
-
-**2.5 Batch health**
-- [ ] `batch_queue_started` vs `batch_completed`; median and p90 of job duration buckets.
-- [ ] Retry rate: `batch_job_retried` / `batch_job_*` total.
-
-**2.6 Hardware and transcoder mix**
-- [ ] Breakdown of `transcoder_changed`, `hwaccel_mode_changed`, `encoder_type_changed` by platform.
-
-**2.7 Dashboards as code** (PD11)
-- [ ] Create the five dashboards above in PostHog.
-- [ ] Export each to `docs/analytics-dashboards/<name>.json` via the PostHog API (read-only personal key, run locally, not in CI).
-- [ ] `docs/analytics-dashboards/README.md` lists each dashboard, its question, and its owner.
-
-**CP2 exit gate:** five dashboards exist; JSON exports committed; README lists the question each one answers.
-
-### Phase 3 - Group analytics and cohorts (CP3)
-
-**3.1 Group types** (PD4)
-- [ ] Define `profile_kind` and `hardware_class` as fixed enums in `src/shared/analytics/groups.ts`.
-- [ ] `groupIdentify` once per process for each group value seen.
-- [ ] Add `groups: { profile_kind }` to `conversion_started` and `batch_queue_started`.
-- [ ] Add `groups: { hardware_class }` to `hw_accel_detected`.
-
-**3.2 Cardinality guard**
-- [ ] Unit test: group keys are members of the enum; anything else is dropped with a debug log.
-- [ ] No file names, paths, or user-defined profile names may appear in group keys.
-
-**3.3 Cohorts**
-- [ ] Power users: ≥ 10 `conversion_completed` in the last 7 days.
-- [ ] MCP users: `mcp_server_toggled` (on) at least once.
-- [ ] Batch users: ≥ 3 `batch_queue_started` in 30 days.
-- [ ] Churn-risk: active in weeks 1–2, zero `app_launched` in the last 14 days.
-- [ ] Export cohort definitions to `docs/analytics-dashboards/cohorts.json`.
-
-**CP3 exit gate:** group analytics show bounded group counts; cohorts saved and exported.
-
-### Phase 4 - Feature flags (CP4)
-
-Prerequisite: Q1 (plan tier) and Q2 (startup flag request) answered.
-
-**4.1 Flag inventory**
-- [ ] Define flags in `src/shared/analytics/flags.ts` with name, owner, default value, and removal date.
-- [ ] Initial flags: `analytics_group_convert` (mirrors `ANALYTICS_GROUPS` remotely),
-      `analytics_group_queue`, and one feature rollout (for example `mcp_server_default_on`).
-
-**4.2 Main-process evaluation**
-- [ ] Fetch flags once at startup with a 2-second timeout; cache to `userData/analytics-flags.json`.
-- [ ] Precedence: environment override > cached remote value > compiled-in default.
-- [ ] Renderer never evaluates flags; main passes resolved values through IPC if needed.
-- [ ] Flag requests are sent only when consent is on.
-
-**4.3 Group gate integration**
-- [ ] `groupGate.ts` consults remote flags before emitting; `ANALYTICS_GROUPS` env remains the
-      highest-priority offline override.
-- [ ] Test: flag off → events dropped and no `capture` call; env override beats remote.
-
-**4.4 Rollout**
-- [ ] One feature rollout behind a flag, 10% → 50% → 100% over two releases, with the flag
-      removed after 100%.
-
-**CP4 exit gate:** a group can be disabled remotely with no release; offline start uses the cached/compiled default; tests cover all precedence paths.
-
-### Phase 5 - Experiments and surveys (CP5)
-
-Prerequisite: Q1 answered; Q4 answered before any renderer work.
-
-**5.1 Experiment protocol**
-- [ ] Pre-register the hypothesis, primary metric, guardrail metrics, and minimum detectable effect in `docs/analytics-experiments/<name>.md` before launch.
-- [ ] Candidate experiments (choose one first): default output container in the convert form;
-      dashboard card order; the copy of the empty batch-queue state. Use only categorical outcomes already in the taxonomy.
-
-**5.2 Implementation**
-- [ ] Assign variant via the flag system (CP4). Record `experiment_variant` as a super property for the experiment's lifetime only.
-- [ ] Guardrail: stop the experiment if `conversion_failed` rate rises by more than 1 percentage point.
-
-**5.3 Surveys** (requires PD7 / Q4)
-- [ ] Decide whether `posthog-js` is re-added to the renderer. If yes:
-      - opt-in only; no autocapture; no session replay; no pageview capture;
-      - CSP updated for the PostHog host only (`connect-src`, `script-src` if the bundle is external);
-      - survey triggers only after N successful `conversion_completed` events, once per install;
-      - the survey response is categorical (rating, multiple choice). Free text is allowed only in the survey itself, opt-in, and never attached to analytics events.
-- [ ] Alternative without `posthog-js`: a main-process window that submits via the surveys API. Evaluate against the renderer option before choosing.
-
-**CP5 exit gate:** one experiment pre-registered and analyzed; one survey live (or the alternative documented as chosen) with consent and CSP verified.
-
-### Phase 6 - Error tracking and AI observability (CP6)
-
-**6.1 Error tracking decision (ADR)**
-- [ ] Write `docs/adr/0001-error-tracking.md` comparing Sentry vs PostHog error tracking on: stack-trace quality, Electron support, cost, PII controls, and whether it duplicates Sentry.
-- [-] ~~Trial PostHog error tracking~~ dropped: Q5 keeps Sentry as the sole error tool (PD8).
-- [ ] If adopted: `enableExceptionAutocapture` stays off; use explicit `captureException` with sanitized messages and bucketed context only.
-
-**6.2 AI observability expansion**
-- [ ] Keep `$ai_generation` metadata-only by default; keep `POSTHOG_AI_CAPTURE_CONTENT` opt-in.
-- [ ] Add `$ai_trace_id` grouping for one user action that makes several LLM calls (Copilot turns).
-- [ ] Add span hierarchy for batch-level operations (`$ai_span` where the SDK supports it).
-- [ ] Add latency and token-count dashboards for AI features by provider (`$ai_provider`).
-
-**6.3 OTel logs review**
-- [ ] Confirm the log pipeline's retention and cost in the PostHog UI.
-- [ ] Emit structured job outcomes (`conversion_failed` with `error_code`, `transcoder`, bucketed duration) through OTel logs, not the event stream, if cost is acceptable.
-
-**CP6 exit gate:** ADR merged; AI traces show multi-call grouping; log pipeline cost reviewed and recorded.
-
-### Phase 7 - Governance and data quality (CP7)
-
-**7.1 Taxonomy ↔ PostHog sync**
-- [ ] Generate `docs/analytics-dashboards/data-schema.json` from `events.ts` (event name, group, payload keys, schema version).
-- [ ] Use PostHog's data-schema / event definitions API to compare the repo against the project. Report drift; do not auto-write.
-- [ ] Script: `npm run analytics:schema-check` (read-only; needs a read-only key, local only).
-
-**7.2 CI guard**
-- [ ] CI job runs the schema generator and fails when an event in `events.ts` has no dashboard reference, or a dashboard references an event no longer in `events.ts`.
-- [ ] Unit test for the generator output shape (no network).
-
-**7.3 Privacy review**
-- [ ] `docs/analytics-privacy-checklist.md`: every new event or property must answer: categorical? no paths/names? no free text? bounded cardinality? consent-gated? group key from enum?
-- [ ] PR template line referencing the checklist for any change under `src/shared/analytics/` or `src/main/analytics/`.
-
-**7.4 Data retention and deletion**
-- [ ] Document the retention period configured in the PostHog project.
-- [ ] Document how a user's data is deleted on request (install id → person deletion via the PostHog API), and the procedure.
-
-**CP7 exit gate:** schema-check runs locally; CI guard green on a deliberate drift test (then reverted); checklist in PR template.
+Owner answers already on record: free tier (Q1), startup flag request allowed (Q2),
+coarse person properties allowed (Q3), renderer SDK for surveys approved (Q4), keep
+Sentry primary (Q5), plan lives in `plans/POSTHOG_PLAN.md` (Q6), relabel starter insights
+(Q7), create experiment draft only (Q8), reuse project `709196` for site analytics
+(Q9), configure alerts (Q10), launch the survey (Q11), daily 09:00 UTC cadence with
+email subscriber `844296` (Q12), first-conversion Desktop trigger with partial
+responses/no free text (Q13), leaving the log alert silent for now (Q14), and site
+web heatmaps on 3 allowlisted pages with saved heatmaps (Q15). Open
+decisions: experiment bucketing/launch. Desktop replay and autocapture exclusions
+stand; the error-tracking exclusion was explicitly reversed by ADR-0002.
 
 ---
 
-## 4. Test Strategy
+## 5. Gap analysis
+
+1. **Runtime verification still trails configuration.** Flags, cohorts, dashboards,
+   spans, exception capture, and the survey gate exist, but flag exposure events,
+   `$ai_span` arrival, `$exception` arrival, logs, and survey delivery need a
+   consented app run.
+2. **Alerts are configured; the log alert is intentionally silent.** Three daily metric
+   alerts and the high-severity log alert are enabled with email subscriber `844296`;
+   the owner chose to leave the log alert without a notification destination for now.
+   Saved log views remain uncreated.
+3. **Starter-insight hygiene is fixed locally in PostHog.** Eight starter insights
+   are relabeled `[Starter]` and tagged `non-production-sample`; their queries now
+   use real `app_launched`/`tool_opened` events, while synthetic `$pageview`/`$screen`
+   route events populate the generic Product Analytics overview cards.
+4. **The survey is live; the experiment remains a draft.** Survey
+   `01a20809-2a1a-0000-3d9b-4076a5323850` started `2026-11-23T12:01:54.605873Z` with
+   first-conversion Desktop targeting; experiment `629482` has saved metrics but no
+   bucketing confirmation, and setup context is not enabled on this connection.
+5. **AI observability is incomplete but no longer shallow.** Generations, metadata-only
+   spans, and a dashboard exist; `$ai_feedback` needs a new categorical rating UI and
+   evaluations remain optional.
+6. **Site/web analytics reuses the same project.** The desktop app still emits no
+   pageviews; the VitePress site now has an env-gated, cookieless page-view and
+   scoped heatmap snippet that needs deploy environment variables, the free-plan
+   Heatmap capture URL selection, and live verification.
+7. **Desktop exclusions mostly stay off.** Session replay, autocapture, and
+   Replay Vision conflict with recorded privacy/stack decisions. Site heatmaps and
+   additive PostHog exception capture are the explicit reversals, scoped to three
+   site URLs and sanitized exception payloads respectively.
+
+---
+
+## 6. Implementation phases
+
+### Phase 0 — Baseline and decisions (CP0) `[x]`
+
+- [x] Snapshot taxonomy (`events.ts`, schema v2) and verify wiring test.
+- [x] Record decisions PD1–PD15 and owner answers Q1–Q6.
+- [x] Confirm one-project topology and test-account cohort `689593`.
+- [x] Refresh baseline against live project (this file).
+
+### Phase 1 — Harden existing instrumentation (CP1) `[!]`
+
+- [x] Capture, identify, groups, super properties, sessions, releases, AI metadata live.
+- [x] Verify every `ANALYTICS_EVENT_GROUP` has recent traffic; list silent events in
+      `analytics/posthog/analytics-dashboards/event-traffic-audit.md` with a reason (feature not shipped,
+      tier v2 gate, or missing call site). Use `read-data-schema` + a 30-day SQL scan.
+- [x] Confirm `$groupidentify` values match the enum keys in `groups.ts` (observed keys
+      `cpu`, `gpu_hw`, `gpu_sw`, `custom` are bounded).
+- [!] Add a PostHog annotation on each release (personal key in CI secrets only) and
+      verify one annotation appears next to `app_release` events. Blocked: no personal
+      API key available in this environment.
+- [x] Add internal test-account filtering verification: re-run one insight with and
+      without cohort `689593` and record the delta (identical; cohort count is 0).
+- [x] Verify OTel log retention/cost for `/i/v1/logs` and document the decision
+      (14-day default, 10 GB/month free tier, custom retention off).
+- [x] Confirm `posthog-node` v6 API surface before any SDK upgrade; installed `5.61.2`
+      typechecks with `getFeatureFlag(..., { sendFeatureFlagEvents: true })`.
+- **Exit gate:** live probe shows events, groups, persons, release annotation, and
+  log cost documented; typecheck/lint green.
+
+### Phase 2 — Saved analytics and dashboards (CP2) `[~]`
+
+Create native typed insights (TrendsQuery / FunnelsQuery / RetentionQuery etc.), not
+HogQL wrappers, then export dashboards to `analytics/posthog/analytics-dashboards/`.
+
+- [x] **Activation dashboard** (`activation.json`): funnel `app_launched` →
+      `onboarding_started` → `onboarding_goal_selected` → `conversion_started` →
+      `conversion_completed` (7-day window), one insight each for `mode` and `channel`
+      breakdowns, filter `channel = prod`.
+- [x] **Retention dashboard** (`retention.json`): daily first-time retention on
+      `app_launched` through D30, WAU by person property `first_seen_version`,
+      and WAU/MAU trends.
+- [x] **Feature adoption** (`feature-adoption.json`): weekly unique users per event
+      group (`convert`, `image`, `audio`, `cut`, `queue`, `mcp`), breakdown by platform.
+- [x] **Reliability** (`reliability.json`): conversion and combined media failure
+      formulas (`*_failed / *_started`); `ui_error_shown` by `ctx.route` and
+      `category` (no free text; no `error_code` emitted).
+- [x] **Batch health** (`batch-health.json`): `batch_queue_started` vs
+      `batch_completed`, median/p90 `jobCount` proxy, and retry rate; job duration
+      is not currently captured.
+- [x] **Hardware/transcoder mix** (`hardware-mix.json`): `transcoder_changed`,
+      `hwaccel_mode_changed`, `encoder_type_changed` by platform.
+- [x] Add alerts: conversion failure rate above 10%, event-volume drop below 50% of
+      the trailing 7-day baseline, and AI generation error rate above 10%. All are
+      enabled daily at 09:00 UTC with email subscriber `844296` (alert IDs
+      `01a20846-cc85-7689-a9b9-e65b72ebf341`, `01a20846-d247-7da1-94ac-d376cd0399d8`,
+      `01a20846-cdcf-7755-98f4-b30de2b64900`).
+- [x] Relabel and repoint the 8 starter insights that relied on `$pageview` to real
+      `app_launched`/`tool_opened` events, keeping `[Starter]` and
+      `non-production-sample`; keep the 5 wizard insights separate.
+- [x] Emit synthetic `$pageview`/`$screen` route events from the desktop app so the
+      generic Product Analytics overview cards have sessionized traffic.
+- [x] Export each dashboard to JSON from saved definitions locally; never in CI.
+- **Exit gate:** six dashboards exist in PostHog, six JSON files committed, README
+  lists question + query notes, every saved insight filters `channel = prod`.
+
+### Phase 3 — Groups and cohorts (CP3) `[~]`
+
+- [x] Group types exist in project; enum keys defined in code.
+- [x] Power users: ≥10 `conversion_completed` in 7 days (cohort `751458`).
+- [x] MCP users: `mcp_server_toggled` with `enabled = true` at least once (cohort `751459`).
+- [x] Batch users: ≥3 `batch_queue_started` in 30 days (cohort `751460`).
+- [x] Churn risk: ≥1 `app_launched` 14–28 days ago, zero in last 14 days (cohort `751461`).
+- [x] Export cohort definitions to `analytics/posthog/analytics-dashboards/cohorts.json`.
+- [ ] Add a group profile check for `hardware_class` and `profile_kind` in PostHog UI.
+- **Exit gate:** four cohorts saved and exported; group counts bounded; no user-defined
+  strings in group keys.
+
+### Phase 4 — Feature flags and experiments (CP4) `[~]`
+
+- [x] Create the three declared flags in PostHog with matching keys, owners, defaults,
+      and removal date `2027-01-01`: `analytics_group_convert` (default on),
+      `analytics_group_queue` (default on), `mcp_server_default_on` (default off).
+- [ ] Verify runtime precedence offline: env override > disk cache > compiled default;
+      confirm `$feature_flag_called` appears after startup when consent is on.
+- [ ] Test remote kill switch: flip `analytics_group_convert` off in PostHog and
+      confirm no `convert` events are emitted without a release.
+- [x] Pre-register one experiment in `analytics/posthog/analytics-experiments/<name>.md`:
+      hypothesis, primary metric, guardrails, MDE, duration. Draft experiment
+      `629482` uses dedicated flag `mcp_server_default_on_experiment`; the boolean
+      rollout-control flag `mcp_server_default_on` remains unchanged.
+- [x] Create the PostHog experiment draft with 1 primary and 3 secondary metrics
+      using confirmed events; bucketing and launch remain blocked by setup context
+      and owner confirmation.
+- [ ] Wire variant assignment through the flag system; guardrail: stop if
+      `conversion_failed` rate rises >1 percentage point.
+- [ ] Staged rollout 10% → 50% → 100%, then remove the flag and code branch.
+- **Exit gate:** flags exist and are evaluated; kill switch and offline fallback
+  tested; one experiment pre-registered and launched.
+
+### Phase 5 — Surveys (CP5) `[~]`
+
+- [x] Call `initPosthogSurveys(consent)` from the renderer bootstrap for consenting
+      users only (`src/renderer/main.tsx` analytics section), gated by config so it can
+      be disabled without a release.
+- [x] Extend CSP: add the configured PostHog host to `connect-src` in
+      `src/shared/csp.ts:29` (and `script-src` only if a remote script is used); keep
+      `posthogSurveys.ts` options `autocapture: false`, `capture_pageview: false`,
+      `persistence: 'memory'`, no replay.
+- [x] Launch one categorical survey (NPS + product area) in PostHog; trigger after the
+      first `conversion_completed` on Desktop, once per install; no free-text attached
+      to analytics events. Survey `01a20809-2a1a-0000-3d9b-4076a5323850` started
+      `2026-11-23T12:01:54.605873Z`; partial responses on, limit `1000`, internal
+      targeting flag `1120431` active.
+- [ ] Verify survey delivery with a live renderer run and check no media/path text
+      leaks into events.
+- **Exit gate:** one survey live, consent + CSP verified, response counts visible.
+
+### Phase 6 — AI observability, logs, and alerts (CP6) `[~]`
+
+- [x] Metadata-only `$ai_generation` for OpenAI-compatible, Anthropic, Gemini.
+- [x] Group Copilot AI routing with one `$ai_trace_id` per plan request and emit a
+      metadata-only `copilot.route` `$ai_span`; generations carry `$ai_span_id` and
+      `$ai_parent_id` using PostHog's documented manual-capture properties.
+- [ ] Add `$ai_feedback` on user thumb/up-down or copilot result rating (categorical);
+      no rating UI exists yet, so the provider plumbing is intentionally deferred.
+- [x] Build an AI dashboard: generations, tokens, latency, cost by `$ai_provider`
+      and model; error rate by provider.
+- [~] Create saved log views/alerts for high-severity OTel logs. Alert
+      `01a20809-59ae-7c9c-8ee0-e46109d4d6ca` is enabled (`error`/`fatal` > 0 in 5 min,
+      15 min cooldown) and intentionally silent by owner choice; saved log views and
+      verification with real log traffic remain. The 10 GB/month free-tier budget is
+      documented.
+- [x] Keep `POSTHOG_AI_CAPTURE_CONTENT=false` in production; document opt-in procedure.
+- **Exit gate:** trace/span hierarchy implemented and verified in PostHog, AI dashboard
+  saved, log cost documented.
+
+### Phase 7 — Explicit non-goals, site analytics, and additive error capture (CP7) `[x]`
+
+- [x] Keep Sentry primary and add PostHog `$exception` capture under the same consent
+      switch (PD8, PD9, PD10); ADR-0002 supersedes ADR-0001.
+- [x] No session replay, heatmaps, or autocapture in the desktop app.
+- [x] Reuse project `709196` for VitePress web analytics with an env-gated,
+      cookieless snippet in `site/.vitepress/config.mts`; the desktop app sends only
+      categorical events plus the documented exception path, and GA4 remains in place.
+- [x] Enable site heatmaps only on `/`, `/download`, and `/video-converter` via
+      `capture_heatmaps`, `capture_pageleave`, and an autocapture URL allowlist; keep
+      session replay, surveys, cookie storage, and console error capture off.
+- [x] Capture browser unhandled errors and rejections on the three scoped site pages
+      with `capture_exceptions`; live arrival still needs a deployed site build.
+- [x] Create saved heatmaps for the three scoped site pages; live capture still needs
+      deploy env vars and the UI-only Heatmap capture URL selection.
+- [x] Write `analytics/posthog/adr/0001-error-tracking-sentry-only.md` for the original
+      Sentry vs PostHog decision (stack traces, Electron support, cost, PII,
+      duplication) and `analytics/posthog/adr/0002-additive-posthog-error-tracking.md`
+      for the current additive decision.
+
+### Phase 8 — Governance and data quality (CP8) `[~]`
+
+- [ ] Generate `analytics/posthog/analytics-dashboards/data-schema.json` from `events.ts` including
+      event names, groups, payload keys, and schema version; include live traffic flags.
+- [x] Complete `npm run analytics:schema-check` (read-only, local personal key) and
+      make CI fail on taxonomy/dashboard drift.
+- [x] Add the `docs/analytics-privacy-checklist.md` reference to
+      `.github/PULL_REQUEST_TEMPLATE.md` for changes under `src/{shared,main}/analytics/`.
+- [x] Document project retention period and the install-id → person deletion procedure.
+- [x] Add quota monitoring documentation: event volume, flag requests, AI events,
+      survey responses, and log bytes against free-tier limits; review at 50%, 80%, 95%.
+      A daily event-volume drop alert and the high-severity log alert are now live;
+      the log alert is intentionally silent by owner choice.
+- [x] Schedule quarterly flag/experiment hygiene review (three flags have removal
+      dates of 2027-01-01).
+- **Exit gate:** schema-check green locally and in CI; checklist in template;
+  retention/deletion and quota docs committed.
+
+### Phase 9 — Deferred / optional `[ ]`
+
+- [ ] Data warehouse sources, pipelines, and batch exports if event volume or
+      cross-source questions justify the free-tier row budget (PD12).
+- [ ] Workflows / transactional email only if the app gains an outbound email path.
+- [ ] Notebooks for experiment write-ups; Inbox/self-driving for automated metric
+      review; endpoints/MCP tooling for team queries.
+- [ ] Revisit local feature-flag evaluation only if startup latency becomes measurable.
+
+---
+
+## 7. Verification and test strategy
 
 | Layer | What is tested | Tooling |
 | ----- | -------------- | ------- |
-| Unit (main) | identify payload allowlist, super-property merge, session rotation, flag precedence, group enum guard | Vitest, mocked `posthog-node` (existing pattern in `posthogMainProvider.test.ts`) |
-| Unit (renderer) | relay only; no flag or key logic | Vitest (existing `posthogRendererProvider.test.ts`) |
-| Contract | every `AnalyticsEventName` has wiring (existing), every dashboard references existing events (new, CP7) | Vitest |
-| Live probe (manual) | real delivery to `encodex-dev` after each checkpoint | temporary probe test, deleted after run (pattern used in the 17:21 session) |
-| Privacy | no path/name/free-text fields pass the sanitizer | property tests on `sanitizeAnalyticsProps` |
+| Unit (main) | Identify allowlist, super-property merge, session rotation, flag precedence, group enum guard | Vitest, mocked `posthog-node` |
+| Unit (renderer) | Survey boot gating and IPC relay only; no keys or flag logic in renderer | Vitest, jsdom |
+| Contract | Every event name has wiring; every dashboard references existing events | Vitest + `analytics:schema-check` |
+| Live probe | Events, flags, cohorts, surveys, traces, and `$exception` arrive in project `709196` | MCP `read-data-schema` / `execute-sql`, temporary probe removed after run |
+| Privacy | No path/name/free-text fields pass the event sanitizer or survey events; exception context is filtered/bounded and raw stacks are documented as the deliberate exception | Property tests on `sanitizeAnalyticsProps` and `sanitizeExceptionContext` |
+| Security | CSP contains only the configured host; no secret keys in renderer bundle | CSP tests + bundle grep in CI |
 
-Each checkpoint must leave the full suite green (`npm test`), typecheck (`npm run typecheck:main`,
-`npm run typecheck:renderer`), lint, and `npm run doc:drift`.
+Per checkpoint: `npm test`, `npm run typecheck:main`, `npm run typecheck:renderer`,
+lint, `npm run doc:drift`, and `npm run build` must be green.
 
 ---
 
-## 5. Risks and Mitigations
+## 8. Risks and mitigations
 
 | Risk | Impact | Mitigation |
 | ---- | ------ | ---------- |
-| Dev events pollute prod project | Wrong metrics | Separate projects per channel (0.4); CI asserts token/project mapping |
-| Flag request slows startup or fails offline | Startup delay, dead features | 2 s timeout, cached values, compiled-in defaults, tests for offline path |
-| Cardinality explosion via groups or props | Cost, slow insights | Enum-only group keys (3.2); allowlists; `$process_person_profile: false` for noisy events |
-| Survey or renderer SDK leaks content | Privacy breach | Opt-in, no autocapture, no replay, CSP scoped, no free text on analytics events |
-| Personal API key leaks into app bundle | Account compromise | Keys only in CI secrets and local `.env` for scripts; never in `src/` or the built app; CI check greps the bundle |
-| Taxonomy and dashboards drift | Misleading metrics | CP7 generator and CI guard |
-| Duplicate error tooling | Cost and confusion | ADR before any PostHog error tracking (CP6) |
-| `.env` duplicate keys silently override values | Analytics disabled (happened once) | Generators and runtime both use dotenv last-wins; startup warnings for invalid host (shipped) |
+| Dev events pollute production metrics | Wrong conclusions | `channel = prod` filter on every insight; test-account cohort `689593` |
+| Flag request slows startup / fails offline | Broken features | 2 s timeout, disk cache, compiled defaults, precedence tests |
+| Survey SDK leaks content | Privacy breach | Consent gate, no autocapture/replay/pageviews, scoped CSP, categorical questions only |
+| Site autocapture leaks page content | Privacy breach | Three-URL autocapture allowlist, memory-only persistence, no session replay or surveys on site |
+| Cardinality explosion | Cost and slow insights | Enum-only group keys, person-property allowlist, `$process_person_profile: false` on noisy events |
+| Secret key leak into app bundle | Account compromise | Keys only in CI/local scripts; bundle grep in CI |
+| Free-tier quota hit | Dropped events / flag defaults | 70% alerts, volume dashboard, keep high-volume logs out of event stream |
+| Duplicate error tooling | Cost and confusion | Sentry primary, additive PostHog capture, one consent switch, Node SDK dedupe, ADR-0002 |
+| Plan drift | Misleading roadmap | This file updated in the same PR as each checkpoint |
 
 ---
 
-## 6. Progress Log
+## 9. Definition of done
 
-Append one line per completed item. Newest first.
+- Code, tests, and docs land in one PR.
+- The relevant checkbox flips to `[x]` in this file in the same PR with a progress-log line.
+- Privacy checklist answered for any event/property change.
+- Every user-visible PostHog item is verified live (insight link or screenshot in the PR).
+- All checks in section 7 pass.
+
+---
+
+## 10. Progress log
+
+Newest first.
 
 | Date | Checkpoint | Item | Commit | Notes |
 | ---- | ---------- | ---- | ------ | ----- |
-| 2026-11-04 | CP0 | Owner answered Q1–Q6; plan updated (free tier, one project, Sentry kept, flags and surveys approved) | - | Tier limits checked on posthog.com/pricing |
-| 2026-11-04 | CP0 | 0.1–0.5 done; plan created | - | Baseline verified in code |
-| 2026-11-04 | - | Host misconfiguration surfaced; `.env` parsing aligned with dotenv | `8d425e35` | Root cause of "no events in PostHog" |
+| 2026-11-23 | CP7 | Post-change validation and live-state check | - | Full unit suite (5,628 tests / 386 files), full typecheck, lint, format, doc:drift, analytics:schema-check, docs:build, and diff check pass; live project `709196` confirms `heatmaps_opt_in: true` and saved heatmaps `6otWQYCW`, `gwYwhE7F`, and `bU3wMrlM` completed at 375/768/1440 px, while `read-data-schema` still shows `$exception` and `$pageview` with no traffic in the last 30 days — live arrival still needs a consented app run and a deployed site build |
+| 2026-11-23 | CP7 | Added additive PostHog exception capture | - | Sentry remains primary; main/renderer/site exceptions now reach PostHog under the single consent switch with sanitized context, bounded pre-init buffering, Node SDK dedupe, and no-throw adapters; ADR-0002 supersedes the Sentry-only ADR; live `$exception` verification remains |
+| 2026-11-23 | CP7 | Enabled scoped site heatmaps and saved heatmaps | - | Project `709196` already had `heatmaps_opt_in: true`; the VitePress snippet now enables `capture_heatmaps` and `capture_pageleave` with autocapture limited to `/`, `/download`, and `/video-converter`; saved heatmaps `6otWQYCW`, `gwYwhE7F`, and `bU3wMrlM` completed at 375/768/1440 px; desktop replay/heatmaps/autocapture remain off; live capture still needs deploy env vars and the UI-only Heatmap capture URL selection; lint, full typecheck, format, doc:drift, analytics:schema-check, docs:build, and diff check pass |
+| 2026-11-23 | CP2/CP5/CP6 | Launched survey, enabled alerts, and synced rollout docs | - | Created event-volume insight `14531023` and enabled daily alerts `01a20846-cc85-7689-a9b9-e65b72ebf341` (conversion failures >10%), `01a20846-cdcf-7755-98f4-b30de2b64900` (AI errors >10%), `01a20846-d247-7da1-94ac-d376cd0399d8` (volume <50% of trailing 7 days); enabled log alert `01a20809-59ae-7c9c-8ee0-e46109d4d6ca` (intentionally silent by owner choice); launched survey `01a20809-2a1a-0000-3d9b-4076a5323850` at `2026-11-23T12:01:54.605873Z` and enabled targeting flag `1120431`; full typecheck, format, lint, doc:drift, analytics:schema-check, docs:build, and diff check pass |
+| 2026-11-23 | CP2/CP4/CP7 | Added experiment metrics, starter relabeling, and site web analytics | - | Experiment `629482` now has 1 primary + 3 secondary metrics on dedicated flag `mcp_server_default_on_experiment` (flag id `1120584`); 8 starter insights relabeled, retagged, and repointed to real EncodeX events; desktop emits synthetic `$pageview`/`$screen` route events; VitePress site uses env-gated cookieless `$pageview` snippet; full typecheck, format, lint, doc:drift, analytics:schema-check, docs:build, and diff check pass |
+| 2026-11-23 | CP6 | Added metadata-only AI trace hierarchy | - | `$ai_generation` now carries `$ai_span_id`/`$ai_parent_id`; Copilot routing emits a `copilot.route` `$ai_span` with one `$ai_trace_id` per plan request; capability inventory refreshed from PostHog docs; full typecheck and full test suite (5,616 tests) pass |
+| 2026-11-23 | CP4/CP6/CP7/CP8 | Added AI observability artifacts and governance docs | - | AI dashboard 2399517 + 5 insights + `ai-observability.json`; draft survey `01a20809-2a1a-0000-3d9b-4076a5323850`; governance notebook `Vl1aPIvR`; disabled logs alert `01a20809-59ae-7c9c-8ee0-e46109d4d6ca`; quarterly reminder `01a20809-5afd-7f33-a101-c9689a27acfb`; ADR + experiment pre-registration + retention/quota/opt-in docs; analytics-schema CI guard added; format, lint, full typecheck, 58 focused tests, doc:drift, schema-check, and diff check pass |
+| 2026-11-23 | CP5 | Survey gate, CSP host plumbing, and local bootstrap | - | `POSTHOG_SURVEYS_ENABLED` defaults off; `initPosthogSurveys(consent)` wired; `POSTHOG_HOST` origin added to `connect-src` with invalid-host rejection; 22 focused tests pass |
+| 2026-11-23 | CP2 | Created six dashboards, 15 insights, and six JSON exports | - | Dashboard IDs 2399420–2399425; all insights filter `channel = prod`, cohort 689593, test accounts off; README updated; lint, typecheck:main, 36 focused tests, and doc:drift pass |
+| 2026-11-23 | CP1 | Added OTLP log `Content-Type` and flag exposure events | - | `posthogMainProvider.ts`; typecheck:main and 36 focused tests pass |
+| 2026-11-23 | CP1 | Event traffic audit + group/test-account/log checks | - | 60/129 typed events seen; 69 silent; test-account delta 0; 14-day log retention kept |
+| 2026-11-23 | CP4 | Created 3 declared flags | - | IDs 1120335/1120336/1120337; defaults 100%/100%/0%; `remove-by:2027-01-01` tags |
+| 2026-11-23 | CP3 | Created 4 behavioral cohorts and exported definitions | - | IDs 751458/751459/751460/751461; test-account filter enabled; counts 1/1/0/67 |
+| 2026-11-23 | CP0 | Plan refreshed from live project + code audit; stale baseline corrected | - | PostHog MCP: project 709196, 13 insights, 2 dashboards, 0 flags/surveys/experiments |
 | 2026-11-04 | - | Full PostHog integration and AI observability | `e6ff6f8e` | Pushed to `fix/otel-posthog-compat` |
-
----
-
-## 7. Definition of Done (per item)
-
-- Code, tests, and docs changed together in one PR.
-- Checkbox flipped to `[x]` in this file in the same PR, with a progress-log line.
-- Privacy checklist answered for any event or property change (from CP7 onward; before that, by hand in the PR description).
-- Verified in PostHog for any user-visible or dashboard item (screenshot or insight link in the PR).
+| 2026-11-04 | - | Host misconfiguration surfaced; `.env` parsing aligned with dotenv | `8d425e35` | Root cause of "no events in PostHog" |
+| 2026-11-04 | CP0 | 0.1–0.5 done; plan created | - | Baseline verified in code |
+| 2026-11-04 | CP0 | Owner answered Q1–Q6; plan updated | - | Free tier, one project, Sentry kept, flags and surveys approved |

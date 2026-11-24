@@ -4,7 +4,10 @@ EncodeX ships anonymous, categorical-only usage analytics through a
 **provider-agnostic analytics layer**. Application code only talks to the
 shared facade; PostHog and Aptabase are interchangeable adapters behind it.
 Error/performance monitoring lives on a separate layer (see
-`docs/MONITORING.md`); both are governed by a single Settings toggle.
+`docs/MONITORING.md`); both are governed by a single Settings toggle. Product
+events remain categorical-only. PostHog exception capture is the one explicit
+exception: it carries bounded error messages and stacks for triage (see
+[Error tracking](#error-tracking) and `analytics/posthog/adr/0002-additive-posthog-error-tracking.md`).
 
 ## Architecture
 
@@ -17,33 +20,41 @@ App code ──► shared/analytics facade (initAnalytics / recordAnalyticsEvent
                   ▲
     PostHogRendererProvider  AptabaseRendererProvider
     (renderer → IPC → main)  (renderer → aptabase-ipc → main)
+
+Monitoring facade ──► AnalyticsService.captureAnalyticsException
+                  │
+                  └──► active provider's captureException (PostHog only)
 ```
 
-- `src/shared/analytics/types.ts` — the provider contract ("port").
+- `src/shared/analytics/types.ts` — the provider contract ("port"), including
+  the optional `captureException` method used by exception-capable providers.
 - `src/shared/analytics/events.ts` — the authoritative **event taxonomy**:
   every event name, its categorical payload, its functional group
   (`ANALYTICS_EVENT_GROUP`) and its rollout tier (`ANALYTICS_TIER`). Audit this
-  file before adding or changing an event.
-- `src/shared/analytics/sanitize.ts` — shared defense-in-depth prop sanitizer
-  used by every adapter.
+  file before adding or changing an event. Exceptions are not part of this
+  taxonomy.
+- `src/shared/analytics/sanitize.ts` — shared defense-in-depth sanitizer for
+  event props and serialized exception payloads.
 - `src/shared/analytics/AnalyticsService.ts` — facade singleton; never throws,
-  no-ops before init and while consent is off, pre-init events are buffered
-  (capped) and replayed once initialized.
+  no-ops before init and while consent is off, buffers events and exceptions
+  before init (both capped), and replays them once initialized.
 - `src/main/analytics/posthogMainProvider.ts` — the **only** module that
-  constructs the PostHog client. Also forwards AI Observability generations.
+  constructs the PostHog client. Also forwards AI Observability generations and
+  captures sanitized exceptions with `posthog-node`.
 - `src/main/analytics/aptabaseMainProvider.ts` — the **only** module allowed to
   import `@aptabase/electron/main`. Loads the SDK lazily, sanitizes payloads,
   enforces the per-group gate, and tracks in-flight requests so
   `flush`/`close` have real semantics (the SDK has no `flush`/`close` export).
 - `src/main/analytics/providerFactory.ts` — picks the backend from config/env.
 - `src/renderer/analytics/posthogRendererProvider.ts` — renderer adapter that
-  relays events over IPC to the main-process backend.
+  relays events and exceptions over IPC to the main-process backend.
 - `src/renderer/analytics/aptabaseRendererProvider.ts` — renderer adapter.
 
 The renderer never sees a backend credential. PostHog renderer events are
-relayed over `IPC.ANALYTICS_TRACK_EVENT` to the active main-process provider;
-Aptabase renderer events use the SDK's own `aptabase-ipc` transport. Either way,
-backend delivery happens on the main side.
+relayed over `IPC.ANALYTICS_TRACK_EVENT` and exceptions over
+`IPC.ANALYTICS_CAPTURE_EXCEPTION` to the active main-process provider; Aptabase
+renderer events use the SDK's own `aptabase-ipc` transport. Either way, backend
+delivery happens on the main side.
 
 > **CSP requirement:** the renderer Content-Security-Policy must allow the
 > `aptabase-ipc` scheme when Aptabase is active. The SDK delivers events with a
@@ -52,35 +63,125 @@ backend delivery happens on the main side.
 > `src/shared/csp.ts`, injected as a `Content-Security-Policy` response header
 > by `src/main/security/csp.ts`) includes `connect-src 'self' aptabase-ipc` —
 > otherwise renderer events are silently dropped (the adapter's fetch is
-> rejected and logged as a `TypeError: Failed to fetch`).
+> rejected and logged as a `TypeError: Failed to fetch`). When surveys are
+> enabled, the origin of `POSTHOG_HOST` is also added to `connect-src`; invalid
+> or non-HTTP hosts are ignored.
 
 ## Configuration
 
-| Variable                       | Purpose                                                                                                                                                                                                                                                                               |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `POSTHOG_PROJECT_TOKEN`        | Enables PostHog when present (main process only). Public project token; for packaged releases it is baked in at build time via `npm run gen:posthog-config` (runs on `npm install` and `npm run build`); runtime env wins. Never enters the renderer bundle.                            |
-| `POSTHOG_HOST`                 | PostHog ingestion host (for example `https://us.i.posthog.com`). Required when PostHog is the active backend.                                                                                                                                                                          |
-| `POSTHOG_AI_CAPTURE_CONTENT`   | Set to `true` to send AI prompt/completion content to PostHog AI Observability. Defaults to metadata-only (model, latency, token counts, errors).                                                                                                                                      |
-| `APTABASE_APP_KEY`             | Enables Aptabase when present (main process only). Loaded from `.env` via dotenv or baked in via `npm run gen:aptabase-config`; runtime env wins. Keys look like `A-{US\|EU\|DEV\|SH}-...`.                                                                                               |
-| `APTABASE_HOST`                | **Only for self-hosted** Aptabase API endpoints (`A-SH-...` keys). Leave empty on cloud.                                                                                                                                                                                              |
-| `APTABASE_ENVIRONMENT`         | Environment label (defaults from `NODE_ENV`).                                                                                                                                                                                                                                         |
-| `ANALYTICS_PROVIDER`           | Optional override: `posthog` \| `aptabase` \| `noop`; otherwise PostHog wins when its token is present, then Aptabase when its App Key is present.                                                                                                                                     |
-| `ANALYTICS_GROUPS`             | Optional per-group emission gate (comma-separated, e.g. `lifecycle,convert,queue`). A group not listed is silently dropped, so a noisy group can be disabled without a release. Absent/empty ⇒ every group is emitted.                                                                 |
-| `APTABASE_DEBUG`               | Set to `1` to watch the Aptabase SDK log event delivery in local dev.                                                                                                                                                                                                                 |
+| Variable                        | Purpose                                                                                                                                                                                                                                                      |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `POSTHOG_PROJECT_TOKEN`         | Enables PostHog when present (main process only). Public project token; for packaged releases it is baked in at build time via `npm run gen:posthog-config` (runs on `npm install` and `npm run build`); runtime env wins. Never enters the renderer bundle. |
+| `POSTHOG_HOST`                  | PostHog ingestion host (for example `https://us.i.posthog.com`). Required when PostHog is the active backend.                                                                                                                                                |
+| `POSTHOG_LOGS_ENABLED`          | Forwards main/renderer app-log entries to PostHog Logs over OTLP when `true`/`1` (the default). Set to `false`/`0` for a no-op. Baked into packaged builds by `npm run gen:posthog-config`; runtime env and telemetry consent still apply.                   |
+| `POSTHOG_SURVEYS_ENABLED`       | Boots the renderer survey SDK only when set to `true`/`1` and telemetry consent is on. Defaults to `false`/`0`; set it for release builds that should display the live survey. Baked into packaged builds by `npm run gen:posthog-config`.                   |
+| `POSTHOG_WEB_ANALYTICS_ENABLED` | Set to `true`/`1` during the VitePress build to inject the cookieless PostHog page-view and scoped site-heatmap snippet on `encodex.in`. Requires `POSTHOG_PROJECT_TOKEN` and `POSTHOG_HOST`; defaults to off.                                               |
+| `POSTHOG_AI_CAPTURE_CONTENT`    | Set to `true` to send AI prompt/completion content to PostHog AI Observability. Defaults to metadata-only (model, latency, token counts, errors).                                                                                                            |
+| `APTABASE_APP_KEY`              | Enables Aptabase when present (main process only). Loaded from `.env` via dotenv or baked in via `npm run gen:aptabase-config`; runtime env wins. Keys look like `A-{US\|EU\|DEV\|SH}-...`.                                                                  |
+| `APTABASE_HOST`                 | **Only for self-hosted** Aptabase API endpoints (`A-SH-...` keys). Leave empty on cloud.                                                                                                                                                                     |
+| `APTABASE_ENVIRONMENT`          | Environment label (defaults from `NODE_ENV`).                                                                                                                                                                                                                |
+| `ANALYTICS_PROVIDER`            | Optional override: `posthog` \| `aptabase` \| `noop`; otherwise PostHog wins when its token is present, then Aptabase when its App Key is present.                                                                                                           |
+| `ANALYTICS_GROUPS`              | Optional per-group emission gate (comma-separated, e.g. `lifecycle,convert,queue`). A group not listed is silently dropped, so a noisy group can be disabled without a release. Absent/empty ⇒ every group is emitted.                                       |
+| `APTABASE_DEBUG`                | Set to `1` to watch the Aptabase SDK log event delivery in local dev.                                                                                                                                                                                        |
 
 Groups: `lifecycle`, `onboarding`, `nav`, `convert`, `image`, `audio`, `cut`,
 `queue`, `profiles`, `settings`, `mcp`, `updates`, `hw`, `cli`, `ux`.
+
+Exception capture needs no separate variable. It uses the same
+`POSTHOG_PROJECT_TOKEN` and `POSTHOG_HOST` as product analytics and is gated by
+the same telemetry consent switch.
+
+## Application logs
+
+When PostHog is the active analytics backend and `POSTHOG_LOGS_ENABLED` is on,
+the app forwards the real entries that flow through the main-process log hub to
+PostHog Logs over OTLP/HTTP. This includes sanitized main-process console output
+and renderer console output mirrored over `IPC.LOGS_PUBLISH`; it is not a
+separate synthetic event stream. The `source`, sequence number, timestamp, app
+version, environment, channel, anonymous distinct id, and session id are sent as
+structured attributes so a log can be linked back to the matching session.
+Turning telemetry consent off detaches the log-hub observer, and turning it back
+on reattaches it. A `false`/`0` flag keeps the OTLP exporter inert, and any
+exporter failure is swallowed so logging and app startup are never blocked.
+
+## Site web analytics
+
+The VitePress site at `encodex.in` reuses PostHog project `709196` for aggregate
+page views, site heatmaps, and browser exception capture. The snippet is injected
+at build time only when `POSTHOG_WEB_ANALYTICS_ENABLED`,
+`POSTHOG_PROJECT_TOKEN`, and `POSTHOG_HOST` are all present; set those same values
+in the hosting provider before deploying. The token is never committed, and the
+desktop app sends its product events through the main-process provider and also
+emits synthetic `$pageview`/`$screen` events from static renderer routes so the
+Product Analytics overview has sessionized traffic. Apart from those route names,
+the desktop app still sends only categorical events, plus the explicit exception
+path documented below.
+
+Site capture is scoped to three pages: `/`, `/download`, and `/video-converter`.
+The SDK enables `capture_heatmaps`, `capture_pageleave`, `capture_exceptions`,
+and `autocapture` with a URL allowlist for those pages; session recording,
+surveys, console error capture, and cookie storage remain disabled. The desktop
+app still has no replay, heatmaps, or autocapture; its pageviews and screens are
+synthetic route events without URLs, titles, or user input. On the free plan
+the same three URLs must also be selected in
+[Heatmap capture URLs](https://app.posthog.com/settings/environment-heatmaps#heatmaps-capture);
+MCP can create saved heatmaps but cannot set that UI-only allowlist. See the
+[PostHog heatmaps docs](https://posthog.com/docs/toolbar/heatmaps) for setup and
+the [web analytics installation docs](https://posthog.com/docs/web-analytics/installation/html-snippet)
+for the snippet source.
+
+Saved heatmaps are configured for `/` (`6otWQYCW`), `/download` (`gwYwhE7F`), and
+`/video-converter` (`bU3wMrlM`) at 375, 768, and 1440 px. They render the pages
+for overlay review; live interaction data starts only after the site build is
+deployed with the web analytics variables and the three capture URLs are saved in
+PostHog.
+
+## Error tracking
+
+PostHog exception capture is additive to Sentry. Sentry remains the primary
+error-monitoring backend; PostHog receives a parallel `$exception` when telemetry
+consent is on and the active analytics backend supports exception capture. The
+same Settings toggle controls both paths, and turning it off clears the pre-init
+buffer and drops later captures.
+
+The desktop main process enables `enableExceptionAutocapture` in `posthog-node`
+and explicitly forwards `MonitoringService.captureException` errors through the
+analytics facade. Sanitized context is attached as `error_tag.<key>` and
+`error_extra.<key>` properties. Node SDK dedupe prevents the same error from
+producing both an autocaptured and an explicit event in one turn. The renderer
+has no `posthog-js` exception autocapture; it relays serialized errors over
+`IPC.ANALYTICS_CAPTURE_EXCEPTION`. The VitePress site uses browser
+`capture_exceptions` for unhandled errors and rejections only.
+
+This is the explicit exception to the categorical-only event contract:
+exception messages and stacks are allowed because they are the triage payload,
+and they can contain paths or free text. They are not declared in
+`src/shared/analytics/events.ts` and are not part of the schema snapshot.
+Everything else attached to an exception is primitive-only, key- and
+value-filtered, and length-bounded; at most 25 exceptions are buffered before
+analytics initialization. Capture adapters never throw into application code,
+and Aptabase/noop providers ignore exception fan-out.
+
+Live arrival of `$exception` in project `709196` still needs a consented desktop
+run and a deployed site build. See
+`analytics/posthog/adr/0002-additive-posthog-error-tracking.md` for the decision
+and privacy rationale.
 
 ## Troubleshooting: no events arrive
 
 The main process reports its state in the app log (_Settings → Logs_):
 
 - `PostHog analytics active. { host }` — the client was created; events flow.
+- `posthog_log_capture_started` — the OTLP log exporter started and the app-log
+  hub observer is attached (visible in PostHog Logs, not the in-app log view).
 - `PostHog analytics inactive: …` — the adapter refused to start. The message
   names the missing/invalid value (`POSTHOG_PROJECT_TOKEN` missing,
   `POSTHOG_HOST` unset, or `POSTHOG_HOST` not a valid URL).
 - `ANALYTICS_PROVIDER=posthog but …` — an explicit backend was requested but
   its credentials are missing, so the no-op backend is used.
+- `Analytics exception capture failed …` — an exception could not be forwarded
+  or a renderer exception payload was rejected; the original error is not thrown
+  into application code.
 
 `POSTHOG_HOST` must be the full ingestion URL (for example
 `https://us.i.posthog.com`), **not** the numeric PostHog project id. Duplicate
@@ -96,16 +197,23 @@ duplicate entry silently overrides a good one.
   (both GUI and CLI honor them at boot; `analytics-consent.json` is seeded
   from the monitoring file when missing).
 - Turning the toggle off closes both backends at runtime; nothing is recorded
-  afterwards. `telemetry_opt_out` is emitted *before* disabling, and
-  `telemetry_opt_in` *after* re-enabling.
-- **Privacy contract (taxonomy):** every payload is categorical-only. By
+  afterwards. `telemetry_opt_out` is emitted _before_ disabling, and
+  `telemetry_opt_in` _after_ re-enabling.
+- **Privacy contract (events):** every taxonomy payload is categorical-only. By
   design, no event contains media content, file names, folder paths, file
   sizes, or any personal identifier. The adapter additionally strips any
   non-string/number/boolean property as defense in depth.
+- **Exception exception:** error messages and stack traces are the sole
+  non-categorical payload and are intentionally retained for triage; they may
+  contain paths or free text. Exception context is primitive-only, filtered,
+  and bounded as described in [Error tracking](#error-tracking).
 - Duration fields are bucketed (e.g. `trimSecBucket`), and percentages/counts
   are coarse aggregate measures, never raw paths or metadata.
-- No PII by default; no user identity is ever attached to an event. PostHog
-  uses a random anonymous installation id persisted in
+- Desktop `$pageview`/`$screen` events contain only the static route path (for
+  example `/convert`) and constant Electron/Desktop metadata; no URL, title,
+  query string, or user input is captured.
+- No PII by default; no user identity is ever attached to an event or exception.
+  PostHog uses a random anonymous installation id persisted in
   `userData/analytics-install-id.txt` so retention can be measured across
   launches; it is not derived from hardware, accounts, or other identifiers.
 - **Person properties** (PostHog) are limited to an allowlist of coarse,
@@ -117,27 +225,102 @@ duplicate entry silently overrides a good one.
   completion content is sent only when `POSTHOG_AI_CAPTURE_CONTENT=true` is
   explicitly configured; otherwise it is never attached.
 
+## Surveys
+
+The renderer boots `posthog-js` only for surveys, only with telemetry consent,
+and only when `POSTHOG_SURVEYS_ENABLED` is true. The SDK runs with autocapture,
+pageviews, and session replay disabled and uses memory-only persistence. Survey
+questions and displayed copy are public content; keep them categorical and free
+of user identifiers.
+
+`EncodeX product feedback` (`01a20809-2a1a-0000-3d9b-4076a5323850`) is live as a
+one-time popover started `2026-11-23T12:01:54.605873Z`. It triggers on the first
+`conversion_completed` event on Desktop, asks the NPS and product-area questions,
+has partial responses enabled, and is limited to `1000` responses. Internal
+targeting flag `1120431` is active and prevents repeat display to dismissed or
+responding users. Delivery still requires a consented app run with the survey
+gate enabled.
+
+The configured survey gate is baked into packaged builds by
+`npm run gen:posthog-config`. Set `POSTHOG_SURVEYS_ENABLED=true` in the release
+build environment (or at runtime) to display the live survey; runtime values win
+over the baked value, and absent or unrecognized values fall back to the baked
+default (`false`).
+
+## Retention, deletion, and quota monitoring
+
+PostHog cloud settings remain the source of truth for retention and deletion.
+The current project uses default 14-day log retention with custom retention
+off. No user identity is attached to events or exceptions, so deletion requests
+are handled by a project administrator in PostHog rather than through an
+app-side account flow; confirm scope with the privacy owner before deleting
+project data.
+
+Free-tier guardrails to watch: 1M analytics events/month, 100K exceptions/month,
+100K AI events/month, 1,500 survey responses/month, 10GB logs/month, and 5K
+session replays/month.
+The `EncodeX — AI observability` dashboard tracks generation volume, spend,
+error rate, provider mix, and summary-event volume. Review at 50%, 80%, and
+95% of any limit.
+
+Three enabled daily alerts check conversion failures above 10%, AI error rate above
+10%, and all-event volume below 50% of the trailing 7-day baseline at 09:00 UTC;
+they email user `844296`. Alert IDs are
+`01a20846-cc85-7689-a9b9-e65b72ebf341`,
+`01a20846-cdcf-7755-98f4-b30de2b64900`, and
+`01a20846-d247-7da1-94ac-d376cd0399d8`. The high-severity log alert
+`01a20809-59ae-7c9c-8ee0-e46109d4d6ca` is enabled for `error`/`fatal` logs above
+zero in a 5-minute window and is intentionally left silent by owner choice until
+a notification destination is requested.
+
+Governance baseline: [EncodeX — PostHog governance baseline](https://us.posthog.com/project/709196/notebooks/Vl1aPIvR).
+A quarterly reminder is configured to review this notebook on 1 January,
+1 April, 1 July, and 1 October at 09:00 UTC.
+
+## AI content opt-in procedure
+
+1. Keep `POSTHOG_AI_CAPTURE_CONTENT` unset or `false` for normal development and
+   release builds.
+2. For a temporary debugging session, set `POSTHOG_AI_CAPTURE_CONTENT=true` in
+   the local environment only, restart the app, and record why and for how long
+   content capture is enabled.
+3. Do not include prompts, completions, credentials, or customer content in
+   tests, issues, or dashboard annotations.
+4. Unset the variable and restart when the session ends; verify that subsequent
+   `$ai_generation` events carry metadata only.
+
+## AI trace hierarchy
+
+Copilot AI routing emits metadata-only AI Observability events using PostHog's
+[manual capture properties](https://posthog.com/docs/ai-observability/installation/manual-capture):
+one `$ai_trace_id` per plan request, a `copilot.route` `$ai_span` for the router
+step, and `$ai_generation` events with `$ai_span_id` and `$ai_parent_id` for each
+provider call. Span input/output state is never sent, so goals, prompts,
+completions, file names, and paths stay out of analytics payloads.
+
 ## What gets recorded
 
-All events are defined in `src/shared/analytics/events.ts`. Categories:
+All product events are defined in `src/shared/analytics/events.ts`. `$exception`
+is captured through the separate error path described above and is not part of
+this taxonomy. Categories:
 
-| Group       | Example events                                                                       |
-| ----------- | ------------------------------------------------------------------------------------ |
-| lifecycle   | `app_installed`, `app_launched`, `app_quit`                                          |
-| ux          | `window_maximize_toggled`, `window_close_requested`, `window_close_deferred`         |
-| onboarding  | `terms_accepted`, `onboarding_started`, `onboarding_goal_selected`, `onboarding_dismissed` |
-| nav         | `dashboard_card_clicked`, `dashboard_shortcut_used`, `tool_opened`, `locale_changed`  |
-| convert     | `conversion_started/completed/failed`, `remux_started/completed/failed`, `demux_started/completed/failed`, `codec_changed`, `transcoder_changed`, `copy_mode_toggled`, `preview_opened` |
-| image       | `compress_started/completed/failed`, `compress_format_changed`                        |
-| audio       | `audio_extract_started/completed/failed`, `audio_codec_changed`                       |
-| cut         | `video_cut_started/completed/failed`, `timeline_zoom_changed`, `media_playback_toggled` |
-| queue       | `batch_queue_started`, `batch_completed`, `batch_job_retried`, `batch_export`         |
-| profiles    | `profile_applied`, `profile_created`, `profile_updated`, `profile_deleted`            |
-| settings    | `telemetry_opt_in/out`, `theme_changed`, `hwaccel_*`, `always_on_top_toggled`, `encoder_type_changed`, `settings_tab_viewed` |
-| mcp         | `mcp_server_toggled`, `mcp_port_committed`, `mcp_token_generated`, `mcp_connection_value_copied` |
-| updates     | `update_available`, `update_downloaded`, `update_installed`, ...                      |
-| hw          | `hw_accel_detected`                                                                   |
-| cli         | `cli_invoked`, `cli_completed`                                                        |
+| Group      | Example events                                                                                                                                                                          |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| lifecycle  | `app_installed`, `app_launched`, `app_quit`                                                                                                                                             |
+| ux         | `window_maximize_toggled`, `window_close_requested`, `window_close_deferred`                                                                                                            |
+| onboarding | `terms_accepted`, `onboarding_started`, `onboarding_goal_selected`, `onboarding_dismissed`                                                                                              |
+| nav        | `dashboard_card_clicked`, `dashboard_shortcut_used`, `tool_opened`, `locale_changed`                                                                                                    |
+| convert    | `conversion_started/completed/failed`, `remux_started/completed/failed`, `demux_started/completed/failed`, `codec_changed`, `transcoder_changed`, `copy_mode_toggled`, `preview_opened` |
+| image      | `compress_started/completed/failed`, `compress_format_changed`                                                                                                                          |
+| audio      | `audio_extract_started/completed/failed`, `audio_codec_changed`                                                                                                                         |
+| cut        | `video_cut_started/completed/failed`, `timeline_zoom_changed`, `media_playback_toggled`                                                                                                 |
+| queue      | `batch_queue_started`, `batch_completed`, `batch_job_retried`, `batch_export`                                                                                                           |
+| profiles   | `profile_applied`, `profile_created`, `profile_updated`, `profile_deleted`                                                                                                              |
+| settings   | `telemetry_opt_in/out`, `theme_changed`, `hwaccel_*`, `always_on_top_toggled`, `encoder_type_changed`, `settings_tab_viewed`                                                            |
+| mcp        | `mcp_server_toggled`, `mcp_port_committed`, `mcp_token_generated`, `mcp_connection_value_copied`                                                                                        |
+| updates    | `update_available`, `update_downloaded`, `update_installed`, ...                                                                                                                        |
+| hw         | `hw_accel_detected`                                                                                                                                                                     |
+| cli        | `cli_invoked`, `cli_completed`                                                                                                                                                          |
 
 `conversion_started` and `conversion_completed` carry `hasVideoFilters` and
 `filterCount` alongside the existing codec/transcoder fields. Remux and demux

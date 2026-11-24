@@ -46,7 +46,16 @@ import {
 import type { AnalyticsEvent } from './events';
 import { ANALYTICS_EVENT_GROUP } from './events';
 import { NoopProvider } from './noopProvider';
-import type { AiGeneration, AnalyticsConfig, AnalyticsProvider, AnalyticsProviderFactory } from './types';
+import { FEATURE_FLAG_DEFAULTS } from './featureFlagDefaults';
+import type {
+  AiGeneration,
+  AiSpan,
+  AnalyticsConfig,
+  AnalyticsExceptionContext,
+  AnalyticsProvider,
+  AnalyticsProviderFactory,
+  BufferedException,
+} from './types';
 
 /** Per-module logger for the analytics facade. @const {Logger} */
 const log = new Logger('shared/analytics');
@@ -65,6 +74,9 @@ let preInitBuffer: AnalyticsEvent[] = [];
 
 /** Cap on buffered pre-init events so a boot-loop can never grow unboundedly. @const {number} */
 const PRE_INIT_BUFFER_LIMIT = 100;
+
+const PRE_INIT_EXCEPTION_BUFFER_LIMIT = 25;
+let preInitExceptionBuffer: BufferedException[] = [];
 
 /** Last accepted configuration, retained for consent re-enable re-inits. @type {AnalyticsConfig | null} */
 let lastConfig: AnalyticsConfig | null = null;
@@ -114,6 +126,7 @@ export async function initAnalytics(config: AnalyticsConfig, resolveProvider?: A
     lastFactory = resolveProvider ?? null;
 
     if (!config.enabled) {
+      preInitExceptionBuffer = [];
       await swapProvider(new NoopProvider(false));
       return;
     }
@@ -134,6 +147,7 @@ export async function initAnalytics(config: AnalyticsConfig, resolveProvider?: A
     await swapProvider(provider);
     initialized = true;
     drainPreInitBuffer();
+    drainPreInitExceptionBuffer();
     log.info(LOG_ANALYTICS_PROVIDER_ACTIVE, activeProvider.name);
   } catch (err) {
     // Absolute safety net: analytics must never break bootstrap.
@@ -160,6 +174,20 @@ function drainPreInitBuffer(): void {
   }
 }
 
+function drainPreInitExceptionBuffer(): void {
+  if (preInitExceptionBuffer.length === 0) return;
+  const buffered = preInitExceptionBuffer;
+  preInitExceptionBuffer = [];
+  if (!activeProvider.isEnabled() || typeof activeProvider.captureException !== 'function') return;
+  for (const entry of buffered) {
+    try {
+      activeProvider.captureException(entry.error, entry.context);
+    } catch (err) {
+      log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
+    }
+  }
+}
+
 /**
  * Toggles recording at runtime (user consent switch).
  *
@@ -174,6 +202,7 @@ export async function setAnalyticsEnabled(enabled: boolean): Promise<void> {
   log.info(LOG_ANALYTICS_SET_ENABLED, String(enabled));
   try {
     if (!enabled) {
+      preInitExceptionBuffer = [];
       await swapProvider(new NoopProvider(false));
       return;
     }
@@ -308,6 +337,30 @@ export function captureAiGeneration(generation: AiGeneration): void {
   }
 }
 
+export function captureAiSpan(span: AiSpan): void {
+  try {
+    if (!bootstrapped || !activeProvider.isEnabled()) return;
+    activeProvider.captureAiSpan?.(span);
+  } catch (err) {
+    log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
+  }
+}
+
+export function captureAnalyticsException(error: unknown, context?: AnalyticsExceptionContext): void {
+  try {
+    if (!bootstrapped) {
+      if (preInitExceptionBuffer.length < PRE_INIT_EXCEPTION_BUFFER_LIMIT) {
+        preInitExceptionBuffer.push({ error, context });
+      }
+      return;
+    }
+    if (!activeProvider.isEnabled() || typeof activeProvider.captureException !== 'function') return;
+    activeProvider.captureException(error, context);
+  } catch (err) {
+    log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
+  }
+}
+
 /**
  * Evaluates a feature flag through the active backend. Returns `undefined`
  * when flags are unavailable or consent is off. Never throws.
@@ -316,25 +369,29 @@ export function captureAiGeneration(generation: AiGeneration): void {
  */
 export function isFeatureFlagEnabled(flag: string): boolean | undefined {
   try {
-    if (!bootstrapped || !activeProvider.isEnabled()) return undefined;
-    return activeProvider.isFeatureFlagEnabled?.(flag);
+    const resolved = activeProvider.isFeatureFlagEnabled?.(flag);
+    if (typeof resolved === 'boolean') return resolved;
+    const fallback = FEATURE_FLAG_DEFAULTS[flag];
+    return typeof fallback === 'boolean' ? fallback : undefined;
   } catch (err) {
     log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
-    return undefined;
+    const fallback = FEATURE_FLAG_DEFAULTS[flag];
+    return typeof fallback === 'boolean' ? fallback : undefined;
   }
 }
 
 /**
- * Returns all resolved feature-flag values, or undefined when unavailable.
+ * Returns resolved feature-flag values, falling back to local defaults when unavailable.
  * @returns {Record<string, boolean | string | number> | undefined}
  */
 export function getAllFeatureFlags(): Record<string, boolean | string | number> | undefined {
   try {
-    if (!bootstrapped || !activeProvider.isEnabled()) return undefined;
-    return activeProvider.getAllFeatureFlags?.();
+    const resolved = activeProvider.getAllFeatureFlags?.();
+    if (resolved) return { ...FEATURE_FLAG_DEFAULTS, ...resolved };
+    return { ...FEATURE_FLAG_DEFAULTS };
   } catch (err) {
     log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
-    return undefined;
+    return { ...FEATURE_FLAG_DEFAULTS };
   }
 }
 
@@ -381,6 +438,7 @@ export function resetAnalyticsForTests(): void {
   initialized = false;
   bootstrapped = false;
   preInitBuffer = [];
+  preInitExceptionBuffer = [];
   lastConfig = null;
   lastFactory = null;
   activeBadge = {};

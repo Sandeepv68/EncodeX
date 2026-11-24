@@ -25,6 +25,25 @@ export interface AnalyticsState {
   /** Active backend adapter name in main ('posthog' | 'aptabase' | 'noop'), so
    *  the renderer initializes its matching counterpart or stays idle. */
   backend: string;
+  /** Resolved PostHog feature flags/defaults exposed for UI gating. */
+  featureFlags?: Record<string, boolean | string | number>;
+}
+
+export interface AnalyticsExceptionContext {
+  tags?: Record<string, string | number | boolean>;
+  extra?: Record<string, unknown>;
+}
+
+export interface AnalyticsExceptionPayload {
+  name?: string;
+  message?: string;
+  stack?: string;
+  context?: AnalyticsExceptionContext;
+}
+
+export interface BufferedException {
+  error: unknown;
+  context?: AnalyticsExceptionContext;
 }
 
 /**
@@ -35,6 +54,8 @@ export interface AnalyticsState {
 export interface AiGeneration {
   /** Trace id shared by every generation in a Copilot turn. */
   traceId: string;
+  spanId?: string;
+  parentSpanId?: string;
   /** Provider that produced the generation (for example, `openai`). */
   provider: string;
   /** Model id supplied to the provider. */
@@ -50,6 +71,17 @@ export interface AiGeneration {
   /** Wall-clock generation latency in seconds. */
   latency: number;
   /** Whether the provider request failed. */
+  isError?: boolean;
+}
+
+export type AiSpanName = 'copilot.route' | 'copilot.llm';
+
+export interface AiSpan {
+  traceId: string;
+  spanId: string;
+  name: AiSpanName;
+  latency: number;
+  parentSpanId?: string;
   isError?: boolean;
 }
 
@@ -73,6 +105,7 @@ export interface AnalyticsConfig {
   host?: string;
   /** PostHog ingest endpoint (for example `https://us.i.posthog.com`). */
   posthogHost?: string;
+  posthogLogsEnabled?: boolean;
 
   /** Master switch reflecting user consent. Providers must respect it. */
   enabled: boolean;
@@ -123,6 +156,10 @@ export interface AnalyticsProvider {
    * Product-only backends intentionally omit this optional capability.
    */
   captureAiGeneration?(generation: AiGeneration): void | Promise<void>;
+
+  captureAiSpan?(span: AiSpan): void | Promise<void>;
+
+  captureException?(error: unknown, context?: AnalyticsExceptionContext): void | string | undefined;
 
   /**
    * Evaluates a feature flag. Returns the resolved boolean, or `undefined`
@@ -220,6 +257,7 @@ export type AnalyticsEventName =
   | 'onboarding_dismissed'
   | 'dashboard_card_clicked'
   | 'dashboard_shortcut_used'
+  | 'page_viewed'
   | 'tool_opened'
   | 'locale_changed'
   | 'convert_input_selected'
@@ -365,6 +403,7 @@ export interface AnalyticsEventPayloadMap {
   onboarding_dismissed: { version: string };
   dashboard_card_clicked: { route: string };
   dashboard_shortcut_used: { shortcutId: string };
+  page_viewed: { path: string };
 
   tool_opened: { route: string };
   locale_changed: { language: string; rtl: boolean };

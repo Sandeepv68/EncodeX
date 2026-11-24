@@ -26,3 +26,10 @@ merge unless an explicit exception is recorded in `docs/ANALYTICS.md`.
    or configuration knob?
 10. **Tests.** Are unit tests added or updated, and does `npm run
     analytics:schema-check` pass?
+11. **Surveys.** If this changes survey boot, targeting, or questions, are the
+    survey gate, consent path, and categorical-only question design covered?
+    Is the survey still off by default until launch?
+12. **Exceptions.** If this changes exception capture, is the documented
+    exception in `docs/ANALYTICS.md` still accurate, with raw message/stack
+    retention justified and all context primitive-only, filtered, bounded, and
+    consent-gated? Are dedupe and no-throw behavior still covered by tests?

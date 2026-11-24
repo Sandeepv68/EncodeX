@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "projectId": 709196,
+  "dashboard": {
+    "id": 2399421,
+    "name": "EncodeX — Activation",
+    "description": "Launch-to-first-conversion funnel for production users, segmented by mode and channel with a seven-day conversion window.",
+    "url": "https://us.posthog.com/project/709196/dashboard/2399421",
+    "pinned": true,
+    "tags": [
+      "encodex",
+      "cp2"
+    ]
+  },
+  "sharedFilters": {
+    "channel": [
+      "prod"
+    ],
+    "excludedCohortId": 689593,
+    "filterTestAccounts": true
+  },
+  "insights": [
+    {
+      "id": 14528146,
+      "shortId": "BCwb7GWB",
+      "name": "EncodeX — Activation funnel by mode",
+      "description": "Seven-day launch-to-conversion funnel for production users, segmented by app mode.",
+      "url": "https://us.posthog.com/project/709196/insights/BCwb7GWB",
+      "tileId": 16087275,
+      "layout": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "tags": [
+        "encodex",
+        "cp2",
+        "activation"
+      ],
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "FunnelsQuery",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "event": "app_launched"
+            },
+            {
+              "kind": "EventsNode",
+              "event": "onboarding_started"
+            },
+            {
+              "kind": "EventsNode",
+              "event": "onboarding_goal_selected"
+            },
+            {
+              "kind": "EventsNode",
+              "event": "conversion_started"
+            },
+            {
+              "kind": "EventsNode",
+              "event": "conversion_completed"
+            }
+          ],
+          "interval": "day",
+          "dateRange": {
+            "date_from": "-30d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "channel",
+              "type": "event",
+              "value": [
+                "prod"
+              ],
+              "operator": "exact"
+            },
+            {
+              "key": "id",
+              "type": "cohort",
+              "value": 689593,
+              "operator": "not_in"
+            }
+          ],
+          "funnelsFilter": {
+            "layout": "vertical",
+            "exclusions": [],
+            "showLegend": false,
+            "funnelVizType": "steps",
+            "legendPosition": "bottom",
+            "funnelOrderType": "ordered",
+            "showAnnotations": true,
+            "showValuesOnSeries": false,
+            "funnelStepReference": "total",
+            "funnelWindowInterval": 7,
+            "showSummaryOnDashboards": false,
+            "breakdownAttributionType": "first_touch",
+            "funnelWindowIntervalUnit": "day",
+            "hideIncompleteConversionWindowPeriods": false
+          },
+          "breakdownFilter": {
+            "breakdown": "mode",
+            "breakdown_type": "event"
+          },
+          "filterTestAccounts": true,
+          "version": 2
+        }
+      }
+    },
+    {
+      "id": 14528147,
+      "shortId": "rV0MoVff",
+      "name": "EncodeX — Activation funnel by channel",
+      "description": "Seven-day launch-to-conversion funnel for production users, segmented by acquisition channel.",
+      "url": "https://us.posthog.com/project/709196/insights/rV0MoVff",
+      "tileId": 16087276,
+      "layout": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
+      "tags": [
+        "encodex",
+        "cp2",
+        "activation"
+      ],
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "FunnelsQuery",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "event": "app_launched"
+            },
+            {
+              "kind": "EventsNode",
+              "event": "onboarding_started"
+            },
+            {
+              "kind": "EventsNode",
+              "event": "onboarding_goal_selected"
+            },
+            {
+              "kind": "EventsNode",
+              "event": "conversion_started"
+            },
+            {
+              "kind": "EventsNode",
+              "event": "conversion_completed"
+            }
+          ],
+          "interval": "day",
+          "dateRange": {
+            "date_from": "-30d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "channel",
+              "type": "event",
+              "value": [
+                "prod"
+              ],
+              "operator": "exact"
+            },
+            {
+              "key": "id",
+              "type": "cohort",
+              "value": 689593,
+              "operator": "not_in"
+            }
+          ],
+          "funnelsFilter": {
+            "layout": "vertical",
+            "exclusions": [],
+            "showLegend": false,
+            "funnelVizType": "steps",
+            "legendPosition": "bottom",
+            "funnelOrderType": "ordered",
+            "showAnnotations": true,
+            "showValuesOnSeries": false,
+            "funnelStepReference": "total",
+            "funnelWindowInterval": 7,
+            "showSummaryOnDashboards": false,
+            "breakdownAttributionType": "first_touch",
+            "funnelWindowIntervalUnit": "day",
+            "hideIncompleteConversionWindowPeriods": false
+          },
+          "breakdownFilter": {
+            "breakdown": "channel",
+            "breakdown_type": "event"
+          },
+          "filterTestAccounts": true,
+          "version": 2
+        }
+      }
+    }
+  ]
+}

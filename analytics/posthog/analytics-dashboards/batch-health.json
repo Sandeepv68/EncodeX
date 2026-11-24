@@ -1,0 +1,290 @@
+{
+  "schemaVersion": 1,
+  "projectId": 709196,
+  "dashboard": {
+    "id": 2399424,
+    "name": "EncodeX — Batch health",
+    "description": "Production batch queue throughput, job-size distribution, and retry rate for queued media work.",
+    "url": "https://us.posthog.com/project/709196/dashboard/2399424",
+    "pinned": false,
+    "tags": [
+      "encodex",
+      "cp2"
+    ]
+  },
+  "sharedFilters": {
+    "channel": [
+      "prod"
+    ],
+    "excludedCohortId": 689593,
+    "filterTestAccounts": true
+  },
+  "insights": [
+    {
+      "id": 14528201,
+      "shortId": "DJuTr6Qk",
+      "name": "EncodeX — Batch queue started vs completed",
+      "description": "Weekly production batch queues started compared with batch completion events.",
+      "url": "https://us.posthog.com/project/709196/insights/DJuTr6Qk",
+      "tileId": 16087355,
+      "layout": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "tags": [
+        "encodex",
+        "cp2",
+        "batch"
+      ],
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "batch_queue_started",
+              "custom_name": "Queued"
+            },
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "batch_completed",
+              "custom_name": "Completed"
+            }
+          ],
+          "interval": "week",
+          "dateRange": {
+            "date_from": "-90d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "channel",
+              "type": "event",
+              "value": [
+                "prod"
+              ],
+              "operator": "exact"
+            },
+            {
+              "key": "id",
+              "type": "cohort",
+              "value": 689593,
+              "operator": "not_in"
+            }
+          ],
+          "trendsFilter": {
+            "display": "ActionsLineGraph",
+            "showLegend": true,
+            "hideWeekends": false,
+            "metricSummary": "total",
+            "legendPosition": "bottom",
+            "yAxisScaleType": "linear",
+            "showAnnotations": true,
+            "metricShowChange": true,
+            "yAxisStartAtZero": true,
+            "showMultipleYAxes": false,
+            "showValuesOnSeries": false,
+            "smoothingIntervals": 1,
+            "showPercentStackView": false,
+            "stackBreakdownValues": false,
+            "aggregationAxisFormat": "numeric",
+            "resultCustomizationBy": "value",
+            "excludeBoxPlotOutliers": true,
+            "metricColorByDirection": false,
+            "showAlertThresholdLines": false
+          },
+          "filterTestAccounts": true,
+          "version": 4
+        }
+      }
+    },
+    {
+      "id": 14528202,
+      "shortId": "gTfaYCau",
+      "name": "EncodeX — Batch job count distribution",
+      "description": "Median and p90 job counts per queue; job duration is not currently captured.",
+      "url": "https://us.posthog.com/project/709196/insights/gTfaYCau",
+      "tileId": 16087356,
+      "layout": {
+        "h": 6,
+        "w": 6,
+        "x": 0,
+        "y": 6
+      },
+      "tags": [
+        "encodex",
+        "cp2",
+        "batch"
+      ],
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "math": "median",
+              "event": "batch_queue_started",
+              "custom_name": "Median job count",
+              "math_property": "jobCount"
+            },
+            {
+              "kind": "EventsNode",
+              "math": "p90",
+              "event": "batch_queue_started",
+              "custom_name": "P90 job count",
+              "math_property": "jobCount"
+            }
+          ],
+          "interval": "week",
+          "dateRange": {
+            "date_from": "-90d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "channel",
+              "type": "event",
+              "value": [
+                "prod"
+              ],
+              "operator": "exact"
+            },
+            {
+              "key": "id",
+              "type": "cohort",
+              "value": 689593,
+              "operator": "not_in"
+            }
+          ],
+          "trendsFilter": {
+            "display": "ActionsLineGraph",
+            "showLegend": true,
+            "hideWeekends": false,
+            "metricSummary": "total",
+            "legendPosition": "bottom",
+            "yAxisScaleType": "linear",
+            "showAnnotations": true,
+            "metricShowChange": true,
+            "yAxisStartAtZero": true,
+            "showMultipleYAxes": false,
+            "showValuesOnSeries": false,
+            "smoothingIntervals": 1,
+            "showPercentStackView": false,
+            "stackBreakdownValues": false,
+            "aggregationAxisFormat": "numeric",
+            "resultCustomizationBy": "value",
+            "excludeBoxPlotOutliers": true,
+            "metricColorByDirection": false,
+            "showAlertThresholdLines": false
+          },
+          "filterTestAccounts": true,
+          "version": 4
+        }
+      }
+    },
+    {
+      "id": 14528203,
+      "shortId": "czMpKHe8",
+      "name": "EncodeX — Batch retry rate",
+      "description": "Weekly production batch retries relative to queues started and batches completed.",
+      "url": "https://us.posthog.com/project/709196/insights/czMpKHe8",
+      "tileId": 16087358,
+      "layout": {
+        "h": 6,
+        "w": 6,
+        "x": 6,
+        "y": 6
+      },
+      "tags": [
+        "encodex",
+        "cp2",
+        "batch"
+      ],
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "batch_job_retried",
+              "custom_name": "Retried"
+            },
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "batch_queue_started",
+              "custom_name": "Queued"
+            },
+            {
+              "kind": "EventsNode",
+              "math": "total",
+              "event": "batch_completed",
+              "custom_name": "Completed"
+            }
+          ],
+          "interval": "week",
+          "dateRange": {
+            "date_from": "-90d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "channel",
+              "type": "event",
+              "value": [
+                "prod"
+              ],
+              "operator": "exact"
+            },
+            {
+              "key": "id",
+              "type": "cohort",
+              "value": 689593,
+              "operator": "not_in"
+            }
+          ],
+          "trendsFilter": {
+            "display": "ActionsLineGraph",
+            "showLegend": true,
+            "formulaNodes": [
+              {
+                "formula": "A/(B+C)",
+                "custom_name": "Batch retry rate"
+              }
+            ],
+            "hideWeekends": false,
+            "metricSummary": "total",
+            "legendPosition": "bottom",
+            "yAxisScaleType": "linear",
+            "showAnnotations": true,
+            "metricShowChange": true,
+            "yAxisStartAtZero": true,
+            "showMultipleYAxes": false,
+            "showValuesOnSeries": false,
+            "smoothingIntervals": 1,
+            "showPercentStackView": false,
+            "stackBreakdownValues": false,
+            "aggregationAxisFormat": "percentage_scaled",
+            "resultCustomizationBy": "value",
+            "excludeBoxPlotOutliers": true,
+            "metricColorByDirection": false,
+            "showAlertThresholdLines": false
+          },
+          "filterTestAccounts": true,
+          "version": 4
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,538 @@
+{
+  "schemaVersion": 1,
+  "projectId": 709196,
+  "dashboard": {
+    "id": 2399422,
+    "name": "EncodeX — Feature adoption",
+    "description": "Weekly unique production users across conversion, image, audio, cut, batch, and MCP feature groups by platform.",
+    "url": "https://us.posthog.com/project/709196/dashboard/2399422",
+    "pinned": false,
+    "tags": [
+      "encodex",
+      "cp2"
+    ]
+  },
+  "sharedFilters": {
+    "channel": [
+      "prod"
+    ],
+    "excludedCohortId": 689593,
+    "filterTestAccounts": true
+  },
+  "insights": [
+    {
+      "id": 14528162,
+      "shortId": "SALCkupP",
+      "name": "EncodeX — Weekly feature adoption by group",
+      "description": "Weekly unique production users across convert, image, audio, cut, queue, and MCP event groups.",
+      "url": "https://us.posthog.com/project/709196/insights/SALCkupP",
+      "tileId": 16087290,
+      "layout": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "tags": [
+        "encodex",
+        "cp2",
+        "adoption"
+      ],
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "series": [
+            {
+              "kind": "GroupNode",
+              "math": "dau",
+              "name": "Convert",
+              "nodes": [
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "convert_input_selected"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "convert_output_selected"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "suggested_extension_applied"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "codec_changed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "preview_opened"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "conversion_started"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "conversion_paused"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "conversion_resumed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "conversion_cancelled"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "conversion_completed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "conversion_failed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "remux_started"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "remux_completed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "remux_failed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "demux_started"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "demux_completed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "demux_failed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "copy_mode_toggled"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "transcoder_changed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "preview_closed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "convert_form_cleared"
+                }
+              ],
+              "operator": "OR"
+            },
+            {
+              "kind": "GroupNode",
+              "math": "dau",
+              "name": "Image",
+              "nodes": [
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "compress_input_selected"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "compress_format_changed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "compress_started"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "compress_completed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "compress_failed"
+                }
+              ],
+              "operator": "OR"
+            },
+            {
+              "kind": "GroupNode",
+              "math": "dau",
+              "name": "Audio",
+              "nodes": [
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "audio_input_selected"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "audio_codec_changed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "audio_extract_started"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "audio_extract_paused"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "audio_extract_resumed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "audio_extract_cancelled"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "audio_extract_completed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "audio_extract_failed"
+                }
+              ],
+              "operator": "OR"
+            },
+            {
+              "kind": "GroupNode",
+              "math": "dau",
+              "name": "Cut",
+              "nodes": [
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "cut_input_selected"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "cut_use_duration_toggled"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "video_cut_started"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "video_cut_paused"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "video_cut_resumed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "video_cut_cancelled"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "video_cut_completed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "video_cut_failed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "cut_audio_toggled"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "timeline_zoom_changed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "media_playback_toggled"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "video_cut_form_cleared"
+                }
+              ],
+              "operator": "OR"
+            },
+            {
+              "kind": "GroupNode",
+              "math": "dau",
+              "name": "Queue",
+              "nodes": [
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "batch_files_added"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "batch_review_confirmed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "batch_operation_changed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "batch_concurrency_changed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "batch_profile_applied"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "batch_queue_started"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "batch_queue_paused"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "batch_queue_resumed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "batch_queue_cancelled_all"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "batch_clear_completed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "batch_job_retried"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "batch_job_removed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "batch_completed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "batch_job_reordered"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "batch_job_options_edited"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "batch_job_reveal_in_folder"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "batch_job_path_copied"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "batch_export"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "batch_import"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "batch_condense_toggled"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "batch_filter_changed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "mux_queue_job_added"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "mux_queue_started"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "mux_queue_completed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "mux_queue_failed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "mux_queue_cancelled"
+                }
+              ],
+              "operator": "OR"
+            },
+            {
+              "kind": "GroupNode",
+              "math": "dau",
+              "name": "MCP",
+              "nodes": [
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "mcp_server_toggled"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "mcp_port_committed"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "mcp_token_generated"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "mcp_token_cleared"
+                },
+                {
+                  "kind": "EventsNode",
+                  "math": "dau",
+                  "event": "mcp_connection_value_copied"
+                }
+              ],
+              "operator": "OR"
+            }
+          ],
+          "interval": "week",
+          "dateRange": {
+            "date_from": "-90d",
+            "explicitDate": false,
+            "excludeIncompletePeriods": false
+          },
+          "properties": [
+            {
+              "key": "channel",
+              "type": "event",
+              "value": [
+                "prod"
+              ],
+              "operator": "exact"
+            },
+            {
+              "key": "id",
+              "type": "cohort",
+              "value": 689593,
+              "operator": "not_in"
+            }
+          ],
+          "trendsFilter": {
+            "display": "ActionsLineGraph",
+            "showLegend": true,
+            "hideWeekends": false,
+            "metricSummary": "total",
+            "legendPosition": "bottom",
+            "yAxisScaleType": "linear",
+            "showAnnotations": true,
+            "metricShowChange": true,
+            "yAxisStartAtZero": true,
+            "showMultipleYAxes": false,
+            "showValuesOnSeries": false,
+            "smoothingIntervals": 1,
+            "showPercentStackView": false,
+            "stackBreakdownValues": false,
+            "aggregationAxisFormat": "numeric",
+            "resultCustomizationBy": "value",
+            "excludeBoxPlotOutliers": true,
+            "metricColorByDirection": false,
+            "showAlertThresholdLines": false
+          },
+          "breakdownFilter": {
+            "breakdowns": [
+              {
+                "type": "event",
+                "property": "platform"
+              }
+            ],
+            "breakdown_type": "event"
+          },
+          "filterTestAccounts": true,
+          "version": 4
+        }
+      }
+    }
+  ]
+}
