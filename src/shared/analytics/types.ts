@@ -25,6 +25,8 @@ export interface AnalyticsState {
   /** Active backend adapter name in main ('posthog' | 'aptabase' | 'noop'), so
    *  the renderer initializes its matching counterpart or stays idle. */
   backend: string;
+  /** Resolved PostHog feature flags/defaults exposed for UI gating. */
+  featureFlags?: Record<string, boolean | string | number>;
 }
 
 export interface AnalyticsExceptionContext {

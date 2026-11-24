@@ -47,6 +47,7 @@ import { recordAnalyticsEvent, setAnalyticsContext } from '../../shared/analytic
 import { createAnalyticsEvent } from '../../shared/analytics/events';
 import { basenameOrEmpty as basenameOf } from '../utils/path-utils';
 import { callBridgeVoid } from '../utils/bridge-call';
+import { useFeatureFlag } from '../hooks/useFeatureFlags';
 import { isJobActive } from '../utils/queue-job-utils';
 import type { AppDrawerProps, NavBlipId, NavJobPopoverContent, NavJobPopoverTab, NavJobPopoverTabId, NavJobQueueJob } from './types';
 import type { ConversionProgress } from '../../shared/types';
@@ -137,6 +138,7 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
   const { navigate } = useNavigationGuard();
   const location = useLocation();
   const { t } = useTranslation();
+  const automationsEnabled = useFeatureFlag('automations_page', import.meta.env.DEV);
   const isConverting = useConversionStore((s) => s.isConverting);
   const convertInput = useConversionStore((s) => s.inputFile);
   const convertProgress = useConversionStore((s) => s.progress);
@@ -370,7 +372,7 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
     <>
       <DrawerNav component="nav" aria-label={t('app.navigation')}>
         <NavList>
-          {NAV_ITEMS.filter((item) => !(logsWindowOpen && item.to === '/logs')).map((item, index) => {
+          {NAV_ITEMS.filter((item) => !(logsWindowOpen && item.to === '/logs') && (automationsEnabled || item.to !== '/automations')).map((item, index) => {
             const label = t(`nav.${navKeyMap[item.to]}`);
             // The job popover already names the page it is anchored to and pins to
             // the same edge of the drawer, so the row tooltip stands down while

@@ -46,6 +46,7 @@ import {
 import type { AnalyticsEvent } from './events';
 import { ANALYTICS_EVENT_GROUP } from './events';
 import { NoopProvider } from './noopProvider';
+import { FEATURE_FLAG_DEFAULTS } from './featureFlagDefaults';
 import type {
   AiGeneration,
   AiSpan,
@@ -368,25 +369,29 @@ export function captureAnalyticsException(error: unknown, context?: AnalyticsExc
  */
 export function isFeatureFlagEnabled(flag: string): boolean | undefined {
   try {
-    if (!bootstrapped || !activeProvider.isEnabled()) return undefined;
-    return activeProvider.isFeatureFlagEnabled?.(flag);
+    const resolved = activeProvider.isFeatureFlagEnabled?.(flag);
+    if (typeof resolved === 'boolean') return resolved;
+    const fallback = FEATURE_FLAG_DEFAULTS[flag];
+    return typeof fallback === 'boolean' ? fallback : undefined;
   } catch (err) {
     log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
-    return undefined;
+    const fallback = FEATURE_FLAG_DEFAULTS[flag];
+    return typeof fallback === 'boolean' ? fallback : undefined;
   }
 }
 
 /**
- * Returns all resolved feature-flag values, or undefined when unavailable.
+ * Returns resolved feature-flag values, falling back to local defaults when unavailable.
  * @returns {Record<string, boolean | string | number> | undefined}
  */
 export function getAllFeatureFlags(): Record<string, boolean | string | number> | undefined {
   try {
-    if (!bootstrapped || !activeProvider.isEnabled()) return undefined;
-    return activeProvider.getAllFeatureFlags?.();
+    const resolved = activeProvider.getAllFeatureFlags?.();
+    if (resolved) return { ...FEATURE_FLAG_DEFAULTS, ...resolved };
+    return { ...FEATURE_FLAG_DEFAULTS };
   } catch (err) {
     log.debug(LOG_ANALYTICS_TRACK_FAILED, err);
-    return undefined;
+    return { ...FEATURE_FLAG_DEFAULTS };
   }
 }
 

@@ -25,6 +25,7 @@ import { pageIcons } from '../pageIcons';
 import { resolveDashboardAppIcon } from '../utils/easter-egg-assets';
 import { useHotkeys } from '../hooks/useHotkeys';
 import { SHORTCUTS, SHORTCUT_BY_ID, formatShortcut } from '../constants/shortcuts';
+import { useFeatureFlag } from '../hooks/useFeatureFlags';
 
 import {
   WelcomeTitle,
@@ -158,6 +159,7 @@ function cardRings(key: string): RingGroup[] {
 export default function Dashboard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const automationsEnabled = useFeatureFlag('automations_page', import.meta.env.DEV);
   const appIcon = resolveDashboardAppIcon(new Date());
 
   /**
@@ -192,7 +194,14 @@ export default function Dashboard() {
       <DashboardSubtitle color="text.secondary">{t('dashboard.subtitle')}</DashboardSubtitle>
       <GettingStartedCard />
       <FeatureGrid container spacing={2}>
-        {NAV_ITEMS.filter((item) => item.to !== '/' && item.to !== '/logs' && item.to !== '/settings' && item.to !== '/about').map(
+        {NAV_ITEMS.filter(
+          (item) =>
+            item.to !== '/' &&
+            item.to !== '/logs' &&
+            item.to !== '/settings' &&
+            item.to !== '/about' &&
+            (automationsEnabled || item.to !== '/automations'),
+        ).map(
           (item, index) => (
             <FeatureGridItem size={{ xs: 12, sm: 6, md: 4 }} key={item.to}>
               <FeatureCard gradientAngle={index * 60} $animationDelay={`${0.3 + index * 0.08}s`}>

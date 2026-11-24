@@ -556,7 +556,7 @@ export interface ElectronAPI {
    * @returns {Promise<{ enabled: boolean; backend: string }>} Consent flag and
    *   active backend adapter name in main ('posthog' | 'aptabase' | 'noop').
    */
-  analyticsGetState(): Promise<{ enabled: boolean; backend: string }>;
+  analyticsGetState(): Promise<{ enabled: boolean; backend: string; featureFlags?: Record<string, boolean | string | number> }>;
   /**
    * Updates the usage-analytics consent (Settings toggle). Persists the new
    * state in the main process and live-toggles the backend over
@@ -564,7 +564,11 @@ export interface ElectronAPI {
    * @param {boolean} enabled - true to enable usage analytics, false to disable.
    * @returns {Promise<{ enabled: boolean; backend: string }>}> The resulting state.
    */
-  analyticsSetEnabled(enabled: boolean): Promise<{ enabled: boolean; backend: string }>;
+  analyticsSetEnabled(enabled: boolean): Promise<{
+    enabled: boolean;
+    backend: string;
+    featureFlags?: Record<string, boolean | string | number>;
+  }>;
   /**
    * Relays one renderer analytics event to the active main-process backend over
    * `IPC.ANALYTICS_TRACK_EVENT` ('analytics-track-event'). Backend credentials

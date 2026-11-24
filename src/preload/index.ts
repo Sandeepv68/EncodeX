@@ -1141,7 +1141,11 @@ const api = {
    */
   analyticsGetState: () => {
     log.debug(LOG_IPC_ANALYTICS_GET_STATE);
-    return ipcRenderer.invoke(IPC.ANALYTICS_GET_STATE) as Promise<{ enabled: boolean; backend: string }>;
+    return ipcRenderer.invoke(IPC.ANALYTICS_GET_STATE) as Promise<{
+      enabled: boolean;
+      backend: string;
+      featureFlags?: Record<string, boolean | string | number>;
+    }>;
   },
 
   /**
@@ -1154,7 +1158,11 @@ const api = {
    */
   analyticsSetEnabled: (enabled: boolean) => {
     log.debug(LOG_IPC_ANALYTICS_SET_ENABLED, { enabled });
-    return ipcRenderer.invoke(IPC.ANALYTICS_SET_ENABLED, enabled) as Promise<{ enabled: boolean; backend: string }>;
+    return ipcRenderer.invoke(IPC.ANALYTICS_SET_ENABLED, enabled) as Promise<{
+      enabled: boolean;
+      backend: string;
+      featureFlags?: Record<string, boolean | string | number>;
+    }>;
   },
 
   /**

@@ -8,6 +8,7 @@
  */
 
 import type { FeatureFlagDefinition } from '../../shared/analytics/types';
+import { FEATURE_FLAG_DEFAULTS as SHARED_FEATURE_FLAG_DEFAULTS } from '../../shared/analytics/featureFlagDefaults';
 
 export const FEATURE_FLAGS: FeatureFlagDefinition[] = [
   {
@@ -31,8 +32,13 @@ export const FEATURE_FLAGS: FeatureFlagDefinition[] = [
     removeBy: '2027-01-01',
     purpose: 'Staged rollout of the embedded MCP server default-on behaviour.',
   },
+  {
+    name: 'automations_page',
+    owner: 'automations',
+    defaultValue: SHARED_FEATURE_FLAG_DEFAULTS.automations_page as boolean,
+    removeBy: '2027-06-01',
+    purpose: 'Gate the Automations page rollout; enabled in development, disabled by default in production.',
+  },
 ];
 
-export const FEATURE_FLAG_DEFAULTS: Record<string, boolean> = Object.fromEntries(
-  FEATURE_FLAGS.map((flag) => [flag.name, flag.defaultValue]),
-);
+export const FEATURE_FLAG_DEFAULTS: Record<string, boolean | string | number> = { ...SHARED_FEATURE_FLAG_DEFAULTS };

@@ -2,6 +2,14 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor, within, act } from '@testing-library/react';
 import { MemoryRouter, useLocation } from 'react-router-dom';
 import AppDrawer from '../AppDrawer';
+
+vi.mock('../../hooks/useFeatureFlags', () => ({
+  useFeatureFlag: (name: string, fallback = false) => {
+    if (name === 'automations_page') return (globalThis as any).__TEST_AUTOMATIONS_ENABLED__ ?? fallback;
+    return fallback;
+  },
+  useFeatureFlags: () => ({ automations_page: (globalThis as any).__TEST_AUTOMATIONS_ENABLED__ ?? true }),
+}));
 import { ColorModeProvider } from '../../ColorModeContext';
 import { useConversionStore } from '../../stores/conversionStore';
 import { useAudioExtractStore } from '../../stores/audioExtractStore';
@@ -16,7 +24,20 @@ function LocationProbe() {
   return <span data-testid="location">{location.pathname}</span>;
 }
 
-function renderDrawer({ isMobile = false, condensed = false, onNavigate = vi.fn(), onToggleCondense = vi.fn() } = {}) {
+function renderDrawer({
+  isMobile = false,
+  condensed = false,
+  onNavigate = vi.fn() as unknown as () => void,
+  onToggleCondense = vi.fn() as unknown as () => void,
+  automationsEnabled = true,
+}: {
+  isMobile?: boolean;
+  condensed?: boolean;
+  onNavigate?: () => void;
+  onToggleCondense?: () => void;
+  automationsEnabled?: boolean;
+} = {}) {
+  (globalThis as any).__TEST_AUTOMATIONS_ENABLED__ = automationsEnabled;
   return render(
     <MemoryRouter initialEntries={['/convert']}>
       <ColorModeProvider>
@@ -149,6 +170,13 @@ describe('AppDrawer', () => {
     expect(screen.getByText('nav.batchQueue')).toBeInTheDocument();
     expect(screen.getByText('nav.automations')).toBeInTheDocument();
     expect(screen.getByText('nav.settings')).toBeInTheDocument();
+  });
+
+  it('hides the Automations nav item when the feature flag is disabled', async () => {
+    renderDrawer({ automationsEnabled: false });
+    await waitFor(() => {
+      expect(screen.queryByText('nav.automations')).not.toBeInTheDocument();
+    });
   });
 
   it('hides the Logs nav item while the detached Logs window is open', () => {

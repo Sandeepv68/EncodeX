@@ -349,14 +349,14 @@ describe('AnalyticsService', () => {
     await initAnalytics({ enabled: true, provider: 'fake' }, () => provider);
     expect(isFeatureFlagEnabled('alpha')).toBe(true);
     expect(isFeatureFlagEnabled('beta')).toBeUndefined();
-    expect(getAllFeatureFlags()).toEqual({ alpha: true, beta: 'x' });
+    expect(getAllFeatureFlags()).toMatchObject({ alpha: true, beta: 'x' });
   });
 
-  it('returns undefined for flags when consent is off', async () => {
+  it('returns defaults for flags when consent is off', async () => {
     resetAnalyticsForTests();
     await initAnalytics({ enabled: false, provider: 'fake' }, () => provider);
-    expect(isFeatureFlagEnabled('alpha')).toBeUndefined();
-    expect(getAllFeatureFlags()).toBeUndefined();
+    expect(isFeatureFlagEnabled('mcp_server_default_on')).toBe(false);
+    expect(getAllFeatureFlags()).toMatchObject({ mcp_server_default_on: false });
   });
 
   it('never throws when the provider fails', async () => {

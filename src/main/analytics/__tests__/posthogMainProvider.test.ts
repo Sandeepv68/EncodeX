@@ -401,10 +401,10 @@ describe('PostHogMainProvider', () => {
     expect(provider.isFeatureFlagEnabled('analytics_group_convert')).toBe(true);
   });
 
-  it('returns undefined for flags while inactive', () => {
+  it('returns defaults for flags while inactive', () => {
     const provider = new PostHogMainProvider();
-    expect(provider.isFeatureFlagEnabled('alpha')).toBeUndefined();
-    expect(provider.getAllFeatureFlags()).toBeUndefined();
+    expect(provider.isFeatureFlagEnabled('mcp_server_default_on')).toBe(false);
+    expect(provider.getAllFeatureFlags()).toMatchObject({ mcp_server_default_on: false });
   });
 
   it('emits app_release once per version', async () => {

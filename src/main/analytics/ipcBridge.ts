@@ -27,6 +27,7 @@ import {
 } from '../../shared/log-constants';
 import {
   captureAnalyticsException,
+  getAllFeatureFlags,
   getAnalyticsBackendName,
   setAnalyticsEnabled,
   trackRelayedAnalyticsEvent,
@@ -69,7 +70,7 @@ export function registerAnalyticsIpcBridge(options: { userDataDir: string; conse
 
   ipcMain.handle(IPC.ANALYTICS_GET_STATE, (): AnalyticsState => {
     log.info(LOG_IPC_ANALYTICS_GET_STATE);
-    return { enabled: bootConsent, backend: getAnalyticsBackendName() };
+    return { enabled: bootConsent, backend: getAnalyticsBackendName(), featureFlags: getAllFeatureFlags() };
   });
 
   ipcMain.handle(IPC.ANALYTICS_SET_ENABLED, async (_event, enabled: unknown): Promise<AnalyticsState> => {
@@ -80,7 +81,7 @@ export function registerAnalyticsIpcBridge(options: { userDataDir: string; conse
       writeAnalyticsConsent(userDataDir, next);
     }
     await setAnalyticsEnabled(next);
-    return { enabled: next, backend: getAnalyticsBackendName() };
+    return { enabled: next, backend: getAnalyticsBackendName(), featureFlags: getAllFeatureFlags() };
   });
 
   ipcMain.handle(IPC.ANALYTICS_TRACK_EVENT, (_event, event: unknown): void => {

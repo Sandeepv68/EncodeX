@@ -24,7 +24,7 @@
 
 import type { ComponentType, ReactNode } from 'react';
 import { useState, useEffect, useLayoutEffect, useMemo, useReducer, useRef } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Navigate, Routes, Route, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMediaQuery, useTheme, CircularProgress } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -65,6 +65,7 @@ import { THEMES } from '../shared/theme/colors';
 import { recordAnalyticsEvent } from '../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../shared/analytics/events';
 import { useErrorStore } from './stores/errorStore';
+import { useFeatureFlag } from './hooks/useFeatureFlags';
 import { isDetachedMode, subscribeSharedLogFeed } from './logs/detached';
 import { useAuditStore } from './stores/auditStore';
 import { useSettingsStore } from './stores/settingsStore';
@@ -236,6 +237,7 @@ function AppLayout() {
   const { themeId, setTheme } = useColorMode();
   const location = useLocation();
   const mainContentRef = useRef<HTMLElement>(null);
+  const automationsEnabled = useFeatureFlag('automations_page', import.meta.env.DEV);
   // The guarded navigation is held in a ref so the effects that use it do not
   // have to re-subscribe whenever the route changes.
   const navigateRef = useRef(navigate);
@@ -372,13 +374,20 @@ function AppLayout() {
       { path: '/remux', element: <RouteLoader load={loadRemux} skeleton={<RemuxSkeleton />} /> },
       { path: '/demux', element: <RouteLoader load={loadDemux} skeleton={<DemuxSkeleton />} /> },
       { path: '/batch', element: <RouteLoader load={loadBatchQueue} skeleton={<BatchQueueSkeleton />} /> },
-      { path: '/automations', element: <RouteLoader load={loadAutomations} skeleton={<AutomationsSkeleton />} /> },
+      {
+        path: '/automations',
+        element: automationsEnabled ? (
+          <RouteLoader load={loadAutomations} skeleton={<AutomationsSkeleton />} />
+        ) : (
+          <Navigate to="/" replace />
+        ),
+      },
       { path: '/copilot', element: <RouteLoader load={loadCopilot} skeleton={<CopilotSkeleton />} /> },
       { path: '/logs', element: <RouteLoader load={loadLogs} skeleton={<LogsSkeleton />} /> },
       { path: '/settings', element: <RouteLoader load={loadSettings} skeleton={<SettingsSkeleton />} /> },
       { path: '/about', element: <RouteLoader load={loadAbout} skeleton={<AboutSkeleton />} /> },
     ],
-    [t],
+    [automationsEnabled, t],
   );
 
   const drawerContent = (

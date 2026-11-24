@@ -370,15 +370,14 @@ export class PostHogMainProvider implements AnalyticsProvider {
   }
 
   isFeatureFlagEnabled(flag: string): boolean | undefined {
-    if (!this.active) return undefined;
     const value = this.flags[flag];
     if (typeof value === 'boolean') return value;
-    return FEATURE_FLAG_DEFAULTS[flag];
+    const fallback = FEATURE_FLAG_DEFAULTS[flag];
+    return typeof fallback === 'boolean' ? fallback : undefined;
   }
 
   getAllFeatureFlags(): Record<string, boolean | string | number> | undefined {
-    if (!this.active) return undefined;
-    return { ...this.flags };
+    return { ...FEATURE_FLAG_DEFAULTS, ...this.flags };
   }
 
   /**
@@ -409,12 +408,16 @@ export class PostHogMainProvider implements AnalyticsProvider {
       const client = this.client;
       const result = await Promise.race([
         (async () => {
-          const allFlags = await client.getAllFlags(this.distinctId);
+          const personProperties = { ...this.superProperties };
+          const allFlags = await client.getAllFlags(this.distinctId, { personProperties });
           const exposures: Record<string, boolean | string | number> = {};
           if (typeof client.getFeatureFlag === 'function') {
             await Promise.all(
               Object.keys(FEATURE_FLAG_DEFAULTS).map(async (key) => {
-                const value = await client.getFeatureFlag(key, this.distinctId, { sendFeatureFlagEvents: true });
+                const value = await client.getFeatureFlag(key, this.distinctId, {
+                  sendFeatureFlagEvents: true,
+                  personProperties,
+                });
                 if (typeof value === 'boolean' || typeof value === 'string' || typeof value === 'number') {
                   exposures[key] = value;
                 }
