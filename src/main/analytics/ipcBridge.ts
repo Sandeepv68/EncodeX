@@ -56,6 +56,15 @@ function resolveSurveysEnabled(): boolean {
   return POSTHOG_BUILD_CONFIG.surveysEnabled;
 }
 
+function resolveRendererFeatureFlags(): Record<string, boolean | string | number> | undefined {
+  const flags = getAllFeatureFlags();
+  if (!flags) return flags;
+  if (app.isPackaged || process.env.NODE_ENV === 'production') {
+    return { ...flags, automations_page: false };
+  }
+  return flags;
+}
+
 /**
  * Registers the analytics IPC channels. Call once during app startup after
  * analytics itself has been initialized.
@@ -71,7 +80,7 @@ export function registerAnalyticsIpcBridge(options: { userDataDir: string; conse
 
   ipcMain.handle(IPC.ANALYTICS_GET_STATE, (): AnalyticsState => {
     log.info(LOG_IPC_ANALYTICS_GET_STATE);
-    return { enabled: bootConsent, backend: getAnalyticsBackendName(), featureFlags: getAllFeatureFlags() };
+    return { enabled: bootConsent, backend: getAnalyticsBackendName(), featureFlags: resolveRendererFeatureFlags() };
   });
 
   ipcMain.handle(IPC.ANALYTICS_SET_ENABLED, async (_event, enabled: unknown): Promise<AnalyticsState> => {
@@ -82,7 +91,7 @@ export function registerAnalyticsIpcBridge(options: { userDataDir: string; conse
       writeAnalyticsConsent(userDataDir, next);
     }
     await setAnalyticsEnabled(next);
-    return { enabled: next, backend: getAnalyticsBackendName(), featureFlags: getAllFeatureFlags() };
+    return { enabled: next, backend: getAnalyticsBackendName(), featureFlags: resolveRendererFeatureFlags() };
   });
 
   ipcMain.handle(IPC.ANALYTICS_TRACK_EVENT, (_event, event: unknown): void => {

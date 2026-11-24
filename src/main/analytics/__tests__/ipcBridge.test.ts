@@ -92,6 +92,23 @@ describe('registerAnalyticsIpcBridge', () => {
     expect(state).toEqual({ enabled: true, backend: 'aptabase', featureFlags: { automations_page: false } });
   });
 
+  it('forces automations off in packaged production builds even when the remote flag is on', () => {
+    getAllFeatureFlagsMock.mockReturnValue({ automations_page: true });
+    const state = handlers.get(IPC.ANALYTICS_GET_STATE)!() as AnalyticsState;
+    expect(state.featureFlags).toMatchObject({ automations_page: false });
+  });
+
+  it('preserves the remote automations flag in unpackaged development builds', () => {
+    getAllFeatureFlagsMock.mockReturnValue({ automations_page: true });
+    appMock.isPackaged = false;
+    try {
+      const state = handlers.get(IPC.ANALYTICS_GET_STATE)!() as AnalyticsState;
+      expect(state.featureFlags).toMatchObject({ automations_page: true });
+    } finally {
+      appMock.isPackaged = true;
+    }
+  });
+
   it('persists opt-out, toggles the facade, and reports the new state', async () => {
     const setter = handlers.get(IPC.ANALYTICS_SET_ENABLED)!;
     const state = (await setter({}, false)) as AnalyticsState;

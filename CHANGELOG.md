@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - PostHog portal views now filter to the production environment and exclude test accounts across dashboards, saved insights, cohorts, session recordings, surveys and log alerts.
 - Renderer PostHog configuration now derives `environment` and `channel` the same way as main, so packaged builds report production data correctly.
+- Automations is now hidden in packaged production builds even when a cached or remote PostHog flag enables it.
 
 ### Documentation
 
