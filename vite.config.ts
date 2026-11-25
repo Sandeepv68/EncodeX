@@ -26,18 +26,22 @@ export default defineConfig(async ({ mode }) => {
   const posthogPlugins: PluginOption[] = [];
 
   if (shouldUploadPosthogSourcemaps) {
-    const { default: posthogRollupPlugin } = await import('@posthog/rollup-plugin');
-    posthogPlugins.push(
-      posthogRollupPlugin({
-        personalApiKey: posthogApiKey ?? '',
-        projectId: process.env.POSTHOG_PROJECT_ID,
-        host: process.env.POSTHOG_HOST,
-        sourcemaps: {
-          enabled: true,
-          deleteAfterUpload: true,
-        },
-      }),
-    );
+    try {
+      const { default: posthogRollupPlugin } = await import('@posthog/rollup-plugin');
+      posthogPlugins.push(
+        posthogRollupPlugin({
+          personalApiKey: posthogApiKey ?? '',
+          projectId: process.env.POSTHOG_PROJECT_ID,
+          host: process.env.POSTHOG_HOST,
+          sourcemaps: {
+            enabled: true,
+            deleteAfterUpload: true,
+          },
+        }),
+      );
+    } catch {
+      console.warn('@posthog/rollup-plugin unavailable; skipping PostHog sourcemap upload');
+    }
   }
 
   return {
