@@ -163,6 +163,7 @@
   },
   "devDependencies": {
     "@codecov/vite-plugin": "^2.0.1",
+    "@posthog/rollup-plugin": "^1.6.4",
     "@sentry/vite-plugin": "^5.4.0",
     "@stryker-mutator/core": "^10.0.0",
     "@stryker-mutator/vitest-runner": "^10.0.0",
@@ -198,9 +199,6 @@
     "vitepress-plugin-mermaid": "^2.0.17",
     "vitest": "^4.1.10",
     "wait-on": "^9.1.0"
-  },
-  "optionalDependencies": {
-    "@posthog/rollup-plugin": "^1.6.4"
   },
   "overrides": {
     "@docsearch/react": "^3.9.0"
