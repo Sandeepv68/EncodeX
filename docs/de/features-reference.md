@@ -4,6 +4,11 @@
 
 EncodeX ist ein plattformübergreifendes Multimedia-Konvertierungstool, das die Leistung von FFmpeg in eine moderne, intuitive Desktop-Oberfläche bringt. Gebaut mit Electron, React und TypeScript ermöglicht es, Medien zwischen Formaten zu konvertieren, Audio zu extrahieren, Videos zu schneiden und Bilder zu komprimieren — alles über eine aufgeräumte, reaktionsschnelle UI mit Batch-Warteschlange, Hardwarebeschleunigung, CLI-Modus und vollständiger Internationalisierung.
 
+## Neu in 1.0.0-beta.9
+
+- **PostHog-Rollout** — Datenschutzfreundliche Produkt-Ereignisse, Pageviews, Ausnahmen und Logs laufen jetzt über die zustimmungspflichtige Analytics-Pipeline.
+- **Nur-Produktions-Portal** — Dashboards, Insights, Kohorten, Replays, Survey-Zielgruppen und Log-Alarme sind auf Produktion gefiltert und schließen Testkonten aus.
+
 ## Neu in 1.0.0-beta.8
 
 - **Updater-Fix** — ein verfügbares Update wird jetzt an den Renderer weitergeleitet, sodass **Nach Updates suchen** nicht mehr auf „Updates werden geprüft" hängen bleibt.

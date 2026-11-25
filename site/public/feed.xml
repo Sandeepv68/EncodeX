@@ -5,8 +5,17 @@
     <link>https://encodex.in/blog/</link>
     <description>Release announcements, guides, and updates about EncodeX — the free, open-source video converter.</description>
     <language>en</language>
-    <lastBuildDate>Mon, 23 Nov 2026 14:20:57 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 24 Nov 2026 16:59:27 GMT</lastBuildDate>
     <atom:link href="https://encodex.in/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>EncodeX V1.0.0-beta.9</title>
+      <link>https://encodex.in/blog/releases/1.0.0-beta.9/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/1.0.0-beta.9/</guid>
+      <description>An analytics release: PostHog now covers product events, pageviews, exception capture and logs, with production-only portal filters and test accounts excluded.</description>
+      <pubDate>Tue, 24 Nov 2026 00:00:00 GMT</pubDate>
+      <category>release</category>
+      <category>1.0.0-beta.9</category>
+    </item>
     <item>
       <title>EncodeX V1.0.0-beta.7</title>
       <link>https://encodex.in/blog/releases/1.0.0-beta.7/</link>

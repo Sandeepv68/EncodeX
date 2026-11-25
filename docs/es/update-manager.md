@@ -72,7 +72,7 @@ El canal se deriva de la versión en ejecución y decide qué releases son elegi
 | Canal | Versión en ejecución | Releases elegibles |
 |---|---|---|
 | `stable` | sin identificador de pre-release, p. ej. `1.0.0` | solo releases estables |
-| `beta` | con un identificador de pre-release, p. ej. `1.0.0-beta.8` | pre-releases *y* releases estables |
+| `beta` | con un identificador de pre-release, p. ej. `1.0.0-beta.9` | pre-releases *y* releases estables |
 
 Consecuencias que conviene conocer:
 
@@ -80,7 +80,7 @@ Consecuencias que conviene conocer:
 - A una compilación estable nunca se le ofrece una pre-release.
 - Una release **borrador** nunca se le ofrece a nadie. GitHub excluye los borradores de la lista de releases publicadas, así que una release que se deje como borrador es invisible para el actualizador hasta que se publique.
 - El endpoint propio de GitHub de «última release» no se usa deliberadamente: resuelve a la release más reciente que no sea borrador ni pre-release, que una compilación beta nunca podría superar, y una beta publicada sin la marca de pre-release se entregaría a los usuarios estables como si fuera la release estable. El actualizador lee la **lista** de releases y aplica él mismo el filtro de canal.
-- El flujo de trabajo de release marca un tag de pre-release (`v1.0.0-beta.8`) como pre-release de GitHub, de modo que la marca y el tag coinciden.
+- El flujo de trabajo de release marca un tag de pre-release (`v1.0.0-beta.9`) como pre-release de GitHub, de modo que la marca y el tag coinciden.
 
 ## Lógica de selección de assets
 
@@ -126,4 +126,4 @@ En Windows, al iniciar el instalador descargado puede aparecer la advertencia de
 - Unitarias: comparación semver, selección de canal de actualización, selección de assets, validación de descargas, gestión de checksums y el marcador de instalación pendiente.
 - Pruebas de entradas hostiles: `src/main/__tests__/updater-hostile.test.ts` fija el comportamiento ante recorridos de ruta, redirecciones, descargas truncadas y digests que no coinciden.
 - Pruebas de IPC: registro de manejadores y reenvío de eventos en `src/main/ipc/__tests__/updater.test.ts`.
-- Manual: publicar un tag de prueba más nuevo que `1.0.0-beta.8` como **pre-release**, publicar el borrador para que salga del estado de borrador y verificar búsqueda -> descarga -> instalación, además de la ruta de instalación al reiniciar. A continuación, verificar desde una compilación estable que esa misma pre-release *no* se ofrece.
+- Manual: publicar un tag de prueba más nuevo que `1.0.0-beta.9` como **pre-release**, publicar el borrador para que salga del estado de borrador y verificar búsqueda -> descarga -> instalación, además de la ruta de instalación al reiniciar. A continuación, verificar desde una compilación estable que esa misma pre-release *no* se ofrece.

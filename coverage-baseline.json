@@ -1109,11 +1109,6 @@
       "branches": 100,
       "statements": 100
     },
-    "src/renderer/utils/a11y.ts": {
-      "lines": 100,
-      "branches": 100,
-      "statements": 100
-    },
     "src/renderer/utils/ai-provider-icons.ts": {
       "lines": 100,
       "branches": 100,
@@ -2842,11 +2837,6 @@
           "statements": 100
         },
         "src/renderer/useLanguageDirection.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/renderer/utils/a11y.ts": {
           "lines": 100,
           "branches": 100,
           "statements": 100
@@ -4804,11 +4794,6 @@
           "statements": 100
         },
         "src/renderer/useLanguageDirection.ts": {
-          "lines": 100,
-          "branches": 100,
-          "statements": 100
-        },
-        "src/renderer/utils/a11y.ts": {
           "lines": 100,
           "branches": 100,
           "statements": 100

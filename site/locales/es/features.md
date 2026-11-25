@@ -16,6 +16,11 @@ Funciona en Windows, Mac y Linux, es completamente gratis y su interfaz está di
 
 ---
 
+## Novedades en 1.0.0-beta.9
+
+- **Despliegue de PostHog** — los eventos de producto, las vistas de página, las excepciones y los registros ahora pasan por la canalización de analytics con consentimiento.
+- **Portal solo de producción** — paneles, insights, cohortes, grabaciones, segmentación de encuestas y alertas de registros se filtran a producción y excluyen cuentas de prueba.
+
 ## Novedades en 1.0.0-beta.8
 
 - **Corrección del actualizador** — ahora se reenvía una actualización disponible al renderer, de modo que **Buscar actualizaciones** ya no se queda atascado en «Buscando actualizaciones».

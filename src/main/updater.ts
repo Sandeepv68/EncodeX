@@ -15,7 +15,7 @@
  *
  * - **stable** (the running version has no pre-release identifier) is offered
  *   stable releases only.
- * - **beta** (the running version is a pre-release, e.g. `1.0.0-beta.8`) is
+ * - **beta** (the running version is a pre-release, e.g. `1.0.0-beta.9`) is
  *   offered both pre-releases and stable releases, so a beta user keeps
  *   receiving betas and still receives the eventual `1.0.0`.
  *
@@ -610,7 +610,7 @@ export function channelForVersion(version: string): UpdateChannel {
  *  4. A release whose tag is not a usable version is skipped rather than
  *     failing the whole check.
  *  5. Among the survivors the highest version wins, so a beta client that has
- *     both `1.0.0-beta.8` and `1.0.0` available is offered `1.0.0`.
+ *     both `1.0.0-beta.9` and `1.0.0` available is offered `1.0.0`.
  *
  * @param {RawRelease[]} releases - Every release the API returned.
  * @param {UpdateChannel} channel - The channel of the running client.

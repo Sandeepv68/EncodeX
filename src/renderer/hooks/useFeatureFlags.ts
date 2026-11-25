@@ -6,6 +6,9 @@ const DEFAULT_FLAGS: Record<string, boolean | string | number> = {
   automations_page: import.meta.env.DEV || window.__ENCODEX_E2E__ === true,
 };
 
+const PRODUCTION_FLAGS: Record<string, boolean | string | number> =
+  import.meta.env.PROD && window.__ENCODEX_E2E__ !== true ? { automations_page: false } : {};
+
 let cachedFlags: Record<string, boolean | string | number> | null = null;
 let inflight: Promise<Record<string, boolean | string | number>> | null = null;
 
@@ -15,9 +18,9 @@ async function loadFeatureFlags(): Promise<Record<string, boolean | string | num
   inflight = (async () => {
     try {
       const state = await window.electronAPI?.analyticsGetState?.();
-      cachedFlags = { ...DEFAULT_FLAGS, ...(state?.featureFlags ?? {}), ...E2E_FLAGS };
+      cachedFlags = { ...DEFAULT_FLAGS, ...(state?.featureFlags ?? {}), ...PRODUCTION_FLAGS, ...E2E_FLAGS };
     } catch {
-      cachedFlags = { ...DEFAULT_FLAGS };
+      cachedFlags = { ...DEFAULT_FLAGS, ...PRODUCTION_FLAGS, ...E2E_FLAGS };
     } finally {
       inflight = null;
     }
