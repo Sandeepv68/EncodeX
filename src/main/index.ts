@@ -56,15 +56,7 @@ import { checkForUpdate, autoInstallPendingUpdate } from './updater';
 import { createTranscoder } from './transcoders/factory';
 import type { McpServer } from '@modelcontextprotocol/server';
 import { Logger } from '../shared/logger';
-import {
-  WINDOW_SIZE,
-  DEV_SERVER_URL,
-  APP_NAME,
-  EXIT_CODES,
-  SPLASH_SIZE,
-  SPLASH_HTML,
-  SPLASH_BACKGROUND,
-} from '../shared/app-constants';
+import { WINDOW_SIZE, DEV_SERVER_URL, APP_NAME, EXIT_CODES, SPLASH_SIZE, SPLASH_HTML, SPLASH_BACKGROUND } from '../shared/app-constants';
 import { IPC } from '../shared/ipc-channels';
 import { CLI_SUBCOMMANDS } from '../shared/constants';
 import {
