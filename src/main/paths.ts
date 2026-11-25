@@ -13,7 +13,9 @@
  * @module main/paths
  */
 
+import { app } from 'electron';
 import * as path from 'path';
+import { APP_ICON, APP_ICON_WINDOWS } from '../shared/app-constants';
 
 /**
  * Resolves the preload script path.
@@ -50,4 +52,9 @@ export function resolvePreloadPath(): string {
  */
 export function resolveRendererEntryPath(): string {
   return path.join(__dirname, '..', 'renderer', 'index.html');
+}
+
+export function resolveWindowIconPath(): string {
+  const icon = process.platform === 'win32' ? APP_ICON_WINDOWS : APP_ICON;
+  return path.join(app.getAppPath(), icon);
 }

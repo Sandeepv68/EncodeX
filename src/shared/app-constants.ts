@@ -77,11 +77,12 @@ export const SPLASH_BACKGROUND = '#EEF4F4';
 
 /**
  * Path to the application icon, relative to the packaged resources directory.
- * Used for the window icon on Windows/Linux and as the source icon for
- * packaged builds.
+ * Used for the window icon on Linux and as the source icon for packaged builds.
  * @const {string} APP_ICON
  */
 export const APP_ICON = 'assets/icons/AppIcon.icon/Assets/icon.png';
+
+export const APP_ICON_WINDOWS = 'assets/icons/icon.ico';
 
 /**
  * Human-readable application name used in window titles and UI text.

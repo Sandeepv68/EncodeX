@@ -268,11 +268,20 @@ const INTERACTIVE_BUDGET_MS = 2_000;
  * every other route stayed below 600 ms. The 2,000 ms ceiling sat just below
  * that outlier; 3,000 ms keeps the "alive but useless" gate while absorbing CI
  * scheduling jitter on the queue route.
+ *
+ * `/remux` gets the same 3,000 ms ceiling after the 2026-11-25 CI sweep measured
+ * a lone 2,260 ms round-trip there under `big-blob` while main answered in 60 ms
+ * and the other eleven routes stayed between 1,117 ms and 1,494 ms. That probe
+ * was the last one the loop attempted, so the burst overran to 3,457 ms while it
+ * was still sampling the tail - one marginal miss against a 2,000 ms ceiling is
+ * runner scheduling jitter, not the wedge this gate exists to catch. 3,000 ms
+ * absorbs it without letting a renderer that never settles pass.
  */
 const ROUTE_BUDGET_MS: Record<string, number> = {
   '/automations': 6_000,
   '/batch': 3_000,
   '/logs': 6_000,
+  '/remux': 3_000,
 };
 
 /**
