@@ -462,6 +462,23 @@ describe('updater hostile input', () => {
       expect(isInside(UPDATE_DIR, dest), `${dest} escaped the update dir`).toBe(true);
     });
 
+    it('creates the update directory before opening the installer for writing', async () => {
+      await expect(serveDownload(Buffer.from('MZ\r\n'), { 'content-length': '4' })).resolves.toBe(INSTALLER_PATH);
+      expect(fs.mkdirSync).toHaveBeenCalledWith(UPDATE_DIR, { recursive: true });
+    });
+
+    it('rejects cleanly when the update directory cannot be created', async () => {
+      expectAppLog('warn', 'main/updater');
+
+      vi.mocked(fs.mkdirSync).mockImplementationOnce(() => {
+        throw new Error('EACCES: permission denied');
+      });
+      const calls = useFakeTransport();
+      await expect(downloadUpdate(infoFor(ASSET_NAME), win)).rejects.toThrow(/EACCES/);
+      expect(calls).toHaveLength(0);
+      expect(fs.createWriteStream).not.toHaveBeenCalled();
+    });
+
     it('rejects a truncated download and removes the partial file', async () => {
       expectAppLog('warn', 'main/updater');
 

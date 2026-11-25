@@ -1052,6 +1052,14 @@ function downloadFile(url: string, filename: string, win: BrowserWindow, digest?
       return;
     }
 
+    try {
+      fs.mkdirSync(path.dirname(destPath), { recursive: true });
+    } catch (err) {
+      log.warn(LOG_UPDATER_ERROR, 'Failed to create update directory:', err);
+      reject(err);
+      return;
+    }
+
     const controller = new AbortController();
     activeAbortController = controller;
 
