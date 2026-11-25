@@ -24,6 +24,8 @@ import { EventEmitter } from 'events';
 import type { ConversionOptions, TranscoderType } from '../../../shared/types';
 import type { ITranscoder } from '../../transcoders/types';
 
+vi.mock('electron', () => ({ app: { isPackaged: false } }));
+
 const { JobQueue } = await import('../job-queue');
 const { QUEUE_STATUS } = await import('../../../shared/media-options');
 const { MAX_QUEUE_CONCURRENCY } = await import('../../../shared/constants');
