@@ -281,6 +281,7 @@ const ROUTE_BUDGET_MS: Record<string, number> = {
   '/automations': 6_000,
   '/batch': 3_000,
   '/logs': 6_000,
+  '/media-info': 3_000,
   '/remux': 3_000,
 };
 
