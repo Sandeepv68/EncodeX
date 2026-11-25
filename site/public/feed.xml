@@ -5,8 +5,17 @@
     <link>https://encodex.in/blog/</link>
     <description>Release announcements, guides, and updates about EncodeX — the free, open-source video converter.</description>
     <language>en</language>
-    <lastBuildDate>Tue, 24 Nov 2026 16:59:27 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 25 Nov 2026 15:15:20 GMT</lastBuildDate>
     <atom:link href="https://encodex.in/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>EncodeX V1.0.0-beta.10</title>
+      <link>https://encodex.in/blog/releases/1.0.0-beta.10/</link>
+      <guid isPermaLink="true">https://encodex.in/blog/releases/1.0.0-beta.10/</guid>
+      <description>An updater release: the update cache directory is now created before downloading, so Windows updates no longer fail with ENOENT.</description>
+      <pubDate>Wed, 25 Nov 2026 00:00:00 GMT</pubDate>
+      <category>release</category>
+      <category>1.0.0-beta.10</category>
+    </item>
     <item>
       <title>EncodeX V1.0.0-beta.9</title>
       <link>https://encodex.in/blog/releases/1.0.0-beta.9/</link>

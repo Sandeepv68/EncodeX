@@ -11,6 +11,10 @@ Es läuft auf Windows, Mac und Linux, ist vollständig kostenlos und seine Oberf
 
 ---
 
+## Neu in 1.0.0-beta.10
+
+- **Updater-Fix** — das Update-Cache-Verzeichnis wird jetzt vor dem Download erstellt, sodass Updates unter Windows nicht mehr mit `ENOENT` fehlschlagen.
+
 ## Neu in 1.0.0-beta.9
 
 - **PostHog-Rollout** — Datenschutzfreundliche Produkt-Ereignisse, Pageviews, Ausnahmen und Logs laufen jetzt über die zustimmungspflichtige Analytics-Pipeline.
