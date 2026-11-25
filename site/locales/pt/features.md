@@ -16,6 +16,10 @@ Funciona no Windows, Mac e Linux, é totalmente grátis e fala mais de 56 idioma
 
 ---
 
+## Novo em 1.0.0-beta.10
+
+- **Correção do atualizador** — o diretório de cache de atualizações agora é criado antes do download, portanto as atualizações não falham mais com `ENOENT` no Windows.
+
 ## Novo em 1.0.0-beta.9
 
 - **Rollout do PostHog** — eventos de produto, pageviews, exceções e logs agora passam pelo pipeline de analytics com consentimento.

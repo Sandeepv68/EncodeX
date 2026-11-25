@@ -72,7 +72,7 @@ Der Kanal wird aus der laufenden Version abgeleitet und bestimmt, welche Release
 | Kanal | Laufende Version | Infrage kommende Releases |
 |---|---|---|
 | `stable` | keine Pre-Release-Kennung, z. B. `1.0.0` | nur stabile Releases |
-| `beta` | eine Pre-Release-Kennung, z. B. `1.0.0-beta.9` | Pre-Releases *und* stabile Releases |
+| `beta` | eine Pre-Release-Kennung, z. B. `1.0.0-beta.10` | Pre-Releases *und* stabile Releases |
 
 Folgen, die man kennen sollte:
 
@@ -80,7 +80,7 @@ Folgen, die man kennen sollte:
 - Ein stabiler Build bekommt niemals ein Pre-Release angeboten.
 - Ein **Entwurfs**-Release wird niemandem angeboten. GitHub schließt Entwürfe aus der veröffentlichten Release-Liste aus, sodass ein als Entwurf belassenes Release für den Updater unsichtbar bleibt, bis es veröffentlicht wird.
 - GitHubs eigener Endpunkt „latest release" wird bewusst *nicht* verwendet: Er löst auf das neueste Release ohne Entwurfs- und ohne Pre-Release-Status auf, das ein Beta-Build nie überwinden könnte, und ein ohne Pre-Release-Flag veröffentlichtes Beta würde als stabile Release an stabile Nutzer übergeben. Der Updater liest die Release-**Liste** und wendet den Kanalfilter selbst an.
-- Der Release-Workflow markiert ein Pre-Release-Tag (`v1.0.0-beta.9`) als GitHub-Pre-Release, sodass Flag und Tag übereinstimmen.
+- Der Release-Workflow markiert ein Pre-Release-Tag (`v1.0.0-beta.10`) als GitHub-Pre-Release, sodass Flag und Tag übereinstimmen.
 
 ## Asset-Auswahllogik
 
@@ -126,4 +126,4 @@ Unter Windows kann das Starten des heruntergeladenen Installers die SmartScreen-
 - Unit: Semver-Vergleich, Update-Kanal-Auswahl, Asset-Auswahl, Download-Validierung, Prüfsummen-Behandlung und die Pending-Install-Markierung.
 - Tests mit feindlichen Eingaben: `src/main/__tests__/updater-hostile.test.ts` fixiert das Verhalten bei Path-Traversal, Weiterleitungen, abgebrochenen Downloads und Digest-Abweichungen.
 - IPC-Tests: Handler-Registrierung und Event-Weiterleitung in `src/main/ipc/__tests__/updater.test.ts`.
-- Manuell: ein Test-Tag veröffentlichen, der neuer als `1.0.0-beta.9` ist, ihn als **Pre-Release** markieren, den Entwurf veröffentlichen, damit er den Entwurfsstatus verlässt, und Suche -> Download -> Installation sowie den Ablauf „Installation beim Neustart" prüfen. Anschließend von einem stabilen Build aus verifizieren, dass dasselbe Pre-Release *nicht* angeboten wird.
+- Manuell: ein Test-Tag veröffentlichen, der neuer als `1.0.0-beta.10` ist, ihn als **Pre-Release** markieren, den Entwurf veröffentlichen, damit er den Entwurfsstatus verlässt, und Suche -> Download -> Installation sowie den Ablauf „Installation beim Neustart" prüfen. Anschließend von einem stabilen Build aus verifizieren, dass dasselbe Pre-Release *nicht* angeboten wird.

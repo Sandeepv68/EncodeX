@@ -16,6 +16,10 @@ Funciona en Windows, Mac y Linux, es completamente gratis y su interfaz está di
 
 ---
 
+## Novedades en 1.0.0-beta.10
+
+- **Corrección del actualizador** — el directorio de caché de actualizaciones ahora se crea antes de la descarga, por lo que las actualizaciones ya no fallan con `ENOENT` en Windows.
+
 ## Novedades en 1.0.0-beta.9
 
 - **Despliegue de PostHog** — los eventos de producto, las vistas de página, las excepciones y los registros ahora pasan por la canalización de analytics con consentimiento.

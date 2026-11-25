@@ -76,7 +76,7 @@ flowchart TD
 | चैनल | चल रहा वर्ज़न | Eligible releases |
 |---|---|---|
 | `stable` | कोई pre-release identifier नहीं, जैसे `1.0.0` | केवल stable releases |
-| `beta` | एक pre-release identifier, जैसे `1.0.0-beta.9` | pre-releases *और* stable releases |
+| `beta` | एक pre-release identifier, जैसे `1.0.0-beta.10` | pre-releases *और* stable releases |
 
 जानने योग्य परिणाम:
 
@@ -84,7 +84,7 @@ flowchart TD
 - Stable build को कभी कोई pre-release offer नहीं होता।
 - **Draft** release किसी को भी offer नहीं होता। GitHub published release list से drafts को बाहर रखता है, इसलिए draft में छोड़ा गया release updater के लिए publish होने तक अदृश्य रहता है।
 - GitHub का अपना "latest release" endpoint जानबूझकर *नहीं* इस्तेमाल किया जाता: यह सबसे नया non-draft, non-prerelease release पर resolve होता है, जिसे कोई beta build कभी पार नहीं कर सकता, और बिना pre-release flag के publish किया गया beta stable users को stable release की तरह मिल जाएगा। Updater release की **list** पढ़ता है और channel filter खुद लागू करता है।
-- Release workflow एक pre-release tag (`v1.0.0-beta.9`) को GitHub pre-release के रूप में चिह्नित करता है, ताकि flag और tag आपस में मेल खाएँ।
+- Release workflow एक pre-release tag (`v1.0.0-beta.10`) को GitHub pre-release के रूप में चिह्नित करता है, ताकि flag और tag आपस में मेल खाएँ।
 
 ## एसेट चयन लॉजिक
 
@@ -130,4 +130,4 @@ Windows पर डाउनलोड किया गया इंस्टॉ�
 - यूनिट: semver तुलना, update-channel चयन, एसेट चयन, डाउनलोड सत्यापन, checksum हैंडलिंग और pending-install marker।
 - Hostile-input परीक्षण: `src/main/__tests__/updater-hostile.test.ts` path traversal, redirect, अधूरे डाउनलोड और digest mismatch के व्यवहार को पिन करता है।
 - IPC परीक्षण: `src/main/ipc/__tests__/updater.test.ts` में हैंडलर पंजीकरण और इवेंट फ़ॉरवर्डिंग।
-- मैनुअल: `1.0.0-beta.9` से नया टैग **pre-release** के रूप में प्रकाशित करें, draft को प्रकाशित करके draft state से बाहर निकालें, और जाँच -> डाउनलोड -> इंस्टॉल प्रवाह के साथ install-on-restart पथ भी सत्यापित करें। फिर stable build से सत्यापित करें कि वही pre-release *नहीं* दिया जाता।
+- मैनुअल: `1.0.0-beta.10` से नया टैग **pre-release** के रूप में प्रकाशित करें, draft को प्रकाशित करके draft state से बाहर निकालें, और जाँच -> डाउनलोड -> इंस्टॉल प्रवाह के साथ install-on-restart पथ भी सत्यापित करें। फिर stable build से सत्यापित करें कि वही pre-release *नहीं* दिया जाता।

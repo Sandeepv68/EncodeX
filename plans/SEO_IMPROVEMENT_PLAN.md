@@ -85,10 +85,10 @@ head.push(['meta', { property: 'og:site_name', content: 'EncodeX' }])
 import packageJson from '../../package.json'
 
 // In transformHead:
-softwareVersion: (packageJson as { version?: string }).version || '1.0.0-beta.9',
+softwareVersion: (packageJson as { version?: string }).version || '1.0.0-beta.10',
 ```
 
-**Verification:** `npm run docs:build` → check JSON-LD output matches `package.json` version (currently `1.0.0-beta.9`)
+**Verification:** `npm run docs:build` → check JSON-LD output matches `package.json` version (currently `1.0.0-beta.10`)
 
 ---
 

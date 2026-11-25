@@ -11,6 +11,10 @@ EncodeX आपके कंप्यूटर के लिए एक मुफ�
 
 ---
 
+## 1.0.0-beta.10 में नया
+
+- **अपडेटर फ़िक्स** — डाउनलोड से पहले अपडेट कैश डायरेक्टरी अब बनाई जाती है, जिससे Windows पर अपडेट `ENOENT` से विफल नहीं होते।
+
 ## 1.0.0-beta.9 में नया
 
 - **PostHog rollout** — privacy-aware product events, pageviews, exceptions और logs अब consent-gated analytics pipeline से चलते हैं।

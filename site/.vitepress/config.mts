@@ -6,7 +6,7 @@ import packageJson from '../../package.json';
 const SITE_URL = 'https://encodex.in';
 const SITE_HEATMAP_URLS = [`${SITE_URL}/`, `${SITE_URL}/download`, `${SITE_URL}/video-converter`];
 
-const SITE_VERSION: string = (packageJson as { version?: string }).version || '1.0.0-beta.9';
+const SITE_VERSION: string = (packageJson as { version?: string }).version || '1.0.0-beta.10';
 
 // Optional Google Ads conversion tag. Set GOOGLE_ADS_CONVERSION_ID (AW-…) and
 // GOOGLE_ADS_CONVERSION_LABEL in the build environment to enable it. The site

@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0-beta.10] - 2026-11-25
+
+### Fixed
+
+- The updater now creates the `%TEMP%\EncodeX-updater` cache directory before writing an installer, so an update no longer fails with `ENOENT` when that directory is missing.
+- A failure to create the update directory is reported as a download error instead of leaving the UI waiting on a failed write stream.
+- Build and CI hardening: the PostHog sourcemap plugin is now tolerated when unavailable, Windows uses the packaged app icon for Electron windows, and the media-info IPC event-budget test is stabilized.
+
+### Documentation
+
+- Version references synced to `1.0.0-beta.10` across the README, docs, wiki, website, release posts and supported-version policy.
+
 ## [1.0.0-beta.9] - 2026-11-24
 
 ### Added
@@ -252,7 +264,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Architecture and feature documentation restructured; community files (code of conduct, contributing) added.
 
-[Unreleased]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.9...HEAD
+[Unreleased]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.10...HEAD
+[1.0.0-beta.10]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.9...v1.0.0-beta.10
 [1.0.0-beta.9]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.8...v1.0.0-beta.9
 [1.0.0-beta.8]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.7...v1.0.0-beta.8
 [1.0.0-beta.7]: https://github.com/Sandeepv68/EncodeX/compare/v1.0.0-beta.6...v1.0.0-beta.7

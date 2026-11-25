@@ -95,7 +95,7 @@ Conversion runs **locally on your computer** — no accounts, no media uploads, 
 
 See [docs/FEATURES.md](docs/FEATURES.md) for the full feature breakdown, supported formats, and codec lists.
 
-> **New in `1.0.0-beta.9`:** PostHog rollout — privacy-aware product events, pageviews, exception capture and logs now flow through the consent-gated pipeline, with production-only portal filters and test accounts excluded. For the beta.8 updater fix and beta.7 dialog polish, see `1.0.0-beta.8` and `1.0.0-beta.7`.
+> **New in `1.0.0-beta.10`:** updater fix — the update cache directory is now created before downloading, so updates no longer fail with `ENOENT` on Windows. For the beta.9 PostHog rollout and beta.8 updater fix, see `1.0.0-beta.9` and `1.0.0-beta.8`.
 
 ## 📸 Screenshots
 

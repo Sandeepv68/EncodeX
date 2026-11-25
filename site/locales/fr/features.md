@@ -16,6 +16,10 @@ Il fonctionne sur Windows, Mac et Linux, est entièrement gratuit, et son interf
 
 ---
 
+## Nouveautés de 1.0.0-beta.10
+
+- **Correctif du gestionnaire de mises à jour** — le répertoire de cache des mises à jour est désormais créé avant le téléchargement, afin que les mises à jour ne échouent plus avec `ENOENT` sous Windows.
+
 ## Nouveautés de 1.0.0-beta.9
 
 - **Déploiement de PostHog** — les événements produit, les pages vues, les exceptions et les journaux passent désormais par le pipeline analytics soumis au consentement.
