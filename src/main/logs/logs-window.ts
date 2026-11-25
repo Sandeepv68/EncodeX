@@ -15,11 +15,10 @@
  * @module main/logs/logs-window
  */
 
-import { app, BrowserWindow } from 'electron';
-import * as path from 'path';
+import { BrowserWindow } from 'electron';
 import { IPC } from '../../shared/ipc-channels';
-import { APP_ICON, APP_NAME, DEV_SERVER_URL } from '../../shared/app-constants';
-import { resolvePreloadPath, resolveRendererEntryPath } from '../paths';
+import { APP_NAME, DEV_SERVER_URL } from '../../shared/app-constants';
+import { resolvePreloadPath, resolveRendererEntryPath, resolveWindowIconPath } from '../paths';
 import { logHub } from './log-hub';
 
 /**
@@ -148,7 +147,7 @@ export function openLogsWindow(): void {
     minWidth: 520,
     minHeight: 380,
     title: `${APP_NAME} - Logs`,
-    ...(process.platform !== 'darwin' ? { icon: path.join(app.getAppPath(), APP_ICON) } : {}),
+    ...(process.platform !== 'darwin' ? { icon: resolveWindowIconPath() } : {}),
     webPreferences: {
       preload: resolvePreloadPath(),
       contextIsolation: true,

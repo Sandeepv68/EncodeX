@@ -70,6 +70,7 @@ describe('logs-window', () => {
     openLogsWindow();
     const win = getWindowInstances()[0];
     expect(win.options).toMatchObject({ title: 'EncodeX - Logs' });
+    expect(win.options.icon).toEqual(expect.stringContaining(process.platform === 'win32' ? 'icon.ico' : 'icon.png'));
     expect((win.options.webPreferences as { preload: string }).preload).toContain('preload');
     expect(win.loadFile).toHaveBeenCalledWith(
       expect.stringContaining('index.html'),

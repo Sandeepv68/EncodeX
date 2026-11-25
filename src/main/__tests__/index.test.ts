@@ -366,6 +366,7 @@ describe('main/index', () => {
         height: WINDOW_SIZE.HEIGHT,
         title: 'EncodeX',
         frame: false,
+        icon: expect.stringContaining(process.platform === 'win32' ? 'icon.ico' : 'icon.png'),
       }),
     );
     expect(registerIpcHandlersMock).toHaveBeenCalledWith(win);
@@ -393,6 +394,7 @@ describe('main/index', () => {
         frame: false,
         skipTaskbar: true,
         alwaysOnTop: true,
+        icon: expect.stringContaining(process.platform === 'win32' ? 'icon.ico' : 'icon.png'),
       }),
     );
     const splash = getWindowInstances()[0];

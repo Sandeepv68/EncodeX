@@ -34,7 +34,7 @@ import { format as formatArgs } from 'util';
 import { registerIpcHandlers } from './ipc/handlers';
 import { cancelAllAutomationRuns } from './automations';
 import { initNotifier } from './notifications/notifier';
-import { resolvePreloadPath, resolveRendererEntryPath } from './paths';
+import { resolvePreloadPath, resolveRendererEntryPath, resolveWindowIconPath } from './paths';
 import { logHub } from './logs/log-hub';
 import { subscribeWindowToLogHub, unsubscribeWindowFromLogHub } from './logs/logs-window';
 import { isDevMode } from './ipc/dev';
@@ -64,7 +64,6 @@ import {
   SPLASH_SIZE,
   SPLASH_HTML,
   SPLASH_BACKGROUND,
-  APP_ICON,
 } from '../shared/app-constants';
 import { IPC } from '../shared/ipc-channels';
 import { CLI_SUBCOMMANDS } from '../shared/constants';
@@ -514,7 +513,7 @@ if (process.argv.includes('--mcp')) {
       center: true,
       show: false,
       backgroundColor: SPLASH_BACKGROUND,
-      ...(process.platform !== 'darwin' ? { icon: path.join(app.getAppPath(), APP_ICON) } : {}),
+      ...(process.platform !== 'darwin' ? { icon: resolveWindowIconPath() } : {}),
       webPreferences: {
         contextIsolation: true,
         nodeIntegration: false,
@@ -555,7 +554,7 @@ if (process.argv.includes('--mcp')) {
       title: APP_NAME,
       frame: false,
       show: false,
-      ...(process.platform !== 'darwin' ? { icon: path.join(app.getAppPath(), APP_ICON) } : {}),
+      ...(process.platform !== 'darwin' ? { icon: resolveWindowIconPath() } : {}),
       webPreferences: {
         preload: resolvePreloadPath(),
         contextIsolation: true,
