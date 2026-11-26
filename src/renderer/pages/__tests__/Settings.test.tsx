@@ -1233,6 +1233,45 @@ describe('Settings', () => {
     expect(window.electronAPI.aiSetSettings).not.toHaveBeenCalled();
   });
 
+  it('reports an invalid response from the AI reset bridge', async () => {
+    vi.mocked(window.electronAPI.aiResetSettings).mockResolvedValue({} as never);
+    renderSettingsOn('ai');
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+
+    fireEvent.click(screen.getByTestId('settings-ai-reset'));
+    expect(await screen.findByText('settings.ai.resetConfirmMessage')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('settings-ai-reset-confirm'));
+
+    expect(await screen.findByTestId('settings-ai-error')).toHaveTextContent('settings.ai.saveFailed');
+    await waitFor(() => expect(screen.queryByText('settings.ai.resetConfirmMessage')).not.toBeInTheDocument());
+  });
+
+  it('reports a rejected AI reset bridge call', async () => {
+    vi.mocked(window.electronAPI.aiResetSettings).mockRejectedValue(new Error('reset boom'));
+    renderSettingsOn('ai');
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+
+    fireEvent.click(screen.getByTestId('settings-ai-reset'));
+    expect(await screen.findByText('settings.ai.resetConfirmMessage')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('settings-ai-reset-confirm'));
+
+    expect(await screen.findByTestId('settings-ai-error')).toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByText('settings.ai.resetConfirmMessage')).not.toBeInTheDocument());
+  });
+
+  it('closes the AI reset dialog from the escape key', async () => {
+    renderSettingsOn('ai');
+    fireEvent.click(screen.getByTestId('settings-ai-reset'));
+    expect(await screen.findByText('settings.ai.resetConfirmMessage')).toBeInTheDocument();
+
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape', code: 'Escape' });
+
+    await waitFor(() => expect(screen.queryByText('settings.ai.resetConfirmMessage')).not.toBeInTheDocument());
+    expect(window.electronAPI.aiResetSettings).not.toHaveBeenCalled();
+  });
+
   it('does not reset providers when the reset dialog is cancelled', async () => {
     renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-reset'));

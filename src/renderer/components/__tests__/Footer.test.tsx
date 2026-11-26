@@ -112,6 +112,47 @@ describe('Footer', () => {
     addToastSpy.mockRestore();
   });
 
+  it('opens the dialog and starts the download from the update-available toast action', async () => {
+    const openDialog = vi.fn();
+    const downloadUpdate = vi.fn();
+    useUpdateStore.setState({ status: 'idle', openDialog, downloadUpdate });
+    const { rerender } = render(<Footer />);
+
+    await act(async () => {
+      useUpdateStore.setState({
+        status: 'available',
+        info: { version: '2.0.0', releaseNotes: '', releaseUrl: '', asset: { name: 'app.exe', url: '', size: 0 } },
+      });
+      rerender(<Footer />);
+    });
+
+    const toast = useToastStore.getState().toasts[0];
+    expect(toast.action?.labelKey).toBe('toast.updateNow');
+    toast.action?.onClick?.();
+    expect(openDialog).toHaveBeenCalledTimes(1);
+    expect(downloadUpdate).toHaveBeenCalledTimes(1);
+  });
+
+  it('opens the dialog from the update-downloaded toast action', async () => {
+    const openDialog = vi.fn();
+    useUpdateStore.setState({ status: 'idle', openDialog });
+    const { rerender } = render(<Footer />);
+
+    await act(async () => {
+      useUpdateStore.setState({
+        status: 'downloaded',
+        info: { version: '2.0.0', releaseNotes: '', releaseUrl: '', asset: { name: 'app.exe', url: '', size: 0 } },
+        installerPath: '/tmp/app.exe',
+      });
+      rerender(<Footer />);
+    });
+
+    const toast = useToastStore.getState().toasts[0];
+    expect(toast.action?.labelKey).toBe('toast.viewUpdate');
+    toast.action?.onClick?.();
+    expect(openDialog).toHaveBeenCalledTimes(1);
+  });
+
   it('only shows toast once for the same update', async () => {
     const addToastSpy = vi.spyOn(useToastStore.getState(), 'addToast');
     useUpdateStore.setState({ status: 'idle' });

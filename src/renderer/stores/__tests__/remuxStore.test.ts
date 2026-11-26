@@ -12,6 +12,7 @@ const pauseConversionMock = vi.mocked(window.electronAPI.pauseConversion);
 const resumeConversionMock = vi.mocked(window.electronAPI.resumeConversion);
 const cancelConversionMock = vi.mocked(window.electronAPI.cancelConversion);
 const muxQueueAddMock = vi.mocked(window.electronAPI.muxQueueAdd);
+const revealFileMock = vi.mocked(window.electronAPI.revealFile);
 const progressHandler = vi.mocked(window.electronAPI.onConversionProgress).mock.calls[0]?.[0];
 
 function resetStore(): void {
@@ -358,6 +359,22 @@ describe('remuxStore', () => {
     expect(useRemuxStore.getState().isConverting).toBe(false);
     expect(useRemuxStore.getState().progress).toBeNull();
     expect(useToastStore.getState().toasts).toHaveLength(1);
+  });
+
+  it('startRemux offers a toast action that reveals the output file', async () => {
+    useRemuxStore.setState({
+      input: 'in.mkv',
+      container: 'mp4',
+      output: '/out/out.mp4',
+      streams: SAMPLE_STREAMS,
+      selectedMaps: ['0:v:0', '0:a:0', '0:s:0'],
+    });
+    await useRemuxStore.getState().startRemux();
+
+    const toast = useToastStore.getState().toasts[0];
+    expect(toast.action?.labelKey).toBe('batchQueue.revealInFolder');
+    toast.action?.onClick?.();
+    expect(revealFileMock).toHaveBeenCalledWith('/out/out.mp4');
   });
 
   it('enqueueRemux adds the remux to the mux queue instead of converting', async () => {

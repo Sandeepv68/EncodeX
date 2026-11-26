@@ -635,6 +635,23 @@ describe('BatchQueue', () => {
     expect(queueAddMock).not.toHaveBeenCalled();
   });
 
+  it('warns when dropped files do not expand to media', async () => {
+    queueListMock.mockResolvedValue([]);
+    vi.mocked(window.electronAPI.getPathForFile).mockReturnValue('/in/note.txt');
+    expandPathsMock.mockResolvedValue([]);
+    renderPage();
+    await waitFor(() => expect(queueListMock).toHaveBeenCalledOnce());
+
+    fireEvent.drop(window, { dataTransfer: { files: [new File(['x'], 'note.txt')] } });
+
+    await waitFor(() =>
+      expect(useToastStore.getState().toasts.some((toast) => toast.type === 'warning' && toast.message === 'batchQueue.noMediaFound')).toBe(
+        true,
+      ),
+    );
+    expect(queueAddMock).not.toHaveBeenCalled();
+  });
+
   it('skips duplicate files already in the queue', async () => {
     queueListMock.mockResolvedValue([job({ id: 'job-1', output: '/in/video_encodex_converted.mp4' })]);
     selectFilesMock.mockResolvedValue(['/in/video.mp4']);
@@ -1147,6 +1164,39 @@ describe('BatchQueue', () => {
     );
     expect(useToastStore.getState().toasts.some((toast) => toast.type === 'success' && toast.message === 'batchQueue.optionsUpdated')).toBe(
       true,
+    );
+  });
+
+  it('reports a failed per-job edit when the bridge returns false', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', options: { videoCodec: 'libx264', audioCodec: 'aac' } })]);
+    queueUpdateOptionsMock.mockResolvedValue(false);
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.editOptions' }));
+    expect(await screen.findByText('Edit options for video.mp4')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
+
+    await waitFor(() =>
+      expect(
+        useToastStore.getState().toasts.some((toast) => toast.type === 'error' && toast.message === 'batchQueue.optionsUpdateFailed'),
+      ).toBe(true),
+    );
+    expect(screen.getByText('Edit options for video.mp4')).toBeInTheDocument();
+  });
+
+  it('reports a thrown per-job edit failure', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', options: { videoCodec: 'libx264', audioCodec: 'aac' } })]);
+    queueUpdateOptionsMock.mockRejectedValue(new Error('update boom'));
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.editOptions' }));
+    expect(await screen.findByText('Edit options for video.mp4')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
+
+    await waitFor(() =>
+      expect(useToastStore.getState().toasts.some((toast) => toast.type === 'error' && toast.detail === 'update boom')).toBe(true),
     );
   });
 

@@ -11,7 +11,7 @@ import type { FrameSampler } from '../../shared/ai/similarity';
 import type { Transcript } from '../../shared/ai/transcript';
 import type { TranslationProvider } from '../../shared/ai/translate';
 import type { MediaFacts } from '../../shared/ai/types';
-import type { CopilotAction, CopilotResult } from '../../shared/copilot';
+import type { CopilotAction, CopilotOperation, CopilotResult } from '../../shared/copilot';
 import type { MediaInfo } from '../../shared/types';
 
 /**
@@ -81,3 +81,14 @@ export interface IntelligenceDeps {
  * @typedef {function(OperationRoutingRequest): Promise<RoutedOperation | undefined>} OperationRouter
  */
 export type OperationRouter = (request: OperationRoutingRequest) => Promise<RoutedOperation | undefined>;
+
+/**
+ * The operation a goal maps to, plus whether any keyword was recognized.
+ * @interface OperationDetection
+ * @property {CopilotOperation} operation - The detected operation.
+ * @property {boolean} matched - True when a keyword rule actually matched.
+ */
+export interface OperationDetection {
+  operation: CopilotOperation;
+  matched: boolean;
+}

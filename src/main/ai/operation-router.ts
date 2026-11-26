@@ -25,7 +25,7 @@ import {
   buildDemuxPlan,
   buildDemuxJobOptions,
 } from '../../mcp/operations';
-import type { BuiltOperation, ProbedEntry } from './types';
+import type { BuiltOperation, OperationDetection, ProbedEntry } from './types';
 
 export type { BuiltOperation, ProbedEntry };
 
@@ -438,17 +438,6 @@ const LOCALIZED_KEYWORD_TABLES: Array<Partial<Record<CopilotOperation, string[]>
   ...Object.values(LOCALIZED_KEYWORDS),
   ...Object.values(LOCALIZED_CONVERT_KEYWORDS).map((terms) => ({ convert: terms })),
 ];
-
-/**
- * The operation a goal maps to, plus whether any keyword was recognized.
- * @interface OperationDetection
- * @property {CopilotOperation} operation - The detected operation.
- * @property {boolean} matched - True when a keyword rule actually matched.
- */
-interface OperationDetection {
-  operation: CopilotOperation;
-  matched: boolean;
-}
 
 /**
  * Chooses the operation named by a goal: English keyword rules first, then the
