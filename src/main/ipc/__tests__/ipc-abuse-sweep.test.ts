@@ -548,6 +548,7 @@ describe('IPC handler abuse (committed unit-tier sweep)', () => {
     const swept = new Set(channels.map((c) => c.channel));
     expect(swept).toContain(IPC.AI_SETTINGS_GET);
     expect(swept).toContain(IPC.AI_SETTINGS_SET);
+    expect(swept).toContain(IPC.AI_SETTINGS_RESET);
     expect(swept).toContain(IPC.AI_CONNECT_TEST);
   });
 

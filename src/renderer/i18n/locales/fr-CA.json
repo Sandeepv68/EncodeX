@@ -685,7 +685,12 @@
       "removeKey": "Supprimer la clé",
       "keyRemoved": "La clé enregistrée a été supprimée.",
       "staleStatus": "Les paramètres ont changé. Reconnectez-vous pour vérifier.",
-      "headerConnected": "Connecté · {{provider}} · {{model}}"
+      "headerConnected": "Connecté · {{provider}} · {{model}}",
+      "reset": "Réinitialiser aux valeurs par défaut",
+      "resetConfirmTitle": "Réinitialiser les fournisseurs d’IA ?",
+      "resetConfirmMessage": "Cette action supprime toutes les clés API, tous les modèles, tous les points d’accès et tout l’historique de connexion enregistrés. Le fournisseur de règles intégré devient actif. Cette action est irréversible.",
+      "resetConfirmAction": "Réinitialiser",
+      "resetComplete": "Les fournisseurs d’IA ont été restaurés à leurs valeurs par défaut."
     },
     "desktopNotifications": "Notifications du bureau",
     "desktopNotificationsHint": "Afficher des notifications système lorsque les tâches de la file d’attente se terminent ou échouent pendant que l’application est en arrière-plan.",

@@ -685,7 +685,12 @@
       "removeKey": "移除密钥",
       "keyRemoved": "已移除存储的密钥。",
       "staleStatus": "设置已更改。请重新连接以验证。",
-      "headerConnected": "已连接 · {{provider}} · {{model}}"
+      "headerConnected": "已连接 · {{provider}} · {{model}}",
+      "reset": "重置为默认值",
+      "resetConfirmTitle": "重置 AI 提供商？",
+      "resetConfirmMessage": "这将删除所有已保存的 API 密钥、模型、端点和连接历史记录。内置规则提供商将变为活动状态。此操作无法撤销。",
+      "resetConfirmAction": "重置",
+      "resetComplete": "AI 提供商已恢复为默认设置。"
     },
     "desktopNotifications": "桌面通知",
     "desktopNotificationsHint": "当应用在后台运行时，在队列任务完成或失败时显示系统通知。",

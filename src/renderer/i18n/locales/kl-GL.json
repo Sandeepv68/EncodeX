@@ -685,7 +685,12 @@
       "removeKey": "Matuaraat peeruk",
       "keyRemoved": "Matuaraat toqqorsimasoq peerneqarpoq.",
       "staleStatus": "Inissisimasut allanngorput. Attaveqaruit uppernarsaaviguk.",
-      "headerConnected": "Attaveqarpoq · {{provider}} · {{model}}"
+      "headerConnected": "Attaveqarpoq · {{provider}} · {{model}}",
+      "reset": "Taqqortitut uttitigut",
+      "resetConfirmTitle": "AI-nik inissisimasut taqqortigit?",
+      "resetConfirmMessage": "Tassa API-matuat, apeqqutit, angqernutissat aamma attaveqarnermut oqaluttuat tamatigut peerussaaput. Sanasimajumik maleruaqqanik inissisimajup aqqutaa atuussaaq. Taanna uttoriinngikkaangat.",
+      "resetConfirmAction": "Taqqorigit",
+      "resetComplete": "AI-nik inissisimasut taqqortitutinut uttussimasaaput."
     },
     "desktopNotifications": "Qarasaasiamut nalunaarutit",
     "desktopNotificationsHint": "App-ip kingornani ingerlatillugu suliat naammassippata imaluunniit ajutoorpatit systemimi nalunaarutit nuisikkit.",

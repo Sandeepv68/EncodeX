@@ -685,7 +685,12 @@
       "removeKey": "Buang kunci",
       "keyRemoved": "Kunci tersimpan telah dibuang.",
       "staleStatus": "Tetapan berubah. Sambung semula untuk mengesahkan.",
-      "headerConnected": "Bersambung · {{provider}} · {{model}}"
+      "headerConnected": "Bersambung · {{provider}} · {{model}}",
+      "reset": "Tetapkan semula ke lalai",
+      "resetConfirmTitle": "Tetapkan semula penyedia AI?",
+      "resetConfirmMessage": "Ini membuang semua kunci API, model, titik hujung dan sejarah sambungan yang disimpan. Penyedia peraturan terbina akan aktif. Tindakan ini tidak boleh dibatalkan.",
+      "resetConfirmAction": "Tetapkan semula",
+      "resetComplete": "Penyedia AI telah dipulihkan ke tetapan lalai mereka."
     },
     "desktopNotifications": "Pemberitahuan desktop",
     "desktopNotificationsHint": "Tunjukkan pemberitahuan sistem apabila tugas baris gilir selesai atau gagal semasa aplikasi berjalan di latar belakang.",

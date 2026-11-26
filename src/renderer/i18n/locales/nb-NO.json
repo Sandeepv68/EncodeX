@@ -685,7 +685,12 @@
       "removeKey": "Fjern nøkkel",
       "keyRemoved": "Den lagrede nøkkelen ble fjernet.",
       "staleStatus": "Innstillingene er endret. Koble til på nytt for å bekrefte.",
-      "headerConnected": "Tilkoblet · {{provider}} · {{model}}"
+      "headerConnected": "Tilkoblet · {{provider}} · {{model}}",
+      "reset": "Nullstill til standard",
+      "resetConfirmTitle": "Nullstill AI-leverandører?",
+      "resetConfirmMessage": "Dette fjerner alle lagrede API-nøkler, modeller, endepunkter og tilkoblingshistorikk. Den innebygde regelleverandøren blir aktiv. Dette kan ikke angres.",
+      "resetConfirmAction": "Nullstill",
+      "resetComplete": "AI-leverandører er tilbakeført til standardinnstillingene sine."
     },
     "desktopNotifications": "Skrivebordsvarsler",
     "desktopNotificationsHint": "Vis systemvarsler når køjobber fullføres eller mislykkes mens appen kjører i bakgrunnen.",

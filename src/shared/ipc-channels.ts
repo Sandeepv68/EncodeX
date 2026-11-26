@@ -260,6 +260,7 @@ export const IPC = {
 
   AI_SETTINGS_GET: 'ai-settings-get',
   AI_SETTINGS_SET: 'ai-settings-set',
+  AI_SETTINGS_RESET: 'ai-settings-reset',
   AI_CONNECT_TEST: 'ai-connect-test',
   AI_MODELS_LIST: 'ai-models-list',
 

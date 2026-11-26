@@ -630,6 +630,7 @@ export interface ElectronAPI {
    * @returns {Promise<AiSettingsView>} The resulting sanitized settings.
    */
   aiSetSettings(update: AiSettingsUpdate): Promise<AiSettingsView>;
+  aiResetSettings(): Promise<AiSettingsView>;
   /**
    * Tests connectivity to the configured AI provider over `IPC.AI_CONNECT_TEST`
    * ('ai-connect-test') by sending a one-token ping.

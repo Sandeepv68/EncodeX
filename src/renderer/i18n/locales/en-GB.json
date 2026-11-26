@@ -685,7 +685,12 @@
       "removeKey": "Remove key",
       "keyRemoved": "The stored key was removed.",
       "staleStatus": "Settings changed. Connect again to verify.",
-      "headerConnected": "Connected · {{provider}} · {{model}}"
+      "headerConnected": "Connected · {{provider}} · {{model}}",
+      "reset": "Reset to defaults",
+      "resetConfirmTitle": "Reset AI providers?",
+      "resetConfirmMessage": "This removes all saved API keys, models, endpoints, and connection history. The built-in rules provider becomes active. This cannot be undone.",
+      "resetConfirmAction": "Reset",
+      "resetComplete": "AI providers restored to their defaults."
     },
     "desktopNotifications": "Desktop notifications",
     "desktopNotificationsHint": "Show system notifications when queue jobs complete or fail while the app is in the background.",

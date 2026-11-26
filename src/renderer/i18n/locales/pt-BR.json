@@ -685,7 +685,12 @@
       "removeKey": "Remover chave",
       "keyRemoved": "A chave armazenada foi removida.",
       "staleStatus": "As configurações mudaram. Conecte novamente para verificar.",
-      "headerConnected": "Conectado · {{provider}} · {{model}}"
+      "headerConnected": "Conectado · {{provider}} · {{model}}",
+      "reset": "Redefinir para os padrões",
+      "resetConfirmTitle": "Redefinir provedores de IA?",
+      "resetConfirmMessage": "Isso remove todas as chaves de API, modelos, endpoints e o histórico de conexões salvos. O provedor de regras integrado se torna ativo. Isso não pode ser desfeito.",
+      "resetConfirmAction": "Redefinir",
+      "resetComplete": "Os provedores de IA foram restaurados aos padrões."
     },
     "desktopNotifications": "Notificações da área de trabalho",
     "desktopNotificationsHint": "Mostrar notificações do sistema quando tarefas da fila forem concluídas ou falharem enquanto o aplicativo estiver em segundo plano.",

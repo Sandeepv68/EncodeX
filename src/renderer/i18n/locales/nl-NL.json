@@ -685,7 +685,12 @@
       "removeKey": "Sleutel verwijderen",
       "keyRemoved": "De opgeslagen sleutel is verwijderd.",
       "staleStatus": "Instellingen gewijzigd. Verbind opnieuw om te verifiëren.",
-      "headerConnected": "Verbonden · {{provider}} · {{model}}"
+      "headerConnected": "Verbonden · {{provider}} · {{model}}",
+      "reset": "Terugzetten naar standaard",
+      "resetConfirmTitle": "AI-providers terugzetten?",
+      "resetConfirmMessage": "Hiermee worden alle opgeslagen API-sleutels, modellen, endpoints en verbindingsgeschiedenis verwijderd. De ingebouwde regelprovider wordt actief. Dit kan niet ongedaan worden gemaakt.",
+      "resetConfirmAction": "Terugzetten",
+      "resetComplete": "AI-providers zijn teruggezet naar hun standaardinstellingen."
     },
     "desktopNotifications": "Bureaubladmeldingen",
     "desktopNotificationsHint": "Toon systeemmeldingen wanneer wachtrijtaken zijn voltooid of mislukken terwijl de app op de achtergrond draait.",

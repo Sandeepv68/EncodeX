@@ -22,6 +22,7 @@ const { appMock, handlers, settingsMock, connectorsMock, modelsMock, modelMock }
       persistProviderModel: vi.fn((dir: string, providerId: string, model: string) => ({ providerId, model })),
       readAiSettings: vi.fn(),
       recordAiConnection: vi.fn(),
+      resetAiSettings: vi.fn(),
       resolveProviderModel: vi.fn(),
       sanitizeAiSettings: vi.fn((value: unknown) => value),
       toAiSettingsView: vi.fn((settings: unknown) => settings),
@@ -70,9 +71,10 @@ describe('registerAiSettingsIpc', () => {
     registerAiSettingsIpc();
   });
 
-  it('registers the four AI settings channels', () => {
+  it('registers the five AI settings channels', () => {
     expect(handlers[IPC.AI_SETTINGS_GET]).toBeTypeOf('function');
     expect(handlers[IPC.AI_SETTINGS_SET]).toBeTypeOf('function');
+    expect(handlers[IPC.AI_SETTINGS_RESET]).toBeTypeOf('function');
     expect(handlers[IPC.AI_CONNECT_TEST]).toBeTypeOf('function');
     expect(handlers[IPC.AI_MODELS_LIST]).toBeTypeOf('function');
   });
@@ -112,6 +114,13 @@ describe('registerAiSettingsIpc', () => {
     settingsMock.applyAiSettingsUpdate.mockReturnValue({ providerId: 'rules' });
     await invoke(IPC.AI_SETTINGS_SET, 'nope');
     expect(settingsMock.applyAiSettingsUpdate).toHaveBeenCalledWith('/userData', { providerId: 'rules' });
+  });
+
+  it('RESET delegates to the main-process defaults policy', async () => {
+    const defaults = { providerId: 'rules', model: '', hasKey: false };
+    settingsMock.resetAiSettings.mockReturnValue(defaults);
+    expect(invoke(IPC.AI_SETTINGS_RESET)).toBe(defaults);
+    expect(settingsMock.resetAiSettings).toHaveBeenCalledWith('/userData');
   });
 
   it('CONNECT_TEST tests a local runtime without requiring an API key', async () => {

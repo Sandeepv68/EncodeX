@@ -685,7 +685,12 @@
       "removeKey": "Fjern nøgle",
       "keyRemoved": "Den gemte nøgle blev fjernet.",
       "staleStatus": "Indstillingerne er ændret. Forbind igen for at bekræfte.",
-      "headerConnected": "Forbundet · {{provider}} · {{model}}"
+      "headerConnected": "Forbundet · {{provider}} · {{model}}",
+      "reset": "Nulstil til standard",
+      "resetConfirmTitle": "Nulstil AI-udbydere?",
+      "resetConfirmMessage": "Dette fjerner alle gemte API-nøgler, modeller, endpoints og forbindelseshistorik. Den indbyggede regeludbyder bliver aktiv. Dette kan ikke fortrydes.",
+      "resetConfirmAction": "Nulstil",
+      "resetComplete": "AI-udbydere er gendannet til deres standardindstillinger."
     },
     "desktopNotifications": "Skrivebordsmeddelelser",
     "desktopNotificationsHint": "Vis systemmeddelelser, når køjob fuldføres eller mislykkes, mens appen kører i baggrunden.",

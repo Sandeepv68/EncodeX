@@ -685,7 +685,12 @@
       "removeKey": "Usuń klucz",
       "keyRemoved": "Zapisany klucz został usunięty.",
       "staleStatus": "Ustawienia zmienione. Połącz ponownie, aby zweryfikować.",
-      "headerConnected": "Połączono · {{provider}} · {{model}}"
+      "headerConnected": "Połączono · {{provider}} · {{model}}",
+      "reset": "Przywróć ustawienia domyślne",
+      "resetConfirmTitle": "Zresetować dostawców AI?",
+      "resetConfirmMessage": "Spowoduje to usunięcie wszystkich zapisanych kluczy API, modeli, punktów końcowych i historii połączeń. Aktywny zostanie wbudowany dostawca reguł. Tej czynności nie można cofnąć.",
+      "resetConfirmAction": "Zresetuj",
+      "resetComplete": "Dostawcy AI zostali przywróceni do ustawień domyślnych."
     },
     "desktopNotifications": "Powiadomienia na pulpicie",
     "desktopNotificationsHint": "Pokazuj powiadomienia systemowe, gdy zadania w kolejce zakończą się lub nie powiodą, gdy aplikacja działa w tle.",

@@ -685,7 +685,12 @@
       "removeKey": "Hapus kunci",
       "keyRemoved": "Kunci tersimpan telah dihapus.",
       "staleStatus": "Pengaturan berubah. Hubungkan lagi untuk memverifikasi.",
-      "headerConnected": "Terhubung · {{provider}} · {{model}}"
+      "headerConnected": "Terhubung · {{provider}} · {{model}}",
+      "reset": "Atur ulang ke default",
+      "resetConfirmTitle": "Atur ulang penyedia AI?",
+      "resetConfirmMessage": "Ini menghapus semua kunci API, model, endpoint, dan riwayat koneksi yang tersimpan. Penyedia aturan bawaan akan aktif. Tindakan ini tidak dapat dibatalkan.",
+      "resetConfirmAction": "Atur ulang",
+      "resetComplete": "Penyedia AI telah dikembalikan ke pengaturan defaultnya."
     },
     "desktopNotifications": "Notifikasi desktop",
     "desktopNotificationsHint": "Tampilkan notifikasi sistem saat tugas antrean selesai atau gagal ketika aplikasi berjalan di latar belakang.",

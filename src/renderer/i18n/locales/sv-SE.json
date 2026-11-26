@@ -685,7 +685,12 @@
       "removeKey": "Ta bort nyckel",
       "keyRemoved": "Den sparade nyckeln togs bort.",
       "staleStatus": "Inställningarna ändrades. Anslut igen för att verifiera.",
-      "headerConnected": "Ansluten · {{provider}} · {{model}}"
+      "headerConnected": "Ansluten · {{provider}} · {{model}}",
+      "reset": "Återställ till standard",
+      "resetConfirmTitle": "Återställ AI-leverantörer?",
+      "resetConfirmMessage": "Detta tar bort alla sparade API-nycklar, modeller, slutpunkter och anslutningshistorik. Den inbyggda regelleverantören blir aktiv. Detta kan inte ångras.",
+      "resetConfirmAction": "Återställ",
+      "resetComplete": "AI-leverantörerna har återställts till sina standardinställningar."
     },
     "desktopNotifications": "Skrivbordsaviseringar",
     "desktopNotificationsHint": "Visa systemaviseringar när köjobb slutförs eller misslyckas medan appen körs i bakgrunden.",

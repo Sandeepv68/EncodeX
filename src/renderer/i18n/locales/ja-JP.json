@@ -685,7 +685,12 @@
       "removeKey": "キーを削除",
       "keyRemoved": "保存されたキーを削除しました。",
       "staleStatus": "設定が変更されました。確認するには再接続してください。",
-      "headerConnected": "接続済み · {{provider}} · {{model}}"
+      "headerConnected": "接続済み · {{provider}} · {{model}}",
+      "reset": "既定値にリセット",
+      "resetConfirmTitle": "AIプロバイダーをリセットしますか？",
+      "resetConfirmMessage": "保存済みのAPIキー、モデル、エンドポイント、接続履歴をすべて削除します。組み込みのルールプロバイダーが有効になります。この操作は取り消せません。",
+      "resetConfirmAction": "リセット",
+      "resetComplete": "AIプロバイダーを既定値に戻しました。"
     },
     "desktopNotifications": "デスクトップ通知",
     "desktopNotificationsHint": "アプリがバックグラウンドで実行中にキューのジョブが完了または失敗したときにシステム通知を表示します。",

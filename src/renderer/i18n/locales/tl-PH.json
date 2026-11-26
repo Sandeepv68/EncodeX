@@ -685,7 +685,12 @@
       "removeKey": "Alisin ang key",
       "keyRemoved": "Inalis ang naka-imbak na key.",
       "staleStatus": "Nagbago ang mga setting. Kumonekta muli para i-verify.",
-      "headerConnected": "Nakakonekta · {{provider}} · {{model}}"
+      "headerConnected": "Nakakonekta · {{provider}} · {{model}}",
+      "reset": "I-reset sa mga default",
+      "resetConfirmTitle": "I-reset ang mga provider ng AI?",
+      "resetConfirmMessage": "Aalisin nito ang lahat ng naka-save na API key, modelo, endpoint, at kasaysayan ng koneksyon. Magiging aktibo ang built-in na rule provider. Hindi ito maaaring bawiin.",
+      "resetConfirmAction": "I-reset",
+      "resetComplete": "Naibalik ang mga provider ng AI sa kanilang mga default."
     },
     "desktopNotifications": "Mga abiso sa desktop",
     "desktopNotificationsHint": "Magpakita ng mga abiso ng system kapag natapos o nabigo ang mga trabaho sa pila habang tumatakbo ang app sa background.",

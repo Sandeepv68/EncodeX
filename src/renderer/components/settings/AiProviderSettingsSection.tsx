@@ -3,11 +3,19 @@
  * (AI connector plan §8).
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Autocomplete, Button, IconButton, Tooltip, InputAdornment } from '@mui/material';
+import { Autocomplete, Button, DialogContentText, IconButton, Tooltip, InputAdornment } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowUpRightFromSquare, faCheck, faChevronDown, faChevronUp, faPaste, faGear } from '@fortawesome/free-solid-svg-icons';
+import {
+  faArrowUpRightFromSquare,
+  faCheck,
+  faChevronDown,
+  faChevronUp,
+  faPaste,
+  faGear,
+  faRotateLeft,
+} from '@fortawesome/free-solid-svg-icons';
 import { useColorMode } from '../../ColorModeContext';
 import type { AiSettingsView } from '../../../shared/ai/settings';
 import {
@@ -42,6 +50,7 @@ import {
 } from '../../styles/settings/AiProviderSettingsSection.styles';
 import SettingLabel from './SettingLabel';
 import AiConnectionStatus from '../AiConnectionStatus';
+import AppDialog from '../AppDialog';
 import { useOnlineStatus } from '../../hooks/useOnlineStatus';
 import { useAiSettingsStore } from '../../stores/aiSettingsStore';
 import { activeConnectionOf, useAiConnectionStore } from '../../stores/aiConnectionStore';
@@ -114,6 +123,7 @@ export default function AiProviderSettingsSection({ autoOpen = false }: { autoOp
   const [baseUrl, setBaseUrl] = useState(initialTarget?.baseUrl ?? cached.baseUrl);
   const [apiKey, setApiKey] = useState('');
   const [busy, setBusy] = useState(false);
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [advancedByProvider, setAdvancedByProvider] = useState<Partial<Record<AIProviderId, boolean>>>({});
@@ -124,6 +134,8 @@ export default function AiProviderSettingsSection({ autoOpen = false }: { autoOp
   // The in-flight (or finished) settings load, so a second expand does not
   // race the first one.
   const loadRef = useRef<Promise<AiSettingsView | null> | null>(null);
+  const loadRequestRef = useRef(0);
+  const resetDialogId = useId();
   // Tags the newest model-list request, so a late response from an older one
   // cannot overwrite the current options.
   const modelsRequestRef = useRef(0);
@@ -187,11 +199,14 @@ export default function AiProviderSettingsSection({ autoOpen = false }: { autoOp
    */
   const loadSettings = (): Promise<AiSettingsView | null> => {
     if (loadRef.current) return loadRef.current;
+    const requestId = loadRequestRef.current + 1;
+    loadRequestRef.current = requestId;
     const pending = (async (): Promise<AiSettingsView | null> => {
       try {
         const loaded = await bridgePromise(() => window.electronAPI.aiGetSettings());
+        if (requestId !== loadRequestRef.current) return null;
         if (!loaded || typeof loaded !== 'object' || !isAiProviderId(loaded.providerId)) {
-          loadRef.current = null;
+          if (requestId === loadRequestRef.current) loadRef.current = null;
           return null;
         }
         useAiSettingsStore.getState().patch({ view: loaded });
@@ -200,7 +215,7 @@ export default function AiProviderSettingsSection({ autoOpen = false }: { autoOp
       } catch {
         // Hostile/unavailable bridge: keep the offline defaults and let a
         // later expand retry the load.
-        loadRef.current = null;
+        if (requestId === loadRequestRef.current) loadRef.current = null;
         return null;
       }
     })();
@@ -368,6 +383,33 @@ export default function AiProviderSettingsSection({ autoOpen = false }: { autoOp
     }
   };
 
+  const resetSettings = async (): Promise<void> => {
+    setBusy(true);
+    setStatus(null);
+    setError(null);
+    try {
+      const resetView = await bridgePromise(() => window.electronAPI.aiResetSettings());
+      if (!resetView || typeof resetView !== 'object' || !isAiProviderId(resetView.providerId)) {
+        setError(t('settings.ai.saveFailed'));
+        return;
+      }
+      loadRef.current = null;
+      loadRequestRef.current += 1;
+      applyView(resetView);
+      restoreSelection(resetView);
+      setApiKey('');
+      setAdvancedByProvider({});
+      setModelOptions([]);
+      setFellBackOffline(false);
+      setStatus(t('settings.ai.resetComplete'));
+    } catch (err) {
+      setError(formatError(err).message);
+    } finally {
+      setBusy(false);
+      setResetDialogOpen(false);
+    }
+  };
+
   /**
    * Persists the provider the user selected, so the editor restores it (and
    * the connected provider it belongs to) on the next start. Selecting a
@@ -527,6 +569,17 @@ export default function AiProviderSettingsSection({ autoOpen = false }: { autoOp
           {!open && active && (
             <AiConnectionStatus connected providerId={active.providerId} model={active.model} testId="settings-ai-header-status" expanded />
           )}
+          <Button
+            size="small"
+            variant="text"
+            color="error"
+            startIcon={<FontAwesomeIcon icon={faRotateLeft} />}
+            onClick={() => setResetDialogOpen(true)}
+            disabled={busy}
+            data-testid="settings-ai-reset"
+          >
+            {t('settings.ai.reset')}
+          </Button>
           <Button size="small" startIcon={<FontAwesomeIcon icon={faGear} />} onClick={toggle} data-testid="settings-ai-toggle">
             {t('settings.ai.configure')}
           </Button>
@@ -751,6 +804,28 @@ export default function AiProviderSettingsSection({ autoOpen = false }: { autoOp
           )}
         </AiWell>
       )}
+      <AppDialog
+        open={resetDialogOpen}
+        onClose={() => setResetDialogOpen(false)}
+        title={t('settings.ai.resetConfirmTitle')}
+        icon={<FontAwesomeIcon icon={faRotateLeft} />}
+        showCloseButton
+        closeButtonAriaLabel={t('shortcuts.close')}
+        ariaLabelledBy={`${resetDialogId}-title`}
+        ariaDescribedBy={`${resetDialogId}-description`}
+        actions={
+          <>
+            <Button onClick={() => setResetDialogOpen(false)} data-testid="settings-ai-reset-cancel">
+              {t('closeConfirm.cancelLabel')}
+            </Button>
+            <Button onClick={resetSettings} color="error" variant="contained" disabled={busy} data-testid="settings-ai-reset-confirm">
+              {t('settings.ai.resetConfirmAction')}
+            </Button>
+          </>
+        }
+      >
+        <DialogContentText id={`${resetDialogId}-description`}>{t('settings.ai.resetConfirmMessage')}</DialogContentText>
+      </AppDialog>
     </AiSettingsSection>
   );
 }

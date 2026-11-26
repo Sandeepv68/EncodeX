@@ -685,7 +685,12 @@
       "removeKey": "Rimuovi chiave",
       "keyRemoved": "La chiave salvata è stata rimossa.",
       "staleStatus": "Le impostazioni sono cambiate. Riconnetti per verificare.",
-      "headerConnected": "Connesso · {{provider}} · {{model}}"
+      "headerConnected": "Connesso · {{provider}} · {{model}}",
+      "reset": "Ripristina le impostazioni predefinite",
+      "resetConfirmTitle": "Reimpostare i provider IA?",
+      "resetConfirmMessage": "Questa operazione rimuove tutte le chiavi API, i modelli, gli endpoint e la cronologia delle connessioni salvati. Il provider di regole integrato diventa attivo. Non è possibile annullare.",
+      "resetConfirmAction": "Reimposta",
+      "resetComplete": "I provider IA sono stati ripristinati alle impostazioni predefinite."
     },
     "desktopNotifications": "Notifiche desktop",
     "desktopNotificationsHint": "Mostra notifiche di sistema quando i lavori in coda vengono completati o non riescono mentre l’app è in background.",

@@ -685,7 +685,12 @@
       "removeKey": "Quitar clave",
       "keyRemoved": "Se eliminó la clave guardada.",
       "staleStatus": "La configuración cambió. Vuelve a conectar para verificar.",
-      "headerConnected": "Conectado · {{provider}} · {{model}}"
+      "headerConnected": "Conectado · {{provider}} · {{model}}",
+      "reset": "Restablecer valores predeterminados",
+      "resetConfirmTitle": "¿Restablecer proveedores de IA?",
+      "resetConfirmMessage": "Esto elimina todas las claves API, modelos, endpoints y el historial de conexiones guardados. El proveedor de reglas integrado pasa a estar activo. Esta acción no se puede deshacer.",
+      "resetConfirmAction": "Restablecer",
+      "resetComplete": "Los proveedores de IA se han restaurado a sus valores predeterminados."
     },
     "desktopNotifications": "Notificaciones de escritorio",
     "desktopNotificationsHint": "Mostrar notificaciones del sistema cuando los trabajos de la cola se completen o fallen mientras la aplicación está en segundo plano.",

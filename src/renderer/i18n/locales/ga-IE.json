@@ -685,7 +685,12 @@
       "removeKey": "Bain an eochair",
       "keyRemoved": "Baineadh an eochair stóráilte.",
       "staleStatus": "Athraíodh na socruithe. Ceangail arís chun fíorú.",
-      "headerConnected": "Ceangailte · {{provider}} · {{model}}"
+      "headerConnected": "Ceangailte · {{provider}} · {{model}}",
+      "reset": "Athshocraigh go dtí na réamhshocruithe",
+      "resetConfirmTitle": "Athshocraigh soláthraithe AI?",
+      "resetConfirmMessage": "Scriosann sé seo gach eochair API, samhail, pointe deiridh agus stair nasc atá sábháilte. Tiocfaidh an soláthraí rialacha ionsuite gníomhach. Ní féidir é seo a chealú.",
+      "resetConfirmAction": "Athshocraigh",
+      "resetComplete": "Tá soláthraithe AI curtha ar ais chuig a réamhshocruithe."
     },
     "desktopNotifications": "Fógraí deisce",
     "desktopNotificationsHint": "Taispeáin fógraí córais nuair a chríochnaíonn nó a theipeann ar phoist scuaine agus an aip sa chúlra.",

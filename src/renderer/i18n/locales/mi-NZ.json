@@ -685,7 +685,12 @@
       "removeKey": "Tango kī",
       "keyRemoved": "Kua tangohia te kī i rongoatia.",
       "staleStatus": "Kua rereke ngā tautuhinga. Hono anō hei whakamana.",
-      "headerConnected": "Kua hono · {{provider}} · {{model}}"
+      "headerConnected": "Kua hono · {{provider}} · {{model}}",
+      "reset": "Tautuhi anō ki ngā taunoa",
+      "resetConfirmTitle": "Tautuhi anō i ngā kaiwhakarato AI?",
+      "resetConfirmMessage": "Ka mukua e tēnei ngā kī API, ngā tauira, ngā pito mutunga me te hitori hononga katoa kua tiakina. Ka noho hāngai te kaiwhakarato ture i hangaia ki roto. Kāore e taea te hoki whakamuri.",
+      "resetConfirmAction": "Tautuhi anō",
+      "resetComplete": "Kua whakahokia ngā kaiwhakarato AI ki ō rātou taunoa."
     },
     "desktopNotifications": "Whakamōhiotanga papamahi",
     "desktopNotificationsHint": "Whakaatuhia ngā whakamōhiotanga pūnaha ina oti, ina rahua rānei ngā mahi tūtira i te wā e rere ana te taupānga ki muri.",

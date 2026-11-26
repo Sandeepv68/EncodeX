@@ -685,7 +685,12 @@
       "removeKey": "Remover chave",
       "keyRemoved": "A chave armazenada foi removida.",
       "staleStatus": "As definições mudaram. Ligue novamente para verificar.",
-      "headerConnected": "Ligado · {{provider}} · {{model}}"
+      "headerConnected": "Ligado · {{provider}} · {{model}}",
+      "reset": "Repor os valores predefinidos",
+      "resetConfirmTitle": "Repor os fornecedores de IA?",
+      "resetConfirmMessage": "Isto remove todas as chaves API, modelos, pontos de extremidade e o histórico de ligações guardados. O fornecedor de regras integrado fica ativo. Esta ação não pode ser anulada.",
+      "resetConfirmAction": "Repor",
+      "resetComplete": "Os fornecedores de IA foram repostos aos valores predefinidos."
     },
     "desktopNotifications": "Notificações da área de trabalho",
     "desktopNotificationsHint": "Mostrar notificações do sistema quando tarefas da fila forem concluídas ou falharem enquanto o aplicativo estiver em segundo plano.",

@@ -685,7 +685,12 @@
       "removeKey": "Fjarlægja lykil",
       "keyRemoved": "Vistaði lykillinn var fjarlægður.",
       "staleStatus": "Stillingar breyttust. Tengdu aftur til að staðfesta.",
-      "headerConnected": "Tengt · {{provider}} · {{model}}"
+      "headerConnected": "Tengt · {{provider}} · {{model}}",
+      "reset": "Endurstilla í sjálfgefið",
+      "resetConfirmTitle": "Endurstilla AI-þjónustuaðila?",
+      "resetConfirmMessage": "Þetta fjarlægir alla vistaða API-lykla, líkön, endapunkta og tengingarsögu. Innbyggði regluþjónninn verður virkur. Ekki er hægt að afturkalla þetta.",
+      "resetConfirmAction": "Endurstilla",
+      "resetComplete": "AI-þjónustuaðilar hafa verið endurstilltir í sjálfgefið ástand."
     },
     "desktopNotifications": "Skjáborðstilkynningar",
     "desktopNotificationsHint": "Sýna kerfistilkynningar þegar verkefni í biðröð klárast eða mistakast á meðan forritið keyrir í bakgrunni.",

@@ -685,7 +685,12 @@
       "removeKey": "Verwyder sleutel",
       "keyRemoved": "Die gestoorde sleutel is verwyder.",
       "staleStatus": "Instellings het verander. Koppel weer om te bevestig.",
-      "headerConnected": "Gekoppel · {{provider}} · {{model}}"
+      "headerConnected": "Gekoppel · {{provider}} · {{model}}",
+      "reset": "Herstel na verstek",
+      "resetConfirmTitle": "Stel KI-verskaffers terug?",
+      "resetConfirmMessage": "Hierdie verwyder alle gestoorde API-sleutels, modelle, eindpunte en verbindingsgeskiedenis. Die ingeboude reëlverskaffer word aktief. Dit kan nie ongedaan gemaak word nie.",
+      "resetConfirmAction": "Herstel",
+      "resetComplete": "KI-verskaffers is na hul verstekinstellings herstel."
     },
     "desktopNotifications": "Werkskermkennisgewings",
     "desktopNotificationsHint": "Wys stelselkennisgewings wanneer tou-take voltooi of misluk terwyl die program in die agtergrond loop.",

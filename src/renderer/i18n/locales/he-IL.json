@@ -685,7 +685,12 @@
       "removeKey": "הסר מפתח",
       "keyRemoved": "המפתח השמור הוסר.",
       "staleStatus": "ההגדרות השתנו. התחבר שוב כדי לאמת.",
-      "headerConnected": "מחובר · {{provider}} · {{model}}"
+      "headerConnected": "מחובר · {{provider}} · {{model}}",
+      "reset": "אפס להגדרות ברירת המחדל",
+      "resetConfirmTitle": "לאפס ספקי בינה מלאכותית?",
+      "resetConfirmMessage": "פעולה זו מסירה את כל מפתחות ה-API, המודלים, נקודות הקצה והיסטוריית החיבורים השמורים. ספק הכללים המובנה יהפוך לפעיל. לא ניתן לבטל את הפעולה.",
+      "resetConfirmAction": "אפס",
+      "resetComplete": "ספקי הבינה המלאכותית הוחזרו להגדרות ברירת המחדל שלהם."
     },
     "desktopNotifications": "התראות שולחן עבודה",
     "desktopNotificationsHint": "הצג התראות מערכת כאשר משימות בתור הושלמו או נכשלו בזמן שהאפליקציה פועלת ברקע.",

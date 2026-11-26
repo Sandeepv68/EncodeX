@@ -685,7 +685,12 @@
       "removeKey": "Xóa khóa",
       "keyRemoved": "Khóa đã lưu đã bị xóa.",
       "staleStatus": "Cài đặt đã thay đổi. Kết nối lại để xác minh.",
-      "headerConnected": "Đã kết nối · {{provider}} · {{model}}"
+      "headerConnected": "Đã kết nối · {{provider}} · {{model}}",
+      "reset": "Đặt lại về mặc định",
+      "resetConfirmTitle": "Đặt lại các nhà cung cấp AI?",
+      "resetConfirmMessage": "Thao tác này xóa tất cả khóa API, mô hình, điểm cuối và lịch sử kết nối đã lưu. Nhà cung cấp quy tắc tích hợp sẽ hoạt động. Không thể hoàn tác.",
+      "resetConfirmAction": "Đặt lại",
+      "resetComplete": "Các nhà cung cấp AI đã được khôi phục về mặc định."
     },
     "desktopNotifications": "Thông báo trên màn hình",
     "desktopNotificationsHint": "Hiển thị thông báo hệ thống khi tác vụ trong hàng đợi hoàn tất hoặc thất bại trong khi ứng dụng chạy nền.",
