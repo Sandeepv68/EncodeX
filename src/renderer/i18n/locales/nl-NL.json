@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "AI-provider configureren",
       "locationNote": "AI-providers worden geconfigureerd in Instellingen.",
-      "notConnected": "Niet verbonden"
+      "notConnected": "Niet verbonden",
+      "noProviderNotice": "Er is geen AI-provider verbonden. Copilot gebruikt ingebouwde regels, dus antwoorden zijn mogelijk minder nauwkeurig en complexe doelen kunnen verkeerd worden gerouteerd. Verbind een AI-provider in Instellingen om het beste uit Copilot te halen."
     },
     "queryLabel": "Zoekterm",
     "queryPlaceholder": "bijv. het deel over prijzen",
@@ -1126,6 +1127,10 @@
       "container": "Container",
       "losslessCopy": "Verliesvrije kopie",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "De ingestelde AI-provider kon dit doel niet routen, daarom is de ingebouwde regelengine gebruikt. Controleer de instellingen van de AI-provider en de logboeken.",
+      "uncertainGoal": "Copilot herkende geen bewerking in dit doel, dus het heeft een standaardconversie gepland. Kies een bewerking in Geavanceerde opties, of verbind een AI-provider voor betere intentiedetectie."
     }
   },
   "leaveConfirm": {

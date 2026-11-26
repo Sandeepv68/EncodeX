@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "I-configure ang AI provider",
       "locationNote": "Ang mga AI provider ay naka-configure sa Settings.",
-      "notConnected": "Walang koneksyon"
+      "notConnected": "Walang koneksyon",
+      "noProviderNotice": "Walang naka-connect na AI provider. Gumagamit ang Copilot ng mga built-in na panuntunan, kaya maaaring hindi gaano katumpak ang mga sagot at maaaring mali ang pag-ruta sa mga kumplikadong layunin. Ikonekta ang isang AI provider sa Settings para masulit ang Copilot."
     },
     "queryLabel": "Pariralang hahanapin",
     "queryPlaceholder": "hal. ang bahagi tungkol sa presyo",
@@ -1126,6 +1127,10 @@
       "container": "Lalagyan",
       "losslessCopy": "Kopyang walang pagkawala",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "Hindi naiproseso ng naka-configure na AI provider ang layuning ito, kaya ginamit ang built-in na rules engine bilang kapalit. Suriin ang mga setting at log ng AI provider.",
+      "uncertainGoal": "Walang natukoy na operasyon ang Copilot sa layuning ito, kaya nagplano ito ng default na conversion. Pumili ng operasyon sa Mga Advanced na Opsyon, o kumonekta ng AI provider para sa mas mahusay na pagtukoy ng layunin."
     }
   },
   "leaveConfirm": {

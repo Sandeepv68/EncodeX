@@ -512,6 +512,13 @@ export default function Copilot() {
               </CopilotAlert>
             </CopilotAlertWrapper>
           )}
+          {!aiConnection && (
+            <CopilotAlertWrapper>
+              <CopilotAlert severity="warning" data-testid="copilot-no-provider-warning">
+                {t('copilot.ai.noProviderNotice')}
+              </CopilotAlert>
+            </CopilotAlertWrapper>
+          )}
           <Conversation
             messages={messages}
             isThinking={isThinking}

@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "Skonfiguruj dostawcę AI",
       "locationNote": "Dostawcy AI są konfigurowani w Ustawieniach.",
-      "notConnected": "Niepołączono"
+      "notConnected": "Niepołączono",
+      "noProviderNotice": "Nie podłączono żadnego dostawcy AI. Copilot używa wbudowanych reguł, więc odpowiedzi mogą być mniej trafne, a złożone cele mogą zostać błędnie przekierowane. Podłącz dostawcę AI w Ustawieniach, aby w pełni wykorzystać Copilot."
     },
     "queryLabel": "Fraza wyszukiwania",
     "queryPlaceholder": "np. część o cenach",
@@ -1126,6 +1127,10 @@
       "container": "Kontener",
       "losslessCopy": "Kopia bezstratna",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "Skonfigurowany dostawca AI nie potrafił skierować tego celu, dlatego zamiast niego użyto wbudowanego silnika reguł. Sprawdź ustawienia dostawcy AI i dzienniki.",
+      "uncertainGoal": "Copilot nie rozpoznał żadnej operacji w tym celu, więc zaplanował domyślną konwersję. Wybierz operację w Opcjach zaawansowanych lub podłącz dostawcę AI, aby lepiej rozpoznawać intencje."
     }
   },
   "leaveConfirm": {

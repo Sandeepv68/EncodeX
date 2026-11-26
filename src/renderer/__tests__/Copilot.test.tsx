@@ -242,6 +242,7 @@ describe('Copilot page', () => {
   it('shows the disconnected AI status without fetching settings on mount', async () => {
     renderPage('Copilot');
     expect(window.electronAPI.aiGetSettings).not.toHaveBeenCalled();
+    expect(screen.getByTestId('copilot-no-provider-warning')).toHaveTextContent('copilot.ai.noProviderNotice');
     fireEvent.click(screen.getByTestId('copilot-ai-status-button'));
     const status = await screen.findByTestId('copilot-ai-status');
     expect(status).toHaveTextContent('copilot.ai.notConnected');
@@ -316,6 +317,7 @@ describe('Copilot page', () => {
     // (the interpolated provider/model live in the localized string).
     expect(status).toHaveTextContent('settings.ai.headerConnected');
     expect(status).not.toHaveTextContent('copilot.ai.notConnected');
+    expect(screen.queryByTestId('copilot-no-provider-warning')).not.toBeInTheDocument();
     expect(window.electronAPI.aiGetSettings).not.toHaveBeenCalled();
   });
 

@@ -37,8 +37,11 @@ export type IpcSender = (channel: string, ...args: unknown[]) => void;
  * @property {RoutedOperation} routed - The chosen operation.
  * @property {boolean} aiFallback - True when an AI provider was available but
  *   returned nothing usable, so the deterministic router was used.
+ * @property {boolean} uncertain - True when the deterministic router found no
+ *   operation keyword and fell back to its default `convert` operation.
  */
 export interface RouteDecision {
   routed: RoutedOperation;
   aiFallback: boolean;
+  uncertain: boolean;
 }

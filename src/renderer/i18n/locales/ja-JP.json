@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "AIプロバイダーを設定",
       "locationNote": "AIプロバイダーは「設定」で構成します。",
-      "notConnected": "未接続"
+      "notConnected": "未接続",
+      "noProviderNotice": "AI プロバイダーが接続されていません。Copilot は組み込みルールを使用するため、回答の精度が下がったり、複雑な目標が誤って振り分けられたりする可能性があります。Copilot を最大限に活用するには、「設定」で AI プロバイダーを接続してください。"
     },
     "queryLabel": "検索フレーズ",
     "queryPlaceholder": "例: 価格設定の部分",
@@ -1126,6 +1127,10 @@
       "container": "コンテナー",
       "losslessCopy": "ロスレスコピー",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "設定済みのAIプロバイダーがこの目標を適切な操作へ振り分けられなかったため、代わりに組み込みのルールエンジンが使われました。AIプロバイダーの設定とログを確認してください。",
+      "uncertainGoal": "Copilotがこの目標から操作を認識できなかったため、既定の変換を計画しました。意図をより正確に把握するには、詳細オプションで操作を選ぶか、AIプロバイダーを接続してください。"
     }
   },
   "leaveConfirm": {

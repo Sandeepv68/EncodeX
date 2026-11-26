@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "配置 AI 提供商",
       "locationNote": "AI 提供商在设置中配置。",
-      "notConnected": "未连接"
+      "notConnected": "未连接",
+      "noProviderNotice": "尚未连接 AI 提供商。Copilot 使用内置规则，因此回答可能不够准确，复杂目标也可能被错误路由。请在“设置”中连接 AI 提供商，以充分利用 Copilot。"
     },
     "queryLabel": "搜索短语",
     "queryPlaceholder": "例如：关于定价的部分",
@@ -1126,6 +1127,10 @@
       "container": "容器",
       "losslessCopy": "无损复制",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "所配置的 AI 提供商无法处理此目标，因此已改用内置规则引擎。请检查 AI 提供商的设置和日志。",
+      "uncertainGoal": "Copilot 未在此目标中识别到任何操作，因此已规划默认转换。请在“高级选项”中选择一个操作，或连接 AI 提供商以获得更准确的意图识别。"
     }
   },
   "leaveConfirm": {

@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "Määritä tekoälyn tarjoaja",
       "locationNote": "Tekoälyn tarjoajat määritetään asetuksissa.",
-      "notConnected": "Ei yhteyttä"
+      "notConnected": "Ei yhteyttä",
+      "noProviderNotice": "Tekoälypalveluntarjoajaa ei ole yhdistetty. Copilot käyttää sisäänrakennettuja sääntöjä, joten vastaukset voivat olla vähemmän tarkkoja ja monimutkaiset tavoitteet voidaan reitittää väärin. Yhdistä tekoälypalveluntarjoaja asetuksissa saadaksesi parhaan hyödyn Copilotista."
     },
     "queryLabel": "Hakulause",
     "queryPlaceholder": "esim. osuus hinnoittelusta",
@@ -1126,6 +1127,10 @@
       "container": "Säilö",
       "losslessCopy": "Häviötön kopio",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "Määritetty AI-palveluntarjoaja ei pystynyt reitittämään tätä tavoitetta, joten sen sijaan käytettiin sisäänrakennettua sääntömoottoria. Tarkista AI-palveluntarjoajan asetukset ja lokit.",
+      "uncertainGoal": "Copilot ei tunnistanut tavoitteesta mitään toimintoa, joten se suunnitteli oletusmuunnoksen. Valitse toiminto Lisäasetuksista tai yhdistä AI-palveluntarjoaja paremman aikomuksentunnistuksen saamiseksi."
     }
   },
   "leaveConfirm": {

@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "Cumraigh soláthraí AI",
       "locationNote": "Cumraítear soláthraithe AI sna Socruithe.",
-      "notConnected": "Gan nasc"
+      "notConnected": "Gan nasc",
+      "noProviderNotice": "Níl aon soláthraí AI ceangailte. Úsáideann Copilot rialacha ionsuite, agus mar sin d’fhéadfadh na freagraí a bheith níos lú cruinn agus d’fhéadfadh spriocanna casta a bheith curtha sa treo mícheart. Ceangail soláthraí AI sna Socruithe chun an leas is fearr a bhaint as Copilot."
     },
     "queryLabel": "Frása cuardaigh",
     "queryPlaceholder": "m.sh. an chuid faoi phraghsáil",
@@ -1126,6 +1127,10 @@
       "container": "Coimeádán",
       "losslessCopy": "Cóipeáil gan chaillteanas",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "Níorbh fhéidir leis an soláthraí AI cumtha an sprioc seo a ródáil, mar sin úsáideadh an t-inneall rialacha ionsuite ina ionad. Seiceáil socruithe an tsoláthraí AI agus na logaí.",
+      "uncertainGoal": "Níor aithin Copilot aon oibríocht sa sprioc seo, mar sin phleanáil sé comhshó réamhshocraithe. Roghnaigh oibríocht in Ardroghanna, nó ceangail soláthraí AI chun rún a bhrath níos fearr."
     }
   },
   "leaveConfirm": {

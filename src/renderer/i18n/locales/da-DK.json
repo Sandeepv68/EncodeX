@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "Konfigurér AI-udbyder",
       "locationNote": "AI-udbydere konfigureres i Indstillinger.",
-      "notConnected": "Ikke forbundet"
+      "notConnected": "Ikke forbundet",
+      "noProviderNotice": "Der er ikke tilsluttet nogen AI-udbyder. Copilot bruger indbyggede regler, så svarene kan være mindre præcise, og komplekse mål kan blive dirigeret forkert. Tilslut en AI-udbyder i Indstillinger for at få mest ud af Copilot."
     },
     "queryLabel": "Søgefraser",
     "queryPlaceholder": "fx delen om priser",
@@ -1126,6 +1127,10 @@
       "container": "Container",
       "losslessCopy": "Tabsfri kopiering",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "Den konfigurerede AI-udbyder kunne ikke rute dette mål, så den indbyggede regelmaskine blev anvendt i stedet. Tjek AI-udbyderens indstillinger og logfiler.",
+      "uncertainGoal": "Copilot genkendte ingen handling i dette mål, så den planlagde en standardkonvertering. Vælg en handling under Avancerede indstillinger, eller tilslut en AI-udbyder for bedre hensigtsgenkendelse."
     }
   },
   "leaveConfirm": {

@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "Konfigurasi penyedia AI",
       "locationNote": "Penyedia AI dikonfigurasi di Pengaturan.",
-      "notConnected": "Tidak terhubung"
+      "notConnected": "Tidak terhubung",
+      "noProviderNotice": "Tidak ada penyedia AI yang terhubung. Copilot menggunakan aturan bawaan, sehingga jawaban mungkin kurang akurat dan tujuan kompleks mungkin salah dialihkan. Hubungkan penyedia AI di Pengaturan untuk memanfaatkan Copilot secara maksimal."
     },
     "queryLabel": "Frasa pencarian",
     "queryPlaceholder": "mis. bagian tentang harga",
@@ -1126,6 +1127,10 @@
       "container": "Wadah",
       "losslessCopy": "Salin lossless",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "Penyedia AI yang dikonfigurasi tidak dapat menentukan rute untuk tujuan ini, sehingga mesin aturan bawaan digunakan. Periksa pengaturan penyedia AI dan log.",
+      "uncertainGoal": "Copilot tidak mengenali operasi apa pun dalam tujuan ini, jadi ia merencanakan konversi default. Pilih operasi di Opsi lanjutan, atau hubungkan penyedia AI untuk deteksi maksud yang lebih akurat."
     }
   },
   "leaveConfirm": {

@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "Configure AI provider",
       "locationNote": "AI providers are configured in Settings.",
-      "notConnected": "Not connected"
+      "notConnected": "Not connected",
+      "noProviderNotice": "No AI provider is connected. Copilot uses built-in rules, so responses may be less accurate and complex goals may be routed incorrectly. Connect an AI provider in Settings to make the best use of Copilot."
     },
     "queryLabel": "Search phrase",
     "queryPlaceholder": "e.g. the part about pricing",
@@ -1126,6 +1127,10 @@
       "container": "Container",
       "losslessCopy": "Lossless copy",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "The configured AI provider could not route this goal, so the built-in rules engine was used instead. Check the AI provider settings and logs.",
+      "uncertainGoal": "Copilot did not recognize an operation in this goal, so it planned a default conversion. Choose an operation in Advanced options, or connect an AI provider for better intent detection."
     }
   },
   "leaveConfirm": {

@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "Konfigurer KI-leverandør",
       "locationNote": "KI-leverandører konfigureres i Innstillinger.",
-      "notConnected": "Ikke koblet"
+      "notConnected": "Ikke koblet",
+      "noProviderNotice": "Ingen KI-leverandør er tilkoblet. Copilot bruker innebygde regler, så svarene kan være mindre nøyaktige, og komplekse mål kan bli feilaktig rutet. Koble til en KI-leverandør i Innstillinger for å få mest ut av Copilot."
     },
     "queryLabel": "Søkefrase",
     "queryPlaceholder": "f.eks. delen om priser",
@@ -1126,6 +1127,10 @@
       "container": "Container",
       "losslessCopy": "Tapfri kopi",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "Den konfigurerte AI-leverandøren kunne ikke rute dette målet, så den innebygde regelmotoren ble brukt i stedet. Sjekk AI-leverandørens innstillinger og logger.",
+      "uncertainGoal": "Copilot gjenkjente ingen operasjon i dette målet, så den planla en standardkonvertering. Velg en operasjon i Avanserte alternativer, eller koble til en AI-leverandør for å gjenkjenne intensjonen bedre."
     }
   },
   "leaveConfirm": {

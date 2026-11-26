@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "Configura provider IA",
       "locationNote": "I provider IA si configurano nelle Impostazioni.",
-      "notConnected": "Non connesso"
+      "notConnected": "Non connesso",
+      "noProviderNotice": "Nessun provider IA è connesso. Copilot usa regole integrate, quindi le risposte potrebbero essere meno accurate e gli obiettivi complessi potrebbero essere indirizzati in modo errato. Collega un provider IA nelle Impostazioni per sfruttare al meglio Copilot."
     },
     "queryLabel": "Frase di ricerca",
     "queryPlaceholder": "es. la parte sui prezzi",
@@ -1126,6 +1127,10 @@
       "container": "Contenitore",
       "losslessCopy": "Copia senza perdita",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "Il provider AI configurato non è riuscito a instradare questo obiettivo, quindi è stato usato il motore di regole integrato. Controlla le impostazioni del provider AI e i registri.",
+      "uncertainGoal": "Copilot non ha riconosciuto alcuna operazione in questo obiettivo, quindi ha pianificato una conversione predefinita. Scegli un'operazione in Opzioni avanzate oppure collega un provider AI per una migliore individuazione delle intenzioni."
     }
   },
   "leaveConfirm": {

@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "Configurar fornecedor de IA",
       "locationNote": "Os fornecedores de IA são configurados nas Definições.",
-      "notConnected": "Não ligado"
+      "notConnected": "Não ligado",
+      "noProviderNotice": "Nenhum fornecedor de IA está ligado. O Copilot utiliza regras incorporadas, pelo que as respostas podem ser menos precisas e os objetivos complexos podem ser encaminhados incorretamente. Ligue um fornecedor de IA nas Definições para tirar o máximo partido do Copilot."
     },
     "queryLabel": "Frase de pesquisa",
     "queryPlaceholder": "por exemplo, a parte sobre preços",
@@ -1126,6 +1127,10 @@
       "container": "Contentor",
       "losslessCopy": "Cópia sem perdas",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "O fornecedor de IA configurado não conseguiu encaminhar este objetivo, pelo que foi utilizado o motor de regras incorporado. Verifique as definições do fornecedor de IA e os registos.",
+      "uncertainGoal": "O Copilot não reconheceu nenhuma operação neste objetivo, pelo que planeou uma conversão predefinida. Escolha uma operação nas Opções avançadas ou ligue um fornecedor de IA para detetar intenções com mais precisão."
     }
   },
   "leaveConfirm": {

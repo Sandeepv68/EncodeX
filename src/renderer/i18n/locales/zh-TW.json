@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "設定 AI 提供者",
       "locationNote": "AI 提供者會在設定中設定。",
-      "notConnected": "未連線"
+      "notConnected": "未連線",
+      "noProviderNotice": "尚未連接 AI 提供者。Copilot 使用內建規則，因此回覆可能不夠準確，複雜目標也可能被錯誤路由。請在「設定」中連接 AI 提供者，以充分運用 Copilot。"
     },
     "queryLabel": "搜尋片語",
     "queryPlaceholder": "例如：關於定價的部分",
@@ -1126,6 +1127,10 @@
       "container": "容器",
       "losslessCopy": "無損複製",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "所設定的 AI 提供者無法處理此目標，因此已改用內建規則引擎。請檢查 AI 提供者的設定與記錄檔。",
+      "uncertainGoal": "Copilot 未在此目標中識別到任何操作，因此已規劃預設轉換。請在「進階選項」中選擇一個操作，或連接 AI 提供者以獲得更準確的意圖識別。"
     }
   },
   "leaveConfirm": {

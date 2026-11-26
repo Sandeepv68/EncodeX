@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "AI 공급자 구성",
       "locationNote": "AI 공급자는 설정에서 구성됩니다.",
-      "notConnected": "연결되지 않음"
+      "notConnected": "연결되지 않음",
+      "noProviderNotice": "연결된 AI 공급자가 없습니다. Copilot은 내장 규칙을 사용하므로 응답이 덜 정확할 수 있고 복잡한 목표가 잘못 분류될 수 있습니다. Copilot을 최대한 활용하려면 설정에서 AI 공급자를 연결하세요."
     },
     "queryLabel": "검색 구문",
     "queryPlaceholder": "예: 가격 책정에 관한 부분",
@@ -1126,6 +1127,10 @@
       "container": "컨테이너",
       "losslessCopy": "무손실 복사",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "구성된 AI 공급자가 이 목표를 라우팅하지 못해 내장 규칙 엔진이 대신 사용되었습니다. AI 공급자 설정과 로그를 확인하세요.",
+      "uncertainGoal": "Copilot이 이 목표에서 작업을 인식하지 못해 기본 변환을 계획했습니다. 의도를 더 정확히 파악하려면 고급 옵션에서 작업을 선택하거나 AI 공급자를 연결하세요."
     }
   },
   "leaveConfirm": {

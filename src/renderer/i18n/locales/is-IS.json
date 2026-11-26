@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "Skerpðu AI-þjónustuaðila",
       "locationNote": "AI-þjónustuaðilar eru stilltir í Stillingum.",
-      "notConnected": "Ekki tengt"
+      "notConnected": "Ekki tengt",
+      "noProviderNotice": "Enginn AI-þjónustuaðili er tengdur. Copilot notar innbyggðar reglur, þannig að svör geta verið ónákvæmari og flókin markmið geta verið rangleið. Tengdu AI-þjónustuaðila í Stillingum til að nýta Copilot sem best."
     },
     "queryLabel": "Leitarorð",
     "queryPlaceholder": "t.d. hlutann um verðlagningu",
@@ -1126,6 +1127,10 @@
       "container": "Gáma",
       "losslessCopy": "Tapgjaldslaus afritun",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "Stilltur AI-þjónustuaðili gat ekki fundið leið fyrir þetta markmið, svo innbyggða regluvélin var notuð í staðinn. Skoðaðu stillingar AI-þjónustuaðilans og annálana.",
+      "uncertainGoal": "Copilot þekkti enga aðgerð í þessu markmiði, svo sjálfgefaðri umbreytingu var lagt upp. Veldu aðgerð í Ítarlegum valkostum eða tengdu AI-þjónustuaðila til að greina ásetning markmiðsins betur."
     }
   },
   "leaveConfirm": {

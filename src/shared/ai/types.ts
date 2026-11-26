@@ -895,6 +895,8 @@ export interface FrameAnalysisOptions {
  * @property {string[]} rationale - Why the operation was chosen.
  * @property {number} confidence - Confidence in `[0, 1]`.
  * @property {AIProviderId} providerId - The provider that routed it.
+ * @property {boolean} [uncertain] - Set by the rules router when no operation
+ *   keyword was recognized in the goal, so the default `convert` was chosen.
  */
 export interface RoutedOperation {
   operation: CopilotOperation;
@@ -902,6 +904,7 @@ export interface RoutedOperation {
   rationale: string[];
   confidence: number;
   providerId: AIProviderId;
+  uncertain?: boolean;
 }
 
 /**

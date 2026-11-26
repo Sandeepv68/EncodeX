@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "Konfigurasikan pembekal AI",
       "locationNote": "Pembekal AI dikonfigurasikan dalam Tetapan.",
-      "notConnected": "Tidak bersambung"
+      "notConnected": "Tidak bersambung",
+      "noProviderNotice": "Tiada penyedia AI yang disambungkan. Copilot menggunakan peraturan terbina dalam, jadi jawapan mungkin kurang tepat dan matlamat yang kompleks mungkin salah dilaluan. Sambungkan penyedia AI dalam Tetapan untuk memanfaatkan Copilot sepenuhnya."
     },
     "queryLabel": "Frasa carian",
     "queryPlaceholder": "cth. bahagian tentang harga",
@@ -1126,6 +1127,10 @@
       "container": "Bekas",
       "losslessCopy": "Salinan tanpa kehilangan",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "Pembekal AI yang dikonfigurasikan gagal menghalakan matlamat ini, jadi enjin peraturan terbina dalam digunakan sebagai gantinya. Semak tetapan pembekal AI dan log.",
+      "uncertainGoal": "Copilot tidak mengesan sebarang operasi dalam matlamat ini, jadi ia merancang penukaran lalai. Pilih operasi dalam Pilihan lanjutan, atau sambungkan pembekal AI untuk pengesanan niat yang lebih baik."
     }
   },
   "leaveConfirm": {

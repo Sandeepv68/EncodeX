@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "AI-verskaffer instel",
       "locationNote": "AI-verskaffers word in Instellings opgestel.",
-      "notConnected": "Nie gekoppel nie"
+      "notConnected": "Nie gekoppel nie",
+      "noProviderNotice": "Geen AI-verskaffer is gekoppel nie. Copilot gebruik ingeboude reëls, dus kan antwoorde minder akkuraat wees en komplekse doelwitte verkeerd gerouteer word. Koppel 'n AI-verskaffer in Instellings om Copilot optimaal te gebruik."
     },
     "queryLabel": "Soekfrase",
     "queryPlaceholder": "bv. die deel oor pryse",
@@ -1126,6 +1127,10 @@
       "container": "Houer",
       "losslessCopy": "Verlieslose kopie",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "Die gekonfigureerde AI-verskaffer kon nie hierdie doelwit roeteer nie, so die ingeboude reëlenjin is eerder gebruik. Kontroleer die AI-verskaffer se instellings en logboeke.",
+      "uncertainGoal": "Copilot het geen operasie in hierdie doelwit herken nie, so dit het 'n verstekomskakeling beplan. Kies 'n operasie in Gevorderde opsies, of koppel 'n AI-verskaffer vir beter bedoelingherkenning."
     }
   },
   "leaveConfirm": {

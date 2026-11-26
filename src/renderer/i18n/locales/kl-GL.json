@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "AI-nik inissisimasut aaqqissuerit",
       "locationNote": "AI-nik inissisimasut Aaqqissuutissat iluani aaqqissorneqarput.",
-      "notConnected": "Atortuumaanngillat"
+      "notConnected": "Atortuumaanngillat",
+      "noProviderNotice": "AI-mik inissisimasut ikkunngillat. Copilot atorpoq ilusilersuutinik aqqissuisunik, tamannalu pissangaaq oqaluussit nukereersinnaallutik aamma angitigisut sumut aqqutigineqarsinnaallutik. AI-mik inissisimasut Aaqqissuutissat iluani ikkukkit Copilot pitsaasumik atorniarsinnaavat."
     },
     "queryLabel": "Ujarleqqissaarut",
     "queryPlaceholder": "soorlu prisinik oqaluttuassaaq",
@@ -1126,6 +1127,10 @@
       "container": "Containeri",
       "losslessCopy": "Naggarsunngitsoq copy",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "Aaqqissorneqartoq AI-mik inissisimasoq anguniakkaq manna sumut aqqutigineqarsinnaanngilaq; tamannalu ilusilersuutinik aqqissuisut aqqissorsuat atorneqarpoq. AI-nik inissisimasut aaqqissuussaat allaaserisallu misissuakkit.",
+      "uncertainGoal": "Copilot-p anguniakkami manna suliniutinik ilisimasaqanngilaq, tamannalu piaartumik allanngortitsinissaq plaaneqarpoq. Toqqagassat qaffasissat iluani suliniut toqqaruk imaluunniit AI-mik inissisimasoq ikkukkit anguniakkamut isumaa pitsaasumik ilisarnissamut."
     }
   },
   "leaveConfirm": {

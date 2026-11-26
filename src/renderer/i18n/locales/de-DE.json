@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "KI-Anbieter konfigurieren",
       "locationNote": "KI-Anbieter werden in den Einstellungen konfiguriert.",
-      "notConnected": "Nicht verbunden"
+      "notConnected": "Nicht verbunden",
+      "noProviderNotice": "Es ist kein KI-Anbieter verbunden. Copilot verwendet integrierte Regeln, daher sind die Antworten möglicherweise weniger genau und komplexe Ziele werden möglicherweise falsch zugeordnet. Verbinden Sie einen KI-Anbieter in den Einstellungen, um Copilot optimal zu nutzen."
     },
     "queryLabel": "Suchbegriff",
     "queryPlaceholder": "z. B. den Teil zum Preis",
@@ -1126,6 +1127,10 @@
       "container": "Container",
       "losslessCopy": "Verlustfreie Kopie",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "Der konfigurierte AI-Anbieter konnte dieses Ziel nicht routen, weshalb stattdessen die integrierte Regel-Engine zum Einsatz kam. Prüfen Sie die AI-Anbieter-Einstellungen und die Protokolle.",
+      "uncertainGoal": "Copilot hat in diesem Ziel keine Operation erkannt und daher eine Standardkonvertierung geplant. Wählen Sie eine Operation in den erweiterten Optionen oder verbinden Sie einen AI-Anbieter für eine bessere Absichtserkennung."
     }
   },
   "leaveConfirm": {

@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "Định cấu hình nhà cung cấp AI",
       "locationNote": "Các nhà cung cấp AI được định cấu hình trong Cài đặt.",
-      "notConnected": "Chưa kết nối"
+      "notConnected": "Chưa kết nối",
+      "noProviderNotice": "Chưa kết nối nhà cung cấp AI nào. Copilot dùng các quy tắc tích hợp sẵn, nên câu trả lời có thể kém chính xác hơn và các mục tiêu phức tạp có thể bị định tuyến sai. Hãy kết nối nhà cung cấp AI trong Cài đặt để sử dụng Copilot hiệu quả nhất."
     },
     "queryLabel": "Cụm từ tìm kiếm",
     "queryPlaceholder": "vd: phần về định giá",
@@ -1126,6 +1127,10 @@
       "container": "Vùng chứa",
       "losslessCopy": "Sao chép không mất dữ liệu",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "Nhà cung cấp AI đã cấu hình không thể xử lý mục tiêu này, nên hệ thống quy tắc tích hợp sẵn đã được sử dụng thay thế. Hãy kiểm tra cài đặt và nhật ký của nhà cung cấp AI.",
+      "uncertainGoal": "Copilot không nhận diện được thao tác nào trong mục tiêu này, nên đã lên kế hoạch một chuyển đổi mặc định. Hãy chọn một thao tác trong Tùy chọn nâng cao, hoặc kết nối nhà cung cấp AI để nhận diện ý định chính xác hơn."
     }
   },
   "leaveConfirm": {

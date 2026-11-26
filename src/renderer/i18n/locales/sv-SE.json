@@ -1095,7 +1095,8 @@
     "ai": {
       "configure": "Konfigurera AI-leverantör",
       "locationNote": "AI-leverantörer konfigureras i Inställningar.",
-      "notConnected": "Inte ansluten"
+      "notConnected": "Inte ansluten",
+      "noProviderNotice": "Ingen AI-leverantör är ansluten. Copilot använder inbyggda regler, så svaren kan bli mindre exakta och komplexa mål kan dirigeras fel. Anslut en AI-leverantör i Inställningar för att få ut det mesta av Copilot."
     },
     "queryLabel": "Sökfras",
     "queryPlaceholder": "t.ex. delen om prissättning",
@@ -1126,6 +1127,10 @@
       "container": "Container",
       "losslessCopy": "Förlustfri kopia",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "Den konfigurerade AI-leverantören kunde inte hantera det här målet, så den inbyggda regelmotorn användes i stället. Kontrollera AI-leverantörens inställningar och loggar.",
+      "uncertainGoal": "Copilot kunde inte identifiera någon åtgärd i det här målet, så en standardkonvertering planerades. Välj en åtgärd under Avancerade alternativ, eller anslut en AI-leverantör för bättre avsiktsidentifiering."
     }
   },
   "leaveConfirm": {
