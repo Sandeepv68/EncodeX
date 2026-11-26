@@ -70,9 +70,7 @@ function emit(type: ToastType, key: string, options: NotifyOptions = {}): void {
   const action = options.action
     ? { label: options.action.labelKey, labelKey: options.action.labelKey, onClick: options.action.onClick }
     : undefined;
-  useToastStore
-    .getState()
-    .addToast(type, key, detail, options.duration, action, options.values, options.detailValues);
+  useToastStore.getState().addToast(type, key, detail, options.duration, action, options.values, options.detailValues);
 }
 
 /**

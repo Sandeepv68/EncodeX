@@ -549,9 +549,7 @@ describe('BatchQueue', () => {
     expect(
       useToastStore
         .getState()
-        .toasts.some(
-          (t) => t.type === 'success' && t.message === 'batchQueue.finished' && t.values?.done === 1 && t.values?.failed === 0,
-        ),
+        .toasts.some((t) => t.type === 'success' && t.message === 'batchQueue.finished' && t.values?.done === 1 && t.values?.failed === 0),
     ).toBe(true);
   });
 

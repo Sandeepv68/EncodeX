@@ -124,45 +124,33 @@ export function useAutomations(): UseAutomationsResult {
     return saved;
   }, []);
 
-  const saveAs = useCallback(
-    async (name: string) => {
-      const saved = await useAutomationStore.getState().saveAutomationAs(name);
-      if (saved) notify.success('automations.saveAsSuccess', { values: { name: saved.name } });
-      else notify.error('automations.saveAsFailed');
-      return saved;
-    },
-    [],
-  );
+  const saveAs = useCallback(async (name: string) => {
+    const saved = await useAutomationStore.getState().saveAutomationAs(name);
+    if (saved) notify.success('automations.saveAsSuccess', { values: { name: saved.name } });
+    else notify.error('automations.saveAsFailed');
+    return saved;
+  }, []);
 
-  const load = useCallback(
-    async (id: string) => {
-      const loaded = await useAutomationStore.getState().loadAutomation(id);
-      if (loaded) notify.info('automations.loadSuccess', { values: { name: loaded.name } });
-      else notify.error('automations.loadFailed');
-      return loaded;
-    },
-    [],
-  );
+  const load = useCallback(async (id: string) => {
+    const loaded = await useAutomationStore.getState().loadAutomation(id);
+    if (loaded) notify.info('automations.loadSuccess', { values: { name: loaded.name } });
+    else notify.error('automations.loadFailed');
+    return loaded;
+  }, []);
 
-  const remove = useCallback(
-    async (id: string) => {
-      const deleted = await useAutomationStore.getState().deleteAutomation(id);
-      if (deleted) notify.success('automations.deleteSuccess');
-      else notify.error('automations.deleteFailed');
-      return deleted;
-    },
-    [],
-  );
+  const remove = useCallback(async (id: string) => {
+    const deleted = await useAutomationStore.getState().deleteAutomation(id);
+    if (deleted) notify.success('automations.deleteSuccess');
+    else notify.error('automations.deleteFailed');
+    return deleted;
+  }, []);
 
-  const duplicate = useCallback(
-    async (id: string) => {
-      const duplicated = await useAutomationStore.getState().duplicateAutomation(id);
-      if (duplicated) notify.success('automations.duplicateSuccess', { values: { name: duplicated.name } });
-      else notify.error('automations.duplicateFailed');
-      return duplicated;
-    },
-    [],
-  );
+  const duplicate = useCallback(async (id: string) => {
+    const duplicated = await useAutomationStore.getState().duplicateAutomation(id);
+    if (duplicated) notify.success('automations.duplicateSuccess', { values: { name: duplicated.name } });
+    else notify.error('automations.duplicateFailed');
+    return duplicated;
+  }, []);
 
   const importDefinition = useCallback(async () => {
     const imported = await useAutomationStore.getState().importAutomation();
@@ -171,15 +159,12 @@ export function useAutomations(): UseAutomationsResult {
     return imported;
   }, []);
 
-  const exportDefinition = useCallback(
-    async (id: string) => {
-      const path = await useAutomationStore.getState().exportAutomation(id);
-      if (path) notify.success('automations.exportSuccess');
-      else notify.error('automations.exportFailed');
-      return path;
-    },
-    [],
-  );
+  const exportDefinition = useCallback(async (id: string) => {
+    const path = await useAutomationStore.getState().exportAutomation(id);
+    if (path) notify.success('automations.exportSuccess');
+    else notify.error('automations.exportFailed');
+    return path;
+  }, []);
 
   const probeInput = useCallback(
     async (pathOverride?: string) => {
