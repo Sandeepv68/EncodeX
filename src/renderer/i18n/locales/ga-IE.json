@@ -530,7 +530,40 @@
     "remuxed": "Críochnaíodh an t-athchumhdach",
     "demuxed": "Asbhaineadh na sruthanna go rathúil",
     "remuxQueued": "Cuireadh an t-athchumhdach leis an scuaine Mux",
-    "demuxQueued": "Cuireadh na sruthanna leis an scuaine Mux"
+    "demuxQueued": "Cuireadh na sruthanna leis an scuaine Mux",
+    "devScreenshotSaved": "Gabháil scáileáin forbróra sábháilte",
+    "devScreenshotFailed": "Gabháil scáileáin forbróra teipthe",
+    "error": {
+      "FILE_NOT_FOUND": "Níorbh fhéidir an comhad roghnaithe a aimsiú. B'fhéidir gur bogadh nó gur scriosadh é.",
+      "FFMPEG_NOT_FOUND": "Níor aimsíodh an comhad inrite FFmpeg. Suiteáil FFmpeg nó seiceáil an comhad inrite atá san áireamh.",
+      "FFPROBE_NOT_FOUND": "Níor aimsíodh an comhad inrite FFprobe. Ní féidir faisnéis faoi na meáin a léamh.",
+      "CONVERSION_FAILED": "Theip ar an bpróiseas comhshó. Seiceáil formáid an chomhaid agus na paraiméadair.",
+      "INVALID_FORMAT": "Ní thacaítear le formáid an chomhaid nó níl an síneadh aschuir ag teacht leis an codec roghnaithe.",
+      "PROBE_FAILED": "Níorbh fhéidir faisnéis faoi chomhad na meán a léamh. B'fhéidir go bhfuil an comhad truaillithe nó i bhformáid nach dtacaítear léi.",
+      "QUEUE_ERROR": "Theip ar phost sa scuaine bhaisc. Féach ar shonraí na bpostanna aonair le tuilleadh eolais a fháil.",
+      "PLAYER_ERROR": "Tháinig earráid ar an seinnteoir físeáin. B'fhéidir go bhfuil an comhad truaillithe nó i bhformáid nach dtacaítear léi.",
+      "CANCELLED": "Chuir an t-úsáideoir an oibríocht ar ceal.",
+      "BMF_NOT_AVAILABLE": "Níl an creat BMF suiteáilte. Suiteáil uirlisí BMF CLI nó bain úsáid as traschódóir eile.",
+      "OUTPUT_NOT_SPECIFIED": "Sonraigh comhad aschuir sula dtosaíonn an comhshó.",
+      "INPUT_NOT_SPECIFIED": "Roghnaigh comhad ionchuir sula dtosaíonn an comhshó.",
+      "OUTPUT_EXISTS": "Tá an comhad aschuir ann cheana féin. Cumasaigh an forscríobh chun é a athsholáthar.",
+      "INVALID_QUEUE_FILE": "Níorbh fhéidir an comhad scuaine a léamh. B'fhéidir go bhfuil sé truaillithe nó i bhformáid nach dtacaítear léi.",
+      "INVALID_AUTOMATION_FILE": "Níorbh fhéidir an comhad uathoibrithe a léamh. B'fhéidir go bhfuil sé truaillithe nó i bhformáid nach dtacaítear léi.",
+      "FILTERS_REQUIRE_RE_ENCODE": "Éilíonn scagairí físeáin athchódú. Díchumasaigh an chóipeáil gan chaillteanas (stream copy) chun na scagairí a chur i bhfeidhm.",
+      "INVALID_VIDEO_FILTERS": "Tá slabhra scagairí físeáin nó an réamhshocrú neamhbhailí. Seiceáil na nathracha scagairí agus na hainmneacha réamhshocraithe.",
+      "STREAM_NOT_FOUND": "Níl an sruth iarrtha sa chomhad foinse. Seiceáil roghnú an tsrutha.",
+      "INCOMPATIBLE_CONTAINER": "Ní féidir sruth roghnaithe a stóráil sa container roghnaithe gan athchódú.",
+      "AUXILIARY_INPUT_NOT_FOUND": "Níorbh fhéidir an comhad breise fotheidil, fuaime, caibidlí nó clúdaigh a aimsiú.",
+      "PERMISSION_DENIED": "Cead diúltaithe. B'fhéidir nach bhfuil rochtain ag an bhfeidhmchlár ar an gcomhad nó ar an bhfillteán roghnaithe.",
+      "OPERATION_TIMED_OUT": "Thóg an oibríocht an iomarca ama agus stopadh í. B'fhéidir go bhfuil an comhad truaillithe nó go bhfuil ualach mór ar an gcóras.",
+      "UNSAFE_ARGUMENTS": "Bhí argóintí sa iarratas nach bhfuil ceadaithe (braitheadh metacarachtair shliogáin nó dara ordú).",
+      "TRANSCRIPTION_UNAVAILABLE": "Níl inneall tiontúcháin urlabhra go téacs ar fáil. Suiteáil uirlis ASR áitiúil a dtacaítear léi (m.sh. whisper.cpp) nó cumraigh ceann.",
+      "TRANSLATION_UNAVAILABLE": "Níl cúlra aistriúcháin fotheidil ar fáil. Cumraigh timpeallacht reatha samhla áitiúil nó soláthraí eile.",
+      "AI_NOT_CONFIGURED": "Níl soláthraí AI cumraithe. Cuir eochair API leis na Socruithe chun pleanáil faoi thiomáint AI a úsáid.",
+      "AI_CONNECTOR_FAILED": "Níorbh fhéidir teacht ar an soláthraí AI. Seiceáil do nasc líonra, an eochair API agus ainm an tsamhail.",
+      "AI_RESPONSE_INVALID": "Thug an soláthraí AI freagra nach féidir a úsáid. Bain triail eile as nó aistrigh chuig an bpleanálaí cinntitheach.",
+      "UNKNOWN": "Tharla earráid gan choinne. Bain triail eile as."
+    }
   },
   "profiles": {
     "searchPlaceholder": "Cuardaigh próifílí...",
@@ -685,7 +718,12 @@
       "removeKey": "Bain an eochair",
       "keyRemoved": "Baineadh an eochair stóráilte.",
       "staleStatus": "Athraíodh na socruithe. Ceangail arís chun fíorú.",
-      "headerConnected": "Ceangailte · {{provider}} · {{model}}"
+      "headerConnected": "Ceangailte · {{provider}} · {{model}}",
+      "reset": "Athshocraigh go dtí na réamhshocruithe",
+      "resetConfirmTitle": "Athshocraigh soláthraithe AI?",
+      "resetConfirmMessage": "Scriosann sé seo gach eochair API, samhail, pointe deiridh agus stair nasc atá sábháilte. Tiocfaidh an soláthraí rialacha ionsuite gníomhach. Ní féidir é seo a chealú.",
+      "resetConfirmAction": "Athshocraigh",
+      "resetComplete": "Tá soláthraithe AI curtha ar ais chuig a réamhshocruithe."
     },
     "desktopNotifications": "Fógraí deisce",
     "desktopNotificationsHint": "Taispeáin fógraí córais nuair a chríochnaíonn nó a theipeann ar phoist scuaine agus an aip sa chúlra.",
@@ -1095,7 +1133,8 @@
     "ai": {
       "configure": "Cumraigh soláthraí AI",
       "locationNote": "Cumraítear soláthraithe AI sna Socruithe.",
-      "notConnected": "Gan nasc"
+      "notConnected": "Gan nasc",
+      "noProviderNotice": "Níl aon soláthraí AI ceangailte. Úsáideann Copilot rialacha ionsuite, agus mar sin d’fhéadfadh na freagraí a bheith níos lú cruinn agus d’fhéadfadh spriocanna casta a bheith curtha sa treo mícheart. Ceangail soláthraí AI sna Socruithe chun an leas is fearr a bhaint as Copilot."
     },
     "queryLabel": "Frása cuardaigh",
     "queryPlaceholder": "m.sh. an chuid faoi phraghsáil",
@@ -1126,6 +1165,10 @@
       "container": "Coimeádán",
       "losslessCopy": "Cóipeáil gan chaillteanas",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "Níorbh fhéidir leis an soláthraí AI cumtha an sprioc seo a ródáil, mar sin úsáideadh an t-inneall rialacha ionsuite ina ionad. Seiceáil socruithe an tsoláthraí AI agus na logaí.",
+      "uncertainGoal": "Níor aithin Copilot aon oibríocht sa sprioc seo, mar sin phleanáil sé comhshó réamhshocraithe. Roghnaigh oibríocht in Ardroghanna, nó ceangail soláthraí AI chun rún a bhrath níos fearr."
     }
   },
   "leaveConfirm": {

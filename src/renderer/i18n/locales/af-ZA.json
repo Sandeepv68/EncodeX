@@ -530,7 +530,40 @@
     "remuxed": "Remux voltooi",
     "demuxed": "Strome suksesvol onttrek",
     "remuxQueued": "Remux by die Mux-waglys gevoeg",
-    "demuxQueued": "Strome by die Mux-waglys gevoeg"
+    "demuxQueued": "Strome by die Mux-waglys gevoeg",
+    "devScreenshotSaved": "Ontwikkelaar-skermkiekie gestoor",
+    "devScreenshotFailed": "Ontwikkelaar-skermkiekie het misluk",
+    "error": {
+      "FILE_NOT_FOUND": "Die geselekteerde lêer kon nie gevind word nie. Dit is dalk geskuif of uitgevee.",
+      "FFMPEG_NOT_FOUND": "FFmpeg-binêre is nie gevind nie. Installeer FFmpeg of kontroleer die ingeslote uitvoerbare lêer.",
+      "FFPROBE_NOT_FOUND": "FFprobe-binêre is nie gevind nie. Mediainligting kan nie gelees word nie.",
+      "CONVERSION_FAILED": "Die omskakelingsproses het misluk. Kontroleer die lêerformaat en parameters.",
+      "INVALID_FORMAT": "Die lêerformaat word nie ondersteun nie, of die uitvoeruitbreiding stem nie ooreen met die geselekteerde codec nie.",
+      "PROBE_FAILED": "Kon nie inligting oor die mediabestand lees nie. Die lêer is dalk beskadig of in 'n onondersteunde formaat.",
+      "QUEUE_ERROR": "'n Taak in die bondelwaglys het misluk. Kontroleer die besonderhede van die individuele take vir meer inligting.",
+      "PLAYER_ERROR": "Die videospeler het 'n fout teëgekom. Die lêer is dalk beskadig of in 'n onondersteunde formaat.",
+      "CANCELLED": "Die bedrywigheid is deur die gebruiker gekanselleer.",
+      "BMF_NOT_AVAILABLE": "BMF-raamwerk is nie geïnstalleer nie. Installeer die BMF CLI-nutsgoed of gebruik 'n ander transkodeerder.",
+      "OUTPUT_NOT_SPECIFIED": "Spesifiseer asseblief 'n uitvoerlêer voordat die omskakeling begin.",
+      "INPUT_NOT_SPECIFIED": "Kies asseblief 'n invoerlêer voordat die omskakeling begin.",
+      "OUTPUT_EXISTS": "Die uitvoerlêer bestaan reeds. Skakel oorskryf in om dit te vervang.",
+      "INVALID_QUEUE_FILE": "Die waglys-lêer kon nie gelees word nie. Dit is dalk beskadig of in 'n onondersteunde formaat.",
+      "INVALID_AUTOMATION_FILE": "Die outomatiseringslêer kon nie gelees word nie. Dit is dalk beskadig of in 'n onondersteunde formaat.",
+      "FILTERS_REQUIRE_RE_ENCODE": "Videofilters vereis herkodering. Skakel verlieslose kopie (stroomkopie) af om filters toe te pas.",
+      "INVALID_VIDEO_FILTERS": "Die videofilterketting of die voorinstelling is ongeldig. Kontroleer die filteruitdrukkings en die name van die voorinstellings.",
+      "STREAM_NOT_FOUND": "Die gevraagde stroom bestaan nie in die bronlêer nie. Kontroleer die stroomkeuse.",
+      "INCOMPATIBLE_CONTAINER": "'n Geselekteerde stroom kan nie sonder herkodering in die gekose container gestoor word nie.",
+      "AUXILIARY_INPUT_NOT_FOUND": "'n Bygevoegde ondertitel-, oudio-, hoofstuk- of omslaglêer kon nie gevind word nie.",
+      "PERMISSION_DENIED": "Toestemming geweier. Die toepassing het moontlik nie toegang tot die geselekteerde lêer of map nie.",
+      "OPERATION_TIMED_OUT": "Die bedrywigheid het te lank geneem en is gestop. Die lêer is dalk beskadig, of die stelsel is swaar belas.",
+      "UNSAFE_ARGUMENTS": "Die versoek het argumente bevat wat nie toegelaat word nie (skildmetakarakters of 'n tweede opdrag is opgespoor).",
+      "TRANSCRIPTION_UNAVAILABLE": "Geen spraak-na-teks-enjin is beskikbaar nie. Installeer 'n ondersteunde plaaslike ASR-instrument (bv. whisper.cpp) of konfigureer een.",
+      "TRANSLATION_UNAVAILABLE": "Geen backend vir ondertitelvertaling is beskikbaar nie. Konfigureer 'n plaaslike modeluitvoeringsomgewing of 'n ander verskaffer.",
+      "AI_NOT_CONFIGURED": "Geen KI-verskaffer is gekonfigureer nie. Voeg 'n API-sleutel in Instellings by om KI-gesteunde beplanning te gebruik.",
+      "AI_CONNECTOR_FAILED": "Kon nie die KI-verskaffer bereik nie. Kontroleer u netwerkverbinding, API-sleutel en modelnaam.",
+      "AI_RESPONSE_INVALID": "Die KI-verskaffer het 'n onbruikbare antwoord teruggegee. Probeer weer of skakel oor na die deterministiese beplanner.",
+      "UNKNOWN": "'n Onverwagte fout het voorgekom. Probeer asseblief weer."
+    }
   },
   "profiles": {
     "searchPlaceholder": "Soek profiele...",
@@ -685,7 +718,12 @@
       "removeKey": "Verwyder sleutel",
       "keyRemoved": "Die gestoorde sleutel is verwyder.",
       "staleStatus": "Instellings het verander. Koppel weer om te bevestig.",
-      "headerConnected": "Gekoppel · {{provider}} · {{model}}"
+      "headerConnected": "Gekoppel · {{provider}} · {{model}}",
+      "reset": "Herstel na verstek",
+      "resetConfirmTitle": "Stel KI-verskaffers terug?",
+      "resetConfirmMessage": "Hierdie verwyder alle gestoorde API-sleutels, modelle, eindpunte en verbindingsgeskiedenis. Die ingeboude reëlverskaffer word aktief. Dit kan nie ongedaan gemaak word nie.",
+      "resetConfirmAction": "Herstel",
+      "resetComplete": "KI-verskaffers is na hul verstekinstellings herstel."
     },
     "desktopNotifications": "Werkskermkennisgewings",
     "desktopNotificationsHint": "Wys stelselkennisgewings wanneer tou-take voltooi of misluk terwyl die program in die agtergrond loop.",
@@ -1095,7 +1133,8 @@
     "ai": {
       "configure": "AI-verskaffer instel",
       "locationNote": "AI-verskaffers word in Instellings opgestel.",
-      "notConnected": "Nie gekoppel nie"
+      "notConnected": "Nie gekoppel nie",
+      "noProviderNotice": "Geen AI-verskaffer is gekoppel nie. Copilot gebruik ingeboude reëls, dus kan antwoorde minder akkuraat wees en komplekse doelwitte verkeerd gerouteer word. Koppel 'n AI-verskaffer in Instellings om Copilot optimaal te gebruik."
     },
     "queryLabel": "Soekfrase",
     "queryPlaceholder": "bv. die deel oor pryse",
@@ -1126,6 +1165,10 @@
       "container": "Houer",
       "losslessCopy": "Verlieslose kopie",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "Die gekonfigureerde AI-verskaffer kon nie hierdie doelwit roeteer nie, so die ingeboude reëlenjin is eerder gebruik. Kontroleer die AI-verskaffer se instellings en logboeke.",
+      "uncertainGoal": "Copilot het geen operasie in hierdie doelwit herken nie, so dit het 'n verstekomskakeling beplan. Kies 'n operasie in Gevorderde opsies, of koppel 'n AI-verskaffer vir beter bedoelingherkenning."
     }
   },
   "leaveConfirm": {

@@ -11,7 +11,6 @@ import type { QueueJob } from '../../../shared/types';
 import { FILE_FILTERS } from '../../../shared/file-extensions';
 import { QUEUE_STATUS } from '../../../shared/media-options';
 import { BATCH_CONFIG_STORAGE_KEY } from '../../../shared/constants';
-import { ERROR_MESSAGES } from '../../../shared/errors';
 
 const queueListMock = vi.mocked(window.electronAPI.queueList);
 const queueGetStateMock = vi.mocked(window.electronAPI.queueGetState);
@@ -547,9 +546,11 @@ describe('BatchQueue', () => {
     act(() => {
       onStatusChange(job({ id: 'job-1', status: 'done' }));
     });
-    expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'Batch finished: 1 succeeded, 0 failed')).toBe(
-      true,
-    );
+    expect(
+      useToastStore
+        .getState()
+        .toasts.some((t) => t.type === 'success' && t.message === 'batchQueue.finished' && t.values?.done === 1 && t.values?.failed === 0),
+    ).toBe(true);
   });
 
   it('raises a native OS notification when the batch finishes', async () => {
@@ -631,6 +632,23 @@ describe('BatchQueue', () => {
     renderPage();
     await waitFor(() => expect(queueListMock).toHaveBeenCalledOnce());
     fireEvent.drop(window, { dataTransfer: { files: [] } });
+    expect(queueAddMock).not.toHaveBeenCalled();
+  });
+
+  it('warns when dropped files do not expand to media', async () => {
+    queueListMock.mockResolvedValue([]);
+    vi.mocked(window.electronAPI.getPathForFile).mockReturnValue('/in/note.txt');
+    expandPathsMock.mockResolvedValue([]);
+    renderPage();
+    await waitFor(() => expect(queueListMock).toHaveBeenCalledOnce());
+
+    fireEvent.drop(window, { dataTransfer: { files: [new File(['x'], 'note.txt')] } });
+
+    await waitFor(() =>
+      expect(useToastStore.getState().toasts.some((toast) => toast.type === 'warning' && toast.message === 'batchQueue.noMediaFound')).toBe(
+        true,
+      ),
+    );
     expect(queueAddMock).not.toHaveBeenCalled();
   });
 
@@ -983,7 +1001,7 @@ describe('BatchQueue', () => {
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.retry' }));
     await waitFor(() =>
       expect(
-        useToastStore.getState().toasts.some((toast) => toast.type === 'error' && toast.message === ERROR_MESSAGES.CONVERSION_FAILED),
+        useToastStore.getState().toasts.some((toast) => toast.type === 'error' && toast.message === 'toast.error.CONVERSION_FAILED'),
       ).toBe(true),
     );
   });
@@ -1146,6 +1164,39 @@ describe('BatchQueue', () => {
     );
     expect(useToastStore.getState().toasts.some((toast) => toast.type === 'success' && toast.message === 'batchQueue.optionsUpdated')).toBe(
       true,
+    );
+  });
+
+  it('reports a failed per-job edit when the bridge returns false', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', options: { videoCodec: 'libx264', audioCodec: 'aac' } })]);
+    queueUpdateOptionsMock.mockResolvedValue(false);
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.editOptions' }));
+    expect(await screen.findByText('Edit options for video.mp4')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
+
+    await waitFor(() =>
+      expect(
+        useToastStore.getState().toasts.some((toast) => toast.type === 'error' && toast.message === 'batchQueue.optionsUpdateFailed'),
+      ).toBe(true),
+    );
+    expect(screen.getByText('Edit options for video.mp4')).toBeInTheDocument();
+  });
+
+  it('reports a thrown per-job edit failure', async () => {
+    queueListMock.mockResolvedValue([job({ id: 'job-1', options: { videoCodec: 'libx264', audioCodec: 'aac' } })]);
+    queueUpdateOptionsMock.mockRejectedValue(new Error('update boom'));
+    renderPage();
+    await screen.findByText(/video\.mp4/);
+    fireEvent.click(screen.getByRole('button', { name: 'batchQueue.editOptions' }));
+    expect(await screen.findByText('Edit options for video.mp4')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
+
+    await waitFor(() =>
+      expect(useToastStore.getState().toasts.some((toast) => toast.type === 'error' && toast.detail === 'update boom')).toBe(true),
     );
   });
 

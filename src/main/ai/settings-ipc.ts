@@ -2,7 +2,7 @@
  * @fileoverview IPC bridge for the Copilot's AI provider settings (AI connector
  * plan §6).
  *
- * Four invoke handlers, all main-process only (the key never crosses IPC):
+ * Five invoke handlers, all main-process only (the key never crosses IPC):
  *  - {@link IPC.AI_SETTINGS_GET} returns the sanitized {@link AiSettingsView}.
  *  - {@link IPC.AI_SETTINGS_SET} persists a provider/model/baseUrl/key change.
  *  - {@link IPC.AI_CONNECT_TEST} builds the connector and sends a one-token ping.
@@ -27,6 +27,7 @@ import {
   persistProviderModel,
   readAiSettings,
   recordAiConnection,
+  resetAiSettings,
   sanitizeAiSettings,
   toAiSettingsView,
 } from './settings';
@@ -80,6 +81,10 @@ export function registerAiSettingsIpc(): void {
 
   ipcMain.handle(IPC.AI_SETTINGS_SET, (_event, candidate: unknown): AiSettingsView => {
     return applyAiSettingsUpdate(app.getPath('userData'), sanitizeUpdate(candidate));
+  });
+
+  ipcMain.handle(IPC.AI_SETTINGS_RESET, (): AiSettingsView => {
+    return resetAiSettings(app.getPath('userData'));
   });
 
   ipcMain.handle(IPC.AI_CONNECT_TEST, async (_event, candidate: unknown): Promise<AiConnectTestResult> => {

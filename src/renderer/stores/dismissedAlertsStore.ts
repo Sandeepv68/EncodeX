@@ -31,6 +31,7 @@ export const DISMISSED_ALERT_KEYS = {
   COMPAT: 'compat',
   OPTIONS_EDITABLE: 'optionsEditable',
   OPTIONS_LOCKED: 'optionsLocked',
+  COPILOT_NO_PROVIDER: 'copilotNoProvider',
 } as const;
 
 /**

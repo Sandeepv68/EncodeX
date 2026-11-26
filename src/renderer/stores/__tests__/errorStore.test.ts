@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useErrorStore } from '../errorStore';
+import { useToastStore } from '../toastStore';
 import { createError, ErrorCode, ERROR_MESSAGES } from '../../../shared/errors';
+import type { ErrorCodeType } from '../../../shared/types';
 
 vi.mock('../../../shared/analytics/AnalyticsService', async (importOriginal) => {
   const mod = await importOriginal<typeof import('../../../shared/analytics/AnalyticsService')>();
@@ -13,6 +15,7 @@ const recordAnalyticsMock = vi.mocked(recordAnalyticsEvent);
 describe('errorStore', () => {
   beforeEach(() => {
     useErrorStore.setState({ currentError: null, errorHistory: [] });
+    useToastStore.setState({ toasts: [] });
     recordAnalyticsMock.mockClear();
   });
 
@@ -102,5 +105,17 @@ describe('errorStore', () => {
     useErrorStore.getState().showErrorMessage(ErrorCode.INVALID_VIDEO_FILTERS);
     const categories = recordAnalyticsMock.mock.calls.map((c) => (c[0] as { props?: { category?: string } })?.props?.category);
     expect(categories).toEqual(['conversion', 'validation']);
+  });
+
+  it('buckets runtime error codes into the runtime analytics category', () => {
+    useErrorStore.getState().showError(createError('RUNTIME_FAILURE' as ErrorCodeType, 'runtime failure'));
+    expect(recordAnalyticsMock.mock.calls[0]?.[0]).toMatchObject({ props: { category: 'runtime' } });
+  });
+
+  it('recordError stores the error without emitting a toast', () => {
+    useErrorStore.getState().recordError(new Error('recorded only'));
+    expect(useErrorStore.getState().currentError?.code).toBeDefined();
+    expect(useErrorStore.getState().errorHistory).toHaveLength(1);
+    expect(useToastStore.getState().toasts).toEqual([]);
   });
 });

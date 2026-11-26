@@ -178,6 +178,7 @@ describe('useAutomations runtime bridge', () => {
 
     expect(ids).toEqual([null]);
     expect(hasToast('automations.runFailed')).toBe(true);
+    expect(useToastStore.getState().toasts).toHaveLength(1);
     expect(useErrorStore.getState().currentError).not.toBeNull();
   });
 

@@ -22,8 +22,7 @@ const log = new Logger('renderer/hooks/useErrorHandler');
  * React hook exposing shared error-handling helpers for the app.
  *
  * All helpers route through {@link useErrorStore} so any error shown here is
- * also recorded in the error history and surfaced by the global ErrorBanner /
- * ErrorSnackbar components.
+ * also recorded in the error history and surfaced by the unified toast viewport.
  *
  * @returns {Object} An object with the current error state and helpers:
  * @property {ErrorDetails | null} currentError - The active error, or null.

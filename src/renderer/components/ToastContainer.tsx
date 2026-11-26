@@ -2,9 +2,11 @@
  * @fileoverview Toast notification container.
  *
  * Renders queued toast notifications as a single top-right Snackbar driven by
- * the shared toast store. Only one toast is visible at a time: the active
- * toast is shown until it is dismissed or its duration elapses, then the next
- * toast in the queue is promoted after the exit transition completes.
+ * the shared toast store. Error-store failures are forwarded here through the
+ * `notify` facade, so this is the only transient feedback surface. Only one
+ * toast is visible at a time: the active toast is shown until it is dismissed
+ * or its duration elapses, then the next toast in the queue is promoted after
+ * the exit transition completes.
  *
  * Each toast is rendered as a filled alert with its message and an optional
  * detail line, using the toast's severity and per-toast duration (falling
@@ -12,10 +14,13 @@
  */
 
 import { useState, useEffect, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useTranslation } from 'react-i18next';
 import { useToastStore } from '../stores/toastStore';
 import type { Toast } from '../stores/types';
 import { ToastAlert, ToastMessage, ToastDetail, ToastActionButton } from '../styles/ToastContainer.styles';
 import { TitleBarOffsetSnackbar } from '../styles/Snackbar.styles';
+import { TOAST_VARIANTS } from '../styles/toast.variants';
 import { TOAST_DEFAULT_DURATION_MS } from '../../shared/constants';
 
 /**
@@ -29,6 +34,7 @@ import { TOAST_DEFAULT_DURATION_MS } from '../../shared/constants';
  * @returns {JSX.Element | null} The Snackbar with the active toast, or null.
  */
 export default function ToastContainer() {
+  const { t } = useTranslation();
   const toasts = useToastStore((s) => s.toasts);
   const removeToast = useToastStore((s) => s.removeToast);
   const [active, setActive] = useState<Toast | null>(null);
@@ -87,6 +93,8 @@ export default function ToastContainer() {
 
   if (!active) return null;
 
+  const variant = TOAST_VARIANTS[active.type];
+
   return (
     <TitleBarOffsetSnackbar
       key={active.id}
@@ -95,16 +103,20 @@ export default function ToastContainer() {
       onClose={handleClose}
       slotProps={{
         transition: { onExited: handleExited },
+        content: { 'aria-live': variant.ariaLive },
       }}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
     >
       <ToastAlert
+        data-testid={`toast-${active.type}`}
+        icon={<FontAwesomeIcon icon={variant.icon} />}
         onClose={handleClose}
         severity={active.type}
         variant="filled"
         action={
           active.action && (
             <ToastActionButton
+              data-testid="toast-action"
               color="inherit"
               size="small"
               onClick={() => {
@@ -112,13 +124,13 @@ export default function ToastContainer() {
                 handleClose();
               }}
             >
-              {active.action.label}
+              {t(active.action.labelKey ?? active.action.label)}
             </ToastActionButton>
           )
         }
       >
-        <ToastMessage>{active.message}</ToastMessage>
-        {active.detail && <ToastDetail>{active.detail}</ToastDetail>}
+        <ToastMessage>{t(active.message, active.values)}</ToastMessage>
+        {active.detail && <ToastDetail>{t(active.detail, active.detailValues)}</ToastDetail>}
       </ToastAlert>
     </TitleBarOffsetSnackbar>
   );

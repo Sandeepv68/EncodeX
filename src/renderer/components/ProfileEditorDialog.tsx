@@ -11,7 +11,7 @@ import { faChevronDown, faPenToSquare } from '@fortawesome/free-solid-svg-icons'
 import type { ConversionProfile, ProfileCategory } from '../../shared/types';
 import { CATEGORY_ORDER, PROFILE_CATEGORIES } from '../../shared/profiles/categories';
 import { useProfileStore } from '../stores/profileStore';
-import { useToastStore } from '../stores/toastStore';
+import { notify } from '../utils/notify';
 import type { ProfileEditorDialogProps } from './types';
 import { FieldBox, FieldLabel } from '../styles/form.styles';
 import { EditorFieldStack, ExpandChevron } from '../styles/ProfileEditorDialog.styles';
@@ -134,10 +134,10 @@ export default function ProfileEditorDialog({ open, onClose, editProfile }: Prof
 
     if (editProfile) {
       updateCustomProfile(editProfile.id, data);
-      useToastStore.getState().success(t('profiles.updated', { name: data.name }));
+      notify.success('profiles.updated', { values: { name: data.name } });
     } else {
       saveCustomProfile(data);
-      useToastStore.getState().success(t('profiles.created', { name: data.name }));
+      notify.success('profiles.created', { values: { name: data.name } });
     }
     onClose();
   };

@@ -24,6 +24,7 @@ import {
   persistProviderModel,
   readAiSettings,
   recordAiConnection,
+  resetAiSettings,
   writeAiSettings,
 } from '../settings';
 import type { AiServerSettings } from '../settings';
@@ -295,6 +296,26 @@ describe('recordAiConnection', () => {
     const view = recordAiConnection(userDataDir, { providerId: 'openai', model: '   ' });
     expect(view.connected).toBe(true);
     expect(view).not.toHaveProperty('connectedModel');
+  });
+});
+
+describe('resetAiSettings', () => {
+  it('writes the first-load defaults and returns their sanitized view', () => {
+    applyAiSettingsUpdate(userDataDir, { providerId: 'openai', model: 'gpt-4o', apiKey: 'sk-1' });
+    recordAiConnection(userDataDir, { providerId: 'openai', model: 'gpt-4o' });
+
+    const view = resetAiSettings(userDataDir);
+
+    expect(readAiSettings(userDataDir)).toEqual({ providerId: 'rules', model: '', key: null });
+    expect(view).toMatchObject({
+      providerId: 'rules',
+      model: '',
+      hasKey: false,
+      keyHint: '',
+      connected: false,
+      selectedProviderId: 'rules',
+    });
+    expect(view).not.toHaveProperty('activeConnection');
   });
 });
 

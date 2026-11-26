@@ -530,7 +530,40 @@
     "remuxed": "Remux が完了しました",
     "demuxed": "ストリームを抽出しました",
     "remuxQueued": "Remux を Mux キューに追加しました",
-    "demuxQueued": "ストリームを Mux キューに追加しました"
+    "demuxQueued": "ストリームを Mux キューに追加しました",
+    "devScreenshotSaved": "開発用スクリーンショットを保存しました",
+    "devScreenshotFailed": "開発用スクリーンショットの保存に失敗しました",
+    "error": {
+      "FILE_NOT_FOUND": "選択したファイルが見つかりません。移動または削除された可能性があります。",
+      "FFMPEG_NOT_FOUND": "FFmpeg のバイナリが見つかりません。FFmpeg をインストールするか、同梱の実行ファイルを確認してください。",
+      "FFPROBE_NOT_FOUND": "FFprobe のバイナリが見つかりません。メディア情報を読み取れません。",
+      "CONVERSION_FAILED": "変換処理に失敗しました。ファイル形式とパラメーターを確認してください。",
+      "INVALID_FORMAT": "ファイル形式がサポートされていないか、出力の拡張子が選択した codec と一致しません。",
+      "PROBE_FAILED": "メディアファイルの情報を読み取れません。ファイルが破損しているか、サポートされていない形式の可能性があります。",
+      "QUEUE_ERROR": "バッチキューのジョブが失敗しました。詳細は各ジョブの情報を確認してください。",
+      "PLAYER_ERROR": "動画プレーヤーでエラーが発生しました。ファイルが破損しているか、サポートされていない形式の可能性があります。",
+      "CANCELLED": "操作がユーザーによってキャンセルされました。",
+      "BMF_NOT_AVAILABLE": "BMF フレームワークがインストールされていません。BMF CLI ツールをインストールするか、別のトランスコーダーを使用してください。",
+      "OUTPUT_NOT_SPECIFIED": "変換を開始する前に出力ファイルを指定してください。",
+      "INPUT_NOT_SPECIFIED": "変換を開始する前に入力ファイルを選択してください。",
+      "OUTPUT_EXISTS": "出力ファイルはすでに存在します。上書きを有効にして置き換えてください。",
+      "INVALID_QUEUE_FILE": "キューファイルを読み取れません。ファイルが破損しているか、サポートされていない形式の可能性があります。",
+      "INVALID_AUTOMATION_FILE": "自動化ファイルを読み取れません。ファイルが破損しているか、サポートされていない形式の可能性があります。",
+      "FILTERS_REQUIRE_RE_ENCODE": "動画フィルターには再エンコードが必要です。フィルターを適用するには、lossless copy (stream copy) を無効にしてください。",
+      "INVALID_VIDEO_FILTERS": "動画フィルターチェーンまたはプリセットが無効です。フィルター式とプリセット名を確認してください。",
+      "STREAM_NOT_FOUND": "要求されたストリームがソースファイルに存在しません。ストリームの選択を確認してください。",
+      "INCOMPATIBLE_CONTAINER": "選択したストリームは、再エンコードせずには選択した container に保存できません。",
+      "AUXILIARY_INPUT_NOT_FOUND": "追加した字幕、音声、チャプター、またはカバー画像のファイルが見つかりません。",
+      "PERMISSION_DENIED": "アクセスが拒否されました。選択したファイルまたはディレクトリにアプリケーションからアクセスできない可能性があります。",
+      "OPERATION_TIMED_OUT": "操作に時間がかかりすぎたため停止しました。ファイルが破損しているか、システムに高負荷がかかっている可能性があります。",
+      "UNSAFE_ARGUMENTS": "リクエストに許可されていない引数が含まれています（シェルのメタ文字または 2 番目のコマンドが検出されました）。",
+      "TRANSCRIPTION_UNAVAILABLE": "利用可能な音声認識エンジンがありません。対応するローカル ASR ツール（例: whisper.cpp）をインストールまたは設定してください。",
+      "TRANSLATION_UNAVAILABLE": "字幕翻訳のバックエンドが利用できません。ローカルモデルのランタイムまたは別のプロバイダーを設定してください。",
+      "AI_NOT_CONFIGURED": "AI プロバイダーが設定されていません。AI によるプランニングを使用するには、設定で API キーを追加してください。",
+      "AI_CONNECTOR_FAILED": "AI プロバイダーに接続できません。ネットワーク接続、API キー、モデル名を確認してください。",
+      "AI_RESPONSE_INVALID": "AI プロバイダーから使用できない応答が返されました。もう一度お試しになるか、決定的プランナーに切り替えてください。",
+      "UNKNOWN": "予期しないエラーが発生しました。もう一度お試しください。"
+    }
   },
   "profiles": {
     "searchPlaceholder": "プロファイルを検索...",
@@ -685,7 +718,12 @@
       "removeKey": "キーを削除",
       "keyRemoved": "保存されたキーを削除しました。",
       "staleStatus": "設定が変更されました。確認するには再接続してください。",
-      "headerConnected": "接続済み · {{provider}} · {{model}}"
+      "headerConnected": "接続済み · {{provider}} · {{model}}",
+      "reset": "既定値にリセット",
+      "resetConfirmTitle": "AIプロバイダーをリセットしますか？",
+      "resetConfirmMessage": "保存済みのAPIキー、モデル、エンドポイント、接続履歴をすべて削除します。組み込みのルールプロバイダーが有効になります。この操作は取り消せません。",
+      "resetConfirmAction": "リセット",
+      "resetComplete": "AIプロバイダーを既定値に戻しました。"
     },
     "desktopNotifications": "デスクトップ通知",
     "desktopNotificationsHint": "アプリがバックグラウンドで実行中にキューのジョブが完了または失敗したときにシステム通知を表示します。",
@@ -1095,7 +1133,8 @@
     "ai": {
       "configure": "AIプロバイダーを設定",
       "locationNote": "AIプロバイダーは「設定」で構成します。",
-      "notConnected": "未接続"
+      "notConnected": "未接続",
+      "noProviderNotice": "AI プロバイダーが接続されていません。Copilot は組み込みルールを使用するため、回答の精度が下がったり、複雑な目標が誤って振り分けられたりする可能性があります。Copilot を最大限に活用するには、「設定」で AI プロバイダーを接続してください。"
     },
     "queryLabel": "検索フレーズ",
     "queryPlaceholder": "例: 価格設定の部分",
@@ -1126,6 +1165,10 @@
       "container": "コンテナー",
       "losslessCopy": "ロスレスコピー",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "設定済みのAIプロバイダーがこの目標を適切な操作へ振り分けられなかったため、代わりに組み込みのルールエンジンが使われました。AIプロバイダーの設定とログを確認してください。",
+      "uncertainGoal": "Copilotがこの目標から操作を認識できなかったため、既定の変換を計画しました。意図をより正確に把握するには、詳細オプションで操作を選ぶか、AIプロバイダーを接続してください。"
     }
   },
   "leaveConfirm": {

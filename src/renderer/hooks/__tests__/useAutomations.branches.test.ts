@@ -244,5 +244,6 @@ describe('useAutomations branch coverage', () => {
       expect(await second.current.cancel('run-1')).toBe(false);
     });
     expect(hasToast('automations.cancelFailed')).toBe(true);
+    expect(useToastStore.getState().toasts).toHaveLength(2);
   });
 });

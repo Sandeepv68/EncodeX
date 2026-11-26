@@ -1,6 +1,6 @@
 ﻿# 🗂️ Project Structure
 
-<!-- drift:renderer-components=84 renderer-components-top=54 renderer-styles=78 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 renderer-pages=14 renderer-stores=22 log-constants=598 builtin-profiles=115 profile-categories=8 e2e-specs=35 -->
+<!-- drift:renderer-components=83 renderer-components-top=53 renderer-styles=79 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 renderer-pages=14 renderer-stores=22 log-constants=598 builtin-profiles=115 profile-categories=8 e2e-specs=35 -->
 
 ```
 src/
@@ -132,7 +132,6 @@ src/
 │   │   ├── EllipsisTooltip.tsx        # Truncated-text tooltip
 │   │   ├── ErrorBanner.tsx            # Inline error banner (color-coded by severity)
 │   │   ├── ErrorBoundary.tsx          # React class-based error boundary
-│   │   ├── ErrorSnackbar.tsx          # Global error toast
 │   │   ├── ExifSection.tsx            # EXIF + histogram viewer
 │   │   ├── FileDropZone.tsx           # Drag-and-drop file selector
 │   │   ├── FilePathField.tsx          # Read-only path input + browse button

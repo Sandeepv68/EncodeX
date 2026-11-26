@@ -121,6 +121,7 @@ const API_TABLE = {
   mcpUiListViews: { kind: 'invoke', channel: IPC.MCP_UI_LIST_VIEWS, params: [] },
   aiGetSettings: { kind: 'invoke', channel: IPC.AI_SETTINGS_GET, params: [] },
   aiSetSettings: { kind: 'invoke', channel: IPC.AI_SETTINGS_SET, params: ['update'] },
+  aiResetSettings: { kind: 'invoke', channel: IPC.AI_SETTINGS_RESET, params: [] },
   aiConnectTest: { kind: 'invoke', channel: IPC.AI_CONNECT_TEST, params: ['candidate'] },
   aiListModels: { kind: 'invoke', channel: IPC.AI_MODELS_LIST, params: ['candidate'] },
   automationList: { kind: 'invoke', channel: IPC.AUTOMATION_LIST, params: [] },

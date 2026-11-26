@@ -11,7 +11,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAutomationStore } from '../stores/automationStore';
 import { useErrorStore } from '../stores/errorStore';
-import { useToastStore } from '../stores/toastStore';
+import { notify } from '../utils/notify';
 import { bridgePromise } from '../utils/bridge-call';
 import { openFileDialog } from '../utils/fileDialog';
 import { AUTOMATION_BACKENDS } from '../../shared/automations/defaults';
@@ -42,11 +42,7 @@ function inferAutomationMediaKind(info: MediaInfo, path: string): AutomationMedi
 export function useAutomations(): UseAutomationsResult {
   const store = useAutomationStore();
   const { t } = useTranslation();
-  const showWarning = useToastStore((state) => state.warning);
-  const showInfo = useToastStore((state) => state.info);
-  const showSuccess = useToastStore((state) => state.success);
-  const showToastError = useToastStore((state) => state.error);
-  const showAppError = useErrorStore((state) => state.showError);
+  const recordError = useErrorStore((state) => state.recordError);
   const pendingRunEvents = useRef<Map<string, AutomationProgressEvent[]>>(new Map());
 
   const flushPendingRunEvents = useCallback((runId: string) => {
@@ -123,67 +119,52 @@ export function useAutomations(): UseAutomationsResult {
 
   const save = useCallback(async () => {
     const saved = await useAutomationStore.getState().saveAutomation();
-    if (saved) showSuccess(t('automations.saveSuccess'));
-    else showToastError(t('automations.saveFailed'));
+    if (saved) notify.success('automations.saveSuccess');
+    else notify.error('automations.saveFailed');
     return saved;
-  }, [showSuccess, showToastError, t]);
+  }, []);
 
-  const saveAs = useCallback(
-    async (name: string) => {
-      const saved = await useAutomationStore.getState().saveAutomationAs(name);
-      if (saved) showSuccess(t('automations.saveAsSuccess', { name: saved.name }));
-      else showToastError(t('automations.saveAsFailed'));
-      return saved;
-    },
-    [showSuccess, showToastError, t],
-  );
+  const saveAs = useCallback(async (name: string) => {
+    const saved = await useAutomationStore.getState().saveAutomationAs(name);
+    if (saved) notify.success('automations.saveAsSuccess', { values: { name: saved.name } });
+    else notify.error('automations.saveAsFailed');
+    return saved;
+  }, []);
 
-  const load = useCallback(
-    async (id: string) => {
-      const loaded = await useAutomationStore.getState().loadAutomation(id);
-      if (loaded) showInfo(t('automations.loadSuccess', { name: loaded.name }));
-      else showToastError(t('automations.loadFailed'));
-      return loaded;
-    },
-    [showInfo, showToastError, t],
-  );
+  const load = useCallback(async (id: string) => {
+    const loaded = await useAutomationStore.getState().loadAutomation(id);
+    if (loaded) notify.info('automations.loadSuccess', { values: { name: loaded.name } });
+    else notify.error('automations.loadFailed');
+    return loaded;
+  }, []);
 
-  const remove = useCallback(
-    async (id: string) => {
-      const deleted = await useAutomationStore.getState().deleteAutomation(id);
-      if (deleted) showSuccess(t('automations.deleteSuccess'));
-      else showToastError(t('automations.deleteFailed'));
-      return deleted;
-    },
-    [showSuccess, showToastError, t],
-  );
+  const remove = useCallback(async (id: string) => {
+    const deleted = await useAutomationStore.getState().deleteAutomation(id);
+    if (deleted) notify.success('automations.deleteSuccess');
+    else notify.error('automations.deleteFailed');
+    return deleted;
+  }, []);
 
-  const duplicate = useCallback(
-    async (id: string) => {
-      const duplicated = await useAutomationStore.getState().duplicateAutomation(id);
-      if (duplicated) showSuccess(t('automations.duplicateSuccess', { name: duplicated.name }));
-      else showToastError(t('automations.duplicateFailed'));
-      return duplicated;
-    },
-    [showSuccess, showToastError, t],
-  );
+  const duplicate = useCallback(async (id: string) => {
+    const duplicated = await useAutomationStore.getState().duplicateAutomation(id);
+    if (duplicated) notify.success('automations.duplicateSuccess', { values: { name: duplicated.name } });
+    else notify.error('automations.duplicateFailed');
+    return duplicated;
+  }, []);
 
   const importDefinition = useCallback(async () => {
     const imported = await useAutomationStore.getState().importAutomation();
-    if (imported) showSuccess(t('automations.importSuccess', { name: imported.name }));
-    else showToastError(t('automations.importFailed'));
+    if (imported) notify.success('automations.importSuccess', { values: { name: imported.name } });
+    else notify.error('automations.importFailed');
     return imported;
-  }, [showSuccess, showToastError, t]);
+  }, []);
 
-  const exportDefinition = useCallback(
-    async (id: string) => {
-      const path = await useAutomationStore.getState().exportAutomation(id);
-      if (path) showSuccess(t('automations.exportSuccess'));
-      else showToastError(t('automations.exportFailed'));
-      return path;
-    },
-    [showSuccess, showToastError, t],
-  );
+  const exportDefinition = useCallback(async (id: string) => {
+    const path = await useAutomationStore.getState().exportAutomation(id);
+    if (path) notify.success('automations.exportSuccess');
+    else notify.error('automations.exportFailed');
+    return path;
+  }, []);
 
   const probeInput = useCallback(
     async (pathOverride?: string) => {
@@ -192,29 +173,29 @@ export function useAutomations(): UseAutomationsResult {
       const path = pathOverride ?? current.runtimeInputPath ?? (input?.data.kind === AUTOMATION_KIND.INPUT ? input.data.path : undefined);
       if (!path) {
         current.setDetectedMediaKind(null);
-        showWarning(t('automations.probeNoInput'));
+        notify.warning('automations.probeNoInput');
         return null;
       }
       const probe = window.electronAPI?.getMediaInfo;
       if (!probe) {
         current.setDetectedMediaKind(null);
-        showToastError(t('automations.probeUnavailable'));
+        notify.error('automations.probeUnavailable');
         return null;
       }
       try {
         const info = await bridgePromise(() => probe(path, 'FFMPEG'));
         const kind = inferAutomationMediaKind(info, path);
         useAutomationStore.getState().setDetectedMediaKind(kind);
-        showSuccess(t('automations.inputProbed'));
+        notify.success('automations.inputProbed');
         return kind;
       } catch (err) {
         useAutomationStore.getState().setDetectedMediaKind(null);
-        showToastError(t('automations.probeFailed'));
-        showAppError(err);
+        notify.error('automations.probeFailed');
+        recordError(err);
         return null;
       }
     },
-    [showAppError, showSuccess, showToastError, showWarning, t],
+    [recordError],
   );
 
   const selectInput = useCallback(async () => {
@@ -241,7 +222,7 @@ export function useAutomations(): UseAutomationsResult {
       const current = useAutomationStore.getState();
       const definition = current.activeDefinition;
       if (!definition) {
-        showWarning(t('automations.runNoDefinition'));
+        notify.warning('automations.runNoDefinition');
         return null;
       }
       const input = definition.graph.nodes.find((node) => node.kind === AUTOMATION_KIND.INPUT);
@@ -257,14 +238,14 @@ export function useAutomations(): UseAutomationsResult {
       const issues = validateAutomation(definition, runtime);
       useAutomationStore.setState({ validationIssues: issues });
       if (issues.length > 0) {
-        showWarning(t('automations.validationFailed', { count: issues.length }));
+        notify.warning('automations.validationFailed', { values: { count: issues.length } });
         return null;
       }
       const invoke = window.electronAPI?.automationStart;
       if (!invoke) {
         const message = t('automations.runUnavailable');
-        showToastError(message);
-        showAppError(new Error(message));
+        notify.error('automations.runUnavailable');
+        recordError(new Error(message));
         return null;
       }
       const request: AutomationStartRequest = { definition, runtime };
@@ -274,15 +255,15 @@ export function useAutomations(): UseAutomationsResult {
           throw new Error(t('automations.runFailed'));
         }
         startRun(runId, definition.id, definition.name);
-        showInfo(t('automations.runQueued'));
+        notify.info('automations.runQueued');
         return runId;
       } catch (err) {
-        showToastError(t('automations.runFailed'));
-        showAppError(err);
+        notify.error('automations.runFailed');
+        recordError(err);
         return null;
       }
     },
-    [showAppError, showInfo, showToastError, showWarning, startRun, t],
+    [recordError, startRun, t],
   );
 
   const rerun = useCallback(() => run(), [run]);
@@ -292,14 +273,14 @@ export function useAutomations(): UseAutomationsResult {
       const invoke = window.electronAPI?.automationCancel;
       if (!invoke) {
         const message = t('automations.cancelUnavailable');
-        showToastError(message);
-        showAppError(new Error(message));
+        notify.error('automations.cancelUnavailable');
+        recordError(new Error(message));
         return false;
       }
       try {
         const cancelled = await bridgePromise(() => invoke(runId));
         if (cancelled !== true) {
-          showToastError(t('automations.cancelFailed'));
+          notify.error('automations.cancelFailed');
           return false;
         }
         const current = useAutomationStore.getState();
@@ -311,15 +292,15 @@ export function useAutomations(): UseAutomationsResult {
           message: t('automations.runCancelled'),
         };
         current.updateRun(event);
-        showInfo(t('automations.runCancelled'));
+        notify.info('automations.runCancelled');
         return true;
       } catch (err) {
-        showToastError(t('automations.cancelFailed'));
-        showAppError(err);
+        notify.error('automations.cancelFailed');
+        recordError(err);
         return false;
       }
     },
-    [showAppError, showInfo, showToastError, t],
+    [recordError, t],
   );
 
   return {

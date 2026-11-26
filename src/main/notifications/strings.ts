@@ -1,4 +1,12 @@
-﻿import { app } from 'electron';
+﻿/**
+ * @fileoverview Localizes OS notification copy from the renderer i18n catalog.
+ *
+ * The locale JSON files are the source of truth; `fallbacks` mirrors `en-US`
+ * and is used only when no locale file can be read (for example in tests).
+ * Keep both in sync when changing `notifications.*` copy.
+ */
+
+import { app } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import { DEFAULT_LANGUAGE } from '../../shared/constants';
@@ -53,17 +61,17 @@ function interpolate(str: string, vars?: NotificationStringVars): string {
 
 const fallbacks: Record<string, string> = {
   'notifications.jobCompletedTitle': 'Conversion complete',
-  'notifications.jobCompletedBody': '{{fileName}} finished successfully.',
+  'notifications.jobCompletedBody': '{{fileName}} complete',
   'notifications.jobFailedTitle': 'Conversion failed',
-  'notifications.jobFailedBody': '{{fileName}} failed.',
+  'notifications.jobFailedBody': '{{fileName}} failed',
   'notifications.queueCompletedTitle': 'Queue complete',
-  'notifications.queueCompletedBody': '{{succeeded}} succeeded, {{failed}} failed.',
+  'notifications.queueCompletedBody': '{{succeeded}} succeeded, {{failed}} failed',
   'notifications.muxJobCompletedTitle': 'Remux/demux complete',
-  'notifications.muxJobCompletedBody': '{{fileName}} finished successfully.',
+  'notifications.muxJobCompletedBody': '{{fileName}} complete',
   'notifications.muxJobFailedTitle': 'Remux/demux failed',
-  'notifications.muxJobFailedBody': '{{fileName}} failed.',
+  'notifications.muxJobFailedBody': '{{fileName}} failed',
   'notifications.muxQueueCompletedTitle': 'Remux/demux queue complete',
-  'notifications.muxQueueCompletedBody': '{{succeeded}} succeeded, {{failed}} failed.',
+  'notifications.muxQueueCompletedBody': '{{succeeded}} succeeded, {{failed}} failed',
 };
 
 export function tNotification(key: string, vars?: NotificationStringVars): string {

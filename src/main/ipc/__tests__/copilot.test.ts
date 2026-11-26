@@ -329,6 +329,7 @@ describe('registerCopilotHandlers', () => {
     const result = await plan({ goal: 'remux to mkv', inputs: [file] });
     expect(result.operation).toBe('remux');
     expect(result.providerId).toBe('rules');
+    expect(result.routingWarningKey).toBe('copilot.routingWarning.aiFallback');
     expect(result.routingWarning).toContain('built-in rules engine');
   });
 
@@ -337,6 +338,23 @@ describe('registerCopilotHandlers', () => {
     const file = path.join(scanDir, 'one.mp4');
     const result = await plan({ goal: 'remux to mkv', inputs: [file] });
     expect(result.providerId).toBe('rules');
+    expect(result.routingWarning).toBeUndefined();
+  });
+
+  it('warns when no provider is configured and the goal has no recognized operation', async () => {
+    providerRegistryMock.resolveLLMOperationRouter.mockReturnValue(null);
+    const file = path.join(scanDir, 'one.mp4');
+    const result = await plan({ goal: '请选择要执行的操作', inputs: [file] });
+    expect(result.operation).toBe('convert');
+    expect(result.routingWarningKey).toBe('copilot.routingWarning.uncertainGoal');
+    expect(result.routingWarning).toContain('did not recognize an operation');
+  });
+
+  it('does not warn when a non-English goal is understood by the rules engine', async () => {
+    providerRegistryMock.resolveLLMOperationRouter.mockReturnValue(null);
+    const file = path.join(scanDir, 'one.mp4');
+    const result = await plan({ goal: 'transcribir el audio', inputs: [file] });
+    expect(result.operation).toBe('transcribe');
     expect(result.routingWarning).toBeUndefined();
   });
 

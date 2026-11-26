@@ -359,10 +359,8 @@ describe('Demux', () => {
     await waitFor(() => expect(getMediaInfoMock).toHaveBeenCalledOnce());
     fireEvent.click(screen.getByText('demux.start'));
     await waitFor(() => expect(convertFileMock).toHaveBeenCalledTimes(2));
-    const successToast = useToastStore
-      .getState()
-      .toasts.find((t) => t.type === 'success' && t.message === 'Streams extracted successfully');
-    expect(successToast?.action?.label).toBe('Reveal in folder');
+    const successToast = useToastStore.getState().toasts.find((t) => t.type === 'success' && t.message === 'toast.demuxed');
+    expect(successToast?.action?.labelKey).toBe('batchQueue.revealInFolder');
     expect(useDemuxStore.getState().isConverting).toBe(false);
   });
 

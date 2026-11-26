@@ -82,7 +82,7 @@ describe.runIf(IS_E2E)('Mux queue', () => {
     await selectSource(page);
 
     await page.locator('[data-testid="remux-add-to-queue"]').click();
-    await expect.poll(() => page.locator('[role="alert"]').filter({ hasText: 'Remux added to the mux queue' }).count()).toBeGreaterThan(0);
+    await expect.poll(() => page.locator('[role="alert"]').filter({ hasText: 'Remux job added to the queue' }).count()).toBeGreaterThan(0);
 
     await gotoPage(page, 'batch');
     await page.locator('[data-testid="batch-queue-tab-mux"]').click();
@@ -96,9 +96,7 @@ describe.runIf(IS_E2E)('Mux queue', () => {
     await selectSource(page);
 
     await page.locator('[data-testid="demux-add-to-queue"]').click();
-    await expect
-      .poll(() => page.locator('[role="alert"]').filter({ hasText: 'Streams added to the mux queue' }).count())
-      .toBeGreaterThan(0);
+    await expect.poll(() => page.locator('[role="alert"]').filter({ hasText: 'Demux job added to the queue' }).count()).toBeGreaterThan(0);
 
     await gotoPage(page, 'batch');
     await page.locator('[data-testid="batch-queue-tab-mux"]').click();

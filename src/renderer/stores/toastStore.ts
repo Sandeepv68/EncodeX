@@ -38,9 +38,10 @@ const MAX_TOASTS = 20;
 /**
  * Zustand store for toast notification state.
  * Holds the active toasts and provides addToast / removeToast plus the typed
- * convenience wrappers success / error / warning / info. Implemented as a
- * module-level singleton so any renderer module can push a toast via
- * useToastStore.getState().
+ * convenience wrappers success / error / warning / info. Those wrappers are
+ * internal compatibility helpers; renderer callers should use the `notify`
+ * facade instead. Implemented as a module-level singleton so any renderer
+ * module can push a toast via useToastStore.getState().
  * @const {UseBoundStore<StoreApi<ToastState>>} useToastStore
  */
 export const useToastStore = create<ToastState>((set, get) => ({
@@ -53,9 +54,9 @@ export const useToastStore = create<ToastState>((set, get) => ({
    * @param {string} [detail] - Optional secondary detail line.
    * @param {number} [duration] - Optional display duration in milliseconds.
    */
-  addToast: (type, message, detail, duration, action) => {
+  addToast: (type, message, detail, duration, action, values, detailValues) => {
     const id = `toast-${++counter}`;
-    const toast: Toast = { id, type, message, detail, duration, action };
+    const toast: Toast = { id, type, message, values, detail, detailValues, duration, action };
     set((s) => {
       // The queue is capped: a bulk operation can raise one toast per file,
       // and an unbounded array would grow for as long as the window is open.
@@ -72,30 +73,38 @@ export const useToastStore = create<ToastState>((set, get) => ({
   },
   /**
    * Adds a 'success' toast.
+   * @deprecated Use `notify.success` from `utils/notify.ts` instead.
    * @param {string} message - The main toast text.
    * @param {string} [detail] - Optional secondary detail line.
    * @param {number} [duration] - Optional display duration in milliseconds.
    */
-  success: (message, detail, duration, action) => get().addToast('success', message, detail, duration, action),
+  success: (message, detail, duration, action, values, detailValues) =>
+    get().addToast('success', message, detail, duration, action, values, detailValues),
   /**
    * Adds an 'error' toast.
+   * @deprecated Use `notify.error` or `notify.fromError` from `utils/notify.ts` instead.
    * @param {string} message - The main toast text.
    * @param {string} [detail] - Optional secondary detail line.
    * @param {number} [duration] - Optional display duration in milliseconds.
    */
-  error: (message, detail, duration, action) => get().addToast('error', message, detail, duration, action),
+  error: (message, detail, duration, action, values, detailValues) =>
+    get().addToast('error', message, detail, duration, action, values, detailValues),
   /**
    * Adds a 'warning' toast.
+   * @deprecated Use `notify.warning` from `utils/notify.ts` instead.
    * @param {string} message - The main toast text.
    * @param {string} [detail] - Optional secondary detail line.
    * @param {number} [duration] - Optional display duration in milliseconds.
    */
-  warning: (message, detail, duration, action) => get().addToast('warning', message, detail, duration, action),
+  warning: (message, detail, duration, action, values, detailValues) =>
+    get().addToast('warning', message, detail, duration, action, values, detailValues),
   /**
    * Adds an 'info' toast.
+   * @deprecated Use `notify.info` from `utils/notify.ts` instead.
    * @param {string} message - The main toast text.
    * @param {string} [detail] - Optional secondary detail line.
    * @param {number} [duration] - Optional display duration in milliseconds.
    */
-  info: (message, detail, duration, action) => get().addToast('info', message, detail, duration, action),
+  info: (message, detail, duration, action, values, detailValues) =>
+    get().addToast('info', message, detail, duration, action, values, detailValues),
 }));

@@ -37,7 +37,7 @@ import { pageIcons } from '../pageIcons';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { Logger } from '../../shared/logger';
 import { useErrorStore } from '../stores/errorStore';
-import { useToastStore } from '../stores/toastStore';
+import { notify } from '../utils/notify';
 import { useTaskStore } from '../stores/taskStore';
 import { ErrorCode } from '../../shared/errors';
 import { IMAGE_FORMATS, IMAGE_CODEC_MAP, SCALE_OPTIONS } from '../../shared/media-options';
@@ -332,7 +332,7 @@ export default function ImageCompress() {
           }
         });
       await taskPromise;
-      useToastStore.getState().success(t('toast.imageCompressed'));
+      notify.success('toast.imageCompressed');
     });
     setProgress(null);
   };

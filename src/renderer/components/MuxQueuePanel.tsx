@@ -34,7 +34,7 @@ import { useMuxQueueStore } from '../stores/muxQueueStore';
 import { useMuxQueueStatus } from '../hooks/useMuxQueueStatus';
 import { computeQueuedTargetPosition, reorderJob } from '../utils/queue-reorder';
 import { fireAndForgetBridge } from '../utils/bridge-call';
-import { useToastStore } from '../stores/toastStore';
+import { notify } from '../utils/notify';
 import { formatError } from '../../shared/errors';
 import { basename } from '../utils/path-utils';
 import MuxQueueJobCard from './MuxQueueJobCard';
@@ -161,10 +161,10 @@ export default function MuxQueuePanel({ searchRef, condensed = false }: MuxQueue
         transcoder: job.transcoder,
         overwrite: true,
       });
-      useToastStore.getState().success(t('toast.jobAdded'));
+      notify.success('toast.jobAdded');
     } catch (err: unknown) {
       const appError = formatError(err);
-      useToastStore.getState().error(appError.message, appError.detail);
+      notify.fromError(appError);
     }
   };
 

@@ -530,7 +530,40 @@
     "remuxed": "Remux terminé",
     "demuxed": "Flux extraits avec succès",
     "remuxQueued": "Remux ajouté à la file d'attente Mux",
-    "demuxQueued": "Flux ajoutés à la file d'attente Mux"
+    "demuxQueued": "Flux ajoutés à la file d'attente Mux",
+    "devScreenshotSaved": "Capture d'écran développeur enregistrée",
+    "devScreenshotFailed": "Capture d'écran développeur échouée",
+    "error": {
+      "FILE_NOT_FOUND": "Le fichier sélectionné est introuvable. Il a peut-être été déplacé ou supprimé.",
+      "FFMPEG_NOT_FOUND": "Le binaire FFmpeg est introuvable. Veuillez installer FFmpeg ou vérifier l'exécutable fourni.",
+      "FFPROBE_NOT_FOUND": "Le binaire FFprobe est introuvable. Les informations sur le média ne peuvent pas être lues.",
+      "CONVERSION_FAILED": "Le processus de conversion a échoué. Vérifiez le format du fichier et les paramètres.",
+      "INVALID_FORMAT": "Le format du fichier n'est pas pris en charge ou l'extension de sortie ne correspond pas au codec sélectionné.",
+      "PROBE_FAILED": "Impossible de lire les informations du fichier multimédia. Le fichier est peut-être corrompu ou dans un format non pris en charge.",
+      "QUEUE_ERROR": "Une tâche de la file d'attente par lots a échoué. Consultez les détails de chaque tâche pour plus d'informations.",
+      "PLAYER_ERROR": "Le lecteur vidéo a rencontré une erreur. Le fichier est peut-être corrompu ou dans un format non pris en charge.",
+      "CANCELLED": "L'opération a été annulée par l'utilisateur.",
+      "BMF_NOT_AVAILABLE": "Le framework BMF n'est pas installé. Veuillez installer les outils BMF CLI ou utiliser un autre transcodeur.",
+      "OUTPUT_NOT_SPECIFIED": "Veuillez spécifier un fichier de sortie avant de lancer la conversion.",
+      "INPUT_NOT_SPECIFIED": "Veuillez sélectionner un fichier d'entrée avant de lancer la conversion.",
+      "OUTPUT_EXISTS": "Le fichier de sortie existe déjà. Activez l'écrasement pour le remplacer.",
+      "INVALID_QUEUE_FILE": "Le fichier de file d'attente n'a pas pu être lu. Il est peut-être corrompu ou dans un format non pris en charge.",
+      "INVALID_AUTOMATION_FILE": "Le fichier d'automatisation n'a pas pu être lu. Il est peut-être corrompu ou dans un format non pris en charge.",
+      "FILTERS_REQUIRE_RE_ENCODE": "Les filtres vidéo nécessitent un réencodage. Désactivez la copie sans perte (stream copy) pour appliquer les filtres.",
+      "INVALID_VIDEO_FILTERS": "La chaîne de filtres vidéo ou le préréglage est invalide. Vérifiez les expressions de filtre et les noms de préréglage.",
+      "STREAM_NOT_FOUND": "Le flux demandé n'existe pas dans le fichier source. Vérifiez la sélection des flux.",
+      "INCOMPATIBLE_CONTAINER": "Un flux sélectionné ne peut pas être stocké dans le container choisi sans réencodage.",
+      "AUXILIARY_INPUT_NOT_FOUND": "Un fichier de sous-titres, d'audio, de chapitres ou de couverture ajouté est introuvable.",
+      "PERMISSION_DENIED": "Accès refusé. L'application n'a peut-être pas accès au fichier ou au dossier sélectionné.",
+      "OPERATION_TIMED_OUT": "L'opération a pris trop de temps et a été interrompue. Le fichier est peut-être corrompu ou le système est fortement sollicité.",
+      "UNSAFE_ARGUMENTS": "La requête contenait des arguments non autorisés (des métacaractères d'interpréteur de commandes ou une seconde commande ont été détectés).",
+      "TRANSCRIPTION_UNAVAILABLE": "Aucun moteur de reconnaissance vocale n'est disponible. Installez un outil ASR local pris en charge (p. ex. whisper.cpp) ou configurez-en un.",
+      "TRANSLATION_UNAVAILABLE": "Aucun service de traduction de sous-titres n'est disponible. Configurez un environnement d'exécution de modèles local ou un autre fournisseur.",
+      "AI_NOT_CONFIGURED": "Aucun fournisseur d'IA n'est configuré. Ajoutez une clé d'API dans les paramètres pour utiliser la planification assistée par l'IA.",
+      "AI_CONNECTOR_FAILED": "Impossible de joindre le fournisseur d'IA. Vérifiez votre connexion réseau, la clé d'API et le nom du modèle.",
+      "AI_RESPONSE_INVALID": "Le fournisseur d'IA a renvoyé une réponse inexploitable. Réessayez ou passez au planificateur déterministe.",
+      "UNKNOWN": "Une erreur inattendue s'est produite. Veuillez réessayer."
+    }
   },
   "profiles": {
     "searchPlaceholder": "Rechercher des profils...",
@@ -685,7 +718,12 @@
       "removeKey": "Supprimer la clé",
       "keyRemoved": "La clé enregistrée a été supprimée.",
       "staleStatus": "Les paramètres ont changé. Reconnectez-vous pour vérifier.",
-      "headerConnected": "Connecté · {{provider}} · {{model}}"
+      "headerConnected": "Connecté · {{provider}} · {{model}}",
+      "reset": "Réinitialiser aux valeurs par défaut",
+      "resetConfirmTitle": "Réinitialiser les fournisseurs d’IA ?",
+      "resetConfirmMessage": "Cette action supprime toutes les clés API, tous les modèles, tous les points d’accès et tout l’historique de connexion enregistrés. Le fournisseur de règles intégré devient actif. Cette action est irréversible.",
+      "resetConfirmAction": "Réinitialiser",
+      "resetComplete": "Les fournisseurs d’IA ont été restaurés à leurs valeurs par défaut."
     },
     "desktopNotifications": "Notifications du bureau",
     "desktopNotificationsHint": "Afficher des notifications système lorsque les tâches de la file d’attente se terminent ou échouent pendant que l’application est en arrière-plan.",
@@ -1095,7 +1133,8 @@
     "ai": {
       "configure": "Configurer le fournisseur d’IA",
       "locationNote": "Les fournisseurs d’IA se configurent dans les paramètres.",
-      "notConnected": "Non connecté"
+      "notConnected": "Non connecté",
+      "noProviderNotice": "Aucun fournisseur d’IA n’est connecté. Copilot utilise des règles intégrées ; les réponses peuvent donc être moins précises et les objectifs complexes peuvent être mal orientés. Connectez un fournisseur d’IA dans les paramètres pour tirer le meilleur parti de Copilot."
     },
     "queryLabel": "Phrase de recherche",
     "queryPlaceholder": "p. ex. la partie sur les prix",
@@ -1126,6 +1165,10 @@
       "container": "Conteneur",
       "losslessCopy": "Copie sans perte",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "Le fournisseur AI configuré n'a pas pu router cet objectif ; le moteur de règles intégré a donc été utilisé à la place. Vérifiez les paramètres du fournisseur AI et les journaux.",
+      "uncertainGoal": "Copilot n'a reconnu aucune opération dans cet objectif et a donc planifié une conversion par défaut. Choisissez une opération dans les options avancées, ou connectez un fournisseur AI pour une meilleure détection des intentions."
     }
   },
   "leaveConfirm": {

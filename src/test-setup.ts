@@ -129,6 +129,8 @@ vi.mock('react-i18next', () => ({
         'logs.auditStatusOk': 'ok',
         'logs.auditStatusFailed': 'failed',
         'copilot.folderFilesCount': '{{name}} ({{count}})',
+        'copilot.routingWarning.aiFallback': 'copilot.routingWarning.aiFallback',
+        'copilot.routingWarning.uncertainGoal': 'copilot.routingWarning.uncertainGoal',
       };
       // `map[key]` on a plain object reaches Object.prototype for keys like
       // '__proto__' or 'constructor', returning a non-string that then blew up
@@ -276,6 +278,16 @@ Object.defineProperty(globalThis, 'electronAPI', {
         connected: false,
       }),
     ),
+    aiResetSettings: vi.fn().mockResolvedValue({
+      providerId: 'rules',
+      model: '',
+      hasKey: false,
+      keyHint: '',
+      storedInsecurely: false,
+      encryptionAvailable: true,
+      connected: false,
+      selectedProviderId: 'rules',
+    }),
     aiConnectTest: vi.fn().mockResolvedValue({ ok: false, message: '' }),
     aiListModels: vi.fn().mockResolvedValue({ ok: true, models: [] }),
     onWindowMaximizedChange: vi.fn(() => vi.fn()),

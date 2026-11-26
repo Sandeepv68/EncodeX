@@ -41,7 +41,7 @@ import ProgressBar from './ProgressBar';
 import { useLazyThumbnail } from '../hooks/useLazyThumbnail';
 import { basename } from '../utils/path-utils';
 import { statusChipColor } from '../utils/queue-job-utils';
-import { useToastStore } from '../stores/toastStore';
+import { notify } from '../utils/notify';
 import { QUEUE_STATUS } from '../../shared/media-options';
 import type { ConversionOptions } from '../../shared/types';
 import type { MuxQueueJobCardProps } from './types';
@@ -108,7 +108,7 @@ export default function MuxQueueJobCard({ job, progress, onRemove, onRetry }: Mu
   const handleCopyPath = async () => {
     const path = job.targets[0]?.output ?? job.output;
     await navigator.clipboard.writeText(path);
-    useToastStore.getState().success(t('toast.pathCopied'));
+    notify.success('toast.pathCopied');
   };
 
   const detailsLabel = expanded ? t('batchQueue.collapseDetails') : t('batchQueue.expandDetails');

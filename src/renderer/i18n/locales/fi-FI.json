@@ -530,7 +530,40 @@
     "remuxed": "Remux valmis",
     "demuxed": "Virrat poimittiin onnistuneesti",
     "remuxQueued": "Remux lisätty Mux-jonoon",
-    "demuxQueued": "Virrat lisätty Mux-jonoon"
+    "demuxQueued": "Virrat lisätty Mux-jonoon",
+    "devScreenshotSaved": "Kehittäjän kuvakaappaus tallennettu",
+    "devScreenshotFailed": "Kehittäjän kuvakaappaus epäonnistui",
+    "error": {
+      "FILE_NOT_FOUND": "Valittua tiedostoa ei löytynyt. Se on saatettu siirtää tai poistaa.",
+      "FFMPEG_NOT_FOUND": "FFmpeg-binääriä ei löytynyt. Asenna FFmpeg tai tarkista paketin mukana tuleva suoritettava tiedosto.",
+      "FFPROBE_NOT_FOUND": "FFprobe-binääriä ei löytynyt. Median tietoja ei voi lukea.",
+      "CONVERSION_FAILED": "Muunnosprosessi epäonnistui. Tarkista tiedostomuoto ja parametrit.",
+      "INVALID_FORMAT": "Tiedostomuotoa ei tueta, tai tulostiedoston pääte ei vastaa valittua codec-arvoa.",
+      "PROBE_FAILED": "Mediatiedoston tietoja ei voitu lukea. Tiedosto saattaa olla vioittunut tai tukemattomassa muodossa.",
+      "QUEUE_ERROR": "Eräjonon työ epäonnistui. Katso yksittäisten töiden tiedot lisätietoja varten.",
+      "PLAYER_ERROR": "Videotoistossa tapahtui virhe. Tiedosto saattaa olla vioittunut tai tukemattomassa muodossa.",
+      "CANCELLED": "Käyttäjä perui toiminnon.",
+      "BMF_NOT_AVAILABLE": "BMF-frameworkia ei ole asennettu. Asenna BMF CLI -työkalut tai käytä toista transkooderia.",
+      "OUTPUT_NOT_SPECIFIED": "Määritä tulostiedosto ennen muunnoksen aloittamista.",
+      "INPUT_NOT_SPECIFIED": "Valitse syötetiedosto ennen muunnoksen aloittamista.",
+      "OUTPUT_EXISTS": "Tulostiedosto on jo olemassa. Ota ylikirjoitus käyttöön sen korvaamiseksi.",
+      "INVALID_QUEUE_FILE": "Jonotiedostoa ei voitu lukea. Se saattaa olla vioittunut tai tukemattomassa muodossa.",
+      "INVALID_AUTOMATION_FILE": "Automaatiotiedostoa ei voitu lukea. Se saattaa olla vioittunut tai tukemattomassa muodossa.",
+      "FILTERS_REQUIRE_RE_ENCODE": "Videosuodattimet vaativat uudelleenkoodauksen. Poista häviötön kopiointi (stream copy) käytöstä suodattimien käyttämiseksi.",
+      "INVALID_VIDEO_FILTERS": "Videosuodattimien ketju tai esiasetus on virheellinen. Tarkista suodatinlausekkeet ja esiasetusten nimet.",
+      "STREAM_NOT_FOUND": "Pyydettyä striimiä ei ole lähdetiedostossa. Tarkista striimin valinta.",
+      "INCOMPATIBLE_CONTAINER": "Valittua striimiä ei voi tallentaa valittuun container-muotoon ilman uudelleenkoodausta.",
+      "AUXILIARY_INPUT_NOT_FOUND": "Lisättyä tekstitys-, ääni-, kappale- tai kansitiedostoa ei löytynyt.",
+      "PERMISSION_DENIED": "Lupa evätty. Sovelluksella ei välttämättä ole pääsyä valittuun tiedostoon tai kansioon.",
+      "OPERATION_TIMED_OUT": "Toiminto kesti liian kauan ja keskeytettiin. Tiedosto saattaa olla vioittunut tai järjestelmä voi olla voimakkaasti kuormitettu.",
+      "UNSAFE_ARGUMENTS": "Pyyntö sisälsi sallimattomia argumentteja (havaittiin komentotulkin erikoismerkkejä tai toinen komento).",
+      "TRANSCRIPTION_UNAVAILABLE": "Puheen tunnistusmoottoria ei ole käytettävissä. Asenna tuettava paikallinen ASR-työkalu (esim. whisper.cpp) tai määritä sellainen.",
+      "TRANSLATION_UNAVAILABLE": "Tekstitysten käännöspalvelua ei ole käytettävissä. Määritä paikallinen mallien suoritusympäristö tai toinen palveluntarjoaja.",
+      "AI_NOT_CONFIGURED": "AI-palveluntarjoajaa ei ole määritetty. Lisää API-avain asetuksissa AI-pohjaisen suunnittelun käyttämiseksi.",
+      "AI_CONNECTOR_FAILED": "AI-palveluntarjoajaan ei saatu yhteyttä. Tarkista verkkoyhteytesi, API-avain ja mallin nimi.",
+      "AI_RESPONSE_INVALID": "AI-palveluntarjoaja palautti käyttökelvottoman vastauksen. Yritä uudelleen tai vaihda deterministiseen suunnittelijaan.",
+      "UNKNOWN": "Tapahtui odottamaton virhe. Yritä uudelleen."
+    }
   },
   "profiles": {
     "searchPlaceholder": "Hae profiileja...",
@@ -685,7 +718,12 @@
       "removeKey": "Poista avain",
       "keyRemoved": "Tallennettu avain poistettiin.",
       "staleStatus": "Asetukset muuttuivat. Yhdistä uudelleen vahvistaaksesi.",
-      "headerConnected": "Yhdistetty · {{provider}} · {{model}}"
+      "headerConnected": "Yhdistetty · {{provider}} · {{model}}",
+      "reset": "Palauta oletusasetuksiin",
+      "resetConfirmTitle": "Palautetaanko tekoälytarjoajat?",
+      "resetConfirmMessage": "Tämä poistaa kaikki tallennetut API-avaimet, mallit, päätepisteet ja yhteyshistorian. Sisäänrakennettu sääntötarjoaja tulee aktiiviseksi. Toimintoa ei voi perua.",
+      "resetConfirmAction": "Palauta",
+      "resetComplete": "Tekoälytarjoajat on palautettu oletusasetuksiinsa."
     },
     "desktopNotifications": "Työpöytäilmoitukset",
     "desktopNotificationsHint": "Näytä järjestelmäilmoitukset, kun jonotehtävät valmistuvat tai epäonnistuvat sovelluksen ollessa taustalla.",
@@ -1095,7 +1133,8 @@
     "ai": {
       "configure": "Määritä tekoälyn tarjoaja",
       "locationNote": "Tekoälyn tarjoajat määritetään asetuksissa.",
-      "notConnected": "Ei yhteyttä"
+      "notConnected": "Ei yhteyttä",
+      "noProviderNotice": "Tekoälypalveluntarjoajaa ei ole yhdistetty. Copilot käyttää sisäänrakennettuja sääntöjä, joten vastaukset voivat olla vähemmän tarkkoja ja monimutkaiset tavoitteet voidaan reitittää väärin. Yhdistä tekoälypalveluntarjoaja asetuksissa saadaksesi parhaan hyödyn Copilotista."
     },
     "queryLabel": "Hakulause",
     "queryPlaceholder": "esim. osuus hinnoittelusta",
@@ -1126,6 +1165,10 @@
       "container": "Säilö",
       "losslessCopy": "Häviötön kopio",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "Määritetty AI-palveluntarjoaja ei pystynyt reitittämään tätä tavoitetta, joten sen sijaan käytettiin sisäänrakennettua sääntömoottoria. Tarkista AI-palveluntarjoajan asetukset ja lokit.",
+      "uncertainGoal": "Copilot ei tunnistanut tavoitteesta mitään toimintoa, joten se suunnitteli oletusmuunnoksen. Valitse toiminto Lisäasetuksista tai yhdistä AI-palveluntarjoaja paremman aikomuksentunnistuksen saamiseksi."
     }
   },
   "leaveConfirm": {

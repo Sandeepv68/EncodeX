@@ -13,7 +13,15 @@
 
 import type { CopilotOperation } from './types';
 
-export type { CopilotOperation, CopilotOperationChoice, CopilotPlanRequest, CopilotAction, CopilotResult, CopilotPlan } from './types';
+export type {
+  CopilotOperation,
+  CopilotOperationChoice,
+  CopilotPlanRequest,
+  CopilotAction,
+  CopilotResult,
+  CopilotPlan,
+  CopilotRoutingWarningKey,
+} from './types';
 
 /**
  * The operations that can be committed to the Batch Queue as conversion jobs.

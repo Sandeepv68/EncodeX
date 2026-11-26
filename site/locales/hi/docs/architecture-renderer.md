@@ -117,7 +117,7 @@ Error system (`src/shared/errors.ts`) 28 typed codes define करता है 
 flowchart TD
     T["throw new Error(...)"] --> F["formatError(err)<br/>shared/errors.ts"]
     F -->|"normalizes to AppError with code / message / detail / timestamp<br/>infers code from message keywords or system errno (ENOENT, EACCES, ...)"| S["errorStore.showError()<br/>stores in currentError + errorHistory (cap 50)"]
-    S --> SN["ErrorSnackbar<br/>global toast, auto-dismiss 6s"]
+    S --> SN["ToastContainer<br/>unified toast viewport, 4s default"]
     S --> BA["ErrorBanner<br/>inline per-page, closable"]
     S --> BO["ErrorBoundary<br/>React crash catch-all,<br/>nested per-page + per-component"]
 ```

@@ -92,6 +92,16 @@ describe('Settings', () => {
         ...(update?.providerId ? { selectedProviderId: update.providerId } : {}),
       });
     });
+    vi.mocked(window.electronAPI.aiResetSettings).mockResolvedValue({
+      providerId: 'rules',
+      model: '',
+      hasKey: false,
+      keyHint: '',
+      storedInsecurely: false,
+      encryptionAvailable: true,
+      connected: false,
+      selectedProviderId: 'rules',
+    });
     vi.mocked(window.electronAPI.aiConnectTest).mockResolvedValue({ ok: false, message: '' });
     useSettingsStore.setState({
       hardwareAcceleration: HWACCEL_DEFAULTS.ENABLED,
@@ -1193,6 +1203,83 @@ describe('Settings', () => {
     await waitFor(() => expect(screen.queryByTestId('settings-ai-remove-key')).not.toBeInTheDocument());
   });
 
+  it('resets every AI provider to the first-load defaults after confirmation', async () => {
+    vi.mocked(window.electronAPI.aiGetSettings).mockResolvedValue({
+      providerId: 'openai',
+      model: 'gpt-4o',
+      hasKey: true,
+      keyHint: '••••••••',
+      storedInsecurely: false,
+      encryptionAvailable: true,
+      connected: true,
+      connectedAt: 5,
+      connectedModel: 'gpt-4o',
+      activeConnection: { providerId: 'openai', model: 'gpt-4o', at: 5 },
+      selectedProviderId: 'openai',
+    });
+    renderSettingsOn('ai');
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+    await waitFor(() => expect(screen.getByTestId('settings-ai-provider-openai')).toHaveAttribute('aria-pressed', 'true'));
+
+    fireEvent.click(screen.getByTestId('settings-ai-reset'));
+    expect(await screen.findByText('settings.ai.resetConfirmMessage')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('settings-ai-reset-confirm'));
+
+    await waitFor(() => expect(window.electronAPI.aiResetSettings).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(screen.getByTestId('settings-ai-provider-rules')).toHaveAttribute('aria-pressed', 'true'));
+    expect(screen.getByTestId('settings-ai-status')).toHaveTextContent('settings.ai.resetComplete');
+    expect(screen.queryByTestId('settings-ai-connected-dot-openai')).not.toBeInTheDocument();
+    expect(window.electronAPI.aiSetSettings).not.toHaveBeenCalled();
+  });
+
+  it('reports an invalid response from the AI reset bridge', async () => {
+    vi.mocked(window.electronAPI.aiResetSettings).mockResolvedValue({} as never);
+    renderSettingsOn('ai');
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+
+    fireEvent.click(screen.getByTestId('settings-ai-reset'));
+    expect(await screen.findByText('settings.ai.resetConfirmMessage')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('settings-ai-reset-confirm'));
+
+    expect(await screen.findByTestId('settings-ai-error')).toHaveTextContent('settings.ai.saveFailed');
+    await waitFor(() => expect(screen.queryByText('settings.ai.resetConfirmMessage')).not.toBeInTheDocument());
+  });
+
+  it('reports a rejected AI reset bridge call', async () => {
+    vi.mocked(window.electronAPI.aiResetSettings).mockRejectedValue(new Error('reset boom'));
+    renderSettingsOn('ai');
+    fireEvent.click(screen.getByTestId('settings-ai-toggle'));
+    await screen.findByTestId('settings-ai');
+
+    fireEvent.click(screen.getByTestId('settings-ai-reset'));
+    expect(await screen.findByText('settings.ai.resetConfirmMessage')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('settings-ai-reset-confirm'));
+
+    expect(await screen.findByTestId('settings-ai-error')).toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByText('settings.ai.resetConfirmMessage')).not.toBeInTheDocument());
+  });
+
+  it('closes the AI reset dialog from the escape key', async () => {
+    renderSettingsOn('ai');
+    fireEvent.click(screen.getByTestId('settings-ai-reset'));
+    expect(await screen.findByText('settings.ai.resetConfirmMessage')).toBeInTheDocument();
+
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape', code: 'Escape' });
+
+    await waitFor(() => expect(screen.queryByText('settings.ai.resetConfirmMessage')).not.toBeInTheDocument());
+    expect(window.electronAPI.aiResetSettings).not.toHaveBeenCalled();
+  });
+
+  it('does not reset providers when the reset dialog is cancelled', async () => {
+    renderSettingsOn('ai');
+    fireEvent.click(screen.getByTestId('settings-ai-reset'));
+    expect(await screen.findByText('settings.ai.resetConfirmMessage')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('settings-ai-reset-cancel'));
+    expect(window.electronAPI.aiResetSettings).not.toHaveBeenCalled();
+  });
+
   it('shows only the selected provider own saved-key state when switching', async () => {
     vi.mocked(window.electronAPI.aiGetSettings).mockResolvedValue({
       providerId: 'openai',
@@ -1247,11 +1334,11 @@ describe('Settings', () => {
     renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
-    expect(screen.getByTestId('settings-ai-connected-dot-openai')).toBeInTheDocument();
+    await screen.findByTestId('settings-ai-connected-dot-openai');
 
     // Selecting a different provider must not hide the one connection.
     fireEvent.click(screen.getByTestId('settings-ai-provider-anthropic'));
-    expect(screen.getByTestId('settings-ai-connected-dot-openai')).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByTestId('settings-ai-connected-dot-openai')).toBeInTheDocument());
     expect(screen.queryByTestId('settings-ai-connected-dot-anthropic')).not.toBeInTheDocument();
     // And it must not claim the freshly selected provider is connected.
     expect(screen.queryByTestId('settings-ai-connected')).not.toBeInTheDocument();

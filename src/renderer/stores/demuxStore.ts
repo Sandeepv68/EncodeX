@@ -49,7 +49,7 @@ import {
   type RemuxWarning,
 } from '../../shared/codec-containers';
 import { useErrorStore } from './errorStore';
-import { useToastStore } from './toastStore';
+import { notify } from '../utils/notify';
 import { navigateToMuxQueue } from '../utils/mux-queue-navigation';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
@@ -57,7 +57,6 @@ import { demuxAnalyticsSummary } from '../../shared/analytics/analytics-summarie
 import type { DemuxState, TaskProgress } from './types';
 import { dirname as pathDirname, stem as pathStem, joinPath } from '../utils/path-utils';
 import { defaultFolderNameForFile, sanitizeFolderName } from '../../shared/folder-naming';
-import i18n from '../i18n/config';
 import {
   LOG_ARROW,
   LOG_CANCEL_CONVERSION_CALLED,
@@ -377,11 +376,13 @@ export const useDemuxStore = create<DemuxState>((set, get) => ({
           durationSec: Math.round((Date.now() - demuxStartedAt) / 1000),
         }),
       );
-      useToastStore.getState().success(i18n.t('toast.demuxed'), undefined, undefined, {
-        label: i18n.t('batchQueue.revealInFolder'),
-        onClick: () => {
-          const firstOutput = get().targets[0]?.output;
-          if (firstOutput) void window.electronAPI.revealFile(firstOutput);
+      notify.success('toast.demuxed', {
+        action: {
+          labelKey: 'batchQueue.revealInFolder',
+          onClick: () => {
+            const firstOutput = get().targets[0]?.output;
+            if (firstOutput) void window.electronAPI.revealFile(firstOutput);
+          },
         },
       });
     }
@@ -422,9 +423,11 @@ export const useDemuxStore = create<DemuxState>((set, get) => ({
         })),
         transcoder: TRANSCODER_TYPES[0],
       });
-      useToastStore.getState().success(i18n.t('toast.demuxQueued'), undefined, undefined, {
-        label: i18n.t('muxQueue.viewQueue'),
-        onClick: () => navigateToMuxQueue(),
+      notify.success('toast.demuxQueued', {
+        action: {
+          labelKey: 'muxQueue.viewQueue',
+          onClick: () => navigateToMuxQueue(),
+        },
       });
       // The job now lives in the mux queue: reset the form so the next file
       // can be picked right away. The per-kind conversion prefs are kept.

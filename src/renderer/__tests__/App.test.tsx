@@ -258,13 +258,16 @@ describe('App', () => {
     expect(useAuditStore.getState().entries).toContainEqual(entry);
   });
 
-  it('shows the error snackbar when the error store has an error', async () => {
-    useErrorStore.setState({
-      currentError: { code: 'CONVERSION_FAILED', message: 'Conversion exploded', detail: 'encoder crashed', timestamp: Date.now() },
+  it('shows error-store failures in the unified toast viewport', async () => {
+    useErrorStore.getState().showError({
+      code: 'CONVERSION_FAILED',
+      message: 'Conversion exploded',
+      detail: 'encoder crashed',
+      timestamp: Date.now(),
     });
     renderApp();
     await screen.findByText('dashboard.welcome 👋', {}, { timeout: 10000 });
-    expect(screen.getByText('Conversion exploded')).toBeInTheDocument();
+    expect(screen.getByText('toast.error.CONVERSION_FAILED')).toBeInTheDocument();
     expect(screen.getByText('encoder crashed')).toBeInTheDocument();
   });
 

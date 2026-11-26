@@ -530,7 +530,40 @@
     "remuxed": "Remux fullført",
     "demuxed": "Strømmene ble hentet ut",
     "remuxQueued": "Remux lagt til i Mux-køen",
-    "demuxQueued": "Strømmene ble lagt til i Mux-køen"
+    "demuxQueued": "Strømmene ble lagt til i Mux-køen",
+    "devScreenshotSaved": "Utviklerskjermbilde lagret",
+    "devScreenshotFailed": "Utviklerskjermbilde mislyktes",
+    "error": {
+      "FILE_NOT_FOUND": "Den valgte filen ble ikke funnet. Den kan ha blitt flyttet eller slettet.",
+      "FFMPEG_NOT_FOUND": "FFmpeg-binærfilen ble ikke funnet. Installer FFmpeg eller kontroller den medfølgende kjørbare filen.",
+      "FFPROBE_NOT_FOUND": "FFprobe-binærfilen ble ikke funnet. Medieinformasjon kan ikke leses.",
+      "CONVERSION_FAILED": "Konverteringsprosessen mislyktes. Kontroller filformatet og parametrene.",
+      "INVALID_FORMAT": "Filformatet støttes ikke, eller utvidelsen stemmer ikke med valgt codec.",
+      "PROBE_FAILED": "Kunne ikke lese informasjon om mediefilen. Filen kan være skadet eller i et format som ikke støttes.",
+      "QUEUE_ERROR": "En jobb i batchkøen mislyktes. Se detaljene for de enkelte jobbene for mer informasjon.",
+      "PLAYER_ERROR": "Videospilleren støtte på en feil. Filen kan være skadet eller i et format som ikke støttes.",
+      "CANCELLED": "Operasjonen ble avbrutt av brukeren.",
+      "BMF_NOT_AVAILABLE": "BMF-rammeverket er ikke installert. Installer BMF CLI-verktøyene eller bruk en annen transkoder.",
+      "OUTPUT_NOT_SPECIFIED": "Angi venligst en utfil før konverteringen starter.",
+      "INPUT_NOT_SPECIFIED": "Velg venligst en innfil før konverteringen starter.",
+      "OUTPUT_EXISTS": "Utfilen finnes allerede. Aktiver overskriving for å erstatte den.",
+      "INVALID_QUEUE_FILE": "Køfilen kunne ikke leses. Den kan være skadet eller i et format som ikke støttes.",
+      "INVALID_AUTOMATION_FILE": "Automatiseringsfilen kunne ikke leses. Den kan være skadet eller i et format som ikke støttes.",
+      "FILTERS_REQUIRE_RE_ENCODE": "Videofiltre krever ny koding. Deaktiver tapsfri kopiering (stream copy) for å bruke filtre.",
+      "INVALID_VIDEO_FILTERS": "Videofilterkjeden eller forhåndsinnstillingen er ugyldig. Kontroller filteruttrykkene og navnene på forhåndsinnstillingene.",
+      "STREAM_NOT_FOUND": "Den forespurte strømmen finnes ikke i kildefilen. Kontroller strømvalget.",
+      "INCOMPATIBLE_CONTAINER": "En valgt strøm kan ikke lagres i valgt container uten ny koding.",
+      "AUXILIARY_INPUT_NOT_FOUND": "En lagt til undertekst-, lyd-, kapittel- eller omslagsfil ble ikke funnet.",
+      "PERMISSION_DENIED": "Tilgang nektet. Programmet har kanskje ikke tilgang til den valgte filen eller mappen.",
+      "OPERATION_TIMED_OUT": "Operasjonen tok for lang tid og ble stoppet. Filen kan være skadet, eller systemet kan være under tung belastning.",
+      "UNSAFE_ARGUMENTS": "Forespørselen inneholdt argumenter som ikke er tillatt (skallmetategn eller en annen kommando ble oppdaget).",
+      "TRANSCRIPTION_UNAVAILABLE": "Ingen tale-til-tekst-motor er tilgjengelig. Installer et støttet lokalt ASR-verktøy (f.eks. whisper.cpp) eller konfigurer et.",
+      "TRANSLATION_UNAVAILABLE": "Ingen backend for oversettelse av undertekster er tilgjengelig. Konfigurer en lokal modellkjøring eller en annen leverandør.",
+      "AI_NOT_CONFIGURED": "Ingen AI-leverandør er konfigurert. Legg til en API-nøkkel i Innstillinger for å bruke AI-basert planlegging.",
+      "AI_CONNECTOR_FAILED": "Kunne ikke kontakte AI-leverandøren. Kontroller nettverkstilkoblingen, API-nøkkelen og modellnavnet.",
+      "AI_RESPONSE_INVALID": "AI-leverandøren returnerte et ubrukelig svar. Prøv igjen, eller bytt til den deterministiske planleggeren.",
+      "UNKNOWN": "En uventet feil oppstod. Vennligst prøv igjen."
+    }
   },
   "profiles": {
     "searchPlaceholder": "Søk i profiler...",
@@ -685,7 +718,12 @@
       "removeKey": "Fjern nøkkel",
       "keyRemoved": "Den lagrede nøkkelen ble fjernet.",
       "staleStatus": "Innstillingene er endret. Koble til på nytt for å bekrefte.",
-      "headerConnected": "Tilkoblet · {{provider}} · {{model}}"
+      "headerConnected": "Tilkoblet · {{provider}} · {{model}}",
+      "reset": "Nullstill til standard",
+      "resetConfirmTitle": "Nullstill AI-leverandører?",
+      "resetConfirmMessage": "Dette fjerner alle lagrede API-nøkler, modeller, endepunkter og tilkoblingshistorikk. Den innebygde regelleverandøren blir aktiv. Dette kan ikke angres.",
+      "resetConfirmAction": "Nullstill",
+      "resetComplete": "AI-leverandører er tilbakeført til standardinnstillingene sine."
     },
     "desktopNotifications": "Skrivebordsvarsler",
     "desktopNotificationsHint": "Vis systemvarsler når køjobber fullføres eller mislykkes mens appen kjører i bakgrunnen.",
@@ -1095,7 +1133,8 @@
     "ai": {
       "configure": "Konfigurer KI-leverandør",
       "locationNote": "KI-leverandører konfigureres i Innstillinger.",
-      "notConnected": "Ikke koblet"
+      "notConnected": "Ikke koblet",
+      "noProviderNotice": "Ingen KI-leverandør er tilkoblet. Copilot bruker innebygde regler, så svarene kan være mindre nøyaktige, og komplekse mål kan bli feilaktig rutet. Koble til en KI-leverandør i Innstillinger for å få mest ut av Copilot."
     },
     "queryLabel": "Søkefrase",
     "queryPlaceholder": "f.eks. delen om priser",
@@ -1126,6 +1165,10 @@
       "container": "Container",
       "losslessCopy": "Tapfri kopi",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "Den konfigurerte AI-leverandøren kunne ikke rute dette målet, så den innebygde regelmotoren ble brukt i stedet. Sjekk AI-leverandørens innstillinger og logger.",
+      "uncertainGoal": "Copilot gjenkjente ingen operasjon i dette målet, så den planla en standardkonvertering. Velg en operasjon i Avanserte alternativer, eller koble til en AI-leverandør for å gjenkjenne intensjonen bedre."
     }
   },
   "leaveConfirm": {

@@ -28,7 +28,14 @@ import { extractMediaFacts, planAgent, planWorkflow } from '../../shared/ai';
 import type { EncoderCapabilities, MediaInfo } from '../../shared/types';
 import { buildConversionOptions, resolveOutputPath } from '../../mcp/conversion-options';
 import type { MCPConversionFields } from '../../mcp/conversion-options';
-import type { CopilotAction, CopilotOperation, CopilotPlan, CopilotPlanRequest, CopilotResult } from '../../shared/copilot';
+import type {
+  CopilotAction,
+  CopilotOperation,
+  CopilotPlan,
+  CopilotPlanRequest,
+  CopilotResult,
+  CopilotRoutingWarningKey,
+} from '../../shared/copilot';
 import { COPILOT_QUEUE_OPERATIONS } from '../../shared/copilot';
 import { MCP_UI_VIEW_URIS, type McpViewAttachment } from '../../shared/mcp-ui';
 import { createError, formatError, ErrorCode } from '../../shared/errors';
@@ -208,6 +215,17 @@ const AI_FALLBACK_WARNING =
   'The configured AI provider could not route this goal, so the built-in rules engine was used instead. Check the AI provider settings and logs.';
 
 /**
+ * The warning shown when the offline router recognized no operation words in
+ * the goal and silently defaulted to `convert`.
+ * @const {string} UNCERTAIN_GOAL_WARNING
+ */
+const UNCERTAIN_GOAL_WARNING =
+  'Copilot did not recognize an operation in this goal, so it planned a default conversion. Choose an operation in Advanced options, or connect an AI provider for better intent detection.';
+
+const AI_FALLBACK_WARNING_KEY: CopilotRoutingWarningKey = 'copilot.routingWarning.aiFallback';
+const UNCERTAIN_GOAL_WARNING_KEY: CopilotRoutingWarningKey = 'copilot.routingWarning.uncertainGoal';
+
+/**
  * Chooses the operation for a goal: an explicit choice wins, otherwise a
  * configured AI provider is consulted and the deterministic router is the
  * fallback. The fallback is reported so the caller can warn instead of silently
@@ -217,7 +235,7 @@ const AI_FALLBACK_WARNING =
  * @param {ProbedEntry[]} entries - The probed candidates.
  * @param {EncoderCapabilities} capabilities - Detected encoders.
  * @param {string} inputExt - Input extension for container defaults.
- * @returns {Promise<RouteDecision>} The routed operation and fallback flag.
+ * @returns {Promise<RouteDecision>} The routed operation and fallback flags.
  */
 async function routeOperation(
   goal: string,
@@ -227,7 +245,9 @@ async function routeOperation(
   inputExt: string,
   aiTraceId: string,
 ): Promise<RouteDecision> {
-  if (forced) return { routed: routeOperationDeterministic({ goal, operation: forced, inputExt }), aiFallback: false };
+  if (forced) {
+    return { routed: routeOperationDeterministic({ goal, operation: forced, inputExt }), aiFallback: false, uncertain: false };
+  }
   const router = await resolveLLMOperationRouter();
   if (router) {
     const spanId = randomUUID();
@@ -252,10 +272,12 @@ async function routeOperation(
         isError: routed === undefined,
       });
     }
-    if (routed) return { routed, aiFallback: false };
-    return { routed: routeOperationDeterministic({ goal, operation: null, inputExt }), aiFallback: true };
+    if (routed) return { routed, aiFallback: false, uncertain: false };
+    const fallback = routeOperationDeterministic({ goal, operation: null, inputExt });
+    return { routed: fallback, aiFallback: true, uncertain: fallback.uncertain === true };
   }
-  return { routed: routeOperationDeterministic({ goal, operation: null, inputExt }), aiFallback: false };
+  const rules = routeOperationDeterministic({ goal, operation: null, inputExt });
+  return { routed: rules, aiFallback: false, uncertain: rules.uncertain === true };
 }
 
 /**
@@ -348,8 +370,12 @@ export function registerCopilotHandlers(): void {
 
       const capabilities = getEncoderCapabilities() ?? EMPTY_CAPABILITIES;
       const inputExt = extname(entries[0].file).slice(1).toLowerCase() || 'mp4';
-      const { routed, aiFallback } = await routeOperation(goal, forced, entries, capabilities, inputExt, aiTraceId);
-      const routingWarning = aiFallback ? AI_FALLBACK_WARNING : undefined;
+      const { routed, aiFallback, uncertain } = await routeOperation(goal, forced, entries, capabilities, inputExt, aiTraceId);
+      const routingWarning = aiFallback
+        ? { routingWarning: AI_FALLBACK_WARNING, routingWarningKey: AI_FALLBACK_WARNING_KEY }
+        : uncertain
+          ? { routingWarning: UNCERTAIN_GOAL_WARNING, routingWarningKey: UNCERTAIN_GOAL_WARNING_KEY }
+          : {};
       if (typeof request?.query === 'string' && request.query.trim()) routed.fields.query = request.query.trim();
       if (typeof request?.targetLanguage === 'string' && request.targetLanguage.trim()) {
         routed.fields.targetLanguage = request.targetLanguage.trim();
@@ -366,7 +392,7 @@ export function registerCopilotHandlers(): void {
           skips: convert.skips,
           rationale: [...routed.rationale, ...convert.rationale],
           notes: [...convert.notes, `Operation chosen by "${routed.providerId}".`],
-          ...(routingWarning ? { routingWarning } : {}),
+          ...routingWarning,
           plan: convert.plan,
           providerId: routed.providerId,
           isEstimated: true,
@@ -401,7 +427,7 @@ export function registerCopilotHandlers(): void {
         skips: built.skips,
         rationale: routed.rationale,
         notes,
-        ...(routingWarning ? { routingWarning } : {}),
+        ...routingWarning,
         plan: planWorkflow({ steps: [] }),
         providerId: routed.providerId,
         isEstimated: true,

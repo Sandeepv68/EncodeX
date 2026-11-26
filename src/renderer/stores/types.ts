@@ -167,13 +167,24 @@ export type ToastType = 'success' | 'error' | 'warning' | 'info';
  * @property {string} [detail] - Optional secondary detail line.
  * @property {number} [duration] - Optional display duration in milliseconds; the UI falls back to a default when omitted.
  */
+/** Interpolation values for a translated toast message or detail line. */
+export type ToastValues = Record<string, string | number>;
+
+export interface ToastAction {
+  label: string;
+  labelKey?: string;
+  onClick: () => void;
+}
+
 export interface Toast {
   id: string;
   type: ToastType;
   message: string;
+  values?: ToastValues;
   detail?: string;
+  detailValues?: ToastValues;
   duration?: number;
-  action?: { label: string; onClick: () => void };
+  action?: ToastAction;
 }
 
 /**
@@ -191,12 +202,48 @@ export interface Toast {
  */
 export interface ToastState {
   toasts: Toast[];
-  addToast: (type: ToastType, message: string, detail?: string, duration?: number, action?: { label: string; onClick: () => void }) => void;
+  addToast: (
+    type: ToastType,
+    message: string,
+    detail?: string,
+    duration?: number,
+    action?: ToastAction,
+    values?: ToastValues,
+    detailValues?: ToastValues,
+  ) => void;
   removeToast: (id: string) => void;
-  success: (message: string, detail?: string, duration?: number, action?: { label: string; onClick: () => void }) => void;
-  error: (message: string, detail?: string, duration?: number, action?: { label: string; onClick: () => void }) => void;
-  warning: (message: string, detail?: string, duration?: number, action?: { label: string; onClick: () => void }) => void;
-  info: (message: string, detail?: string, duration?: number, action?: { label: string; onClick: () => void }) => void;
+  success: (
+    message: string,
+    detail?: string,
+    duration?: number,
+    action?: ToastAction,
+    values?: ToastValues,
+    detailValues?: ToastValues,
+  ) => void;
+  error: (
+    message: string,
+    detail?: string,
+    duration?: number,
+    action?: ToastAction,
+    values?: ToastValues,
+    detailValues?: ToastValues,
+  ) => void;
+  warning: (
+    message: string,
+    detail?: string,
+    duration?: number,
+    action?: ToastAction,
+    values?: ToastValues,
+    detailValues?: ToastValues,
+  ) => void;
+  info: (
+    message: string,
+    detail?: string,
+    duration?: number,
+    action?: ToastAction,
+    values?: ToastValues,
+    detailValues?: ToastValues,
+  ) => void;
 }
 
 /**
@@ -505,8 +552,9 @@ export interface ConversionState {
  * @interface ErrorState
  * @property {AppError | null} currentError - The error currently displayed, or null when none.
  * @property {AppError[]} errorHistory - Recent errors in chronological order, oldest first, capped at ERROR_HISTORY_MAX.
- * @property {(err: unknown) => void} showError - Normalizes an unknown thrown value and sets it as currentError, pushing it onto the history.
- * @property {(code: ErrorCodeType, detail?: string) => void} showErrorMessage - Builds an AppError from a code (with canonical message) and sets it as currentError, pushing it onto the history.
+ * @property {(err: unknown) => void} showError - Normalizes an unknown thrown value, records it, and forwards it to the unified toast viewport.
+ * @property {(code: ErrorCodeType, detail?: string) => void} showErrorMessage - Builds an AppError from a code, records it, and forwards it to the unified toast viewport.
+ * @property {(err: unknown) => void} recordError - Records an error without emitting a toast, for callers that already showed a domain-specific toast.
  * @property {() => void} clearError - Clears the current error.
  * @property {() => void} clearHistory - Clears the entire error history.
  */
@@ -515,6 +563,7 @@ export interface ErrorState {
   errorHistory: AppError[];
   showError: (err: unknown) => void;
   showErrorMessage: (code: ErrorCodeType, detail?: string) => void;
+  recordError: (err: unknown) => void;
   clearError: () => void;
   clearHistory: () => void;
 }

@@ -29,7 +29,7 @@ import type { ConversionProfile, ProfileCategory } from '../../shared/types';
 import type { AutocompleteRenderGroupParams } from '@mui/material/Autocomplete';
 import { CATEGORY_ORDER, PROFILE_CATEGORIES } from '../../shared/profiles/categories';
 import { useProfileStore } from '../stores/profileStore';
-import { useToastStore } from '../stores/toastStore';
+import { notify } from '../utils/notify';
 import { highlightSegments } from '../utils/string-utils';
 import type { ProfileSelectorProps } from './types';
 import ProfileIcon from './ProfileIcon';
@@ -316,7 +316,7 @@ export default function ProfileSelector({ onCreateNew, onApplyProfile, testId }:
             deleteCustomProfile(deletingProfile.id);
             if (deletingProfile.id === activeProfileId) setActiveProfileId(null);
             setDeletingProfile(null);
-            useToastStore.getState().error(t('profiles.deleted', { name }));
+            notify.success('profiles.deleted', { values: { name } });
           }
         }}
       />

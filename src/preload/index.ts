@@ -1276,6 +1276,10 @@ const api = {
     return ipcRenderer.invoke(IPC.AI_SETTINGS_SET, update) as Promise<AiSettingsView>;
   },
 
+  aiResetSettings: () => {
+    return ipcRenderer.invoke(IPC.AI_SETTINGS_RESET) as Promise<AiSettingsView>;
+  },
+
   /**
    * Tests connectivity to the configured AI provider by sending a one-token
    * ping. Uses the supplied `apiKey` when present, else the stored key. Invokes

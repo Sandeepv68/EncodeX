@@ -530,7 +530,40 @@
     "remuxed": "Remux concluído",
     "demuxed": "Fluxos extraídos com sucesso",
     "remuxQueued": "Remux adicionado à Fila Mux",
-    "demuxQueued": "Fluxos adicionados à Fila Mux"
+    "demuxQueued": "Fluxos adicionados à Fila Mux",
+    "devScreenshotSaved": "Captura de tela do desenvolvedor salva",
+    "devScreenshotFailed": "Captura de tela do desenvolvedor falhou",
+    "error": {
+      "FILE_NOT_FOUND": "O arquivo selecionado não foi encontrado. Ele pode ter sido movido ou removido.",
+      "FFMPEG_NOT_FOUND": "Binário do FFmpeg não encontrado. Instale o FFmpeg ou verifique o executável incluído.",
+      "FFPROBE_NOT_FOUND": "Binário do FFprobe não encontrado. Não é possível ler as informações de mídia.",
+      "CONVERSION_FAILED": "O processo de conversão falhou. Verifique o formato do arquivo e os parâmetros.",
+      "INVALID_FORMAT": "O formato do arquivo não é compatível ou a extensão de saída não corresponde ao codec selecionado.",
+      "PROBE_FAILED": "Não foi possível ler as informações do arquivo de mídia. O arquivo pode estar corrompido ou em um formato não compatível.",
+      "QUEUE_ERROR": "Uma tarefa na fila de processamento em lote falhou. Consulte os detalhes das tarefas individuais para obter mais informações.",
+      "PLAYER_ERROR": "O reprodutor de vídeo encontrou um erro. O arquivo pode estar corrompido ou em um formato não compatível.",
+      "CANCELLED": "A operação foi cancelada pelo usuário.",
+      "BMF_NOT_AVAILABLE": "O framework BMF não está instalado. Instale as ferramentas BMF CLI ou use outro transcodificador.",
+      "OUTPUT_NOT_SPECIFIED": "Especifique um arquivo de saída antes de iniciar a conversão.",
+      "INPUT_NOT_SPECIFIED": "Selecione um arquivo de entrada antes de iniciar a conversão.",
+      "OUTPUT_EXISTS": "O arquivo de saída já existe. Ative a sobrescrita para substituí-lo.",
+      "INVALID_QUEUE_FILE": "Não foi possível ler o arquivo da fila. Ele pode estar corrompido ou em um formato não compatível.",
+      "INVALID_AUTOMATION_FILE": "Não foi possível ler o arquivo de automação. Ele pode estar corrompido ou em um formato não compatível.",
+      "FILTERS_REQUIRE_RE_ENCODE": "Os filtros de vídeo exigem recodificação. Desative a cópia sem perdas (stream copy) para aplicar os filtros.",
+      "INVALID_VIDEO_FILTERS": "A cadeia de filtros de vídeo ou o preset é inválido. Verifique as expressões dos filtros e os nomes dos presets.",
+      "STREAM_NOT_FOUND": "O fluxo solicitado não existe no arquivo de origem. Verifique a seleção do fluxo.",
+      "INCOMPATIBLE_CONTAINER": "Um fluxo selecionado não pode ser armazenado no container escolhido sem recodificação.",
+      "AUXILIARY_INPUT_NOT_FOUND": "Não foi possível encontrar um arquivo adicional de legendas, áudio, capítulos ou capa.",
+      "PERMISSION_DENIED": "Permissão negada. A aplicação pode não ter acesso ao arquivo ou à pasta selecionados.",
+      "OPERATION_TIMED_OUT": "A operação ultrapassou o tempo limite e foi interrompida. O arquivo pode estar corrompido ou o sistema pode estar sob carga intensa.",
+      "UNSAFE_ARGUMENTS": "A solicitação continha argumentos não permitidos (foram detectados metacaracteres do interpretador de comandos ou um segundo comando).",
+      "TRANSCRIPTION_UNAVAILABLE": "Nenhum mecanismo de conversão de fala em texto está disponível. Instale uma ferramenta ASR local compatível (por exemplo, whisper.cpp) ou configure uma.",
+      "TRANSLATION_UNAVAILABLE": "Nenhum serviço de tradução de legendas está disponível. Configure um ambiente de execução de modelos local ou outro provedor.",
+      "AI_NOT_CONFIGURED": "Nenhum provedor de IA está configurado. Adicione uma chave de API nas Configurações para usar o planejamento com IA.",
+      "AI_CONNECTOR_FAILED": "Não foi possível alcançar o provedor de IA. Verifique sua conexão de rede, a chave de API e o nome do modelo.",
+      "AI_RESPONSE_INVALID": "O provedor de IA devolveu uma resposta inutilizável. Tente novamente ou mude para o planejador determinístico.",
+      "UNKNOWN": "Ocorreu um erro inesperado. Tente novamente."
+    }
   },
   "profiles": {
     "searchPlaceholder": "Pesquisar perfis...",
@@ -685,7 +718,12 @@
       "removeKey": "Remover chave",
       "keyRemoved": "A chave armazenada foi removida.",
       "staleStatus": "As configurações mudaram. Conecte novamente para verificar.",
-      "headerConnected": "Conectado · {{provider}} · {{model}}"
+      "headerConnected": "Conectado · {{provider}} · {{model}}",
+      "reset": "Redefinir para os padrões",
+      "resetConfirmTitle": "Redefinir provedores de IA?",
+      "resetConfirmMessage": "Isso remove todas as chaves de API, modelos, endpoints e o histórico de conexões salvos. O provedor de regras integrado se torna ativo. Isso não pode ser desfeito.",
+      "resetConfirmAction": "Redefinir",
+      "resetComplete": "Os provedores de IA foram restaurados aos padrões."
     },
     "desktopNotifications": "Notificações da área de trabalho",
     "desktopNotificationsHint": "Mostrar notificações do sistema quando tarefas da fila forem concluídas ou falharem enquanto o aplicativo estiver em segundo plano.",
@@ -1095,7 +1133,8 @@
     "ai": {
       "configure": "Configurar provedor de IA",
       "locationNote": "Os provedores de IA são configurados nas Configurações.",
-      "notConnected": "Não conectado"
+      "notConnected": "Não conectado",
+      "noProviderNotice": "Nenhum provedor de IA está conectado. O Copilot usa regras internas, portanto as respostas podem ser menos precisas e objetivos complexos podem ser encaminhados incorretamente. Conecte um provedor de IA nas Configurações para aproveitar ao máximo o Copilot."
     },
     "queryLabel": "Frase de pesquisa",
     "queryPlaceholder": "por exemplo, a parte sobre preços",
@@ -1126,6 +1165,10 @@
       "container": "Contêiner",
       "losslessCopy": "Cópia sem perdas",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "O provedor de IA configurado não conseguiu encaminhar este objetivo, por isso o mecanismo de regras interno foi usado no lugar dele. Verifique as configurações do provedor de IA e os registros.",
+      "uncertainGoal": "O Copilot não reconheceu nenhuma operação neste objetivo, então planejou uma conversão padrão. Escolha uma operação em Opções avançadas ou conecte um provedor de IA para detectar a intenção com mais precisão."
     }
   },
   "leaveConfirm": {

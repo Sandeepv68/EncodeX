@@ -59,6 +59,10 @@ export default function AssistantMessage({
 
   if (!plan) return null;
 
+  const routingWarning = plan.routingWarningKey
+    ? t(plan.routingWarningKey, { defaultValue: plan.routingWarning ?? plan.routingWarningKey })
+    : plan.routingWarning;
+
   return (
     <AssistantBody data-testid="copilot-plan-summary">
       {plan.operation && (
@@ -68,9 +72,9 @@ export default function AssistantMessage({
           data-testid="copilot-routed-as"
         />
       )}
-      {plan.routingWarning && (
+      {routingWarning && (
         <AssistantWarningAlert severity="warning" data-testid="copilot-routing-warning">
-          {plan.routingWarning}
+          {routingWarning}
         </AssistantWarningAlert>
       )}
       <SectionHeading variant="subtitle1" component="h2">

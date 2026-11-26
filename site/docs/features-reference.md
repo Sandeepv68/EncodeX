@@ -185,7 +185,7 @@ Live log viewer that aggregates console output from both the main and renderer p
 
 ### Notifications
 
-Toast notifications (success/info/warning/error) with configurable duration for non-blocking feedback, layered on top of the global error snackbar.
+Toast notifications (success/info/warning/error) with configurable duration for non-blocking feedback, rendered through the unified toast viewport.
 
 ### Custom Window Frame
 
@@ -247,7 +247,7 @@ Custom update manager that checks GitHub Releases for new versions, notifies the
 
 ### Error Handling
 
-Structured error system with 29 typed error codes (`ErrorCode`), user-facing localized messages, a global error snackbar, inline error banners, toast notifications, nested React error boundaries, and an in-app error history (cap 50). All errors are normalized through `formatError()` and propagated across IPC.
+Structured error system with 29 typed error codes (`ErrorCode`), user-facing localized messages, a unified toast viewport for all transient feedback, inline error banners, nested React error boundaries, and an in-app error history (cap 50). All errors are normalized through `formatError()` and propagated across IPC.
 
 ## Supported Media Formats
 

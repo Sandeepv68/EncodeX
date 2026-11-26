@@ -1266,6 +1266,8 @@ export interface CopilotResult {
   content?: unknown;
 }
 
+export type CopilotRoutingWarningKey = 'copilot.routingWarning.aiFallback' | 'copilot.routingWarning.uncertainGoal';
+
 /**
  * The plan the Copilot panel renders: the agent's actions, skips and rationale,
  * plus the dry-run of the workflow the actions form.
@@ -1277,8 +1279,9 @@ export interface CopilotResult {
  * @property {AgentSkip[]} skips - Files left out, with reasons.
  * @property {string[]} rationale - Plan-level reasons, one per line.
  * @property {string[]} notes - Caveats for the caller.
- * @property {string} [routingWarning] - Set when a configured AI provider could
- *   not choose the operation and the offline rules engine was used instead.
+ * @property {string} [routingWarning] - Set when routing needs the user's
+ *   attention: a configured AI provider failed, or the offline rules engine
+ *   recognized no operation and defaulted to `convert`.
  * @property {WorkflowPlan} plan - The dry-run validation of the workflow.
  * @property {AIProviderId} providerId - The provider that chose the operation.
  * @property {true} isEstimated - The plan is a proposal, not a measurement.
@@ -1294,6 +1297,7 @@ export interface CopilotPlan {
   rationale: string[];
   notes: string[];
   routingWarning?: string;
+  routingWarningKey?: CopilotRoutingWarningKey;
   plan: WorkflowPlan;
   providerId: AIProviderId;
   isEstimated: true;

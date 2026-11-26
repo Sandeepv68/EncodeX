@@ -88,6 +88,12 @@ export function writeAiSettings(userDataDir: string, settings: AiServerSettings)
   }
 }
 
+export function resetAiSettings(userDataDir: string): AiSettingsView {
+  const defaults = defaultAiSettings();
+  writeAiSettings(userDataDir, defaults);
+  return toAiSettingsView(defaults, isEncryptionAvailable());
+}
+
 /**
  * Encrypts a plaintext API key for storage. Returns the stored form and whether
  * it had to be written in plaintext.

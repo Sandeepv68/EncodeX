@@ -104,6 +104,46 @@ interface GitHubRelease {
   assets: GitHubAsset[];
 }
 
+function compareVersions(left: string, right: string): number {
+  const parse = (version: string) => {
+    const [core = '', ...pre] = version.replace(/^v/, '').split('-');
+    return {
+      core: core.split('.').map((part) => Number.parseInt(part, 10) || 0),
+      pre: pre.join('-').split('.').filter(Boolean),
+    };
+  };
+  const a = parse(left);
+  const b = parse(right);
+  for (let index = 0; index < 3; index += 1) {
+    const aPart = a.core[index] ?? 0;
+    const bPart = b.core[index] ?? 0;
+    if (aPart !== bPart) return aPart - bPart;
+  }
+  if (a.pre.length === 0 || b.pre.length === 0) {
+    if (a.pre.length === b.pre.length) return 0;
+    return a.pre.length === 0 ? 1 : -1;
+  }
+  for (let index = 0; index < Math.max(a.pre.length, b.pre.length); index += 1) {
+    const aPart = a.pre[index];
+    const bPart = b.pre[index];
+    if (aPart === undefined) return -1;
+    if (bPart === undefined) return 1;
+    if (aPart === bPart) continue;
+    const aNumeric = /^\d+$/.test(aPart);
+    const bNumeric = /^\d+$/.test(bPart);
+    if (aNumeric && bNumeric) return Number(aPart) - Number(bPart);
+    if (aNumeric !== bNumeric) return aNumeric ? -1 : 1;
+    return aPart.localeCompare(bPart);
+  }
+  return 0;
+}
+
+function compareReleasesDescending(a: ReleaseData, b: ReleaseData): number {
+  const versionDifference = compareVersions(a.version, b.version);
+  if (versionDifference !== 0) return -versionDifference;
+  return b.publishedAt.localeCompare(a.publishedAt);
+}
+
 export function normalizeRelease(release: GitHubRelease, fetchedAt: string): ReleaseData {
   const assets: Record<string, ReleaseAsset> = {};
   for (const asset of release.assets) {
@@ -190,21 +230,14 @@ function apiHeaders(): Record<string, string> {
 }
 
 export async function fetchLatestRelease(): Promise<ReleaseData> {
-  // Uses the releases list (newest first) instead of `/releases/latest`, which
-  // returns 404 when every release is marked prerelease (common for beta
-  // products). The list endpoint resolves the newest release in every case.
-  const res = await fetch(`https://api.github.com/repos/${REPO}/releases?per_page=1`, {
-    headers: apiHeaders(),
-  });
-  if (!res.ok) {
-    throw new Error(`GitHub API responded ${res.status} while fetching latest release`);
-  }
-  const list = (await res.json()) as GitHubRelease[];
-  const first = list.find((rel) => !rel.draft);
+  // Uses the releases list instead of `/releases/latest`, which returns 404
+  // when every release is marked prerelease (common for beta products).
+  const releases = await fetchReleases(100);
+  const first = releases[0];
   if (!first) {
     throw new Error('GitHub returned no published releases');
   }
-  return normalizeRelease(first, new Date().toISOString());
+  return first;
 }
 
 export async function fetchReleases(perPage = 100): Promise<ReleaseData[]> {
@@ -220,7 +253,10 @@ export async function fetchReleases(perPage = 100): Promise<ReleaseData[]> {
     if (list.length < perPage) break;
   }
   const now = new Date().toISOString();
-  return all.filter((rel) => !rel.draft).map((rel) => normalizeRelease(rel, now));
+  return all
+    .filter((rel) => !rel.draft)
+    .map((rel) => normalizeRelease(rel, now))
+    .sort(compareReleasesDescending);
 }
 
 // Memoized so every caller shares one set of API requests

@@ -24,7 +24,7 @@ import { useLogStore } from '../stores/logStore';
 import { isDetachedMode } from '../logs/detached';
 import { callBridgeVoid } from '../utils/bridge-call';
 import { useAuditStore } from '../stores/auditStore';
-import { useToastStore } from '../stores/toastStore';
+import { notify } from '../utils/notify';
 import { useHotkeys } from '../hooks/useHotkeys';
 import { COLORS } from '../../shared/theme/colors';
 import {
@@ -293,7 +293,7 @@ export default function Logs() {
     a.download = `${LOG_EXPORT_FILENAME_PREFIX}-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.txt`;
     a.click();
     URL.revokeObjectURL(url);
-    useToastStore.getState().success(t('toast.logsDownloaded'));
+    notify.success('toast.logsDownloaded');
     recordAnalyticsEvent(createAnalyticsEvent('logs_exported', { entryCount: filtered.length }));
   };
 

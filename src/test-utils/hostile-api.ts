@@ -123,6 +123,7 @@ const API_TABLE: Record<string, MethodEntry> = {
   mcpSetSettings: { kind: 'invoke', params: ['settings'] },
   aiGetSettings: { kind: 'invoke', params: [] },
   aiSetSettings: { kind: 'invoke', params: ['update'] },
+  aiResetSettings: { kind: 'invoke', params: [] },
   aiConnectTest: { kind: 'invoke', params: ['candidate'] },
   aiListModels: { kind: 'invoke', params: ['candidate'] },
   automationList: { kind: 'invoke', params: [] },
@@ -301,6 +302,7 @@ function benignResolveFor(name: string, args: readonly unknown[]): unknown {
       return '';
     case 'aiGetSettings':
     case 'aiSetSettings':
+    case 'aiResetSettings':
       return {
         providerId: 'rules',
         model: '',

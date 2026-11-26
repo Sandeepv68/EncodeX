@@ -16,7 +16,7 @@
 import { useEffect } from 'react';
 import { formatError } from '../../shared/errors';
 import { parseShortcut, shortcutMatches } from '../constants/shortcuts';
-import { useToastStore } from '../stores/toastStore';
+import { notify } from '../utils/notify';
 
 /** Canonical chord that triggers a dev screenshot ('Ctrl' = Cmd on macOS). */
 const DEV_SCREENSHOT_CHORD = 'Ctrl+Alt+S';
@@ -68,10 +68,10 @@ export function useDevScreenshot(): void {
           throw new Error('captureDevScreenshot API unavailable');
         }
         const savedPath = await window.electronAPI.captureDevScreenshot();
-        useToastStore.getState().success('Dev screenshot saved', savedPath);
+        notify.success('toast.devScreenshotSaved', { detail: savedPath });
       } catch (err) {
         const appError = formatError(err);
-        useToastStore.getState().error('Dev screenshot failed', appError.message);
+        notify.error('toast.devScreenshotFailed', { detail: appError.message });
       }
     }
 

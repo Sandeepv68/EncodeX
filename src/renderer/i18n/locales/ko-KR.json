@@ -530,7 +530,40 @@
     "remuxed": "리멀텍스가 완료되었습니다",
     "demuxed": "스트림을 성공적으로 추출했습니다",
     "remuxQueued": "리멀텍스를 Mux 큐에 추가했습니다",
-    "demuxQueued": "스트림을 Mux 큐에 추가했습니다"
+    "demuxQueued": "스트림을 Mux 큐에 추가했습니다",
+    "devScreenshotSaved": "개발용 스크린샷 저장됨",
+    "devScreenshotFailed": "개발용 스크린샷 저장 실패",
+    "error": {
+      "FILE_NOT_FOUND": "선택한 파일을 찾을 수 없습니다. 이동하거나 삭제되었을 수 있습니다.",
+      "FFMPEG_NOT_FOUND": "FFmpeg 바이너리를 찾을 수 없습니다. FFmpeg를 설치하거나 함께 제공된 실행 파일을 확인하세요.",
+      "FFPROBE_NOT_FOUND": "FFprobe 바이너리를 찾을 수 없습니다. 미디어 정보를 읽을 수 없습니다.",
+      "CONVERSION_FAILED": "변환 과정이 실패했습니다. 파일 형식과 매개변수를 확인하세요.",
+      "INVALID_FORMAT": "파일 형식이 지원되지 않거나 출력 확장자가 선택한 codec과 일치하지 않습니다.",
+      "PROBE_FAILED": "미디어 파일 정보를 읽을 수 없습니다. 파일이 손상되었거나 지원되지 않는 형식일 수 있습니다.",
+      "QUEUE_ERROR": "일괄 처리 큐 작업이 실패했습니다. 자세한 내용은 각 작업의 세부 정보를 확인하세요.",
+      "PLAYER_ERROR": "동영상 플레이어에 오류가 발생했습니다. 파일이 손상되었거나 지원되지 않는 형식일 수 있습니다.",
+      "CANCELLED": "사용자가 작업을 취소했습니다.",
+      "BMF_NOT_AVAILABLE": "BMF 프레임워크가 설치되지 않았습니다. BMF CLI 도구를 설치하거나 다른 트랜스코더를 사용하세요.",
+      "OUTPUT_NOT_SPECIFIED": "변환을 시작하기 전에 출력 파일을 지정하세요.",
+      "INPUT_NOT_SPECIFIED": "변환을 시작하기 전에 입력 파일을 선택하세요.",
+      "OUTPUT_EXISTS": "출력 파일이 이미 있습니다. 덮어쓰기를 활성화하여 교체하세요.",
+      "INVALID_QUEUE_FILE": "큐 파일을 읽을 수 없습니다. 파일이 손상되었거나 지원되지 않는 형식일 수 있습니다.",
+      "INVALID_AUTOMATION_FILE": "자동화 파일을 읽을 수 없습니다. 파일이 손상되었거나 지원되지 않는 형식일 수 있습니다.",
+      "FILTERS_REQUIRE_RE_ENCODE": "동영상 필터에는 다시 인코딩이 필요합니다. 필터를 적용하려면 lossless copy (stream copy)를 비활성화하세요.",
+      "INVALID_VIDEO_FILTERS": "동영상 필터 체인 또는 프리셋이 잘못되었습니다. 필터 식과 프리셋 이름을 확인하세요.",
+      "STREAM_NOT_FOUND": "요청한 스트림이 원본 파일에 없습니다. 스트림 선택을 확인하세요.",
+      "INCOMPATIBLE_CONTAINER": "선택한 스트림은 다시 인코딩하지 않으면 선택한 container에 저장할 수 없습니다.",
+      "AUXILIARY_INPUT_NOT_FOUND": "추가한 자막, 오디오, 챕터 또는 표지 파일을 찾을 수 없습니다.",
+      "PERMISSION_DENIED": "권한이 거부되었습니다. 애플리케이션이 선택한 파일이나 디렉터리에 접근하지 못할 수 있습니다.",
+      "OPERATION_TIMED_OUT": "작업 시간이 너무 오래 걸려 중지했습니다. 파일이 손상되었거나 시스템에 과부하가 걸렸을 수 있습니다.",
+      "UNSAFE_ARGUMENTS": "요청에 허용되지 않은 인자가 포함되어 있습니다(셸 메타문자 또는 두 번째 명령이 감지됨).",
+      "TRANSCRIPTION_UNAVAILABLE": "사용 가능한 음성 인식 엔진이 없습니다. 지원되는 로컬 ASR 도구(예: whisper.cpp)를 설치하거나 설정하세요.",
+      "TRANSLATION_UNAVAILABLE": "자막 번역 백엔드를 사용할 수 없습니다. 로컬 모델 런타임이나 다른 공급자를 설정하세요.",
+      "AI_NOT_CONFIGURED": "AI 공급자가 설정되지 않았습니다. AI 기반 계획을 사용하려면 설정에서 API 키를 추가하세요.",
+      "AI_CONNECTOR_FAILED": "AI 공급자에 연결할 수 없습니다. 네트워크 연결, API 키, 모델 이름을 확인하세요.",
+      "AI_RESPONSE_INVALID": "AI 공급자가 사용할 수 없는 응답을 반환했습니다. 다시 시도하거나 결정적 플래너로 전환하세요.",
+      "UNKNOWN": "예기치 않은 오류가 발생했습니다. 다시 시도하세요."
+    }
   },
   "profiles": {
     "searchPlaceholder": "프로필 검색...",
@@ -685,7 +718,12 @@
       "removeKey": "키 제거",
       "keyRemoved": "저장된 키가 제거되었습니다.",
       "staleStatus": "설정이 변경되었습니다. 확인하려면 다시 연결하세요.",
-      "headerConnected": "연결됨 · {{provider}} · {{model}}"
+      "headerConnected": "연결됨 · {{provider}} · {{model}}",
+      "reset": "기본값으로 초기화",
+      "resetConfirmTitle": "AI 공급자를 초기화할까요?",
+      "resetConfirmMessage": "저장된 모든 API 키, 모델, 엔드포인트 및 연결 기록이 삭제됩니다. 내장 규칙 공급자가 활성화됩니다. 이 작업은 취소할 수 없습니다.",
+      "resetConfirmAction": "초기화",
+      "resetComplete": "AI 공급자가 기본값으로 복원되었습니다."
     },
     "desktopNotifications": "데스크톱 알림",
     "desktopNotificationsHint": "앱이 백그라운드에서 실행되는 동안 대기열 작업이 완료되거나 실패하면 시스템 알림을 표시합니다.",
@@ -1095,7 +1133,8 @@
     "ai": {
       "configure": "AI 공급자 구성",
       "locationNote": "AI 공급자는 설정에서 구성됩니다.",
-      "notConnected": "연결되지 않음"
+      "notConnected": "연결되지 않음",
+      "noProviderNotice": "연결된 AI 공급자가 없습니다. Copilot은 내장 규칙을 사용하므로 응답이 덜 정확할 수 있고 복잡한 목표가 잘못 분류될 수 있습니다. Copilot을 최대한 활용하려면 설정에서 AI 공급자를 연결하세요."
     },
     "queryLabel": "검색 구문",
     "queryPlaceholder": "예: 가격 책정에 관한 부분",
@@ -1126,6 +1165,10 @@
       "container": "컨테이너",
       "losslessCopy": "무손실 복사",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "구성된 AI 공급자가 이 목표를 라우팅하지 못해 내장 규칙 엔진이 대신 사용되었습니다. AI 공급자 설정과 로그를 확인하세요.",
+      "uncertainGoal": "Copilot이 이 목표에서 작업을 인식하지 못해 기본 변환을 계획했습니다. 의도를 더 정확히 파악하려면 고급 옵션에서 작업을 선택하거나 AI 공급자를 연결하세요."
     }
   },
   "leaveConfirm": {

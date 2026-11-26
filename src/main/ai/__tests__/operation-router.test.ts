@@ -72,6 +72,36 @@ describe('detectOperation', () => {
     ];
     for (const [goal, expected] of cases) expect(detectOperation(goal)).toBe(expected);
   });
+
+  it('routes goals written in other languages without an AI provider', () => {
+    const cases: Array<[string, string]> = [
+      ['comprimir imagen a webp', 'compress_image'],
+      ['traduire les sous-titres', 'translate'],
+      ['video schneiden', 'cut'],
+      ['estrarre la musica', 'extract_audio'],
+      ['comprimir imagem', 'compress_image'],
+      ['afbeelding verkleinen', 'compress_image'],
+      ['перевести субтитры', 'translate'],
+      ['стиснути зображення', 'compress_image'],
+      ['skompresować zdjęcie', 'compress_image'],
+      ['sök i transkriptionen', 'search_transcript'],
+      ['bölümler', 'chapters'],
+      ['استخراج الصوت من الفيديو', 'extract_audio'],
+      ['חתוך את הסרטון', 'cut'],
+      ['विश्लेषण करें', 'analyze'],
+      ['音声をテキストに変換', 'transcribe'],
+      ['重新封装为 mkv', 'remux'],
+      ['요약해 주세요', 'summarize'],
+      ['tóm tắt video', 'summarize'],
+      ['ekstrak audio', 'extract_audio'],
+      ['บีบอัดภาพ', 'compress_image'],
+      ['convertir a mp4', 'convert'],
+      ['konvertieren zu mp4', 'convert'],
+      ['转换视频格式', 'convert'],
+      ['แปลงเสียงเป็นข้อความ', 'transcribe'],
+    ];
+    for (const [goal, expected] of cases) expect(detectOperation(goal)).toBe(expected);
+  });
 });
 
 describe('extractFields', () => {
@@ -143,6 +173,20 @@ describe('routeOperationDeterministic', () => {
     const routed = routeOperationDeterministic({ goal: 'remux to mkv', operation: 'analyze' });
     expect(routed.operation).toBe('analyze');
     expect(routed.rationale[0]).toContain('selected explicitly');
+  });
+
+  it('flags an unrecognized goal as uncertain and leaves matched goals certain', () => {
+    const uncertain = routeOperationDeterministic({ goal: '请选择要执行的操作', operation: null });
+    expect(uncertain).toMatchObject({ operation: 'convert', uncertain: true, confidence: 0.3 });
+
+    const matched = routeOperationDeterministic({ goal: 'comprimir imagen', operation: null });
+    expect(matched).toMatchObject({ operation: 'compress_image', uncertain: false, confidence: 0.5 });
+
+    const explicitConvert = routeOperationDeterministic({ goal: 'convertir a mp4', operation: null });
+    expect(explicitConvert).toMatchObject({ operation: 'convert', uncertain: false, confidence: 0.5 });
+
+    const forced = routeOperationDeterministic({ goal: '请选择要执行的操作', operation: 'analyze' });
+    expect(forced).toMatchObject({ operation: 'analyze', uncertain: false, confidence: 0.5 });
   });
 });
 

@@ -463,16 +463,23 @@ export const EXIF_HISTOGRAM_HEIGHT = 48;
 
 // --- Notifications ---
 /**
- * Auto-dismiss delay in milliseconds for snackbar notifications.
- * @const {number} SNACKBAR_AUTO_HIDE_MS
- */
-export const SNACKBAR_AUTO_HIDE_MS = 6000;
-
-/**
  * Default display duration in milliseconds for toast notifications.
  * @const {number} TOAST_DEFAULT_DURATION_MS
  */
 export const TOAST_DEFAULT_DURATION_MS = 4000;
+
+/**
+ * Extended display duration in milliseconds for actionable update toasts.
+ * @const {number} TOAST_LONG_DURATION_MS
+ */
+export const TOAST_LONG_DURATION_MS = 8000;
+
+/**
+ * Display duration in milliseconds for the "update downloaded" toast, which
+ * needs longer than other actionable toasts because the user may be away.
+ * @const {number} TOAST_UPDATE_READY_DURATION_MS
+ */
+export const TOAST_UPDATE_READY_DURATION_MS = 10000;
 
 /**
  * Height in pixels (before rem scaling) of the custom application title bar.

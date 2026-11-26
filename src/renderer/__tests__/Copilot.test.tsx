@@ -16,6 +16,7 @@ import { useLocation } from 'react-router-dom';
 import { NavigationGuardProvider } from '../NavigationGuardContext';
 import { useToastStore } from '../stores/toastStore';
 import { useAiConnectionStore } from '../stores/aiConnectionStore';
+import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
 import { useQueueStore } from '../stores/queueStore';
 import { readSavedCopilotChats, saveCopilotChat } from '../stores/copilotChats';
 import type { SavedCopilotChat } from '../stores/copilotChats';
@@ -223,6 +224,7 @@ describe('Copilot page', () => {
     useToastStore.setState({ toasts: [] });
     useQueueStore.setState({ jobs: [] });
     useAiConnectionStore.getState().reset();
+    useDismissedAlertsStore.setState({ dismissed: [] });
     lastPath = '';
     vi.mocked(window.electronAPI.selectFolderFiles).mockResolvedValue({ folder: '/in', files: ['/in/one.mp4', '/in/two.mkv'] });
     vi.mocked(window.electronAPI.selectFiles).mockReset().mockResolvedValue([]);
@@ -242,9 +244,26 @@ describe('Copilot page', () => {
   it('shows the disconnected AI status without fetching settings on mount', async () => {
     renderPage('Copilot');
     expect(window.electronAPI.aiGetSettings).not.toHaveBeenCalled();
+    expect(screen.getByTestId('copilot-no-provider-warning')).toHaveTextContent('copilot.ai.noProviderNotice');
     fireEvent.click(screen.getByTestId('copilot-ai-status-button'));
     const status = await screen.findByTestId('copilot-ai-status');
     expect(status).toHaveTextContent('copilot.ai.notConnected');
+  });
+
+  it('dismisses the disconnected AI warning for the session', async () => {
+    const firstRender = renderPage('Copilot');
+    const warning = screen.getByTestId('copilot-no-provider-warning');
+    const dismiss = within(warning).getByRole('button', { name: 'shortcuts.close' });
+    expect(dismiss).toHaveAttribute('data-testid', 'copilot-no-provider-dismiss');
+
+    fireEvent.click(dismiss);
+
+    await waitFor(() => expect(screen.queryByTestId('copilot-no-provider-warning')).not.toBeInTheDocument());
+    expect(useDismissedAlertsStore.getState().isDismissed(DISMISSED_ALERT_KEYS.COPILOT_NO_PROVIDER)).toBe(true);
+
+    firstRender.unmount();
+    renderPage('Copilot');
+    expect(screen.queryByTestId('copilot-no-provider-warning')).not.toBeInTheDocument();
   });
 
   it('marks the empty transcript so the welcome and composer share the center', async () => {
@@ -316,6 +335,7 @@ describe('Copilot page', () => {
     // (the interpolated provider/model live in the localized string).
     expect(status).toHaveTextContent('settings.ai.headerConnected');
     expect(status).not.toHaveTextContent('copilot.ai.notConnected');
+    expect(screen.queryByTestId('copilot-no-provider-warning')).not.toBeInTheDocument();
     expect(window.electronAPI.aiGetSettings).not.toHaveBeenCalled();
   });
 

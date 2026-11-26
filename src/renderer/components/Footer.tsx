@@ -27,7 +27,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ffmpegBanner from '../../../assets/ffmpeg_banner.png';
 import pkg from '../../../package.json';
 import { useUpdateStore } from '../stores/updateStore';
-import { useToastStore } from '../stores/toastStore';
+import { notify, TOAST_DURATION } from '../utils/notify';
 import {
   FooterBox,
   FooterVersionText,
@@ -78,20 +78,28 @@ export default function Footer() {
     }
     if (status === 'available' && info && !shownAvailableToastRef.current) {
       shownAvailableToastRef.current = true;
-      useToastStore.getState().info(t('toast.updateAvailable', { version: info.version }), undefined, 8000, {
-        label: t('toast.updateNow'),
-        onClick: () => {
-          openDialog();
-          downloadUpdate();
+      notify.info('toast.updateAvailable', {
+        values: { version: info.version },
+        duration: TOAST_DURATION.long,
+        action: {
+          labelKey: 'toast.updateNow',
+          onClick: () => {
+            openDialog();
+            downloadUpdate();
+          },
         },
       });
     }
     if (status === 'downloaded' && info && !shownDownloadedToastRef.current) {
       shownDownloadedToastRef.current = true;
-      useToastStore.getState().info(t('toast.updateDownloaded', { version: info.version }), undefined, 10000, {
-        label: t('toast.viewUpdate'),
-        onClick: () => {
-          openDialog();
+      notify.info('toast.updateDownloaded', {
+        values: { version: info.version },
+        duration: TOAST_DURATION.updateReady,
+        action: {
+          labelKey: 'toast.viewUpdate',
+          onClick: () => {
+            openDialog();
+          },
         },
       });
     }

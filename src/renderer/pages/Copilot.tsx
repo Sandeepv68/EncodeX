@@ -32,7 +32,7 @@ import { useNavigationGuard } from '../NavigationGuardContext';
 import PageContainer from '../components/PageContainer';
 import AppDialog from '../components/AppDialog';
 import { bridgePromise, withBridgeTimeout } from '../utils/bridge-call';
-import { useToastStore } from '../stores/toastStore';
+import { notify } from '../utils/notify';
 import { useQueueStore } from '../stores/queueStore';
 import type { QueueJob } from '../../shared/types';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
@@ -42,6 +42,7 @@ import Conversation, { type ConversationMessage } from '../components/copilot/Co
 import ChatComposer from '../components/copilot/ChatComposer';
 import type { ComposerAttachment } from '../components/copilot/types';
 import { activeConnectionOf, useAiConnectionStore } from '../stores/aiConnectionStore';
+import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
 import { basename } from '../utils/path-utils';
 import { buildMuxQueuePayloads, isMuxQueueOperation } from '../utils/copilot-mux-queue';
 import { VisuallyHidden } from '../styles/a11y.styles';
@@ -89,6 +90,7 @@ export default function Copilot() {
   const aiView = useAiConnectionStore((state) => state.view);
   /** The single active AI connection, if any. */
   const aiConnection = activeConnectionOf(aiView);
+  const noProviderWarningDismissed = useDismissedAlertsStore((state) => state.isDismissed(DISMISSED_ALERT_KEYS.COPILOT_NO_PROVIDER));
 
   /** Whether the transcript holds messages that would be lost on navigation. */
   const hasActiveChat = messages.length > 0;
@@ -143,7 +145,7 @@ export default function Copilot() {
       // Refresh the open panel so the chat shows up in the list right away
       // instead of only after the panel is closed and reopened.
       setSavedChats(readSavedCopilotChats());
-      useToastStore.getState().success(t('copilot.chatSaved'));
+      notify.success('copilot.chatSaved');
       return true;
     } catch {
       setGlobalError(t('copilot.savedChatSaveFailed'));
@@ -441,7 +443,7 @@ export default function Copilot() {
 
     setBusy(false);
     if (added > 0) {
-      useToastStore.getState().success(t('copilot.addedToQueue', { count: added }));
+      notify.success('copilot.addedToQueue', { values: { count: added } });
     }
     if (added === planToEnqueue.actions.length && planToEnqueue.actions.length > 0) {
       navigateWithoutGuard(muxAdded > 0 ? '/batch?tab=mux' : '/batch');
@@ -509,6 +511,23 @@ export default function Copilot() {
             <CopilotAlertWrapper>
               <CopilotAlert severity="info" data-testid="copilot-notice">
                 {notice}
+              </CopilotAlert>
+            </CopilotAlertWrapper>
+          )}
+          {!aiConnection && !noProviderWarningDismissed && (
+            <CopilotAlertWrapper>
+              <CopilotAlert
+                severity="warning"
+                data-testid="copilot-no-provider-warning"
+                onClose={() => useDismissedAlertsStore.getState().dismiss(DISMISSED_ALERT_KEYS.COPILOT_NO_PROVIDER)}
+                slotProps={{
+                  closeButton: {
+                    'aria-label': t('shortcuts.close'),
+                    'data-testid': 'copilot-no-provider-dismiss',
+                  },
+                }}
+              >
+                {t('copilot.ai.noProviderNotice')}
               </CopilotAlert>
             </CopilotAlertWrapper>
           )}

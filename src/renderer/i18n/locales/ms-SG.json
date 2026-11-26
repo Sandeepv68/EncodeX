@@ -530,7 +530,40 @@
     "remuxed": "Remux selesai",
     "demuxed": "Strim berjaya diekstrak",
     "remuxQueued": "Remux ditambah ke Baris Giliran Mux",
-    "demuxQueued": "Aliran ditambah ke Baris Giliran Mux"
+    "demuxQueued": "Aliran ditambah ke Baris Giliran Mux",
+    "devScreenshotSaved": "Screenshot dev disimpan",
+    "devScreenshotFailed": "Screenshot dev gagal disimpan",
+    "error": {
+      "FILE_NOT_FOUND": "Fail yang dipilih tidak ditemui. Ia mungkin telah dipindahkan atau dipadam.",
+      "FFMPEG_NOT_FOUND": "Binari FFmpeg tidak ditemui. Sila pasang FFmpeg atau semak fail boleh laku yang disertakan.",
+      "FFPROBE_NOT_FOUND": "Binari FFprobe tidak ditemui. Maklumat media tidak dapat dibaca.",
+      "CONVERSION_FAILED": "Proses penukaran gagal. Semak format fail dan parameter yang digunakan.",
+      "INVALID_FORMAT": "Format fail tidak disokong atau sambungan output tidak sepadan dengan codec yang dipilih.",
+      "PROBE_FAILED": "Maklumat fail media tidak dapat dibaca. Fail mungkin rosak atau dalam format yang tidak disokong.",
+      "QUEUE_ERROR": "Satu kerja dalam giliran kelompok gagal. Lihat butiran setiap kerja untuk maklumat lanjut.",
+      "PLAYER_ERROR": "Pemain video mengalami ralat. Fail mungkin rosak atau dalam format yang tidak disokong.",
+      "CANCELLED": "Operasi dibatalkan oleh pengguna.",
+      "BMF_NOT_AVAILABLE": "Rangka kerja BMF tidak dipasang. Sila pasang alat CLI BMF atau gunakan penukar lain.",
+      "OUTPUT_NOT_SPECIFIED": "Nyatakan fail output sebelum memulakan penukaran.",
+      "INPUT_NOT_SPECIFIED": "Pilih fail input sebelum memulakan penukaran.",
+      "OUTPUT_EXISTS": "Fail output sudah wujud. Dayakan overwrite untuk menggantikannya.",
+      "INVALID_QUEUE_FILE": "Fail giliran tidak dapat dibaca. Fail mungkin rosak atau dalam format yang tidak disokong.",
+      "INVALID_AUTOMATION_FILE": "Fail automasi tidak dapat dibaca. Fail mungkin rosak atau dalam format yang tidak disokong.",
+      "FILTERS_REQUIRE_RE_ENCODE": "Penapis video memerlukan pengekodan semula. Nyahdayakan lossless copy (stream copy) untuk menggunakan penapis.",
+      "INVALID_VIDEO_FILTERS": "Rantaian penapis video atau preset tidak sah. Semak ungkapan penapis dan nama preset.",
+      "STREAM_NOT_FOUND": "Strim yang diminta tidak wujud dalam fail sumber. Semak pemilihan strim.",
+      "INCOMPATIBLE_CONTAINER": "Strim yang dipilih tidak boleh disimpan dalam container yang dipilih tanpa pengekodan semula.",
+      "AUXILIARY_INPUT_NOT_FOUND": "Fail sari kata, audio, bab, atau kulit yang ditambah tidak ditemui.",
+      "PERMISSION_DENIED": "Kebenaran dinafikan. Aplikasi mungkin tidak mempunyai akses kepada fail atau direktori yang dipilih.",
+      "OPERATION_TIMED_OUT": "Operasi mengambil masa terlalu lama dan dihentikan. Fail mungkin rosak, atau sistem mungkin berada di bawah beban berat.",
+      "UNSAFE_ARGUMENTS": "Permintaan mengandungi argumen yang tidak dibenarkan (metaksara shell atau arahan kedua dikesan).",
+      "TRANSCRIPTION_UNAVAILABLE": "Tiada enjin speech-to-text yang tersedia. Pasang alat ASR tempatan yang disokong (contohnya whisper.cpp) atau konfigurasikannya.",
+      "TRANSLATION_UNAVAILABLE": "Tiada backend terjemahan sari kata yang tersedia. Konfigurasikan runtime model tempatan atau penyedia lain.",
+      "AI_NOT_CONFIGURED": "Tiada penyedia AI dikonfigurasikan. Tambah API key dalam Tetapan untuk menggunakan perancangan berkuasa AI.",
+      "AI_CONNECTOR_FAILED": "Penyedia AI tidak dapat dicapai. Semak sambungan rangkaian, API key, dan nama model.",
+      "AI_RESPONSE_INVALID": "Penyedia AI mengembalikan respons yang tidak boleh digunakan. Cuba lagi atau bertukar kepada perancang deterministik.",
+      "UNKNOWN": "Ralat tidak dijangka berlaku. Sila cuba lagi."
+    }
   },
   "profiles": {
     "searchPlaceholder": "Cari profil...",
@@ -685,7 +718,12 @@
       "removeKey": "Buang kunci",
       "keyRemoved": "Kunci tersimpan telah dibuang.",
       "staleStatus": "Tetapan berubah. Sambung semula untuk mengesahkan.",
-      "headerConnected": "Bersambung · {{provider}} · {{model}}"
+      "headerConnected": "Bersambung · {{provider}} · {{model}}",
+      "reset": "Tetapkan semula ke lalai",
+      "resetConfirmTitle": "Tetapkan semula penyedia AI?",
+      "resetConfirmMessage": "Ini membuang semua kunci API, model, titik hujung dan sejarah sambungan yang disimpan. Penyedia peraturan terbina akan aktif. Tindakan ini tidak boleh dibatalkan.",
+      "resetConfirmAction": "Tetapkan semula",
+      "resetComplete": "Penyedia AI telah dipulihkan ke tetapan lalai mereka."
     },
     "desktopNotifications": "Pemberitahuan desktop",
     "desktopNotificationsHint": "Tunjukkan pemberitahuan sistem apabila tugas baris gilir selesai atau gagal semasa aplikasi berjalan di latar belakang.",
@@ -1095,7 +1133,8 @@
     "ai": {
       "configure": "Konfigurasikan pembekal AI",
       "locationNote": "Pembekal AI dikonfigurasikan dalam Tetapan.",
-      "notConnected": "Tidak bersambung"
+      "notConnected": "Tidak bersambung",
+      "noProviderNotice": "Tiada penyedia AI yang disambungkan. Copilot menggunakan peraturan terbina dalam, jadi jawapan mungkin kurang tepat dan matlamat yang kompleks mungkin salah dilaluan. Sambungkan penyedia AI dalam Tetapan untuk memanfaatkan Copilot sepenuhnya."
     },
     "queryLabel": "Frasa carian",
     "queryPlaceholder": "cth. bahagian tentang harga",
@@ -1126,6 +1165,10 @@
       "container": "Bekas",
       "losslessCopy": "Salinan tanpa kehilangan",
       "crf": "CRF {{value}}"
+    },
+    "routingWarning": {
+      "aiFallback": "Pembekal AI yang dikonfigurasikan gagal menghalakan matlamat ini, jadi enjin peraturan terbina dalam digunakan sebagai gantinya. Semak tetapan pembekal AI dan log.",
+      "uncertainGoal": "Copilot tidak mengesan sebarang operasi dalam matlamat ini, jadi ia merancang penukaran lalai. Pilih operasi dalam Pilihan lanjutan, atau sambungkan pembekal AI untuk pengesanan niat yang lebih baik."
     }
   },
   "leaveConfirm": {

@@ -154,7 +154,7 @@ Live log viewer जो main और renderer दोनों processes से con
 
 ### Notifications
 
-Non-blocking feedback के लिए configurable duration वाले Toast notifications (success/info/warning/error), global error snackbar पर layered।
+Non-blocking feedback के लिए configurable duration वाले Toast notifications (success/info/warning/error), unified toast viewport में render होते हैं।
 
 ### Custom window frame
 
@@ -216,7 +216,7 @@ Custom update manager जो GitHub Releases check करता है new versi
 
 ### Error handling
 
-29 typed error codes (`ErrorCode`), user-facing localized messages, global error snackbar, inline error banners, toast notifications, nested React error boundaries, और in-app error history (cap 50) के साथ structured error system। सभी errors `formatError()` के माध्यम से normalize होते हैं और IPC across propagate होते हैं।
+29 typed error codes (`ErrorCode`), user-facing localized messages, सभी transient feedback के लिए unified toast viewport, inline error banners, nested React error boundaries, और in-app error history (cap 50) के साथ structured error system। सभी errors `formatError()` के माध्यम से normalize होते हैं और IPC across propagate होते हैं।
 
 ### MCP Apps and local models
 

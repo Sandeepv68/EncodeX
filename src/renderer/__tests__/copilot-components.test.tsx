@@ -446,7 +446,18 @@ describe('AssistantMessage', () => {
     expect(screen.queryByTestId('copilot-routed-as')).toBeNull();
   });
 
-  it('shows a warning when the AI provider fell back to the rules engine', () => {
+  it('shows a translated warning when the AI provider fell back to the rules engine', () => {
+    renderMessage({
+      plan: {
+        ...PLAN,
+        routingWarning: 'The configured AI provider could not route this goal.',
+        routingWarningKey: 'copilot.routingWarning.aiFallback',
+      },
+    });
+    expect(screen.getByTestId('copilot-routing-warning')).toHaveTextContent('copilot.routingWarning.aiFallback');
+  });
+
+  it('shows a legacy routing warning from a saved conversation', () => {
     renderMessage({ plan: { ...PLAN, routingWarning: 'AI routing failed; rules were used.' } });
     expect(screen.getByTestId('copilot-routing-warning')).toHaveTextContent('AI routing failed; rules were used.');
   });

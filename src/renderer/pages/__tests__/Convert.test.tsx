@@ -232,7 +232,7 @@ describe('Convert', () => {
       },
       'FFMPEG',
     );
-    expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'Conversion complete')).toBe(true);
+    expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'toast.conversionComplete')).toBe(true);
     expect(screen.queryByText('100.0%')).not.toBeInTheDocument();
   });
 
