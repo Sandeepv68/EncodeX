@@ -11,7 +11,6 @@ import type { QueueJob } from '../../../shared/types';
 import { FILE_FILTERS } from '../../../shared/file-extensions';
 import { QUEUE_STATUS } from '../../../shared/media-options';
 import { BATCH_CONFIG_STORAGE_KEY } from '../../../shared/constants';
-import { ERROR_MESSAGES } from '../../../shared/errors';
 
 const queueListMock = vi.mocked(window.electronAPI.queueList);
 const queueGetStateMock = vi.mocked(window.electronAPI.queueGetState);
@@ -547,9 +546,13 @@ describe('BatchQueue', () => {
     act(() => {
       onStatusChange(job({ id: 'job-1', status: 'done' }));
     });
-    expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'Batch finished: 1 succeeded, 0 failed')).toBe(
-      true,
-    );
+    expect(
+      useToastStore
+        .getState()
+        .toasts.some(
+          (t) => t.type === 'success' && t.message === 'batchQueue.finished' && t.values?.done === 1 && t.values?.failed === 0,
+        ),
+    ).toBe(true);
   });
 
   it('raises a native OS notification when the batch finishes', async () => {
@@ -983,7 +986,7 @@ describe('BatchQueue', () => {
     fireEvent.click(screen.getByRole('button', { name: 'batchQueue.retry' }));
     await waitFor(() =>
       expect(
-        useToastStore.getState().toasts.some((toast) => toast.type === 'error' && toast.message === ERROR_MESSAGES.CONVERSION_FAILED),
+        useToastStore.getState().toasts.some((toast) => toast.type === 'error' && toast.message === 'toast.error.CONVERSION_FAILED'),
       ).toBe(true),
     );
   });

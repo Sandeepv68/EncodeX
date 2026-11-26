@@ -71,21 +71,21 @@ describe('tNotification', () => {
   });
 
   it('interpolates the variables into the body', async () => {
-    setLocaleFiles({ 'en-US.json': { notifications: { jobCompletedBody: '{{fileName}} finished successfully.' } } });
+    setLocaleFiles({ 'en-US.json': { notifications: { jobCompletedBody: '{{fileName}} complete' } } });
     const { tNotification } = await import('./strings');
-    expect(tNotification('notifications.jobCompletedBody', { fileName: 'clip.mp4' })).toBe('clip.mp4 finished successfully.');
+    expect(tNotification('notifications.jobCompletedBody', { fileName: 'clip.mp4' })).toBe('clip.mp4 complete');
   });
 
   it('replaces a missing variable with an empty string', async () => {
-    setLocaleFiles({ 'en-US.json': { notifications: { jobCompletedBody: '{{fileName}} finished successfully.' } } });
+    setLocaleFiles({ 'en-US.json': { notifications: { jobCompletedBody: '{{fileName}} complete' } } });
     const { tNotification } = await import('./strings');
-    expect(tNotification('notifications.jobCompletedBody', {})).toBe(' finished successfully.');
+    expect(tNotification('notifications.jobCompletedBody', {})).toBe(' complete');
   });
 
   it('leaves the placeholders alone when no variables are given', async () => {
-    setLocaleFiles({ 'en-US.json': { notifications: { jobCompletedBody: '{{fileName}} finished successfully.' } } });
+    setLocaleFiles({ 'en-US.json': { notifications: { jobCompletedBody: '{{fileName}} complete' } } });
     const { tNotification } = await import('./strings');
-    expect(tNotification('notifications.jobCompletedBody')).toBe('{{fileName}} finished successfully.');
+    expect(tNotification('notifications.jobCompletedBody')).toBe('{{fileName}} complete');
   });
 
   it('uses the default language when the locale lookup throws', async () => {

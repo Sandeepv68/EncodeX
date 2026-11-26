@@ -93,7 +93,7 @@ describe.runIf(IS_E2E)('Audio Extract page', () => {
 
     await session.page.locator('[data-testid="audio-extract-extract"]').click();
     await expect
-      .poll(() => session.page.locator('[role="alert"]').filter({ hasText: 'Audio extracted successfully' }).count())
+      .poll(() => session.page.locator('[role="alert"]').filter({ hasText: 'Audio extraction complete' }).count())
       .toBeGreaterThan(0);
   });
 });

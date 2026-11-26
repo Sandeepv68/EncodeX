@@ -41,10 +41,9 @@ import { ErrorCode } from '../../shared/errors';
 import { withExtension, remuxWarnings } from '../../shared/codec-containers';
 import { buildAndValidateRemuxPlan, buildPrimaryStreamMaps } from '../../shared/remux-utils';
 import { useErrorStore } from './errorStore';
-import { useToastStore } from './toastStore';
+import { notify } from '../utils/notify';
 import { navigateToMuxQueue } from '../utils/mux-queue-navigation';
 import type { RemuxState, TaskProgress } from './types';
-import i18n from '../i18n/config';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
 import {
@@ -437,10 +436,12 @@ export const useRemuxStore = create<RemuxState>((set, get) => ({
           durationSec: Math.round((Date.now() - remuxStartedAt) / 1000),
         }),
       );
-      useToastStore.getState().success(i18n.t('toast.remuxed'), undefined, undefined, {
-        label: i18n.t('batchQueue.revealInFolder'),
-        onClick: () => {
-          void window.electronAPI.revealFile(output);
+      notify.success('toast.remuxed', {
+        action: {
+          labelKey: 'batchQueue.revealInFolder',
+          onClick: () => {
+            void window.electronAPI.revealFile(output);
+          },
         },
       });
       set({ progress: null });
@@ -495,9 +496,11 @@ export const useRemuxStore = create<RemuxState>((set, get) => ({
         targets: [{ output, options, label: output }],
         transcoder: TRANSCODER_TYPES[0],
       });
-      useToastStore.getState().success(i18n.t('toast.remuxQueued'), undefined, undefined, {
-        label: i18n.t('muxQueue.viewQueue'),
-        onClick: () => navigateToMuxQueue(),
+      notify.success('toast.remuxQueued', {
+        action: {
+          labelKey: 'muxQueue.viewQueue',
+          onClick: () => navigateToMuxQueue(),
+        },
       });
       // The job now lives in the mux queue: reset the form so the next file
       // can be picked right away. The container and the video filters are kept.

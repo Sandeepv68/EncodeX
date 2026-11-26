@@ -62,3 +62,22 @@ export const ToastAlert = styled(BaseAlert)(({ theme }) => ({
   maxWidth: theme.typography.pxToRem(600),
   color: theme.palette.common.white,
 }));
+
+/**
+ * Headline text shared by toasts, snackbars, and error surfaces.
+ * @const AlertMessageText
+ */
+export const AlertMessageText = styled('div')(({ theme }) => ({
+  fontSize: theme.typography.pxToRem(13),
+}));
+
+/**
+ * Secondary technical detail text shared by every alert surface.
+ * @const AlertDetailText
+ */
+export const AlertDetailText = styled('div')(({ theme }) => ({
+  fontSize: theme.typography.pxToRem(12),
+  fontWeight: 400,
+  opacity: 0.9,
+  marginTop: theme.typography.pxToRem(2),
+}));

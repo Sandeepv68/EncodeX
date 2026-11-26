@@ -13,12 +13,11 @@ import { useEffect, useCallback } from 'react';
 import { Logger } from '../../shared/logger';
 import { useConversionStore } from '../stores/conversionStore';
 import { useErrorStore } from '../stores/errorStore';
-import { useToastStore } from '../stores/toastStore';
+import { notify } from '../utils/notify';
 import { ConversionProgress, ConversionOptions } from '../../shared/types';
 import { toTaskProgress } from '../../shared/progress';
 import { ErrorCode } from '../../shared/errors';
 import { validateVideoFilters } from '../../shared/video-filters';
-import i18n from '../i18n/config';
 import { useSettingsStore } from '../stores/settingsStore';
 import { getExtension, suggestedExtensionForVideoCodec } from '../../shared/codec-containers';
 import { DEFAULT_SUFFIX } from '../../shared/media-options';
@@ -171,7 +170,7 @@ export function useConversion() {
       );
       log.info(LOG_CONVERSION_COMPLETED_SUCCESSFULLY);
       store.resetForm();
-      useToastStore.getState().success(i18n.t('toast.conversionComplete'));
+      notify.success('toast.conversionComplete');
     } catch (err: unknown) {
       log.error(LOG_CONVERSION_FAILED, err);
       store.setProgress(null);

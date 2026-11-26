@@ -48,7 +48,6 @@ import {
   SettingsSkeleton,
   VideoCutSkeleton,
 } from './components/PageSkeletons';
-import ErrorSnackbar from './components/ErrorSnackbar';
 import ToastContainer from './components/ToastContainer';
 import MuxQueueSync from './components/MuxQueueSync';
 import CloseConfirmDialog from './components/CloseConfirmDialog';
@@ -64,7 +63,6 @@ import { SHORTCUTS } from './constants/shortcuts';
 import { THEMES } from '../shared/theme/colors';
 import { recordAnalyticsEvent } from '../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../shared/analytics/events';
-import { useErrorStore } from './stores/errorStore';
 import { useFeatureFlag } from './hooks/useFeatureFlags';
 import { isDetachedMode, subscribeSharedLogFeed } from './logs/detached';
 import { useAuditStore } from './stores/auditStore';
@@ -210,9 +208,9 @@ export function RouteLoader({ load, skeleton, minVisibleMs = MIN_SKELETON_MS }: 
  *
  * Renders the route table for every feature page, each wrapped in an
  *  `ErrorBoundary` and its own `Suspense` fallback. It also
- *  hosts the global `ErrorSnackbar`, `ToastContainer`, and `CloseConfirmDialog`
- *  so error/toast notifications and the close-with-active-jobs confirmation
- *  are shown above all routes.
+ *  hosts the global `ToastContainer` and `CloseConfirmDialog` so error/toast
+ *  notifications and the close-with-active-jobs confirmation are shown above
+ *  all routes.
  *
  * On mount it subscribes to log entries pushed from the main process and
  * applies the persisted always-on-top and launch-at-login window flags.
@@ -225,10 +223,8 @@ function AppLayout() {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { t } = useTranslation();
   // The shell subscribes to the slices it renders, not to the whole stores:
-  // a whole-store subscription re-renders the entire app on every error or
-  // settings write, wherever it comes from.
-  const currentError = useErrorStore((s) => s.currentError);
-  const clearError = useErrorStore((s) => s.clearError);
+  // a whole-store subscription re-renders the entire app on every settings
+  // write, wherever it comes from.
   const [mobileOpen, setMobileOpen] = useState(false);
   const drawerCondensed = useSettingsStore((s) => s.drawerCondensed);
   const setDrawerCondensed = useSettingsStore((s) => s.setDrawerCondensed);
@@ -434,7 +430,6 @@ function AppLayout() {
           {detached ? null : <Footer />}
         </ColumnLayout>
       </AppBody>
-      <ErrorSnackbar error={currentError} onClose={clearError} />
       <ToastContainer />
       <MuxQueueSync />
       <CloseConfirmDialog />

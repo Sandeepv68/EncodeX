@@ -13,6 +13,10 @@
  *    ErrorCode using the canonical ERROR_MESSAGES text.
  *  - Each new error is pushed onto the history while the oldest entry is
  *    trimmed, keeping the history bounded.
+ *  - Each new error is forwarded through the `notify` facade so it is rendered
+ *    by the single unified toast viewport. Callers that already emitted a
+ *    domain-specific toast can use `recordError` to record it without a second
+ *    notification.
  *
  * Consumers:
  *  - The global error dialog / notification UI (renderer)
@@ -29,6 +33,7 @@ import { ERROR_HISTORY_MAX } from '../../shared/constants';
 import { LOG_ERROR_CLEARED, LOG_ERROR_HISTORY_CLEARED, LOG_ERROR_MESSAGE_SHOWN, LOG_ERROR_SHOWN } from '../../shared/log-constants';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
+import { notify } from '../utils/notify';
 
 /**
  * Maps an error code to a coarse, stable analytics category so the UI-error
@@ -76,6 +81,7 @@ export const useErrorStore = create<ErrorState>((set) => ({
       currentError: appError,
       errorHistory: [...s.errorHistory.slice(-(ERROR_HISTORY_MAX - 1)), appError],
     }));
+    notify.fromError(appError);
   },
   /**
    * Builds an AppError from an error code (using the canonical message from
@@ -87,6 +93,23 @@ export const useErrorStore = create<ErrorState>((set) => ({
   showErrorMessage: (code: ErrorCodeType, detail?: string) => {
     const appError = createError(code, ERROR_MESSAGES[code], detail);
     log.error(LOG_ERROR_MESSAGE_SHOWN, code, ERROR_MESSAGES[code], detail || '');
+    recordAnalyticsEvent(createAnalyticsEvent('ui_error_shown', { category: categoryForError(appError.code) }));
+    set((s) => ({
+      currentError: appError,
+      errorHistory: [...s.errorHistory.slice(-(ERROR_HISTORY_MAX - 1)), appError],
+    }));
+    notify.fromError(appError);
+  },
+  /**
+   * Records an error without forwarding it to the toast viewport.
+   * Used when the caller already emitted a domain-specific toast for the same
+   * failure, so the error history and analytics are preserved without a
+   * duplicate notification.
+   * @param {unknown} err - The raw thrown value (Error, string, AppError, etc.).
+   */
+  recordError: (err: unknown) => {
+    const appError = formatError(err);
+    log.error(LOG_ERROR_SHOWN, appError.code, appError.message, appError.detail || '');
     recordAnalyticsEvent(createAnalyticsEvent('ui_error_shown', { category: categoryForError(appError.code) }));
     set((s) => ({
       currentError: appError,

@@ -366,7 +366,7 @@ describe('demuxStore', () => {
     await useDemuxStore.getState().setInput('/in/movie.mkv');
     await useDemuxStore.getState().enqueueDemux();
     const toast = useToastStore.getState().toasts[0];
-    expect(toast.action?.label).toBe('View queue');
+    expect(toast.action?.labelKey).toBe('muxQueue.viewQueue');
     toast.action?.onClick?.();
     expect(window.location.hash).toBe('#/batch?tab=mux');
     window.location.hash = '';
@@ -419,7 +419,8 @@ describe('demuxStore', () => {
     await useDemuxStore.getState().setInput('/in/movie.mkv');
     await useDemuxStore.getState().enqueueDemux();
     expect(useErrorStore.getState().currentError).not.toBeNull();
-    expect(useToastStore.getState().toasts).toHaveLength(0);
+    expect(useToastStore.getState().toasts).toHaveLength(1);
+    expect(useToastStore.getState().toasts[0].detail).toBeTruthy();
   });
 
   it('startDemux runs each target sequentially', async () => {
@@ -511,7 +512,8 @@ describe('demuxStore', () => {
     expect(convertFileMock).toHaveBeenCalledTimes(2);
     expect(useErrorStore.getState().currentError?.detail).toBe('boom');
     expect(useDemuxStore.getState().isConverting).toBe(false);
-    expect(useToastStore.getState().toasts).toHaveLength(0);
+    expect(useToastStore.getState().toasts).toHaveLength(1);
+    expect(useToastStore.getState().toasts[0].detail).toBeTruthy();
   });
 
   it('startDemux stops silently when a target is cancelled', async () => {

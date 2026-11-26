@@ -292,7 +292,7 @@ describe('Remux', () => {
     fireEvent.click(screen.getByText('remux.start'));
     await waitFor(() => expect(convertFileMock).toHaveBeenCalledOnce());
     expect(convertFileMock).toHaveBeenCalledWith('/in/video.mkv', '/out/out.mkv', expect.objectContaining({}), 'FFMPEG');
-    expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'Remux complete')).toBe(true);
+    expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'toast.remuxed')).toBe(true);
     await waitFor(() => expect(useRemuxStore.getState().progress).toBeNull());
     expect(screen.queryByText('42.0%')).not.toBeInTheDocument();
   });

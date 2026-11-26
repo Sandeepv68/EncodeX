@@ -45,7 +45,7 @@ import {
   DismissButton,
 } from '../styles/GettingStartedCard.styles';
 import { useSettingsStore } from '../stores/settingsStore';
-import { useToastStore } from '../stores/toastStore';
+import { notify } from '../utils/notify';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
 import type { GoalSpec } from './types';
@@ -154,7 +154,7 @@ export default function GettingStartedCard(): ReactElement | null {
    */
   function handleEnableMcp(): void {
     setMcpEnabled(true);
-    useToastStore.getState().success(t('gettingStarted.mcpEnabled'));
+    notify.success('gettingStarted.mcpEnabled');
     recordAnalyticsEvent(createAnalyticsEvent('onboarding_mcp_enabled', {}));
   }
 

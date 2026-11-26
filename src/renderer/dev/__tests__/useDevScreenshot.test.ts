@@ -2,16 +2,14 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { ERROR_MESSAGES } from '../../../shared/errors';
 
-const { toastSuccessSpy, toastErrorSpy } = vi.hoisted(() => ({
-  toastSuccessSpy: vi.fn(),
-  toastErrorSpy: vi.fn(),
+const { toastAddToastSpy } = vi.hoisted(() => ({
+  toastAddToastSpy: vi.fn(),
 }));
 
 vi.mock('../../stores/toastStore', () => ({
   useToastStore: {
     getState: () => ({
-      success: toastSuccessSpy,
-      error: toastErrorSpy,
+      addToast: toastAddToastSpy,
     }),
   },
 }));
@@ -71,7 +69,15 @@ describe('useDevScreenshot', () => {
     });
 
     expect(window.electronAPI.captureDevScreenshot).toHaveBeenCalledOnce();
-    expect(toastSuccessSpy).toHaveBeenCalledWith('Dev screenshot saved', '/screenshots/dev/test.png');
+    expect(toastAddToastSpy).toHaveBeenCalledWith(
+      'success',
+      'toast.devScreenshotSaved',
+      '/screenshots/dev/test.png',
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+    );
   });
 
   it('ignores repeated keydown events', async () => {
@@ -129,7 +135,15 @@ describe('useDevScreenshot', () => {
       } as unknown as KeyboardEvent);
     });
 
-    expect(toastErrorSpy).toHaveBeenCalledWith('Dev screenshot failed', ERROR_MESSAGES.CONVERSION_FAILED);
+    expect(toastAddToastSpy).toHaveBeenCalledWith(
+      'error',
+      'toast.devScreenshotFailed',
+      ERROR_MESSAGES.CONVERSION_FAILED,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+    );
   });
 
   it('shows error when captureDevScreenshot API is unavailable', async () => {
@@ -149,7 +163,15 @@ describe('useDevScreenshot', () => {
       } as unknown as KeyboardEvent);
     });
 
-    expect(toastErrorSpy).toHaveBeenCalledWith('Dev screenshot failed', ERROR_MESSAGES.UNKNOWN);
+    expect(toastAddToastSpy).toHaveBeenCalledWith(
+      'error',
+      'toast.devScreenshotFailed',
+      ERROR_MESSAGES.UNKNOWN,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+    );
   });
 
   it('shows error when non-Error is thrown', async () => {
@@ -169,6 +191,14 @@ describe('useDevScreenshot', () => {
       } as unknown as KeyboardEvent);
     });
 
-    expect(toastErrorSpy).toHaveBeenCalledWith('Dev screenshot failed', ERROR_MESSAGES.UNKNOWN);
+    expect(toastAddToastSpy).toHaveBeenCalledWith(
+      'error',
+      'toast.devScreenshotFailed',
+      ERROR_MESSAGES.UNKNOWN,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+    );
   });
 });

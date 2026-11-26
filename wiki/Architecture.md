@@ -97,7 +97,7 @@ useConversion / page state -> ProgressBar UI
 
 ## 🛡️ Error Handling
 
-29 typed error codes (`FILE_NOT_FOUND`, `FFMPEG_NOT_FOUND`, `CONVERSION_FAILED`, `CANCELLED`, etc.) with user-facing localized messages. <!-- drift: error-codes=29 --> All errors flow through `formatError()` which normalizes to `AppError { code, message, detail, timestamp }` and are displayed via `ErrorSnackbar`, `ErrorBanner`, and `ErrorBoundary`.
+29 typed error codes (`FILE_NOT_FOUND`, `FFMPEG_NOT_FOUND`, `CONVERSION_FAILED`, `CANCELLED`, etc.) with user-facing localized messages. <!-- drift: error-codes=29 --> All errors flow through `formatError()` which normalizes to `AppError { code, message, detail, timestamp }` and are displayed via the unified `ToastContainer`, `ErrorBanner`, and `ErrorBoundary`.
 
 ## 🌍 Additional Topics
 

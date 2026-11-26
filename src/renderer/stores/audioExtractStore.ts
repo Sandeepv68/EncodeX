@@ -34,11 +34,10 @@ import type { ConversionProgress, MediaStreamInfo } from '../../shared/types';
 import { toTaskProgress } from '../../shared/progress';
 import { ErrorCode } from '../../shared/errors';
 import { useErrorStore } from './errorStore';
-import { useToastStore } from './toastStore';
+import { notify } from '../utils/notify';
 import type { AudioExtractState, TaskProgress } from './types';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
-import i18n from '../i18n/config';
 import { AUDIO_EXTRACT_DEFAULT_CODEC } from '../../shared/constants';
 import {
   LOG_ARROW,
@@ -210,7 +209,7 @@ export const useAudioExtractStore = create<AudioExtractState>((set, get) => ({
           durationSec: Math.round((Date.now() - extractStartedAt) / 1000),
         }),
       );
-      useToastStore.getState().success(i18n.t('toast.audioExtracted'));
+      notify.success('toast.audioExtracted');
       set({ progress: null });
     } catch (err: unknown) {
       log.error(LOG_EXTRACTION_FAILED, err);

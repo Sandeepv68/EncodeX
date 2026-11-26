@@ -389,15 +389,6 @@ export interface ErrorBoundaryState {
 }
 
 /**
- * Props for the error snackbar.
- * @interface ErrorSnackbarProps
- */
-export interface ErrorSnackbarProps {
-  error: AppError | null;
-  onClose: () => void;
-}
-
-/**
  * Props for the drag-and-drop file zone.
  * @interface FileDropZoneProps
  */

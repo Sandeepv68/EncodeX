@@ -161,7 +161,7 @@ src/
 │   │   ├── views/                     # Batch, Capabilities, Confirm, Convert, Error, Inspector, Job, Lab, MediaInfo, Plan, Profiles, Queue, Workflow
 │   │   ├── kit/                       # Shared view primitives
 │   │   └── standalone/                # Entry external hosts run in their iframe
-│   ├── components/                    # Shared UI components (72 modules: 54 top-level + copilot/ and settings/ subfolders) <!-- drift:renderer-components=84 --> <!-- drift:renderer-components-top=54 -->
+│   ├── components/                    # Shared UI components (72 modules: 54 top-level + copilot/ and settings/ subfolders) <!-- drift:renderer-components=83 --> <!-- drift:renderer-components-top=53 -->
 │   │   └── types.ts                   # Shared component prop shapes
 │   ├── constants/
 │   │   ├── shortcuts.ts               # 71 keyboard shortcuts registry (11 sections) + tooltip hints <!-- drift:shortcuts=71 --> <!-- drift:shortcut-sections=11 -->
@@ -174,7 +174,7 @@ src/
 │   │   └── types.ts                   # Page-level prop and view-model types
 │   ├── stores/                        # 21 Zustand stores (queue, conversion, settings, profile, terms, batchConfig, audioExtract, videoCut, logs, errors, toasts, update, task, dismissedAlerts, aiSettings, aiConnection, audit, copilotChats, remux, demux) <!-- drift:renderer-stores=22 -->
 │   │   └── types.ts                   # Zustand store state shapes + actions
-│   ├── styles/                        # Extracted MUI style constants per component (76 modules + Copilot/Settings subfolders) <!-- drift:renderer-styles=78 -->
+│   ├── styles/                        # Extracted MUI style constants per component (76 modules + Copilot/Settings subfolders) <!-- drift:renderer-styles=79 -->
 │   ├── utils/                         # formatters, preview cache helpers, easter egg dates, batch options
 │   │   └── types.ts                   # Shared renderer utility types
 │   └── types.ts                       # Color mode / theme context types

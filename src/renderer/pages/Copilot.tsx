@@ -32,7 +32,7 @@ import { useNavigationGuard } from '../NavigationGuardContext';
 import PageContainer from '../components/PageContainer';
 import AppDialog from '../components/AppDialog';
 import { bridgePromise, withBridgeTimeout } from '../utils/bridge-call';
-import { useToastStore } from '../stores/toastStore';
+import { notify } from '../utils/notify';
 import { useQueueStore } from '../stores/queueStore';
 import type { QueueJob } from '../../shared/types';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
@@ -145,7 +145,7 @@ export default function Copilot() {
       // Refresh the open panel so the chat shows up in the list right away
       // instead of only after the panel is closed and reopened.
       setSavedChats(readSavedCopilotChats());
-      useToastStore.getState().success(t('copilot.chatSaved'));
+      notify.success('copilot.chatSaved');
       return true;
     } catch {
       setGlobalError(t('copilot.savedChatSaveFailed'));
@@ -443,7 +443,7 @@ export default function Copilot() {
 
     setBusy(false);
     if (added > 0) {
-      useToastStore.getState().success(t('copilot.addedToQueue', { count: added }));
+      notify.success('copilot.addedToQueue', { values: { count: added } });
     }
     if (added === planToEnqueue.actions.length && planToEnqueue.actions.length > 0) {
       navigateWithoutGuard(muxAdded > 0 ? '/batch?tab=mux' : '/batch');

@@ -12,7 +12,7 @@
  */
 
 const { contextBridge } = require('electron');
-const { state, subscribe, emit } = require('./main-store');
+const { state, defaults, subscribe, emit } = require('./main-store');
 
 contextBridge.exposeInMainWorld(
   '__ENCODEX_E2E__',
@@ -586,6 +586,11 @@ const api = {
     }
     persistAiSettings(view);
     return Promise.resolve({ ...view });
+  },
+  aiResetSettings: () => {
+    const view = { ...defaults.aiSettingsView };
+    persistAiSettings(view);
+    return Promise.resolve(view);
   },
   aiConnectTest: () => {
     const result = state.aiConnectResult;

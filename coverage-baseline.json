@@ -784,11 +784,6 @@
       "branches": 75,
       "statements": 100
     },
-    "src/renderer/components/ErrorSnackbar.tsx": {
-      "lines": 100,
-      "branches": 83.33,
-      "statements": 100
-    },
     "src/renderer/components/ExifSection.tsx": {
       "lines": 100,
       "branches": 100,
@@ -2514,11 +2509,6 @@
         "src/renderer/components/ErrorBoundary.tsx": {
           "lines": 100,
           "branches": 75,
-          "statements": 100
-        },
-        "src/renderer/components/ErrorSnackbar.tsx": {
-          "lines": 100,
-          "branches": 83.33,
           "statements": 100
         },
         "src/renderer/components/ExifSection.tsx": {
@@ -4501,11 +4491,6 @@
         "src/renderer/components/ErrorBoundary.tsx": {
           "lines": 100,
           "branches": 75,
-          "statements": 100
-        },
-        "src/renderer/components/ErrorSnackbar.tsx": {
-          "lines": 100,
-          "branches": 83.33,
           "statements": 100
         },
         "src/renderer/components/FilePathField.tsx": {

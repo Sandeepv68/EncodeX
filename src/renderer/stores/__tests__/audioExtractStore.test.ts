@@ -146,7 +146,7 @@ describe('audioExtractStore', () => {
     expect(useAudioExtractStore.getState().isConverting).toBe(false);
     expect(useAudioExtractStore.getState().progress).toBeNull();
     expect(useToastStore.getState().toasts).toHaveLength(1);
-    expect(useToastStore.getState().toasts[0].message).toBe('Audio extracted successfully');
+    expect(useToastStore.getState().toasts[0].message).toBe('toast.audioExtracted');
   });
 
   it('startExtract shows the error when the conversion fails', async () => {
@@ -155,7 +155,8 @@ describe('audioExtractStore', () => {
     await useAudioExtractStore.getState().startExtract();
     expect(useErrorStore.getState().currentError?.detail).toBe('boom');
     expect(useAudioExtractStore.getState().isConverting).toBe(false);
-    expect(useToastStore.getState().toasts).toHaveLength(0);
+    expect(useToastStore.getState().toasts).toHaveLength(1);
+    expect(useToastStore.getState().toasts[0]).toMatchObject({ type: 'error', detail: 'boom' });
   });
 
   it('pauseExtract sets isPaused', async () => {

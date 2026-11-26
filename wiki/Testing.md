@@ -44,7 +44,7 @@ Coverage reports are generated in `coverage/`:
 
 ## ✅ Test Suite
 
-The suite is run by Vitest 4 across **386 test/spec files** in `src/`. <!-- drift:test-files=398 --> Coverage uses the v8 provider.
+The suite is run by Vitest 4 across **386 test/spec files** in `src/`. <!-- drift:test-files=397 --> Coverage uses the v8 provider.
 
 | Area                                      | What's Covered                                                                                                                                                                                             |
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -58,7 +58,7 @@ The suite is run by Vitest 4 across **386 test/spec files** in `src/`. <!-- drif
 | **Monitoring (9 files)**                  | MonitoringService facade, noop provider, logger bridge, Sentry providers (main + renderer), provider factories, consent + IPC bridge                                                                       |
 | **Standalone MCP (32 files)**             | Server wiring, the full tool catalogue (37 registrations), conversion-options mapping, job manager, safety/validation, STT/translation, stdio integration                                                  |
 | **Preload (3 files)**                     | Full `electronAPI` bridge surface, every IPC method                                                                                                                                                        |
-| **Renderer components (54 files)**        | Rendering, interactions, error states, accessibility for all shared UI components <!-- drift:renderer-component-tests=55 -->                                                                               |
+| **Renderer components (54 files)**        | Rendering, interactions, error states, accessibility for all shared UI components <!-- drift:renderer-component-tests=54 -->                                                                               |
 | **Renderer hooks (11 files)**              | Conversion orchestration, error handling, form validation, media task lifecycle, RTL direction, keyboard shortcuts, AI connection                                                                          |
 | **Renderer pages (14 files)**             | Full page flows: form state, validation, IPC invocation, settings persistence, Copilot, Remux/Demux, about/update                                                                                          |
 | **Renderer stores (23 files)**            | Zustand store state transitions and persistence, terms gate, batch config, profiles, dismissed alerts, AI/audit/remux/demux                                                                                |
@@ -104,7 +104,7 @@ Vitest end-to-end tests live in `e2e/` (node environment, 60s timeouts), driving
 | `e2e/specs/copilot-responsive.spec.ts`       | Copilot responsive layout                                                                                                                                          |
 | `e2e/specs/mux-queue.spec.ts`                | Mux/demux queue add, reorder, progress, and cancellation                                                                                                           |
 | `e2e/specs/dashboard.spec.ts`                | Dashboard tiles and getting-started card                                                                                                                           |
-| `e2e/specs/error-states.spec.ts`             | Error snackbar, banner, and boundary states                                                                                                                        |
+| `e2e/specs/error-states.spec.ts`             | Unified toast, banner, and boundary states                                                                                                                        |
 | `e2e/specs/focus-order.spec.ts`              | Keyboard focus order across the shell                                                                                                                              |
 | `e2e/specs/harness-recovery.spec.ts`         | Test harness recovery from crashes                                                                                                                                 |
 | `e2e/specs/hostile-bridge.spec.ts`           | Hostile preload/IPC bridge inputs                                                                                                                                  |

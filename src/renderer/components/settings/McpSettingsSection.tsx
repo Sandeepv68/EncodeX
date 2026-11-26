@@ -8,7 +8,7 @@ import { Switch, IconButton, Tooltip, InputAdornment, Link } from '@mui/material
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy, faEye, faEyeSlash, faTrashCan, faWandMagicSparkles } from '@fortawesome/free-solid-svg-icons';
 import { useSettingsStore } from '../../stores/settingsStore';
-import { useToastStore } from '../../stores/toastStore';
+import { notify } from '../../utils/notify';
 import { MCP_MIN_PORT, MCP_MAX_PORT, MCP_DEFAULT_PORT, clampMcpPort } from '../../../shared/mcp-settings';
 import { recordAnalyticsEvent } from '../../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../../shared/analytics/events';
@@ -136,7 +136,7 @@ export default function McpSettingsSection() {
   const copyConnectionValue = async (value: string, valueType: 'token' | 'endpoint' | 'authorization'): Promise<void> => {
     await navigator.clipboard.writeText(value);
     recordAnalyticsEvent(createAnalyticsEvent('mcp_connection_value_copied', { valueType }));
-    useToastStore.getState().success(t('settings.mcpCopied'));
+    notify.success('settings.mcpCopied');
   };
 
   return (

@@ -25,7 +25,7 @@ import { useHotkeys } from '../hooks/useHotkeys';
 import { openFileDialog } from '../utils/fileDialog';
 import { Logger } from '../../shared/logger';
 import { useErrorStore } from '../stores/errorStore';
-import { useToastStore } from '../stores/toastStore';
+import { notify } from '../utils/notify';
 import { MediaInfo as MediaInfoType, ImageExifData } from '../../shared/types';
 import { isImageFile } from '../../shared/file-extensions';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
@@ -57,7 +57,7 @@ const log = new Logger('renderer/pages/MediaInfo');
  *
  * State managed: `info` (the FFmpeg media info), `exif` (image EXIF/histogram
  * data, only set for image inputs), and `loading`. Errors are surfaced through
- * `useErrorStore` and success through `useToastStore`.
+ * `useErrorStore` and success through the unified `notify` facade.
  *
  * IPC interactions:
  *  - `getMediaInfo(path, 'FFMPEG')` - probed container/stream data.
@@ -118,7 +118,7 @@ export default function MediaInfo() {
       const data = await window.electronAPI.getMediaInfo(path, 'FFMPEG');
       log.info(LOG_MEDIA_INFO_RETRIEVED, data.format, data.duration.toFixed(2) + 's,', data.streams.length, 'streams');
       setInfo(data);
-      useToastStore.getState().success(t('toast.mediaInfoLoaded'));
+      notify.success('toast.mediaInfoLoaded');
       let exifData: ImageExifData | null = null;
       if (isImageFile(path)) {
         const imageData = await window.electronAPI.getImageInfo(path);

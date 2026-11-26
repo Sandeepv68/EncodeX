@@ -1,6 +1,6 @@
 # Canaux IPC & electronAPI
 
-<!-- drift:ipc-channels=128 -->
+<!-- drift:ipc-channels=129 -->
 
 Tous les noms de canaux sont centralisés dans `src/shared/ipc-channels.ts`.
 

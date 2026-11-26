@@ -50,7 +50,7 @@ import ViewLogsButton from '../components/ViewLogsButton';
 import { useHotkeys } from '../hooks/useHotkeys';
 import { useMuxQueueStatus } from '../hooks/useMuxQueueStatus';
 import { useQueueStore } from '../stores/queueStore';
-import { useToastStore } from '../stores/toastStore';
+import { notify } from '../utils/notify';
 import { useProfileStore } from '../stores/profileStore';
 import { DEFAULT_SUFFIX, QUEUE_STATUS } from '../../shared/media-options';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
@@ -679,9 +679,9 @@ export default function BatchQueue() {
       fireAndForgetBridge(() => window.electronAPI?.queueUpdateOptions(job.id, options, output), 'queueUpdateOptions');
     }
     if (skippedNames.length > 0) {
-      useToastStore
-        .getState()
-        .warning(t('batchQueue.outputCollisionSkipped', { count: skippedNames.length, names: skippedNames.join(', ') }));
+      notify.warning('batchQueue.outputCollisionSkipped', {
+        values: { count: skippedNames.length, names: skippedNames.join(', ') },
+      });
     }
   }, [
     videoCodec,
@@ -787,7 +787,7 @@ export default function BatchQueue() {
       const doneCount = outcomes.filter((outcome) => outcome === 'done').length;
       const failedCount = outcomes.filter((outcome) => outcome === 'error').length;
       const message = t('batchQueue.finished', { done: doneCount, failed: failedCount });
-      useToastStore.getState().success(message);
+      notify.success('batchQueue.finished', { values: { done: doneCount, failed: failedCount } });
       showNativeCompletionNotification(t('batchQueue.notificationTitle'), message);
       finishedRef.current.clear();
     }
@@ -835,7 +835,7 @@ export default function BatchQueue() {
       if (paths.length === 0) return;
       const mediaFiles = await window.electronAPI?.expandPaths(paths);
       if (!mediaFiles || mediaFiles.length === 0) {
-        useToastStore.getState().warning(t('batchQueue.noMediaFound'));
+        notify.warning('batchQueue.noMediaFound');
         return;
       }
       enqueueSelectionsRef.current(
@@ -877,7 +877,7 @@ export default function BatchQueue() {
       // toolbar last checked. Unknown status (IPC failure) does not block.
       const status = await window.electronAPI?.getBmfStatus?.().catch(() => null);
       if (status?.available === false) {
-        useToastStore.getState().error(t('batchQueue.bmfNotFound', { missing: status.missing.join(', ') }));
+        notify.error('batchQueue.bmfNotFound', { values: { missing: status.missing.join(', ') } });
         return;
       }
     }
@@ -915,18 +915,18 @@ export default function BatchQueue() {
         })
         .catch((err: unknown) => {
           const appError = formatError(err);
-          useToastStore.getState().error(appError.message, appError.detail);
+          notify.fromError(appError);
         }),
     );
     await Promise.all(enqueues);
     if (added > 0) {
-      useToastStore.getState().success(t('batchQueue.enqueued', { count: added }));
+      notify.success('batchQueue.enqueued', { values: { count: added } });
       recordAnalyticsEvent(createAnalyticsEvent('batch_files_added', { source: source, count: added }));
     }
     if (plan.skippedNames.length > 0) {
-      useToastStore
-        .getState()
-        .warning(t('batchQueue.skippedDuplicates', { count: plan.skippedNames.length, names: plan.skippedNames.join(', ') }));
+      notify.warning('batchQueue.skippedDuplicates', {
+        values: { count: plan.skippedNames.length, names: plan.skippedNames.join(', ') },
+      });
     }
   };
 
@@ -999,11 +999,11 @@ export default function BatchQueue() {
       await window.electronAPI.queueAdd(failedJob.input, failedJob.output, failedJob.options, failedJob.transcoder, true);
       removeJob(failedJob.id);
       fireAndForgetBridge(() => window.electronAPI.queueRemove(failedJob.id), 'queueRemove');
-      useToastStore.getState().success(t('toast.jobAdded'));
+      notify.success('toast.jobAdded');
       recordAnalyticsEvent(createAnalyticsEvent('batch_job_retried', { operation: inferJobOperation(failedJob.options) }));
     } catch (err) {
       const appError = formatError(err);
-      useToastStore.getState().error(appError.message, appError.detail);
+      notify.fromError(appError);
     }
   };
 
@@ -1037,7 +1037,7 @@ export default function BatchQueue() {
     setCancelConfirmOpen(false);
     await window.electronAPI.queueCancelAll();
     clearJobs();
-    useToastStore.getState().info(t('toast.allCancelled'));
+    notify.info('toast.allCancelled');
     recordAnalyticsEvent(createAnalyticsEvent('batch_queue_cancelled_all', { count: cancelledCount }));
   };
 
@@ -1083,13 +1083,13 @@ export default function BatchQueue() {
       .getState()
       .jobs.some((other: QueueJob) => other.id !== job.id && normalizePath(other.output) === normalizePath(output));
     if (collides) {
-      useToastStore.getState().warning(t('batchQueue.outputCollision'));
+      notify.warning('batchQueue.outputCollision');
       return;
     }
     try {
       const updated = await window.electronAPI.queueUpdateOptions(job.id, options, output);
       if (!updated) {
-        useToastStore.getState().error(t('batchQueue.optionsUpdateFailed'));
+        notify.error('batchQueue.optionsUpdateFailed');
         return;
       }
       setCustomizedIds((prev) => {
@@ -1098,12 +1098,12 @@ export default function BatchQueue() {
         customizedIdsRef.current = next;
         return next;
       });
-      useToastStore.getState().success(t('batchQueue.optionsUpdated'));
+      notify.success('batchQueue.optionsUpdated');
       setEditJob(null);
       recordAnalyticsEvent(createAnalyticsEvent('batch_job_options_edited', { operation: inferJobOperation(options) }));
     } catch (err) {
       const appError = formatError(err);
-      useToastStore.getState().error(appError.message, appError.detail);
+      notify.fromError(appError);
     }
   };
 
@@ -1238,7 +1238,7 @@ export default function BatchQueue() {
   const handleExport = async () => {
     const count = await window.electronAPI.queueExport();
     if (count > 0) {
-      useToastStore.getState().success(t('batchQueue.exported', { count }));
+      notify.success('batchQueue.exported', { values: { count } });
       recordAnalyticsEvent(createAnalyticsEvent('batch_export', { count }));
     }
   };
@@ -1254,12 +1254,12 @@ export default function BatchQueue() {
     try {
       const count = await window.electronAPI.queueImport();
       if (count > 0) {
-        useToastStore.getState().success(t('batchQueue.imported', { count }));
+        notify.success('batchQueue.imported', { values: { count } });
         recordAnalyticsEvent(createAnalyticsEvent('batch_import', { count }));
       }
     } catch (err) {
       const appError = formatError(err);
-      useToastStore.getState().error(appError.message, appError.detail);
+      notify.fromError(appError);
     }
   };
 

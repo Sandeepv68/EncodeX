@@ -50,7 +50,7 @@ import { ErrorBoundary } from '../components/ErrorBoundary';
 import ViewLogsButton from '../components/ViewLogsButton';
 import { Logger } from '../../shared/logger';
 import { useErrorStore } from '../stores/errorStore';
-import { useToastStore } from '../stores/toastStore';
+import { notify } from '../utils/notify';
 import { ErrorCode } from '../../shared/errors';
 import { isValidTime } from '../../shared/validation';
 import { TRANSCODER_TYPES } from '../../shared/transcoder-constants';
@@ -576,7 +576,7 @@ export default function VideoCut() {
             }
           });
         await taskPromise;
-        useToastStore.getState().success(t('toast.videoCut'));
+        notify.success('toast.videoCut');
       });
     } finally {
       setIsCutting(false);

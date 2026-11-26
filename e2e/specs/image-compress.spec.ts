@@ -88,7 +88,7 @@ describe.runIf(IS_E2E)('Image Compress page', () => {
 
     await session.page.locator('[data-testid="image-compress-compress"]').click();
     await expect
-      .poll(() => session.page.locator('[role="alert"]').filter({ hasText: 'Image compressed successfully' }).count())
+      .poll(() => session.page.locator('[role="alert"]').filter({ hasText: 'Image compression complete' }).count())
       .toBeGreaterThan(0);
   });
 });

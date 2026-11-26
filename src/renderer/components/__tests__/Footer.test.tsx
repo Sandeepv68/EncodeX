@@ -105,7 +105,9 @@ describe('Footer', () => {
       'toast.updateAvailable',
       undefined,
       8000,
-      expect.objectContaining({ label: 'toast.updateNow' }),
+      expect.objectContaining({ label: 'toast.updateNow', labelKey: 'toast.updateNow' }),
+      { version: '2.0.0' },
+      undefined,
     );
     addToastSpy.mockRestore();
   });
@@ -201,7 +203,9 @@ describe('Footer', () => {
       'toast.updateDownloaded',
       undefined,
       10000,
-      expect.objectContaining({ label: 'toast.viewUpdate' }),
+      expect.objectContaining({ label: 'toast.viewUpdate', labelKey: 'toast.viewUpdate' }),
+      { version: '2.0.0' },
+      undefined,
     );
     addToastSpy.mockRestore();
   });

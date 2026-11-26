@@ -182,7 +182,7 @@ describe('ProfileSelector', () => {
     const deleteBtn = option.closest('li')!.querySelector('[role="button"]')!;
     fireEvent.click(deleteBtn);
     fireEvent.click(screen.getByRole('button', { name: /profiles\.deleteConfirm|Delete/i }));
-    expect(useToastStore.getState().toasts.some((t) => t.type === 'error')).toBe(true);
+    expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'profiles.deleted')).toBe(true);
   });
 
   it('renders category group headers', async () => {

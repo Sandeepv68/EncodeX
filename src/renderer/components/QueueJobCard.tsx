@@ -65,7 +65,7 @@ import ProgressBar from './ProgressBar';
 import type { DragHandleProps, QueueJobCardProps } from './types';
 import type { ConversionOptions } from '../../shared/types';
 import { QUEUE_STATUS } from '../../shared/media-options';
-import { useToastStore } from '../stores/toastStore';
+import { notify } from '../utils/notify';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
 import { useLazyThumbnail } from '../hooks/useLazyThumbnail';
@@ -176,7 +176,7 @@ export function QueueJobCardContent({
    */
   const handleCopyPath = async () => {
     await navigator.clipboard.writeText(job.output);
-    useToastStore.getState().success(t('toast.pathCopied'));
+    notify.success('toast.pathCopied');
     recordAnalyticsEvent(createAnalyticsEvent('batch_job_path_copied', {}));
   };
 
