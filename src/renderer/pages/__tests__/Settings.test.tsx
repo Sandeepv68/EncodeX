@@ -1334,11 +1334,11 @@ describe('Settings', () => {
     renderSettingsOn('ai');
     fireEvent.click(screen.getByTestId('settings-ai-toggle'));
     await screen.findByTestId('settings-ai');
-    expect(screen.getByTestId('settings-ai-connected-dot-openai')).toBeInTheDocument();
+    await screen.findByTestId('settings-ai-connected-dot-openai');
 
     // Selecting a different provider must not hide the one connection.
     fireEvent.click(screen.getByTestId('settings-ai-provider-anthropic'));
-    expect(screen.getByTestId('settings-ai-connected-dot-openai')).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByTestId('settings-ai-connected-dot-openai')).toBeInTheDocument());
     expect(screen.queryByTestId('settings-ai-connected-dot-anthropic')).not.toBeInTheDocument();
     // And it must not claim the freshly selected provider is connected.
     expect(screen.queryByTestId('settings-ai-connected')).not.toBeInTheDocument();
