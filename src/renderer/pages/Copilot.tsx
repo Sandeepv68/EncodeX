@@ -42,6 +42,7 @@ import Conversation, { type ConversationMessage } from '../components/copilot/Co
 import ChatComposer from '../components/copilot/ChatComposer';
 import type { ComposerAttachment } from '../components/copilot/types';
 import { activeConnectionOf, useAiConnectionStore } from '../stores/aiConnectionStore';
+import { useDismissedAlertsStore, DISMISSED_ALERT_KEYS } from '../stores/dismissedAlertsStore';
 import { basename } from '../utils/path-utils';
 import { buildMuxQueuePayloads, isMuxQueueOperation } from '../utils/copilot-mux-queue';
 import { VisuallyHidden } from '../styles/a11y.styles';
@@ -89,6 +90,7 @@ export default function Copilot() {
   const aiView = useAiConnectionStore((state) => state.view);
   /** The single active AI connection, if any. */
   const aiConnection = activeConnectionOf(aiView);
+  const noProviderWarningDismissed = useDismissedAlertsStore((state) => state.isDismissed(DISMISSED_ALERT_KEYS.COPILOT_NO_PROVIDER));
 
   /** Whether the transcript holds messages that would be lost on navigation. */
   const hasActiveChat = messages.length > 0;
@@ -512,9 +514,19 @@ export default function Copilot() {
               </CopilotAlert>
             </CopilotAlertWrapper>
           )}
-          {!aiConnection && (
+          {!aiConnection && !noProviderWarningDismissed && (
             <CopilotAlertWrapper>
-              <CopilotAlert severity="warning" data-testid="copilot-no-provider-warning">
+              <CopilotAlert
+                severity="warning"
+                data-testid="copilot-no-provider-warning"
+                onClose={() => useDismissedAlertsStore.getState().dismiss(DISMISSED_ALERT_KEYS.COPILOT_NO_PROVIDER)}
+                slotProps={{
+                  closeButton: {
+                    'aria-label': t('shortcuts.close'),
+                    'data-testid': 'copilot-no-provider-dismiss',
+                  },
+                }}
+              >
                 {t('copilot.ai.noProviderNotice')}
               </CopilotAlert>
             </CopilotAlertWrapper>
