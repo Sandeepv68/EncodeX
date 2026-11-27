@@ -20,7 +20,7 @@ export const GroupBar = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   flexWrap: 'wrap',
   justifyContent: 'flex-start',
-  alignSelf: 'flex-start',
+  alignSelf: 'center',
   gap: theme.spacing(1),
   width: 'fit-content',
   maxWidth: '100%',
@@ -32,21 +32,27 @@ export const GroupBar = styled(Box)(({ theme }) => ({
   borderColor: theme.palette.divider,
 }));
 
+/** Group chip with even padding around both the icon and the count label. */
+export const GroupChip = styled(Chip)(({ theme }) => ({
+  paddingBlock: theme.spacing(0.25),
+  paddingInline: theme.spacing(1),
+  gap: theme.spacing(0.25),
+  '& .MuiChip-icon': {
+    marginInline: 0,
+  },
+  '& .MuiChip-label': {
+    paddingInline: 0,
+  },
+}));
+
 /** Dismissible instruction alert shown above the grouped card sections. */
 export const EditHintAlert = styled(InlineAlert)(({ theme }) => ({
-  alignSelf: 'flex-start',
+  alignSelf: 'center',
   width: 'fit-content',
   maxWidth: '100%',
   marginBottom: theme.spacing(1),
   '& .MuiAlert-message': {
     textAlign: 'left',
-  },
-}));
-
-/** Group chip with a count suffix. */
-export const GroupChip = styled(Chip)(({ theme }) => ({
-  '& .MuiChip-label': {
-    padding: `${theme.spacing(0.25)} ${theme.spacing(1)}`,
   },
 }));
 
