@@ -20,7 +20,7 @@ import type { SortableDashboardCardProps } from './types';
 /** A dashboard feature card wrapped in a dnd-kit sortable, shown only in edit mode. */
 export default function SortableDashboardCard({ card, index, onGroupMenu }: SortableDashboardCardProps) {
   const { t } = useTranslation();
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: card.to });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging, isSorting } = useSortable({ id: card.to });
   const title = t(`nav.${card.titleKey}`);
 
   return (
@@ -31,6 +31,7 @@ export default function SortableDashboardCard({ card, index, onGroupMenu }: Sort
       $transform={CSS.Transform.toString(transform)}
       $transition={transition}
       $dragging={isDragging}
+      $sorting={isSorting}
     >
       <FeatureCard gradientAngle={index * 60} $animationDelay="0s">
         <CardBackgroundSvg aria-hidden="true" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice">

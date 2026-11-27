@@ -6,13 +6,16 @@ import { InlineAlert } from './alerts.styles';
 
 /** Grid cell carrying dnd-kit's visual transform while a card is dragged. */
 export const SortableGridItem = styled(FeatureGridItem, {
-  shouldForwardProp: (prop) => prop !== '$transform' && prop !== '$transition' && prop !== '$dragging',
-})<{ $transform?: string; $transition?: string; $dragging?: boolean }>(({ theme, $transform, $transition, $dragging }) => ({
-  transform: $transform,
-  transition: $transition,
-  opacity: $dragging ? 0.5 : 1,
-  borderColor: $dragging ? theme.palette.primary.main : undefined,
-}));
+  shouldForwardProp: (prop) => prop !== '$transform' && prop !== '$transition' && prop !== '$dragging' && prop !== '$sorting',
+})<{ $transform?: string; $transition?: string; $dragging?: boolean; $sorting?: boolean }>(
+  ({ theme, $transform, $transition, $dragging, $sorting }) => ({
+    transform: $transform,
+    transition: $transition,
+    opacity: $dragging ? 0 : 1,
+    willChange: $sorting ? 'transform' : undefined,
+    borderColor: $dragging ? theme.palette.primary.main : undefined,
+  }),
+);
 
 /** Horizontal bar with group chips and layout actions in edit mode. */
 export const GroupBar = styled(Box)(({ theme }) => ({
@@ -100,6 +103,7 @@ export const DragHandle = styled(IconButton)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
   cursor: 'grab',
+  touchAction: 'none',
   '&:active': {
     cursor: 'grabbing',
   },

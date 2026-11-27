@@ -16,7 +16,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { MouseEvent, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { DndContext, DragOverlay, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
+import { DndContext, DragOverlay, KeyboardSensor, PointerSensor, closestCorners, useSensor, useSensors } from '@dnd-kit/core';
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { SortableContext, rectSortingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Menu, MenuItem, TextField } from '@mui/material';
@@ -154,7 +154,7 @@ export default function Dashboard() {
   );
 
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(PointerSensor, { activationConstraint: { distance: 2 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
@@ -234,9 +234,9 @@ export default function Dashboard() {
     setDeleteId(null);
   }
 
-  function renderCard(card: DashboardCardSpec, index: number): ReactNode {
+  function renderCard(card: DashboardCardSpec, index: number, overlay = false): ReactNode {
     return (
-      <FeatureCard gradientAngle={index * 60} $animationDelay={`${0.3 + index * 0.08}s`}>
+      <FeatureCard gradientAngle={index * 60} $animationDelay={`${0.3 + index * 0.08}s`} $static={overlay} $dragOverlay={overlay}>
         <CardBackgroundSvg aria-hidden="true" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice">
           {cardRings(card.to).map((ring) => (
             <g key={ring.id} fill="none" stroke="currentColor" strokeWidth={1} vectorEffect="non-scaling-stroke">
@@ -319,11 +319,19 @@ export default function Dashboard() {
             />
           )}
           {editing ? (
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCorners}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+              onDragCancel={() => setActiveRoute(null)}
+            >
               <SortableContext items={visibleCards.map((card) => card.to)} strategy={rectSortingStrategy}>
                 {sections.map((section) => renderSection(section, true))}
               </SortableContext>
-              <DragOverlay>{overlayCard ? renderCard(overlayCard, 0) : null}</DragOverlay>
+              <DragOverlay dropAnimation={{ duration: 200, easing: 'cubic-bezier(0.25, 1, 0.5, 1)' }}>
+                {overlayCard ? renderCard(overlayCard, 0, true) : null}
+              </DragOverlay>
             </DndContext>
           ) : hasSavedGroups ? (
             sections.map((section) => renderSection(section, false))
