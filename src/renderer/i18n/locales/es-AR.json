@@ -46,7 +46,36 @@
     "descRemux": "Transfiere los flujos sin pérdidas a un nuevo contenedor",
     "descDemux": "Divide los flujos de un archivo en archivos de salida separados",
     "descCopilot": "Planifica conversiones describiendo un objetivo",
-    "descAutomations": "Crea flujos de conversión reutilizables en un lienzo visual"
+    "descAutomations": "Crea flujos de conversión reutilizables en un lienzo visual",
+    "actions": {
+      "viewSwitcher": "Elegir una vista",
+      "dashboard": "Panel",
+      "quickLinks": "Accesos rápidos"
+    },
+    "edit": {
+      "edit": "Editar",
+      "done": "Listo",
+      "hint": "Arrastrá las tarjetas para reorganizarlas. Usá el menú de grupo de cada tarjeta para organizarlas.",
+      "dragHandle": "Mover {{title}}",
+      "group": "Grupo",
+      "newGroup": "Nuevo grupo…",
+      "groupName": "Nombre del grupo",
+      "create": "Crear",
+      "rename": "Renombrar",
+      "delete": "Eliminar",
+      "resetLayout": "Restablecer diseño",
+      "groups": "Grupos",
+      "newGroupTitle": "Crear un grupo",
+      "renameGroupTitle": "Renombrar grupo",
+      "deleteGroupTitle": "Eliminar grupo",
+      "deleteGroupMessage": "Las tarjetas de este grupo quedarán sin agrupar.",
+      "cardCount": "{{count}} tarjetas",
+      "cancel": "Cancelar"
+    },
+    "groups": {
+      "favourites": "Favoritos",
+      "ungrouped": "Todas las herramientas"
+    }
   },
   "gettingStarted": {
     "hint": "¿Nuevo por aquí?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "Nodo seleccionado movido {{direction}}. Nueva posición, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Pulsa Intro o Espacio para seleccionar una conexión. Después puedes pulsar Supr para eliminarla o Esc para cancelar.",
     "canvasHandleLabel": "Conector"
+  },
+  "quickLinks": {
+    "title": "Accesos rápidos",
+    "tabs": {
+      "all": "Todos"
+    },
+    "empty": "Los accesos rápidos aparecerán aquí pronto.",
+    "cardAria": "Abrir {{title}}"
   }
 }

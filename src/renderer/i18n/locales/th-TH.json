@@ -46,7 +46,36 @@
     "descRemux": "ย้ายสตรีมแบบไม่สูญเสียไปยังคอนเทนเนอร์ใหม่",
     "descDemux": "แยกสตรีมของไฟล์ออกเป็นไฟล์ผลลัพธ์แยกกัน",
     "descCopilot": "วางแผนการแปลงโดยการอธิบายเป้าหมาย",
-    "descAutomations": "สร้างไปป์ไลน์การแปลงที่นำกลับมาใช้ใหม่ได้บนแคนวาสแบบภาพ"
+    "descAutomations": "สร้างไปป์ไลน์การแปลงที่นำกลับมาใช้ใหม่ได้บนแคนวาสแบบภาพ",
+    "actions": {
+      "viewSwitcher": "เลือกมุมมอง",
+      "dashboard": "แดชบอร์ด",
+      "quickLinks": "ลิงก์ด่วน"
+    },
+    "edit": {
+      "edit": "แก้ไข",
+      "done": "เสร็จสิ้น",
+      "hint": "ลากการ์ดเพื่อจัดลำดับใหม่ ใช้เมนูกลุ่มของการ์ดแต่ละใบเพื่อจัดระเบียบ",
+      "dragHandle": "ย้าย {{title}}",
+      "group": "กลุ่ม",
+      "newGroup": "กลุ่มใหม่…",
+      "groupName": "ชื่อกลุ่ม",
+      "create": "สร้าง",
+      "rename": "เปลี่ยนชื่อ",
+      "delete": "ลบ",
+      "resetLayout": "รีเซ็ตเค้าโครง",
+      "groups": "กลุ่ม",
+      "newGroupTitle": "สร้างกลุ่ม",
+      "renameGroupTitle": "เปลี่ยนชื่อกลุ่ม",
+      "deleteGroupTitle": "ลบกลุ่ม",
+      "deleteGroupMessage": "การ์ดในกลุ่มนี้จะถูกย้ายออกจากกลุ่ม",
+      "cardCount": "{{count}} การ์ด",
+      "cancel": "ยกเลิก"
+    },
+    "groups": {
+      "favourites": "รายการโปรด",
+      "ungrouped": "เครื่องมือทั้งหมด"
+    }
   },
   "gettingStarted": {
     "hint": "ใหม่ที่นี่หรือ?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "ย้ายโหนดที่เลือก {{direction}} แล้ว ตำแหน่งใหม่ x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "กด enter หรือ space เพื่อเลือกเส้นเชื่อม จากนั้นกด delete เพื่อลบ หรือ escape เพื่อยกเลิก",
     "canvasHandleLabel": "จุดเชื่อมต่อ"
+  },
+  "quickLinks": {
+    "title": "ลิงก์ด่วน",
+    "tabs": {
+      "all": "ทั้งหมด"
+    },
+    "empty": "ลิงก์ด่วนจะปรากฏที่นี่ในเร็ว ๆ นี้",
+    "cardAria": "เปิด {{title}}"
   }
 }

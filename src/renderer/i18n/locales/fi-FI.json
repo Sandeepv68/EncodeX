@@ -46,7 +46,36 @@
     "descRemux": "Siirtää virrat häviöttömästi uuteen säilöön",
     "descDemux": "Jakaa tiedoston virrat erillisiin tulostiedostoihin",
     "descCopilot": "Suunnittele muunnokset kuvailemalla tavoite",
-    "descAutomations": "Rakenna uudelleenkäytettäviä muunnosputkia visuaalisella työtilalla"
+    "descAutomations": "Rakenna uudelleenkäytettäviä muunnosputkia visuaalisella työtilalla",
+    "actions": {
+      "viewSwitcher": "Valitse näkymä",
+      "dashboard": "Hallintapaneeli",
+      "quickLinks": "Pikalinkit"
+    },
+    "edit": {
+      "edit": "Muokkaa",
+      "done": "Valmis",
+      "hint": "Vedä kortteja järjestääksesi ne uudelleen. Käytä kunkin kortin ryhmävalikkoa niiden järjestämiseen.",
+      "dragHandle": "Siirrä {{title}}",
+      "group": "Ryhmä",
+      "newGroup": "Uusi ryhmä…",
+      "groupName": "Ryhmän nimi",
+      "create": "Luo",
+      "rename": "Nimeä uudelleen",
+      "delete": "Poista",
+      "resetLayout": "Palauta asettelu",
+      "groups": "Ryhmät",
+      "newGroupTitle": "Luo ryhmä",
+      "renameGroupTitle": "Nimeä ryhmä uudelleen",
+      "deleteGroupTitle": "Poista ryhmä",
+      "deleteGroupMessage": "Tämän ryhmän kortit jäävät ilman ryhmää.",
+      "cardCount": "{{count}} korttia",
+      "cancel": "Peruuta"
+    },
+    "groups": {
+      "favourites": "Suosikit",
+      "ungrouped": "Kaikki työkalut"
+    }
   },
   "gettingStarted": {
     "hint": "Uusi täällä?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "Valittu solmu siirretty {{direction}}. Uusi sijainti, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Valitse yhteys painamalla Enteriä tai välilyöntiä. Voit sitten poistaa sen Delete-näppäimellä tai peruuttaa Esc-näppäimellä.",
     "canvasHandleLabel": "Kahva"
+  },
+  "quickLinks": {
+    "title": "Pikalinkit",
+    "tabs": {
+      "all": "Kaikki"
+    },
+    "empty": "Pikalinkit ilmestyvät tähän pian.",
+    "cardAria": "Avaa {{title}}"
   }
 }

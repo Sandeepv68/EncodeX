@@ -46,7 +46,36 @@
     "descRemux": "Transpose les flux sans perte dans un nouveau conteneur",
     "descDemux": "Sépare les flux d'un fichier en fichiers de sortie distincts",
     "descCopilot": "Planifier des conversions en décrivant un objectif",
-    "descAutomations": "Créez des pipelines de conversion réutilisables sur un canevas visuel"
+    "descAutomations": "Créez des pipelines de conversion réutilisables sur un canevas visuel",
+    "actions": {
+      "viewSwitcher": "Choisir une vue",
+      "dashboard": "Tableau de Bord",
+      "quickLinks": "Liens rapides"
+    },
+    "edit": {
+      "edit": "Modifier",
+      "done": "Terminé",
+      "hint": "Faites glisser les cartes pour les réorganiser. Utilisez le menu de groupe de chaque carte pour les organiser.",
+      "dragHandle": "Déplacer {{title}}",
+      "group": "Groupe",
+      "newGroup": "Nouveau groupe…",
+      "groupName": "Nom du groupe",
+      "create": "Créer",
+      "rename": "Renommer",
+      "delete": "Supprimer",
+      "resetLayout": "Réinitialiser la disposition",
+      "groups": "Groupes",
+      "newGroupTitle": "Créer un groupe",
+      "renameGroupTitle": "Renommer le groupe",
+      "deleteGroupTitle": "Supprimer le groupe",
+      "deleteGroupMessage": "Les cartes de ce groupe ne seront plus groupées.",
+      "cardCount": "{{count}} cartes",
+      "cancel": "Annuler"
+    },
+    "groups": {
+      "favourites": "Favoris",
+      "ungrouped": "Tous les outils"
+    }
   },
   "gettingStarted": {
     "hint": "Nouveau ici ?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "Nœud sélectionné déplacé {{direction}}. Nouvelle position, x : {{x}}, y : {{y}}",
     "canvasEdgeDescription": "Appuyez sur Entrée ou Espace pour sélectionner une arête. Vous pouvez ensuite appuyer sur Suppr pour la supprimer ou Échap pour annuler.",
     "canvasHandleLabel": "Connecteur"
+  },
+  "quickLinks": {
+    "title": "Liens rapides",
+    "tabs": {
+      "all": "Tous"
+    },
+    "empty": "Les liens rapides apparaîtront bientôt ici.",
+    "cardAria": "Ouvrir {{title}}"
   }
 }

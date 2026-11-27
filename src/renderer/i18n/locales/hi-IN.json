@@ -46,7 +46,36 @@
     "descRemux": "स्ट्रीम को बिना नुकसान के नए कंटेनर में ले जाता है",
     "descDemux": "किसी फ़ाइल की स्ट्रीम को अलग-अलग आउटपुट फ़ाइलों में बाँटता है",
     "descCopilot": "एक लक्ष्य बताकर रूपांतरणों की योजना बनाएँ",
-    "descAutomations": "विज़ुअल कैनवास पर पुन: उपयोग योग्य रूपांतरण पाइपलाइन बनाएँ"
+    "descAutomations": "विज़ुअल कैनवास पर पुन: उपयोग योग्य रूपांतरण पाइपलाइन बनाएँ",
+    "actions": {
+      "viewSwitcher": "दृश्य चुनें",
+      "dashboard": "डैशबोर्ड",
+      "quickLinks": "त्वरित लिंक"
+    },
+    "edit": {
+      "edit": "संपादित करें",
+      "done": "पूर्ण",
+      "hint": "कार्डों को पुनः व्यवस्थित करने के लिए उन्हें खींचें। उन्हें व्यवस्थित करने के लिए हर कार्ड के समूह मेन्यू का उपयोग करें।",
+      "dragHandle": "{{title}} को ले जाएँ",
+      "group": "समूह",
+      "newGroup": "नया समूह…",
+      "groupName": "समूह का नाम",
+      "create": "बनाएं",
+      "rename": "नाम बदलें",
+      "delete": "हटाएँ",
+      "resetLayout": "लेआउट रीसेट करें",
+      "groups": "समूह",
+      "newGroupTitle": "समूह बनाएं",
+      "renameGroupTitle": "समूह का नाम बदलें",
+      "deleteGroupTitle": "समूह हटाएं",
+      "deleteGroupMessage": "इस समूह के कार्ड असमूहीकृत हो जाएँगे।",
+      "cardCount": "{{count}} कार्ड",
+      "cancel": "रद्द करें"
+    },
+    "groups": {
+      "favourites": "पसंदीदा",
+      "ungrouped": "सभी टूल"
+    }
   },
   "gettingStarted": {
     "hint": "यहां नए हैं?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "चयनित नोड {{direction}} ले जाया गया। नई स्थिति, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "एज चुनने के लिए Enter या Space दबाएँ। फिर हटाने के लिए Delete या रद्द करने के लिए Escape दबाएँ।",
     "canvasHandleLabel": "हैंडल"
+  },
+  "quickLinks": {
+    "title": "त्वरित लिंक",
+    "tabs": {
+      "all": "सभी"
+    },
+    "empty": "त्वरित लिंक जल्द यहाँ दिखेंगे।",
+    "cardAria": "{{title}} खोलें"
   }
 }

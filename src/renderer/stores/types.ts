@@ -1092,3 +1092,40 @@ export interface UpdateState {
   hydratePendingInstall: () => void;
   reset: () => void;
 }
+
+/**
+ * Identifier of a dashboard card group: the built-in `favourites` id or a
+ * user-created custom group id.
+ */
+export type DashboardGroupId = string;
+
+/** A user-created dashboard card group. */
+export interface DashboardCustomGroup {
+  id: DashboardGroupId;
+  name: string;
+}
+
+/** Persisted part of the dashboard layout: card order, groups and assignments. */
+export interface DashboardLayoutSnapshot {
+  order: string[];
+  assignments: Record<string, DashboardGroupId | null>;
+  customGroups: DashboardCustomGroup[];
+}
+
+/** Dashboard layout store: persisted snapshot plus its mutation actions. */
+export interface DashboardLayoutState extends DashboardLayoutSnapshot {
+  reorder: (activeRoute: string, overRoute: string) => void;
+  assignGroup: (route: string, groupId: DashboardGroupId | null) => void;
+  createGroup: (name: string) => DashboardGroupId | null;
+  renameGroup: (id: DashboardGroupId, name: string) => void;
+  deleteGroup: (id: DashboardGroupId) => void;
+  resetLayout: () => void;
+}
+
+/** One entry on the Quick Links page. The list starts empty and grows later. */
+export interface QuickLink {
+  to: string;
+  labelKey: string;
+  descriptionKey?: string;
+  category: string;
+}

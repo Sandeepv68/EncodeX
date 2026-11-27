@@ -46,7 +46,36 @@
     "descRemux": "Pindahkan strim tanpa-rugi ke bekas baharu",
     "descDemux": "Pisahkan strim fail kepada fail output berasingan",
     "descCopilot": "Rancang penukaran dengan menerangkan matlamat",
-    "descAutomations": "Bina saluran penukaran boleh guna semula pada kanvas visual"
+    "descAutomations": "Bina saluran penukaran boleh guna semula pada kanvas visual",
+    "actions": {
+      "viewSwitcher": "Pilih paparan",
+      "dashboard": "Papan Pemuka",
+      "quickLinks": "Pautan Pantas"
+    },
+    "edit": {
+      "edit": "Edit",
+      "done": "Selesai",
+      "hint": "Seret kad untuk menyusun semula. Gunakan menu kumpulan pada setiap kad untuk mengaturnya.",
+      "dragHandle": "Gerakkan {{title}}",
+      "group": "Kumpulan",
+      "newGroup": "Kumpulan baharu…",
+      "groupName": "Nama kumpulan",
+      "create": "Cipta",
+      "rename": "Namakan semula",
+      "delete": "Padam",
+      "resetLayout": "Tetapkan semula susun atur",
+      "groups": "Kumpulan",
+      "newGroupTitle": "Cipta kumpulan",
+      "renameGroupTitle": "Namakan semula kumpulan",
+      "deleteGroupTitle": "Padam kumpulan",
+      "deleteGroupMessage": "Kad dalam kumpulan ini akan dinyahkumpulkan.",
+      "cardCount": "{{count}} kad",
+      "cancel": "Batal"
+    },
+    "groups": {
+      "favourites": "Kegemaran",
+      "ungrouped": "Semua alat"
+    }
   },
   "gettingStarted": {
     "hint": "Baru di sini?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "Nod terpilih digerakkan {{direction}}. Kedudukan baharu, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Tekan enter atau ruang untuk memilih garis sambungan. Anda kemudian boleh menekan delete untuk memadamnya atau escape untuk membatalkan.",
     "canvasHandleLabel": "Titik sambungan"
+  },
+  "quickLinks": {
+    "title": "Pautan Pantas",
+    "tabs": {
+      "all": "Semua"
+    },
+    "empty": "Pautan pantas akan muncul di sini tidak lama lagi.",
+    "cardAria": "Buka {{title}}"
   }
 }

@@ -46,7 +46,36 @@
     "descRemux": "Aistríonn sruthanna gan chailliúint chuig coimeádán nua",
     "descDemux": "Deighileann sruthanna comhaid ina gcomhaid aschuir ar leith",
     "descCopilot": "Pleanáil tiontuithe trí chur síos a dhéanamh ar sprioc",
-    "descAutomations": "Cruthaigh píblínte comhshó in-athúsáidte ar chanbhás amhairc"
+    "descAutomations": "Cruthaigh píblínte comhshó in-athúsáidte ar chanbhás amhairc",
+    "actions": {
+      "viewSwitcher": "Roghnaigh radharc",
+      "dashboard": "Deais",
+      "quickLinks": "Naisc thapa"
+    },
+    "edit": {
+      "edit": "Cuir in eagar",
+      "done": "Déanta",
+      "hint": "Tarraing cártaí chun iad a athordú. Úsáid roghchlár grúpa gach cárta chun iad a eagrú.",
+      "dragHandle": "Bog {{title}}",
+      "group": "Grúpa",
+      "newGroup": "Grúpa nua…",
+      "groupName": "Ainm an ghrúpa",
+      "create": "Cruthaigh",
+      "rename": "Athainmnigh",
+      "delete": "Bain",
+      "resetLayout": "Athshocraigh an leagan amach",
+      "groups": "Grúpaí",
+      "newGroupTitle": "Cruthaigh grúpa",
+      "renameGroupTitle": "Athainmnigh an grúpa",
+      "deleteGroupTitle": "Bain an grúpa",
+      "deleteGroupMessage": "Beidh na cártaí sa ghrúpa seo gan ghrúpa.",
+      "cardCount": "{{count}} cárta",
+      "cancel": "Cealaigh"
+    },
+    "groups": {
+      "favourites": "Ceanáin",
+      "ungrouped": "Gach uirlis"
+    }
   },
   "gettingStarted": {
     "hint": "Nua anseo?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "Bogadh an nód roghnaithe {{direction}}. Suíomh nua, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Brúigh Enter nó spás chun nasc a roghnú. Is féidir leat Delete a bhrú chun é a bhaint nó Escape chun cealú.",
     "canvasHandleLabel": "Láimhseáil"
+  },
+  "quickLinks": {
+    "title": "Naisc thapa",
+    "tabs": {
+      "all": "Uile"
+    },
+    "empty": "Beidh naisc thapa le feiceáil anseo go luath.",
+    "cardAria": "Oscail {{title}}"
   }
 }

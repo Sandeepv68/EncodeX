@@ -46,7 +46,36 @@
     "descRemux": "Chuyển các luồng sang vùng chứa mới mà không tổn thất",
     "descDemux": "Tách các luồng của một tệp thành những tệp đầu riêng biệt",
     "descCopilot": "Lên kế hoạch chuyển đổi bằng cách mô tả một mục tiêu",
-    "descAutomations": "Xây dựng quy trình chuyển đổi có thể tái sử dụng trên canvas trực quan"
+    "descAutomations": "Xây dựng quy trình chuyển đổi có thể tái sử dụng trên canvas trực quan",
+    "actions": {
+      "viewSwitcher": "Chọn chế độ xem",
+      "dashboard": "Bảng điều khiển",
+      "quickLinks": "Liên kết nhanh"
+    },
+    "edit": {
+      "edit": "Sửa",
+      "done": "Hoàn thành",
+      "hint": "Kéo thả các thẻ để sắp xếp lại. Dùng menu nhóm của từng thẻ để tổ chức chúng.",
+      "dragHandle": "Di chuyển {{title}}",
+      "group": "Nhóm",
+      "newGroup": "Nhóm mới…",
+      "groupName": "Tên nhóm",
+      "create": "Tạo",
+      "rename": "Đổi tên",
+      "delete": "Xóa",
+      "resetLayout": "Đặt lại bố cục",
+      "groups": "Các nhóm",
+      "newGroupTitle": "Tạo nhóm",
+      "renameGroupTitle": "Đổi tên nhóm",
+      "deleteGroupTitle": "Xóa nhóm",
+      "deleteGroupMessage": "Các thẻ trong nhóm này sẽ được bỏ nhóm.",
+      "cardCount": "{{count}} thẻ",
+      "cancel": "Hủy"
+    },
+    "groups": {
+      "favourites": "Yêu thích",
+      "ungrouped": "Tất cả công cụ"
+    }
   },
   "gettingStarted": {
     "hint": "Mới đến đây?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "Đã di chuyển node đã chọn {{direction}}. Vị trí mới, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Nhấn enter hoặc space để chọn một cạnh. Sau đó bạn có thể nhấn delete để xóa nó hoặc escape để hủy.",
     "canvasHandleLabel": "Điểm kết nối"
+  },
+  "quickLinks": {
+    "title": "Liên kết nhanh",
+    "tabs": {
+      "all": "Tất cả"
+    },
+    "empty": "Liên kết nhanh sẽ xuất hiện tại đây.",
+    "cardAria": "Mở {{title}}"
   }
 }

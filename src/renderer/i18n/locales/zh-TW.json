@@ -46,7 +46,36 @@
     "descRemux": "將串流無損轉移到新的容器",
     "descDemux": "將檔案的各個串流拆分成個別的輸出檔案",
     "descCopilot": "透過描述目標來規劃轉換",
-    "descAutomations": "在視覺化畫布上建立可重複使用的轉換管線"
+    "descAutomations": "在視覺化畫布上建立可重複使用的轉換管線",
+    "actions": {
+      "viewSwitcher": "選擇檢視",
+      "dashboard": "儀表板",
+      "quickLinks": "快速連結"
+    },
+    "edit": {
+      "edit": "編輯",
+      "done": "已完成",
+      "hint": "拖曳卡片即可重新排列。使用每張卡片的群組選單進行整理。",
+      "dragHandle": "移動 {{title}}",
+      "group": "群組",
+      "newGroup": "新增群組…",
+      "groupName": "群組名稱",
+      "create": "建立",
+      "rename": "重新命名",
+      "delete": "刪除",
+      "resetLayout": "重設版面配置",
+      "groups": "群組",
+      "newGroupTitle": "建立群組",
+      "renameGroupTitle": "重新命名群組",
+      "deleteGroupTitle": "刪除群組",
+      "deleteGroupMessage": "此群組中的卡片將會取消群組。",
+      "cardCount": "{{count}} 張卡片",
+      "cancel": "取消"
+    },
+    "groups": {
+      "favourites": "收藏",
+      "ungrouped": "所有工具"
+    }
   },
   "gettingStarted": {
     "hint": "第一次來？",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "已將選取的節點往{{direction}}移動。新位置：x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "按 Enter 或空白鍵選取連線。按 Delete 鍵移除，或按 Esc 鍵取消。",
     "canvasHandleLabel": "控制點"
+  },
+  "quickLinks": {
+    "title": "快速連結",
+    "tabs": {
+      "all": "全部"
+    },
+    "empty": "快速連結將會顯示在這裡。",
+    "cardAria": "開啟 {{title}}"
   }
 }

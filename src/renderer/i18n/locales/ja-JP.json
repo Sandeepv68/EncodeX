@@ -46,7 +46,36 @@
     "descRemux": "ストリームを無損失で新しいコンテナーに移します",
     "descDemux": "ファイルのストリームを個別の出力ファイルに分割します",
     "descCopilot": "目標を説明して変換を計画する",
-    "descAutomations": "ビジュアルキャンバスで再利用可能な変換パイプラインを構築"
+    "descAutomations": "ビジュアルキャンバスで再利用可能な変換パイプラインを構築",
+    "actions": {
+      "viewSwitcher": "表示を選択",
+      "dashboard": "ダッシュボード",
+      "quickLinks": "クイックリンク"
+    },
+    "edit": {
+      "edit": "編集",
+      "done": "完了",
+      "hint": "カードをドラッグして並べ替えられます。各カードのグループメニューで整理できます。",
+      "dragHandle": "{{title}} を移動",
+      "group": "グループ",
+      "newGroup": "新しいグループ…",
+      "groupName": "グループ名",
+      "create": "作成",
+      "rename": "名前を変更",
+      "delete": "削除",
+      "resetLayout": "レイアウトをリセット",
+      "groups": "グループ",
+      "newGroupTitle": "グループを作成",
+      "renameGroupTitle": "グループの名前を変更",
+      "deleteGroupTitle": "グループを削除",
+      "deleteGroupMessage": "このグループのカードはグループから解除されます。",
+      "cardCount": "{{count}} 枚のカード",
+      "cancel": "キャンセル"
+    },
+    "groups": {
+      "favourites": "お気に入り",
+      "ungrouped": "すべてのツール"
+    }
   },
   "gettingStarted": {
     "hint": "はじめてですか？",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "選択したノードを {{direction}} に移動しました。新しい位置: x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Enter または Space で接続線を選択します。Delete で削除するか、Escape でキャンセルできます。",
     "canvasHandleLabel": "ハンドル"
+  },
+  "quickLinks": {
+    "title": "クイックリンク",
+    "tabs": {
+      "all": "すべて"
+    },
+    "empty": "クイックリンクがここに表示されます。",
+    "cardAria": "{{title}} を開く"
   }
 }

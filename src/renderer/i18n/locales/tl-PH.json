@@ -46,7 +46,36 @@
     "descRemux": "Inililipat nang walang kabawasang-kalidad ang mga stream sa bagong container",
     "descDemux": "Hinahati ang mga stream ng isang file sa magkakahiwalay na output na file",
     "descCopilot": "Magplano ng mga conversion sa pamamagitan ng paglalarawan ng layunin",
-    "descAutomations": "Gumawa ng mga magagamit muli na pipeline ng pag-convert sa isang visual na canvas"
+    "descAutomations": "Gumawa ng mga magagamit muli na pipeline ng pag-convert sa isang visual na canvas",
+    "actions": {
+      "viewSwitcher": "Pumili ng view",
+      "dashboard": "Dashboard",
+      "quickLinks": "Mga Mabilisang Link"
+    },
+    "edit": {
+      "edit": "I-edit",
+      "done": "Tapos",
+      "hint": "I-drag ang mga card upang muling ayusin ang mga ito. Gamitin ang menu ng grupo ng bawat card upang ayusin ang mga ito.",
+      "dragHandle": "Ilipat ang {{title}}",
+      "group": "Grupo",
+      "newGroup": "Bagong grupo…",
+      "groupName": "Pangalan ng grupo",
+      "create": "Lumikha",
+      "rename": "Palitan ang pangalan",
+      "delete": "Tanggalin",
+      "resetLayout": "I-reset ang layout",
+      "groups": "Mga grupo",
+      "newGroupTitle": "Lumikha ng grupo",
+      "renameGroupTitle": "Palitan ang pangalan ng grupo",
+      "deleteGroupTitle": "Tanggalin ang grupo",
+      "deleteGroupMessage": "Mawawalan ng grupo ang mga card sa grupong ito.",
+      "cardCount": "{{count}} na card",
+      "cancel": "Kanselahin"
+    },
+    "groups": {
+      "favourites": "Mga Paborito",
+      "ungrouped": "Lahat ng kagamitan"
+    }
   },
   "gettingStarted": {
     "hint": "Bago ka ba rito?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "Inilipat ang napiling node {{direction}}. Bagong posisyon, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Pindutin ang enter o space upang pumili ng edge. Pagkatapos, maaari mong pindutin ang delete upang alisin ito o escape upang kanselahin.",
     "canvasHandleLabel": "Hawakan"
+  },
+  "quickLinks": {
+    "title": "Mga Mabilisang Link",
+    "tabs": {
+      "all": "Lahat"
+    },
+    "empty": "Lilitaw dito ang mga mabilisang link sa lalong madaling panahon.",
+    "cardAria": "Buksan ang {{title}}"
   }
 }

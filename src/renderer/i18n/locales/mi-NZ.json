@@ -46,7 +46,36 @@
     "descRemux": "Nekehia ngā awa kore-ngaro ki tētahi ipu hou",
     "descDemux": "Wehewehea ngā awa o tētahi kōnae ki ngā kōnae putanga motuhake",
     "descCopilot": "Whakamahere tahuri mā te whakamārama i tētahi whāinga",
-    "descAutomations": "Hangaia he rerenga whakawhiti ka taea te whakamahi an? i runga i te k?nawehi ataata"
+    "descAutomations": "Hangaia he rerenga whakawhiti ka taea te whakamahi an? i runga i te k?nawehi ataata",
+    "actions": {
+      "viewSwitcher": "Kōwhiria he tirohanga",
+      "dashboard": "Papa Whakahaere",
+      "quickLinks": "Ngā Hononga Tere"
+    },
+    "edit": {
+      "edit": "Whakatika",
+      "done": "Oti",
+      "hint": "Tōia ngā kāri kia huri ai te raupapa. Whakamahia te tahua rōpū o ia kāri hei whakarite i a rātou.",
+      "dragHandle": "Nekehia {{title}}",
+      "group": "Rōpū",
+      "newGroup": "Rōpū hou…",
+      "groupName": "Ingoa rōpū",
+      "create": "Hangaia",
+      "rename": "Hurihia te ingoa",
+      "delete": "Mukua",
+      "resetLayout": "Tautuhi anō i te whakatakotoranga",
+      "groups": "Ngā rōpū",
+      "newGroupTitle": "Hangaia he rōpū",
+      "renameGroupTitle": "Hurihia te ingoa o te rōpū",
+      "deleteGroupTitle": "Mukua te rōpū",
+      "deleteGroupMessage": "Ka noho kore rōpū ngā kāri i roto i tēnei rōpū.",
+      "cardCount": "{{count}} kāri",
+      "cancel": "Whakakore"
+    },
+    "groups": {
+      "favourites": "Ngā Tino Pai",
+      "ungrouped": "Ngā Utauta Katoa"
+    }
   },
   "gettingStarted": {
     "hint": "He tauhou koe?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "Kua nekehia te k?puku kua t?pakohia ki {{direction}}. T?nga h?u, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "P?hia Enter, Mokow? r?nei hei t?pako tapa. K?tahi ka taea te p?hi Delete hei tango, Escape r?nei hei whakakore.",
     "canvasHandleLabel": "Kakau"
+  },
+  "quickLinks": {
+    "title": "Ngā Hononga Tere",
+    "tabs": {
+      "all": "Katoa"
+    },
+    "empty": "Ka puta wawe mai ngā hononga tere ki konei.",
+    "cardAria": "Whakatuwheratia {{title}}"
   }
 }

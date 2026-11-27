@@ -6,7 +6,7 @@
  *
  * jsdom cannot run `color-contrast` (every color resolves to its initial value
  * before paint) and has no viewport, so this is the tier where paint facts and
- * responsive breakpoints finally run. The matrix is 14 routes x light/dark x
+ * responsive breakpoints finally run. The matrix is 15 routes x light/dark x
  * 320/768/1440 = 72 cells.
  *
  * Two transient artifacts are handled before each axe run:

@@ -100,7 +100,44 @@
     "descBatch": "Convert many files at once with a smart queue",
     "descAutomations": "Build reusable conversion pipelines on a visual canvas",
     "descCopilot": "Plan conversions by describing a goal",
-    "shortcutsFooter": "Press {{shortcut}} for keyboard shortcuts"
+    "shortcutsFooter": "Press {{shortcut}} for keyboard shortcuts",
+    "actions": {
+      "viewSwitcher": "Choose a view",
+      "dashboard": "Dashboard",
+      "quickLinks": "Quick Links"
+    },
+    "edit": {
+      "edit": "Edit",
+      "done": "Done",
+      "hint": "Drag cards to rearrange them. Use each card's group menu to organize them.",
+      "dragHandle": "Move {{title}}",
+      "group": "Group",
+      "newGroup": "New group…",
+      "groupName": "Group name",
+      "create": "Create",
+      "rename": "Rename",
+      "delete": "Delete",
+      "resetLayout": "Reset layout",
+      "groups": "Groups",
+      "newGroupTitle": "Create a group",
+      "renameGroupTitle": "Rename group",
+      "deleteGroupTitle": "Delete group",
+      "deleteGroupMessage": "Cards in this group will become ungrouped.",
+      "cancel": "Cancel",
+      "cardCount": "{{count}} cards"
+    },
+    "groups": {
+      "favourites": "Favourites",
+      "ungrouped": "All tools"
+    }
+  },
+  "quickLinks": {
+    "title": "Quick Links",
+    "tabs": {
+      "all": "All"
+    },
+    "empty": "Quick links will appear here soon.",
+    "cardAria": "Open {{title}}"
   },
   "gettingStarted": {
     "hint": "New here?",

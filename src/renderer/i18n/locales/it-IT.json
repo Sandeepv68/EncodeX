@@ -46,7 +46,36 @@
     "descRemux": "Trasferisce i flussi senza perdita in un nuovo contenitore",
     "descDemux": "Divide i flussi di un file in file di output separati",
     "descCopilot": "Pianifica conversioni descrivendo un obiettivo",
-    "descAutomations": "Crea pipeline di conversione riutilizzabili su un canvas visivo"
+    "descAutomations": "Crea pipeline di conversione riutilizzabili su un canvas visivo",
+    "actions": {
+      "viewSwitcher": "Scegli una vista",
+      "dashboard": "Pannello",
+      "quickLinks": "Collegamenti rapidi"
+    },
+    "edit": {
+      "edit": "Modifica",
+      "done": "Fatto",
+      "hint": "Trascina le schede per riorganizzarle. Usa il menu di gruppo di ogni scheda per organizzarle.",
+      "dragHandle": "Sposta {{title}}",
+      "group": "Gruppo",
+      "newGroup": "Nuovo gruppo…",
+      "groupName": "Nome del gruppo",
+      "create": "Crea",
+      "rename": "Rinomina",
+      "delete": "Elimina",
+      "resetLayout": "Ripristina layout",
+      "groups": "Gruppi",
+      "newGroupTitle": "Crea un gruppo",
+      "renameGroupTitle": "Rinomina gruppo",
+      "deleteGroupTitle": "Elimina gruppo",
+      "deleteGroupMessage": "Le schede di questo gruppo non saranno più raggruppate.",
+      "cardCount": "{{count}} schede",
+      "cancel": "Annulla"
+    },
+    "groups": {
+      "favourites": "Preferiti",
+      "ungrouped": "Tutti gli strumenti"
+    }
   },
   "gettingStarted": {
     "hint": "Nuovo qui?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "Nodo selezionato spostato {{direction}}. Nuova posizione, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Premi Invio o Spazio per selezionare una connessione. Puoi quindi premere Canc per rimuoverla ed Esc per annullare.",
     "canvasHandleLabel": "Connettore"
+  },
+  "quickLinks": {
+    "title": "Collegamenti rapidi",
+    "tabs": {
+      "all": "Tutti"
+    },
+    "empty": "I collegamenti rapidi appariranno qui a breve.",
+    "cardAria": "Apri {{title}}"
   }
 }

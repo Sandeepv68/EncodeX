@@ -46,7 +46,36 @@
     "descRemux": "För över strömmar förlustfritt till en ny container",
     "descDemux": "Delar en fils strömmar i separata utdatafiler",
     "descCopilot": "Planera konverteringar genom att beskriva ett mål",
-    "descAutomations": "Bygg återanvändbara konverteringspipelines på en visuell arbetsyta"
+    "descAutomations": "Bygg återanvändbara konverteringspipelines på en visuell arbetsyta",
+    "actions": {
+      "viewSwitcher": "Välj en vy",
+      "dashboard": "Instrumentpanel",
+      "quickLinks": "Snabblänkar"
+    },
+    "edit": {
+      "edit": "Redigera",
+      "done": "Klara",
+      "hint": "Dra korten för att ordna om dem. Använd varje korts gruppmeny för att organisera dem.",
+      "dragHandle": "Flytta {{title}}",
+      "group": "Grupp",
+      "newGroup": "Ny grupp…",
+      "groupName": "Gruppnamn",
+      "create": "Skapa",
+      "rename": "Byt namn",
+      "delete": "Ta bort",
+      "resetLayout": "Återställ layout",
+      "groups": "Grupper",
+      "newGroupTitle": "Skapa en grupp",
+      "renameGroupTitle": "Byt namn på grupp",
+      "deleteGroupTitle": "Ta bort grupp",
+      "deleteGroupMessage": "Kort i den här gruppen blir ogrupperade.",
+      "cardCount": "{{count}} kort",
+      "cancel": "Avbryt"
+    },
+    "groups": {
+      "favourites": "Favoriter",
+      "ungrouped": "Alla verktyg"
+    }
   },
   "gettingStarted": {
     "hint": "Ny här?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "Flyttade vald nod {{direction}}. Ny position, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Tryck på Enter eller blanksteg för att välja en koppling. Du kan sedan trycka på Delete för att ta bort den eller Escape för att avbryta.",
     "canvasHandleLabel": "Handtag"
+  },
+  "quickLinks": {
+    "title": "Snabblänkar",
+    "tabs": {
+      "all": "Alla"
+    },
+    "empty": "Snabblänkar visas här snart.",
+    "cardAria": "Öppna {{title}}"
   }
 }

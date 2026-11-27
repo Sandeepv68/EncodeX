@@ -46,7 +46,36 @@
     "descRemux": "Verplaatst streams verliesvrij naar een nieuwe container",
     "descDemux": "Splitst de streams van een bestand in afzonderlijke uitvoerbestanden",
     "descCopilot": "Conversies plannen door een doel te beschrijven",
-    "descAutomations": "Bouw herbruikbare conversiepipelines op een visueel canvas"
+    "descAutomations": "Bouw herbruikbare conversiepipelines op een visueel canvas",
+    "actions": {
+      "viewSwitcher": "Kies een weergave",
+      "dashboard": "Dashboard",
+      "quickLinks": "Snelkoppelingen"
+    },
+    "edit": {
+      "edit": "Bewerken",
+      "done": "Klaar",
+      "hint": "Sleep de kaarten om ze opnieuw te rangschikken. Gebruik het groepmenu van elke kaart om ze te organiseren.",
+      "dragHandle": "{{title}} verplaatsen",
+      "group": "Groep",
+      "newGroup": "Nieuwe groep…",
+      "groupName": "Groepsnaam",
+      "create": "Aanmaken",
+      "rename": "Hernoemen",
+      "delete": "Verwijderen",
+      "resetLayout": "Indeling terugzetten",
+      "groups": "Groepen",
+      "newGroupTitle": "Een groep aanmaken",
+      "renameGroupTitle": "Groep hernoemen",
+      "deleteGroupTitle": "Groep verwijderen",
+      "deleteGroupMessage": "Kaarten in deze groep worden niet meer gegroepeerd.",
+      "cardCount": "{{count}} kaarten",
+      "cancel": "Annuleren"
+    },
+    "groups": {
+      "favourites": "Favorieten",
+      "ungrouped": "Alle tools"
+    }
   },
   "gettingStarted": {
     "hint": "Nieuw hier?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "Geselecteerde knoop {{direction}} verplaatst. Nieuwe positie, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Druk op Enter of spatie om een verbinding te selecteren. Daarna kun je op Delete drukken om hem te verwijderen of op Escape om te annuleren.",
     "canvasHandleLabel": "Handgreep"
+  },
+  "quickLinks": {
+    "title": "Snelkoppelingen",
+    "tabs": {
+      "all": "Alle"
+    },
+    "empty": "Snelkoppelingen verschijnen hier binnenkort.",
+    "cardAria": "{{title}} openen"
   }
 }

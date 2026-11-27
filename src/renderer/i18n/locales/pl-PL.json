@@ -46,7 +46,36 @@
     "descRemux": "Przenosi strumienie bezstratnie do nowego kontenera",
     "descDemux": "Dzieli strumienie pliku na osobne pliki wyjściowe",
     "descCopilot": "Planuj konwersje, opisując cel",
-    "descAutomations": "Twórz wielokrotnego użytku potoki konwersji na wizualnym obszarze roboczym"
+    "descAutomations": "Twórz wielokrotnego użytku potoki konwersji na wizualnym obszarze roboczym",
+    "actions": {
+      "viewSwitcher": "Wybierz widok",
+      "dashboard": "Pulpit",
+      "quickLinks": "Szybkie linki"
+    },
+    "edit": {
+      "edit": "Edytuj",
+      "done": "Gotowe",
+      "hint": "Przeciągnij karty, aby zmienić ich kolejność. Użyj menu grupy każdej karty, aby je uporządkować.",
+      "dragHandle": "Przenieś {{title}}",
+      "group": "Grupa",
+      "newGroup": "Nowa grupa…",
+      "groupName": "Nazwa grupy",
+      "create": "Utwórz",
+      "rename": "Zmień nazwę",
+      "delete": "Usuń",
+      "resetLayout": "Zresetuj układ",
+      "groups": "Grupy",
+      "newGroupTitle": "Utwórz grupę",
+      "renameGroupTitle": "Zmień nazwę grupy",
+      "deleteGroupTitle": "Usuń grupę",
+      "deleteGroupMessage": "Karty w tej grupie zostaną usunięte z grupy.",
+      "cardCount": "Liczba kart: {{count}}",
+      "cancel": "Anuluj"
+    },
+    "groups": {
+      "favourites": "Ulubione",
+      "ungrouped": "Wszystkie narzędzia"
+    }
   },
   "gettingStarted": {
     "hint": "Nowy tutaj?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "Przesunięto zaznaczony węzeł {{direction}}. Nowa pozycja, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Naciśnij Enter lub spację, aby zaznaczyć połączenie. Następnie możesz nacisnąć Delete, aby je usunąć, lub Escape, aby anulować.",
     "canvasHandleLabel": "Uchwyt"
+  },
+  "quickLinks": {
+    "title": "Szybkie linki",
+    "tabs": {
+      "all": "Wszystkie"
+    },
+    "empty": "Szybkie linki pojawią się tu wkrótce.",
+    "cardAria": "Otwórz {{title}}"
   }
 }

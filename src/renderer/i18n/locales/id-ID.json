@@ -46,7 +46,36 @@
     "descRemux": "Memindahkan aliran tanpa kehilangan kualitas ke wadah baru",
     "descDemux": "Memisahkan aliran sebuah file menjadi file keluaran terpisah",
     "descCopilot": "Rencanakan konversi dengan menjelaskan sebuah tujuan",
-    "descAutomations": "Bangun alur konversi yang dapat digunakan kembali di kanvas visual"
+    "descAutomations": "Bangun alur konversi yang dapat digunakan kembali di kanvas visual",
+    "actions": {
+      "viewSwitcher": "Pilih tampilan",
+      "dashboard": "Dasbor",
+      "quickLinks": "Tautan cepat"
+    },
+    "edit": {
+      "edit": "Edit",
+      "done": "Selesai",
+      "hint": "Seret kartu untuk mengurutkan ulang. Gunakan menu grup pada setiap kartu untuk mengaturnya.",
+      "dragHandle": "Pindahkan {{title}}",
+      "group": "Grup",
+      "newGroup": "Grup baru…",
+      "groupName": "Nama grup",
+      "create": "Buat",
+      "rename": "Ganti nama",
+      "delete": "Hapus",
+      "resetLayout": "Atur ulang tata letak",
+      "groups": "Grup",
+      "newGroupTitle": "Buat grup",
+      "renameGroupTitle": "Ganti nama grup",
+      "deleteGroupTitle": "Hapus grup",
+      "deleteGroupMessage": "Kartu dalam grup ini akan menjadi tanpa grup.",
+      "cardCount": "{{count}} kartu",
+      "cancel": "Batal"
+    },
+    "groups": {
+      "favourites": "Favorit",
+      "ungrouped": "Semua alat"
+    }
   },
   "gettingStarted": {
     "hint": "Baru di sini?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "Node yang dipilih dipindahkan {{direction}}. Posisi baru, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Tekan enter atau spasi untuk memilih garis penghubung. Anda kemudian dapat menekan delete untuk menghapusnya atau escape untuk membatalkan.",
     "canvasHandleLabel": "Titik sambung"
+  },
+  "quickLinks": {
+    "title": "Tautan cepat",
+    "tabs": {
+      "all": "Semua"
+    },
+    "empty": "Tautan cepat akan tampil di sini.",
+    "cardAria": "Buka {{title}}"
   }
 }

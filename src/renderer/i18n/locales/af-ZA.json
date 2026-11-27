@@ -46,7 +46,36 @@
     "descRemux": "Oordra strome verliesvry na 'n nuwe houer",
     "descDemux": "Skei die strome van 'n lêer in afsonderlike uitvoerlêers",
     "descCopilot": "Beplan omskakelings deur 'n doel te beskryf",
-    "descAutomations": "Bou herbruikbare omskakelingspyplyne op 'n visuele doek"
+    "descAutomations": "Bou herbruikbare omskakelingspyplyne op 'n visuele doek",
+    "actions": {
+      "viewSwitcher": "Kies 'n aansig",
+      "dashboard": "Paneelbord",
+      "quickLinks": "Vinnige skakels"
+    },
+    "edit": {
+      "edit": "Redigeer",
+      "done": "Klaar",
+      "hint": "Sleep kaarte om hulle te herrangskik. Gebruik elke kaart se groepkieslys om hulle te organiseer.",
+      "dragHandle": "Beweeg {{title}}",
+      "group": "Groep",
+      "newGroup": "Nuwe groep…",
+      "groupName": "Groepnaam",
+      "create": "Skep",
+      "rename": "Hernoem",
+      "delete": "Verwyder",
+      "resetLayout": "Herstel uitleg",
+      "groups": "Groepe",
+      "newGroupTitle": "Skep 'n groep",
+      "renameGroupTitle": "Hernoem groep",
+      "deleteGroupTitle": "Verwyder groep",
+      "deleteGroupMessage": "Kaarte in hierdie groep sal ontgroepeer word.",
+      "cardCount": "{{count}} kaarte",
+      "cancel": "Kanselleer"
+    },
+    "groups": {
+      "favourites": "Gunstelinge",
+      "ungrouped": "Alle gereedskap"
+    }
   },
   "gettingStarted": {
     "hint": "Nuut hier?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "Gekose knooppunt geskuif {{direction}}. Nuwe posisie, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Druk Enter of spasie om 'n rand te kies. U kan dan Delete druk om dit te verwyder of Escape om te kanselleer.",
     "canvasHandleLabel": "Handvatsel"
+  },
+  "quickLinks": {
+    "title": "Vinnige skakels",
+    "tabs": {
+      "all": "Alles"
+    },
+    "empty": "Vinnige skakels sal binnekort hier verskyn.",
+    "cardAria": "Maak {{title}} oop"
   }
 }

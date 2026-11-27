@@ -46,7 +46,36 @@
     "descRemux": "Streams verlustfrei in einen neuen Container übertragen",
     "descDemux": "Streams einer Datei in einzelne Ausgabedateien aufteilen",
     "descCopilot": "Konvertierungen durch Beschreiben eines Ziels planen",
-    "descAutomations": "Erstelle wiederverwendbare Konvertierungs-Pipelines auf einer visuellen Arbeitsfläche"
+    "descAutomations": "Erstelle wiederverwendbare Konvertierungs-Pipelines auf einer visuellen Arbeitsfläche",
+    "actions": {
+      "viewSwitcher": "Ansicht auswählen",
+      "dashboard": "Armaturenbrett",
+      "quickLinks": "Schnellzugriff"
+    },
+    "edit": {
+      "edit": "Bearbeiten",
+      "done": "Fertig",
+      "hint": "Ziehen Sie die Karten, um sie neu anzuordnen. Verwenden Sie das Gruppenmenü jeder Karte, um sie zu organisieren.",
+      "dragHandle": "{{title}} verschieben",
+      "group": "Gruppe",
+      "newGroup": "Neue Gruppe…",
+      "groupName": "Gruppenname",
+      "create": "Erstellen",
+      "rename": "Umbenennen",
+      "delete": "Löschen",
+      "resetLayout": "Layout zurücksetzen",
+      "groups": "Gruppen",
+      "newGroupTitle": "Eine Gruppe erstellen",
+      "renameGroupTitle": "Gruppe umbenennen",
+      "deleteGroupTitle": "Gruppe löschen",
+      "deleteGroupMessage": "Karten in dieser Gruppe werden nicht mehr gruppiert.",
+      "cardCount": "{{count}} Karten",
+      "cancel": "Abbrechen"
+    },
+    "groups": {
+      "favourites": "Favoriten",
+      "ungrouped": "Alle Werkzeuge"
+    }
   },
   "gettingStarted": {
     "hint": "Neu hier?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "Ausgewählten Knoten {{direction}} verschoben. Neue Position: x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Drücke Enter oder Leertaste, um eine Verbindung auszuwählen. Anschließend kannst du Entf zum Entfernen oder Escape zum Abbrechen drücken.",
     "canvasHandleLabel": "Anschlusspunkt"
+  },
+  "quickLinks": {
+    "title": "Schnellzugriff",
+    "tabs": {
+      "all": "Alle"
+    },
+    "empty": "Schnellzugriffe werden bald hier angezeigt.",
+    "cardAria": "{{title}} öffnen"
   }
 }

@@ -46,7 +46,36 @@
     "descRemux": "מעביר זרמים ללא אובדנים למיכל חדש",
     "descDemux": "מפצל את זרמי קובץ לקובצי פלט נפרדים",
     "descCopilot": "תכנן המרות על ידי תיאור מטרה",
-    "descAutomations": "????? ?????? ???? ?????? ???? ?? ??? ???? ?????"
+    "descAutomations": "????? ?????? ???? ?????? ???? ?? ??? ???? ?????",
+    "actions": {
+      "viewSwitcher": "בחירת תצוגה",
+      "dashboard": "לוח בקרה",
+      "quickLinks": "קישורים מהירים"
+    },
+    "edit": {
+      "edit": "עריכה",
+      "done": "סיום",
+      "hint": "גררו כרטיסים כדי לסדר אותם מחדש. השתמשו בתפריט הקבוצות של כל כרטיס כדי לארגן אותם.",
+      "dragHandle": "הזזת {{title}}",
+      "group": "קבוצה",
+      "newGroup": "קבוצה חדשה…",
+      "groupName": "שם הקבוצה",
+      "create": "יצירה",
+      "rename": "שינוי שם",
+      "delete": "מחיקה",
+      "resetLayout": "איפוס הפריסה",
+      "groups": "קבוצות",
+      "newGroupTitle": "יצירת קבוצה",
+      "renameGroupTitle": "שינוי שם הקבוצה",
+      "deleteGroupTitle": "מחיקת קבוצה",
+      "deleteGroupMessage": "כרטיסים בקבוצה זו יהפכו ללא קבוצה.",
+      "cardCount": "{{count}} כרטיסים",
+      "cancel": "ביטול"
+    },
+    "groups": {
+      "favourites": "מועדפים",
+      "ungrouped": "כל הכלים"
+    }
   },
   "gettingStarted": {
     "hint": "חדש/חדשה כאן?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "????? ????? ???? {{direction}}. ????? ???, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "???? Enter ?? ???? ??? ????? ???. ???? ??? ???? ????? Delete ??? ????? ???? ?? Escape ??????.",
     "canvasHandleLabel": "????? ?????"
+  },
+  "quickLinks": {
+    "title": "קישורים מהירים",
+    "tabs": {
+      "all": "הכל"
+    },
+    "empty": "קישורים מהירים יופיעו כאן בקרוב.",
+    "cardAria": "פתיחת {{title}}"
   }
 }

@@ -46,7 +46,36 @@
     "descRemux": "Flytur strauma taplaus í nýja gáma",
     "descDemux": "Skiptir straumum skráar í sérstakar útaplás",
     "descCopilot": "Skipuleggðu umbreytingar með því að lýsa markmiði",
-    "descAutomations": "Byggðu endurnýtanlegar umbreytingarleiðslur á sjónrænu vinnusvæði"
+    "descAutomations": "Byggðu endurnýtanlegar umbreytingarleiðslur á sjónrænu vinnusvæði",
+    "actions": {
+      "viewSwitcher": "Veldu útsýni",
+      "dashboard": "Mælaborð",
+      "quickLinks": "Flýtileiðir"
+    },
+    "edit": {
+      "edit": "Breyta",
+      "done": "Lokið",
+      "hint": "Dragðu kortin til að endurraða þeim. Notaðu hópavalmynd hvers korts til að skipuleggja þau.",
+      "dragHandle": "Færa {{title}}",
+      "group": "Hópur",
+      "newGroup": "Nýr hópur…",
+      "groupName": "Heiti hóps",
+      "create": "Búa til",
+      "rename": "Endurnefna",
+      "delete": "Eyða",
+      "resetLayout": "Endurstilla útlit",
+      "groups": "Hópar",
+      "newGroupTitle": "Búa til hóp",
+      "renameGroupTitle": "Endurnefna hóp",
+      "deleteGroupTitle": "Eyða hópi",
+      "deleteGroupMessage": "Kort í þessum hópi verða óhópuð.",
+      "cardCount": "{{count}} kort",
+      "cancel": "Hætta við"
+    },
+    "groups": {
+      "favourites": "Uppáhalds",
+      "ungrouped": "Öll tæki"
+    }
   },
   "gettingStarted": {
     "hint": "Nýr hér?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "Færði valinn hnút {{direction}}. Ný staða, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Ýttu á Enter eða bil til að velja tengingu. Þú getur síðan ýtt á Delete til að fjarlægja hana eða Escape til að hætta.",
     "canvasHandleLabel": "Handfang"
+  },
+  "quickLinks": {
+    "title": "Flýtileiðir",
+    "tabs": {
+      "all": "Allt"
+    },
+    "empty": "Flýtileiðir birtast hér fljótlega.",
+    "cardAria": "Opna {{title}}"
   }
 }

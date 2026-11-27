@@ -46,7 +46,36 @@
     "descRemux": "Overfører streams tabsfrit til en ny container",
     "descDemux": "Opdeler en fils streams i separate outputfiler",
     "descCopilot": "Planlæg konverteringer ved at beskrive et mål",
-    "descAutomations": "Byg genbrugelige konverteringspipelines på et visuelt lærred"
+    "descAutomations": "Byg genbrugelige konverteringspipelines på et visuelt lærred",
+    "actions": {
+      "viewSwitcher": "Vælg en visning",
+      "dashboard": "Oversigt",
+      "quickLinks": "Hurtige links"
+    },
+    "edit": {
+      "edit": "Rediger",
+      "done": "Færdig",
+      "hint": "Træk kortene for at omarrangere dem. Brug hvert korts gruppemenu til at organisere dem.",
+      "dragHandle": "Flyt {{title}}",
+      "group": "Gruppe",
+      "newGroup": "Ny gruppe…",
+      "groupName": "Gruppenavn",
+      "create": "Opret",
+      "rename": "Omdøb",
+      "delete": "Slet",
+      "resetLayout": "Nulstil layout",
+      "groups": "Grupper",
+      "newGroupTitle": "Opret en gruppe",
+      "renameGroupTitle": "Omdøb gruppe",
+      "deleteGroupTitle": "Slet gruppe",
+      "deleteGroupMessage": "Kort i denne gruppe bliver ugrupperede.",
+      "cardCount": "{{count}} kort",
+      "cancel": "Annuller"
+    },
+    "groups": {
+      "favourites": "Favoritter",
+      "ungrouped": "Alle værktøjer"
+    }
   },
   "gettingStarted": {
     "hint": "Ny her?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "Flyttet valgt node {{direction}}. Ny position, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Tryk på Enter eller mellemrum for at vælge en kant. Du kan derefter trykke på Delete for at fjerne den eller Escape for at annullere.",
     "canvasHandleLabel": "Håndtag"
+  },
+  "quickLinks": {
+    "title": "Hurtige links",
+    "tabs": {
+      "all": "Alle"
+    },
+    "empty": "Hurtige links vises her snart.",
+    "cardAria": "Åbn {{title}}"
   }
 }

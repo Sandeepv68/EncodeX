@@ -46,7 +46,36 @@
     "descRemux": "스트림을 무손실 상태로 새 컨테이너에 담습니다",
     "descDemux": "파일의 스트림을 개별 출력 파일로 분리합니다",
     "descCopilot": "목표를 설명하여 변환 계획 세우기",
-    "descAutomations": "시각적 캔버스에서 재사용 가능한 변환 파이프라인을 만드세요"
+    "descAutomations": "시각적 캔버스에서 재사용 가능한 변환 파이프라인을 만드세요",
+    "actions": {
+      "viewSwitcher": "보기 선택",
+      "dashboard": "대시보드",
+      "quickLinks": "빠른 링크"
+    },
+    "edit": {
+      "edit": "편집",
+      "done": "완료",
+      "hint": "카드를 드래그하여 순서를 바꿀 수 있습니다. 각 카드의 그룹 메뉴로 정리하세요.",
+      "dragHandle": "{{title}} 이동",
+      "group": "그룹",
+      "newGroup": "새 그룹…",
+      "groupName": "그룹 이름",
+      "create": "만들기",
+      "rename": "이름 바꾸기",
+      "delete": "삭제",
+      "resetLayout": "레이아웃 초기화",
+      "groups": "그룹",
+      "newGroupTitle": "그룹 만들기",
+      "renameGroupTitle": "그룹 이름 바꾸기",
+      "deleteGroupTitle": "그룹 삭제",
+      "deleteGroupMessage": "이 그룹의 카드는 그룹에서 해제됩니다.",
+      "cardCount": "카드 {{count}}개",
+      "cancel": "취소"
+    },
+    "groups": {
+      "favourites": "즐겨찾기",
+      "ungrouped": "모든 도구"
+    }
   },
   "gettingStarted": {
     "hint": "처음 오셨나요?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "선택한 노드를 {{direction}}(으)로 이동했습니다. 새 위치: x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Enter 또는 Space 키로 연결선을 선택하세요. Delete 키로 삭제하거나 Escape 키로 취소할 수 있습니다.",
     "canvasHandleLabel": "핸들"
+  },
+  "quickLinks": {
+    "title": "빠른 링크",
+    "tabs": {
+      "all": "전체"
+    },
+    "empty": "빠른 링크가 여기에 표시됩니다.",
+    "cardAria": "{{title}} 열기"
   }
 }

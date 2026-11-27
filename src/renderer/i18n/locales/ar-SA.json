@@ -46,7 +46,36 @@
     "descRemux": "ينقل التدفقات بلا فقدان إلى حاوية جديدة",
     "descDemux": "يفكّ تدفقات الملف إلى ملفات مخرجات منفصلة",
     "descCopilot": "خطّط للتحويلات بوصف هدف",
-    "descAutomations": "???? ?????? ????? ????? ?????? ????????? ??? ???? ?????"
+    "descAutomations": "???? ?????? ????? ????? ?????? ????????? ??? ???? ?????",
+    "actions": {
+      "viewSwitcher": "اختر عرضًا",
+      "dashboard": "لوحة التحكم",
+      "quickLinks": "روابط سريعة"
+    },
+    "edit": {
+      "edit": "تحرير",
+      "done": "تم",
+      "hint": "اسحب البطاقات لإعادة ترتيبها. استخدم قائمة المجموعات في كل بطاقة لتنظيمها.",
+      "dragHandle": "تحريك {{title}}",
+      "group": "مجموعة",
+      "newGroup": "مجموعة جديدة…",
+      "groupName": "اسم المجموعة",
+      "create": "إنشاء",
+      "rename": "إعادة تسمية",
+      "delete": "حذف",
+      "resetLayout": "إعادة تعيين التخطيط",
+      "groups": "مجموعات",
+      "newGroupTitle": "إنشاء مجموعة",
+      "renameGroupTitle": "إعادة تسمية المجموعة",
+      "deleteGroupTitle": "حذف المجموعة",
+      "deleteGroupMessage": "ستصبح البطاقات الموجودة في هذه المجموعة غير مجمّعة.",
+      "cardCount": "{{count}} بطاقة",
+      "cancel": "إلغاء"
+    },
+    "groups": {
+      "favourites": "المفضلة",
+      "ungrouped": "كل الأدوات"
+    }
   },
   "gettingStarted": {
     "hint": "جديد هنا؟",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "?? ??? ?????? ??????? {{direction}}. ?????? ??????? x: {{x}}? y: {{y}}",
     "canvasEdgeDescription": "???? Enter ?? Space ?????? ????. ????? ??? ??? ????? ??? Delete ???????? ?? Escape ???????.",
     "canvasHandleLabel": "????"
+  },
+  "quickLinks": {
+    "title": "روابط سريعة",
+    "tabs": {
+      "all": "الكل"
+    },
+    "empty": "ستظهر الروابط السريعة هنا قريبًا.",
+    "cardAria": "فتح {{title}}"
   }
 }

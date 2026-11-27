@@ -257,6 +257,14 @@ export type AnalyticsEventName =
   | 'onboarding_dismissed'
   | 'dashboard_card_clicked'
   | 'dashboard_shortcut_used'
+  | 'dashboard_view_changed'
+  | 'dashboard_edit_toggled'
+  | 'dashboard_card_reordered'
+  | 'dashboard_group_created'
+  | 'dashboard_group_assigned'
+  | 'dashboard_group_deleted'
+  | 'quick_links_tab_viewed'
+  | 'quick_link_clicked'
   | 'page_viewed'
   | 'tool_opened'
   | 'locale_changed'
@@ -403,6 +411,14 @@ export interface AnalyticsEventPayloadMap {
   onboarding_dismissed: { version: string };
   dashboard_card_clicked: { route: string };
   dashboard_shortcut_used: { shortcutId: string };
+  dashboard_view_changed: { route: 'dashboard' | 'quick-links' };
+  dashboard_edit_toggled: { enabled: boolean };
+  dashboard_card_reordered: { route: string; groupKind: 'favourites' | 'custom' | 'ungrouped' };
+  dashboard_group_created: { groupCount: number };
+  dashboard_group_assigned: { groupKind: 'favourites' | 'custom' | 'ungrouped' };
+  dashboard_group_deleted: { groupCount: number };
+  quick_links_tab_viewed: { category: string };
+  quick_link_clicked: { route: string };
   page_viewed: { path: string };
 
   tool_opened: { route: string };

@@ -4,6 +4,8 @@
  * view models.
  */
 
+import type { DashboardGroupId } from '../stores/types';
+
 /**
  * One cluster of concentric rings.
  * @interface RingGroup
@@ -17,4 +19,12 @@ export interface RingGroup {
   cy: number;
   /** Radii of the concentric circles, smallest first. */
   radii: number[];
+}
+
+/** One feature card as seen by the dashboard grid and its edit controls. */
+export interface DashboardCardSpec {
+  to: string;
+  titleKey: string;
+  descriptionKey: string;
+  groupId: DashboardGroupId | null;
 }

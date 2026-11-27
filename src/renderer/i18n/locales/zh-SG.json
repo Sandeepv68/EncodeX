@@ -46,7 +46,36 @@
     "descRemux": "将流无损转移到新的容器中",
     "descDemux": "将文件的各个流拆分到独立的输出文件",
     "descCopilot": "通过描述目标来规划转换",
-    "descAutomations": "在可视化画布上搭建可复用的转码流水线"
+    "descAutomations": "在可视化画布上搭建可复用的转码流水线",
+    "actions": {
+      "viewSwitcher": "选择视图",
+      "dashboard": "仪表板",
+      "quickLinks": "快捷链接"
+    },
+    "edit": {
+      "edit": "编辑",
+      "done": "已完成",
+      "hint": "拖动卡片可重新排列。使用每张卡片的分组菜单进行整理。",
+      "dragHandle": "移动 {{title}}",
+      "group": "分组",
+      "newGroup": "新建分组…",
+      "groupName": "分组名称",
+      "create": "创建",
+      "rename": "重命名",
+      "delete": "删除",
+      "resetLayout": "重置布局",
+      "groups": "分组",
+      "newGroupTitle": "创建分组",
+      "renameGroupTitle": "重命名分组",
+      "deleteGroupTitle": "删除分组",
+      "deleteGroupMessage": "此分组中的卡片将被取消分组。",
+      "cardCount": "{{count}} 张卡片",
+      "cancel": "取消"
+    },
+    "groups": {
+      "favourites": "收藏",
+      "ungrouped": "所有工具"
+    }
   },
   "gettingStarted": {
     "hint": "第一次来？",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "已将所选节点向{{direction}}移动。新位置：x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "按回车键或空格键选择连线。按 Delete 键删除，或按 Esc 键取消。",
     "canvasHandleLabel": "连接点"
+  },
+  "quickLinks": {
+    "title": "快捷链接",
+    "tabs": {
+      "all": "全部"
+    },
+    "empty": "快捷链接将在此显示。",
+    "cardAria": "打开 {{title}}"
   }
 }

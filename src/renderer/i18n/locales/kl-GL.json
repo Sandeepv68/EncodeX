@@ -46,7 +46,36 @@
     "descRemux": "Stream-it timersoqutissanut nuakkut, tamannalu anneralugu",
     "descDemux": "Fileup stream-it annilarutinut immikkoortinnaveersaarpaa",
     "descCopilot": "Plaaneri tassaaneq allaqillugu allanngortitaasunik",
-    "descAutomations": "Nutsikkat allanngortitsinermut aqumusseqatigiissutit takuneqarsinnaasut sanaakkit"
+    "descAutomations": "Nutsikkat allanngortitsinermut aqumusseqatigiissutit takuneqarsinnaasut sanaakkit",
+    "actions": {
+      "viewSwitcher": "Toqqaruk takussutissiaq",
+      "dashboard": "Oqarfigissaaneq",
+      "quickLinks": "Attaveqaat akikkaartut"
+    },
+    "edit": {
+      "edit": "Allanngoruk",
+      "done": "Naammassineqartoq",
+      "hint": "Kortit igitsiguk inissiaat allanngortinniarlugit. Korti tamarmik gruppi toqqarnerat atorlugit immikkoortoqqusiguk.",
+      "dragHandle": "Nuussikuk {{title}}",
+      "group": "Gruppi",
+      "newGroup": "Gruppi nutaaq…",
+      "groupName": "Gruppi ateq",
+      "create": "Uggunnaaruk",
+      "rename": "Ateq allanngoruk",
+      "delete": "Peeruk",
+      "resetLayout": "Aaqqissuussineq taqqorigit",
+      "groups": "Gruppit",
+      "newGroupTitle": "Gruppi uggunnaaruk",
+      "renameGroupTitle": "Gruppi ateq allanngoruk",
+      "deleteGroupTitle": "Gruppi peeruk",
+      "deleteGroupMessage": "Kortit gruppimiittut gruppeqanngiartut.",
+      "cardCount": "{{count}} kortit",
+      "cancel": "Piumasuunngit"
+    },
+    "groups": {
+      "favourites": "Kissaateqartut",
+      "ungrouped": "Atortorissaarutit tamarmik"
+    }
   },
   "gettingStarted": {
     "hint": "Nutaaq?",
@@ -1508,5 +1537,13 @@
     "canvasNodeMove": "Node toqqakkat {{direction}}-mut nuunneqarpoq. Sumiiffik nutaaq, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Enter imaluunniit Space tooruk sinaaq toqqarniarlugu. Kingorna Delete tooruk peersinniarlugu Escape-luuni atorunnaarsinniarlugu.",
     "canvasHandleLabel": "Tigusiffik"
+  },
+  "quickLinks": {
+    "title": "Attaveqaat akikkaartut",
+    "tabs": {
+      "all": "Tamarmik"
+    },
+    "empty": "Attaveqaat akikkaartut maani takussaassapput.",
+    "cardAria": "Ammat {{title}}"
   }
 }
