@@ -13,7 +13,12 @@ const drawerSlideIn = (theme: Theme) => keyframes`
 `;
 
 export const TemporaryDrawer = styled(Drawer)(({ theme }) => ({
-  '& .MuiDrawer-paper': { width: theme.typography.pxToRem(DRAWER_WIDTH), boxSizing: 'border-box' },
+  '& .MuiDrawer-paper': {
+    width: theme.typography.pxToRem(DRAWER_WIDTH),
+    boxSizing: 'border-box',
+    overflowX: 'hidden',
+    overflowY: 'hidden',
+  },
 }));
 
 export const PermanentDrawer = styled(Drawer, {
@@ -28,6 +33,8 @@ export const PermanentDrawer = styled(Drawer, {
     '& .MuiDrawer-paper': {
       width: theme.typography.pxToRem(width),
       boxSizing: 'border-box',
+      overflowX: 'hidden',
+      overflowY: 'hidden',
       position: 'relative',
       height: '100%',
       transition: 'width 0.2s ease',

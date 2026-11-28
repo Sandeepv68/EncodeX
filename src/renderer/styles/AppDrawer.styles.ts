@@ -32,12 +32,24 @@ const NAV_ICON_HOVER_SCALE = 1.18;
  */
 const NAV_ICON_HOVER_TRANSITION = '0.25s';
 
+const navScrollFade = keyframes`
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+`;
+
+const navScrollNudge = (theme: Theme) => keyframes`
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(${theme.typography.pxToRem(4)}); }
+`;
+
 export const DrawerDivider = styled(Divider)(({ theme }) => ({
   borderColor: theme.palette.divider,
+  flexShrink: 0,
 }));
 
 export const NavFooter = styled(Box)(({ theme }) => ({
   display: 'flex',
+  flexShrink: 0,
   alignItems: 'center',
   justifyContent: 'center',
   gap: theme.spacing(1),
@@ -54,8 +66,62 @@ export const CondenseButton = styled(IconButton)(({ theme }) => ({
 
 export const NavList = styled('div')(({ theme }) => ({
   flex: 1,
+  minHeight: 0,
+  minWidth: 0,
+  overflowX: 'hidden',
+  overflowY: 'auto',
+  overscrollBehavior: 'contain',
+  scrollbarWidth: 'none',
   paddingInline: theme.spacing(1),
   paddingTop: theme.spacing(1),
+  '&::-webkit-scrollbar': {
+    display: 'none',
+  },
+}));
+
+export const NavScrollRegion = styled('div', {
+  shouldForwardProp: (prop) => prop !== '$hasMore',
+})<{ $hasMore: boolean }>(({ theme, $hasMore }) => ({
+  position: 'relative',
+  display: 'flex',
+  flex: 1,
+  minHeight: 0,
+  minWidth: 0,
+  '&::after': {
+    content: '""',
+    position: 'absolute',
+    insetInline: 0,
+    insetBlockEnd: 0,
+    height: theme.spacing(4),
+    background: `linear-gradient(to top, ${theme.palette.background.paper}, ${alpha(theme.palette.background.paper, 0)})`,
+    opacity: $hasMore ? 1 : 0,
+    transition: 'opacity 0.2s ease',
+    animation: $hasMore ? `${navScrollFade} 2s ease-in-out infinite` : 'none',
+    pointerEvents: 'none',
+  },
+  '@media (prefers-reduced-motion: reduce)': {
+    '&::after': { animation: 'none' },
+  },
+}));
+
+export const NavScrollHint = styled('span')(({ theme }) => ({
+  position: 'absolute',
+  insetBlockEnd: theme.spacing(0.5),
+  insetInlineStart: '50%',
+  transform: 'translateX(-50%)',
+  zIndex: 1,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  color: theme.palette.text.secondary,
+  '& svg': {
+    fontSize: theme.typography.pxToRem(12),
+    animation: `${navScrollNudge(theme)} 1.4s ease-in-out infinite`,
+  },
+  '@media (prefers-reduced-motion: reduce)': {
+    '& svg': { animation: 'none' },
+  },
+  pointerEvents: 'none',
 }));
 
 /** Root navigation element of the drawer. */
@@ -64,6 +130,8 @@ export const DrawerNav = styled(Box)<{ component?: ElementType }>({
   flexDirection: 'column',
   flex: 1,
   minHeight: 0,
+  minWidth: 0,
+  overflow: 'hidden',
 });
 
 const navItemIn = (theme: Theme) => keyframes`
