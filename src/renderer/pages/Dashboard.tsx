@@ -16,7 +16,16 @@ import { useEffect, useMemo, useState } from 'react';
 import type { MouseEvent, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { DndContext, DragOverlay, KeyboardSensor, PointerSensor, closestCorners, useSensor, useSensors } from '@dnd-kit/core';
+import {
+  DndContext,
+  DragOverlay,
+  KeyboardSensor,
+  PointerSensor,
+  closestCorners,
+  useDndContext,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { SortableContext, rectSortingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Menu, MenuItem, TextField } from '@mui/material';
@@ -50,7 +59,14 @@ import {
   CardBackgroundSvg,
   DashboardFooter,
 } from '../styles/Dashboard.styles';
-import { GroupCardsGrid, GroupHeaderRow, GroupNameLabel, GroupSection, GroupTitle } from '../styles/DashboardEditing.styles';
+import {
+  DropPlaceholder,
+  GroupCardsGrid,
+  GroupHeaderRow,
+  GroupNameLabel,
+  GroupSection,
+  GroupTitle,
+} from '../styles/DashboardEditing.styles';
 import { LOG_DASHBOARD_RENDERED } from '../../shared/log-constants';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
@@ -62,6 +78,13 @@ import SortableDashboardCard from '../components/SortableDashboardCard';
 
 /** Logger instance scoped to this page. */
 const log = new Logger('renderer/pages/Dashboard');
+
+function DashboardDropPlaceholder() {
+  const { active, over } = useDndContext();
+  if (!active || !over || active.id === over.id) return null;
+  const { top, left, width, height } = over.rect;
+  return <DropPlaceholder $rect={{ top, left, width, height }} data-testid="dashboard-drop-placeholder" />;
+}
 
 /** Renders the Dashboard page (`/`). */
 export default function Dashboard() {
@@ -329,6 +352,7 @@ export default function Dashboard() {
               <SortableContext items={visibleCards.map((card) => card.to)} strategy={rectSortingStrategy}>
                 {sections.map((section) => renderSection(section, true))}
               </SortableContext>
+              <DashboardDropPlaceholder />
               <DragOverlay dropAnimation={{ duration: 200, easing: 'cubic-bezier(0.25, 1, 0.5, 1)' }}>
                 {overlayCard ? renderCard(overlayCard, 0, true) : null}
               </DragOverlay>
@@ -411,7 +435,7 @@ export default function Dashboard() {
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setGroupDialog(null)}>{t('dashboard.edit.cancel')}</Button>
-            <Button onClick={handleSaveGroup} variant="contained" data-testid="dashboard-save-group">
+            <Button onClick={handleSaveGroup} variant="contained" disabled={!draftName.trim()} data-testid="dashboard-save-group">
               {groupDialog.id ? t('dashboard.edit.rename') : t('dashboard.edit.create')}
             </Button>
           </DialogActions>

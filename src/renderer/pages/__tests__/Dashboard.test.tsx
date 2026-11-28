@@ -196,7 +196,11 @@ describe('Dashboard', () => {
     fireEvent.click(screen.getByTestId('dashboard-assign-new-group'));
     expect(screen.getByTestId('dashboard-group-name-label')).toHaveTextContent('dashboard.edit.groupName');
     expect(screen.getByTestId('dashboard-group-name-input')).toHaveAttribute('id', 'dashboard-group-name');
+    expect(screen.getByTestId('dashboard-save-group')).toBeDisabled();
+    fireEvent.change(screen.getByTestId('dashboard-group-name-input'), { target: { value: '   ' } });
+    expect(screen.getByTestId('dashboard-save-group')).toBeDisabled();
     fireEvent.change(screen.getByTestId('dashboard-group-name-input'), { target: { value: 'My tools' } });
+    expect(screen.getByTestId('dashboard-save-group')).toBeEnabled();
     fireEvent.click(screen.getByTestId('dashboard-save-group'));
     const { customGroups, assignments } = useDashboardLayoutStore.getState();
     expect(customGroups).toHaveLength(1);

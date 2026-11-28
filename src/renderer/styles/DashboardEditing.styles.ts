@@ -1,4 +1,4 @@
-import { styled } from '@mui/material/styles';
+import { alpha, styled } from '@mui/material/styles';
 import { Box, Chip, IconButton, Typography } from '@mui/material';
 import { SHADOWS } from '../../shared/theme/colors';
 import { FeatureGrid, FeatureGridItem } from './Dashboard.styles';
@@ -16,6 +16,23 @@ export const SortableGridItem = styled(FeatureGridItem, {
     borderColor: $dragging ? theme.palette.primary.main : undefined,
   }),
 );
+
+export const DropPlaceholder = styled('div', { shouldForwardProp: (prop) => prop !== '$rect' })<{
+  $rect: { top: number; left: number; width: number; height: number };
+}>(({ theme, $rect }) => ({
+  position: 'fixed',
+  top: $rect.top,
+  left: $rect.left,
+  width: $rect.width,
+  height: $rect.height,
+  boxSizing: 'border-box',
+  border: `${theme.typography.pxToRem(2)} dashed ${alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.55 : 0.45)}`,
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.06 : 0.03),
+  boxShadow: `0 0 ${theme.typography.pxToRem(8)} ${alpha(theme.palette.primary.main, 0.1)}`,
+  pointerEvents: 'none',
+  zIndex: 3,
+}));
 
 /** Horizontal bar with group chips and layout actions in edit mode. */
 export const GroupBar = styled(Box)(({ theme }) => ({
