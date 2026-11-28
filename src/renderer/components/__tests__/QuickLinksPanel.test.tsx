@@ -1,7 +1,11 @@
-import { describe, expect, it } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import QuickLinksPanel from '../QuickLinksPanel';
+
+vi.mock('../../hooks/useFeatureFlags', () => ({
+  useFeatureFlag: () => true,
+}));
 
 function renderPanel() {
   return render(
@@ -12,18 +16,24 @@ function renderPanel() {
 }
 
 describe('QuickLinksPanel', () => {
-  it('renders the panel title, tabs and empty state without page chrome', () => {
+  it('renders a left-aligned panel heading without tabs or an empty-state card', () => {
     renderPanel();
+    const heading = screen.getByRole('heading', { level: 2, name: 'quickLinks.title' });
     expect(screen.getByTestId('quick-links-panel')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 2, name: 'quickLinks.title' })).toBeInTheDocument();
-    expect(screen.getByTestId('quick-links-tab-all')).toBeInTheDocument();
-    expect(screen.getByTestId('quick-links-empty')).toHaveTextContent('quickLinks.empty');
+    expect(heading).toBeInTheDocument();
+    expect(heading).toHaveStyle({ textAlign: 'left' });
+    expect(screen.queryByTestId('quick-links-tab-all')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('quick-links-empty')).not.toBeInTheDocument();
   });
 
-  it('keeps the selected category in panel state', () => {
-    renderPanel();
-    expect(screen.getByTestId('quick-links-tab-all')).toHaveAttribute('aria-selected', 'true');
-    fireEvent.click(screen.getByTestId('quick-links-tab-all'));
-    expect(screen.getByTestId('quick-links-empty')).toBeInTheDocument();
+  it('renders every approved quick link as a titled, described, icon-based card', () => {
+    const { container } = renderPanel();
+    expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(63);
+    expect(container.querySelectorAll('svg')).toHaveLength(63);
+    expect(screen.getByTestId('quick-link-chat-with-copilot')).toBeInTheDocument();
+    expect(screen.getByTestId('quick-link-read-about-encodex')).toBeInTheDocument();
+    expect(screen.getByText('quickLinks.links.chatWithCopilot.title')).toBeInTheDocument();
+    expect(screen.getByText('quickLinks.links.chatWithCopilot.description')).toBeInTheDocument();
+    expect(screen.queryByTestId('quick-link-/')).not.toBeInTheDocument();
   });
 });

@@ -1540,10 +1540,260 @@
   },
   "quickLinks": {
     "title": "Schnellzugriff",
-    "tabs": {
-      "all": "Alle"
-    },
-    "empty": "Schnellzugriffe werden bald hier angezeigt.",
-    "cardAria": "{{title}} öffnen"
+    "cardAria": "{{title}} öffnen",
+    "links": {
+      "chatWithCopilot": {
+        "title": "Chatten Sie mit Copilot",
+        "description": "Stellen Sie eine Frage oder beschreiben Sie, was Sie mit Ihren Medien machen möchten."
+      },
+      "describeGoal": {
+        "title": "Beschreiben Sie ein Ziel",
+        "description": "Erklären Sie ein Ziel in einfacher Sprache und lassen Sie Copilot die Arbeit vorbereiten."
+      },
+      "planConversion": {
+        "title": "Planen Sie eine Konvertierung",
+        "description": "Verwandeln Sie ein Ziel in einen Plan, den Sie überprüfen können, bevor Sie es zur Warteschlange hinzufügen."
+      },
+      "findMomentInVideo": {
+        "title": "Finden Sie einen Moment in einem Video",
+        "description": "Durchsuchen Sie ein Videotranskript, um zum gewünschten Teil zu springen."
+      },
+      "searchTranscript": {
+        "title": "Transkript durchsuchen",
+        "description": "Durchsuchen Sie Transkripte nach Wörtern oder Sätzen, an die Sie sich erinnern."
+      },
+      "translateSubtitles": {
+        "title": "Untertitel übersetzen",
+        "description": "Übersetzen Sie Untertiteldateien in eine andere Sprache."
+      },
+      "saveChat": {
+        "title": "Chat speichern",
+        "description": "Bewahren Sie das aktuelle Copilot-Gespräch für später auf."
+      },
+      "convertVideo": {
+        "title": "Video konvertieren",
+        "description": "Kodieren Sie ein Video mit dem von Ihnen gewählten Format, der Qualität und der Größe neu."
+      },
+      "convertAudio": {
+        "title": "Audio konvertieren",
+        "description": "Ändern Sie das Format, den Codec oder die Bitrate einer Audiodatei."
+      },
+      "compressVideo": {
+        "title": "Video komprimieren",
+        "description": "Reduzieren Sie die Dateigröße eines Videos, während das Ergebnis weiterhin sichtbar bleibt."
+      },
+      "useConversionProfile": {
+        "title": "Verwenden Sie ein Conversion-Profil",
+        "description": "Wählen Sie eine Voreinstellung aus, die die Kodierungseinstellungen für Sie ausfüllt."
+      },
+      "createCustomProfile": {
+        "title": "Erstellen Sie ein benutzerdefiniertes Profil",
+        "description": "Speichern Sie Ihre eigenen Kodierungseinstellungen als wiederverwendbares Profil."
+      },
+      "losslessCopy": {
+        "title": "Verlustfreie Kopie",
+        "description": "Kopieren Sie Streams ohne Neukodierung, um die Originalqualität beizubehalten."
+      },
+      "speedUpWithGpu": {
+        "title": "Beschleunigen Sie mit der GPU",
+        "description": "Nutzen Sie die Hardwarebeschleunigung, um schneller zu kodieren."
+      },
+      "changeContainer": {
+        "title": "Ändern Sie den Container ohne Neucodierung",
+        "description": "Wechseln Sie Container wie MP4 oder MKV ohne Neukodierung."
+      },
+      "addAudioToVideo": {
+        "title": "Fügen Sie Audio zu Video hinzu",
+        "description": "Hängen Sie eine externe Audiospur an ein Video an."
+      },
+      "mergeAudioAndVideo": {
+        "title": "Audio und Video zusammenführen",
+        "description": "Kombinieren Sie separate Audio- und Videospuren in einer Datei."
+      },
+      "addSubtitles": {
+        "title": "Untertitel hinzufügen",
+        "description": "Fügen Sie Untertitelspuren zu einem Video hinzu, ohne das Bild zu ändern."
+      },
+      "syncAudioDelay": {
+        "title": "Audioverzögerung synchronisieren",
+        "description": "Verschieben Sie den Ton früher oder später, um ihn an das Video anzupassen."
+      },
+      "copyStreams": {
+        "title": "Streams kopieren",
+        "description": "Wählen Sie aus, welche Streams Sie behalten möchten, und kopieren Sie sie unverändert."
+      },
+      "extractStreams": {
+        "title": "Streams extrahieren",
+        "description": "Ziehen Sie Video-, Audio- oder Untertitelspuren in separate Dateien heraus."
+      },
+      "splitAudioChannels": {
+        "title": "Audiokanäle aufteilen",
+        "description": "Teilen Sie eine Mehrkanal-Audiospur in einzelne Dateien auf."
+      },
+      "saveSubtitles": {
+        "title": "Untertitel speichern",
+        "description": "Extrahieren Sie Untertitel-Streams in eigenständige Untertiteldateien."
+      },
+      "exportTracksSeparately": {
+        "title": "Tracks separat exportieren",
+        "description": "Schreiben Sie jeden ausgewählten Titel in eine eigene Ausgabedatei."
+      },
+      "trimVideo": {
+        "title": "Video zuschneiden",
+        "description": "Schneiden Sie ein Video auf den Teil, den Sie behalten möchten."
+      },
+      "cutClipByTime": {
+        "title": "Clip nach Zeit schneiden",
+        "description": "Legen Sie genaue Start- und Endzeiten für einen Clip fest."
+      },
+      "cutByDuration": {
+        "title": "Nach Dauer schneiden",
+        "description": "Legen Sie eine Startzeit und Cliplänge anstelle einer Endzeit fest."
+      },
+      "previewClip": {
+        "title": "Vorschau des Clips",
+        "description": "Überprüfen Sie das zugeschnittene Ergebnis, bevor Sie es speichern."
+      },
+      "playClip": {
+        "title": "Clip abspielen",
+        "description": "Spielen Sie das ausgewählte Segment auf der Timeline ab."
+      },
+      "removeAudioFromClip": {
+        "title": "Audio aus Clip entfernen",
+        "description": "Erstellen Sie einen stillen Clip, indem Sie die Audiospur weglassen."
+      },
+      "extractAudioFromVideo": {
+        "title": "Audio aus Video extrahieren",
+        "description": "Speichern Sie den Ton eines Videos als eigene Datei."
+      },
+      "saveAudioAsMp3": {
+        "title": "Audio als MP3 speichern",
+        "description": "Exportieren Sie extrahiertes Audio im MP3-Format."
+      },
+      "chooseAudioQuality": {
+        "title": "Wählen Sie Audioqualität",
+        "description": "Wählen Sie den Codec und die Bitrate für das extrahierte Audio aus."
+      },
+      "compressImage": {
+        "title": "Bild komprimieren",
+        "description": "Verkleinern Sie ein Bild, ohne dass es gut aussieht."
+      },
+      "resizeImage": {
+        "title": "Bildgröße ändern",
+        "description": "Ändern Sie die Abmessungen eines Bildes, bevor Sie es speichern."
+      },
+      "changeImageFormat": {
+        "title": "Bildformat ändern",
+        "description": "Konvertieren Sie ein Bild in ein anderes Dateiformat."
+      },
+      "newBatchTask": {
+        "title": "Neue Batch-Aufgabe",
+        "description": "Starten Sie einen neuen Auftrag mit mehreren Dateien und gemeinsamen Einstellungen."
+      },
+      "runBatchJobs": {
+        "title": "Führen Sie Batch-Jobs aus",
+        "description": "Starten Sie die Warteschlange und verarbeiten Sie alle Jobs der Reihe nach."
+      },
+      "queueFiles": {
+        "title": "Warteschlangendateien",
+        "description": "Fügen Sie Dateien oder einen Ordner zur Batch-Warteschlange hinzu."
+      },
+      "retryFailedJobs": {
+        "title": "Fehlgeschlagene Jobs wiederholen",
+        "description": "Führen Sie fehlgeschlagene Jobs erneut aus, nachdem Sie das Problem behoben haben."
+      },
+      "importQueue": {
+        "title": "Warteschlange importieren",
+        "description": "Laden Sie eine gespeicherte Batch-Warteschlange aus einer Datei."
+      },
+      "editJobOptions": {
+        "title": "Joboptionen bearbeiten",
+        "description": "Ändern Sie die Codierungsoptionen für Jobs, die sich noch in der Warteschlange befinden."
+      },
+      "runJobsThenShutDown": {
+        "title": "Jobs ausführen und dann herunterfahren",
+        "description": "Lassen Sie den Stapel fertigstellen und schalten Sie dann den Computer aus."
+      },
+      "buildAutomation": {
+        "title": "Build-Automatisierung",
+        "description": "Entwerfen Sie eine wiederverwendbare Pipeline aus Medienknoten auf einer Leinwand."
+      },
+      "runAutomation": {
+        "title": "Automatisierung ausführen",
+        "description": "Führen Sie die ausgewählte Automatisierung für eine Eingabedatei aus."
+      },
+      "viewRunHistory": {
+        "title": "Laufverlauf anzeigen",
+        "description": "Überprüfen Sie vergangene Automatisierungsläufe und deren Ergebnisse."
+      },
+      "saveAutomationPipeline": {
+        "title": "Speichern Sie die Automatisierungspipeline",
+        "description": "Speichern Sie die Pipeline, damit Sie sie später erneut ausführen können."
+      },
+      "inspectMediaFile": {
+        "title": "Überprüfen Sie die Mediendatei",
+        "description": "Öffnen Sie eine Datei und sehen Sie, was darin enthalten ist."
+      },
+      "viewStreamDetails": {
+        "title": "Streamdetails anzeigen",
+        "description": "Überprüfen Sie die Video-, Audio- und Untertitel-Streams."
+      },
+      "checkCodecs": {
+        "title": "Überprüfen Sie die Codecs",
+        "description": "Überprüfen Sie, welche Codecs die Datei verwendet."
+      },
+      "readFileMetadata": {
+        "title": "Dateimetadaten lesen",
+        "description": "Sehen Sie sich Container, Dauer, Bitrate und andere Dateidetails an."
+      },
+      "changeTheme": {
+        "title": "Thema ändern",
+        "description": "Wählen Sie ein helles oder dunkles Thema für EncodeX."
+      },
+      "setUpAiProvider": {
+        "title": "KI-Anbieter einrichten",
+        "description": "Verbinden Sie einen KI-Anbieter für eine intelligentere Copilot-Planung."
+      },
+      "configureHardwareAcceleration": {
+        "title": "Konfigurieren Sie die Hardwarebeschleunigung",
+        "description": "Wählen Sie, wie EncodeX Ihre GPU verwendet."
+      },
+      "enableMcpServer": {
+        "title": "Aktivieren Sie den MCP-Server",
+        "description": "Lassen Sie lokale MCP-Clients EncodeX steuern."
+      },
+      "manageStartupNotifications": {
+        "title": "Verwalten Sie Start und Benachrichtigungen",
+        "description": "Steuern Sie das Startverhalten und Desktop-Benachrichtigungen."
+      },
+      "viewLogs": {
+        "title": "Protokolle anzeigen",
+        "description": "Öffnen Sie die Anwendungsprotokollkonsole."
+      },
+      "searchErrors": {
+        "title": "Suchfehler",
+        "description": "Filtern Sie Protokolle nach Warnungen und Fehlern."
+      },
+      "reviewOperationHistory": {
+        "title": "Überprüfen Sie den Vorgangsverlauf",
+        "description": "Überprüfen Sie den Prüfpfad auf abgeschlossene Vorgänge."
+      },
+      "downloadLogs": {
+        "title": "Protokolle herunterladen",
+        "description": "Speichern Sie die aktuellen Protokolle als Textdatei."
+      },
+      "checkVersion": {
+        "title": "Überprüfen Sie die Version",
+        "description": "Sehen Sie, welche Version von EncodeX installiert ist."
+      },
+      "viewBuildInfo": {
+        "title": "Build-Informationen anzeigen",
+        "description": "Überprüfen Sie die Build-Details für diese Installation."
+      },
+      "readAboutEncodeX": {
+        "title": "Lesen Sie mehr über EncodeX",
+        "description": "Erfahren Sie mehr über EncodeX."
+      }
+    }
   }
 }

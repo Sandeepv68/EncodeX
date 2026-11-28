@@ -1540,10 +1540,260 @@
   },
   "quickLinks": {
     "title": "Naisc thapa",
-    "tabs": {
-      "all": "Uile"
-    },
-    "empty": "Beidh naisc thapa le feiceáil anseo go luath.",
-    "cardAria": "Oscail {{title}}"
+    "cardAria": "Oscail {{title}}",
+    "links": {
+      "chatWithCopilot": {
+        "title": "Comhrá a dhéanamh le Copilot",
+        "description": "Cuir ceist nó déan cur síos ar cad ba mhaith leat a dhéanamh le do chuid meáin."
+      },
+      "describeGoal": {
+        "title": "Déan cur síos ar Sprioc",
+        "description": "Mínigh sprioc i dteanga shimplí agus lig do Copilot an obair a ullmhú."
+      },
+      "planConversion": {
+        "title": "Tiontú a phleanáil",
+        "description": "Déan plean ar féidir leat sprioc a athbhreithniú sula gcuirfidh tú leis an scuaine é."
+      },
+      "findMomentInVideo": {
+        "title": "Aimsigh Nóiméad i bhFíseán",
+        "description": "Cuardaigh tras-scríbhinn físeáin chun léim go dtí an chuid atá uait."
+      },
+      "searchTranscript": {
+        "title": "Athscríbhinn Cuardaigh",
+        "description": "Féach trí tras-scríbhinní le haghaidh focail nó frásaí is cuimhin leat."
+      },
+      "translateSubtitles": {
+        "title": "Aistrigh Fotheidil",
+        "description": "Aistrigh comhaid fotheideal go teanga eile."
+      },
+      "saveChat": {
+        "title": "Sábháil Comhrá",
+        "description": "Coinnigh an comhrá Copilot reatha le haghaidh níos déanaí."
+      },
+      "convertVideo": {
+        "title": "Tiontaigh Video",
+        "description": "Athchódaigh físeán leis an bhformáid, cáilíocht agus méid atá roghnaithe agat."
+      },
+      "convertAudio": {
+        "title": "Tiontaigh Fuaime",
+        "description": "Athraigh formáid comhaid fuaime, cód, nó ráta giotán."
+      },
+      "compressVideo": {
+        "title": "Comhbhrúigh Físeán",
+        "description": "Laghdaigh méid comhaid físe agus coinnigh an toradh infheicthe."
+      },
+      "useConversionProfile": {
+        "title": "Úsáid Próifíl Tiontaithe",
+        "description": "Roghnaigh réamhshocrú a chomhlánaíonn na socruithe ionchódaithe duit."
+      },
+      "createCustomProfile": {
+        "title": "Cruthaigh Próifíl Chustaim",
+        "description": "Sábháil do shocruithe ionchódaithe féin mar phróifíl ath-inúsáidte."
+      },
+      "losslessCopy": {
+        "title": "Cóip gan chailleadh",
+        "description": "Cóipeáil sruthanna gan athchódú chun an buncháilíocht a choinneáil."
+      },
+      "speedUpWithGpu": {
+        "title": "Luasaigh suas le GPU",
+        "description": "Úsáid luasghéarú crua-earraí chun ionchódú níos tapúla."
+      },
+      "changeContainer": {
+        "title": "Athraigh Coimeádán Gan Athchódú",
+        "description": "Athraigh coimeádáin ar nós MP4 nó MKV gan ath-ionchódú."
+      },
+      "addAudioToVideo": {
+        "title": "Cuir Fuaim le Fís",
+        "description": "Ceangail rian fuaime seachtrach le físeán."
+      },
+      "mergeAudioAndVideo": {
+        "title": "Cumaisc Fuaime agus Físeáin",
+        "description": "Comhcheangail rianta fuaime agus físe ar leith i gcomhad amháin."
+      },
+      "addSubtitles": {
+        "title": "Cuir Fotheidil leis",
+        "description": "Cuir rianta fotheideal le físeán gan an pictiúr a athrú."
+      },
+      "syncAudioDelay": {
+        "title": "Moill Fuaime Sioncronaigh",
+        "description": "Aistrigh an fhuaim níos luaithe nó níos déanaí chun é a líneáil le físeáin."
+      },
+      "copyStreams": {
+        "title": "Cóipeáil Sruthanna",
+        "description": "Roghnaigh na sruthanna is cóir a choinneáil agus cóipeáil iad mar atá."
+      },
+      "extractStreams": {
+        "title": "Sliocht Sruthanna",
+        "description": "Tarraing rianta físe, fuaime nó fotheideal amach i gcomhaid ar leith."
+      },
+      "splitAudioChannels": {
+        "title": "Scoilt Cainéil Fuaime",
+        "description": "Scoilt rian fuaime ilchainéil ina chomhaid aonair."
+      },
+      "saveSubtitles": {
+        "title": "Sábháil Fotheidil",
+        "description": "Sliocht sruthanna fotheideal go comhaid fotheideal neamhspleácha."
+      },
+      "exportTracksSeparately": {
+        "title": "Amhráin Easpórtáil ar Leith",
+        "description": "Scríobh gach rian roghnaithe chuig a chomhad aschuir féin."
+      },
+      "trimVideo": {
+        "title": "Físeán Baile Átha Troim",
+        "description": "Gearr físeán síos go dtí an chuid is mian leat a choinneáil."
+      },
+      "cutClipByTime": {
+        "title": "Gearr Clip ag Am",
+        "description": "Socraigh amanna tosaigh agus deiridh cruinn le haghaidh gearrthóg."
+      },
+      "cutByDuration": {
+        "title": "Gearr de réir Ré",
+        "description": "Socraigh am tosaithe agus fad gearrthóg in ionad am deiridh."
+      },
+      "previewClip": {
+        "title": "Gearrthóg Réamhamhairc",
+        "description": "Seiceáil an toradh bearrtha sula sábhálfaidh tú é."
+      },
+      "playClip": {
+        "title": "Seinn Clip",
+        "description": "Seinn an mhír roghnaithe ar ais ar an amlíne."
+      },
+      "removeAudioFromClip": {
+        "title": "Bain Fuaime as Clip",
+        "description": "Cruthaigh gearrthóg chiúin tríd an rian fuaime a fhágáil amach."
+      },
+      "extractAudioFromVideo": {
+        "title": "Íosluchtaigh fuaime ó físeán",
+        "description": "Sábháil an fhuaim ó fhís mar a chomhad féin."
+      },
+      "saveAudioAsMp3": {
+        "title": "Fuaime a shábháil mar mp3",
+        "description": "Easpórtáil fuaime a bhaintear i bhformáid MP3."
+      },
+      "chooseAudioQuality": {
+        "title": "Roghnaigh Cáilíocht Fuaime",
+        "description": "Roghnaigh an CODEC agus an ráta giotán don fhuaim a bhaintear."
+      },
+      "compressImage": {
+        "title": "Comhbhrúigh Íomhá",
+        "description": "Déan íomhá níos lú agus é ag breathnú go maith."
+      },
+      "resizeImage": {
+        "title": "Athraigh an Íomhá",
+        "description": "Athraigh toisí íomhá roimh é a shábháil."
+      },
+      "changeImageFormat": {
+        "title": "Athraigh Formáid Íomhá",
+        "description": "Tiontaigh íomhá go formáid comhaid eile."
+      },
+      "newBatchTask": {
+        "title": "Tasc Baisc Nua",
+        "description": "Tosaigh post ilchomhad nua le socruithe comhroinnte."
+      },
+      "runBatchJobs": {
+        "title": "Rith Poist Baisc",
+        "description": "Tosaigh an scuaine agus próiseáil gach post in ord."
+      },
+      "queueFiles": {
+        "title": "Comhaid scuaine",
+        "description": "Cuir comhaid nó fillteán leis an scuaine baisc."
+      },
+      "retryFailedJobs": {
+        "title": "Bain triail eile as Poist Theip",
+        "description": "Rith poist theip arís tar éis an fhadhb a réiteach."
+      },
+      "importQueue": {
+        "title": "Iompórtáil scuaine",
+        "description": "Luchtaigh scuaine bhaisc shábháilte ó chomhad."
+      },
+      "editJobOptions": {
+        "title": "Cuir Roghanna Poist in Eagar",
+        "description": "Athraigh roghanna ionchódaithe do phoist atá fós i scuaine."
+      },
+      "runJobsThenShutDown": {
+        "title": "Rith Poist Ansin Múchadh",
+        "description": "Lig don bhaisc críochnú agus ansin cumhacht as an ríomhaire."
+      },
+      "buildAutomation": {
+        "title": "Uathoibriú Tógáil",
+        "description": "Dear píblíne ath-inúsáidte ó nóid meán ar chanbhás."
+      },
+      "runAutomation": {
+        "title": "Rith Uathoibriú",
+        "description": "Rith an uathoibriú roghnaithe i gcoinne comhad ionchuir."
+      },
+      "viewRunHistory": {
+        "title": "Féach ar Stair Rith",
+        "description": "Athbhreithnigh rití uathoibrithe san am a chuaigh thart agus a gcuid torthaí."
+      },
+      "saveAutomationPipeline": {
+        "title": "Sábháil Píblíne Uathoibrithe",
+        "description": "Sábháil an phíblíne ionas gur féidir leat é a rith arís níos déanaí."
+      },
+      "inspectMediaFile": {
+        "title": "Iniúchadh Comhad Meán",
+        "description": "Oscail comhad agus féach cad atá istigh ann."
+      },
+      "viewStreamDetails": {
+        "title": "Féach ar Shonraí Srutha",
+        "description": "Déan iniúchadh ar na sruthanna físe, fuaime agus fotheideal."
+      },
+      "checkCodecs": {
+        "title": "Seiceáil codecs",
+        "description": "Seiceáil cé na codecs a úsáideann an comhad."
+      },
+      "readFileMetadata": {
+        "title": "Léigh Meiteashonraí Comhad",
+        "description": "Féach ar choimeádán, fad, ráta giotán, agus sonraí comhaid eile."
+      },
+      "changeTheme": {
+        "title": "Athraigh Téama",
+        "description": "Roghnaigh téama éadrom nó dorcha le haghaidh EncodeX."
+      },
+      "setUpAiProvider": {
+        "title": "Socraigh Soláthraí AI",
+        "description": "Ceangail soláthraí AI le haghaidh pleanála Copilot níos cliste."
+      },
+      "configureHardwareAcceleration": {
+        "title": "Cumraigh Luasghéarú Crua-earraí",
+        "description": "Roghnaigh conas a úsáideann EncodeX do GPU."
+      },
+      "enableMcpServer": {
+        "title": "Cumasaigh Freastalaí MCP",
+        "description": "Lig do chliaint MCP áitiúla EncodeX a rialú."
+      },
+      "manageStartupNotifications": {
+        "title": "Bainistigh Tosaithe & Fógraí",
+        "description": "Rialú iompar tosaithe agus fógraí deisce."
+      },
+      "viewLogs": {
+        "title": "Logchomhaid Amharc",
+        "description": "Oscail consól logála an fheidhmchláir."
+      },
+      "searchErrors": {
+        "title": "Earráidí Cuardaigh",
+        "description": "Scag logs le haghaidh rabhaidh agus earráidí."
+      },
+      "reviewOperationHistory": {
+        "title": "Athbhreithnigh Stair Oibriúcháin",
+        "description": "Seiceáil an rian iniúchta le haghaidh oibríochtaí críochnaithe."
+      },
+      "downloadLogs": {
+        "title": "Logs íoslódáil",
+        "description": "Sábháil na logaí reatha mar chomhad téacs."
+      },
+      "checkVersion": {
+        "title": "Seiceáil Leagan",
+        "description": "Féach cén leagan de EncodeX atá suiteáilte."
+      },
+      "viewBuildInfo": {
+        "title": "Féach ar Fhaisnéis Tógála",
+        "description": "Seiceáil sonraí tógála don tsuiteáil seo."
+      },
+      "readAboutEncodeX": {
+        "title": "Léigh Faoi EncodeX",
+        "description": "Tuilleadh eolais faoi EncodeX."
+      }
+    }
   }
 }

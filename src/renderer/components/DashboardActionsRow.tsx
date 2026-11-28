@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faGrip, faLink, faPen } from '@fortawesome/free-solid-svg-icons';
+import { faBolt, faCheck, faGrip, faPen } from '@fortawesome/free-solid-svg-icons';
 import { IconButton, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
@@ -23,7 +23,7 @@ export default function DashboardActionsRow({ view, editing = false, onToggleVie
     <ActionsRow data-testid="dashboard-actions-row">
       <Tooltip title={viewLabel} placement="bottom">
         <IconButton size="small" onClick={handleToggleView} aria-label={viewLabel} data-testid="dashboard-view-toggle-button">
-          <FontAwesomeIcon icon={view === 'dashboard' ? faLink : faGrip} />
+          <FontAwesomeIcon icon={view === 'dashboard' ? faBolt : faGrip} />
         </IconButton>
       </Tooltip>
       {view === 'dashboard' && onToggleEdit && (

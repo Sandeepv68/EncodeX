@@ -1540,10 +1540,260 @@
   },
   "quickLinks": {
     "title": "Flýtileiðir",
-    "tabs": {
-      "all": "Allt"
-    },
-    "empty": "Flýtileiðir birtast hér fljótlega.",
-    "cardAria": "Opna {{title}}"
+    "cardAria": "Opna {{title}}",
+    "links": {
+      "chatWithCopilot": {
+        "title": "Spjallaðu við Copilot",
+        "description": "Spyrðu spurningu eða lýstu því hvað þú vilt gera við fjölmiðlana þína."
+      },
+      "describeGoal": {
+        "title": "Lýstu markmiði",
+        "description": "Útskýrðu markmið á einföldu máli og láttu Copilot undirbúa verkið."
+      },
+      "planConversion": {
+        "title": "Skipuleggðu umbreytingu",
+        "description": "Breyttu markmiði í áætlun sem þú getur skoðað áður en þú bætir því við röðina."
+      },
+      "findMomentInVideo": {
+        "title": "Finndu augnablik í myndbandi",
+        "description": "Leitaðu í myndbandsuppskrift til að hoppa á hlutann sem þú þarft."
+      },
+      "searchTranscript": {
+        "title": "Leita eftir afriti",
+        "description": "Leitaðu í gegnum afrit að orðum eða orðasamböndum sem þú manst."
+      },
+      "translateSubtitles": {
+        "title": "Þýða texta",
+        "description": "Þýddu textaskrár á annað tungumál."
+      },
+      "saveChat": {
+        "title": "Vista spjall",
+        "description": "Haltu núverandi Copilot samtali til síðar."
+      },
+      "convertVideo": {
+        "title": "Umbreyta myndbandi",
+        "description": "Endurkóðuð myndband með því sniði sem þú valdir, gæðum og stærð."
+      },
+      "convertAudio": {
+        "title": "Umbreyta hljóð",
+        "description": "Breyttu hljóðskráarsniði, merkjamáli eða bitahraða."
+      },
+      "compressVideo": {
+        "title": "Þjappa myndbandi",
+        "description": "Minnkaðu skráarstærð myndbands á sama tíma og útkoman er áhorfanleg."
+      },
+      "useConversionProfile": {
+        "title": "Notaðu viðskiptaprófíl",
+        "description": "Veldu forstillingu sem fyllir út kóðunarstillingarnar fyrir þig."
+      },
+      "createCustomProfile": {
+        "title": "Búðu til sérsniðið snið",
+        "description": "Vistaðu þínar eigin kóðunarstillingar sem endurnýtanlegt snið."
+      },
+      "losslessCopy": {
+        "title": "Taplaust afrit",
+        "description": "Afritaðu strauma án endurkóðun til að halda upprunalegum gæðum."
+      },
+      "speedUpWithGpu": {
+        "title": "Flýttu þér með GPU",
+        "description": "Notaðu vélbúnaðarhröðun til að kóða hraðar."
+      },
+      "changeContainer": {
+        "title": "Skiptu um ílát án endurkóðun",
+        "description": "Skiptu um ílát eins og MP4 eða MKV án endurkóðun."
+      },
+      "addAudioToVideo": {
+        "title": "Bættu hljóði við myndband",
+        "description": "Tengdu ytri hljóðrás við myndband."
+      },
+      "mergeAudioAndVideo": {
+        "title": "Sameina hljóð og myndskeið",
+        "description": "Sameina aðskilin hljóð- og myndbandslög í eina skrá."
+      },
+      "addSubtitles": {
+        "title": "Bæta við texta",
+        "description": "Bættu textalögum við myndband án þess að breyta myndinni."
+      },
+      "syncAudioDelay": {
+        "title": "Samstillingar seinkun á hljóði",
+        "description": "Breyttu hljóðinu fyrr eða síðar til að stilla því saman við myndband."
+      },
+      "copyStreams": {
+        "title": "Afritaðu strauma",
+        "description": "Veldu hvaða strauma þú vilt geyma og afritaðu þá eins og þeir eru."
+      },
+      "extractStreams": {
+        "title": "Dragðu út strauma",
+        "description": "Dragðu myndbands-, hljóð- eða textalög út í aðskildar skrár."
+      },
+      "splitAudioChannels": {
+        "title": "Skiptu hljóðrásum",
+        "description": "Skiptu fjölrása hljóðrás í einstakar skrár."
+      },
+      "saveSubtitles": {
+        "title": "Vista texta",
+        "description": "Dragðu út textastrauma í sjálfstæðar textaskrár."
+      },
+      "exportTracksSeparately": {
+        "title": "Flytja út lög sérstaklega",
+        "description": "Skrifaðu hvert valið lag í sína eigin úttaksskrá."
+      },
+      "trimVideo": {
+        "title": "Klippa myndband",
+        "description": "Klipptu myndband niður í þann hluta sem þú vilt halda."
+      },
+      "cutClipByTime": {
+        "title": "Skerðu klipp eftir tíma",
+        "description": "Stilltu nákvæma upphafs- og lokatíma fyrir bút."
+      },
+      "cutByDuration": {
+        "title": "Skerið eftir lengd",
+        "description": "Stilltu upphafstíma og lengd myndbands í stað lokatíma."
+      },
+      "previewClip": {
+        "title": "Forskoða klipp",
+        "description": "Athugaðu klipptu niðurstöðuna áður en þú vistar hana."
+      },
+      "playClip": {
+        "title": "Spila myndband",
+        "description": "Spilaðu valinn hluta á tímalínunni."
+      },
+      "removeAudioFromClip": {
+        "title": "Fjarlægðu hljóð úr klemmu",
+        "description": "Búðu til hljóðlausan bút með því að sleppa hljóðrásinni."
+      },
+      "extractAudioFromVideo": {
+        "title": "Dragðu út hljóð úr myndbandi",
+        "description": "Vistaðu hljóðið úr myndbandi sem eigin skrá."
+      },
+      "saveAudioAsMp3": {
+        "title": "Vista hljóð sem MP3",
+        "description": "Flytja út útdregið hljóð á MP3 sniði."
+      },
+      "chooseAudioQuality": {
+        "title": "Veldu hljóðgæði",
+        "description": "Veldu merkjamál og bitahraða fyrir útdráttarhljóðið."
+      },
+      "compressImage": {
+        "title": "Þjappa mynd",
+        "description": "Gerðu mynd minni á meðan hún lítur vel út."
+      },
+      "resizeImage": {
+        "title": "Breyta stærð mynd",
+        "description": "Breyttu stærð myndar áður en þú vistar hana."
+      },
+      "changeImageFormat": {
+        "title": "Breyta myndsniði",
+        "description": "Umbreyttu mynd í annað skráarsnið."
+      },
+      "newBatchTask": {
+        "title": "Nýtt lotuverkefni",
+        "description": "Byrjaðu nýtt fjölskráaverk með samnýttum stillingum."
+      },
+      "runBatchJobs": {
+        "title": "Keyra hópvinnu",
+        "description": "Byrjaðu biðröðina og vinndu öll störf í röð."
+      },
+      "queueFiles": {
+        "title": "Biðröð skrár",
+        "description": "Bættu skrám eða möppu við hópröðina."
+      },
+      "retryFailedJobs": {
+        "title": "Reyna aftur mistókst störf",
+        "description": "Keyra misheppnuð störf aftur eftir að hafa lagað vandamálið."
+      },
+      "importQueue": {
+        "title": "Innflutningsröð",
+        "description": "Hladdu vistaða hópröð úr skrá."
+      },
+      "editJobOptions": {
+        "title": "Breyta starfsvalkostum",
+        "description": "Breyttu kóðunvalkostum fyrir störf sem eru enn í biðröð."
+      },
+      "runJobsThenShutDown": {
+        "title": "Keyrðu störf og lokaðu síðan",
+        "description": "Láttu lotuna klára og slökktu síðan á tölvunni."
+      },
+      "buildAutomation": {
+        "title": "Byggja sjálfvirkni",
+        "description": "Hannaðu endurnýtanlega leiðslu úr miðlunarhnútum á striga."
+      },
+      "runAutomation": {
+        "title": "Keyra sjálfvirkni",
+        "description": "Keyrðu valda sjálfvirkni gegn inntaksskrá."
+      },
+      "viewRunHistory": {
+        "title": "Skoða hlaupasögu",
+        "description": "Skoðaðu fyrri sjálfvirknikeyrslur og niðurstöður þeirra."
+      },
+      "saveAutomationPipeline": {
+        "title": "Vista sjálfvirkni leiðsla",
+        "description": "Vistaðu leiðsluna svo þú getir keyrt hana aftur síðar."
+      },
+      "inspectMediaFile": {
+        "title": "Skoðaðu fjölmiðlaskrá",
+        "description": "Opnaðu skrá og sjáðu hvað er inni í henni."
+      },
+      "viewStreamDetails": {
+        "title": "Skoða upplýsingar um streymi",
+        "description": "Skoðaðu myndbands-, hljóð- og textastraumana."
+      },
+      "checkCodecs": {
+        "title": "Athugaðu merkjamál",
+        "description": "Athugaðu hvaða merkjamál skráin notar."
+      },
+      "readFileMetadata": {
+        "title": "Lestu skráarlýsigögn",
+        "description": "Skoða ílát, lengd, bitahraða og aðrar upplýsingar um skrár."
+      },
+      "changeTheme": {
+        "title": "Breyta þema",
+        "description": "Veldu ljós eða dökkt þema fyrir EncodeX."
+      },
+      "setUpAiProvider": {
+        "title": "Settu upp gervigreindarveitu",
+        "description": "Tengdu gervigreindaraðila fyrir snjallari Copilot áætlanagerð."
+      },
+      "configureHardwareAcceleration": {
+        "title": "Stilla vélbúnaðarhröðun",
+        "description": "Veldu hvernig EncodeX notar GPU þinn."
+      },
+      "enableMcpServer": {
+        "title": "Virkja MCP Server",
+        "description": "Leyfðu staðbundnum MCP viðskiptavinum að stjórna EncodeX."
+      },
+      "manageStartupNotifications": {
+        "title": "Stjórna ræsingu og tilkynningum",
+        "description": "Stjórnaðu ræsingarhegðun og skjáborðstilkynningum."
+      },
+      "viewLogs": {
+        "title": "Skoða logs",
+        "description": "Opnaðu stjórnborð forritaskrár."
+      },
+      "searchErrors": {
+        "title": "Leitarvillur",
+        "description": "Sía logs fyrir viðvaranir og villur."
+      },
+      "reviewOperationHistory": {
+        "title": "Skoðaðu aðgerðasögu",
+        "description": "Athugaðu endurskoðunarferilinn fyrir lokið aðgerðir."
+      },
+      "downloadLogs": {
+        "title": "Sækja logs",
+        "description": "Vistaðu núverandi annála sem textaskrá."
+      },
+      "checkVersion": {
+        "title": "Athugaðu útgáfu",
+        "description": "Sjáðu hvaða útgáfa af EncodeX er uppsett."
+      },
+      "viewBuildInfo": {
+        "title": "Skoða byggingarupplýsingar",
+        "description": "Athugaðu byggingarupplýsingar fyrir þessa uppsetningu."
+      },
+      "readAboutEncodeX": {
+        "title": "Lestu um EncodeX",
+        "description": "Lærðu meira um EncodeX."
+      }
+    }
   }
 }

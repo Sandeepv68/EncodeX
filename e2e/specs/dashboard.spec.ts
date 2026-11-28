@@ -118,8 +118,6 @@ describe.runIf(IS_E2E)('Dashboard page', () => {
     const { page } = session;
     await page.locator('[data-testid="dashboard-view-toggle-button"]').click();
     await expect.poll(() => page.locator('[data-testid="quick-links-panel"]').count()).toBe(1);
-    await expect.poll(() => page.locator('[data-testid="quick-links-tab-all"]').count()).toBe(1);
-    await expect.poll(() => page.locator('[data-testid="quick-links-empty"]').count()).toBe(1);
     await expect.poll(() => page.locator('[data-testid="dashboard-edit-button"]').count()).toBe(0);
     await expect.poll(() => page.getByRole('heading', { level: 1, name: /Welcome to EncodeX/ }).count()).toBe(1);
     expect(await page.evaluate(() => location.hash)).toBe('#/');

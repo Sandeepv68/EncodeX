@@ -1540,10 +1540,260 @@
   },
   "quickLinks": {
     "title": "קישורים מהירים",
-    "tabs": {
-      "all": "הכל"
-    },
-    "empty": "קישורים מהירים יופיעו כאן בקרוב.",
-    "cardAria": "פתיחת {{title}}"
+    "cardAria": "פתיחת {{title}}",
+    "links": {
+      "chatWithCopilot": {
+        "title": "צ'אט עם Copilot",
+        "description": "שאל שאלה או תאר מה אתה רוצה לעשות עם המדיה שלך."
+      },
+      "describeGoal": {
+        "title": "תאר מטרה",
+        "description": "הסבירו מטרה בשפה פשוטה ותנו לקופיילוט להכין את העבודה."
+      },
+      "planConversion": {
+        "title": "תכנן המרה",
+        "description": "הפוך יעד לתוכנית שתוכל לבדוק לפני שתוסיף אותו לתור."
+      },
+      "findMomentInVideo": {
+        "title": "מצא רגע בסרטון",
+        "description": "חפש תמליל וידאו כדי לקפוץ לחלק שאתה צריך."
+      },
+      "searchTranscript": {
+        "title": "חפש תמליל",
+        "description": "חפש בתמלילים מילים או ביטויים שאתה זוכר."
+      },
+      "translateSubtitles": {
+        "title": "תרגם כתוביות",
+        "description": "תרגם קבצי כתוביות לשפה אחרת."
+      },
+      "saveChat": {
+        "title": "שמור צ'אט",
+        "description": "שמור את שיחת Copilot הנוכחית למועד מאוחר יותר."
+      },
+      "convertVideo": {
+        "title": "המרת וידאו",
+        "description": "מקודד מחדש סרטון עם הפורמט, האיכות והגודל שבחרת."
+      },
+      "convertAudio": {
+        "title": "המרת אודיו",
+        "description": "שנה את הפורמט, ה-codec או קצב הסיביות של קובץ שמע."
+      },
+      "compressVideo": {
+        "title": "דחוס וידאו",
+        "description": "הקטנת גודל הקובץ של סרטון תוך שמירה על התוצאה ניתנת לצפייה."
+      },
+      "useConversionProfile": {
+        "title": "השתמש בפרופיל המרה",
+        "description": "בחר הגדרה מראש שממלאת עבורך את הגדרות הקידוד."
+      },
+      "createCustomProfile": {
+        "title": "צור פרופיל מותאם אישית",
+        "description": "שמור את הגדרות הקידוד שלך כפרופיל לשימוש חוזר."
+      },
+      "losslessCopy": {
+        "title": "עותק ללא אובדן",
+        "description": "העתק זרמים ללא קידוד מחדש כדי לשמור על האיכות המקורית."
+      },
+      "speedUpWithGpu": {
+        "title": "האיץ עם GPU",
+        "description": "השתמש בהאצת חומרה כדי לקודד מהר יותר."
+      },
+      "changeContainer": {
+        "title": "שנה מיכל ללא קידוד מחדש",
+        "description": "החלף מיכלים כגון MP4 או MKV ללא קידוד מחדש."
+      },
+      "addAudioToVideo": {
+        "title": "הוסף אודיו לווידאו",
+        "description": "צרף רצועת אודיו חיצונית לסרטון."
+      },
+      "mergeAudioAndVideo": {
+        "title": "מיזוג אודיו ווידאו",
+        "description": "שלב רצועות אודיו ווידאו נפרדות לקובץ אחד."
+      },
+      "addSubtitles": {
+        "title": "הוסף כתוביות",
+        "description": "הוסף רצועות כתוביות לסרטון מבלי לשנות את התמונה."
+      },
+      "syncAudioDelay": {
+        "title": "השהיית שמע סינכרון",
+        "description": "העבר אודיו מוקדם יותר או מאוחר יותר כדי ליישר אותו עם וידאו."
+      },
+      "copyStreams": {
+        "title": "העתק זרמים",
+        "description": "בחר אילו זרמים לשמור והעתק אותם כפי שהם."
+      },
+      "extractStreams": {
+        "title": "חלץ זרמים",
+        "description": "משוך רצועות וידאו, אודיו או כתוביות החוצה לקבצים נפרדים."
+      },
+      "splitAudioChannels": {
+        "title": "פיצול ערוצי אודיו",
+        "description": "פיצול רצועת שמע רב-ערוצית לקבצים בודדים."
+      },
+      "saveSubtitles": {
+        "title": "שמור כתוביות",
+        "description": "חלץ זרמי כתוביות לקבצי כתוביות עצמאיים."
+      },
+      "exportTracksSeparately": {
+        "title": "ייצא רצועות בנפרד",
+        "description": "כתוב כל רצועה שנבחרה לקובץ הפלט שלו."
+      },
+      "trimVideo": {
+        "title": "חתוך וידאו",
+        "description": "חתוך סרטון לחלק שאתה רוצה לשמור."
+      },
+      "cutClipByTime": {
+        "title": "גזור קליפ לפי זמן",
+        "description": "הגדר זמני התחלה וסיום מדויקים עבור קליפ."
+      },
+      "cutByDuration": {
+        "title": "חתך לפי משך",
+        "description": "הגדר שעת התחלה ואורך קליפ במקום שעת סיום."
+      },
+      "previewClip": {
+        "title": "תצוגה מקדימה של קליפ",
+        "description": "בדוק את התוצאה הגזורה לפני שתשמור אותה."
+      },
+      "playClip": {
+        "title": "הפעל קליפ",
+        "description": "הפעל את הקטע שנבחר על ציר הזמן."
+      },
+      "removeAudioFromClip": {
+        "title": "הסר אודיו מהקליפ",
+        "description": "צור קליפ שקט על ידי השארת רצועת האודיו בחוץ."
+      },
+      "extractAudioFromVideo": {
+        "title": "חלץ אודיו מווידאו",
+        "description": "שמור את השמע מסרטון כקובץ משלו."
+      },
+      "saveAudioAsMp3": {
+        "title": "שמור אודיו כ-MP3",
+        "description": "ייצא אודיו שחולץ בפורמט MP3."
+      },
+      "chooseAudioQuality": {
+        "title": "בחר איכות שמע",
+        "description": "בחר את ה-codec וקצב הסיביות עבור האודיו שחולץ."
+      },
+      "compressImage": {
+        "title": "דחוס תמונה",
+        "description": "הפוך תמונה קטנה יותר תוך שמירה על מראה טוב."
+      },
+      "resizeImage": {
+        "title": "שנה את גודל התמונה",
+        "description": "שנה את מידות התמונה לפני שמירתה."
+      },
+      "changeImageFormat": {
+        "title": "שנה פורמט תמונה",
+        "description": "המרת תמונה לפורמט קובץ אחר."
+      },
+      "newBatchTask": {
+        "title": "משימת אצווה חדשה",
+        "description": "התחל עבודה מרובת קבצים חדשה עם הגדרות משותפות."
+      },
+      "runBatchJobs": {
+        "title": "הפעל עבודות אצווה",
+        "description": "התחל את התור ועבד את כל העבודות לפי הסדר."
+      },
+      "queueFiles": {
+        "title": "תור קבצים",
+        "description": "הוסף קבצים או תיקיה לתור האצווה."
+      },
+      "retryFailedJobs": {
+        "title": "נסה שוב משימות שנכשלו",
+        "description": "הפעל שוב עבודות שנכשלו לאחר תיקון הבעיה."
+      },
+      "importQueue": {
+        "title": "תור ייבוא",
+        "description": "טען תור אצווה שמור מקובץ."
+      },
+      "editJobOptions": {
+        "title": "ערוך אפשרויות עבודה",
+        "description": "שנה אפשרויות קידוד עבור עבודות שעדיין עומדות בתור."
+      },
+      "runJobsThenShutDown": {
+        "title": "הפעל עבודות ואז כבה",
+        "description": "תן לאצווה להסתיים ואז כבה את המחשב."
+      },
+      "buildAutomation": {
+        "title": "בניית אוטומציה",
+        "description": "עצב צינור לשימוש חוזר מצמתי מדיה על בד."
+      },
+      "runAutomation": {
+        "title": "הפעל אוטומציה",
+        "description": "הפעל את האוטומציה שנבחרה כנגד קובץ קלט."
+      },
+      "viewRunHistory": {
+        "title": "הצג היסטוריית ריצה",
+        "description": "סקור ריצות אוטומציה קודמות והתוצאות שלהן."
+      },
+      "saveAutomationPipeline": {
+        "title": "שמור צינור אוטומציה",
+        "description": "שמור את הצינור כדי שתוכל להפעיל אותו שוב מאוחר יותר."
+      },
+      "inspectMediaFile": {
+        "title": "בדוק את קובץ המדיה",
+        "description": "פתח קובץ וראה מה יש בתוכו."
+      },
+      "viewStreamDetails": {
+        "title": "הצג את פרטי הזרם",
+        "description": "בדוק את זרמי הווידאו, האודיו והכתוביות."
+      },
+      "checkCodecs": {
+        "title": "בדוק Codec",
+        "description": "בדוק באילו רכיבי codec הקובץ משתמש."
+      },
+      "readFileMetadata": {
+        "title": "קרא מטא נתונים של קובץ",
+        "description": "הצג מיכל, משך, קצב סיביות ופרטי קבצים אחרים."
+      },
+      "changeTheme": {
+        "title": "שנה ערכת נושא",
+        "description": "בחר ערכת נושא בהירה או כהה עבור EncodeX."
+      },
+      "setUpAiProvider": {
+        "title": "הגדר ספק AI",
+        "description": "חבר ספק AI לתכנון Copilot חכם יותר."
+      },
+      "configureHardwareAcceleration": {
+        "title": "הגדר את האצת חומרה",
+        "description": "בחר כיצד EncodeX משתמש ב-GPU שלך."
+      },
+      "enableMcpServer": {
+        "title": "הפעל את שרת MCP",
+        "description": "תן ללקוחות MCP מקומיים לשלוט ב-EncodeX."
+      },
+      "manageStartupNotifications": {
+        "title": "נהל אתחול והתראות",
+        "description": "שליטה בהתנהגות האתחול ובהודעות שולחן העבודה."
+      },
+      "viewLogs": {
+        "title": "הצג יומנים",
+        "description": "פתח את מסוף יומן היישום."
+      },
+      "searchErrors": {
+        "title": "שגיאות חיפוש",
+        "description": "סנן יומנים לאזהרות ושגיאות."
+      },
+      "reviewOperationHistory": {
+        "title": "סקור את היסטוריית המבצעים",
+        "description": "בדוק את נתיב הביקורת עבור פעולות שהושלמו."
+      },
+      "downloadLogs": {
+        "title": "הורד יומנים",
+        "description": "שמור את היומנים הנוכחיים כקובץ טקסט."
+      },
+      "checkVersion": {
+        "title": "בדוק גרסה",
+        "description": "ראה איזו גרסה של EncodeX מותקנת."
+      },
+      "viewBuildInfo": {
+        "title": "הצג מידע על בנייה",
+        "description": "בדוק את פרטי הבנייה עבור התקנה זו."
+      },
+      "readAboutEncodeX": {
+        "title": "קרא על EncodeX",
+        "description": "למידע נוסף על EncodeX."
+      }
+    }
   }
 }

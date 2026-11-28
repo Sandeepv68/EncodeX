@@ -1540,10 +1540,260 @@
   },
   "quickLinks": {
     "title": "빠른 링크",
-    "tabs": {
-      "all": "전체"
-    },
-    "empty": "빠른 링크가 여기에 표시됩니다.",
-    "cardAria": "{{title}} 열기"
+    "cardAria": "{{title}} 열기",
+    "links": {
+      "chatWithCopilot": {
+        "title": "부조종사와 채팅",
+        "description": "질문을 하거나 미디어로 무엇을 하고 싶은지 설명하세요."
+      },
+      "describeGoal": {
+        "title": "목표 설명",
+        "description": "목표를 쉬운 언어로 설명하고 Copilot이 작업을 준비하도록 하세요."
+      },
+      "planConversion": {
+        "title": "전환 계획",
+        "description": "목표를 대기열에 추가하기 전에 검토할 수 있는 계획으로 전환하세요."
+      },
+      "findMomentInVideo": {
+        "title": "비디오에서 순간을 찾아보세요",
+        "description": "필요한 부분으로 이동하려면 비디오 대본을 검색하세요."
+      },
+      "searchTranscript": {
+        "title": "검색 기록",
+        "description": "기억나는 단어나 문구를 대본에서 찾아보세요."
+      },
+      "translateSubtitles": {
+        "title": "자막 번역",
+        "description": "자막 파일을 다른 언어로 번역하세요."
+      },
+      "saveChat": {
+        "title": "채팅 저장",
+        "description": "나중을 위해 현재 Copilot 대화를 유지하세요."
+      },
+      "convertVideo": {
+        "title": "비디오 변환",
+        "description": "선택한 형식, 품질 및 크기로 비디오를 다시 인코딩합니다."
+      },
+      "convertAudio": {
+        "title": "오디오 변환",
+        "description": "오디오 파일의 형식, 코덱 또는 비트 전송률을 변경합니다."
+      },
+      "compressVideo": {
+        "title": "비디오 압축",
+        "description": "결과를 시청 가능하게 유지하면서 비디오 파일 크기를 줄이세요."
+      },
+      "useConversionProfile": {
+        "title": "전환 프로필 사용",
+        "description": "인코딩 설정을 채워주는 사전 설정을 선택하세요."
+      },
+      "createCustomProfile": {
+        "title": "맞춤 프로필 만들기",
+        "description": "자신의 인코딩 설정을 재사용 가능한 프로필로 저장하세요."
+      },
+      "losslessCopy": {
+        "title": "무손실 사본",
+        "description": "원본 품질을 유지하려면 다시 인코딩하지 않고 스트림을 복사하세요."
+      },
+      "speedUpWithGpu": {
+        "title": "GPU로 속도 향상",
+        "description": "하드웨어 가속을 사용하여 더 빠르게 인코딩하세요."
+      },
+      "changeContainer": {
+        "title": "다시 인코딩하지 않고 컨테이너 변경",
+        "description": "다시 인코딩하지 않고 MP4 또는 MKV와 같은 컨테이너를 전환합니다."
+      },
+      "addAudioToVideo": {
+        "title": "비디오에 오디오 추가",
+        "description": "외부 오디오 트랙을 비디오에 첨부합니다."
+      },
+      "mergeAudioAndVideo": {
+        "title": "오디오 및 비디오 병합",
+        "description": "별도의 오디오 및 비디오 트랙을 하나의 파일로 결합합니다."
+      },
+      "addSubtitles": {
+        "title": "자막 추가",
+        "description": "사진을 변경하지 않고 비디오에 자막 트랙을 추가합니다."
+      },
+      "syncAudioDelay": {
+        "title": "오디오 동기화 지연",
+        "description": "비디오와 일치하도록 오디오를 앞이나 뒤로 이동합니다."
+      },
+      "copyStreams": {
+        "title": "스트림 복사",
+        "description": "유지할 스트림을 선택하고 그대로 복사하세요."
+      },
+      "extractStreams": {
+        "title": "스트림 추출",
+        "description": "비디오, 오디오 또는 자막 트랙을 별도의 파일로 가져옵니다."
+      },
+      "splitAudioChannels": {
+        "title": "오디오 채널 분할",
+        "description": "다중 채널 오디오 트랙을 개별 파일로 분할합니다."
+      },
+      "saveSubtitles": {
+        "title": "자막 저장",
+        "description": "자막 스트림을 독립형 자막 파일로 추출합니다."
+      },
+      "exportTracksSeparately": {
+        "title": "트랙을 별도로 내보내기",
+        "description": "선택한 각 트랙을 자체 출력 파일에 씁니다."
+      },
+      "trimVideo": {
+        "title": "비디오 다듬기",
+        "description": "유지하고 싶은 부분만큼 비디오를 잘라냅니다."
+      },
+      "cutClipByTime": {
+        "title": "시간별로 클립 자르기",
+        "description": "클립의 정확한 시작 및 종료 시간을 설정하세요."
+      },
+      "cutByDuration": {
+        "title": "기간별 컷",
+        "description": "종료 시간 대신 시작 시간과 클립 길이를 설정하세요."
+      },
+      "previewClip": {
+        "title": "클립 미리보기",
+        "description": "저장하기 전에 잘린 결과를 확인하세요."
+      },
+      "playClip": {
+        "title": "클립 재생",
+        "description": "타임라인에서 선택한 세그먼트를 재생합니다."
+      },
+      "removeAudioFromClip": {
+        "title": "클립에서 오디오 제거",
+        "description": "오디오 트랙을 제외하여 무음 클립을 만듭니다."
+      },
+      "extractAudioFromVideo": {
+        "title": "비디오에서 오디오 추출",
+        "description": "비디오의 오디오를 자체 파일로 저장합니다."
+      },
+      "saveAudioAsMp3": {
+        "title": "오디오를 MP3로 저장",
+        "description": "추출된 오디오를 MP3 형식으로 내보냅니다."
+      },
+      "chooseAudioQuality": {
+        "title": "오디오 품질 선택",
+        "description": "추출된 오디오의 코덱과 비트 전송률을 선택합니다."
+      },
+      "compressImage": {
+        "title": "이미지 압축",
+        "description": "보기 좋게 유지하면서 이미지를 더 작게 만듭니다."
+      },
+      "resizeImage": {
+        "title": "이미지 크기 조정",
+        "description": "이미지를 저장하기 전에 이미지의 크기를 변경하세요."
+      },
+      "changeImageFormat": {
+        "title": "이미지 형식 변경",
+        "description": "이미지를 다른 파일 형식으로 변환합니다."
+      },
+      "newBatchTask": {
+        "title": "새 일괄 작업",
+        "description": "공유 설정을 사용하여 새로운 다중 파일 작업을 시작합니다."
+      },
+      "runBatchJobs": {
+        "title": "일괄 작업 실행",
+        "description": "대기열을 시작하고 모든 작업을 순서대로 처리합니다."
+      },
+      "queueFiles": {
+        "title": "대기열 파일",
+        "description": "일괄 대기열에 파일이나 폴더를 추가합니다."
+      },
+      "retryFailedJobs": {
+        "title": "실패한 작업 재시도",
+        "description": "문제를 해결한 후 실패한 작업을 다시 실행하십시오."
+      },
+      "importQueue": {
+        "title": "가져오기 대기열",
+        "description": "파일에서 저장된 일괄 대기열을 로드합니다."
+      },
+      "editJobOptions": {
+        "title": "작업 옵션 편집",
+        "description": "아직 대기열에 있는 작업에 대한 인코딩 옵션을 변경합니다."
+      },
+      "runJobsThenShutDown": {
+        "title": "작업 실행 후 종료",
+        "description": "배치가 완료되도록 한 다음 컴퓨터 전원을 끕니다."
+      },
+      "buildAutomation": {
+        "title": "빌드 자동화",
+        "description": "캔버스의 미디어 노드에서 재사용 가능한 파이프라인을 디자인합니다."
+      },
+      "runAutomation": {
+        "title": "자동화 실행",
+        "description": "입력 파일에 대해 선택한 자동화를 실행합니다."
+      },
+      "viewRunHistory": {
+        "title": "실행 기록 보기",
+        "description": "과거 자동화 실행 및 결과를 검토합니다."
+      },
+      "saveAutomationPipeline": {
+        "title": "자동화 파이프라인 저장",
+        "description": "나중에 다시 실행할 수 있도록 파이프라인을 저장합니다."
+      },
+      "inspectMediaFile": {
+        "title": "미디어 파일 검사",
+        "description": "파일을 열고 그 안에 무엇이 있는지 확인하세요."
+      },
+      "viewStreamDetails": {
+        "title": "스트림 세부정보 보기",
+        "description": "비디오, 오디오 및 자막 스트림을 검사합니다."
+      },
+      "checkCodecs": {
+        "title": "코덱 확인",
+        "description": "파일이 어떤 코덱을 사용하는지 확인하세요."
+      },
+      "readFileMetadata": {
+        "title": "파일 메타데이터 읽기",
+        "description": "컨테이너, 지속 시간, 비트 전송률 및 기타 파일 세부 정보를 봅니다."
+      },
+      "changeTheme": {
+        "title": "테마 변경",
+        "description": "EncodeX의 밝은 테마나 어두운 테마를 선택하세요."
+      },
+      "setUpAiProvider": {
+        "title": "AI 공급자 설정",
+        "description": "보다 스마트한 Copilot 계획을 위해 AI 제공업체를 연결하세요."
+      },
+      "configureHardwareAcceleration": {
+        "title": "하드웨어 가속 구성",
+        "description": "EncodeX가 GPU를 사용하는 방법을 선택하세요."
+      },
+      "enableMcpServer": {
+        "title": "MCP 서버 활성화",
+        "description": "로컬 MCP 클라이언트가 EncodeX를 제어하도록 합니다."
+      },
+      "manageStartupNotifications": {
+        "title": "시작 및 알림 관리",
+        "description": "시작 동작 및 데스크톱 알림을 제어합니다."
+      },
+      "viewLogs": {
+        "title": "로그 보기",
+        "description": "애플리케이션 로그 콘솔을 엽니다."
+      },
+      "searchErrors": {
+        "title": "검색 오류",
+        "description": "경고 및 오류에 대한 로그를 필터링합니다."
+      },
+      "reviewOperationHistory": {
+        "title": "작업 내역 검토",
+        "description": "완료된 작업에 대한 감사 추적을 확인하세요."
+      },
+      "downloadLogs": {
+        "title": "로그 다운로드",
+        "description": "현재 로그를 텍스트 파일로 저장합니다."
+      },
+      "checkVersion": {
+        "title": "버전 확인",
+        "description": "설치된 EncodeX 버전을 확인하세요."
+      },
+      "viewBuildInfo": {
+        "title": "빌드 정보 보기",
+        "description": "이 설치에 대한 빌드 세부정보를 확인하세요."
+      },
+      "readAboutEncodeX": {
+        "title": "EncodeX에 대해 읽어보세요",
+        "description": "EncodeX에 대해 자세히 알아보세요."
+      }
+    }
   }
 }

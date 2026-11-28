@@ -1122,10 +1122,59 @@ export interface DashboardLayoutState extends DashboardLayoutSnapshot {
   resetLayout: () => void;
 }
 
-/** One entry on the Quick Links page. The list starts empty and grows later. */
+export type QuickLinkIconKey =
+  | 'about'
+  | 'ai'
+  | 'audio'
+  | 'automation'
+  | 'bolt'
+  | 'caption'
+  | 'chat'
+  | 'clock'
+  | 'compress'
+  | 'container'
+  | 'copy'
+  | 'cut'
+  | 'download'
+  | 'edit'
+  | 'errors'
+  | 'export'
+  | 'file'
+  | 'folder'
+  | 'format'
+  | 'goal'
+  | 'history'
+  | 'import'
+  | 'inspect'
+  | 'language'
+  | 'list'
+  | 'logs'
+  | 'merge'
+  | 'metadata'
+  | 'mute'
+  | 'play'
+  | 'plug'
+  | 'plus'
+  | 'power'
+  | 'quality'
+  | 'queue'
+  | 'redo'
+  | 'resize'
+  | 'run'
+  | 'save'
+  | 'search'
+  | 'split'
+  | 'streams'
+  | 'sync'
+  | 'theme'
+  | 'transcript'
+  | 'version'
+  | 'video';
+
 export interface QuickLink {
+  id: string;
   to: string;
   labelKey: string;
-  descriptionKey?: string;
-  category: string;
+  descriptionKey: string;
+  iconKey: QuickLinkIconKey;
 }

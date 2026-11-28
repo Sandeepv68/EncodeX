@@ -1540,10 +1540,260 @@
   },
   "quickLinks": {
     "title": "Mga Mabilisang Link",
-    "tabs": {
-      "all": "Lahat"
-    },
-    "empty": "Lilitaw dito ang mga mabilisang link sa lalong madaling panahon.",
-    "cardAria": "Buksan ang {{title}}"
+    "cardAria": "Buksan ang {{title}}",
+    "links": {
+      "chatWithCopilot": {
+        "title": "Makipag-chat kay Copilot",
+        "description": "Magtanong o ilarawan kung ano ang gusto mong gawin sa iyong media."
+      },
+      "describeGoal": {
+        "title": "Ilarawan ang isang Layunin",
+        "description": "Ipaliwanag ang isang layunin sa simpleng wika at hayaang ihanda ni Copilot ang gawain."
+      },
+      "planConversion": {
+        "title": "Magplano ng Conversion",
+        "description": "Gawing plano ang layunin na maaari mong suriin bago ito idagdag sa pila."
+      },
+      "findMomentInVideo": {
+        "title": "Maghanap ng Sandali sa isang Video",
+        "description": "Maghanap ng transcript ng video para tumalon sa bahaging kailangan mo."
+      },
+      "searchTranscript": {
+        "title": "Maghanap ng Transcript",
+        "description": "Tumingin sa mga transcript para sa mga salita o parirala na naaalala mo."
+      },
+      "translateSubtitles": {
+        "title": "Isalin ang mga Subtitle",
+        "description": "Isalin ang mga subtitle na file sa ibang wika."
+      },
+      "saveChat": {
+        "title": "I-save ang Chat",
+        "description": "Panatilihin ang kasalukuyang Copilot na pag-uusap para sa ibang pagkakataon."
+      },
+      "convertVideo": {
+        "title": "I-convert ang Video",
+        "description": "Muling i-encode ang isang video gamit ang iyong napiling format, kalidad, at laki."
+      },
+      "convertAudio": {
+        "title": "I-convert ang Audio",
+        "description": "Baguhin ang format, codec, o bitrate ng isang audio file."
+      },
+      "compressVideo": {
+        "title": "I-compress ang Video",
+        "description": "Bawasan ang laki ng file ng isang video habang pinapanatiling napapanood ang resulta."
+      },
+      "useConversionProfile": {
+        "title": "Gumamit ng Conversion Profile",
+        "description": "Pumili ng preset na pumupuno sa mga setting ng pag-encode para sa iyo."
+      },
+      "createCustomProfile": {
+        "title": "Gumawa ng Custom na Profile",
+        "description": "I-save ang iyong sariling mga setting ng pag-encode bilang isang magagamit muli na profile."
+      },
+      "losslessCopy": {
+        "title": "Walang Loss na Kopya",
+        "description": "Kopyahin ang mga stream nang walang muling pag-encode upang mapanatili ang orihinal na kalidad."
+      },
+      "speedUpWithGpu": {
+        "title": "Pabilisin gamit ang GPU",
+        "description": "Gumamit ng hardware acceleration para mas mabilis na mag-encode."
+      },
+      "changeContainer": {
+        "title": "Baguhin ang Container Nang Walang Muling pag-encode",
+        "description": "Lumipat ng mga lalagyan gaya ng MP4 o MKV nang walang muling pag-encode."
+      },
+      "addAudioToVideo": {
+        "title": "Magdagdag ng Audio sa Video",
+        "description": "Maglakip ng panlabas na audio track sa isang video."
+      },
+      "mergeAudioAndVideo": {
+        "title": "Pagsamahin ang Audio at Video",
+        "description": "Pagsamahin ang magkahiwalay na audio at video track sa isang file."
+      },
+      "addSubtitles": {
+        "title": "Magdagdag ng mga Subtitle",
+        "description": "Magdagdag ng mga subtitle na track sa isang video nang hindi binabago ang larawan."
+      },
+      "syncAudioDelay": {
+        "title": "I-sync ang Audio Delay",
+        "description": "Ilipat ang audio nang mas maaga o mas bago upang ihanay ito sa video."
+      },
+      "copyStreams": {
+        "title": "Kopyahin ang Mga Stream",
+        "description": "Piliin kung aling mga stream ang pananatilihin at kopyahin ang mga ito kung ano-ano."
+      },
+      "extractStreams": {
+        "title": "I-extract ang mga Stream",
+        "description": "Hilahin ang mga track ng video, audio, o subtitle sa magkahiwalay na mga file."
+      },
+      "splitAudioChannels": {
+        "title": "Hatiin ang Mga Channel ng Audio",
+        "description": "Hatiin ang isang multichannel na audio track sa mga indibidwal na file."
+      },
+      "saveSubtitles": {
+        "title": "I-save ang Mga Subtitle",
+        "description": "I-extract ang mga subtitle stream sa mga standalone na subtitle file."
+      },
+      "exportTracksSeparately": {
+        "title": "Mag-export ng Mga Track nang Hiwalay",
+        "description": "Isulat ang bawat napiling track sa sarili nitong output file."
+      },
+      "trimVideo": {
+        "title": "I-trim ang Video",
+        "description": "Gupitin ang isang video hanggang sa bahaging gusto mong panatilihin."
+      },
+      "cutClipByTime": {
+        "title": "Gupitin ang Clip ayon sa Oras",
+        "description": "Itakda ang eksaktong oras ng pagsisimula at pagtatapos para sa isang clip."
+      },
+      "cutByDuration": {
+        "title": "Pinutol ng Tagal",
+        "description": "Magtakda ng oras ng pagsisimula at haba ng clip sa halip na oras ng pagtatapos."
+      },
+      "previewClip": {
+        "title": "I-preview ang Clip",
+        "description": "Suriin ang na-trim na resulta bago mo ito i-save."
+      },
+      "playClip": {
+        "title": "Maglaro ng Clip",
+        "description": "I-play muli ang napiling segment sa timeline."
+      },
+      "removeAudioFromClip": {
+        "title": "Alisin ang Audio mula sa Clip",
+        "description": "Gumawa ng silent clip sa pamamagitan ng pag-alis sa audio track."
+      },
+      "extractAudioFromVideo": {
+        "title": "I-extract ang Audio mula sa Video",
+        "description": "I-save ang audio mula sa isang video bilang sarili nitong file."
+      },
+      "saveAudioAsMp3": {
+        "title": "I-save ang Audio bilang MP3",
+        "description": "I-export ang na-extract na audio sa MP3 na format."
+      },
+      "chooseAudioQuality": {
+        "title": "Piliin ang Kalidad ng Audio",
+        "description": "Piliin ang codec at bitrate para sa na-extract na audio."
+      },
+      "compressImage": {
+        "title": "I-compress ang Imahe",
+        "description": "Gawing mas maliit ang isang imahe habang pinapanatili itong maganda."
+      },
+      "resizeImage": {
+        "title": "Baguhin ang laki ng Larawan",
+        "description": "Baguhin ang mga sukat ng larawan bago ito i-save."
+      },
+      "changeImageFormat": {
+        "title": "Baguhin ang Format ng Larawan",
+        "description": "I-convert ang isang imahe sa ibang format ng file."
+      },
+      "newBatchTask": {
+        "title": "Bagong Batch na Gawain",
+        "description": "Magsimula ng bagong multi-file na trabaho gamit ang mga nakabahaging setting."
+      },
+      "runBatchJobs": {
+        "title": "Patakbuhin ang Batch Jobs",
+        "description": "Simulan ang pila at iproseso ang lahat ng trabaho sa pagkakasunud-sunod."
+      },
+      "queueFiles": {
+        "title": "Mga File ng Queue",
+        "description": "Magdagdag ng mga file o folder sa batch queue."
+      },
+      "retryFailedJobs": {
+        "title": "Subukang muli ang Mga Nabigong Trabaho",
+        "description": "Patakbuhin muli ang mga nabigong trabaho pagkatapos ayusin ang problema."
+      },
+      "importQueue": {
+        "title": "I-import ang Queue",
+        "description": "Mag-load ng naka-save na batch queue mula sa isang file."
+      },
+      "editJobOptions": {
+        "title": "I-edit ang Mga Opsyon sa Trabaho",
+        "description": "Baguhin ang mga opsyon sa pag-encode para sa mga trabahong nakapila pa rin."
+      },
+      "runJobsThenShutDown": {
+        "title": "Patakbuhin ang Mga Trabaho Pagkatapos Isara",
+        "description": "Hayaang matapos ang batch at pagkatapos ay patayin ang computer."
+      },
+      "buildAutomation": {
+        "title": "Bumuo ng Automation",
+        "description": "Magdisenyo ng magagamit muli na pipeline mula sa mga media node sa isang canvas."
+      },
+      "runAutomation": {
+        "title": "Patakbuhin ang Automation",
+        "description": "Patakbuhin ang napiling automation laban sa isang input file."
+      },
+      "viewRunHistory": {
+        "title": "Tingnan ang Run History",
+        "description": "Suriin ang mga nakaraang pagtakbo ng automation at ang kanilang mga resulta."
+      },
+      "saveAutomationPipeline": {
+        "title": "I-save ang Automation Pipeline",
+        "description": "I-save ang pipeline para mapatakbo mo itong muli sa ibang pagkakataon."
+      },
+      "inspectMediaFile": {
+        "title": "Suriin ang Media File",
+        "description": "Buksan ang isang file at tingnan kung ano ang nasa loob nito."
+      },
+      "viewStreamDetails": {
+        "title": "Tingnan ang Mga Detalye ng Stream",
+        "description": "Siyasatin ang mga stream ng video, audio, at subtitle."
+      },
+      "checkCodecs": {
+        "title": "Suriin ang Mga Codec",
+        "description": "Suriin kung aling mga codec ang ginagamit ng file."
+      },
+      "readFileMetadata": {
+        "title": "Basahin ang Metadata ng File",
+        "description": "Tingnan ang container, tagal, bitrate, at iba pang mga detalye ng file."
+      },
+      "changeTheme": {
+        "title": "Baguhin ang Tema",
+        "description": "Pumili ng maliwanag o madilim na tema para sa EncodeX."
+      },
+      "setUpAiProvider": {
+        "title": "I-set Up ang AI Provider",
+        "description": "Ikonekta ang isang AI provider para sa mas matalinong pagpaplano ng Copilot."
+      },
+      "configureHardwareAcceleration": {
+        "title": "I-configure ang Hardware Acceleration",
+        "description": "Piliin kung paano ginagamit ng EncodeX ang iyong GPU."
+      },
+      "enableMcpServer": {
+        "title": "Paganahin ang MCP Server",
+        "description": "Hayaang kontrolin ng mga lokal na kliyente ng MCP ang EncodeX."
+      },
+      "manageStartupNotifications": {
+        "title": "Pamahalaan ang Startup at Mga Notification",
+        "description": "Kontrolin ang gawi sa pagsisimula at mga notification sa desktop."
+      },
+      "viewLogs": {
+        "title": "Tingnan ang Mga Log",
+        "description": "Buksan ang application log console."
+      },
+      "searchErrors": {
+        "title": "Mga Error sa Paghahanap",
+        "description": "I-filter ang mga log para sa mga babala at error."
+      },
+      "reviewOperationHistory": {
+        "title": "Suriin ang Kasaysayan ng Operasyon",
+        "description": "Suriin ang audit trail para sa mga nakumpletong operasyon."
+      },
+      "downloadLogs": {
+        "title": "Mag-download ng Mga Log",
+        "description": "I-save ang kasalukuyang mga log bilang isang text file."
+      },
+      "checkVersion": {
+        "title": "Suriin ang Bersyon",
+        "description": "Tingnan kung aling bersyon ng EncodeX ang naka-install."
+      },
+      "viewBuildInfo": {
+        "title": "Tingnan ang Build Info",
+        "description": "Suriin ang mga detalye ng build para sa pag-install na ito."
+      },
+      "readAboutEncodeX": {
+        "title": "Basahin ang Tungkol sa EncodeX",
+        "description": "Matuto pa tungkol sa EncodeX."
+      }
+    }
   }
 }

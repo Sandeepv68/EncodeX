@@ -1540,10 +1540,260 @@
   },
   "quickLinks": {
     "title": "Ngā Hononga Tere",
-    "tabs": {
-      "all": "Katoa"
-    },
-    "empty": "Ka puta wawe mai ngā hononga tere ki konei.",
-    "cardAria": "Whakatuwheratia {{title}}"
+    "cardAria": "Whakatuwheratia {{title}}",
+    "links": {
+      "chatWithCopilot": {
+        "title": "Kōrerorero me Copilot",
+        "description": "Patai he patai, whakaahuahia ranei he aha e hiahia ana koe ki te mahi me to hunga pāpāho."
+      },
+      "describeGoal": {
+        "title": "Whakaahuahia he Whainga",
+        "description": "Whakamaramahia tetahi whainga i roto i te reo ngawari ka waiho ma Copilot e whakarite te mahi."
+      },
+      "planConversion": {
+        "title": "Whakamaherehia he Tahuri",
+        "description": "Hurihia te whainga hei mahere ka taea e koe te arotake i mua i te taapiri atu ki te rarangi."
+      },
+      "findMomentInVideo": {
+        "title": "Kimihia he wa i roto i te ataata",
+        "description": "Rapua he tuhinga ataata hei peke ki te waahanga e hiahia ana koe."
+      },
+      "searchTranscript": {
+        "title": "Rapu Tuhinga",
+        "description": "Tirohia nga tuhinga mo nga kupu, kianga ranei e maumahara ana koe."
+      },
+      "translateSubtitles": {
+        "title": "Whakamaori Taitararoto",
+        "description": "Whakamaorihia nga konae taitararoto ki tetahi atu reo."
+      },
+      "saveChat": {
+        "title": "Tiaki Kōrerorero",
+        "description": "Puritia te korero Copilot o naianei mo muri ake."
+      },
+      "convertVideo": {
+        "title": "Tahuri Ataata",
+        "description": "Whakawaeherehia ano he ataata ki te whakatakotoranga, te kounga me te rahi."
+      },
+      "convertAudio": {
+        "title": "Tahuri Ororongo",
+        "description": "Hurihia te whakatakotoranga o te konae ororongo, kotēkē, te tere moka rānei."
+      },
+      "compressVideo": {
+        "title": "Kōpeke Ataata",
+        "description": "Whakaitihia te rahi o te konae ataata me te pupuri tonu i te hua ka maataki."
+      },
+      "useConversionProfile": {
+        "title": "Whakamahia he Profile Tahuri",
+        "description": "Tīpakohia he tatūkē hei whakakī i ngā tautuhinga whakawaehere māu."
+      },
+      "createCustomProfile": {
+        "title": "Waihanga Ritenga Kōtaha",
+        "description": "Tiakina o ake tautuhinga whakawaehere hei kotaha ka taea te whakamahi ano."
+      },
+      "losslessCopy": {
+        "title": "Kape Ngarokore",
+        "description": "Tāruahia nga awa me te kore whakawaeheretia kia mau tonu te kounga taketake."
+      },
+      "speedUpWithGpu": {
+        "title": "Tere ki te GPU",
+        "description": "Whakamahia te whakaterenga taputapu ki te whakawaehere tere."
+      },
+      "changeContainer": {
+        "title": "Huri Ipu Kore Whakawaehere Anō",
+        "description": "Whakawhiti ipu penei i te MP4 me te MKV me te kore whakawaehere ano."
+      },
+      "addAudioToVideo": {
+        "title": "Tāpiri Ororongo ki Ataata",
+        "description": "Whakapirihia he riu oro o waho ki tetahi ataata."
+      },
+      "mergeAudioAndVideo": {
+        "title": "Hanumi Ororongo me Ataata",
+        "description": "Whakakotahitia nga riu oro me nga riipene riipene ataata ki te konae kotahi."
+      },
+      "addSubtitles": {
+        "title": "Tāpiri Taitararoto",
+        "description": "Tāpirihia nga ara taitararoto ki tetahi ataata me te kore e huri i te pikitia."
+      },
+      "syncAudioDelay": {
+        "title": "Tukutahi Whakaroa Ororongo",
+        "description": "Hurihia te ororongo i mua atu, i muri mai ranei hei whakararangi ki te ataata."
+      },
+      "copyStreams": {
+        "title": "Tārua awa",
+        "description": "Kōwhiria ko ēhea ngā kōawa hei pupuri, ka tārua i a rātou anō."
+      },
+      "extractStreams": {
+        "title": "Tangohia nga awa",
+        "description": "Toia nga riipene ataata, ororongo, taitararoto ranei ki nga konae motuhake."
+      },
+      "splitAudioChannels": {
+        "title": "Wehea nga Hongere Ororongo",
+        "description": "Wehea te riu ororongo hongere maha ki nga konae takitahi."
+      },
+      "saveSubtitles": {
+        "title": "Tiaki Taitararoto",
+        "description": "Unuhia nga roma taitararoto ki nga konae taitararoto motuhake."
+      },
+      "exportTracksSeparately": {
+        "title": "Kaweake Takitahi nga Riu",
+        "description": "Tuhia ia ara kua tohua ki tana ake konae whakaputa."
+      },
+      "trimVideo": {
+        "title": "Kuti Ataata",
+        "description": "Tapahia he ataata ki te waahanga e hiahia ana koe ki te pupuri."
+      },
+      "cutClipByTime": {
+        "title": "Tapahia te Topenga ma te Wa",
+        "description": "Tautuhia nga wa tiimata me te mutunga mo te topenga."
+      },
+      "cutByDuration": {
+        "title": "Tapahia e te Roa",
+        "description": "Tautuhia he wa tiimata me te roa o te topenga hei utu mo te wa mutunga."
+      },
+      "previewClip": {
+        "title": "Topenga Arokite",
+        "description": "Tirohia te hua kua oti te whakapai i mua i to tiaki."
+      },
+      "playClip": {
+        "title": "Whakatangihia te Topenga",
+        "description": "Pureitia te wahanga kua tohua i runga i te raarangi waahi."
+      },
+      "removeAudioFromClip": {
+        "title": "Tango Ororongo mai i te Topenga",
+        "description": "Waihangahia he topenga wahangu ma te waiho i te riu oro."
+      },
+      "extractAudioFromVideo": {
+        "title": "Tango Ororongo mai i te Ataata",
+        "description": "Tiakina te ororongo mai i te ataata hei konae ake."
+      },
+      "saveAudioAsMp3": {
+        "title": "Tiaki Ororongo hei MP3",
+        "description": "Kaweake te ororongo kua tangohia ki te whakatakotoranga MP3."
+      },
+      "chooseAudioQuality": {
+        "title": "Kōwhiri Kounga Ororongo",
+        "description": "Tīpakohia te kōtēke me te tere moka mo te ororongo kua tangohia."
+      },
+      "compressImage": {
+        "title": "Kōpeke Atahanga",
+        "description": "Whakaitihia te ahua me te pupuri i te ahua pai."
+      },
+      "resizeImage": {
+        "title": "Whakarahihia te Atahanga",
+        "description": "Hurihia te rahi o te ahua i mua i te tiaki."
+      },
+      "changeImageFormat": {
+        "title": "Huri Hōputu Atahanga",
+        "description": "Tahurihia te ahua ki tetahi momo konae rereke."
+      },
+      "newBatchTask": {
+        "title": "Taumahi Huinga Hou",
+        "description": "Tīmatahia he mahi maha-kōnae hōu me ngā tautuhinga tiri."
+      },
+      "runBatchJobs": {
+        "title": "Whakahaerehia nga Mahi Huinga",
+        "description": "Tīmatahia te tūtira me te tukatuka i nga mahi katoa kia raupapa."
+      },
+      "queueFiles": {
+        "title": "Kōnae Tūtira",
+        "description": "Tāpirihia he kōnae, he kōpaki rānei ki te tūtira puranga."
+      },
+      "retryFailedJobs": {
+        "title": "Ngana Anō Nga Mahi I Rahua",
+        "description": "Whakahaerehia ano nga mahi i rahua i muri i te whakatika i te raru."
+      },
+      "importQueue": {
+        "title": "Tūtira Kawemai",
+        "description": "Utaina he rarangi puranga kua tiakina mai i tetahi konae."
+      },
+      "editJobOptions": {
+        "title": "Whakatika Kōwhiringa Mahi",
+        "description": "Hurihia nga whiringa whakawaehere mo nga mahi kei te rarangi tonu."
+      },
+      "runJobsThenShutDown": {
+        "title": "Whakahaere Mahi Katahi Ka Whakaweto",
+        "description": "Tukua kia mutu te puranga ka whakawetohia te rorohiko."
+      },
+      "buildAutomation": {
+        "title": "Hanga Aunoatanga",
+        "description": "Hoahoa he paipa ka taea te whakamahi ano mai i nga pona pāpāho i runga i te kanawehi."
+      },
+      "runAutomation": {
+        "title": "Whakahaere Aunoatanga",
+        "description": "Whakahaerehia te aunoatanga kua tohua ki tetahi konae whakauru."
+      },
+      "viewRunHistory": {
+        "title": "Tirohia Hītori Rere",
+        "description": "Te arotake i nga whakahaere aunoatanga o mua me o raatau hua."
+      },
+      "saveAutomationPipeline": {
+        "title": "Tiaki Raina Paipa Aunoa",
+        "description": "Tiakina te paipa kia taea e koe te whakahaere ano i muri mai."
+      },
+      "inspectMediaFile": {
+        "title": "Tirotiro Kōnae Media",
+        "description": "Tuwherahia he konae ka kite he aha kei roto."
+      },
+      "viewStreamDetails": {
+        "title": "Tirohia nga korero mo te awa",
+        "description": "Tirotirohia te riipene ataata, ororongo, taitararoto."
+      },
+      "checkCodecs": {
+        "title": "Tirohia nga Codecs",
+        "description": "Takina ko ēhea kotēkē e whakamahia ana e te kōnae."
+      },
+      "readFileMetadata": {
+        "title": "Pānuihia te Raraunga Raraunga",
+        "description": "Tirohia te ipu, te roanga, te tere moka, me etahi atu taipitopito o te konae."
+      },
+      "changeTheme": {
+        "title": "Huri Kaupapa",
+        "description": "Kōwhiria he kaupapa marama, pouri ranei mo EncodeX."
+      },
+      "setUpAiProvider": {
+        "title": "Whakaritehia te Kaituku AI",
+        "description": "Honoa he kaiwhakarato AI mo te whakamahere Copilot maamaa ake."
+      },
+      "configureHardwareAcceleration": {
+        "title": "Whirihorahia te Whakaterenga Taputapu",
+        "description": "Kōwhiria me pehea te whakamahi a EncodeX i to GPU."
+      },
+      "enableMcpServer": {
+        "title": "Whakahohehia te Tūmau MCP",
+        "description": "Tukuna nga kiritaki MCP rohe e whakahaere EncodeX."
+      },
+      "manageStartupNotifications": {
+        "title": "Whakahaere Whakaoho & Whakamōhiotanga",
+        "description": "Whakahaerehia te whanonga whakaoho me nga whakamohiotanga papamahi."
+      },
+      "viewLogs": {
+        "title": "Tirohia nga Rangitaki",
+        "description": "Whakatūwherahia te papatohu rangitaki tono."
+      },
+      "searchErrors": {
+        "title": "Rapu Hapa",
+        "description": "Tātari rangitaki mō ngā whakatūpato me ngā hapa."
+      },
+      "reviewOperationHistory": {
+        "title": "Arotakehia te Hitori Mahi",
+        "description": "Tirohia te huarahi arotake mo nga mahi kua oti."
+      },
+      "downloadLogs": {
+        "title": "Tikiake Rangitaki",
+        "description": "Tiakina nga rangitaki o naianei hei konae tuhinga."
+      },
+      "checkVersion": {
+        "title": "Taki Putanga",
+        "description": "Tirohia ko tehea putanga o EncodeX kua whakauruhia."
+      },
+      "viewBuildInfo": {
+        "title": "Tirohia nga korero hanga",
+        "description": "Tirohia nga taipitopito hanga mo tenei whakaurunga."
+      },
+      "readAboutEncodeX": {
+        "title": "Panui Mo EncodeX",
+        "description": "Ako atu mo EncodeX."
+      }
+    }
   }
 }
