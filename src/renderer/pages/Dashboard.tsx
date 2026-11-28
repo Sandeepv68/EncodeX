@@ -325,11 +325,11 @@ export default function Dashboard() {
       </WelcomeTitle>
       <DashboardSubtitle color="text.secondary">{t('dashboard.subtitle')}</DashboardSubtitle>
       <DashboardActionsRow view={view} editing={editing} onToggleView={handleToggleView} onToggleEdit={handleToggleEdit} />
-      <GettingStartedCard />
       {view === 'quick-links' ? (
         <QuickLinksPanel />
       ) : (
         <>
+          <GettingStartedCard />
           {editing && (
             <DashboardGroupBar
               groups={barGroups}

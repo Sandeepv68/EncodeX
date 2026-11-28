@@ -143,16 +143,19 @@ describe('Dashboard', () => {
 
   it('toggles the Quick Links panel in place while keeping the dashboard chrome', async () => {
     await renderDashboard();
+    expect(screen.getByTestId('getting-started-card')).toBeInTheDocument();
     fireEvent.click(screen.getByTestId('dashboard-view-toggle-button'));
     expect(screen.getByTestId('quick-links-panel')).toBeInTheDocument();
     expect(screen.getByText('dashboard.welcome 👋')).toBeInTheDocument();
     expect(screen.queryByText('nav.convert')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('getting-started-card')).not.toBeInTheDocument();
     expect(screen.getByTestId('location')).toHaveTextContent('/');
     expect(screen.queryByTestId('dashboard-edit-button')).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('dashboard-view-toggle-button'));
     expect(screen.queryByTestId('quick-links-panel')).not.toBeInTheDocument();
     expect(screen.getByText('nav.convert')).toBeInTheDocument();
+    expect(screen.getByTestId('getting-started-card')).toBeInTheDocument();
   });
 
   it('reveals drag handles and group controls only after Edit is clicked', async () => {
