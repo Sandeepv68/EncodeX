@@ -7,6 +7,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
@@ -16,6 +17,7 @@ import { FileMuxQueuePersistence } from '../persistence';
 import { batchOutputClaims, muxOutputClaims } from '../output-claims';
 import { QUEUE_STATUS } from '../../../shared/media-options';
 import { MUX_QUEUE_STATE_VERSION } from '../../../shared/constants';
+import { cancelledError } from '../../../shared/errors';
 import type { ConversionProgress, MuxQueueAddPayload, MuxQueueJob, TranscoderType } from '../../../shared/types';
 import type { ITranscoder } from '../../transcoders/types';
 
@@ -487,5 +489,103 @@ describe('MuxQueue persistence', () => {
     queue.flushState();
     const raw = JSON.parse(fs.readFileSync(path.join(dir, 'mux-queue-state.json'), 'utf8')) as { jobs: MuxQueueJob[] };
     expect(raw.jobs).toHaveLength(1);
+  });
+});
+
+describe('MuxQueue history recorder', () => {
+  let dir: string;
+
+  beforeEach(() => {
+    dir = fs.mkdtempSync(path.join(os.tmpdir(), 'encodex-mux-history-'));
+    FakeTranscoder.instances = [];
+  });
+
+  afterEach(() => {
+    fs.rmSync(dir, { recursive: true, force: true });
+  });
+
+  function historyPayload(name: string): MuxQueueAddPayload {
+    const output = `C:/out/history-${name}.mkv`;
+    return payload({ output, targets: [{ output, options: {} }] });
+  }
+
+  function flush(): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, 0));
+  }
+
+  it('records success with target and priority metadata', async () => {
+    const record = vi.fn().mockResolvedValue({ id: 'entry' });
+    const queue = makeQueue({ historyRecorder: { record } });
+    const job = historyPayload('success');
+    queue.addJob(job);
+    queue.start();
+    FakeTranscoder.instances[0].emitter.emit('end');
+    await flush();
+
+    expect(record).toHaveBeenCalledWith(
+      expect.objectContaining({
+        family: 'remux',
+        source: 'gui',
+        status: 'succeeded',
+        inputs: [job.input],
+        outputs: [job.output, ...job.targets.map((target) => target.output)],
+        metadata: { targets: 1, priority: 0 },
+      }),
+    );
+  });
+
+  it('records failure codes only when they are strings', async () => {
+    const record = vi.fn().mockResolvedValue({ id: 'entry' });
+    const queue = makeQueue({ historyRecorder: { record } });
+    queue.addJob(historyPayload('coded'));
+    queue.start();
+    FakeTranscoder.instances[0].emitter.emit('error', Object.assign(new Error('coded'), { code: 'E_FAIL' }));
+    await flush();
+    expect(record.mock.calls[0][0].error).toEqual(expect.objectContaining({ code: 'E_FAIL' }));
+
+    record.mockClear();
+    queue.addJob(historyPayload('uncoded'));
+    queue.start();
+    FakeTranscoder.instances[1].emitter.emit('error', Object.assign(new Error('uncoded'), { code: 42 }));
+    await flush();
+    expect(record.mock.calls[0][0].error).toEqual({ message: expect.stringContaining('uncoded') });
+  });
+
+  it('skips recording cancelled failures', async () => {
+    const record = vi.fn().mockResolvedValue({ id: 'entry' });
+    const queue = makeQueue({ historyRecorder: { record } });
+    queue.addJob(historyPayload('cancelled'));
+    queue.start();
+    FakeTranscoder.instances[0].emitter.emit('error', cancelledError());
+    await flush();
+
+    expect(record).not.toHaveBeenCalled();
+  });
+
+  it('normalizes non-object failures when recording directly', () => {
+    const record = vi.fn().mockResolvedValue({ id: 'entry' });
+    const queue = makeQueue({ historyRecorder: { record } });
+    const id = queue.addJob(historyPayload('direct'));
+    const internals = queue as unknown as {
+      recordHistory: (job: unknown, status: string, err?: unknown) => void;
+    };
+
+    internals.recordHistory(
+      queue.getJobs().find((job) => job.id === id),
+      'failed',
+      'plain failure',
+    );
+    expect(record.mock.calls[0][0].error).toEqual({ message: 'plain failure' });
+  });
+
+  it('logs a non-Error recorder rejection', async () => {
+    expectAppLog('warn', 'main/queue/mux-queue');
+    const record = vi.fn().mockRejectedValue('record failed');
+    const queue = makeQueue({ historyRecorder: { record } });
+    queue.addJob(historyPayload('rejected'));
+    queue.start();
+    FakeTranscoder.instances[0].emitter.emit('end');
+
+    await flush();
   });
 });

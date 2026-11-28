@@ -1,14 +1,58 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within, act } from '@testing-library/react';
+import type { ReactNode } from 'react';
 import { MemoryRouter, useLocation } from 'react-router-dom';
 import Dashboard from '../Dashboard';
 import { resetFeatureFlagsForTests } from '../../hooks/useFeatureFlags';
 import { useDashboardLayoutStore } from '../../stores/dashboardLayoutStore';
+import { MAX_CUSTOM_GROUPS } from '../../constants/dashboard';
+
+const { dndHandlers, dndState } = vi.hoisted(() => ({
+  dndHandlers: {
+    onDragStart: null as ((event: { active: { id: string } }) => void) | null,
+    onDragEnd: null as ((event: { active: { id: string }; over: { id: string } | null }) => void) | null,
+    onDragCancel: null as (() => void) | null,
+  },
+  dndState: {
+    active: null as { id: string } | null,
+    over: null as { id: string; rect: { top: number; left: number; width: number; height: number } } | null,
+  },
+}));
+
+vi.mock('@dnd-kit/core', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@dnd-kit/core')>();
+  return {
+    ...actual,
+    DndContext: ({
+      children,
+      onDragStart,
+      onDragEnd,
+      onDragCancel,
+    }: {
+      children: ReactNode;
+      onDragStart?: (event: never) => void;
+      onDragEnd?: (event: never) => void;
+      onDragCancel?: () => void;
+    }) => {
+      dndHandlers.onDragStart = onDragStart as typeof dndHandlers.onDragStart;
+      dndHandlers.onDragEnd = onDragEnd as typeof dndHandlers.onDragEnd;
+      dndHandlers.onDragCancel = onDragCancel ?? null;
+      return <>{children}</>;
+    },
+    DragOverlay: ({ children }: { children: ReactNode }) => <>{children}</>,
+    useDndContext: () => dndState,
+  };
+});
 
 beforeEach(() => {
   localStorage.clear();
   useDashboardLayoutStore.getState().resetLayout();
   resetFeatureFlagsForTests();
+  dndHandlers.onDragStart = null;
+  dndHandlers.onDragEnd = null;
+  dndHandlers.onDragCancel = null;
+  dndState.active = null;
+  dndState.over = null;
   vi.mocked(window.electronAPI.analyticsGetState).mockResolvedValue({
     enabled: true,
     backend: 'noop',
@@ -233,5 +277,216 @@ describe('Dashboard', () => {
     fireEvent.click(screen.getByTestId('dashboard-reset-layout-button'));
     expect(useDashboardLayoutStore.getState().assignments['/convert']).toBeUndefined();
     expect(screen.queryByTestId('dashboard-section-favourites')).not.toBeInTheDocument();
+  });
+
+  it('falls back to generic title and description keys for unknown routes', async () => {
+    useDashboardLayoutStore.setState({ order: ['/mystery'] });
+    await renderDashboard();
+    expect(screen.getByText('nav.batchQueue')).toBeInTheDocument();
+    expect(screen.getByText('dashboard.descBatch')).toBeInTheDocument();
+  });
+
+  it('shows the drag overlay and drop placeholder, then reorders cards', async () => {
+    await renderDashboard();
+    fireEvent.click(screen.getByTestId('dashboard-edit-button'));
+    const before = [...useDashboardLayoutStore.getState().order];
+
+    dndState.active = { id: '/convert' };
+    dndState.over = { id: '/media-info', rect: { top: 1, left: 2, width: 3, height: 4 } };
+    await act(async () => {
+      dndHandlers.onDragStart!({ active: { id: '/convert' } });
+    });
+    expect(screen.getByTestId('dashboard-drop-placeholder')).toBeInTheDocument();
+    expect(screen.getAllByText('nav.convert').length).toBeGreaterThan(1);
+
+    dndState.active = null;
+    dndState.over = null;
+    await act(async () => {
+      dndHandlers.onDragEnd!({ active: { id: '/convert' }, over: { id: '/media-info' } });
+    });
+    expect(useDashboardLayoutStore.getState().order).not.toEqual(before);
+    expect(screen.queryByTestId('dashboard-drop-placeholder')).not.toBeInTheDocument();
+  });
+
+  it('ignores drag completion with no target or the same target and handles drag cancel', async () => {
+    await renderDashboard();
+    fireEvent.click(screen.getByTestId('dashboard-edit-button'));
+    const before = [...useDashboardLayoutStore.getState().order];
+
+    dndState.active = { id: '/convert' };
+    dndState.over = { id: '/convert', rect: { top: 0, left: 0, width: 0, height: 0 } };
+    await act(async () => {
+      dndHandlers.onDragStart!({ active: { id: '/convert' } });
+    });
+    expect(screen.queryByTestId('dashboard-drop-placeholder')).not.toBeInTheDocument();
+
+    await act(async () => {
+      dndHandlers.onDragEnd!({ active: { id: '/convert' }, over: { id: '/convert' } });
+    });
+    await act(async () => {
+      dndHandlers.onDragEnd!({ active: { id: '/convert' }, over: null });
+    });
+    expect(useDashboardLayoutStore.getState().order).toEqual(before);
+
+    await act(async () => {
+      dndHandlers.onDragStart!({ active: { id: '/convert' } });
+    });
+    await act(async () => {
+      dndHandlers.onDragCancel!();
+    });
+    expect(screen.queryByTestId('dashboard-drop-placeholder')).not.toBeInTheDocument();
+  });
+
+  it('assigns cards to ungrouped and custom groups from the card menu', async () => {
+    useDashboardLayoutStore.setState({ customGroups: [{ id: 'custom-1', name: 'Custom' }] });
+    await renderDashboard();
+    fireEvent.click(screen.getByTestId('dashboard-edit-button'));
+
+    fireEvent.click(screen.getByTestId('dashboard-group-button-/convert'));
+    fireEvent.click(screen.getByTestId('dashboard-assign-ungrouped'));
+    expect(useDashboardLayoutStore.getState().assignments['/convert']).toBeNull();
+
+    fireEvent.click(screen.getByTestId('dashboard-group-button-/media-info'));
+    fireEvent.click(screen.getByTestId('dashboard-assign-custom-1'));
+    expect(useDashboardLayoutStore.getState().assignments['/media-info']).toBe('custom-1');
+    expect(screen.getByTestId('dashboard-section-custom-1')).toHaveTextContent('nav.mediaInfo');
+  });
+
+  it('creates a group from the bar without assigning a card', async () => {
+    await renderDashboard();
+    fireEvent.click(screen.getByTestId('dashboard-edit-button'));
+    fireEvent.click(screen.getByTestId('dashboard-new-group-button'));
+    fireEvent.change(screen.getByTestId('dashboard-group-name-input'), { target: { value: 'Bar group' } });
+    fireEvent.click(screen.getByTestId('dashboard-save-group'));
+    expect(useDashboardLayoutStore.getState().customGroups.map((group) => group.name)).toEqual(['Bar group']);
+    expect(Object.values(useDashboardLayoutStore.getState().assignments)).toHaveLength(0);
+  });
+
+  it('renames and deletes a custom group from the group menu', async () => {
+    useDashboardLayoutStore.setState({
+      customGroups: [{ id: 'custom-2', name: 'Old name' }],
+      assignments: { '/convert': 'custom-2' },
+    });
+    await renderDashboard();
+    fireEvent.click(screen.getByTestId('dashboard-edit-button'));
+
+    fireEvent.click(screen.getByTestId('dashboard-group-custom-2'));
+    fireEvent.click(screen.getByTestId('dashboard-rename-group'));
+    const input = screen.getByTestId('dashboard-group-name-input');
+    expect(input).toHaveValue('Old name');
+    fireEvent.change(input, { target: { value: 'Renamed' } });
+    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+    expect(useDashboardLayoutStore.getState().customGroups[0].name).toBe('Renamed');
+
+    fireEvent.click(screen.getByTestId('dashboard-group-custom-2'));
+    fireEvent.click(screen.getByTestId('dashboard-delete-group'));
+    expect(screen.getByTestId('dashboard-confirm-delete-group')).toBeInTheDocument();
+    const deleteDialog = screen.getByText('dashboard.edit.deleteGroupTitle').closest('[role="dialog"]') as HTMLElement;
+    fireEvent.click(within(deleteDialog).getByRole('button', { name: 'dashboard.edit.cancel' }));
+    expect(screen.queryByTestId('dashboard-confirm-delete-group')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('dashboard-group-custom-2'));
+    fireEvent.click(screen.getByTestId('dashboard-delete-group'));
+    fireEvent.click(screen.getByTestId('dashboard-confirm-delete-group'));
+    expect(useDashboardLayoutStore.getState().customGroups).toEqual([]);
+    expect(useDashboardLayoutStore.getState().assignments['/convert']).toBeNull();
+  });
+
+  it('closes card menus and dialogs when Escape is pressed', async () => {
+    useDashboardLayoutStore.setState({ customGroups: [{ id: 'custom-escape', name: 'Custom' }] });
+    await renderDashboard();
+    fireEvent.click(screen.getByTestId('dashboard-edit-button'));
+
+    fireEvent.click(screen.getByTestId('dashboard-group-button-/convert'));
+    expect(screen.getByTestId('dashboard-card-group-menu')).toBeInTheDocument();
+    fireEvent.keyDown(screen.getByTestId('dashboard-card-group-menu'), { key: 'Escape', code: 'Escape' });
+    expect(screen.queryByTestId('dashboard-card-group-menu')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('dashboard-group-custom-escape'));
+    expect(screen.getByTestId('dashboard-rename-group')).toBeInTheDocument();
+    fireEvent.keyDown(screen.getByRole('presentation'), { key: 'Escape', code: 'Escape' });
+    expect(screen.queryByTestId('dashboard-rename-group')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('dashboard-new-group-button'));
+    expect(screen.getByTestId('dashboard-group-name-input')).toBeInTheDocument();
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape', code: 'Escape' });
+    expect(screen.queryByTestId('dashboard-group-name-input')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('dashboard-group-custom-escape'));
+    fireEvent.click(screen.getByTestId('dashboard-rename-group'));
+    expect(screen.getByTestId('dashboard-group-name-input')).toBeInTheDocument();
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape', code: 'Escape' });
+    expect(screen.queryByTestId('dashboard-group-name-input')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('dashboard-group-custom-escape'));
+    fireEvent.click(screen.getByTestId('dashboard-delete-group'));
+    expect(screen.getByTestId('dashboard-confirm-delete-group')).toBeInTheDocument();
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape', code: 'Escape' });
+    expect(screen.queryByTestId('dashboard-confirm-delete-group')).not.toBeInTheDocument();
+  });
+
+  it('cancels the group dialog without creating a group', async () => {
+    await renderDashboard();
+    fireEvent.click(screen.getByTestId('dashboard-edit-button'));
+    fireEvent.click(screen.getByTestId('dashboard-new-group-button'));
+    fireEvent.change(screen.getByTestId('dashboard-group-name-input'), { target: { value: 'Discard me' } });
+    const dialog = screen.getByText('dashboard.edit.newGroupTitle').closest('[role="dialog"]') as HTMLElement;
+    fireEvent.click(within(dialog).getByRole('button', { name: 'dashboard.edit.cancel' }));
+
+    expect(screen.queryByTestId('dashboard-group-name-input')).not.toBeInTheDocument();
+    expect(useDashboardLayoutStore.getState().customGroups).toEqual([]);
+  });
+
+  it('renders an empty group title when a saved custom group cannot be found', async () => {
+    const customGroups = [{ id: 'custom-missing', name: 'Missing' }];
+    Object.defineProperty(customGroups, 'find', { value: () => undefined });
+    useDashboardLayoutStore.setState({ customGroups, assignments: { '/convert': 'custom-missing' } });
+
+    await renderDashboard();
+
+    const section = screen.getByTestId('dashboard-section-custom-missing');
+    expect(section).toBeInTheDocument();
+    expect(section).not.toHaveTextContent('Missing');
+  });
+
+  it('starts a rename with an empty draft when the custom group cannot be found', async () => {
+    const customGroups = [{ id: 'custom-rename-missing', name: 'Missing' }];
+    Object.defineProperty(customGroups, 'find', { value: () => undefined });
+    useDashboardLayoutStore.setState({ customGroups });
+
+    await renderDashboard();
+    fireEvent.click(screen.getByTestId('dashboard-edit-button'));
+    fireEvent.click(screen.getByTestId('dashboard-group-custom-rename-missing'));
+    fireEvent.click(screen.getByTestId('dashboard-rename-group'));
+
+    expect(screen.getByTestId('dashboard-group-name-input')).toHaveValue('');
+  });
+
+  it('ignores non-Enter keys and blank names in the group dialog', async () => {
+    await renderDashboard();
+    fireEvent.click(screen.getByTestId('dashboard-edit-button'));
+    fireEvent.click(screen.getByTestId('dashboard-new-group-button'));
+    const input = screen.getByTestId('dashboard-group-name-input');
+    fireEvent.keyDown(input, { key: 'a', code: 'KeyA' });
+    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+
+    expect(input).toBeInTheDocument();
+    expect(useDashboardLayoutStore.getState().customGroups).toEqual([]);
+  });
+
+  it('does not create a group once the custom group cap is reached', async () => {
+    const customGroups = Array.from({ length: MAX_CUSTOM_GROUPS }, (_, index) => ({
+      id: `custom-${index}`,
+      name: `Group ${index}`,
+    }));
+    useDashboardLayoutStore.setState({ customGroups });
+
+    await renderDashboard();
+    fireEvent.click(screen.getByTestId('dashboard-edit-button'));
+    fireEvent.click(screen.getByTestId('dashboard-new-group-button'));
+    fireEvent.change(screen.getByTestId('dashboard-group-name-input'), { target: { value: 'Another group' } });
+    fireEvent.click(screen.getByTestId('dashboard-save-group'));
+
+    expect(useDashboardLayoutStore.getState().customGroups).toHaveLength(MAX_CUSTOM_GROUPS);
   });
 });

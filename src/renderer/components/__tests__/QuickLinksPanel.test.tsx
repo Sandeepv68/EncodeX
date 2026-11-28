@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { MemoryRouter, useLocation } from 'react-router-dom';
 import QuickLinksPanel from '../QuickLinksPanel';
+import { recordAnalyticsEvent } from '../../../shared/analytics/AnalyticsService';
 
 const testFlags = vi.hoisted(() => ({ automations_page: true }));
 
@@ -9,10 +10,21 @@ vi.mock('../../hooks/useFeatureFlags', () => ({
   useFeatureFlags: () => ({ automations_page: testFlags.automations_page }),
 }));
 
+vi.mock('../../../shared/analytics/AnalyticsService', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../../shared/analytics/AnalyticsService')>()),
+  recordAnalyticsEvent: vi.fn(),
+}));
+
+function LocationProbe() {
+  const location = useLocation();
+  return <span data-testid="location">{location.pathname}</span>;
+}
+
 function renderPanel() {
   return render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries={['/']}>
       <QuickLinksPanel />
+      <LocationProbe />
     </MemoryRouter>,
   );
 }
@@ -20,6 +32,7 @@ function renderPanel() {
 describe('QuickLinksPanel', () => {
   beforeEach(() => {
     testFlags.automations_page = true;
+    vi.mocked(recordAnalyticsEvent).mockClear();
   });
 
   it('renders a left-aligned panel heading without tabs or an empty-state card', () => {
@@ -51,5 +64,15 @@ describe('QuickLinksPanel', () => {
     expect(screen.queryByTestId('quick-link-run-automation')).not.toBeInTheDocument();
     expect(screen.queryByTestId('quick-link-view-run-history')).not.toBeInTheDocument();
     expect(screen.queryByTestId('quick-link-save-automation-pipeline')).not.toBeInTheDocument();
+  });
+
+  it('records analytics and navigates when a quick link is clicked', () => {
+    renderPanel();
+    fireEvent.click(screen.getByTestId('quick-link-chat-with-copilot'));
+
+    expect(recordAnalyticsEvent).toHaveBeenCalledWith(
+      expect.objectContaining({ name: 'quick_link_clicked', props: { route: '/copilot' } }),
+    );
+    expect(screen.getByTestId('location')).toHaveTextContent('/copilot');
   });
 });

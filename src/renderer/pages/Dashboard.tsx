@@ -216,8 +216,7 @@ export default function Dashboard() {
   }
 
   function handleAssign(groupId: DashboardGroupId | null): void {
-    if (!cardMenu) return;
-    assignGroup(cardMenu.route, groupId);
+    assignGroup(cardMenu!.route, groupId);
     recordAnalyticsEvent(createAnalyticsEvent('dashboard_group_assigned', { groupKind: groupKind(groupId) }));
     setCardMenu(null);
   }
@@ -251,8 +250,7 @@ export default function Dashboard() {
   }
 
   function handleDeleteGroup(): void {
-    if (!deleteId) return;
-    deleteGroup(deleteId);
+    deleteGroup(deleteId!);
     recordAnalyticsEvent(createAnalyticsEvent('dashboard_group_deleted', { groupCount: Math.max(0, customGroups.length - 1) }));
     setDeleteId(null);
   }

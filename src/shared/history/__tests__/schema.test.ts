@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { HISTORY_LIMITS } from '../limits';
-import { parseHistoryContext, parseHistoryEntry, parseHistoryStoreJson } from '../schema';
+import { parseHistoryContext, parseHistoryEntry, parseHistoryError, parseHistoryStoreJson, parseHistoryThumbnail } from '../schema';
 import type { HistoryEntry } from '../types';
 
 function makeEntry(overrides: Partial<HistoryEntry> = {}): HistoryEntry {
@@ -47,5 +47,26 @@ describe('history schema', () => {
       metadata: { codec: 'mp3' },
     });
     expect(parseHistoryContext({ family: 'batch', source: 'gui' })).toBeNull();
+  });
+
+  it('parses bounded error details and ignores malformed ones', () => {
+    expect(parseHistoryError({ code: 'E_TEST', message: 'failed', detail: 'more' })).toEqual({
+      code: 'E_TEST',
+      message: 'failed',
+      detail: 'more',
+    });
+    expect(parseHistoryError({ message: '' })).toBeUndefined();
+    expect(parseHistoryError('boom')).toBeUndefined();
+  });
+
+  it('parses thumbnails and ignores malformed payloads', () => {
+    expect(parseHistoryThumbnail({ path: '/tmp/a.png', mimeType: 'image/png' })).toEqual({ path: '/tmp/a.png', mimeType: 'image/png' });
+    expect(parseHistoryThumbnail({ path: '/tmp/a.gif', mimeType: 'image/gif' })).toBeNull();
+    expect(parseHistoryThumbnail(null)).toBeNull();
+  });
+
+  it('falls back to an empty store for mismatched versions or entries that are not an array', () => {
+    expect(parseHistoryStoreJson(JSON.stringify({ version: 2, entries: [] }))).toEqual({ version: 1, entries: [] });
+    expect(parseHistoryStoreJson(JSON.stringify({ version: 1, entries: {} }))).toEqual({ version: 1, entries: [] });
   });
 });

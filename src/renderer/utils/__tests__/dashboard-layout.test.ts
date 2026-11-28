@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   DEFAULT_DASHBOARD_ROUTES,
   FAVOURITES_GROUP_ID,
@@ -6,7 +6,14 @@ import {
   MAX_GROUP_NAME_LENGTH,
   UNGROUPED_GROUP_ID,
 } from '../../constants/dashboard';
-import { createDefaultLayout, createGroupId, normalizeGroupName, reconcileDashboardLayout, reorderedRoutes } from '../dashboard-layout';
+import {
+  createDefaultLayout,
+  createGroupId,
+  groupKind,
+  normalizeGroupName,
+  reconcileDashboardLayout,
+  reorderedRoutes,
+} from '../dashboard-layout';
 
 describe('createDefaultLayout', () => {
   it('returns every canonical card route in order with no groups', () => {
@@ -36,6 +43,23 @@ describe('createGroupId', () => {
     const first = createGroupId();
     expect(first.length).toBeGreaterThan(0);
     expect(createGroupId()).not.toBe(first);
+  });
+
+  it('falls back to a timestamp-based id without Web Crypto', () => {
+    vi.stubGlobal('crypto', undefined);
+    try {
+      expect(createGroupId()).toMatch(/^group-\d+-[a-z0-9]+$/);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+});
+
+describe('groupKind', () => {
+  it('classifies built-in and custom groups', () => {
+    expect(groupKind(null)).toBe('ungrouped');
+    expect(groupKind(FAVOURITES_GROUP_ID)).toBe('favourites');
+    expect(groupKind('custom-group')).toBe('custom');
   });
 });
 

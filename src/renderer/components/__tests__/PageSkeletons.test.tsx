@@ -15,6 +15,7 @@ import {
   ConvertSkeleton,
   CopilotSkeleton,
   DemuxSkeleton,
+  HistorySkeleton,
   ImageCompressSkeleton,
   LogsSkeleton,
   MediaInfoSkeleton,
@@ -37,6 +38,7 @@ const SKELETONS: Array<[string, ComponentType]> = [
   ['About', AboutSkeleton],
   ['MediaInfo', MediaInfoSkeleton],
   ['Copilot', CopilotSkeleton],
+  ['History', HistorySkeleton],
 ];
 
 describe('PageSkeletons', () => {

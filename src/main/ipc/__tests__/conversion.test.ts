@@ -226,6 +226,34 @@ describe('registerConversionHandlers', () => {
     expect(historyRecorderMock.record).toHaveBeenCalledWith(expect.objectContaining({ status: 'failed' }));
   });
 
+  it('CONVERT_FILE records safe history fields when option getters turn hostile', async () => {
+    let additionalReads = 0;
+    let hardwareReads = 0;
+    const options = {
+      get additionalInputs() {
+        additionalReads += 1;
+        if (additionalReads === 3) throw new Error('hostile getter');
+        return [];
+      },
+      get hardwareAcceleration() {
+        hardwareReads += 1;
+        if (hardwareReads === 4) throw new Error('hostile getter');
+        return false;
+      },
+    };
+    const transcoder = makeTranscoder();
+    createTranscoderMock.mockReturnValue(transcoder);
+    historyRecorderMock.record.mockClear();
+
+    const pending = getHandlers()[IPC.CONVERT_FILE]({}, 'in.mp4', 'out.mp4', options, 'FFMPEG') as Promise<void>;
+    transcoder.emitter.emit('end');
+    await pending;
+
+    expect(historyRecorderMock.record).toHaveBeenCalledWith(
+      expect.objectContaining({ inputs: ['in.mp4'], metadata: expect.objectContaining({ hwAccel: false }) }),
+    );
+  });
+
   it('CONVERT_FILE records exactly one cancelled entry for cancelled errors', async () => {
     const errors = [
       new Error('killed'),

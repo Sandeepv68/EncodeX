@@ -265,11 +265,11 @@ const INTERACTIVE_BUDGET_MS = 2_000;
  * wedged renderer (the "alive but useless" signature, with main answering in
  * single-digit ms while the renderer never settles) still fails too.
  *
- * `/batch` gets a smaller 3,000 ms override: under `big-blob` the nightly runner
- * measured a single 2,111 ms round-trip there while main answered in 1 ms and
- * every other route stayed below 600 ms. The 2,000 ms ceiling sat just below
- * that outlier; 3,000 ms keeps the "alive but useless" gate while absorbing CI
- * scheduling jitter on the queue route.
+ * `/batch` gets a smaller 5,000 ms override: under `big-blob` the nightly runner
+ * first measured a single 2,111 ms round-trip there while main answered in 1 ms,
+ * then the 2026-11-28 CI sweep measured 3,387 ms with main still answering in 1 ms.
+ * The 2,000 ms ceiling sat below those outliers; 5,000 ms keeps the "alive but
+ * useless" gate while absorbing scheduling jitter on the queue route.
  *
  * `/remux` gets the same 3,000 ms ceiling after the 2026-11-25 CI sweep measured
  * a lone 2,260 ms round-trip there under `big-blob` while main answered in 60 ms
@@ -281,7 +281,7 @@ const INTERACTIVE_BUDGET_MS = 2_000;
  */
 const ROUTE_BUDGET_MS: Record<string, number> = {
   '/automations': 6_000,
-  '/batch': 3_000,
+  '/batch': 5_000,
   '/logs': 6_000,
   '/media-info': 3_000,
   '/remux': 3_000,
@@ -395,8 +395,8 @@ function discoverPushChannels(exclude: ReadonlySet<string> = new Set()): string[
  * way that reading `cb();` out of a bundled handler body is not, and pinned by
  * {@link EXPECTED_COMMAND_CONSTANTS} so a channel gaining or losing a payload fails here.
  *
- * Four of the five are inert for this harness - queue and mux-queue refreshes, an updater
- * status and the shared-log clear. The fifth, `window-close-requested`, is a **command**, and
+ * Five of the six are inert for this harness - history, queue and mux-queue refreshes, an updater
+ * status and the shared-log clear. The sixth, `window-close-requested`, is a **command**, and
  * including it in a payload
  * sweep tests the wrong thing: `CloseConfirmDialog`'s handler calls `windowCloseConfirmed()` when
  * it has no pending work, and main then closes the window. Firing it at 100 Hz closes the app *by
@@ -404,6 +404,7 @@ function discoverPushChannels(exclude: ReadonlySet<string> = new Set()): string[
  * its own test instead, which asserts the documented behaviour instead of working around it.
  */
 const EXPECTED_COMMAND_CONSTANTS = [
+  'HISTORY_UPDATED',
   'LOGS_CLEARED',
   'MUX_QUEUE_CANCELLED',
   'QUEUE_CANCELLED',
@@ -874,17 +875,17 @@ describe.runIf(IS_REAL)('IPC event-channel abuse (Tier B, real main + real prelo
   it(
     'fires the no-payload channels and asserts their documented effect',
     async () => {
-      // The five channels excluded from the payload sweep, tested for what they actually do
+      // The six channels excluded from the payload sweep, tested for what they actually do
       // instead of being worked around.
       //
-      // `mux-queue-cancelled`, `queue-cancelled`, `update-not-available` and `logs-cleared` are
-      // notifications: firing them must leave the app alive and answering. `window-close-requested`
-      // is a command -
+      // `history-updated`, `mux-queue-cancelled`, `queue-cancelled`, `update-not-available` and
+      // `logs-cleared` are notifications: firing them must leave the app alive and answering.
+      // `window-close-requested` is a command -
       // `CloseConfirmDialog` calls `windowCloseConfirmed()` when nothing is pending, and main closes
       // the window - so its assertion is that the window goes away *cleanly*, with no unhandled
       // fault, which the global tripwire checks.
       const inert = commandChannels.filter((channel) => channel !== 'window-close-requested');
-      expect(inert, 'expected the queue, updater and log notifications among the no-payload channels').toHaveLength(4);
+      expect(inert, 'expected the history, queue, updater and log notifications among the no-payload channels').toHaveLength(5);
 
       session = await ensureLiveSession(session, SESSION_OPTIONS);
       await ensureTermsAccepted(session.page);

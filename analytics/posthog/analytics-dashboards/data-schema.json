@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "eventCount": 130,
+  "eventCount": 138,
   "events": [
     {
       "name": "always_on_top_toggled",
@@ -278,7 +278,37 @@
       "tier": null
     },
     {
+      "name": "dashboard_card_reordered",
+      "group": "nav",
+      "tier": null
+    },
+    {
+      "name": "dashboard_edit_toggled",
+      "group": "ux",
+      "tier": null
+    },
+    {
+      "name": "dashboard_group_assigned",
+      "group": "ux",
+      "tier": null
+    },
+    {
+      "name": "dashboard_group_created",
+      "group": "ux",
+      "tier": null
+    },
+    {
+      "name": "dashboard_group_deleted",
+      "group": "ux",
+      "tier": null
+    },
+    {
       "name": "dashboard_shortcut_used",
+      "group": "nav",
+      "tier": null
+    },
+    {
+      "name": "dashboard_view_changed",
       "group": "nav",
       "tier": null
     },
@@ -470,6 +500,16 @@
     {
       "name": "profile_updated",
       "group": "profiles",
+      "tier": null
+    },
+    {
+      "name": "quick_link_clicked",
+      "group": "nav",
+      "tier": null
+    },
+    {
+      "name": "quick_links_tab_viewed",
+      "group": "nav",
       "tier": null
     },
     {
