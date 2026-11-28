@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "Sjálfvirkni"
+    "automations": "Sjálfvirkni",
+    "history": "Ferill"
   },
   "dashboard": {
     "welcome": "Velkomin í EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "Uppáhalds",
       "ungrouped": "Öll tæki"
-    }
+    },
+    "descHistory": "Yfirfara aðgerðir sem tókust, mistókust og voru felldar niður"
   },
   "gettingStarted": {
     "hint": "Nýr hér?",
@@ -1794,6 +1796,58 @@
         "title": "Lestu um EncodeX",
         "description": "Lærðu meira um EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "Aðgerðarsaga",
+    "search": "Leita að aðgerðum",
+    "empty": "Engar aðgerðir passa við núverandi síur.",
+    "clearConfirm": "Hreinsa alla ferilskrá aðgerða?",
+    "refresh": "Hreinsa",
+    "clear": "Hreinsa feril",
+    "remove": "Fjarlægja",
+    "details": "Upplýsingar",
+    "noSelection": "Veldu aðgerð til að skoða upplýsingar um hana.",
+    "count": "{{count}} aðgerðir",
+    "filteredCount": "{{count}} af {{total}} aðgerðum",
+    "status": "Staða",
+    "family": "Aðgerð",
+    "source": "Heimild",
+    "started": "Byrjaði",
+    "duration": "Tímalengd",
+    "input": "Inntak",
+    "outputs": "Úttök",
+    "error": "Villa",
+    "metadata": "Lýsigögn",
+    "sort": "Raða",
+    "allStatuses": "Allar stöður",
+    "allFamilies": "Allar aðgerðir",
+    "allSources": "Allar heimildir",
+    "sortNewest": "Sýna & nýjustu fyrst",
+    "sortOldest": "Sýna elstu myndina fyrst",
+    "sortLongest": "Lengsta fyrst",
+    "sortShortest": "Styttsta fyrst",
+    "sortName": "Nafn A-Ö",
+    "statusLabels": {
+      "succeeded": "Tókst",
+      "failed": "Mistókst",
+      "cancelled": "Hætt við"
+    },
+    "familyLabels": {
+      "convert": "Umbreyta",
+      "audioExtract": "Útdráttur hljóðs",
+      "imageCompress": "Samþjöppun mynda",
+      "videoCut": "Myndskeiðssnið",
+      "remux": "Endurblöndun",
+      "demux": "Afkóðun",
+      "batch": "Biðröð lotna",
+      "automation": "Sjálfvirkni",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Notendaviðmót",
+      "mcp": "MCP",
+      "automation": "Sjálfvirkni"
     }
   }
 }

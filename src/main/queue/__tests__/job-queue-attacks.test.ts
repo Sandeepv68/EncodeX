@@ -671,3 +671,57 @@ describe('JobQueue - bulk and reentrancy', () => {
     expect(queue.getConcurrency()).toBe(4);
   }, 120_000);
 });
+
+describe('JobQueue - history recording', () => {
+  let transcoders: FakeTranscoder[];
+  let historyRecorder: { record: ReturnType<typeof vi.fn> };
+
+  beforeEach(() => {
+    transcoders = [];
+    historyRecorder = { record: vi.fn().mockResolvedValue({ id: 'entry' }) };
+  });
+
+  it('records exactly one succeeded entry when a job completes', () => {
+    const transcoder = new FakeTranscoder();
+    transcoders.push(transcoder);
+    const { queue } = makeQueue(transcoders, { historyRecorder });
+    const id = queue.addJob('history-in.mp4', 'history-out.mp4', OPTS, 'FFMPEG' as TranscoderType);
+
+    queue.start();
+    transcoder.emitter.emit('end');
+
+    expect(historyRecorder.record).toHaveBeenCalledTimes(1);
+    expect(historyRecorder.record).toHaveBeenCalledWith(
+      expect.objectContaining({ family: 'batch', source: 'gui', status: 'succeeded', jobId: id, inputs: ['history-in.mp4'] }),
+    );
+  });
+
+  it('records exactly one failed entry when a job fails', () => {
+    const transcoder = new FakeTranscoder();
+    transcoders.push(transcoder);
+    const { queue } = makeQueue(transcoders, { historyRecorder });
+    const id = queue.addJob('history-fail-in.mp4', 'history-fail-out.mp4', OPTS, 'FFMPEG' as TranscoderType);
+
+    queue.start();
+    transcoder.emitter.emit('error', new Error('boom'));
+
+    expect(historyRecorder.record).toHaveBeenCalledTimes(1);
+    expect(historyRecorder.record).toHaveBeenCalledWith(
+      expect.objectContaining({ family: 'batch', status: 'failed', jobId: id, error: expect.objectContaining({ message: 'boom' }) }),
+    );
+  });
+
+  it('records exactly one cancelled entry when a job is cancelled', () => {
+    const transcoder = new FakeTranscoder();
+    transcoders.push(transcoder);
+    const { queue } = makeQueue(transcoders, { historyRecorder });
+    const id = queue.addJob('history-cancel-in.mp4', 'history-cancel-out.mp4', OPTS, 'FFMPEG' as TranscoderType);
+
+    queue.start();
+    queue.cancelJob(id);
+    transcoder.emitter.emit('error', Object.assign(new Error('killed'), { code: 'CANCELLED' }));
+
+    expect(historyRecorder.record).toHaveBeenCalledTimes(1);
+    expect(historyRecorder.record).toHaveBeenCalledWith(expect.objectContaining({ family: 'batch', status: 'cancelled', jobId: id }));
+  });
+});

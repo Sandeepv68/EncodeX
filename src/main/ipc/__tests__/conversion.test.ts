@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { EventEmitter } from 'events';
 import { IPC } from '../../../shared/ipc-channels';
+import { createError, ErrorCode, ERROR_MESSAGES } from '../../../shared/errors';
 
-const { ipcMainMock, getHandlers, createTranscoderMock, existsSyncMock, unlinkMock } = vi.hoisted(() => {
+const { ipcMainMock, getHandlers, createTranscoderMock, existsSyncMock, unlinkMock, historyRecorderMock } = vi.hoisted(() => {
   const handlers: Record<string, (...args: unknown[]) => unknown> = {};
   return {
     ipcMainMock: {
@@ -14,6 +15,7 @@ const { ipcMainMock, getHandlers, createTranscoderMock, existsSyncMock, unlinkMo
     getHandlers: () => handlers,
     existsSyncMock: vi.fn(() => true),
     unlinkMock: vi.fn(),
+    historyRecorderMock: { record: vi.fn().mockResolvedValue({ id: 'entry' }) },
   };
 });
 
@@ -63,7 +65,8 @@ describe('registerConversionHandlers', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    registerConversionHandlers({} as never, send);
+    historyRecorderMock.record.mockResolvedValue({ id: 'entry' });
+    registerConversionHandlers({} as never, send, historyRecorderMock);
   });
 
   afterEach(() => {
@@ -179,5 +182,65 @@ describe('registerConversionHandlers', () => {
     await getHandlers()[IPC.RESUME_CONVERSION]();
     expect(transcoder.pause).not.toHaveBeenCalled();
     expect(transcoder.resume).not.toHaveBeenCalled();
+  });
+
+  it('CONVERT_FILE records exactly one succeeded entry', async () => {
+    const transcoder = makeTranscoder();
+    createTranscoderMock.mockReturnValue(transcoder);
+    const pending = getHandlers()[IPC.CONVERT_FILE]({}, 'in.mp4', 'out.mp4', {}, 'FFMPEG') as Promise<void>;
+    transcoder.emitter.emit('end');
+    await pending;
+    expect(historyRecorderMock.record).toHaveBeenCalledTimes(1);
+    expect(historyRecorderMock.record).toHaveBeenCalledWith(
+      expect.objectContaining({
+        family: 'convert',
+        source: 'gui',
+        status: 'succeeded',
+        inputs: ['in.mp4'],
+        outputs: ['out.mp4'],
+        transcoder: 'FFMPEG',
+      }),
+    );
+  });
+
+  it('CONVERT_FILE records exactly one failed entry on an emitted error', async () => {
+    const transcoder = makeTranscoder();
+    createTranscoderMock.mockReturnValue(transcoder);
+    const pending = getHandlers()[IPC.CONVERT_FILE]({}, 'in.mp4', 'out.mp4', {}, 'FFMPEG') as Promise<void>;
+    transcoder.emitter.emit('error', new Error('conversion failed'));
+    await expect(pending).rejects.toMatchObject({ code: 'CONVERSION_FAILED' });
+    expect(historyRecorderMock.record).toHaveBeenCalledTimes(1);
+    expect(historyRecorderMock.record).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 'failed', error: expect.objectContaining({ message: 'conversion failed' }) }),
+    );
+  });
+
+  it('CONVERT_FILE records exactly one failed entry when convert throws synchronously', async () => {
+    const transcoder = makeTranscoder();
+    transcoder.convert.mockImplementation(() => {
+      throw new Error('boom');
+    });
+    createTranscoderMock.mockReturnValue(transcoder);
+    await expect(getHandlers()[IPC.CONVERT_FILE]({}, 'in.mp4', 'out.mp4', {}, 'FFMPEG')).rejects.toMatchObject({ detail: 'boom' });
+    expect(historyRecorderMock.record).toHaveBeenCalledTimes(1);
+    expect(historyRecorderMock.record).toHaveBeenCalledWith(expect.objectContaining({ status: 'failed' }));
+  });
+
+  it('CONVERT_FILE records exactly one cancelled entry for cancelled errors', async () => {
+    const errors = [
+      new Error('killed'),
+      createError(ErrorCode.CANCELLED, ERROR_MESSAGES[ErrorCode.CANCELLED]),
+      Object.assign(new Error('cancelled'), { code: ErrorCode.CANCELLED }),
+    ];
+    for (const err of errors) {
+      historyRecorderMock.record.mockClear();
+      const transcoder = makeTranscoder();
+      createTranscoderMock.mockReturnValue(transcoder);
+      const pending = getHandlers()[IPC.CONVERT_FILE]({}, 'in.mp4', 'out.mp4', {}, 'FFMPEG') as Promise<void>;
+      transcoder.emitter.emit('error', err);
+      await expect(pending).rejects.toMatchObject({ code: 'CANCELLED' });
+      expect(historyRecorderMock.record).toHaveBeenCalledTimes(1);
+      expect(historyRecorderMock.record).toHaveBeenCalledWith(expect.objectContaining({ status: 'cancelled' }));
+    }
   });
 });

@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "ස්වයංක්‍රීයකරණ"
+    "automations": "ස්වයංක්‍රීයකරණ",
+    "history": "ඉතිහාසය"
   },
   "dashboard": {
     "welcome": "EncodeX වෙත සාදරයෙන් පිළිගනිමු",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "ප්‍රියතමයන්",
       "ungrouped": "සියලු මෙවලම්"
-    }
+    },
+    "descHistory": "සාර්ථක, අසාර්ථක සහ අවලංගු කළ මෙහෙයුම් සමාලෝචනය කරන්න"
   },
   "gettingStarted": {
     "hint": "මෙහි අලුත්ද?",
@@ -1794,6 +1796,58 @@
         "title": "EncodeX ගැන කියවන්න",
         "description": "EncodeX ගැන තව දැනගන්න."
       }
+    }
+  },
+  "history": {
+    "title": "මෙහෙයුම් ඉතිහාසය",
+    "search": "සෙවුම් මෙහෙයුම්",
+    "empty": "වත්මන් පෙරහන් සමඟ කිසිදු ක්‍රියාවක් නොගැලපේ.",
+    "clearConfirm": "සියලුම මෙහෙයුම් ඉතිහාසය හිස් කරන්නද?",
+    "refresh": "නැවුම් කරන්න",
+    "clear": "ඉතිහාසය පැහැදිලි කරන්න",
+    "remove": "ඉවත් කරන්න",
+    "details": "විස්තර",
+    "noSelection": "එහි විස්තර බැලීමට මෙහෙයුමක් තෝරන්න.",
+    "count": "{{count}} මෙහෙයුම්",
+    "filteredCount": "මෙහෙයුම් {{total}} න් {{count}}",
+    "status": "තත්ත්වය",
+    "family": "මෙහෙයුම",
+    "source": "මූලාශ්රය",
+    "started": "පටන් ගත්තා",
+    "duration": "කාලසීමාව",
+    "input": "ආදානය",
+    "outputs": "ප්රතිදාන",
+    "error": "දෝෂයකි",
+    "metadata": "පාරදත්ත",
+    "sort": "වර්ග කරන්න",
+    "allStatuses": "සියලුම තත්ව",
+    "allFamilies": "සියලුම මෙහෙයුම්",
+    "allSources": "සියලුම මූලාශ්ර",
+    "sortNewest": "අලුත්ම මුලින්ම",
+    "sortOldest": "පැරණිතම පළමුව",
+    "sortLongest": "දිගම පළමු",
+    "sortShortest": "කෙටිම පළමුව",
+    "sortName": "නම A-Z",
+    "statusLabels": {
+      "succeeded": "සාර්ථක විය",
+      "failed": "අසාර්ථකයි",
+      "cancelled": "අවලංගු කළා"
+    },
+    "familyLabels": {
+      "convert": "පරිවර්තනය කරන්න",
+      "audioExtract": "ශ්රව්ය නිස්සාරණය",
+      "imageCompress": "රූප සම්පීඩනය",
+      "videoCut": "වීඩියෝ කප්පාදුව",
+      "remux": "Remux",
+      "demux": "Demux",
+      "batch": "කණ්ඩායම් පෝලිම",
+      "automation": "ස්වයංක්රීයකරණය",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "අතුරු මුහුණත",
+      "mcp": "MCP",
+      "automation": "ස්වයංක්රීයකරණය"
     }
   }
 }

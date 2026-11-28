@@ -61,6 +61,7 @@ import type {
   AutomationRunState,
   AutomationStartRequest,
 } from '../../shared/automations/types';
+import type { HistoryEntry, HistoryFamily, HistorySource, HistoryStatus } from '../../shared/history/types';
 
 /**
  * Persisted hardware acceleration settings.
@@ -1178,4 +1179,33 @@ export interface QuickLink {
   descriptionKey: string;
   iconKey: QuickLinkIconKey;
   featureFlag?: string;
+}
+
+export type HistoryLoadState = 'idle' | 'loading' | 'ready' | 'error';
+
+export type HistorySortKey = 'newest' | 'oldest' | 'longest' | 'shortest' | 'name';
+
+export interface HistoryQuery {
+  search: string;
+  status: HistoryStatus | 'all';
+  family: HistoryFamily | 'all';
+  source: HistorySource | 'all';
+  sort: HistorySortKey;
+}
+
+export interface HistoryState {
+  entries: HistoryEntry[];
+  loadState: HistoryLoadState;
+  error: string | null;
+  query: HistoryQuery;
+  selectedId: string | null;
+  thumbnails: Record<string, string | null>;
+  load: () => Promise<void>;
+  refresh: () => Promise<void>;
+  clear: () => Promise<void>;
+  remove: (id: string) => Promise<void>;
+  loadThumbnail: (entry: HistoryEntry) => Promise<void>;
+  setQuery: (patch: Partial<HistoryQuery>) => void;
+  select: (id: string | null) => void;
+  reset: () => void;
 }

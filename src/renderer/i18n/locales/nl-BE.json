@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "Automatiseringen"
+    "automations": "Automatiseringen",
+    "history": "Geschiedenis"
   },
   "dashboard": {
     "welcome": "Welkom bij EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "Favorieten",
       "ungrouped": "Alle tools"
-    }
+    },
+    "descHistory": "Beoordeel succesvolle, mislukte en geannuleerde bewerkingen"
   },
   "gettingStarted": {
     "hint": "Nieuw hier?",
@@ -1794,6 +1796,58 @@
         "title": "Lees meer over EncodeX",
         "description": "Meer informatie over EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "Operatie Geschiedenis",
+    "search": "Zoekbewerkingen",
+    "empty": "Er zijn geen bewerkingen die overeenkomen met de huidige filters.",
+    "clearConfirm": "Alle bedieningsgeschiedenis wissen?",
+    "refresh": "Vernieuwen",
+    "clear": "Geschiedenis wissen",
+    "remove": "Verwijderen",
+    "details": "Details",
+    "noSelection": "Selecteer een bewerking om de details ervan te bekijken.",
+    "count": "{{count}} bewerkingen",
+    "filteredCount": "{{count}} van {{total}} bewerkingen",
+    "status": "Status",
+    "family": "Operatie",
+    "source": "Bron",
+    "started": "Gestart",
+    "duration": "Duur",
+    "input": "Invoer",
+    "outputs": "Uitgangen",
+    "error": "Fout",
+    "metadata": "Metagegevens",
+    "sort": "Sorteren",
+    "allStatuses": "Alle statussen",
+    "allFamilies": "Alle operaties",
+    "allSources": "Alle bronnen",
+    "sortNewest": "Nieuwste eerst",
+    "sortOldest": "Oudste eerst",
+    "sortLongest": "Langste eerst",
+    "sortShortest": "Kortste eerst",
+    "sortName": "Naam A-Z",
+    "statusLabels": {
+      "succeeded": "Geslaagd",
+      "failed": "Mislukt",
+      "cancelled": "Geannuleerd"
+    },
+    "familyLabels": {
+      "convert": "Converteren",
+      "audioExtract": "Audio-extractie",
+      "imageCompress": "Beeldcompressie",
+      "videoCut": "Video-opname",
+      "remux": "Remux",
+      "demux": "Demux",
+      "batch": "Batch-wachtrij",
+      "automation": "Automatisering",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Interface",
+      "mcp": "MCP",
+      "automation": "Automatisering"
     }
   }
 }

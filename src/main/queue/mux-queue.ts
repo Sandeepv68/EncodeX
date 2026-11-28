@@ -21,6 +21,8 @@ import { QUEUE_STATUS } from '../../shared/media-options';
 import { COMPLETED_PROGRESS } from '../../shared/transcoder-constants';
 import { DEFAULT_MUX_QUEUE_CONCURRENCY, MAX_MUX_QUEUE_TARGETS, MUX_QUEUE_STATE_VERSION } from '../../shared/constants';
 import type { ConversionProgress, MuxQueueAddPayload, MuxQueueJob, MuxQueueSnapshot, TranscoderType } from '../../shared/types';
+import { HISTORY_LIMITS } from '../../shared/history/limits';
+import type { HistoryRecorderLike, HistoryStatus } from '../../shared/history/types';
 import { createTranscoder } from '../transcoders/factory';
 import type { ITranscoder } from '../transcoders/types';
 import { MuxJobRunner } from './mux-job-runner';
@@ -32,6 +34,7 @@ import { targetCountBucket } from '../../shared/analytics/analytics-summaries';
 import type { MuxQueueOptions, MuxQueuePersistence } from './types';
 import {
   LOG_ARROW,
+  LOG_HISTORY_RECORD_FAILED,
   LOG_MUX_QUEUE_CANCELLED,
   LOG_MUX_QUEUE_CLEAR_COMPLETED,
   LOG_MUX_QUEUE_DRAINED,
@@ -55,6 +58,10 @@ import {
 } from '../../shared/log-constants';
 
 const log = new Logger('main/queue/mux-queue');
+
+function historyErrorMessage(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
+}
 
 /**
  * Default debounce delay before a mux queue mutation is written to disk.
@@ -90,6 +97,7 @@ export class MuxQueue extends EventEmitter {
   private readonly persistDelayMs: number;
   /** Factory used to create the transcoder running each job's targets. */
   private readonly transcoderFactory: (type: TranscoderType) => ITranscoder;
+  private readonly historyRecorder?: HistoryRecorderLike;
   /** Pending debounced persistence timer, or null when none is scheduled. */
   private persistTimer: NodeJS.Timeout | null = null;
   /** True once at least one job reached a terminal state since the last drain. */
@@ -107,6 +115,7 @@ export class MuxQueue extends EventEmitter {
     this.persistence = options.persistence;
     this.persistDelayMs = options.persistDelayMs ?? DEFAULT_PERSIST_DELAY_MS;
     this.transcoderFactory = options.transcoderFactory ?? createTranscoder;
+    this.historyRecorder = options.historyRecorder;
     this.loadPersistedState();
   }
 
@@ -392,12 +401,14 @@ export class MuxQueue extends EventEmitter {
    * @returns {void}
    */
   cancelJob(id: string): void {
+    const job = this.queue.find((item) => item.id === id);
     const runner = this.activeJobs.get(id);
     if (runner) {
       runner.cancel();
       this.activeJobs.delete(id);
     }
     this.removeJob(id);
+    if (job) this.recordHistory(job, 'cancelled');
     if (runner) {
       this.processNext();
     }
@@ -413,6 +424,7 @@ export class MuxQueue extends EventEmitter {
       runner.cancel();
     }
     for (const job of this.queue) {
+      this.recordHistory(job, 'cancelled');
       for (const target of job.targets) {
         muxOutputClaims.release(target.output, job.id);
       }
@@ -533,6 +545,34 @@ export class MuxQueue extends EventEmitter {
     return this.queue.some((job) => job.id === id);
   }
 
+  private recordHistory(job: MuxQueueJob, status: HistoryStatus, err?: unknown): void {
+    const recorder = this.historyRecorder;
+    if (!recorder) return;
+    const code = err && typeof err === 'object' && 'code' in err ? (err as { code?: unknown }).code : undefined;
+    void recorder
+      .record({
+        family: job.kind,
+        source: 'gui',
+        status,
+        startedAt: job.createdAt,
+        finishedAt: Date.now(),
+        inputs: [job.input],
+        outputs: [job.output, ...job.targets.map((target) => target.output)].filter(Boolean).slice(0, HISTORY_LIMITS.maxPaths),
+        transcoder: job.transcoder,
+        jobId: job.id,
+        metadata: { targets: job.targets.length, priority: job.priority ?? 0 },
+        ...(status === 'failed' && err !== undefined
+          ? {
+              error: {
+                message: historyErrorMessage(err),
+                ...(typeof code === 'string' ? { code } : {}),
+              },
+            }
+          : {}),
+      })
+      .catch((recordError: unknown) => log.warn(LOG_HISTORY_RECORD_FAILED, job.id, historyErrorMessage(recordError)));
+  }
+
   /**
    * Marks the job RUNNING and wires its runner's lifecycle events.
    * @param {MuxQueueJob} job - The QUEUED job to start.
@@ -563,6 +603,7 @@ export class MuxQueue extends EventEmitter {
       if (this.holdsJob(job.id)) {
         this.emitStatusChange(job);
       }
+      this.recordHistory(job, 'succeeded');
       if (wasActive) {
         this.jobCompletedSinceLastDrain = true;
       }
@@ -574,6 +615,7 @@ export class MuxQueue extends EventEmitter {
       log.error(LOG_MUX_QUEUE_JOB_FAILED, job.id, err?.message ?? String(err));
       const code = (err as { code?: string }).code;
       if (code !== ErrorCode.CANCELLED) {
+        this.recordHistory(job, 'failed', err);
         recordAnalyticsEvent(
           createAnalyticsEvent('mux_queue_failed', {
             kind: job.kind,

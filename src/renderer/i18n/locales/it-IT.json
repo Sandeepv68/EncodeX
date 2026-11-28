@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copiloto",
-    "automations": "Automazioni"
+    "automations": "Automazioni",
+    "history": "Cronologia"
   },
   "dashboard": {
     "welcome": "Benvenuto in EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "Preferiti",
       "ungrouped": "Tutti gli strumenti"
-    }
+    },
+    "descHistory": "Verifica delle operazioni riuscite, non riuscite e annullate"
   },
   "gettingStarted": {
     "hint": "Nuovo qui?",
@@ -1794,6 +1796,58 @@
         "title": "Leggi informazioni su EncodeX",
         "description": "Ulteriori informazioni su EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "Cronologia delle operazioni",
+    "search": "Cerca operazioni",
+    "empty": "Nessuna operazione corrisponde ai filtri correnti.",
+    "clearConfirm": "Cancellare tutta la cronologia delle operazioni?",
+    "refresh": "Aggiorna",
+    "clear": "Cancella cronologia",
+    "remove": "Rimuovi",
+    "details": "Dettagli",
+    "noSelection": "Seleziona un'operazione per visualizzarne i dettagli.",
+    "count": "{{count}} operazioni",
+    "filteredCount": "{{count}} di {{total}} operazioni",
+    "status": "Stato",
+    "family": "Operazione",
+    "source": "Origine",
+    "started": "Iniziato",
+    "duration": "Durata",
+    "input": "Immissione",
+    "outputs": "Output",
+    "error": "Errore",
+    "metadata": "Metadati",
+    "sort": "Ordina",
+    "allStatuses": "Tutti gli stati",
+    "allFamilies": "Tutte le operazioni",
+    "allSources": "Tutte le fonti",
+    "sortNewest": "Prima il più nuovo",
+    "sortOldest": "Meno recenti prima",
+    "sortLongest": "Il più lungo per primo",
+    "sortShortest": "Il più breve per primo",
+    "sortName": "Nome A-Z",
+    "statusLabels": {
+      "succeeded": "Riuscito",
+      "failed": "Non riuscita",
+      "cancelled": "Annullato"
+    },
+    "familyLabels": {
+      "convert": "Converti",
+      "audioExtract": "Estrazione audio",
+      "imageCompress": "Compressione delle immagini",
+      "videoCut": "Taglio video",
+      "remux": "Remux",
+      "demux": "Multiplexer",
+      "batch": "Coda batch",
+      "automation": "Automazione",
+      "mcp": "PFC;"
+    },
+    "sourceLabels": {
+      "gui": "Interfaccia",
+      "mcp": "PFC;",
+      "automation": "Automazione"
     }
   }
 }

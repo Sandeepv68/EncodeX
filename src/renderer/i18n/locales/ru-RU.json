@@ -31,7 +31,8 @@
     "remux": "Ремукс",
     "demux": "Демукс",
     "copilot": "Копилот",
-    "automations": "Автоматизации"
+    "automations": "Автоматизации",
+    "history": "История"
   },
   "dashboard": {
     "welcome": "Добро пожаловать в EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "Избранное",
       "ungrouped": "Все инструменты"
-    }
+    },
+    "descHistory": "Просмотр успешных, неудачных и отмененных операций."
   },
   "gettingStarted": {
     "hint": "Впервые здесь?",
@@ -1794,6 +1796,58 @@
         "title": "Прочтите о EncodeX",
         "description": "Узнайте больше о EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "История эксплуатации",
+    "search": "Поисковые операции",
+    "empty": "Ни одна операция не соответствует текущим фильтрам.",
+    "clearConfirm": "Очистить всю историю операций?",
+    "refresh": "Обновить",
+    "clear": "Очистить историю",
+    "remove": "Удалить",
+    "details": "Подробности",
+    "noSelection": "Выберите операцию, чтобы просмотреть ее сведения.",
+    "count": "{{count}} операций",
+    "filteredCount": "{{count}} из {{total}} операций",
+    "status": "Статус",
+    "family": "Операция",
+    "source": "Источник",
+    "started": "Началось",
+    "duration": "Продолжительность",
+    "input": "Ввод",
+    "outputs": "Выходы",
+    "error": "Ошибка",
+    "metadata": "Метаданные",
+    "sort": "Сортировать",
+    "allStatuses": "Все статусы",
+    "allFamilies": "Все операции",
+    "allSources": "Все источники",
+    "sortNewest": "Сначала самые новые",
+    "sortOldest": "Сначала самый старый",
+    "sortLongest": "Самый длинный первый",
+    "sortShortest": "Сначала кратчайший",
+    "sortName": "Имя от А до Я",
+    "statusLabels": {
+      "succeeded": "Удалось",
+      "failed": "Не удалось",
+      "cancelled": "Отменено"
+    },
+    "familyLabels": {
+      "convert": "Конвертировать",
+      "audioExtract": "Извлечение аудио",
+      "imageCompress": "Сжатие изображения",
+      "videoCut": "Вырезка видео",
+      "remux": "Ремукс",
+      "demux": "Демукс",
+      "batch": "Пакетная очередь",
+      "automation": "Автоматизация",
+      "mcp": "МКП"
+    },
+    "sourceLabels": {
+      "gui": "Интерфейс",
+      "mcp": "МКП",
+      "automation": "Автоматизация"
     }
   }
 }

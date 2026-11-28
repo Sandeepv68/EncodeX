@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "Automatisierungen"
+    "automations": "Automatisierungen",
+    "history": "Geschichte"
   },
   "dashboard": {
     "welcome": "Willkommen bei EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "Favoriten",
       "ungrouped": "Alle Werkzeuge"
-    }
+    },
+    "descHistory": "Erfolgreiche, fehlgeschlagene und abgebrochene Vorgänge überprüfen"
   },
   "gettingStarted": {
     "hint": "Neu hier?",
@@ -1794,6 +1796,58 @@
         "title": "Lesen Sie mehr über EncodeX",
         "description": "Erfahren Sie mehr über EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "Operationsverlauf",
+    "search": "Vorgänge suchen",
+    "empty": "Es gibt keine Vorgänge, die den aktuellen Filtern entsprechen.",
+    "clearConfirm": "Gesamten Betriebshistorie löschen?",
+    "refresh": "Aktualisieren",
+    "clear": "Verlauf löschen",
+    "remove": "Entfernen",
+    "details": "Einzelheiten",
+    "noSelection": "Wählen Sie einen Vorgang aus, um dessen Details anzuzeigen.",
+    "count": "{{count}} Vorgänge",
+    "filteredCount": "{{count}} von {{total}} Vorgängen",
+    "status": "Status",
+    "family": "Vorgang",
+    "source": "Quelle",
+    "started": "Gestartet",
+    "duration": "Dauer",
+    "input": "Eingabe",
+    "outputs": "Ausgaben",
+    "error": "Fehler",
+    "metadata": "Metadaten",
+    "sort": "Sortieren",
+    "allStatuses": "Alle Stati",
+    "allFamilies": "Alle Einsätze",
+    "allSources": "Alle Quellen",
+    "sortNewest": "Neuere zuerst",
+    "sortOldest": "Älteste zuerst",
+    "sortLongest": "Längste zuerst",
+    "sortShortest": "Kürzeste zuerst",
+    "sortName": "Name A–Z",
+    "statusLabels": {
+      "succeeded": "Erfolgreich",
+      "failed": "Nicht bestanden",
+      "cancelled": "Storniert"
+    },
+    "familyLabels": {
+      "convert": "Konvertieren",
+      "audioExtract": "Audioextraktion",
+      "imageCompress": "Bildkomprimierung",
+      "videoCut": "Videoschnitt",
+      "remux": "Remuxen",
+      "demux": "Demultiplexer",
+      "batch": "Batch-Warteschlange",
+      "automation": "Automatisierung",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Schnittstelle",
+      "mcp": "MCP",
+      "automation": "Automatisierung"
     }
   }
 }

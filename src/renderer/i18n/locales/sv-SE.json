@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "Automatiseringar"
+    "automations": "Automatiseringar",
+    "history": "Historia"
   },
   "dashboard": {
     "welcome": "Välkommen till EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "Favoriter",
       "ungrouped": "Alla verktyg"
-    }
+    },
+    "descHistory": "Granska lyckade, misslyckade och avbrutna operationer"
   },
   "gettingStarted": {
     "hint": "Ny här?",
@@ -1794,6 +1796,58 @@
         "title": "Läs om EncodeX",
         "description": "Lär dig mer om EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "Operationshistorik",
+    "search": "Sökoperationer",
+    "empty": "Inga operationer matchar de aktuella filtren.",
+    "clearConfirm": "Rensa all drifthistorik?",
+    "refresh": "Uppdatera",
+    "clear": "Rensa historik",
+    "remove": "Ta bort",
+    "details": "Detaljer",
+    "noSelection": "Välj en operation för att se dess detaljer.",
+    "count": "{{count}} operationer",
+    "filteredCount": "{{count}} av {{total}} operationer",
+    "status": "Status",
+    "family": "Drift",
+    "source": "Källa",
+    "started": "Startade",
+    "duration": "Varaktighet",
+    "input": "Input",
+    "outputs": "Utgångar",
+    "error": "Fel",
+    "metadata": "Metadata",
+    "sort": "Sortera",
+    "allStatuses": "Alla statusar",
+    "allFamilies": "Alla operationer",
+    "allSources": "Alla källor",
+    "sortNewest": "Nyaste först",
+    "sortOldest": "Äldst först",
+    "sortLongest": "Längst först",
+    "sortShortest": "Kortast först",
+    "sortName": "Namn A-Z",
+    "statusLabels": {
+      "succeeded": "Lyckades",
+      "failed": "Misslyckades",
+      "cancelled": "Avbruten"
+    },
+    "familyLabels": {
+      "convert": "Konvertera",
+      "audioExtract": "Ljudextraktion",
+      "imageCompress": "Bildkomprimering",
+      "videoCut": "Videoklipp",
+      "remux": "Remux",
+      "demux": "Demux",
+      "batch": "Batchkö",
+      "automation": "Automatisering",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Gränssnitt",
+      "mcp": "MCP",
+      "automation": "Automatisering"
     }
   }
 }

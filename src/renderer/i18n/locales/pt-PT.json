@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copiloto",
-    "automations": "Automações"
+    "automations": "Automações",
+    "history": "História"
   },
   "dashboard": {
     "welcome": "Bem-vindo ao EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "Favoritos",
       "ungrouped": "Todas as ferramentas"
-    }
+    },
+    "descHistory": "Reveja as operações bem-sucedidas, com falha e canceladas"
   },
   "gettingStarted": {
     "hint": "Novo por aqui?",
@@ -1794,6 +1796,58 @@
         "title": "Leia sobre EncodeX",
         "description": "Saiba mais sobre EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "Histórico de operações",
+    "search": "Operações de pesquisa",
+    "empty": "Nenhuma operação corresponde aos filtros atuais.",
+    "clearConfirm": "Limpar todo o histórico de operações?",
+    "refresh": "Atualizar",
+    "clear": "Limpar histórico",
+    "remove": "Remover",
+    "details": "Detalhes",
+    "noSelection": "Selecione uma operação para visualizar os seus detalhes.",
+    "count": "{{count}} operações",
+    "filteredCount": "{{count}} de {{total}} operações",
+    "status": "Estado",
+    "family": "Operação",
+    "source": "Fonte",
+    "started": "Iniciado",
+    "duration": "Duração",
+    "input": "Entrada",
+    "outputs": "Resultados",
+    "error": "Erro",
+    "metadata": "Metadados",
+    "sort": "Classificar",
+    "allStatuses": "Todos os estados",
+    "allFamilies": "Todas as operações",
+    "allSources": "Todas as fontes",
+    "sortNewest": "O mais novo primeiro",
+    "sortOldest": "Mais antigo primeiro",
+    "sortLongest": "Mais longo primeiro",
+    "sortShortest": "Mais curto primeiro",
+    "sortName": "Nome A-Z",
+    "statusLabels": {
+      "succeeded": "Sucesso",
+      "failed": "Falha",
+      "cancelled": "Cancelado"
+    },
+    "familyLabels": {
+      "convert": "Converter",
+      "audioExtract": "Extração de áudio",
+      "imageCompress": "Compressão de imagem",
+      "videoCut": "Corte de vídeo",
+      "remux": "Remux",
+      "demux": "Demux",
+      "batch": "Fila de lote",
+      "automation": "Automação",
+      "mcp": "PCM"
+    },
+    "sourceLabels": {
+      "gui": "Interface",
+      "mcp": "PCM",
+      "automation": "Automação"
     }
   }
 }

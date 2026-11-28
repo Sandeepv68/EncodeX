@@ -1,6 +1,6 @@
 ﻿# 🗂️ Project Structure
 
-<!-- drift:renderer-components=83 renderer-components-top=53 renderer-styles=79 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 renderer-pages=14 renderer-stores=22 log-constants=598 builtin-profiles=115 profile-categories=8 e2e-specs=35 -->
+<!-- drift:renderer-components=92 renderer-components-top=57 renderer-styles=83 shortcuts=71 shortcut-sections=11 locales=56 locale-subtags=36 renderer-pages=15 renderer-stores=24 log-constants=606 builtin-profiles=115 profile-categories=8 e2e-specs=35 -->
 
 ```
 src/

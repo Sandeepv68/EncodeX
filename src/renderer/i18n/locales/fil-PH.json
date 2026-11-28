@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "Awtomasyon"
+    "automations": "Awtomasyon",
+    "history": "KASAYSAYAN"
   },
   "dashboard": {
     "welcome": "Maligayang Pagdating sa EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "Mga Paborito",
       "ungrouped": "Lahat ng tool"
-    }
+    },
+    "descHistory": "Suriin ang mga matagumpay, nabigo, at kinanselang operasyon"
   },
   "gettingStarted": {
     "hint": "Bago ka ba rito?",
@@ -1794,6 +1796,58 @@
         "title": "Basahin ang Tungkol sa EncodeX",
         "description": "Matuto pa tungkol sa EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "Talaan ng mga Operasyon",
+    "search": "Mga operasyon sa paghahanap",
+    "empty": "Walang operasyon na tumutugma sa mga kasalukuyang filter.",
+    "clearConfirm": "I-clear ang lahat ng history ng operasyon?",
+    "refresh": "I-refresh",
+    "clear": "I-clear ang history",
+    "remove": "Alisin",
+    "details": "Mga Detalye",
+    "noSelection": "Pumili ng operasyon para makita ang mga detalye nito.",
+    "count": "{{count}} operasyon",
+    "filteredCount": "{{count}} sa {{total}} operasyon",
+    "status": "Katayuan",
+    "family": "paghahatid ng serbisyo",
+    "source": "Pinagmulan",
+    "started": "Nagsimula na",
+    "duration": "Tagal",
+    "input": "Pansinin",
+    "outputs": "Mga Output",
+    "error": "Error",
+    "metadata": "Metadata",
+    "sort": "I-sort",
+    "allStatuses": "Lahat ng status",
+    "allFamilies": "Lahat ng operasyon",
+    "allSources": "Lahat ng source",
+    "sortNewest": "Pinakabago muna",
+    "sortOldest": "Pinakaluma muna",
+    "sortLongest": "Pinakamahaba muna",
+    "sortShortest": "Pinakamaikli muna",
+    "sortName": "Pangalan A–Z",
+    "statusLabels": {
+      "succeeded": "Nagtagumpay",
+      "failed": "Bigo",
+      "cancelled": "Kinansela"
+    },
+    "familyLabels": {
+      "convert": "I - convert",
+      "audioExtract": "Pag-extract ng audio",
+      "imageCompress": "Pag-compress ng larawan",
+      "videoCut": "Cut ng video",
+      "remux": "I-remux",
+      "demux": "Demux",
+      "batch": "Batch queue",
+      "automation": "Konting-konting",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Interface",
+      "mcp": "MCP",
+      "automation": "Konting-konting"
     }
   }
 }

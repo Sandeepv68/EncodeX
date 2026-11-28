@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "コパイロット",
-    "automations": "オートメーション"
+    "automations": "オートメーション",
+    "history": "履歴"
   },
   "dashboard": {
     "welcome": "EncodeX へようこそ",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "お気に入り",
       "ungrouped": "すべてのツール"
-    }
+    },
+    "descHistory": "成功したオペレーション、失敗したオペレーション、キャンセルされたオペレーションを確認する"
   },
   "gettingStarted": {
     "hint": "はじめてですか？",
@@ -1794,6 +1796,58 @@
         "title": "EncodeX について読む",
         "description": "EncodeX について詳しくは、こちらをご覧ください。"
       }
+    }
+  },
+  "history": {
+    "title": "操作履歴",
+    "search": "オペレーションを検索",
+    "empty": "現在のフィルターに一致する操作はありません。",
+    "clearConfirm": "すべての操作履歴を消去しますか？",
+    "refresh": "更新",
+    "clear": "履歴を消去",
+    "remove": "削除",
+    "details": "詳細",
+    "noSelection": "操作を選択して詳細を表示します。",
+    "count": "{{count}}件の操作",
+    "filteredCount": "{{total}}件中{{count}}件のオペレーション",
+    "status": "ステータス",
+    "family": "操作",
+    "source": "出典",
+    "started": "開始",
+    "duration": "期間",
+    "input": "入力",
+    "outputs": "出力",
+    "error": "エラー",
+    "metadata": "メタデータ",
+    "sort": "並べ替え",
+    "allStatuses": "すべてのステータス",
+    "allFamilies": "すべてのオペレーション",
+    "allSources": "すべてのソース",
+    "sortNewest": "新しいものから表示",
+    "sortOldest": "古い順",
+    "sortLongest": "長い順",
+    "sortShortest": "短い順",
+    "sortName": "名前（A～Z）",
+    "statusLabels": {
+      "succeeded": "成功しました",
+      "failed": "失敗",
+      "cancelled": "キャンセル済み"
+    },
+    "familyLabels": {
+      "convert": "変換",
+      "audioExtract": "音声抽出",
+      "imageCompress": "画像圧縮",
+      "videoCut": "動画カット",
+      "remux": "リミックス",
+      "demux": "デマルチプレクサ",
+      "batch": "バッチキュー",
+      "automation": "自動化",
+      "mcp": "CD46抗原"
+    },
+    "sourceLabels": {
+      "gui": "インターフェイス",
+      "mcp": "CD46抗原",
+      "automation": "自動化"
     }
   }
 }

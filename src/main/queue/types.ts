@@ -6,6 +6,7 @@
  */
 
 import type { ConversionOptions, MuxQueueSnapshot, QueueJob, TranscoderType } from '../../shared/types';
+import type { HistoryRecorderLike } from '../../shared/history/types';
 import type { ITranscoder } from '../transcoders/types';
 
 /**
@@ -27,6 +28,7 @@ export interface JobQueueOptions {
   persistence?: QueuePersistence;
   persistDelayMs?: number;
   transcoderFactory?: (type: TranscoderType) => ITranscoder;
+  historyRecorder?: HistoryRecorderLike;
 }
 
 /**
@@ -40,6 +42,7 @@ export interface MuxQueueOptions {
   persistence?: MuxQueuePersistence;
   persistDelayMs?: number;
   transcoderFactory?: (type: TranscoderType) => ITranscoder;
+  historyRecorder?: HistoryRecorderLike;
 }
 
 /**

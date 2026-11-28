@@ -12,8 +12,9 @@
  * conversion, queue, player, window) are scoped to the given window.
  */
 
-import { BrowserWindow } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import { Logger } from '../../shared/logger';
+import { IPC } from '../../shared/ipc-channels';
 import { createSender } from './send';
 import { registerDialogHandlers } from './dialogs';
 import { registerConversionHandlers } from './conversion';
@@ -30,6 +31,10 @@ import { registerUpdaterHandlers } from './updater';
 import { registerDevHandlers } from './dev';
 import { registerLogsHandlers } from './logs';
 import { registerNotificationHandlers } from './notifications';
+import { HistoryRecorder } from '../history/recorder';
+import { HistoryStore } from '../history/store';
+import { generateHistoryThumbnail } from '../history/thumbnails';
+import { registerHistoryHandlers } from './history';
 import { registerCopilotHandlers } from './copilot';
 import { registerAiSettingsIpc } from '../ai/settings-ipc';
 import { registerMcpUiIpc } from '../mcp/ui-ipc';
@@ -53,15 +58,23 @@ const log = new Logger('main/ipc/handlers');
 export function registerIpcHandlers(win: BrowserWindow): void {
   log.info(LOG_REGISTERING_IPC_HANDLERS);
   const send = createSender(win);
+  const notifyHistoryUpdated = () => send(IPC.HISTORY_UPDATED);
+  const historyStore = new HistoryStore(app.getPath('userData'));
+  const historyRecorder = new HistoryRecorder({
+    store: historyStore,
+    generateThumbnail: generateHistoryThumbnail,
+    onEntry: notifyHistoryUpdated,
+  });
+  registerHistoryHandlers(historyStore, notifyHistoryUpdated);
   registerDialogHandlers(win);
   registerCapabilityHandlers();
   registerCopilotHandlers();
   registerAiSettingsIpc();
   registerMcpUiIpc();
-  registerConversionHandlers(win, send);
-  registerQueueHandlers(win, send);
-  registerMuxQueueHandlers(win, send);
-  registerAutomationHandlers(win, send);
+  registerConversionHandlers(win, send, historyRecorder);
+  registerQueueHandlers(win, send, historyRecorder);
+  registerMuxQueueHandlers(win, send, historyRecorder);
+  registerAutomationHandlers(win, send, historyRecorder);
   registerSystemHandlers(win);
   registerPlayerHandlers(win, send);
   registerWindowHandlers(win);

@@ -90,6 +90,7 @@ export const pageIcons: Record<string, ReactNode> = {
   '/logs': <FontAwesomeIcon icon={faFileLines} />,
   '/settings': <FontAwesomeIcon icon={faGear} />,
   '/about': <FontAwesomeIcon icon={faCircleQuestion} />,
+  '/history': <FontAwesomeIcon icon={faClockRotateLeft} />,
 };
 
 export const quickLinkIcons: Record<QuickLinkIconKey, ReactNode> = {

@@ -32,6 +32,7 @@ const FEATURE_CARDS: { route: string; title: string }[] = [
   { route: '/batch', title: 'Batch Queue' },
   { route: '/automations', title: 'Automations' },
   { route: '/copilot', title: 'Copilot' },
+  { route: '/history', title: 'History' },
 ];
 
 /** Number-key shortcuts registered on the dashboard, in card order for the first eight. */

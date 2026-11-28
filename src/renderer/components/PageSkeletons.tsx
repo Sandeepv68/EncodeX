@@ -481,6 +481,33 @@ export function LogsSkeleton() {
   );
 }
 
+export function HistorySkeleton() {
+  return (
+    <SkeletonStatus>
+      <LogsRoot>
+        <PageHeaderSkeleton />
+        <LogsHeader>
+          <SkeletonSearchField variant="rounded" />
+          <Bone width={110} height={28} />
+          <Bone width={110} height={28} />
+          <Bone width={100} height={28} />
+          <Bone width={90} height={28} />
+          <SkeletonIconButtonSmall variant="rounded" />
+        </LogsHeader>
+        <LogsBody>
+          {Array.from({ length: 8 }, (_, index) => (
+            <SkeletonLogRow key={`history-row-${index}`}>
+              <Bone width={52} height={44} />
+              <Bone width="60%" height={12} />
+              <Bone width={80} height={12} />
+            </SkeletonLogRow>
+          ))}
+        </LogsBody>
+      </LogsRoot>
+    </SkeletonStatus>
+  );
+}
+
 export function SettingsSkeleton() {
   return (
     <SkeletonStatus>

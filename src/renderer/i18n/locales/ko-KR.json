@@ -31,7 +31,8 @@
     "remux": "리멀텍스",
     "demux": "디멀텍스",
     "copilot": "코파일롯",
-    "automations": "자동화"
+    "automations": "자동화",
+    "history": "역사"
   },
   "dashboard": {
     "welcome": "EncodeX에 오신 것을 환영합니다",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "즐겨찾기",
       "ungrouped": "모든 도구"
-    }
+    },
+    "descHistory": "성공, 실패, 취소된 작업 검토"
   },
   "gettingStarted": {
     "hint": "처음 오셨나요?",
@@ -1794,6 +1796,58 @@
         "title": "EncodeX에 대해 읽어보세요",
         "description": "EncodeX에 대해 자세히 알아보세요."
       }
+    }
+  },
+  "history": {
+    "title": "운영 내역",
+    "search": "검색 작업",
+    "empty": "현재 필터와 일치하는 작업이 없습니다.",
+    "clearConfirm": "작업 기록을 모두 삭제하시겠습니까?",
+    "refresh": "새로고침",
+    "clear": "기록 지우기",
+    "remove": "제거",
+    "details": "세부정보",
+    "noSelection": "세부정보를 보려면 작업을 선택하세요.",
+    "count": "{{count}} 작업",
+    "filteredCount": "{{total}} 작업 중 {{count}}",
+    "status": "상태",
+    "family": "작동",
+    "source": "원천",
+    "started": "시작됨",
+    "duration": "기간",
+    "input": "입력",
+    "outputs": "출력",
+    "error": "오류",
+    "metadata": "메타데이터",
+    "sort": "정렬",
+    "allStatuses": "모든 상태",
+    "allFamilies": "모든 작업",
+    "allSources": "모든 소스",
+    "sortNewest": "최신순",
+    "sortOldest": "오래된 것부터",
+    "sortLongest": "가장 긴 것부터",
+    "sortShortest": "가장 짧은 것부터",
+    "sortName": "이름 A~Z",
+    "statusLabels": {
+      "succeeded": "성공함",
+      "failed": "실패",
+      "cancelled": "취소됨"
+    },
+    "familyLabels": {
+      "convert": "변환",
+      "audioExtract": "오디오 추출",
+      "imageCompress": "이미지 압축",
+      "videoCut": "영상 컷",
+      "remux": "리먹스",
+      "demux": "디먹스",
+      "batch": "일괄 대기열",
+      "automation": "자동화",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "인터페이스",
+      "mcp": "MCP",
+      "automation": "오토메이션"
     }
   }
 }

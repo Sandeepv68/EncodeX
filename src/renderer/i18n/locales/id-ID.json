@@ -31,7 +31,8 @@
     "remux": "Remuks",
     "demux": "Demuks",
     "copilot": "Copilot",
-    "automations": "Otomatisasi"
+    "automations": "Otomatisasi",
+    "history": "Riwayat"
   },
   "dashboard": {
     "welcome": "Selamat datang di EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "Favorit",
       "ungrouped": "Semua alat"
-    }
+    },
+    "descHistory": "Tinjau operasi yang berhasil, gagal, dan dibatalkan"
   },
   "gettingStarted": {
     "hint": "Baru di sini?",
@@ -1794,6 +1796,58 @@
         "title": "Baca Tentang EncodeX",
         "description": "Pelajari lebih lanjut tentang EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "Riwayat Operasi",
+    "search": "Cari operasi",
+    "empty": "Tidak ada operasi yang sesuai dengan filter saat ini.",
+    "clearConfirm": "Hapus semua riwayat operasi?",
+    "refresh": "Muat ulang",
+    "clear": "Hapus riwayat",
+    "remove": "Hapus",
+    "details": "Detail",
+    "noSelection": "Pilih operasi untuk melihat detailnya.",
+    "count": "{{count}} operasi",
+    "filteredCount": "{{count}} dari {{total}} operasi",
+    "status": "Status",
+    "family": "Operasi",
+    "source": "Sumber",
+    "started": "Dimulai",
+    "duration": "Durasi",
+    "input": "Daya Masuk",
+    "outputs": "Output",
+    "error": "Kesalahan",
+    "metadata": "Metadata",
+    "sort": "Urutkan",
+    "allStatuses": "Semua status",
+    "allFamilies": "Semua operasi",
+    "allSources": "Semua sumber",
+    "sortNewest": "Terbaru Lebih Dulu",
+    "sortOldest": "Terlama Lebih Dulu",
+    "sortLongest": "Terpanjang terlebih dahulu",
+    "sortShortest": "Terpendek terlebih dahulu",
+    "sortName": "Nama A-Z",
+    "statusLabels": {
+      "succeeded": "Sukses.",
+      "failed": "Gagal",
+      "cancelled": "Dibatalkan"
+    },
+    "familyLabels": {
+      "convert": "Konversi",
+      "audioExtract": "Ekstraksi audio",
+      "imageCompress": "Kompresi gambar",
+      "videoCut": "Potongan video",
+      "remux": "Remux",
+      "demux": "Demux",
+      "batch": "Antrean batch",
+      "automation": "Otomatisasi",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Antarmuka",
+      "mcp": "MCP",
+      "automation": "Otomatisasi"
     }
   }
 }

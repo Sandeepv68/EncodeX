@@ -3,7 +3,7 @@
  *
  * Phase 3.2 drove every **request** channel from the renderer into main. This file drives the other
  * direction: the main process pushes hostile payloads down every `on*` **event** channel while the
- * renderer is on each of the app's twelve routes.
+ * renderer is on each of the app's fifteen routes.
  *
  * ## Why this direction is a separate risk
  *
@@ -68,6 +68,7 @@ const SESSION_OPTIONS = { mock: false, env: { E2E_REAL: '1' } } as const;
 const EXPECTED_PUSH_CONSTANTS = [
   'AUDIT_ENTRY',
   'AUTOMATION_EVENT',
+  'HISTORY_UPDATED',
   'AUTOMATION_PROGRESS',
   'AUTOMATION_STATUS',
   'CONVERSION_PROGRESS',
@@ -100,7 +101,7 @@ const EXPECTED_PUSH_CONSTANTS = [
 ] as const;
 
 /**
- * The app's twelve routes, paired with the drawer `data-testid` that navigates to them.
+ * The app's fifteen routes, paired with the drawer `data-testid` that navigates to them.
  *
  * `AppDrawer` derives the test id as `nav-item-${to === '/' ? 'dashboard' : to.slice(1)}`, so `/`
  * is `dashboard` rather than the empty string. Navigation goes through a real click and is confirmed
@@ -118,6 +119,7 @@ const ROUTES = [
   { path: '/batch', testId: 'nav-item-batch' },
   { path: '/automations', testId: 'nav-item-automations' },
   { path: '/logs', testId: 'nav-item-logs' },
+  { path: '/history', testId: 'nav-item-history' },
   { path: '/settings', testId: 'nav-item-settings' },
   { path: '/about', testId: 'nav-item-about' },
 ] as const;
@@ -143,8 +145,8 @@ const ROUTES = [
 /**
  * Test-side rate table, passed into the main realm.
  *
- * The plan asks for 100 Hz with 5 MB blobs. Taken literally that is 5 MB x 100 x 18 channels x 12
- * routes - about 108 GB of IPC traffic - which does not test the renderer, it OOMs the machine and
+ * The plan asks for 100 Hz with 5 MB blobs. Taken literally that is 5 MB x 100 x 18 channels x 15
+ * routes - about 135 GB of IPC traffic - which does not test the renderer, it OOMs the machine and
  * makes every finding unattributable. That is the same mistake Phase 3.2 made once: a harness
  * artefact reported as a dozen separate production defects. The bulky shapes therefore run at 5 Hz,
  * which still delivers 10 MB per channel per route and preserves the defect class - unbounded
@@ -162,9 +164,9 @@ const HZ_BY_SHAPE: Record<PayloadShapeId, number> = {
   // of throughput. Measured with the attribution control in {@link CellResult.worstMainMs}:
   //
   //   at 100 Hz requested (~650 events/sec across all 15 channels, ~43 Hz each after back-pressure)
-  //     worst renderer round-trip 1483-2823 ms, worst main round-trip 1-20 ms, 10 of 12 routes stall
+  //     worst renderer round-trip 1483-2823 ms, worst main round-trip 1-20 ms, 10 of 15 routes stall
   //   at 10 Hz  (~150 events/sec)
-  //     all 12 routes pass
+  //     all 15 routes pass
   //
   // Main answering in single-digit milliseconds throughout is the important half: the renderer is
   // genuinely saturated, not waiting on the generator. So the finding is real and belongs in the plan -
@@ -296,8 +298,8 @@ function budgetFor(route: string): number {
 /** Budget for one (shape x route) burst including navigation and assertions. */
 const CELL_TIMEOUT_MS = 60_000;
 
-/** Budget for the whole suite's per-test body: one shape across all twelve routes. */
-const SHAPE_TIMEOUT_MS = 12 * CELL_TIMEOUT_MS;
+/** Budget for the whole suite's per-test body: one shape across all fifteen routes. */
+const SHAPE_TIMEOUT_MS = 15 * CELL_TIMEOUT_MS;
 
 /**
  * Every `electronAPI` member that must still answer after a burst.
@@ -737,7 +739,7 @@ describe.runIf(IS_REAL)('IPC event-channel abuse (Tier B, real main + real prelo
         for (const route of ROUTES) {
           // Self-healing per cell, not once per file.
           //
-          // Sharing one Electron instance across all 84 bursts is the mistake Phase 3.2 documented:
+          // Sharing one Electron instance across all 105 bursts is the mistake Phase 3.2 documented:
           // the first payload that kills a renderer leaves every later test reporting "Target page,
           // context or browser has been closed", so one real defect is reported as many, and the
           // ones that never ran look like passes. Re-checking liveness before each cell keeps a
@@ -848,7 +850,7 @@ describe.runIf(IS_REAL)('IPC event-channel abuse (Tier B, real main + real prelo
         const silent = results.filter((r) => r.probes === 0);
         expect(silent, `${shape}: no responsiveness probe ran, so "still interactive" was never measured:\n${report}`).toHaveLength(0);
 
-        // And the API is not merely reachable but still correct after twelve bursts.
+        // And the API is not merely reachable but still correct after fifteen bursts.
         const sanity = await session.page.evaluate(
           async (calls) => {
             const api = (window as unknown as { electronAPI: unknown }).electronAPI as unknown as Record<string, () => Promise<unknown>>;

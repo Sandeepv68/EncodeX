@@ -34,12 +34,14 @@ import {
 } from '../../shared/automations/schema';
 import { AutomationStore, buildAutomationExport } from '../automations/store';
 import { AutomationRunner, forwardAutomationEvents } from '../automations';
+import type { HistoryRecorderLike } from '../../shared/history/types';
 import type { IpcSender } from './types';
 
 const log = new Logger('main/ipc/automations');
 
 let store: AutomationStore | null = null;
 let runner: AutomationRunner | null = null;
+let runnerHistoryRecorder: HistoryRecorderLike | undefined;
 
 /** Returns the process-wide automation store, created on first use. */
 export function getAutomationStore(): AutomationStore {
@@ -55,7 +57,7 @@ export function resetAutomationStore(): void {
 /** Returns the process-wide automation runner, created on first use. */
 export function getAutomationRunner(): AutomationRunner {
   if (!runner) {
-    runner = new AutomationRunner({ userDataDir: app.getPath('userData') });
+    runner = new AutomationRunner({ userDataDir: app.getPath('userData'), historyRecorder: runnerHistoryRecorder });
   }
   return runner;
 }
@@ -103,7 +105,8 @@ function readBoundedImportFile(filePath: string): string {
 }
 
 /** Registers automation library and runtime handlers. */
-export function registerAutomationHandlers(win: BrowserWindow, send: IpcSender): void {
+export function registerAutomationHandlers(win: BrowserWindow, send: IpcSender, historyRecorder?: HistoryRecorderLike): void {
+  runnerHistoryRecorder = historyRecorder;
   const automationRunner = getAutomationRunner();
   forwardAutomationEvents(automationRunner, send);
 

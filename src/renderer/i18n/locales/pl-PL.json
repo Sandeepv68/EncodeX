@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "Automatyzacje"
+    "automations": "Automatyzacje",
+    "history": "Historia"
   },
   "dashboard": {
     "welcome": "Witamy w EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "Ulubione",
       "ungrouped": "Wszystkie narzędzia"
-    }
+    },
+    "descHistory": "Przejrzyj operacje zakończone sukcesem, niepowodzeniem i anulowane"
   },
   "gettingStarted": {
     "hint": "Nowy tutaj?",
@@ -1794,6 +1796,58 @@
         "title": "Przeczytaj o EncodeX",
         "description": "Dowiedz się więcej o EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "Historia operacji",
+    "search": "Operacje wyszukiwania",
+    "empty": "Żadna operacja nie pasuje do bieżących filtrów.",
+    "clearConfirm": "Wyczyścić całą historię operacji?",
+    "refresh": "Odśwież",
+    "clear": "Wyczyść historię",
+    "remove": "Usuń",
+    "details": "Szczegóły",
+    "noSelection": "Wybierz operację, aby wyświetlić jej szczegóły.",
+    "count": "{{count}} operacji",
+    "filteredCount": "{{count}} z {{total}} operacji",
+    "status": "Stan",
+    "family": "Operacja",
+    "source": "Źródło",
+    "started": "Rozpoczęło się",
+    "duration": "Czas trwania",
+    "input": "Wejście",
+    "outputs": "Wyjścia",
+    "error": "Błąd",
+    "metadata": "Metadane",
+    "sort": "Sortuj",
+    "allStatuses": "Wszystkie statusy",
+    "allFamilies": "Wszystkie operacje",
+    "allSources": "Wszystkie źródła",
+    "sortNewest": "Najpierw najnowsze",
+    "sortOldest": "Najpierw najstarszy",
+    "sortLongest": "Najpierw najdłuższy",
+    "sortShortest": "Najpierw najkrótszy",
+    "sortName": "Imię A-Z",
+    "statusLabels": {
+      "succeeded": "Udało się",
+      "failed": "Nie udało się",
+      "cancelled": "Anulowano"
+    },
+    "familyLabels": {
+      "convert": "Konwertuj",
+      "audioExtract": "Ekstrakcja dźwięku",
+      "imageCompress": "Kompresja obrazu",
+      "videoCut": "Cięcie wideo",
+      "remux": "Remux",
+      "demux": "Demux",
+      "batch": "Kolejka zbiorcza",
+      "automation": "Automatyzacja",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Interfejs",
+      "mcp": "MCP",
+      "automation": "Automatyzacja"
     }
   }
 }

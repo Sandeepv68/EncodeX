@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copiloto",
-    "automations": "Automatizaciones"
+    "automations": "Automatizaciones",
+    "history": "Historial"
   },
   "dashboard": {
     "welcome": "Bienvenido a EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "Favoritos",
       "ungrouped": "Todas las herramientas"
-    }
+    },
+    "descHistory": "Revisar las operaciones realizadas correctamente, fallidas y canceladas"
   },
   "gettingStarted": {
     "hint": "¿Nuevo por aquí?",
@@ -1794,6 +1796,58 @@
         "title": "Leer sobre EncodeX",
         "description": "Obtenga más información sobre EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "Historial de operaciones",
+    "search": "Buscar operaciones",
+    "empty": "No hay operaciones que coincidan con los filtros actuales.",
+    "clearConfirm": "¿Borrar todo el historial de operaciones?",
+    "refresh": "Actualizar",
+    "clear": "Borrar historial",
+    "remove": "Eliminar",
+    "details": "Detalles",
+    "noSelection": "Seleccione una operación para ver sus detalles.",
+    "count": "{{count}} operaciones",
+    "filteredCount": "{{count}} de {{total}} operaciones",
+    "status": "Estado",
+    "family": "Funcionamiento",
+    "source": "Fuente",
+    "started": "Iniciado",
+    "duration": "Duración",
+    "input": "Entrada",
+    "outputs": "Salidas",
+    "error": "Error",
+    "metadata": "Metadatos",
+    "sort": "Ordenar",
+    "allStatuses": "Todos los estados",
+    "allFamilies": "Todas las operaciones",
+    "allSources": "Todas las fuentes",
+    "sortNewest": "Recientes primero",
+    "sortOldest": "Antiguos primero",
+    "sortLongest": "Más largas primero",
+    "sortShortest": "Eslora menor a mayor",
+    "sortName": "Nombre A-Z",
+    "statusLabels": {
+      "succeeded": "Correcta",
+      "failed": "Fallida",
+      "cancelled": "Cancelado"
+    },
+    "familyLabels": {
+      "convert": "Convertir",
+      "audioExtract": "Extracción de audio",
+      "imageCompress": "Compresión de imagen",
+      "videoCut": "[corte de video]",
+      "remux": "Remultiplexar",
+      "demux": "demultiplexor",
+      "batch": "Cola de lotes",
+      "automation": "Automatización",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Interfaz",
+      "mcp": "MCP",
+      "automation": "Automatización"
     }
   }
 }

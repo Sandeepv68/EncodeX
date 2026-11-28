@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "Outomatiseringe"
+    "automations": "Outomatiseringe",
+    "history": "Geskiedenis"
   },
   "dashboard": {
     "welcome": "Welkom by EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "Gunstelinge",
       "ungrouped": "Alle gereedskap"
-    }
+    },
+    "descHistory": "Hersien suksesvolle, mislukte en gekanselleerde bedrywighede"
   },
   "gettingStarted": {
     "hint": "Nuut hier?",
@@ -1794,6 +1796,58 @@
         "title": "Lees oor EncodeX",
         "description": "Kom meer te wete oor EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "Bedryfgeskiedenis",
+    "search": "Soekbedrywighede",
+    "empty": "Geen bedrywighede stem ooreen met die huidige filters nie.",
+    "clearConfirm": "Vee alle bedryfgeskiedenis uit?",
+    "refresh": "Verfris",
+    "clear": "Vee geskiedenis uit",
+    "remove": "Verwyder",
+    "details": "Besonderhede",
+    "noSelection": "Kies 'n handeling om die besonderhede daarvan te sien.",
+    "count": "{{count}} bedrywighede",
+    "filteredCount": "{{count}} van {{total}} operasies",
+    "status": "Status",
+    "family": "Werking",
+    "source": "Oorsprong",
+    "started": "Friends",
+    "duration": "Duur",
+    "input": "Toevoer",
+    "outputs": "Uitsette",
+    "error": "Fout",
+    "metadata": "Metadata",
+    "sort": "Sorteer",
+    "allStatuses": "Alle statusse",
+    "allFamilies": "Alle bedrywighede",
+    "allSources": "Alle bronne",
+    "sortNewest": "Nuutste eerste",
+    "sortOldest": "Oudste eerste",
+    "sortLongest": "Langste eerste",
+    "sortShortest": "Kortste eerste",
+    "sortName": "Naam A-Z",
+    "statusLabels": {
+      "succeeded": "Suksesvol",
+      "failed": "Het misluk",
+      "cancelled": "Gekanselleer"
+    },
+    "familyLabels": {
+      "convert": "Omskep",
+      "audioExtract": "Klankuittrekking",
+      "imageCompress": "Beeldkompressie",
+      "videoCut": "Videoknipsel",
+      "remux": "Remux",
+      "demux": "Demux",
+      "batch": "Batch-waglys",
+      "automation": "Outomatisering",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Koppelvlak",
+      "mcp": "MCP",
+      "automation": "Outomatisering"
     }
   }
 }

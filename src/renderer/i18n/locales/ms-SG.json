@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "Automasi"
+    "automations": "Automasi",
+    "history": "Sejarah"
   },
   "dashboard": {
     "welcome": "Selamat Datang ke EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "Kegemaran",
       "ungrouped": "Semua alat"
-    }
+    },
+    "descHistory": "Semak operasi yang berjaya, gagal dan dibatalkan"
   },
   "gettingStarted": {
     "hint": "Baru di sini?",
@@ -1794,6 +1796,58 @@
         "title": "Baca Mengenai EncodeX",
         "description": "Ketahui lebih lanjut tentang EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "Sejarah Operasi",
+    "search": "Operasi carian",
+    "empty": "Tiada operasi yang sepadan dengan penapis semasa.",
+    "clearConfirm": "Kosongkan semua sejarah operasi?",
+    "refresh": "Segarkan semula",
+    "clear": "Kosongkan sejarah",
+    "remove": "Alih keluar",
+    "details": "Butiran",
+    "noSelection": "Pilih operasi untuk melihat butirannya.",
+    "count": "{{count}} operasi",
+    "filteredCount": "{{count}} daripada {{total}} operasi",
+    "status": "Status",
+    "family": "Operasi",
+    "source": "Sumber",
+    "started": "Bermula",
+    "duration": "Tempoh",
+    "input": "Input",
+    "outputs": "Keluaran",
+    "error": "ralat",
+    "metadata": "Metadata",
+    "sort": "Isih",
+    "allStatuses": "Semua status",
+    "allFamilies": "Semua operasi",
+    "allSources": "Semua sumber",
+    "sortNewest": "Terbaharu dahulu",
+    "sortOldest": "Tertua dahulu",
+    "sortLongest": "Paling lama dulu",
+    "sortShortest": "Terpendek dahulu",
+    "sortName": "Nama A-Z",
+    "statusLabels": {
+      "succeeded": "Berjaya",
+      "failed": "gagal",
+      "cancelled": "Dibatalkan"
+    },
+    "familyLabels": {
+      "convert": "Tukar",
+      "audioExtract": "Pengekstrakan audio",
+      "imageCompress": "Pemampatan imej",
+      "videoCut": "Potongan video",
+      "remux": "Remux",
+      "demux": "Demux",
+      "batch": "Barisan berkelompok",
+      "automation": "Automasi",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Antara muka",
+      "mcp": "MCP",
+      "automation": "Automasi"
     }
   }
 }

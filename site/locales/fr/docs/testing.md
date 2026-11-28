@@ -1,6 +1,6 @@
 # Tests
 
-<!-- drift:test-files=397 renderer-component-tests=54 -->
+<!-- drift:test-files=407 renderer-component-tests=56 -->
 
 ## Commandes
 

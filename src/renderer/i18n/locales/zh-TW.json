@@ -31,7 +31,8 @@
     "remux": "重新封裝",
     "demux": "解封裝",
     "copilot": "Copilot",
-    "automations": "自動化"
+    "automations": "自動化",
+    "history": "歷史"
   },
   "dashboard": {
     "welcome": "歡迎使用 EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "收藏",
       "ungrouped": "所有工具"
-    }
+    },
+    "descHistory": "查看成功、失敗和取消的操作"
   },
   "gettingStarted": {
     "hint": "第一次來？",
@@ -1794,6 +1796,58 @@
         "title": "了解 EncodeX",
         "description": "了解有關 EncodeX 的更多資訊。"
       }
+    }
+  },
+  "history": {
+    "title": "操作歷史",
+    "search": "搜尋操作",
+    "empty": "沒有操作與目前過濾器相符。",
+    "clearConfirm": "清除所有操作記錄？",
+    "refresh": "重新整理",
+    "clear": "清除歷史記錄",
+    "remove": "刪除",
+    "details": "詳情",
+    "noSelection": "選擇一個操作以查看其詳細資訊。",
+    "count": "{{count}} 次運算",
+    "filteredCount": "{{count}} 個運算，共 {{total}} 個運算",
+    "status": "狀態",
+    "family": "操作",
+    "source": "來源",
+    "started": "開始",
+    "duration": "持續時間",
+    "input": "輸入",
+    "outputs": "輸出",
+    "error": "錯誤",
+    "metadata": "元數據",
+    "sort": "排序",
+    "allStatuses": "所有狀態",
+    "allFamilies": "所有操作",
+    "allSources": "所有來源",
+    "sortNewest": "最新的優先",
+    "sortOldest": "最老的在前",
+    "sortLongest": "最長的優先",
+    "sortShortest": "最短的優先",
+    "sortName": "名稱 A-Z",
+    "statusLabels": {
+      "succeeded": "成功了",
+      "failed": "失敗",
+      "cancelled": "取消"
+    },
+    "familyLabels": {
+      "convert": "轉換",
+      "audioExtract": "音訊擷取",
+      "imageCompress": "影像壓縮",
+      "videoCut": "影片剪輯",
+      "remux": "混用器",
+      "demux": "解復用器",
+      "batch": "批次佇列",
+      "automation": "自動化",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "介面",
+      "mcp": "MCP",
+      "automation": "自動化"
     }
   }
 }

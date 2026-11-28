@@ -1,6 +1,6 @@
 # Processus, système de build & démarrage
 
-<!-- drift:video-codecs=51 audio-codecs=27 pixel-formats=56 log-constants=598 -->
+<!-- drift:video-codecs=51 audio-codecs=27 pixel-formats=56 log-constants=606 -->
 
 ## Modèle de processus
 

@@ -97,6 +97,7 @@ import {
 import type { McpSettings } from '../shared/mcp-settings';
 import type { AiConnectTestResult, AiModelsListResult, AiSettingsUpdate, AiSettingsView } from '../shared/ai/settings';
 import type { AuditEntry } from '../shared/audit';
+import type { HistoryContext, HistoryEntry } from '../shared/history/types';
 import type { AnalyticsEvent } from '../shared/analytics/events';
 import type { AnalyticsExceptionPayload } from '../shared/analytics/types';
 import type {
@@ -541,10 +542,14 @@ const api = {
    * @throws {Error} Rejects with a formatted AppError if conversion fails; the main
    *   process also removes any partially written output file.
    */
-  convertFile: (input: string, output: string, options: ConversionOptions, transcoderType: string) => {
+  convertFile: (input: string, output: string, options: ConversionOptions, transcoderType: string, context?: HistoryContext) => {
     log.info(LOG_CONVERT_FILE, input, LOG_ARROW, output, LOG_TRANSCODER, transcoderType);
-    return ipcRenderer.invoke(IPC.CONVERT_FILE, input, output, options, transcoderType) as Promise<void>;
+    return ipcRenderer.invoke(IPC.CONVERT_FILE, input, output, options, transcoderType, context) as Promise<void>;
   },
+  historyList: () => ipcRenderer.invoke(IPC.HISTORY_LIST) as Promise<HistoryEntry[]>,
+  historyGetThumbnail: (id: string) => ipcRenderer.invoke(IPC.HISTORY_GET_THUMBNAIL, id) as Promise<string | null>,
+  historyClear: () => ipcRenderer.invoke(IPC.HISTORY_CLEAR) as Promise<void>,
+  historyRemove: (id: string) => ipcRenderer.invoke(IPC.HISTORY_REMOVE, id) as Promise<boolean>,
   /**
    * Pauses the currently running single-file conversion. Logs the call at info level,
    * then invokes the main process over the `IPC.PAUSE_CONVERSION` ('pause-conversion')
@@ -1516,6 +1521,11 @@ const api = {
     };
     ipcRenderer.on(IPC.QUEUE_CANCELLED, handler);
     return () => ipcRenderer.removeListener(IPC.QUEUE_CANCELLED, handler);
+  },
+  onHistoryUpdated: (cb: () => void) => {
+    const handler = (_event: IpcRendererEvent) => cb();
+    ipcRenderer.on(IPC.HISTORY_UPDATED, handler);
+    return () => ipcRenderer.removeListener(IPC.HISTORY_UPDATED, handler);
   },
   /**
    * Subscribes to the notification that a QUEUED job was reordered, pushed over

@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "?????????????"
+    "automations": "?????????????",
+    "history": "ປະຫວັດສາດ"
   },
   "dashboard": {
     "welcome": "ຍິນດີຕ້ອນຮັບສູ່ EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "ທີ່ມັກ",
       "ungrouped": "ເຄື່ອງມືທັງໝົດ"
-    }
+    },
+    "descHistory": "ທົບທວນຄືນການດໍາເນີນງານທີ່ປະສົບຜົນສໍາເລັດ, ລົ້ມເຫລວ, ແລະຖືກຍົກເລີກ"
   },
   "gettingStarted": {
     "hint": "ມາໃໝ່ບໍ?",
@@ -1794,6 +1796,58 @@
         "title": "ອ່ານກ່ຽວກັບ EncodeX",
         "description": "ສຶກສາເພີ່ມເຕີມກ່ຽວກັບ EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "ປະຫວັດການດໍາເນີນງານ",
+    "search": "ການດໍາເນີນງານຄົ້ນຫາ",
+    "empty": "ບໍ່ມີການປະຕິບັດງານທີ່ກົງກັບຕົວກອງປັດຈຸບັນ.",
+    "clearConfirm": "ລຶບລ້າງປະຫວັດການດໍາເນີນງານທັງໝົດບໍ?",
+    "refresh": "ໂຫຼດຂໍ້ມູນຄືນໃໝ່",
+    "clear": "ລຶບລ້າງປະຫວັດ",
+    "remove": "ເອົາອອກ",
+    "details": "ລາຍລະອຽດ",
+    "noSelection": "ເລືອກການດໍາເນີນການເພື່ອເບິ່ງລາຍລະອຽດຂອງມັນ.",
+    "count": "{{count}} ການດໍາເນີນງານ",
+    "filteredCount": "{{count}} ຂອງ {{total}} ການດໍາເນີນງານ",
+    "status": "ສະຖານະ",
+    "family": "ການດໍາເນີນງານ",
+    "source": "ທີ່ມາ",
+    "started": "ເລີ່ມແລ້ວ",
+    "duration": "ໄລຍະເວລາ",
+    "input": "ປ້ອນຂໍ້ມູນ",
+    "outputs": "ຜົນໄດ້ຮັບ",
+    "error": "ຜິດພາດ",
+    "metadata": "ເມຕາເດຕາ",
+    "sort": "ຄັດ",
+    "allStatuses": "ສະຖານະທັງໝົດ",
+    "allFamilies": "ການດໍາເນີນງານທັງຫມົດ",
+    "allSources": "ແຫຼ່ງຂໍ້ມູນທັງຫມົດ",
+    "sortNewest": "ໃໝ່ລ່າສຸດ",
+    "sortOldest": "ເກົ່າແກ່ທີ່ສຸດ",
+    "sortLongest": "ຍາວທີ່ສຸດກ່ອນ",
+    "sortShortest": "ສັ້ນທີ່ສຸດກ່ອນ",
+    "sortName": "ຊື່ A-Z",
+    "statusLabels": {
+      "succeeded": "ປະສົບຜົນສໍາເລັດ",
+      "failed": "ລົ້ມເຫລວ",
+      "cancelled": "ຍົກເລີກ"
+    },
+    "familyLabels": {
+      "convert": "ແປງ",
+      "audioExtract": "ການສະກັດສຽງ",
+      "imageCompress": "ການບີບອັດຮູບພາບ",
+      "videoCut": "ຕັດວິດີໂອ",
+      "remux": "Remux",
+      "demux": "Demux",
+      "batch": "ຄິວຊຸດ",
+      "automation": "ອັດຕະໂນມັດ",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "ການໂຕ້ຕອບ",
+      "mcp": "MCP",
+      "automation": "ອັດຕະໂນມັດ"
     }
   }
 }

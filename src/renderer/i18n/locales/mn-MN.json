@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "Автоматжуулалт"
+    "automations": "Автоматжуулалт",
+    "history": "Түүх"
   },
   "dashboard": {
     "welcome": "EncodeX-д тавтай морилно уу",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "Таалагдсан",
       "ungrouped": "Бүх хэрэгсэл"
-    }
+    },
+    "descHistory": "Амжилттай, бүтэлгүйтсэн, цуцлагдсан үйлдлүүдийг шалгана уу"
   },
   "gettingStarted": {
     "hint": "Энд шинэ үү?",
@@ -1794,6 +1796,58 @@
         "title": "EncodeX-ийн талаар уншина уу",
         "description": "EncodeX-ийн талаар илүү ихийг мэдэж аваарай."
       }
+    }
+  },
+  "history": {
+    "title": "Үйл ажиллагааны түүх",
+    "search": "Хайлтын ажиллагаа",
+    "empty": "Одоогийн шүүлтүүртэй тохирох үйлдэл алга.",
+    "clearConfirm": "Бүх үйлдлийн түүхийг арилгах уу?",
+    "refresh": "Сэргээх",
+    "clear": "Түүхийг цэвэрлэх",
+    "remove": "Устгах",
+    "details": "Дэлгэрэнгүй мэдээлэл",
+    "noSelection": "Дэлгэрэнгүйг харахын тулд үйлдлийг сонгоно уу.",
+    "count": "{{count}} үйлдэл",
+    "filteredCount": "{{total}} үйлдлийн {{count}}",
+    "status": "Статус",
+    "family": "Үйл ажиллагаа",
+    "source": "Эх сурвалж",
+    "started": "Эхэлсэн",
+    "duration": "Үргэлжлэх хугацаа",
+    "input": "Оруулах",
+    "outputs": "Гаралт",
+    "error": "Алдаа",
+    "metadata": "Мета өгөгдөл",
+    "sort": "Эрэмбэлэх",
+    "allStatuses": "Бүх статусууд",
+    "allFamilies": "Бүх үйл ажиллагаа",
+    "allSources": "Бүх эх сурвалж",
+    "sortNewest": "Хамгийн шинэ нь эхлээд",
+    "sortOldest": "Эхлээд хамгийн хөгшин",
+    "sortLongest": "Эхлээд хамгийн урт",
+    "sortShortest": "Эхлээд хамгийн богино",
+    "sortName": "Нэр A-Z",
+    "statusLabels": {
+      "succeeded": "Амжилттай",
+      "failed": "Амжилтгүй",
+      "cancelled": "Цуцлагдсан"
+    },
+    "familyLabels": {
+      "convert": "Хөрвүүлэх",
+      "audioExtract": "Аудио олборлолт",
+      "imageCompress": "Зураг шахах",
+      "videoCut": "Видео таслав",
+      "remux": "Ремукс",
+      "demux": "Демукс",
+      "batch": "Багц дараалал",
+      "automation": "Автоматжуулалт",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Интерфэйс",
+      "mcp": "MCP",
+      "automation": "Автоматжуулалт"
     }
   }
 }

@@ -11,6 +11,7 @@
 
 import { ipcMain, app } from 'electron';
 import { MuxQueue } from '../queue/mux-queue';
+import type { MuxQueueOptions } from '../queue/types';
 import path from 'path';
 import { getNotifier } from '../notifications/notifier';
 import { tNotification } from '../notifications/strings';
@@ -53,13 +54,13 @@ const log = new Logger('main/ipc/mux-queue');
  *   lifecycle events.
  * @returns {void} Nothing is returned.
  */
-export function registerMuxQueueHandlers(win: unknown, send: IpcSender): void {
+export function registerMuxQueueHandlers(win: unknown, send: IpcSender, historyRecorder?: MuxQueueOptions['historyRecorder']): void {
   /** The mux queue persistence adapter; the will-quit clear targets its snapshot. */
   const persistence = new FileMuxQueuePersistence(app.getPath('userData'));
   registerQueueSnapshotClear(() => persistence.clear());
 
   /** The mux queue backing these handlers; one instance per registration call. */
-  const muxQueue = new MuxQueue({ persistence });
+  const muxQueue = new MuxQueue({ persistence, historyRecorder });
 
   /**
    * Handles the IPC.MUX_QUEUE_ADD channel (mux-queue-add).

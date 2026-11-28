@@ -31,7 +31,8 @@
     "remux": "Athchumhdach",
     "demux": "Démhcseáil",
     "copilot": "Copilot",
-    "automations": "Uathoibríochtaí"
+    "automations": "Uathoibríochtaí",
+    "history": "Stair"
   },
   "dashboard": {
     "welcome": "Fáilte go EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "Ceanáin",
       "ungrouped": "Gach uirlis"
-    }
+    },
+    "descHistory": "Déan athbhreithniú ar oibríochtaí rathúla, oibríochtaí nár éirigh leo agus oibríochtaí a cuireadh ar ceal"
   },
   "gettingStarted": {
     "hint": "Nua anseo?",
@@ -1794,6 +1796,58 @@
         "title": "Léigh Faoi EncodeX",
         "description": "Tuilleadh eolais faoi EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "Stair na nOibríochtaí",
+    "search": "Cuardaigh oibríochtaí",
+    "empty": "Ní thagann aon oibríocht leis na scagairí reatha.",
+    "clearConfirm": "Glan stair na n-oibríochtaí go léir?",
+    "refresh": "Athnuaigh",
+    "clear": "Glan an stair",
+    "remove": "Bain",
+    "details": "Sonraí",
+    "noSelection": "Roghnaigh oibríocht chun a sonraí a fheiceáil.",
+    "count": "{{count}} oibríocht",
+    "filteredCount": "{{count}} as {{total}} oibríocht",
+    "status": "Stádas",
+    "family": "Oibríocht",
+    "source": "Foinse",
+    "started": "Riosca",
+    "duration": "Fad",
+    "input": "Inchur",
+    "outputs": "Aschuir",
+    "error": "Earráid",
+    "metadata": "Meiteashonraí",
+    "sort": "Sórtáil",
+    "allStatuses": "Gach stádas",
+    "allFamilies": "Gach oibríocht",
+    "allSources": "Gach foinse",
+    "sortNewest": "An ceann is nuaí ar dtús",
+    "sortOldest": "An ceann is sine ar dtús",
+    "sortLongest": "An ceann is faide ar dtús",
+    "sortShortest": "An ceann is giorra ar dtús",
+    "sortName": "Ainm A-Z",
+    "statusLabels": {
+      "succeeded": "Rathúil",
+      "failed": "Theip air",
+      "cancelled": "Curtha ar ceal"
+    },
+    "familyLabels": {
+      "convert": "Tiontaigh",
+      "audioExtract": "Eastóscadh fuaime",
+      "imageCompress": "comhbhrú íomhá",
+      "videoCut": "Gearradh físeáin",
+      "remux": "Ath-ilphléacsáil",
+      "demux": "Démultapléacsú",
+      "batch": "Scuaine bhaisc",
+      "automation": "Uathoibriú",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "@ info: tooltip interface type",
+      "mcp": "MCP",
+      "automation": "uathoibriú"
     }
   }
 }

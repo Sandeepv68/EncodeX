@@ -245,6 +245,7 @@ describe('VideoCut', () => {
       '/out/cut.mp4',
       { copy: true, startTime: '00:00:00', endTime: '00:01:30' },
       'FFMPEG',
+      { family: 'video-cut', source: 'gui', metadata: expect.objectContaining({}) },
     );
     expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'toast.videoCut')).toBe(true);
   });
@@ -263,6 +264,7 @@ describe('VideoCut', () => {
       '/out/cut.mp4',
       { copy: true, startTime: '00:00:00', duration: '00:00:45' },
       'FFMPEG',
+      { family: 'video-cut', source: 'gui', metadata: expect.objectContaining({}) },
     );
   });
 
@@ -279,6 +281,7 @@ describe('VideoCut', () => {
       '/out/cut.mp4',
       { copy: true, startTime: '00:00:00', endTime: '00:01:30' },
       'FFMPEG',
+      { family: 'video-cut', source: 'gui', metadata: expect.objectContaining({}) },
     );
   });
 
@@ -297,6 +300,7 @@ describe('VideoCut', () => {
       '/out/cut.mp4',
       { copy: true, startTime: '00:00:00', endTime: '00:01:30', audio: false },
       'FFMPEG',
+      { family: 'video-cut', source: 'gui', metadata: expect.objectContaining({}) },
     );
   });
 

@@ -31,7 +31,8 @@
     "remux": "Đóng gói lại",
     "demux": "Tách luồng",
     "copilot": "Copilot",
-    "automations": "Tự động hóa"
+    "automations": "Tự động hóa",
+    "history": "Lịch sử"
   },
   "dashboard": {
     "welcome": "Chào mừng đến với EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "Yêu thích",
       "ungrouped": "Tất cả công cụ"
-    }
+    },
+    "descHistory": "Xem lại các hoạt động thành công, thất bại và bị hủy"
   },
   "gettingStarted": {
     "hint": "Mới đến đây?",
@@ -1794,6 +1796,58 @@
         "title": "Đọc về EncodeX",
         "description": "Tìm hiểu thêm về EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "Lịch sử hoạt động",
+    "search": "Hoạt động tìm kiếm",
+    "empty": "Không có hoạt động nào phù hợp với các bộ lọc hiện tại.",
+    "clearConfirm": "Xóa tất cả lịch sử hoạt động?",
+    "refresh": "Làm mới",
+    "clear": "Xóa lịch sử",
+    "remove": "Xóa",
+    "details": "Chi tiết",
+    "noSelection": "Chọn một thao tác để xem chi tiết của nó.",
+    "count": "{{count}} thao tác",
+    "filteredCount": "{{count}} trong tổng số {{total}} hoạt động",
+    "status": "Trạng thái",
+    "family": "hoạt động",
+    "source": "Nguồn",
+    "started": "Đã bắt đầu",
+    "duration": "Thời lượng",
+    "input": "đầu vào",
+    "outputs": "đầu ra",
+    "error": "Lỗi",
+    "metadata": "Siêu dữ liệu",
+    "sort": "Sắp xếp",
+    "allStatuses": "Tất cả trạng thái",
+    "allFamilies": "Mọi hoạt động",
+    "allSources": "Tất cả các nguồn",
+    "sortNewest": "Mới nhất đầu tiên",
+    "sortOldest": "Cũ nhất đầu tiên",
+    "sortLongest": "Đầu tiên dài nhất",
+    "sortShortest": "Đầu tiên ngắn nhất",
+    "sortName": "Tên A-Z",
+    "statusLabels": {
+      "succeeded": "thành công",
+      "failed": "thất bại",
+      "cancelled": "Đã hủy"
+    },
+    "familyLabels": {
+      "convert": "Chuyển đổi",
+      "audioExtract": "Trích xuất âm thanh",
+      "imageCompress": "Nén hình ảnh",
+      "videoCut": "Cắt video",
+      "remux": "Bản phối lại",
+      "demux": "Demux",
+      "batch": "Hàng đợi hàng loạt",
+      "automation": "Tự động hóa",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Giao diện",
+      "mcp": "MCP",
+      "automation": "Tự động hóa"
     }
   }
 }

@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "Automatiseringer"
+    "automations": "Automatiseringer",
+    "history": "Historie"
   },
   "dashboard": {
     "welcome": "Velkommen til EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "Favoritter",
       "ungrouped": "Alle værktøjer"
-    }
+    },
+    "descHistory": "Gennemgå gennemførte, mislykkede og annullerede handlinger"
   },
   "gettingStarted": {
     "hint": "Ny her?",
@@ -1794,6 +1796,58 @@
         "title": "Læs om EncodeX",
         "description": "Lær mere om EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "Driftshistorik",
+    "search": "Søg efter operationer",
+    "empty": "Ingen operationer matcher de aktuelle filtre.",
+    "clearConfirm": "Vil du slette hele driftshistorikken?",
+    "refresh": "Opdater",
+    "clear": "Ryd historik",
+    "remove": "Fjern",
+    "details": "Oplysninger",
+    "noSelection": "Vælg en handling for at se dens oplysninger.",
+    "count": "{{count}} operationer",
+    "filteredCount": "{{count}} ud af {{total}} operationer",
+    "status": "Status",
+    "family": "Handling",
+    "source": "Kilde",
+    "started": "Startet",
+    "duration": "Varighed",
+    "input": "Indgang",
+    "outputs": "Output",
+    "error": "Fejl",
+    "metadata": "Metadata",
+    "sort": "Sorter",
+    "allStatuses": "Alle statusser",
+    "allFamilies": "Alle operationer",
+    "allSources": "Alle kilder",
+    "sortNewest": "Nyeste først",
+    "sortOldest": "Ældste først",
+    "sortLongest": "Længste først",
+    "sortShortest": "Korteste først",
+    "sortName": "Navn A-Å",
+    "statusLabels": {
+      "succeeded": "Lykkedes",
+      "failed": "Ikke bestået",
+      "cancelled": "Aflyst"
+    },
+    "familyLabels": {
+      "convert": "Konverter",
+      "audioExtract": "Lydudtrækning",
+      "imageCompress": "billedkompression",
+      "videoCut": "Videoklip",
+      "remux": "Remux",
+      "demux": "Demux",
+      "batch": "Batchkø",
+      "automation": "Automatisering",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Interface",
+      "mcp": "MCP",
+      "automation": "Automatisering"
     }
   }
 }

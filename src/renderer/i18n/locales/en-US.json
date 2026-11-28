@@ -76,6 +76,7 @@
     "automations": "Automations",
     "copilot": "Copilot",
     "logs": "Logs",
+    "history": "History",
     "settings": "Settings",
     "about": "About",
     "blip": {
@@ -100,6 +101,7 @@
     "descBatch": "Convert many files at once with a smart queue",
     "descAutomations": "Build reusable conversion pipelines on a visual canvas",
     "descCopilot": "Plan conversions by describing a goal",
+    "descHistory": "Review successful, failed, and cancelled operations",
     "shortcutsFooter": "Press {{shortcut}} for keyboard shortcuts",
     "actions": {
       "viewSwitcher": "Choose a view",
@@ -1089,6 +1091,58 @@
     "auditTier": "T{{tier}}",
     "auditStatusOk": "ok",
     "auditStatusFailed": "failed"
+  },
+  "history": {
+    "title": "Operation History",
+    "search": "Search operations",
+    "empty": "No operations match the current filters.",
+    "clearConfirm": "Clear all operation history?",
+    "refresh": "Refresh",
+    "clear": "Clear history",
+    "remove": "Remove",
+    "details": "Details",
+    "noSelection": "Select an operation to view its details.",
+    "count": "{{count}} operations",
+    "filteredCount": "{{count}} of {{total}} operations",
+    "status": "Status",
+    "family": "Operation",
+    "source": "Source",
+    "started": "Started",
+    "duration": "Duration",
+    "input": "Input",
+    "outputs": "Outputs",
+    "error": "Error",
+    "metadata": "Metadata",
+    "sort": "Sort",
+    "allStatuses": "All statuses",
+    "allFamilies": "All operations",
+    "allSources": "All sources",
+    "sortNewest": "Newest first",
+    "sortOldest": "Oldest first",
+    "sortLongest": "Longest first",
+    "sortShortest": "Shortest first",
+    "sortName": "Name A-Z",
+    "statusLabels": {
+      "succeeded": "Succeeded",
+      "failed": "Failed",
+      "cancelled": "Cancelled"
+    },
+    "familyLabels": {
+      "convert": "Convert",
+      "audioExtract": "Audio extraction",
+      "imageCompress": "Image compression",
+      "videoCut": "Video cut",
+      "remux": "Remux",
+      "demux": "Demux",
+      "batch": "Batch queue",
+      "automation": "Automation",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Interface",
+      "mcp": "MCP",
+      "automation": "Automation"
+    }
   },
   "footer": {
     "version": "v{{version}}",

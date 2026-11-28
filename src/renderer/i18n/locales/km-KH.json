@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "?????????????????"
+    "automations": "?????????????????",
+    "history": "ប្រវត្តិ"
   },
   "dashboard": {
     "welcome": "សូមស្វាគមន៍មកកាន់ EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "ចំណូលចិត្ត",
       "ungrouped": "ឧបករណ៍ទាំងអស់"
-    }
+    },
+    "descHistory": "ពិនិត្យមើលប្រតិបត្តិការដែលជោគជ័យ បរាជ័យ និងបានលុបចោល"
   },
   "gettingStarted": {
     "hint": "ថ្មីនៅទីនេះ?",
@@ -1794,6 +1796,58 @@
         "title": "អានអំពី EncodeX",
         "description": "មើល​បន្ថែមទៀត​អំពី EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "ប្រវត្តិប្រតិបត្តិការ",
+    "search": "ស្វែងរកប្រតិបត្តិការ",
+    "empty": "គ្មានប្រតិបត្តិការណាមួយត្រូវគ្នានឹងតម្រងបច្ចុប្បន្នទេ។",
+    "clearConfirm": "សម្អាតប្រវត្តិប្រតិបត្តិការទាំងអស់ឬ?",
+    "refresh": "ផ្ទុកឡើងវិញ",
+    "clear": "សម្អាតប្រវត្តិ",
+    "remove": "ដកចេញ",
+    "details": "ព័ត៌មានលម្អិត",
+    "noSelection": "ជ្រើសរើសប្រតិបត្តិការមួយ ដើម្បីមើលព័ត៌មានលម្អិតរបស់វា។",
+    "count": "ប្រតិបត្តិការចំនួន {{count}}",
+    "filteredCount": "{{count}} ក្នុងចំណោមប្រតិបត្តិការចំនួន {{total}}",
+    "status": "ស្ថានភាព",
+    "family": "ប្រតិបត្តិការ",
+    "source": "ប្រភព",
+    "started": "ចាប់ផ្ដើម",
+    "duration": "រយៈពេល",
+    "input": "áááááá¶áâááááá¼á",
+    "outputs": "ទិន្នផល",
+    "error": "កំហុស",
+    "metadata": "ទិន្នន័យមេតា (Metadata)",
+    "sort": "តម្រៀប",
+    "allStatuses": "ស្ថានភាពទាំងអស់",
+    "allFamilies": "ប្រតិបត្តិការទាំងអស់",
+    "allSources": "ប្រភពទាំងអស់",
+    "sortNewest": "ថ្មីបំផុតមុនគេ",
+    "sortOldest": "ចាស់ជាងគេមុនគេ",
+    "sortLongest": "វែងជាងគេមុនគេ",
+    "sortShortest": "ខ្លីបំផុតមុនគេ",
+    "sortName": "ឈ្មោះ A-Z",
+    "statusLabels": {
+      "succeeded": "ជោគជ័យ",
+      "failed": "បរាជ័យ",
+      "cancelled": "បានបោះបង់"
+    },
+    "familyLabels": {
+      "convert": "បម្លែង",
+      "audioExtract": "ការដកស្រង់សំឡេង",
+      "imageCompress": "ការបង្ហាប់រូបភាព",
+      "videoCut": "ការកាត់វីដេអូ",
+      "remux": "រីមិច",
+      "demux": "Demux",
+      "batch": "ជួរឈរជាបាច់",
+      "automation": "ស្វ័យប្រវត្តិកម្ម",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "system driver name",
+      "mcp": "MCP",
+      "automation": "ស្វ័យប្រវត្តិកម្ម"
     }
   }
 }

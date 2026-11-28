@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "Aunoatanga"
+    "automations": "Aunoatanga",
+    "history": "Hītori"
   },
   "dashboard": {
     "welcome": "Nau mai, haere mai ki EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "Ngā Tino Pai",
       "ungrouped": "Ngā Utauta Katoa"
-    }
+    },
+    "descHistory": "Te arotake i nga mahi angitu, i rahua, kua whakakorea"
   },
   "gettingStarted": {
     "hint": "He tauhou koe?",
@@ -1794,6 +1796,58 @@
         "title": "Panui Mo EncodeX",
         "description": "Ako atu mo EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "Hītori Mahi",
+    "search": "Nga mahi rapu",
+    "empty": "Karekau he mahinga e rite ana ki nga whiriwhiringa o naianei.",
+    "clearConfirm": "Ūkuia te hītori mahi katoa?",
+    "refresh": "Tāmata",
+    "clear": "Maamaa te hitori",
+    "remove": "Tango",
+    "details": "Nga korero",
+    "noSelection": "Tīpakohia he mahinga hei tiro i ona taipitopito.",
+    "count": "{{count}} mahinga",
+    "filteredCount": "{{count}} o {{total}} mahinga",
+    "status": "Tūnga",
+    "family": "Mahi",
+    "source": "Puna",
+    "started": "I timata",
+    "duration": "Roanga",
+    "input": "Whakauru",
+    "outputs": "Nga putanga",
+    "error": "Hapa",
+    "metadata": "Raraunga meta",
+    "sort": "Kōmaka",
+    "allStatuses": "Nga mana katoa",
+    "allFamilies": "Nga mahi katoa",
+    "allSources": "Ko nga puna katoa",
+    "sortNewest": "Hou tuatahi",
+    "sortOldest": "Tawhito tuatahi",
+    "sortLongest": "Te roa tuatahi",
+    "sortShortest": "Poto rawa tuatahi",
+    "sortName": "Ingoa A-Z",
+    "statusLabels": {
+      "succeeded": "I angitu",
+      "failed": "I rahua",
+      "cancelled": "Kua whakakorehia"
+    },
+    "familyLabels": {
+      "convert": "Tahuri",
+      "audioExtract": "Tangohanga ororongo",
+      "imageCompress": "Kōpeketanga whakaahua",
+      "videoCut": "Tapahia te ataata",
+      "remux": "Remux",
+      "demux": "Demux",
+      "batch": "Tūtira puranga",
+      "automation": "Aunoatanga",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Atanga",
+      "mcp": "MCP",
+      "automation": "Aunoatanga"
     }
   }
 }

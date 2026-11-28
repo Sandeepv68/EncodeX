@@ -42,6 +42,7 @@ export const DASHBOARD_CARD_TITLES: Readonly<Record<string, string>> = {
   '/batch': 'batchQueue',
   '/automations': 'automations',
   '/media-info': 'mediaInfo',
+  '/history': 'history',
 };
 
 /** Dashboard translation key suffix for each card description. */
@@ -56,6 +57,7 @@ export const DASHBOARD_CARD_DESCRIPTIONS: Readonly<Record<string, string>> = {
   '/batch': 'descBatch',
   '/automations': 'descAutomations',
   '/media-info': 'descMediaInfo',
+  '/history': 'descHistory',
 };
 
 export const QUICK_LINKS: readonly QuickLink[] = [
@@ -471,7 +473,7 @@ export const QUICK_LINKS: readonly QuickLink[] = [
   },
   {
     id: 'review-operation-history',
-    to: '/logs',
+    to: '/history',
     iconKey: 'history',
     labelKey: 'quickLinks.links.reviewOperationHistory.title',
     descriptionKey: 'quickLinks.links.reviewOperationHistory.description',

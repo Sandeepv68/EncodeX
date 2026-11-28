@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilote",
-    "automations": "Automatisations"
+    "automations": "Automatisations",
+    "history": "Historique"
   },
   "dashboard": {
     "welcome": "Bienvenue sur EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "Favoris",
       "ungrouped": "Tous les outils"
-    }
+    },
+    "descHistory": "Examiner les opérations réussies, échouées et annulées"
   },
   "gettingStarted": {
     "hint": "Nouveau ici ?",
@@ -1794,6 +1796,58 @@
         "title": "En savoir plus sur EncodeX",
         "description": "En savoir plus sur EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "Historique des opérations",
+    "search": "Rechercher des opérations",
+    "empty": "Aucune opération ne correspond aux filtres actuels.",
+    "clearConfirm": "Effacer tout l'historique des opérations ?",
+    "refresh": "Actualiser",
+    "clear": "Effacer l'historique",
+    "remove": "Supprimer",
+    "details": "Détails",
+    "noSelection": "Sélectionnez une opération pour afficher ses détails.",
+    "count": "{{count}} opérations",
+    "filteredCount": "{{count}} opérations sur {{total}}",
+    "status": "Statut",
+    "family": "Opération",
+    "source": "Source",
+    "started": "Commencé",
+    "duration": "Durée",
+    "input": "Entrée",
+    "outputs": "Sorties",
+    "error": "Erreur",
+    "metadata": "Les métadonnées",
+    "sort": "Trier",
+    "allStatuses": "Tous les statuts",
+    "allFamilies": "Toutes les opérations",
+    "allSources": "Toutes les sources",
+    "sortNewest": "Les plus récents",
+    "sortOldest": "Les plus anciens",
+    "sortLongest": "Les plus longues en premier",
+    "sortShortest": "Le plus court en premier",
+    "sortName": "Nom A-Z",
+    "statusLabels": {
+      "succeeded": "Réussi",
+      "failed": "Échec",
+      "cancelled": "Annulé"
+    },
+    "familyLabels": {
+      "convert": "Convertir",
+      "audioExtract": "Extraction audio",
+      "imageCompress": "Compression d’image complète.",
+      "videoCut": "CUT VIDEO&#10;On a vécu avec des modèles amoureux",
+      "remux": "Remuxer",
+      "demux": "Multiplexeur",
+      "batch": "File d’attente des lots",
+      "automation": "Automatisation",
+      "mcp": "PCM"
+    },
+    "sourceLabels": {
+      "gui": "Interface",
+      "mcp": "PCM",
+      "automation": "Automatisme"
     }
   }
 }

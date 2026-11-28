@@ -5,6 +5,7 @@
 import type { IpcSender } from '../ipc/types';
 import type { ITranscoder } from '../transcoders/types';
 import type { AutomationProgressEvent, AutomationSettings } from '../../shared/automations/types';
+import type { HistoryRecorderLike } from '../../shared/history/types';
 import type { TranscoderType } from '../../shared/types';
 
 export type AutomationEventKind = 'status' | 'progress' | 'event';
@@ -17,6 +18,11 @@ export interface AutomationBusEvent {
 export interface ActiveAutomationRun {
   runId: string;
   automationId: string;
+  automationName?: string;
+  inputPath?: string;
+  outputPath?: string;
+  stepCount?: number;
+  startedAt: number;
   runDirectory: string;
   keepIntermediateFiles: boolean;
   cancelled: boolean;
@@ -39,6 +45,7 @@ export interface AutomationTempContext {
 
 export interface AutomationRunnerOptions {
   userDataDir: string;
+  historyRecorder?: HistoryRecorderLike;
   eventBus?: import('./events').AutomationEventBus;
   transcoderFactory?: AutomationTranscoderFactory;
   checkBmfAvailability?: () => { available: boolean; missing: string[] };

@@ -85,6 +85,7 @@ const navKeyMap: Record<string, string> = {
   '/settings': 'settings',
   '/about': 'about',
   '/logs': 'logs',
+  '/history': 'history',
 };
 
 /**

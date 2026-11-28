@@ -3,7 +3,7 @@
  *
  * Phase 3.2 drove request channels with the *real* bridge and hostile payloads. Phase 3.3 drove event
  * channels. This file attacks the other half of the contract: the bridge itself. Every
- * `window.electronAPI` method is made to fail, and the app is walked through all twelve routes to see
+ * `window.electronAPI` method is made to fail, and the app is walked through all fifteen routes to see
  * whether the renderer treats a bridge it does not control the way it should.
  *
  * ## Why the bridge is the interesting boundary
@@ -71,7 +71,7 @@ const PENDING_MODES: ReadonlySet<string> = new Set(['never']);
 const sessions = new Map<string, AppSession>();
 
 /**
- * The app's twelve routes, paired with the drawer `data-testid` that navigates to them.
+ * The app's fifteen routes, paired with the drawer `data-testid` that navigates to them.
  *
  * Duplicated from `ipc-events.spec.ts` rather than imported: the two suites describe different contracts
  * of the drawer, and a shared helper here would couple them so that a navigation change moves two
@@ -90,6 +90,7 @@ const ROUTES = [
   { path: '/batch', testId: 'nav-item-batch' },
   { path: '/automations', testId: 'nav-item-automations' },
   { path: '/logs', testId: 'nav-item-logs' },
+  { path: '/history', testId: 'nav-item-history' },
   { path: '/settings', testId: 'nav-item-settings' },
   { path: '/about', testId: 'nav-item-about' },
 ] as const;
@@ -232,7 +233,7 @@ describe('hostile preload: renderer survives a bridge that fails every call', ()
         session = sessions.get(mode)!;
       });
 
-      it('survives all fourteen routes with no unhandled error and a mounted route each time', async () => {
+      it('survives all fifteen routes with no unhandled error and a mounted route each time', async () => {
         const session = await ensureLiveSession(sessions.get(mode)!, sessionOptions(mode));
         sessions.set(mode, session);
         await ensureTermsAccepted(session.page);
@@ -249,7 +250,7 @@ describe('hostile preload: renderer survives a bridge that fails every call', ()
           });
         }
 
-        // Twelve distinct routes, each actually mounted. Without this the loop above could pass while
+        // Fifteen distinct routes, each actually mounted. Without this the loop above could pass while
         // every click was ignored and the app sat on one page for the whole run.
         expect(new Set(observed.map((entry) => entry.hash)).size).toBe(ROUTES.length);
 

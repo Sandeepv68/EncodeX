@@ -31,7 +31,8 @@
     "remux": "रिमक्स",
     "demux": "डीमक्स",
     "copilot": "कॉपिलॉट",
-    "automations": "ऑटोमेशन"
+    "automations": "ऑटोमेशन",
+    "history": "हिस्ट्री"
   },
   "dashboard": {
     "welcome": "EncodeX में आपका स्वागत है",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "पसंदीदा",
       "ungrouped": "सभी टूल"
-    }
+    },
+    "descHistory": "सफल, असफल और कैंसिल किए गए ऑपरेशन की समीक्षा करें"
   },
   "gettingStarted": {
     "hint": "यहां नए हैं?",
@@ -1794,6 +1796,58 @@
         "title": "एनकोडएक्स के बारे में पढ़ें",
         "description": "एनकोडएक्स के बारे में और जानें।"
       }
+    }
+  },
+  "history": {
+    "title": "ऑपरेशन का इतिहास",
+    "search": "ऑपरेशन सर्च करें",
+    "empty": "मौजूदा फ़िल्टर से कोई भी ऑपरेशन मैच नहीं करता।",
+    "clearConfirm": "ऑपरेशन का पूरा इतिहास मिटाएँ?",
+    "refresh": "रीफ़्रेश करें",
+    "clear": "हिस्ट्री साफ़ करें",
+    "remove": "हटाएँ",
+    "details": "विवरण",
+    "noSelection": "इसके विवरण देखने के लिए कोई ऑपरेशन चुनें।",
+    "count": "{{count}} ऑपरेशन",
+    "filteredCount": "{{total}} में से {{count}} ऑपरेशन",
+    "status": "स्टेटस",
+    "family": "ऑपरेशन",
+    "source": "स्रोत",
+    "started": "प्रारंभ",
+    "duration": "अवधि",
+    "input": "इनपुट",
+    "outputs": "आउटपुट",
+    "error": "गड़बड़ी",
+    "metadata": "मेटाडाटा",
+    "sort": "क्रमबद्ध करें",
+    "allStatuses": "सभी स्टेटस",
+    "allFamilies": "सभी ऑपरेशन",
+    "allSources": "सभी स्रोत",
+    "sortNewest": "नवीनतम पहले",
+    "sortOldest": "सबसे पुराना पहले",
+    "sortLongest": "सबसे लंबा पहले",
+    "sortShortest": "सबसे कम दूरी वाला पहले",
+    "sortName": "नाम A-Z",
+    "statusLabels": {
+      "succeeded": "सफल रहा",
+      "failed": "असफल रहा",
+      "cancelled": "कैंसल किया गया"
+    },
+    "familyLabels": {
+      "convert": "कन्वर्ट करें",
+      "audioExtract": "ऑडियो एक्सट्रैक्शन",
+      "imageCompress": "इमेज कंप्रेशन",
+      "videoCut": "वीडियो कट",
+      "remux": "रीमक्स",
+      "demux": "डिमक्स",
+      "batch": "बैच क्यू",
+      "automation": "ऑटोमेशन",
+      "mcp": "एम.सी.पी"
+    },
+    "sourceLabels": {
+      "gui": "इंटरफ़ेस",
+      "mcp": "एम.सी.पी",
+      "automation": "स्वचालन"
     }
   }
 }

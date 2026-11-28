@@ -26,6 +26,8 @@ import type {
 } from '../../shared/types';
 import type { AIProviderId } from '../../shared/ai/types';
 import type { OnboardingGoal } from '../../shared/analytics/events';
+import type { HistoryEntry } from '../../shared/history/types';
+import type { HistoryLoadState, HistoryQuery } from '../stores/types';
 import type { TooltipProps } from '@mui/material/Tooltip';
 import type { BatchEncodingValues } from '../utils/types';
 import type { DashboardCardSpec } from '../pages/types';
@@ -893,4 +895,46 @@ export interface DashboardGroupBarProps {
   onGroupMenu: (event: MouseEvent<HTMLElement>, id: string) => void;
   onNewGroup: () => void;
   onReset: () => void;
+}
+
+export interface HistoryToolbarProps {
+  query: HistoryQuery;
+  resultCount: number;
+  totalCount: number;
+  onQueryChange: (patch: Partial<HistoryQuery>) => void;
+  onRefresh: () => void;
+  onClear: () => void;
+}
+
+export interface HistoryListProps {
+  entries: HistoryEntry[];
+  selectedId: string | null;
+  thumbnails: Record<string, string | null>;
+  loadState: HistoryLoadState;
+  error: string | null;
+  onSelect: (id: string) => void;
+  onRemove: (id: string) => void;
+  onLoadThumbnail: (entry: HistoryEntry) => void;
+}
+
+export interface HistoryRowProps {
+  entry: HistoryEntry;
+  selected: boolean;
+  thumbnail: string | null | undefined;
+  onSelect: (id: string) => void;
+  onRemove: (id: string) => void;
+  onLoadThumbnail: (entry: HistoryEntry) => void;
+}
+
+export interface HistoryDetailsProps {
+  entry: HistoryEntry | null;
+  thumbnail: string | null | undefined;
+  onClose: () => void;
+  onRemove: (id: string) => void;
+}
+
+export interface HistoryThumbnailProps {
+  entry: HistoryEntry;
+  thumbnail: string | null | undefined;
+  onLoadThumbnail: (entry: HistoryEntry) => void;
 }

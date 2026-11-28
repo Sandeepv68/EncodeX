@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "Automaatiot"
+    "automations": "Automaatiot",
+    "history": "Historia"
   },
   "dashboard": {
     "welcome": "Tervetuloa EncodeX:ään",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "Suosikit",
       "ungrouped": "Kaikki työkalut"
-    }
+    },
+    "descHistory": "Tarkista onnistuneet, epäonnistuneet ja peruutetut toiminnot"
   },
   "gettingStarted": {
     "hint": "Uusi täällä?",
@@ -1794,6 +1796,58 @@
         "title": "Lue EncodeX:stä",
         "description": "Lisätietoja EncodeX:stä."
       }
+    }
+  },
+  "history": {
+    "title": "Toimintohistoria",
+    "search": "Hae toimintoja",
+    "empty": "Mitkään toiminnot eivät vastaa nykyisiä suodattimia.",
+    "clearConfirm": "Tyhjennetäänkö kaikki toimintohistoria?",
+    "refresh": "Päivitä",
+    "clear": "Tyhjennä historia",
+    "remove": "Poista",
+    "details": "Tiedot",
+    "noSelection": "Valitse toiminto nähdäksesi sen tiedot.",
+    "count": "{{count}} toimintoa",
+    "filteredCount": "{{count}} / {{total}} toimintoa",
+    "status": "Tila",
+    "family": "Toiminto",
+    "source": "Lähde",
+    "started": "Aloitetut",
+    "duration": "Kesto",
+    "input": "Sisääntulo",
+    "outputs": "Tulosteet",
+    "error": "Virhe",
+    "metadata": "Metatiedot",
+    "sort": "Lajittele",
+    "allStatuses": "Kaikki tilat",
+    "allFamilies": "Kaikki toiminnot",
+    "allSources": "Kaikki lähteet",
+    "sortNewest": "Uusin ensin",
+    "sortOldest": "Vanhin ensin",
+    "sortLongest": "Pisin ensin",
+    "sortShortest": "Lyhin ensin",
+    "sortName": "Nimi A–Ö",
+    "statusLabels": {
+      "succeeded": "Onnistui",
+      "failed": "Epäonnistui",
+      "cancelled": "Peruutettu"
+    },
+    "familyLabels": {
+      "convert": "Muunna",
+      "audioExtract": "Äänen erottaminen",
+      "imageCompress": "Kuvan pakkaaminen",
+      "videoCut": "Videoleike",
+      "remux": "Remuksaa",
+      "demux": "demultiplekseri",
+      "batch": "Eräjono",
+      "automation": "Automatisointi",
+      "mcp": "CD46-antigeenit"
+    },
+    "sourceLabels": {
+      "gui": "Liitäntä",
+      "mcp": "CD46-antigeenit",
+      "automation": "Automatisointi"
     }
   }
 }

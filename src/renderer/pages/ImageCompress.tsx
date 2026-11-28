@@ -309,6 +309,7 @@ export default function ImageCompress() {
           pixelFormat: CONVERSION_DEFAULTS.PIXEL_FORMAT,
         },
         transcoder,
+        { family: 'image-compress', source: 'gui', metadata: { format, quality } },
       );
       taskPromise
         .then(async () => {

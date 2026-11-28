@@ -187,6 +187,7 @@ describe('AudioExtract', () => {
       '/out/audio.mp3',
       { audioCodec: 'libmp3lame', audioBitrate: '192k' },
       'FFMPEG',
+      { family: 'audio-extract', source: 'gui', metadata: { codec: expect.any(String) } },
     );
     expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'toast.audioExtracted')).toBe(true);
     await waitFor(() => expect(useAudioExtractStore.getState().progress).toBeNull());

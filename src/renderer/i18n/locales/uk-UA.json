@@ -31,7 +31,8 @@
     "remux": "Ремукс",
     "demux": "Демукс",
     "copilot": "Копілот",
-    "automations": "Автоматизації"
+    "automations": "Автоматизації",
+    "history": "історія"
   },
   "dashboard": {
     "welcome": "Ласкаво просимо до EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "Обране",
       "ungrouped": "Усі інструменти"
-    }
+    },
+    "descHistory": "Перегляньте успішні, невдалі та скасовані операції"
   },
   "gettingStarted": {
     "hint": "Вперше тут?",
@@ -1794,6 +1796,58 @@
         "title": "Прочитайте про EncodeX",
         "description": "Дізнайтеся більше про EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "Історія операції",
+    "search": "Розшукові операції",
+    "empty": "Жодна операція не відповідає поточним фільтрам.",
+    "clearConfirm": "Очистити всю історію операцій?",
+    "refresh": "Оновити",
+    "clear": "Очистити історію",
+    "remove": "видалити",
+    "details": "Подробиці",
+    "noSelection": "Виберіть операцію, щоб переглянути її деталі.",
+    "count": "{{count}} операцій",
+    "filteredCount": "{{count}} із {{total}} операцій",
+    "status": "Статус",
+    "family": "Операція",
+    "source": "Джерело",
+    "started": "розпочато",
+    "duration": "Тривалість",
+    "input": "Введення",
+    "outputs": "Виходи",
+    "error": "Помилка",
+    "metadata": "Метадані",
+    "sort": "Сортувати",
+    "allStatuses": "Всі статуси",
+    "allFamilies": "Всі операції",
+    "allSources": "Всі джерела",
+    "sortNewest": "Спочатку найновіші",
+    "sortOldest": "Спочатку найстаріші",
+    "sortLongest": "Перший найдовший",
+    "sortShortest": "Спочатку найкоротший",
+    "sortName": "Назва від А до Я",
+    "statusLabels": {
+      "succeeded": "Вдався",
+      "failed": "Не вдалося",
+      "cancelled": "Скасовано"
+    },
+    "familyLabels": {
+      "convert": "конвертувати",
+      "audioExtract": "Вилучення аудіо",
+      "imageCompress": "Стиснення зображення",
+      "videoCut": "Нарізка відео",
+      "remux": "Remux",
+      "demux": "Демультиплексор",
+      "batch": "Пакетна черга",
+      "automation": "автоматизація",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Інтерфейс",
+      "mcp": "MCP",
+      "automation": "автоматизація"
     }
   }
 }

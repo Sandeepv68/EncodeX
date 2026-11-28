@@ -31,7 +31,8 @@
     "remux": "אריזה מחדש",
     "demux": "פיצול זרמים",
     "copilot": "קופילוט",
-    "automations": "?????????"
+    "automations": "?????????",
+    "history": "היסטוריה"
   },
   "dashboard": {
     "welcome": "ברוכים הבאים ל-EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "מועדפים",
       "ungrouped": "כל הכלים"
-    }
+    },
+    "descHistory": "סקירת פעולות מוצלחות, שנכשלו ובוטלו"
   },
   "gettingStarted": {
     "hint": "חדש/חדשה כאן?",
@@ -1794,6 +1796,58 @@
         "title": "קרא על EncodeX",
         "description": "למידע נוסף על EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "היסטוריית פעולות",
+    "search": "חיפוש פעולות",
+    "empty": "אין פעולות שתואמות למסננים הנוכחיים.",
+    "clearConfirm": "למחוק את כל היסטוריית הפעולות?",
+    "refresh": "רענן",
+    "clear": "ניקוי היסטוריה",
+    "remove": "הסרה",
+    "details": "פרטים",
+    "noSelection": "יש לבחור פעולה כדי להציג את הפרטים שלה.",
+    "count": "{{count}} פעולות",
+    "filteredCount": "{{count}} מתוך {{total}} פעולות",
+    "status": "סטטוס",
+    "family": "פעולה",
+    "source": "מקור",
+    "started": "הופעל",
+    "duration": "משך זמן",
+    "input": "קלט",
+    "outputs": "פלטים",
+    "error": "שגיאה",
+    "metadata": "נתוני על",
+    "sort": "מיון",
+    "allStatuses": "כל הסטטוסים",
+    "allFamilies": "כל הפעולות",
+    "allSources": "כל המקורות",
+    "sortNewest": "החדש ביותר ראשון",
+    "sortOldest": "הישן ביותר ראשון",
+    "sortLongest": "הארוך ביותר תחילה",
+    "sortShortest": "הקצר ביותר תחילה",
+    "sortName": "שם א'-ת'",
+    "statusLabels": {
+      "succeeded": "הצליחה",
+      "failed": "נכשל",
+      "cancelled": "בוטל"
+    },
+    "familyLabels": {
+      "convert": "המר",
+      "audioExtract": "חילוץ אודיו",
+      "imageCompress": "דחיסת תמונה",
+      "videoCut": "חיתוך סרטון",
+      "remux": "רימוקס",
+      "demux": "דמוקס",
+      "batch": "תור אצוות",
+      "automation": "אוטומציה",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "ממשק",
+      "mcp": "MCP",
+      "automation": "אוטומציה"
     }
   }
 }

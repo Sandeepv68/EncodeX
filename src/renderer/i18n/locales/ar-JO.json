@@ -31,7 +31,8 @@
     "remux": "إعادة التغليف",
     "demux": "فك التدفقات",
     "copilot": "كوبيلوت",
-    "automations": "???????"
+    "automations": "???????",
+    "history": "السجل"
   },
   "dashboard": {
     "welcome": "مرحباً بك في EncodeX",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "المفضلة",
       "ungrouped": "كل الأدوات"
-    }
+    },
+    "descHistory": "مراجعة العمليات الناجحة والفاشلة والملغاة"
   },
   "gettingStarted": {
     "hint": "جديد هنا؟",
@@ -1794,6 +1796,58 @@
         "title": "اقرأ عن EncodeX",
         "description": "تعرف على المزيد حول EncodeX."
       }
+    }
+  },
+  "history": {
+    "title": "سجل العمليات",
+    "search": "عمليات البحث",
+    "empty": "لا توجد عمليات تطابق مع عوامل التصفية الحالية.",
+    "clearConfirm": "هل تريد مسح سجل العمليات بالكامل؟",
+    "refresh": "تحديث",
+    "clear": "مسح السجل",
+    "remove": "إزالة",
+    "details": "التفاصيل",
+    "noSelection": "حدد عملية لعرض تفاصيلها.",
+    "count": "{{count}} عملية (عمليات)",
+    "filteredCount": "{{count}} من {{total}} عملية (عمليات)",
+    "status": "الحالة",
+    "family": "العملية",
+    "source": "المصدر",
+    "started": "البدء",
+    "duration": "المدة",
+    "input": "المدخلات",
+    "outputs": "المخرجات",
+    "error": "خطأ",
+    "metadata": "البيانات الوصفية",
+    "sort": "فرز",
+    "allStatuses": "جميع الحالات",
+    "allFamilies": "جميع العمليات",
+    "allSources": "جميع المصادر",
+    "sortNewest": "الأحدث أولاً",
+    "sortOldest": "الأقدم أولاً",
+    "sortLongest": "الأطول أولاً",
+    "sortShortest": "الأقصر أولاً",
+    "sortName": "الاسم من الألف إلى الياء",
+    "statusLabels": {
+      "succeeded": "تم بنجاح",
+      "failed": "فشل",
+      "cancelled": "تم الإلغاء"
+    },
+    "familyLabels": {
+      "convert": "تحويل",
+      "audioExtract": "استخراج الصوت",
+      "imageCompress": "ضغط الصورة, ضغط حجم ملف الصورة دون الإضرار بجودة الصورة نفسها",
+      "videoCut": "قص الفيديو",
+      "remux": "إعادة الدمج",
+      "demux": "إلغاء التعددية",
+      "batch": "قائمة انتظار الدفعات",
+      "automation": "الأتمتة",
+      "mcp": "محترف معتمد من مايكروسوفت"
+    },
+    "sourceLabels": {
+      "gui": "الواجهة البينية",
+      "mcp": "محترف معتمد من مايكروسوفت",
+      "automation": "التشغيل الآلي"
     }
   }
 }

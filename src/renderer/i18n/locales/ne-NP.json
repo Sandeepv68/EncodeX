@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "अटोमेशन"
+    "automations": "अटोमेशन",
+    "history": "इतिहास"
   },
   "dashboard": {
     "welcome": "EncodeX मा स्वागत छ",
@@ -75,7 +76,8 @@
     "groups": {
       "favourites": "मनपर्नेहरू",
       "ungrouped": "सबै उपकरणहरू"
-    }
+    },
+    "descHistory": "समीक्षा सफल, असफल, र रद्द अपरेशनहरू"
   },
   "gettingStarted": {
     "hint": "यहाँ नयाँ हुनुहुन्छ?",
@@ -1794,6 +1796,58 @@
         "title": "EncodeX बारे पढ्नुहोस्",
         "description": "EncodeX बारे थप जान्नुहोस्।"
       }
+    }
+  },
+  "history": {
+    "title": "सञ्चालन इतिहास",
+    "search": "खोज कार्यहरू",
+    "empty": "हालका फिल्टरहरूसँग कुनै अपरेसनहरू मेल खाँदैन।",
+    "clearConfirm": "सबै सञ्चालन इतिहास खाली गर्ने हो?",
+    "refresh": "रिफ्रेस गर्नुहोस्",
+    "clear": "इतिहास खाली गर्नुहोस्",
+    "remove": "हटाउनुहोस्",
+    "details": "विवरणहरू",
+    "noSelection": "यसको विवरणहरू हेर्नको लागि अपरेशन चयन गर्नुहोस्।",
+    "count": "{{count}} सञ्चालन",
+    "filteredCount": "{{total}} को {{count}} कार्यहरू",
+    "status": "स्थिति",
+    "family": "सञ्चालन",
+    "source": "स्रोत",
+    "started": "सुरु भयो",
+    "duration": "अवधि",
+    "input": "इनपुट",
+    "outputs": "आउटपुटहरू",
+    "error": "त्रुटि",
+    "metadata": "मेटाडेटा",
+    "sort": "क्रमबद्ध गर्नुहोस्",
+    "allStatuses": "सबै स्थितिहरू",
+    "allFamilies": "सबै कार्यहरू",
+    "allSources": "सबै स्रोतहरू",
+    "sortNewest": "सबैभन्दा नयाँ पहिलो",
+    "sortOldest": "सबैभन्दा पुरानो पहिलो",
+    "sortLongest": "सबैभन्दा लामो पहिलो",
+    "sortShortest": "सबैभन्दा छोटो पहिले",
+    "sortName": "नाम A-Z",
+    "statusLabels": {
+      "succeeded": "सफल भयो",
+      "failed": "असफल",
+      "cancelled": "रद्द गरियो"
+    },
+    "familyLabels": {
+      "convert": "रूपान्तरण गर्नुहोस्",
+      "audioExtract": "अडियो निकासी",
+      "imageCompress": "छवि सङ्कुचन",
+      "videoCut": "भिडियो काटियो",
+      "remux": "Remux",
+      "demux": "डेमक्स",
+      "batch": "ब्याच लाम",
+      "automation": "स्वचालन",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "इन्टरफेस",
+      "mcp": "MCP",
+      "automation": "स्वचालन"
     }
   }
 }

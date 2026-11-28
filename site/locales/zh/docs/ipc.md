@@ -1,6 +1,6 @@
 # IPC 通道与 electronAPI
 
-<!-- drift:ipc-channels=129 -->
+<!-- drift:ipc-channels=134 -->
 
 所有通道名称集中在 `src/shared/ipc-channels.ts`。
 
