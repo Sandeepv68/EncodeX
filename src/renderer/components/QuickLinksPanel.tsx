@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { QUICK_LINKS } from '../constants/dashboard';
-import { useFeatureFlag } from '../hooks/useFeatureFlags';
+import { useFeatureFlags } from '../hooks/useFeatureFlags';
 import { quickLinkIcons } from '../pageIcons';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
 import { createAnalyticsEvent } from '../../shared/analytics/events';
@@ -12,8 +12,8 @@ import { QuickLinksGrid, QuickLinksGridItem, QuickLinksPanelRoot, QuickLinksPane
 export default function QuickLinksPanel() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const automationsEnabled = useFeatureFlag('automations_page', import.meta.env.DEV);
-  const visibleLinks = QUICK_LINKS.filter((link) => automationsEnabled || link.to !== '/automations');
+  const flags = useFeatureFlags();
+  const visibleLinks = QUICK_LINKS.filter((link) => !link.featureFlag || flags[link.featureFlag] === true);
 
   return (
     <QuickLinksPanelRoot data-testid="quick-links-panel">

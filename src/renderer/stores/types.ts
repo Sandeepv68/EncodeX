@@ -1177,4 +1177,5 @@ export interface QuickLink {
   labelKey: string;
   descriptionKey: string;
   iconKey: QuickLinkIconKey;
+  featureFlag?: string;
 }

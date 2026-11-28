@@ -363,6 +363,7 @@ export const QUICK_LINKS: readonly QuickLink[] = [
   {
     id: 'build-automation',
     to: '/automations',
+    featureFlag: 'automations_page',
     iconKey: 'automation',
     labelKey: 'quickLinks.links.buildAutomation.title',
     descriptionKey: 'quickLinks.links.buildAutomation.description',
@@ -370,6 +371,7 @@ export const QUICK_LINKS: readonly QuickLink[] = [
   {
     id: 'run-automation',
     to: '/automations',
+    featureFlag: 'automations_page',
     iconKey: 'run',
     labelKey: 'quickLinks.links.runAutomation.title',
     descriptionKey: 'quickLinks.links.runAutomation.description',
@@ -377,6 +379,7 @@ export const QUICK_LINKS: readonly QuickLink[] = [
   {
     id: 'view-run-history',
     to: '/automations',
+    featureFlag: 'automations_page',
     iconKey: 'history',
     labelKey: 'quickLinks.links.viewRunHistory.title',
     descriptionKey: 'quickLinks.links.viewRunHistory.description',
@@ -384,6 +387,7 @@ export const QUICK_LINKS: readonly QuickLink[] = [
   {
     id: 'save-automation-pipeline',
     to: '/automations',
+    featureFlag: 'automations_page',
     iconKey: 'save',
     labelKey: 'quickLinks.links.saveAutomationPipeline.title',
     descriptionKey: 'quickLinks.links.saveAutomationPipeline.description',
