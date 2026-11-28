@@ -61,6 +61,7 @@ import type {
   AutomationRunState,
   AutomationStartRequest,
 } from '../../shared/automations/types';
+import type { HistoryEntry, HistoryFamily, HistorySource, HistoryStatus } from '../../shared/history/types';
 
 /**
  * Persisted hardware acceleration settings.
@@ -1090,5 +1091,121 @@ export interface UpdateState {
   openDialog: () => void;
   closeDialog: () => void;
   hydratePendingInstall: () => void;
+  reset: () => void;
+}
+
+/**
+ * Identifier of a dashboard card group: the built-in `favourites` id or a
+ * user-created custom group id.
+ */
+export type DashboardGroupId = string;
+
+/** A user-created dashboard card group. */
+export interface DashboardCustomGroup {
+  id: DashboardGroupId;
+  name: string;
+}
+
+/** Persisted part of the dashboard layout: card order, groups and assignments. */
+export interface DashboardLayoutSnapshot {
+  order: string[];
+  assignments: Record<string, DashboardGroupId | null>;
+  customGroups: DashboardCustomGroup[];
+}
+
+/** Dashboard layout store: persisted snapshot plus its mutation actions. */
+export interface DashboardLayoutState extends DashboardLayoutSnapshot {
+  reorder: (activeRoute: string, overRoute: string) => void;
+  assignGroup: (route: string, groupId: DashboardGroupId | null) => void;
+  createGroup: (name: string) => DashboardGroupId | null;
+  renameGroup: (id: DashboardGroupId, name: string) => void;
+  deleteGroup: (id: DashboardGroupId) => void;
+  resetLayout: () => void;
+}
+
+export type QuickLinkIconKey =
+  | 'about'
+  | 'ai'
+  | 'audio'
+  | 'automation'
+  | 'bolt'
+  | 'caption'
+  | 'chat'
+  | 'clock'
+  | 'compress'
+  | 'container'
+  | 'copy'
+  | 'cut'
+  | 'download'
+  | 'edit'
+  | 'errors'
+  | 'export'
+  | 'file'
+  | 'folder'
+  | 'format'
+  | 'goal'
+  | 'history'
+  | 'import'
+  | 'inspect'
+  | 'language'
+  | 'list'
+  | 'logs'
+  | 'merge'
+  | 'metadata'
+  | 'mute'
+  | 'play'
+  | 'plug'
+  | 'plus'
+  | 'power'
+  | 'quality'
+  | 'queue'
+  | 'redo'
+  | 'resize'
+  | 'run'
+  | 'save'
+  | 'search'
+  | 'split'
+  | 'streams'
+  | 'sync'
+  | 'theme'
+  | 'transcript'
+  | 'version'
+  | 'video';
+
+export interface QuickLink {
+  id: string;
+  to: string;
+  labelKey: string;
+  descriptionKey: string;
+  iconKey: QuickLinkIconKey;
+  featureFlag?: string;
+}
+
+export type HistoryLoadState = 'idle' | 'loading' | 'ready' | 'error';
+
+export type HistorySortKey = 'newest' | 'oldest' | 'longest' | 'shortest' | 'name';
+
+export interface HistoryQuery {
+  search: string;
+  status: HistoryStatus | 'all';
+  family: HistoryFamily | 'all';
+  source: HistorySource | 'all';
+  sort: HistorySortKey;
+}
+
+export interface HistoryState {
+  entries: HistoryEntry[];
+  loadState: HistoryLoadState;
+  error: string | null;
+  query: HistoryQuery;
+  selectedId: string | null;
+  thumbnails: Record<string, string | null>;
+  load: () => Promise<void>;
+  refresh: () => Promise<void>;
+  clear: () => Promise<void>;
+  remove: (id: string) => Promise<void>;
+  loadThumbnail: (entry: HistoryEntry) => Promise<void>;
+  setQuery: (patch: Partial<HistoryQuery>) => void;
+  select: (id: string | null) => void;
   reset: () => void;
 }

@@ -14,6 +14,7 @@ const NAV_ROUTES = [
   ['batch', '/batch'],
   ['automations', '/automations'],
   ['logs', '/logs'],
+  ['history', '/history'],
   ['settings', '/settings'],
   ['about', '/about'],
 ] as const;

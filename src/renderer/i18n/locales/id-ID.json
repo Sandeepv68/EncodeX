@@ -31,7 +31,8 @@
     "remux": "Remuks",
     "demux": "Demuks",
     "copilot": "Copilot",
-    "automations": "Otomatisasi"
+    "automations": "Otomatisasi",
+    "history": "Riwayat"
   },
   "dashboard": {
     "welcome": "Selamat datang di EncodeX",
@@ -46,7 +47,37 @@
     "descRemux": "Memindahkan aliran tanpa kehilangan kualitas ke wadah baru",
     "descDemux": "Memisahkan aliran sebuah file menjadi file keluaran terpisah",
     "descCopilot": "Rencanakan konversi dengan menjelaskan sebuah tujuan",
-    "descAutomations": "Bangun alur konversi yang dapat digunakan kembali di kanvas visual"
+    "descAutomations": "Bangun alur konversi yang dapat digunakan kembali di kanvas visual",
+    "actions": {
+      "viewSwitcher": "Pilih tampilan",
+      "dashboard": "Dasbor",
+      "quickLinks": "Tautan cepat"
+    },
+    "edit": {
+      "edit": "Edit",
+      "done": "Selesai",
+      "hint": "Seret kartu untuk mengurutkan ulang. Gunakan menu grup pada setiap kartu untuk mengaturnya.",
+      "dragHandle": "Pindahkan {{title}}",
+      "group": "Grup",
+      "newGroup": "Grup baru…",
+      "groupName": "Nama grup",
+      "create": "Buat",
+      "rename": "Ganti nama",
+      "delete": "Hapus",
+      "resetLayout": "Atur ulang tata letak",
+      "groups": "Grup",
+      "newGroupTitle": "Buat grup",
+      "renameGroupTitle": "Ganti nama grup",
+      "deleteGroupTitle": "Hapus grup",
+      "deleteGroupMessage": "Kartu dalam grup ini akan menjadi tanpa grup.",
+      "cardCount": "{{count}} kartu",
+      "cancel": "Batal"
+    },
+    "groups": {
+      "favourites": "Favorit",
+      "ungrouped": "Semua alat"
+    },
+    "descHistory": "Tinjau operasi yang berhasil, gagal, dan dibatalkan"
   },
   "gettingStarted": {
     "hint": "Baru di sini?",
@@ -1508,5 +1539,315 @@
     "canvasNodeMove": "Node yang dipilih dipindahkan {{direction}}. Posisi baru, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Tekan enter atau spasi untuk memilih garis penghubung. Anda kemudian dapat menekan delete untuk menghapusnya atau escape untuk membatalkan.",
     "canvasHandleLabel": "Titik sambung"
+  },
+  "quickLinks": {
+    "title": "Tautan cepat",
+    "cardAria": "Buka {{title}}",
+    "links": {
+      "chatWithCopilot": {
+        "title": "Ngobrol dengan Kopilot",
+        "description": "Ajukan pertanyaan atau jelaskan apa yang ingin Anda lakukan dengan media Anda."
+      },
+      "describeGoal": {
+        "title": "Jelaskan Tujuan",
+        "description": "Jelaskan tujuan dalam bahasa yang sederhana dan biarkan Copilot mempersiapkan pekerjaannya."
+      },
+      "planConversion": {
+        "title": "Rencanakan Konversi",
+        "description": "Ubah tujuan menjadi rencana yang dapat Anda tinjau sebelum menambahkannya ke antrean."
+      },
+      "findMomentInVideo": {
+        "title": "Temukan Momen dalam Video",
+        "description": "Telusuri transkrip video untuk melompat ke bagian yang Anda perlukan."
+      },
+      "searchTranscript": {
+        "title": "Transkrip Pencarian",
+        "description": "Periksa transkrip untuk kata atau frasa yang Anda ingat."
+      },
+      "translateSubtitles": {
+        "title": "Terjemahkan Subtitle",
+        "description": "Terjemahkan file subtitle ke bahasa lain."
+      },
+      "saveChat": {
+        "title": "Simpan Obrolan",
+        "description": "Simpan percakapan Kopilot saat ini untuk nanti."
+      },
+      "convertVideo": {
+        "title": "Konversi Video",
+        "description": "Enkode ulang video dengan format, kualitas, dan ukuran pilihan Anda."
+      },
+      "convertAudio": {
+        "title": "Konversi Audio",
+        "description": "Mengubah format, codec, atau kecepatan bit file audio."
+      },
+      "compressVideo": {
+        "title": "Kompres Video",
+        "description": "Kurangi ukuran file video sambil menjaga hasilnya tetap dapat ditonton."
+      },
+      "useConversionProfile": {
+        "title": "Gunakan Profil Konversi",
+        "description": "Pilih preset yang mengisi pengaturan pengkodean untuk Anda."
+      },
+      "createCustomProfile": {
+        "title": "Buat Profil Khusus",
+        "description": "Simpan pengaturan pengkodean Anda sendiri sebagai profil yang dapat digunakan kembali."
+      },
+      "losslessCopy": {
+        "title": "Salinan Tanpa Rugi",
+        "description": "Salin streaming tanpa pengkodean ulang untuk menjaga kualitas aslinya."
+      },
+      "speedUpWithGpu": {
+        "title": "Mempercepat dengan GPU",
+        "description": "Gunakan akselerasi perangkat keras untuk menyandikan lebih cepat."
+      },
+      "changeContainer": {
+        "title": "Ubah Kontainer Tanpa Pengodean Ulang",
+        "description": "Ganti wadah seperti MP4 atau MKV tanpa pengkodean ulang."
+      },
+      "addAudioToVideo": {
+        "title": "Tambahkan Audio ke Video",
+        "description": "Lampirkan trek audio eksternal ke video."
+      },
+      "mergeAudioAndVideo": {
+        "title": "Gabungkan Audio dan Video",
+        "description": "Gabungkan trek audio dan video terpisah menjadi satu file."
+      },
+      "addSubtitles": {
+        "title": "Tambahkan Subtitle",
+        "description": "Tambahkan trek subtitle ke video tanpa mengubah gambar."
+      },
+      "syncAudioDelay": {
+        "title": "Sinkronkan Penundaan Audio",
+        "description": "Geser audio lebih awal atau lebih lambat untuk menyelaraskannya dengan video."
+      },
+      "copyStreams": {
+        "title": "Salin Aliran",
+        "description": "Pilih aliran mana yang akan disimpan dan salin apa adanya."
+      },
+      "extractStreams": {
+        "title": "Ekstrak Aliran",
+        "description": "Tarik trek video, audio, atau subtitle ke dalam file terpisah."
+      },
+      "splitAudioChannels": {
+        "title": "Pisahkan Saluran Audio",
+        "description": "Pisahkan trek audio multisaluran menjadi file individual."
+      },
+      "saveSubtitles": {
+        "title": "Simpan Subtitle",
+        "description": "Ekstrak aliran subtitle ke file subtitle mandiri."
+      },
+      "exportTracksSeparately": {
+        "title": "Ekspor Lagu Secara Terpisah",
+        "description": "Tulis setiap trek yang dipilih ke file keluarannya sendiri."
+      },
+      "trimVideo": {
+        "title": "Potong Video",
+        "description": "Potong video ke bagian yang ingin Anda simpan."
+      },
+      "cutClipByTime": {
+        "title": "Potong Klip berdasarkan Waktu",
+        "description": "Tetapkan waktu mulai dan berakhir yang tepat untuk sebuah klip."
+      },
+      "cutByDuration": {
+        "title": "Dipotong berdasarkan Durasi",
+        "description": "Tetapkan waktu mulai dan panjang klip, bukan waktu berakhir."
+      },
+      "previewClip": {
+        "title": "Pratinjau Klip",
+        "description": "Periksa hasil pemangkasan sebelum Anda menyimpannya."
+      },
+      "playClip": {
+        "title": "Putar Klip",
+        "description": "Memutar ulang segmen yang dipilih pada timeline."
+      },
+      "removeAudioFromClip": {
+        "title": "Hapus Audio dari Klip",
+        "description": "Buat klip senyap dengan mengabaikan trek audio."
+      },
+      "extractAudioFromVideo": {
+        "title": "Ekstrak Audio dari Video",
+        "description": "Simpan audio dari video sebagai filenya sendiri."
+      },
+      "saveAudioAsMp3": {
+        "title": "Simpan Audio sebagai MP3",
+        "description": "Ekspor audio yang diekstraksi dalam format MP3."
+      },
+      "chooseAudioQuality": {
+        "title": "Pilih Kualitas Audio",
+        "description": "Pilih codec dan bitrate untuk audio yang diekstraksi."
+      },
+      "compressImage": {
+        "title": "Kompres Gambar",
+        "description": "Memperkecil gambar sekaligus menjaganya tetap terlihat bagus."
+      },
+      "resizeImage": {
+        "title": "Ubah Ukuran Gambar",
+        "description": "Ubah dimensi gambar sebelum menyimpannya."
+      },
+      "changeImageFormat": {
+        "title": "Ubah Format Gambar",
+        "description": "Konversikan gambar ke format file lain."
+      },
+      "newBatchTask": {
+        "title": "Tugas Batch Baru",
+        "description": "Mulai pekerjaan multi-file baru dengan pengaturan bersama."
+      },
+      "runBatchJobs": {
+        "title": "Jalankan Pekerjaan Batch",
+        "description": "Mulai antrian dan proses semua pekerjaan secara berurutan."
+      },
+      "queueFiles": {
+        "title": "File Antrian",
+        "description": "Tambahkan file atau folder ke antrian batch."
+      },
+      "retryFailedJobs": {
+        "title": "Coba Lagi Pekerjaan yang Gagal",
+        "description": "Jalankan kembali pekerjaan yang gagal setelah memperbaiki masalah."
+      },
+      "importQueue": {
+        "title": "Impor Antrean",
+        "description": "Muat antrian batch yang disimpan dari file."
+      },
+      "editJobOptions": {
+        "title": "Edit Opsi Pekerjaan",
+        "description": "Ubah opsi pengkodean untuk pekerjaan yang masih dalam antrian."
+      },
+      "runJobsThenShutDown": {
+        "title": "Jalankan Pekerjaan Lalu Matikan",
+        "description": "Biarkan batch selesai lalu matikan komputer."
+      },
+      "buildAutomation": {
+        "title": "Bangun Otomatisasi",
+        "description": "Rancang alur yang dapat digunakan kembali dari node media di kanvas."
+      },
+      "runAutomation": {
+        "title": "Jalankan Otomatisasi",
+        "description": "Jalankan otomatisasi yang dipilih terhadap file input."
+      },
+      "viewRunHistory": {
+        "title": "Lihat Riwayat Jalankan",
+        "description": "Tinjau proses otomatisasi sebelumnya dan hasilnya."
+      },
+      "saveAutomationPipeline": {
+        "title": "Simpan Saluran Otomasi",
+        "description": "Simpan alur agar Anda dapat menjalankannya lagi nanti."
+      },
+      "inspectMediaFile": {
+        "title": "Periksa File Media",
+        "description": "Buka file dan lihat apa yang ada di dalamnya."
+      },
+      "viewStreamDetails": {
+        "title": "Lihat Detail Aliran",
+        "description": "Periksa aliran video, audio, dan subtitle."
+      },
+      "checkCodecs": {
+        "title": "Periksa Codec",
+        "description": "Periksa codec mana yang digunakan file tersebut."
+      },
+      "readFileMetadata": {
+        "title": "Baca Metadata File",
+        "description": "Lihat penampung, durasi, bitrate, dan detail file lainnya."
+      },
+      "changeTheme": {
+        "title": "Ubah Tema",
+        "description": "Pilih tema terang atau gelap untuk EncodeX."
+      },
+      "setUpAiProvider": {
+        "title": "Siapkan Penyedia AI",
+        "description": "Hubungkan penyedia AI untuk perencanaan Copilot yang lebih cerdas."
+      },
+      "configureHardwareAcceleration": {
+        "title": "Konfigurasikan Akselerasi Perangkat Keras",
+        "description": "Pilih bagaimana EncodeX menggunakan GPU Anda."
+      },
+      "enableMcpServer": {
+        "title": "Aktifkan Server MCP",
+        "description": "Biarkan klien MCP lokal mengontrol EncodeX."
+      },
+      "manageStartupNotifications": {
+        "title": "Kelola Startup & Notifikasi",
+        "description": "Kontrol perilaku startup dan notifikasi desktop."
+      },
+      "viewLogs": {
+        "title": "Lihat Log",
+        "description": "Buka konsol log aplikasi."
+      },
+      "searchErrors": {
+        "title": "Kesalahan Pencarian",
+        "description": "Filter log untuk peringatan dan kesalahan."
+      },
+      "reviewOperationHistory": {
+        "title": "Tinjau Riwayat Operasi",
+        "description": "Periksa jejak audit untuk operasi yang telah selesai."
+      },
+      "downloadLogs": {
+        "title": "Unduh Log",
+        "description": "Simpan log saat ini sebagai file teks."
+      },
+      "checkVersion": {
+        "title": "Periksa Versi",
+        "description": "Lihat versi EncodeX mana yang diinstal."
+      },
+      "viewBuildInfo": {
+        "title": "Lihat Info Pembuatan",
+        "description": "Periksa detail build untuk instalasi ini."
+      },
+      "readAboutEncodeX": {
+        "title": "Baca Tentang EncodeX",
+        "description": "Pelajari lebih lanjut tentang EncodeX."
+      }
+    }
+  },
+  "history": {
+    "title": "Riwayat Operasi",
+    "search": "Cari operasi",
+    "empty": "Tidak ada operasi yang sesuai dengan filter saat ini.",
+    "clearConfirm": "Hapus semua riwayat operasi?",
+    "refresh": "Muat ulang",
+    "clear": "Hapus riwayat",
+    "remove": "Hapus",
+    "details": "Detail",
+    "noSelection": "Pilih operasi untuk melihat detailnya.",
+    "count": "{{count}} operasi",
+    "filteredCount": "{{count}} dari {{total}} operasi",
+    "status": "Status",
+    "family": "Operasi",
+    "source": "Sumber",
+    "started": "Dimulai",
+    "duration": "Durasi",
+    "input": "Daya Masuk",
+    "outputs": "Output",
+    "error": "Kesalahan",
+    "metadata": "Metadata",
+    "sort": "Urutkan",
+    "allStatuses": "Semua status",
+    "allFamilies": "Semua operasi",
+    "allSources": "Semua sumber",
+    "sortNewest": "Terbaru Lebih Dulu",
+    "sortOldest": "Terlama Lebih Dulu",
+    "sortLongest": "Terpanjang terlebih dahulu",
+    "sortShortest": "Terpendek terlebih dahulu",
+    "sortName": "Nama A-Z",
+    "statusLabels": {
+      "succeeded": "Sukses.",
+      "failed": "Gagal",
+      "cancelled": "Dibatalkan"
+    },
+    "familyLabels": {
+      "convert": "Konversi",
+      "audioExtract": "Ekstraksi audio",
+      "imageCompress": "Kompresi gambar",
+      "videoCut": "Potongan video",
+      "remux": "Remux",
+      "demux": "Demux",
+      "batch": "Antrean batch",
+      "automation": "Otomatisasi",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Antarmuka",
+      "mcp": "MCP",
+      "automation": "Otomatisasi"
+    }
   }
 }

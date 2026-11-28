@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "Automatiseringer"
+    "automations": "Automatiseringer",
+    "history": "Historie"
   },
   "dashboard": {
     "welcome": "Velkommen til EncodeX",
@@ -46,7 +47,37 @@
     "descRemux": "Overfører streams tabsfrit til en ny container",
     "descDemux": "Opdeler en fils streams i separate outputfiler",
     "descCopilot": "Planlæg konverteringer ved at beskrive et mål",
-    "descAutomations": "Byg genbrugelige konverteringspipelines på et visuelt lærred"
+    "descAutomations": "Byg genbrugelige konverteringspipelines på et visuelt lærred",
+    "actions": {
+      "viewSwitcher": "Vælg en visning",
+      "dashboard": "Oversigt",
+      "quickLinks": "Hurtige links"
+    },
+    "edit": {
+      "edit": "Rediger",
+      "done": "Færdig",
+      "hint": "Træk kortene for at omarrangere dem. Brug hvert korts gruppemenu til at organisere dem.",
+      "dragHandle": "Flyt {{title}}",
+      "group": "Gruppe",
+      "newGroup": "Ny gruppe…",
+      "groupName": "Gruppenavn",
+      "create": "Opret",
+      "rename": "Omdøb",
+      "delete": "Slet",
+      "resetLayout": "Nulstil layout",
+      "groups": "Grupper",
+      "newGroupTitle": "Opret en gruppe",
+      "renameGroupTitle": "Omdøb gruppe",
+      "deleteGroupTitle": "Slet gruppe",
+      "deleteGroupMessage": "Kort i denne gruppe bliver ugrupperede.",
+      "cardCount": "{{count}} kort",
+      "cancel": "Annuller"
+    },
+    "groups": {
+      "favourites": "Favoritter",
+      "ungrouped": "Alle værktøjer"
+    },
+    "descHistory": "Gennemgå gennemførte, mislykkede og annullerede handlinger"
   },
   "gettingStarted": {
     "hint": "Ny her?",
@@ -1508,5 +1539,315 @@
     "canvasNodeMove": "Flyttet valgt node {{direction}}. Ny position, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Tryk på Enter eller mellemrum for at vælge en kant. Du kan derefter trykke på Delete for at fjerne den eller Escape for at annullere.",
     "canvasHandleLabel": "Håndtag"
+  },
+  "quickLinks": {
+    "title": "Hurtige links",
+    "cardAria": "Åbn {{title}}",
+    "links": {
+      "chatWithCopilot": {
+        "title": "Chat med Copilot",
+        "description": "Stil et spørgsmål eller beskriv, hvad du vil med dine medier."
+      },
+      "describeGoal": {
+        "title": "Beskriv et mål",
+        "description": "Forklar et mål i almindeligt sprog og lad Copilot forberede arbejdet."
+      },
+      "planConversion": {
+        "title": "Planlæg en konvertering",
+        "description": "Gør et mål til en plan, du kan gennemgå, før du tilføjer det til køen."
+      },
+      "findMomentInVideo": {
+        "title": "Find et øjeblik i en video",
+        "description": "Søg i et videoudskrift for at springe til den del, du har brug for."
+      },
+      "searchTranscript": {
+        "title": "Søg efter transkription",
+        "description": "Kig gennem transskriptioner for ord eller sætninger, du husker."
+      },
+      "translateSubtitles": {
+        "title": "Oversæt undertekster",
+        "description": "Oversæt undertekstfiler til et andet sprog."
+      },
+      "saveChat": {
+        "title": "Gem chat",
+        "description": "Behold den aktuelle Copilot-samtale til senere."
+      },
+      "convertVideo": {
+        "title": "Konverter video",
+        "description": "Omkode en video med dit valgte format, kvalitet og størrelse."
+      },
+      "convertAudio": {
+        "title": "Konverter lyd",
+        "description": "Skift en lydfils format, codec eller bitrate."
+      },
+      "compressVideo": {
+        "title": "Komprimer video",
+        "description": "Reducer en videos filstørrelse, samtidig med at resultatet kan ses."
+      },
+      "useConversionProfile": {
+        "title": "Brug en konverteringsprofil",
+        "description": "Vælg en forudindstilling, der udfylder kodningsindstillingerne for dig."
+      },
+      "createCustomProfile": {
+        "title": "Opret brugerdefineret profil",
+        "description": "Gem dine egne kodningsindstillinger som en genbrugelig profil."
+      },
+      "losslessCopy": {
+        "title": "Tabsfri kopi",
+        "description": "Kopier streams uden omkodning for at bevare den originale kvalitet."
+      },
+      "speedUpWithGpu": {
+        "title": "Fremskynd med GPU",
+        "description": "Brug hardwareacceleration til at kode hurtigere."
+      },
+      "changeContainer": {
+        "title": "Skift container uden omkodning",
+        "description": "Skift containere som MP4 eller MKV uden omkodning."
+      },
+      "addAudioToVideo": {
+        "title": "Tilføj lyd til video",
+        "description": "Vedhæft et eksternt lydspor til en video."
+      },
+      "mergeAudioAndVideo": {
+        "title": "Flet lyd og video",
+        "description": "Kombiner separate lyd- og videospor til én fil."
+      },
+      "addSubtitles": {
+        "title": "Tilføj undertekster",
+        "description": "Tilføj undertekstspor til en video uden at ændre billedet."
+      },
+      "syncAudioDelay": {
+        "title": "Synk lydforsinkelse",
+        "description": "Skift lyd tidligere eller senere for at tilpasse den til video."
+      },
+      "copyStreams": {
+        "title": "Kopier streams",
+        "description": "Vælg, hvilke streams du vil beholde, og kopier dem, som de er."
+      },
+      "extractStreams": {
+        "title": "Uddrag strømme",
+        "description": "Træk video-, lyd- eller undertekstspor ud i separate filer."
+      },
+      "splitAudioChannels": {
+        "title": "Opdel lydkanaler",
+        "description": "Opdel et flerkanals lydspor i individuelle filer."
+      },
+      "saveSubtitles": {
+        "title": "Gem undertekster",
+        "description": "Udpak undertekststrømme til selvstændige undertekstfiler."
+      },
+      "exportTracksSeparately": {
+        "title": "Eksporter spor separat",
+        "description": "Skriv hvert valgt spor til sin egen outputfil."
+      },
+      "trimVideo": {
+        "title": "Trim video",
+        "description": "Klip en video ned til den del, du vil beholde."
+      },
+      "cutClipByTime": {
+        "title": "Klip klip efter tid",
+        "description": "Indstil nøjagtige start- og sluttider for et klip."
+      },
+      "cutByDuration": {
+        "title": "Klip efter varighed",
+        "description": "Indstil et starttidspunkt og kliplængde i stedet for et sluttidspunkt."
+      },
+      "previewClip": {
+        "title": "Eksempelklip",
+        "description": "Tjek det trimmede resultat, før du gemmer det."
+      },
+      "playClip": {
+        "title": "Afspil klip",
+        "description": "Afspil det valgte segment på tidslinjen."
+      },
+      "removeAudioFromClip": {
+        "title": "Fjern lyd fra klip",
+        "description": "Opret et lydløst klip ved at udelade lydsporet."
+      },
+      "extractAudioFromVideo": {
+        "title": "Uddrag lyd fra video",
+        "description": "Gem lyden fra en video som sin egen fil."
+      },
+      "saveAudioAsMp3": {
+        "title": "Gem lyd som MP3",
+        "description": "Eksporter udtrukket lyd i MP3-format."
+      },
+      "chooseAudioQuality": {
+        "title": "Vælg Lydkvalitet",
+        "description": "Vælg codec og bitrate for den udpakkede lyd."
+      },
+      "compressImage": {
+        "title": "Komprimer billede",
+        "description": "Gør et billede mindre, samtidig med at det ser godt ud."
+      },
+      "resizeImage": {
+        "title": "Ændr størrelse på billede",
+        "description": "Skift et billedes dimensioner, før du gemmer det."
+      },
+      "changeImageFormat": {
+        "title": "Skift billedformat",
+        "description": "Konverter et billede til et andet filformat."
+      },
+      "newBatchTask": {
+        "title": "Ny batch-opgave",
+        "description": "Start et nyt job med flere filer med delte indstillinger."
+      },
+      "runBatchJobs": {
+        "title": "Kør batchjob",
+        "description": "Start køen og bearbejd alle jobs i rækkefølge."
+      },
+      "queueFiles": {
+        "title": "Kø filer",
+        "description": "Tilføj filer eller en mappe til batch-køen."
+      },
+      "retryFailedJobs": {
+        "title": "Prøv igen mislykkede job",
+        "description": "Kør mislykkede job igen efter at have løst problemet."
+      },
+      "importQueue": {
+        "title": "Importkø",
+        "description": "Indlæs en gemt batch-kø fra en fil."
+      },
+      "editJobOptions": {
+        "title": "Rediger jobmuligheder",
+        "description": "Skift indkodningsmuligheder for job, der stadig er i kø."
+      },
+      "runJobsThenShutDown": {
+        "title": "Kør job og luk ned",
+        "description": "Lad batchen afslutte, og sluk derefter computeren."
+      },
+      "buildAutomation": {
+        "title": "Byg automatisering",
+        "description": "Design en genanvendelig pipeline fra medieknuder på et lærred."
+      },
+      "runAutomation": {
+        "title": "Kør automatisering",
+        "description": "Kør den valgte automatisering mod en inputfil."
+      },
+      "viewRunHistory": {
+        "title": "Se Kørselshistorik",
+        "description": "Gennemgå tidligere automatiseringskørsler og deres resultater."
+      },
+      "saveAutomationPipeline": {
+        "title": "Gem Automation Pipeline",
+        "description": "Gem pipelinen, så du kan køre den igen senere."
+      },
+      "inspectMediaFile": {
+        "title": "Undersøg mediefil",
+        "description": "Åbn en fil og se, hvad der er inde i den."
+      },
+      "viewStreamDetails": {
+        "title": "Se streamdetaljer",
+        "description": "Undersøg video-, lyd- og undertekststreams."
+      },
+      "checkCodecs": {
+        "title": "Tjek codecs",
+        "description": "Tjek hvilke codecs filen bruger."
+      },
+      "readFileMetadata": {
+        "title": "Læs Fil Metadata",
+        "description": "Se container, varighed, bitrate og andre fildetaljer."
+      },
+      "changeTheme": {
+        "title": "Skift tema",
+        "description": "Vælg et lyst eller mørkt tema til EncodeX."
+      },
+      "setUpAiProvider": {
+        "title": "Konfigurer AI-udbyder",
+        "description": "Tilslut en AI-udbyder for smartere Copilot-planlægning."
+      },
+      "configureHardwareAcceleration": {
+        "title": "Konfigurer hardwareacceleration",
+        "description": "Vælg, hvordan EncodeX bruger din GPU."
+      },
+      "enableMcpServer": {
+        "title": "Aktiver MCP-server",
+        "description": "Lad lokale MCP-klienter styre EncodeX."
+      },
+      "manageStartupNotifications": {
+        "title": "Administrer opstart og meddelelser",
+        "description": "Kontroller opstartsadfærd og skrivebordsmeddelelser."
+      },
+      "viewLogs": {
+        "title": "Se logfiler",
+        "description": "Åbn applikationslogkonsollen."
+      },
+      "searchErrors": {
+        "title": "Søgefejl",
+        "description": "Filtrer logfiler for advarsler og fejl."
+      },
+      "reviewOperationHistory": {
+        "title": "Gennemgå operationshistorik",
+        "description": "Tjek revisionssporet for afsluttede operationer."
+      },
+      "downloadLogs": {
+        "title": "Download logs",
+        "description": "Gem de aktuelle logfiler som en tekstfil."
+      },
+      "checkVersion": {
+        "title": "Tjek version",
+        "description": "Se hvilken version af EncodeX der er installeret."
+      },
+      "viewBuildInfo": {
+        "title": "Se byggeoplysninger",
+        "description": "Tjek byggedetaljerne for denne installation."
+      },
+      "readAboutEncodeX": {
+        "title": "Læs om EncodeX",
+        "description": "Lær mere om EncodeX."
+      }
+    }
+  },
+  "history": {
+    "title": "Driftshistorik",
+    "search": "Søg efter operationer",
+    "empty": "Ingen operationer matcher de aktuelle filtre.",
+    "clearConfirm": "Vil du slette hele driftshistorikken?",
+    "refresh": "Opdater",
+    "clear": "Ryd historik",
+    "remove": "Fjern",
+    "details": "Oplysninger",
+    "noSelection": "Vælg en handling for at se dens oplysninger.",
+    "count": "{{count}} operationer",
+    "filteredCount": "{{count}} ud af {{total}} operationer",
+    "status": "Status",
+    "family": "Handling",
+    "source": "Kilde",
+    "started": "Startet",
+    "duration": "Varighed",
+    "input": "Indgang",
+    "outputs": "Output",
+    "error": "Fejl",
+    "metadata": "Metadata",
+    "sort": "Sorter",
+    "allStatuses": "Alle statusser",
+    "allFamilies": "Alle operationer",
+    "allSources": "Alle kilder",
+    "sortNewest": "Nyeste først",
+    "sortOldest": "Ældste først",
+    "sortLongest": "Længste først",
+    "sortShortest": "Korteste først",
+    "sortName": "Navn A-Å",
+    "statusLabels": {
+      "succeeded": "Lykkedes",
+      "failed": "Ikke bestået",
+      "cancelled": "Aflyst"
+    },
+    "familyLabels": {
+      "convert": "Konverter",
+      "audioExtract": "Lydudtrækning",
+      "imageCompress": "billedkompression",
+      "videoCut": "Videoklip",
+      "remux": "Remux",
+      "demux": "Demux",
+      "batch": "Batchkø",
+      "automation": "Automatisering",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Interface",
+      "mcp": "MCP",
+      "automation": "Automatisering"
+    }
   }
 }

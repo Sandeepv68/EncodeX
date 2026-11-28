@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { IPC } from '../../shared/ipc-channels';
+import type { HistoryContext } from '../../shared/history/types';
 import { expectAppLog } from '../../test-utils/crash-tripwire';
 import { resetDropLogThrottle } from '../event-drop-log';
 
@@ -110,6 +111,12 @@ describe('preload', () => {
     },
   } as const;
 
+  const HISTORY_CONTEXT_FIXTURE: HistoryContext = {
+    family: 'convert',
+    source: 'gui',
+    metadata: { codec: 'libx264' },
+  };
+
   beforeEach(() => {
     vi.clearAllMocks();
     // The drop-logging throttle is module-global by design - it has to outlive a single handler to
@@ -126,6 +133,11 @@ describe('preload', () => {
   it('exposes the electronAPI bridge', () => {
     expect(api).toBeDefined();
     expect(api.convertFile).toBeTypeOf('function');
+    expect(api.historyList).toBeTypeOf('function');
+    expect(api.historyGetThumbnail).toBeTypeOf('function');
+    expect(api.historyClear).toBeTypeOf('function');
+    expect(api.historyRemove).toBeTypeOf('function');
+    expect(api.onHistoryUpdated).toBeTypeOf('function');
     expect(api.onLogMessage).toBeTypeOf('function');
     expect(api.onLogsCleared).toBeTypeOf('function');
     expect(api.logsClear).toBeTypeOf('function');
@@ -157,7 +169,12 @@ describe('preload', () => {
     ['automationImport', IPC.AUTOMATION_IMPORT, []],
     ['automationExport', IPC.AUTOMATION_EXPORT, ['auto-1']],
     ['automationStart', IPC.AUTOMATION_START, [AUTOMATION_START_REQUEST]],
-    ['convertFile', IPC.CONVERT_FILE, ['in.mp4', 'out.mp4', {}, 'FFMPEG']],
+    ['convertFile', IPC.CONVERT_FILE, ['in.mp4', 'out.mp4', {}, 'FFMPEG', undefined]],
+    ['convertFile', IPC.CONVERT_FILE, ['in.mp4', 'out.mp4', {}, 'FFMPEG', HISTORY_CONTEXT_FIXTURE]],
+    ['historyList', IPC.HISTORY_LIST, []],
+    ['historyGetThumbnail', IPC.HISTORY_GET_THUMBNAIL, ['history-1']],
+    ['historyClear', IPC.HISTORY_CLEAR, []],
+    ['historyRemove', IPC.HISTORY_REMOVE, ['history-1']],
     ['pauseConversion', IPC.PAUSE_CONVERSION, []],
     ['resumeConversion', IPC.RESUME_CONVERSION, []],
     ['cancelConversion', IPC.CANCEL_CONVERSION, []],
@@ -249,6 +266,7 @@ describe('preload', () => {
     ['onPlayerAudio', IPC.PLAYER_AUDIO, { data: new ArrayBuffer(0), sampleRate: 48000, channels: 2, generation: 0 }],
     ['onPlayerError', IPC.PLAYER_ERROR, 'decoder crashed'],
     ['onLogMessage', IPC.LOG_MESSAGE, { timestamp: 't', level: 'INFO', text: 'hello', source: 'main' }],
+    ['onHistoryUpdated', IPC.HISTORY_UPDATED, undefined],
     [
       'onAuditEntry',
       IPC.AUDIT_ENTRY,

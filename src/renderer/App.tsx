@@ -41,6 +41,7 @@ import {
   ConvertSkeleton,
   CopilotSkeleton,
   DemuxSkeleton,
+  HistorySkeleton,
   ImageCompressSkeleton,
   LogsSkeleton,
   MediaInfoSkeleton,
@@ -105,6 +106,7 @@ const loadAutomations: PageLoader = () => import('./pages/Automations');
 const loadCopilot: PageLoader = () => import('./pages/Copilot');
 /** Loads the Logs page chunk (the '/logs' route). @const {PageLoader} */
 const loadLogs: PageLoader = () => import('./pages/Logs');
+const loadHistory: PageLoader = () => import('./pages/History');
 /** Loads the Settings page chunk (the '/settings' route). @const {PageLoader} */
 const loadSettings: PageLoader = () => import('./pages/Settings');
 /** Loads the About page chunk (the '/about' route). @const {PageLoader} */
@@ -380,6 +382,7 @@ function AppLayout() {
       },
       { path: '/copilot', element: <RouteLoader load={loadCopilot} skeleton={<CopilotSkeleton />} /> },
       { path: '/logs', element: <RouteLoader load={loadLogs} skeleton={<LogsSkeleton />} /> },
+      { path: '/history', element: <RouteLoader load={loadHistory} skeleton={<HistorySkeleton />} /> },
       { path: '/settings', element: <RouteLoader load={loadSettings} skeleton={<SettingsSkeleton />} /> },
       { path: '/about', element: <RouteLoader load={loadAbout} skeleton={<AboutSkeleton />} /> },
     ],

@@ -31,7 +31,8 @@
     "remux": "إعادة التغليف",
     "demux": "فك التدفقات",
     "copilot": "كوبيلوت",
-    "automations": "???????"
+    "automations": "???????",
+    "history": "السجل"
   },
   "dashboard": {
     "welcome": "مرحباً بك في EncodeX",
@@ -46,7 +47,37 @@
     "descRemux": "ينقل التدفقات بلا فقدان إلى حاوية جديدة",
     "descDemux": "يفكّ تدفقات الملف إلى ملفات مخرجات منفصلة",
     "descCopilot": "خطّط للتحويلات بوصف هدف",
-    "descAutomations": "???? ?????? ????? ????? ?????? ????????? ??? ???? ?????"
+    "descAutomations": "???? ?????? ????? ????? ?????? ????????? ??? ???? ?????",
+    "actions": {
+      "viewSwitcher": "اختر عرضًا",
+      "dashboard": "لوحة التحكم",
+      "quickLinks": "روابط سريعة"
+    },
+    "edit": {
+      "edit": "تحرير",
+      "done": "تم",
+      "hint": "اسحب البطاقات لإعادة ترتيبها. استخدم قائمة المجموعات في كل بطاقة لتنظيمها.",
+      "dragHandle": "تحريك {{title}}",
+      "group": "مجموعة",
+      "newGroup": "مجموعة جديدة…",
+      "groupName": "اسم المجموعة",
+      "create": "إنشاء",
+      "rename": "إعادة تسمية",
+      "delete": "حذف",
+      "resetLayout": "إعادة تعيين التخطيط",
+      "groups": "مجموعات",
+      "newGroupTitle": "إنشاء مجموعة",
+      "renameGroupTitle": "إعادة تسمية المجموعة",
+      "deleteGroupTitle": "حذف المجموعة",
+      "deleteGroupMessage": "ستصبح البطاقات الموجودة في هذه المجموعة غير مجمّعة.",
+      "cardCount": "{{count}} بطاقة",
+      "cancel": "إلغاء"
+    },
+    "groups": {
+      "favourites": "المفضلة",
+      "ungrouped": "كل الأدوات"
+    },
+    "descHistory": "مراجعة العمليات الناجحة والفاشلة والملغاة"
   },
   "gettingStarted": {
     "hint": "جديد هنا؟",
@@ -1508,5 +1539,315 @@
     "canvasNodeMove": "?? ??? ?????? ??????? {{direction}}. ?????? ??????? x: {{x}}? y: {{y}}",
     "canvasEdgeDescription": "???? Enter ?? Space ?????? ????. ????? ??? ??? ????? ??? Delete ???????? ?? Escape ???????.",
     "canvasHandleLabel": "????"
+  },
+  "quickLinks": {
+    "title": "روابط سريعة",
+    "cardAria": "فتح {{title}}",
+    "links": {
+      "chatWithCopilot": {
+        "title": "الدردشة مع مساعد الطيار",
+        "description": "اطرح سؤالاً أو قم بوصف ما تريد فعله بالوسائط الخاصة بك."
+      },
+      "describeGoal": {
+        "title": "وصف الهدف",
+        "description": "اشرح الهدف بلغة واضحة ودع Copilot يقوم بإعداد العمل."
+      },
+      "planConversion": {
+        "title": "خطط للتحويل",
+        "description": "قم بتحويل الهدف إلى خطة يمكنك مراجعتها قبل إضافتها إلى قائمة الانتظار."
+      },
+      "findMomentInVideo": {
+        "title": "ابحث عن لحظة في مقطع فيديو",
+        "description": "ابحث عن نص فيديو للانتقال إلى الجزء الذي تحتاجه."
+      },
+      "searchTranscript": {
+        "title": "بحث في النص",
+        "description": "ابحث في النصوص عن الكلمات أو العبارات التي تتذكرها."
+      },
+      "translateSubtitles": {
+        "title": "ترجمة ترجمات",
+        "description": "ترجمة ملفات الترجمة إلى لغة أخرى."
+      },
+      "saveChat": {
+        "title": "حفظ الدردشة",
+        "description": "احتفظ بمحادثة Copilot الحالية لوقت لاحق."
+      },
+      "convertVideo": {
+        "title": "تحويل الفيديو",
+        "description": "أعد تشفير الفيديو بالتنسيق والجودة والحجم الذي اخترته."
+      },
+      "convertAudio": {
+        "title": "تحويل الصوت",
+        "description": "تغيير تنسيق الملف الصوتي أو برنامج الترميز أو معدل البت."
+      },
+      "compressVideo": {
+        "title": "ضغط الفيديو",
+        "description": "قم بتقليل حجم ملف الفيديو مع إبقاء النتيجة قابلة للمشاهدة."
+      },
+      "useConversionProfile": {
+        "title": "استخدم ملف تعريف التحويل",
+        "description": "اختر إعدادًا مسبقًا يملأ إعدادات الترميز نيابةً عنك."
+      },
+      "createCustomProfile": {
+        "title": "إنشاء ملف تعريف مخصص",
+        "description": "احفظ إعدادات الترميز الخاصة بك كملف تعريف قابل لإعادة الاستخدام."
+      },
+      "losslessCopy": {
+        "title": "نسخة بلا فقدان",
+        "description": "انسخ التدفقات دون إعادة ترميزها للحفاظ على الجودة الأصلية."
+      },
+      "speedUpWithGpu": {
+        "title": "تسريع مع GPU",
+        "description": "استخدم تسريع الأجهزة للتشفير بشكل أسرع."
+      },
+      "changeContainer": {
+        "title": "تغيير الحاوية دون إعادة الترميز",
+        "description": "قم بتبديل الحاويات مثل MP4 أو MKV دون إعادة ترميزها."
+      },
+      "addAudioToVideo": {
+        "title": "إضافة الصوت إلى الفيديو",
+        "description": "قم بإرفاق مسار صوتي خارجي بالفيديو."
+      },
+      "mergeAudioAndVideo": {
+        "title": "دمج الصوت والفيديو",
+        "description": "الجمع بين مسارات الصوت والفيديو المنفصلة في ملف واحد."
+      },
+      "addSubtitles": {
+        "title": "أضف ترجمات",
+        "description": "إضافة مسارات الترجمة إلى الفيديو دون تغيير الصورة."
+      },
+      "syncAudioDelay": {
+        "title": "تأخير مزامنة الصوت",
+        "description": "قم بنقل الصوت مبكرًا أو لاحقًا لمواءمته مع الفيديو."
+      },
+      "copyStreams": {
+        "title": "نسخ التدفقات",
+        "description": "اختر التدفقات التي تريد الاحتفاظ بها وانسخها كما هي."
+      },
+      "extractStreams": {
+        "title": "استخراج تيارات",
+        "description": "اسحب مسارات الفيديو أو الصوت أو الترجمة إلى ملفات منفصلة."
+      },
+      "splitAudioChannels": {
+        "title": "تقسيم القنوات الصوتية",
+        "description": "تقسيم مسار صوتي متعدد القنوات إلى ملفات فردية."
+      },
+      "saveSubtitles": {
+        "title": "حفظ الترجمة",
+        "description": "استخراج تدفقات الترجمة إلى ملفات الترجمة المستقلة."
+      },
+      "exportTracksSeparately": {
+        "title": "تصدير المسارات بشكل منفصل",
+        "description": "اكتب كل مسار محدد في ملف الإخراج الخاص به."
+      },
+      "trimVideo": {
+        "title": "تقليم الفيديو",
+        "description": "قم بقص مقطع فيديو إلى الجزء الذي تريد الاحتفاظ به."
+      },
+      "cutClipByTime": {
+        "title": "قص المقطع حسب الوقت",
+        "description": "قم بتعيين أوقات البدء والانتهاء الدقيقة للمقطع."
+      },
+      "cutByDuration": {
+        "title": "قطع حسب المدة",
+        "description": "قم بتعيين وقت البدء وطول المقطع بدلاً من وقت الانتهاء."
+      },
+      "previewClip": {
+        "title": "معاينة المقطع",
+        "description": "تحقق من النتيجة المشذبة قبل حفظها."
+      },
+      "playClip": {
+        "title": "تشغيل المقطع",
+        "description": "قم بتشغيل المقطع المحدد على المخطط الزمني."
+      },
+      "removeAudioFromClip": {
+        "title": "إزالة الصوت من المقطع",
+        "description": "أنشئ مقطعًا صامتًا عن طريق ترك المسار الصوتي."
+      },
+      "extractAudioFromVideo": {
+        "title": "استخراج الصوت من الفيديو",
+        "description": "حفظ الصوت من الفيديو كملف خاص به."
+      },
+      "saveAudioAsMp3": {
+        "title": "حفظ الصوت بصيغة MP3",
+        "description": "تصدير الصوت المستخرج بتنسيق MP3."
+      },
+      "chooseAudioQuality": {
+        "title": "اختر جودة الصوت",
+        "description": "اختر برنامج الترميز ومعدل البت للصوت المستخرج."
+      },
+      "compressImage": {
+        "title": "ضغط الصورة",
+        "description": "جعل الصورة أصغر مع الحفاظ على مظهرها الجيد."
+      },
+      "resizeImage": {
+        "title": "تغيير حجم الصورة",
+        "description": "قم بتغيير أبعاد الصورة قبل حفظها."
+      },
+      "changeImageFormat": {
+        "title": "تغيير تنسيق الصورة",
+        "description": "تحويل الصورة إلى تنسيق ملف مختلف."
+      },
+      "newBatchTask": {
+        "title": "مهمة دفعة جديدة",
+        "description": "ابدأ مهمة جديدة متعددة الملفات باستخدام الإعدادات المشتركة."
+      },
+      "runBatchJobs": {
+        "title": "تشغيل وظائف الدفعة",
+        "description": "ابدأ قائمة الانتظار وقم بمعالجة جميع المهام بالترتيب."
+      },
+      "queueFiles": {
+        "title": "ملفات قائمة الانتظار",
+        "description": "إضافة ملفات أو مجلد إلى قائمة الانتظار الدفعية."
+      },
+      "retryFailedJobs": {
+        "title": "إعادة محاولة المهام الفاشلة",
+        "description": "قم بتشغيل المهام الفاشلة مرة أخرى بعد حل المشكلة."
+      },
+      "importQueue": {
+        "title": "قائمة انتظار الاستيراد",
+        "description": "قم بتحميل قائمة انتظار دفعية محفوظة من ملف."
+      },
+      "editJobOptions": {
+        "title": "تحرير خيارات الوظيفة",
+        "description": "تغيير خيارات الترميز للمهام التي لا تزال في قائمة الانتظار."
+      },
+      "runJobsThenShutDown": {
+        "title": "تشغيل المهام ثم إيقاف التشغيل",
+        "description": "دع الدفعة تنتهي ثم قم بإيقاف تشغيل الكمبيوتر."
+      },
+      "buildAutomation": {
+        "title": "بناء الأتمتة",
+        "description": "صمم خط أنابيب قابلاً لإعادة الاستخدام من عقد الوسائط على اللوحة القماشية."
+      },
+      "runAutomation": {
+        "title": "تشغيل الأتمتة",
+        "description": "قم بتشغيل الأتمتة المحددة مقابل ملف إدخال."
+      },
+      "viewRunHistory": {
+        "title": "عرض سجل التشغيل",
+        "description": "مراجعة عمليات التشغيل الآلي السابقة ونتائجها."
+      },
+      "saveAutomationPipeline": {
+        "title": "حفظ خط أنابيب الأتمتة",
+        "description": "احفظ خط الأنابيب حتى تتمكن من تشغيله مرة أخرى لاحقًا."
+      },
+      "inspectMediaFile": {
+        "title": "فحص ملف الوسائط",
+        "description": "افتح الملف وشاهد ما بداخله."
+      },
+      "viewStreamDetails": {
+        "title": "عرض تفاصيل الدفق",
+        "description": "فحص تدفقات الفيديو والصوت والترجمة."
+      },
+      "checkCodecs": {
+        "title": "تحقق من برامج الترميز",
+        "description": "تحقق من برامج الترميز التي يستخدمها الملف."
+      },
+      "readFileMetadata": {
+        "title": "قراءة بيانات تعريف الملف",
+        "description": "عرض الحاوية والمدة ومعدل البت وتفاصيل الملف الأخرى."
+      },
+      "changeTheme": {
+        "title": "تغيير الموضوع",
+        "description": "اختر سمة فاتحة أو داكنة لـ EncodeX."
+      },
+      "setUpAiProvider": {
+        "title": "إعداد موفر الذكاء الاصطناعي",
+        "description": "قم بتوصيل مزود الذكاء الاصطناعي لتخطيط مساعد الطيار بشكل أكثر ذكاءً."
+      },
+      "configureHardwareAcceleration": {
+        "title": "تكوين تسريع الأجهزة",
+        "description": "اختر كيفية استخدام EncodeX لوحدة معالجة الرسومات الخاصة بك."
+      },
+      "enableMcpServer": {
+        "title": "تمكين خادم MCP",
+        "description": "اسمح لعملاء MCP المحليين بالتحكم في EncodeX."
+      },
+      "manageStartupNotifications": {
+        "title": "إدارة بدء التشغيل والإشعارات",
+        "description": "التحكم في سلوك بدء التشغيل وإشعارات سطح المكتب."
+      },
+      "viewLogs": {
+        "title": "عرض السجلات",
+        "description": "افتح وحدة تحكم سجل التطبيق."
+      },
+      "searchErrors": {
+        "title": "أخطاء البحث",
+        "description": "تصفية السجلات للتحذيرات والأخطاء."
+      },
+      "reviewOperationHistory": {
+        "title": "مراجعة تاريخ العملية",
+        "description": "التحقق من مسار التدقيق للعمليات المكتملة."
+      },
+      "downloadLogs": {
+        "title": "تحميل السجلات",
+        "description": "حفظ السجلات الحالية كملف نصي."
+      },
+      "checkVersion": {
+        "title": "التحقق من الإصدار",
+        "description": "تعرف على إصدار EncodeX المثبت."
+      },
+      "viewBuildInfo": {
+        "title": "عرض معلومات البناء",
+        "description": "تحقق من تفاصيل البناء لهذا التثبيت."
+      },
+      "readAboutEncodeX": {
+        "title": "اقرأ عن EncodeX",
+        "description": "تعرف على المزيد حول EncodeX."
+      }
+    }
+  },
+  "history": {
+    "title": "سجل العمليات",
+    "search": "عمليات البحث",
+    "empty": "لا توجد عمليات تطابق مع عوامل التصفية الحالية.",
+    "clearConfirm": "هل تريد مسح سجل العمليات بالكامل؟",
+    "refresh": "تحديث",
+    "clear": "مسح السجل",
+    "remove": "إزالة",
+    "details": "التفاصيل",
+    "noSelection": "حدد عملية لعرض تفاصيلها.",
+    "count": "{{count}} عملية (عمليات)",
+    "filteredCount": "{{count}} من {{total}} عملية (عمليات)",
+    "status": "الحالة",
+    "family": "العملية",
+    "source": "المصدر",
+    "started": "البدء",
+    "duration": "المدة",
+    "input": "المدخلات",
+    "outputs": "المخرجات",
+    "error": "خطأ",
+    "metadata": "البيانات الوصفية",
+    "sort": "فرز",
+    "allStatuses": "جميع الحالات",
+    "allFamilies": "جميع العمليات",
+    "allSources": "جميع المصادر",
+    "sortNewest": "الأحدث أولاً",
+    "sortOldest": "الأقدم أولاً",
+    "sortLongest": "الأطول أولاً",
+    "sortShortest": "الأقصر أولاً",
+    "sortName": "الاسم من الألف إلى الياء",
+    "statusLabels": {
+      "succeeded": "تم بنجاح",
+      "failed": "فشل",
+      "cancelled": "تم الإلغاء"
+    },
+    "familyLabels": {
+      "convert": "تحويل",
+      "audioExtract": "استخراج الصوت",
+      "imageCompress": "ضغط الصورة, ضغط حجم ملف الصورة دون الإضرار بجودة الصورة نفسها",
+      "videoCut": "قص الفيديو",
+      "remux": "إعادة الدمج",
+      "demux": "إلغاء التعددية",
+      "batch": "قائمة انتظار الدفعات",
+      "automation": "الأتمتة",
+      "mcp": "محترف معتمد من مايكروسوفت"
+    },
+    "sourceLabels": {
+      "gui": "الواجهة البينية",
+      "mcp": "محترف معتمد من مايكروسوفت",
+      "automation": "التشغيل الآلي"
+    }
   }
 }

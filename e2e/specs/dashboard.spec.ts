@@ -8,7 +8,9 @@
  *  - one feature card exists for every tool destination (and none for the
  *    shell-only pages Logs/Settings/About),
  *  - each card click reaches its route (checked on `location.hash`),
- *  - the 1-8 number keys jump to the same routes as their cards.
+ *  - the 1-8 number keys jump to the same routes as their cards,
+ *  - the actions row toggles the card grid and Quick Links panel in place,
+ *  - Edit mode exposes grouping controls and drag handles.
  */
 
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
@@ -30,6 +32,7 @@ const FEATURE_CARDS: { route: string; title: string }[] = [
   { route: '/batch', title: 'Batch Queue' },
   { route: '/automations', title: 'Automations' },
   { route: '/copilot', title: 'Copilot' },
+  { route: '/history', title: 'History' },
 ];
 
 /** Number-key shortcuts registered on the dashboard, in card order for the first eight. */
@@ -55,6 +58,7 @@ describe.runIf(IS_E2E)('Dashboard page', () => {
   beforeEach(async () => {
     session = await ensureLiveSession(session);
     await mockApi.reset(session.page);
+    await session.page.evaluate(() => localStorage.removeItem('encodex-dashboard-layout'));
     session = await reloadSession(session);
     await gotoDashboard(session.page);
   }, 30000);
@@ -94,5 +98,70 @@ describe.runIf(IS_E2E)('Dashboard page', () => {
       const route = NUMBER_KEY_ROUTES[i];
       await page.waitForFunction((expected) => location.hash.startsWith(`#${expected}`), route, { timeout: 15000 });
     }
+  });
+
+  it('renders ghost icon-only view and edit actions with tooltips above the dashboard content', async () => {
+    const { page } = session;
+    await expect.poll(() => page.locator('[data-testid="dashboard-actions-row"]').count()).toBe(1);
+    const toggle = page.locator('[data-testid="dashboard-view-toggle-button"]');
+    await expect.poll(() => toggle.count()).toBe(1);
+    await expect.poll(() => toggle.innerText()).toBe('');
+    await toggle.hover();
+    await expect.poll(() => page.locator('[role="tooltip"]').last().innerText()).toBe('Quick Links');
+
+    const edit = page.locator('[data-testid="dashboard-edit-button"]');
+    await expect.poll(() => edit.innerText()).toBe('');
+    await edit.hover();
+    await expect.poll(() => page.locator('[role="tooltip"]').last().innerText()).toBe('Edit');
+  });
+
+  it('toggles the card grid and Quick Links panel without leaving the dashboard', async () => {
+    const { page } = session;
+    await page.locator('[data-testid="dashboard-view-toggle-button"]').click();
+    await expect.poll(() => page.locator('[data-testid="quick-links-panel"]').count()).toBe(1);
+    await expect.poll(() => page.locator('[data-testid="dashboard-edit-button"]').count()).toBe(0);
+    await expect.poll(() => page.getByRole('heading', { level: 1, name: /Welcome to EncodeX/ }).count()).toBe(1);
+    expect(await page.evaluate(() => location.hash)).toBe('#/');
+
+    await page.locator('[data-testid="dashboard-view-toggle-button"]').click();
+    await expect.poll(() => page.locator('[data-testid="quick-links-panel"]').count()).toBe(0);
+    await expect.poll(() => page.getByRole('heading', { level: 2, name: 'Convert', exact: true }).count()).toBe(1);
+  });
+
+  it('keeps saved group sections visible after leaving edit mode', async () => {
+    const { page } = session;
+    await page.locator('[data-testid="dashboard-edit-button"]').click();
+    await expect.poll(() => page.locator('[data-testid="dashboard-edit-button"]').getAttribute('aria-pressed')).toBe('true');
+    await expect.poll(() => page.locator('[data-testid="dashboard-group-bar"]').count()).toBe(1);
+    await expect.poll(() => page.locator('[data-testid="dashboard-group-favourites"]').count()).toBe(1);
+    await expect.poll(() => page.locator('[data-testid="dashboard-group-favourites"] svg').count()).toBe(1);
+    await expect.poll(() => page.locator('[data-testid="dashboard-edit-hint"]').getAttribute('role')).toBe('alert');
+    const barBox = await page.locator('[data-testid="dashboard-group-bar"]').boundingBox();
+    const viewportWidth = await page.evaluate(() => window.innerWidth);
+    expect(barBox?.width).toBeLessThan(viewportWidth);
+    await page.locator('[data-testid="dashboard-edit-hint"] button').click();
+    await expect.poll(() => page.locator('[data-testid="dashboard-edit-hint"]').count()).toBe(0);
+    await expect.poll(() => page.locator('[data-testid="dashboard-drag-handle-/convert"]').count()).toBe(1);
+
+    await page.locator('[data-testid="dashboard-group-button-/convert"]').click();
+    await page.locator('[data-testid="dashboard-assign-favourites"]').click();
+    const ungroupedEditJustify = await page
+      .locator('[data-testid="dashboard-section-ungrouped"] .MuiGrid-container')
+      .evaluate((element) => getComputedStyle(element).justifyContent);
+    expect(ungroupedEditJustify).toBe('center');
+    await page.locator('[data-testid="dashboard-edit-button"]').click();
+    await expect.poll(() => page.locator('[data-testid="dashboard-edit-button"]').getAttribute('aria-pressed')).toBe('false');
+    await expect.poll(() => page.locator('[data-testid="dashboard-section-favourites"]').count()).toBe(1);
+    await expect.poll(() => page.locator('[data-testid="dashboard-section-favourites"] svg').count()).toBeGreaterThan(0);
+    const gridJustify = await page
+      .locator('[data-testid="dashboard-section-favourites"] .MuiGrid-container')
+      .evaluate((element) => getComputedStyle(element).justifyContent);
+    expect(gridJustify).toBe('flex-start');
+    const ungroupedSavedJustify = await page
+      .locator('[data-testid="dashboard-section-ungrouped"] .MuiGrid-container')
+      .evaluate((element) => getComputedStyle(element).justifyContent);
+    expect(ungroupedSavedJustify).toBe('center');
+    await expect.poll(() => page.locator('[data-testid="dashboard-group-bar"]').count()).toBe(0);
+    await expect.poll(() => page.locator('[data-testid="dashboard-drag-handle-/convert"]').count()).toBe(0);
   });
 });

@@ -7,7 +7,7 @@
  * cannot tell you whether `de-DE` ships a value whose interpolation token is
  * never satisfied, or whether `ja-JP` renders a raw translation key because a
  * component calls `t('typo.ed.key')`. This suite unmocks `react-i18next` and
- * renders the real fourteen pages against the real i18next instance loaded with
+ * renders the real fifteen pages against the real i18next instance loaded with
  * all 56 locale files, asserting the three things the plan demands:
  *
  *  (a) no page error -- the crash tripwire makes any `window.error`,
@@ -23,7 +23,7 @@
  * `scripts/validate-locales.mjs` performs, so a broken locale JSON fails the
  * test tier without a separate job (the plan's "test-time variant").
  *
- * The suite runs as its own CI gate (`test:locale-matrix`), because 56 x 12
+ * The suite runs as its own CI gate (`test:locale-matrix`), because 56 x 15
  * mounts in real-i18next mode is too slow for the shared unit tier.
  *
  * Shared helpers live in `./i18n-matrix-utils` (never collected as tests);
@@ -143,8 +143,8 @@ describe('5.1 locale matrix', () => {
   });
 
   it('knows every route by heart (harness guard so the loop cannot empty out)', () => {
-    expect(PAGE_ROUTES).toHaveLength(14);
-    expect(new Set(PAGE_ROUTES.map((r) => r.name)).size).toBe(14);
+    expect(PAGE_ROUTES).toHaveLength(15);
+    expect(new Set(PAGE_ROUTES.map((r) => r.name)).size).toBe(15);
   });
 
   it('reads real, non-English resources for a sample of locales', async () => {
@@ -171,7 +171,7 @@ describe('5.1 locale matrix', () => {
   });
 
   for (const { code } of LOCALES) {
-    it(`renders all 14 routes in ${code} without errors, raw tokens, or leaked keys`, async () => {
+    it(`renders all 15 routes in ${code} without errors, raw tokens, or leaked keys`, async () => {
       // Rendering pages in a benign default state legitimately produces app
       // WARNs (empty queue, no selection, ...). The matrix's job is i18n
       // integrity, not warning hygiene, so the app's own warnings are

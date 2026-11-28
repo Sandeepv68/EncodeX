@@ -23,6 +23,7 @@
 import { ipcMain, BrowserWindow, app, dialog } from 'electron';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { JobQueue } from '../queue/job-queue';
+import type { JobQueueOptions } from '../queue/types';
 import { FileQueuePersistence } from '../queue/persistence';
 import { muxOutputClaims } from '../queue/output-claims';
 import { buildQueueExport, parseQueueExport } from '../queue/queue-transfer';
@@ -164,13 +165,13 @@ function normalizePath(path: string): string {
  *   events (added, removed, status change, progress, cancelled).
  * @returns {void} Nothing is returned.
  */
-export function registerQueueHandlers(win: BrowserWindow, send: IpcSender): void {
+export function registerQueueHandlers(win: BrowserWindow, send: IpcSender, historyRecorder?: JobQueueOptions['historyRecorder']): void {
   /** The queue persistence adapter; the will-quit clear targets its snapshot. */
   const persistence = new FileQueuePersistence(app.getPath('userData'));
   registerQueueSnapshotClear(() => persistence.clear());
 
   /** The job queue backing these handlers; one instance per registration call. */
-  const jobQueue = new JobQueue({ persistence });
+  const jobQueue = new JobQueue({ persistence, historyRecorder });
 
   /**
    * Handles the IPC.QUEUE_ADD channel (queue-add).

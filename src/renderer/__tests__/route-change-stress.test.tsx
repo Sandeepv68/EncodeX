@@ -47,6 +47,7 @@ const ROUTES = [
   '/batch',
   '/automations',
   '/logs',
+  '/history',
   '/settings',
   '/about',
 ];

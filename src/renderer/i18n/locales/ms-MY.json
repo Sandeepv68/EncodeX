@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "Automasi"
+    "automations": "Automasi",
+    "history": "Sejarah"
   },
   "dashboard": {
     "welcome": "Selamat Datang ke EncodeX",
@@ -46,7 +47,37 @@
     "descRemux": "Pindahkan strim tanpa-rugi ke bekas baharu",
     "descDemux": "Pisahkan strim fail kepada fail output berasingan",
     "descCopilot": "Rancang penukaran dengan menerangkan matlamat",
-    "descAutomations": "Bina saluran penukaran boleh guna semula pada kanvas visual"
+    "descAutomations": "Bina saluran penukaran boleh guna semula pada kanvas visual",
+    "actions": {
+      "viewSwitcher": "Pilih paparan",
+      "dashboard": "Papan Pemuka",
+      "quickLinks": "Pautan pantas"
+    },
+    "edit": {
+      "edit": "Edit",
+      "done": "Selesai",
+      "hint": "Seret kad untuk menyusun semula. Gunakan menu kumpulan pada setiap kad untuk mengaturnya.",
+      "dragHandle": "Gerakkan {{title}}",
+      "group": "Kumpulan",
+      "newGroup": "Kumpulan baharu…",
+      "groupName": "Nama kumpulan",
+      "create": "Cipta",
+      "rename": "Tukar nama",
+      "delete": "Padam",
+      "resetLayout": "Tetapkan semula susun atur",
+      "groups": "Kumpulan",
+      "newGroupTitle": "Cipta kumpulan",
+      "renameGroupTitle": "Tukar nama kumpulan",
+      "deleteGroupTitle": "Padam kumpulan",
+      "deleteGroupMessage": "Kad dalam kumpulan ini akan dinyahkumpulkan.",
+      "cardCount": "{{count}} kad",
+      "cancel": "Batal"
+    },
+    "groups": {
+      "favourites": "Kegemaran",
+      "ungrouped": "Semua alat"
+    },
+    "descHistory": "Semak operasi yang berjaya, gagal dan dibatalkan"
   },
   "gettingStarted": {
     "hint": "Baru di sini?",
@@ -1508,5 +1539,315 @@
     "canvasNodeMove": "Nod terpilih digerakkan {{direction}}. Kedudukan baharu, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Tekan enter atau ruang untuk memilih garis sambungan. Anda kemudian boleh menekan delete untuk memadamnya atau escape untuk membatalkan.",
     "canvasHandleLabel": "Titik sambungan"
+  },
+  "quickLinks": {
+    "title": "Pautan pantas",
+    "cardAria": "Buka {{title}}",
+    "links": {
+      "chatWithCopilot": {
+        "title": "Berbual dengan Copilot",
+        "description": "Tanya soalan atau huraikan perkara yang anda mahu lakukan dengan media anda."
+      },
+      "describeGoal": {
+        "title": "Huraikan Matlamat",
+        "description": "Jelaskan matlamat dalam bahasa mudah dan biarkan Copilot menyediakan kerja."
+      },
+      "planConversion": {
+        "title": "Rancang Penukaran",
+        "description": "Tukar matlamat kepada pelan yang boleh anda semak sebelum menambahkannya pada baris gilir."
+      },
+      "findMomentInVideo": {
+        "title": "Cari Momen dalam Video",
+        "description": "Cari transkrip video untuk melompat ke bahagian yang anda perlukan."
+      },
+      "searchTranscript": {
+        "title": "Transkrip Carian",
+        "description": "Lihat melalui transkrip untuk perkataan atau frasa yang anda ingat."
+      },
+      "translateSubtitles": {
+        "title": "Terjemah Sarikata",
+        "description": "Terjemah fail sari kata ke dalam bahasa lain."
+      },
+      "saveChat": {
+        "title": "Simpan Sembang",
+        "description": "Simpan perbualan Copilot semasa untuk kemudian."
+      },
+      "convertVideo": {
+        "title": "Tukar Video",
+        "description": "Kod semula video dengan format, kualiti dan saiz pilihan anda."
+      },
+      "convertAudio": {
+        "title": "Tukar Audio",
+        "description": "Tukar format, codec atau kadar bit fail audio."
+      },
+      "compressVideo": {
+        "title": "Mampatkan Video",
+        "description": "Kurangkan saiz fail video sambil memastikan hasil dapat ditonton."
+      },
+      "useConversionProfile": {
+        "title": "Gunakan Profil Penukaran",
+        "description": "Pilih pratetap yang mengisi tetapan pengekodan untuk anda."
+      },
+      "createCustomProfile": {
+        "title": "Buat Profil Tersuai",
+        "description": "Simpan tetapan pengekodan anda sendiri sebagai profil boleh guna semula."
+      },
+      "losslessCopy": {
+        "title": "Salinan Tanpa Rugi",
+        "description": "Salin strim tanpa pengekodan semula untuk mengekalkan kualiti asal."
+      },
+      "speedUpWithGpu": {
+        "title": "Percepatkan dengan GPU",
+        "description": "Gunakan pecutan perkakasan untuk mengekod dengan lebih pantas."
+      },
+      "changeContainer": {
+        "title": "Tukar Bekas Tanpa Pengekodan Semula",
+        "description": "Tukar bekas seperti MP4 atau MKV tanpa pengekodan semula."
+      },
+      "addAudioToVideo": {
+        "title": "Tambahkan Audio pada Video",
+        "description": "Lampirkan trek audio luaran pada video."
+      },
+      "mergeAudioAndVideo": {
+        "title": "Gabungkan Audio dan Video",
+        "description": "Gabungkan trek audio dan video yang berasingan ke dalam satu fail."
+      },
+      "addSubtitles": {
+        "title": "Tambah Sarikata",
+        "description": "Tambahkan trek sari kata pada video tanpa menukar gambar."
+      },
+      "syncAudioDelay": {
+        "title": "Segerakkan Kelewatan Audio",
+        "description": "Alihkan audio lebih awal atau kemudian untuk menyelaraskannya dengan video."
+      },
+      "copyStreams": {
+        "title": "Salin Strim",
+        "description": "Pilih strim mana yang hendak disimpan dan salinnya seadanya."
+      },
+      "extractStreams": {
+        "title": "Ekstrak Aliran",
+        "description": "Tarik trek video, audio atau sari kata keluar ke dalam fail yang berasingan."
+      },
+      "splitAudioChannels": {
+        "title": "Pisahkan Saluran Audio",
+        "description": "Pisahkan trek audio berbilang saluran kepada fail individu."
+      },
+      "saveSubtitles": {
+        "title": "Simpan Sarikata",
+        "description": "Ekstrak strim sari kata kepada fail sari kata tersendiri."
+      },
+      "exportTracksSeparately": {
+        "title": "Eksport Trek Secara Berasingan",
+        "description": "Tulis setiap trek yang dipilih ke fail outputnya sendiri."
+      },
+      "trimVideo": {
+        "title": "Potong Video",
+        "description": "Potong video ke bahagian yang anda mahu simpan."
+      },
+      "cutClipByTime": {
+        "title": "Potong Klip mengikut Masa",
+        "description": "Tetapkan masa mula dan tamat yang tepat untuk klip."
+      },
+      "cutByDuration": {
+        "title": "Dipotong mengikut Tempoh",
+        "description": "Tetapkan masa mula dan panjang klip bukannya masa tamat."
+      },
+      "previewClip": {
+        "title": "Klip Pratonton",
+        "description": "Semak hasil yang dipangkas sebelum anda menyimpannya."
+      },
+      "playClip": {
+        "title": "Main Klip",
+        "description": "Main semula segmen yang dipilih pada garis masa."
+      },
+      "removeAudioFromClip": {
+        "title": "Alih keluar Audio daripada Klip",
+        "description": "Buat klip senyap dengan meninggalkan trek audio."
+      },
+      "extractAudioFromVideo": {
+        "title": "Ekstrak Audio daripada Video",
+        "description": "Simpan audio daripada video sebagai failnya sendiri."
+      },
+      "saveAudioAsMp3": {
+        "title": "Simpan Audio sebagai MP3",
+        "description": "Eksport audio yang diekstrak dalam format MP3."
+      },
+      "chooseAudioQuality": {
+        "title": "Pilih Kualiti Audio",
+        "description": "Pilih codec dan kadar bit untuk audio yang diekstrak."
+      },
+      "compressImage": {
+        "title": "Memampatkan Imej",
+        "description": "Kecilkan imej sambil memastikan ia kelihatan baik."
+      },
+      "resizeImage": {
+        "title": "Saiz semula Imej",
+        "description": "Tukar dimensi imej sebelum menyimpannya."
+      },
+      "changeImageFormat": {
+        "title": "Tukar Format Imej",
+        "description": "Tukar imej kepada format fail yang berbeza."
+      },
+      "newBatchTask": {
+        "title": "Tugas Kelompok Baharu",
+        "description": "Mulakan kerja berbilang fail baharu dengan tetapan kongsi."
+      },
+      "runBatchJobs": {
+        "title": "Jalankan Kerja Berkelompok",
+        "description": "Mulakan baris gilir dan proses semua kerja mengikut urutan."
+      },
+      "queueFiles": {
+        "title": "Fail Beratur",
+        "description": "Tambahkan fail atau folder pada baris gilir kelompok."
+      },
+      "retryFailedJobs": {
+        "title": "Cuba Semula Kerja Gagal",
+        "description": "Jalankan kerja yang gagal sekali lagi selepas menyelesaikan masalah."
+      },
+      "importQueue": {
+        "title": "Import Baris Gilir",
+        "description": "Muatkan baris gilir kelompok yang disimpan daripada fail."
+      },
+      "editJobOptions": {
+        "title": "Edit Pilihan Kerja",
+        "description": "Tukar pilihan pengekodan untuk kerja yang masih beratur."
+      },
+      "runJobsThenShutDown": {
+        "title": "Jalankan Pekerjaan Kemudian Tutup",
+        "description": "Biarkan kumpulan itu selesai dan kemudian matikan komputer."
+      },
+      "buildAutomation": {
+        "title": "Bina Automasi",
+        "description": "Reka bentuk saluran paip boleh guna semula daripada nod media pada kanvas."
+      },
+      "runAutomation": {
+        "title": "Jalankan Automasi",
+        "description": "Jalankan automasi yang dipilih terhadap fail input."
+      },
+      "viewRunHistory": {
+        "title": "Lihat Sejarah Larian",
+        "description": "Semak larian automasi yang lalu dan keputusannya."
+      },
+      "saveAutomationPipeline": {
+        "title": "Simpan Saluran Paip Automasi",
+        "description": "Simpan saluran paip supaya anda boleh menjalankannya semula kemudian."
+      },
+      "inspectMediaFile": {
+        "title": "Periksa Fail Media",
+        "description": "Buka fail dan lihat apa yang ada di dalamnya."
+      },
+      "viewStreamDetails": {
+        "title": "Lihat Butiran Strim",
+        "description": "Periksa aliran video, audio dan sari kata."
+      },
+      "checkCodecs": {
+        "title": "Semak Codec",
+        "description": "Semak codec yang digunakan oleh fail."
+      },
+      "readFileMetadata": {
+        "title": "Baca Metadata Fail",
+        "description": "Lihat bekas, tempoh, kadar bit dan butiran fail lain."
+      },
+      "changeTheme": {
+        "title": "Tukar Tema",
+        "description": "Pilih tema terang atau gelap untuk EncodeX."
+      },
+      "setUpAiProvider": {
+        "title": "Sediakan Pembekal AI",
+        "description": "Sambungkan pembekal AI untuk perancangan Copilot yang lebih bijak."
+      },
+      "configureHardwareAcceleration": {
+        "title": "Konfigurasikan Pecutan Perkakasan",
+        "description": "Pilih cara EncodeX menggunakan GPU anda."
+      },
+      "enableMcpServer": {
+        "title": "Dayakan Pelayan MCP",
+        "description": "Benarkan pelanggan MCP tempatan mengawal EncodeX."
+      },
+      "manageStartupNotifications": {
+        "title": "Urus Permulaan & Pemberitahuan",
+        "description": "Kawal tingkah laku permulaan dan pemberitahuan desktop."
+      },
+      "viewLogs": {
+        "title": "Lihat Log",
+        "description": "Buka konsol log aplikasi."
+      },
+      "searchErrors": {
+        "title": "Ralat Carian",
+        "description": "Tapis log untuk amaran dan ralat."
+      },
+      "reviewOperationHistory": {
+        "title": "Semak Sejarah Operasi",
+        "description": "Semak jejak audit untuk operasi selesai."
+      },
+      "downloadLogs": {
+        "title": "Muat turun Log",
+        "description": "Simpan log semasa sebagai fail teks."
+      },
+      "checkVersion": {
+        "title": "Semak Versi",
+        "description": "Lihat versi EncodeX yang dipasang."
+      },
+      "viewBuildInfo": {
+        "title": "Lihat Maklumat Binaan",
+        "description": "Semak butiran binaan untuk pemasangan ini."
+      },
+      "readAboutEncodeX": {
+        "title": "Baca Mengenai EncodeX",
+        "description": "Ketahui lebih lanjut tentang EncodeX."
+      }
+    }
+  },
+  "history": {
+    "title": "Sejarah Operasi",
+    "search": "Operasi carian",
+    "empty": "Tiada operasi yang sepadan dengan penapis semasa.",
+    "clearConfirm": "Kosongkan semua sejarah operasi?",
+    "refresh": "Segarkan semula",
+    "clear": "Kosongkan sejarah",
+    "remove": "Alih keluar",
+    "details": "Butiran",
+    "noSelection": "Pilih operasi untuk melihat butirannya.",
+    "count": "{{count}} operasi",
+    "filteredCount": "{{count}} daripada {{total}} operasi",
+    "status": "Status",
+    "family": "Operasi",
+    "source": "Sumber",
+    "started": "Bermula",
+    "duration": "Tempoh",
+    "input": "Input",
+    "outputs": "Keluaran",
+    "error": "ralat",
+    "metadata": "Metadata",
+    "sort": "Isih",
+    "allStatuses": "Semua status",
+    "allFamilies": "Semua operasi",
+    "allSources": "Semua sumber",
+    "sortNewest": "Terbaharu dahulu",
+    "sortOldest": "Tertua dahulu",
+    "sortLongest": "Paling lama dulu",
+    "sortShortest": "Terpendek dahulu",
+    "sortName": "Nama A-Z",
+    "statusLabels": {
+      "succeeded": "Berjaya",
+      "failed": "gagal",
+      "cancelled": "Dibatalkan"
+    },
+    "familyLabels": {
+      "convert": "Tukar",
+      "audioExtract": "Pengekstrakan audio",
+      "imageCompress": "Pemampatan imej",
+      "videoCut": "Potongan video",
+      "remux": "Remux",
+      "demux": "Demux",
+      "batch": "Barisan berkelompok",
+      "automation": "Automasi",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Antara muka",
+      "mcp": "MCP",
+      "automation": "Automasi"
+    }
   }
 }

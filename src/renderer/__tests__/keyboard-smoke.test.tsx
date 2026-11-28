@@ -151,7 +151,7 @@ async function settleToStableTabOrder(): Promise<HTMLElement[]> {
   return expectedTabOrder();
 }
 
-describe('5.3 keyboard smoke (12 routed pages: Tab order, Shift+Tab back, no trap leaks)', () => {
+describe('5.3 keyboard smoke (15 routed pages: Tab order, Shift+Tab back, no trap leaks)', () => {
   let restoreScrollIntoView: (() => void) | undefined;
 
   beforeAll(() => {

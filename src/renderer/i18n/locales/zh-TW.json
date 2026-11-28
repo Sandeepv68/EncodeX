@@ -31,7 +31,8 @@
     "remux": "重新封裝",
     "demux": "解封裝",
     "copilot": "Copilot",
-    "automations": "自動化"
+    "automations": "自動化",
+    "history": "歷史"
   },
   "dashboard": {
     "welcome": "歡迎使用 EncodeX",
@@ -46,7 +47,37 @@
     "descRemux": "將串流無損轉移到新的容器",
     "descDemux": "將檔案的各個串流拆分成個別的輸出檔案",
     "descCopilot": "透過描述目標來規劃轉換",
-    "descAutomations": "在視覺化畫布上建立可重複使用的轉換管線"
+    "descAutomations": "在視覺化畫布上建立可重複使用的轉換管線",
+    "actions": {
+      "viewSwitcher": "選擇檢視",
+      "dashboard": "儀表板",
+      "quickLinks": "快速連結"
+    },
+    "edit": {
+      "edit": "編輯",
+      "done": "已完成",
+      "hint": "拖曳卡片即可重新排列。使用每張卡片的群組選單進行整理。",
+      "dragHandle": "移動 {{title}}",
+      "group": "群組",
+      "newGroup": "新增群組…",
+      "groupName": "群組名稱",
+      "create": "建立",
+      "rename": "重新命名",
+      "delete": "刪除",
+      "resetLayout": "重設版面配置",
+      "groups": "群組",
+      "newGroupTitle": "建立群組",
+      "renameGroupTitle": "重新命名群組",
+      "deleteGroupTitle": "刪除群組",
+      "deleteGroupMessage": "此群組中的卡片將會取消群組。",
+      "cardCount": "{{count}} 張卡片",
+      "cancel": "取消"
+    },
+    "groups": {
+      "favourites": "收藏",
+      "ungrouped": "所有工具"
+    },
+    "descHistory": "查看成功、失敗和取消的操作"
   },
   "gettingStarted": {
     "hint": "第一次來？",
@@ -1508,5 +1539,315 @@
     "canvasNodeMove": "已將選取的節點往{{direction}}移動。新位置：x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "按 Enter 或空白鍵選取連線。按 Delete 鍵移除，或按 Esc 鍵取消。",
     "canvasHandleLabel": "控制點"
+  },
+  "quickLinks": {
+    "title": "快速連結",
+    "cardAria": "開啟 {{title}}",
+    "links": {
+      "chatWithCopilot": {
+        "title": "與副駕駛聊天",
+        "description": "提出問題或描述您想如何處理媒體。"
+      },
+      "describeGoal": {
+        "title": "描述一個目標",
+        "description": "用簡單的語言解釋目標並讓 Copilot 準備工作。"
+      },
+      "planConversion": {
+        "title": "計劃轉換",
+        "description": "將目標轉變為計劃，您可以在將其新增至佇列之前進行審查。"
+      },
+      "findMomentInVideo": {
+        "title": "尋找影片中的某個時刻",
+        "description": "搜尋影片腳本以跳到您需要的部分。"
+      },
+      "searchTranscript": {
+        "title": "搜尋成績單",
+        "description": "翻閱文字記錄，尋找您記得的單字或短語。"
+      },
+      "translateSubtitles": {
+        "title": "翻譯字幕",
+        "description": "將字幕檔翻譯成另一種語言。"
+      },
+      "saveChat": {
+        "title": "保存聊天記錄",
+        "description": "保留目前的副駕駛對話以供稍後使用。"
+      },
+      "convertVideo": {
+        "title": "轉換影片",
+        "description": "使用您選擇的格式、品質和大小重新編碼影片。"
+      },
+      "convertAudio": {
+        "title": "轉換音訊",
+        "description": "更改音訊檔案的格式、編解碼器或位元率。"
+      },
+      "compressVideo": {
+        "title": "壓縮視頻",
+        "description": "減小影片檔案大小，同時保持結果可觀看。"
+      },
+      "useConversionProfile": {
+        "title": "使用轉換設定檔",
+        "description": "選擇一個為您填滿編碼設定的預設。"
+      },
+      "createCustomProfile": {
+        "title": "建立自訂設定檔",
+        "description": "將您自己的編碼設定儲存為可重複使用的設定檔。"
+      },
+      "losslessCopy": {
+        "title": "無損複製",
+        "description": "複製流而不重新編碼以保持原始品質。"
+      },
+      "speedUpWithGpu": {
+        "title": "使用 GPU 加速",
+        "description": "使用硬體加速來更快地編碼。"
+      },
+      "changeContainer": {
+        "title": "更改容器而不重新編碼",
+        "description": "切換 MP4 或 MKV 等容器，無需重新編碼。"
+      },
+      "addAudioToVideo": {
+        "title": "添加音頻到視頻",
+        "description": "將外部音軌附加到影片。"
+      },
+      "mergeAudioAndVideo": {
+        "title": "合併音訊和視頻",
+        "description": "將單獨的音訊和視訊軌道合併到一個檔案中。"
+      },
+      "addSubtitles": {
+        "title": "新增字幕",
+        "description": "在不更改圖片的情況下向影片添加字幕軌道。"
+      },
+      "syncAudioDelay": {
+        "title": "同步音訊延遲",
+        "description": "提前或推遲音訊以使其與視訊對齊。"
+      },
+      "copyStreams": {
+        "title": "複製串流",
+        "description": "選擇要保留的流並按原樣複製它們。"
+      },
+      "extractStreams": {
+        "title": "提取串流",
+        "description": "將視訊、音訊或字幕軌提取到單獨的檔案中。"
+      },
+      "splitAudioChannels": {
+        "title": "分割音訊通道",
+        "description": "將多通道音軌分割成單獨的檔案。"
+      },
+      "saveSubtitles": {
+        "title": "儲存字幕",
+        "description": "將字幕流提取到獨立的字幕檔。"
+      },
+      "exportTracksSeparately": {
+        "title": "單獨導出曲目",
+        "description": "將每個選定的軌道寫入自己的輸出檔案。"
+      },
+      "trimVideo": {
+        "title": "修剪視頻",
+        "description": "將影片剪切到您想要保留的部分。"
+      },
+      "cutClipByTime": {
+        "title": "按時間剪切剪輯",
+        "description": "設定剪輯的準確開始和結束時間。"
+      },
+      "cutByDuration": {
+        "title": "按時長削減",
+        "description": "設定開始時間和剪輯長度而不是結束時間。"
+      },
+      "previewClip": {
+        "title": "預覽剪輯",
+        "description": "保存前檢查修剪結果。"
+      },
+      "playClip": {
+        "title": "播放剪輯",
+        "description": "播放時間線上選定的片段。"
+      },
+      "removeAudioFromClip": {
+        "title": "從剪輯中刪除音頻",
+        "description": "透過省略音軌來創建無聲剪輯。"
+      },
+      "extractAudioFromVideo": {
+        "title": "從視頻中提取音頻",
+        "description": "將影片中的音訊另存為自己的檔案。"
+      },
+      "saveAudioAsMp3": {
+        "title": "將音訊另存為 MP3",
+        "description": "以 MP3 格式匯出擷取的音訊。"
+      },
+      "chooseAudioQuality": {
+        "title": "選擇音訊品質",
+        "description": "選擇提取的音訊的編解碼器和位元率。"
+      },
+      "compressImage": {
+        "title": "壓縮影像",
+        "description": "縮小影像，同時保持良好的外觀。"
+      },
+      "resizeImage": {
+        "title": "調整影像大小",
+        "description": "在儲存之前更改圖像的尺寸。"
+      },
+      "changeImageFormat": {
+        "title": "更改圖像格式",
+        "description": "將圖像轉換為不同的文件格式。"
+      },
+      "newBatchTask": {
+        "title": "新建批次任務",
+        "description": "使用共享設定啟動新的多文件作業。"
+      },
+      "runBatchJobs": {
+        "title": "執行批次作業",
+        "description": "啟動佇列並按順序處理所有作業。"
+      },
+      "queueFiles": {
+        "title": "隊列文件",
+        "description": "將檔案或資料夾新增至批次佇列。"
+      },
+      "retryFailedJobs": {
+        "title": "重試失敗的作業",
+        "description": "修復問題後再次執行失敗的作業。"
+      },
+      "importQueue": {
+        "title": "導入佇列",
+        "description": "從檔案載入已儲存的批次佇列。"
+      },
+      "editJobOptions": {
+        "title": "編輯工作選項",
+        "description": "變更仍在排隊的作業的編碼選項。"
+      },
+      "runJobsThenShutDown": {
+        "title": "運行作業然後關閉",
+        "description": "讓批次完成，然後關閉電腦。"
+      },
+      "buildAutomation": {
+        "title": "建立自動化",
+        "description": "從畫布上的媒體節點設計可重複使用的管道。"
+      },
+      "runAutomation": {
+        "title": "運作自動化",
+        "description": "針對輸入檔運行選定的自動化。"
+      },
+      "viewRunHistory": {
+        "title": "查看運行歷史記錄",
+        "description": "查看過去的自動化運作及其結果。"
+      },
+      "saveAutomationPipeline": {
+        "title": "保存自動化管道",
+        "description": "保存管道，以便稍後可以再次運行它。"
+      },
+      "inspectMediaFile": {
+        "title": "檢查媒體文件",
+        "description": "打開一個文件並查看其中的內容。"
+      },
+      "viewStreamDetails": {
+        "title": "查看直播詳細信息",
+        "description": "檢查視訊、音訊和字幕串流。"
+      },
+      "checkCodecs": {
+        "title": "檢查解碼器",
+        "description": "檢查檔案使用哪些編解碼器。"
+      },
+      "readFileMetadata": {
+        "title": "讀取檔案元數據",
+        "description": "查看容器、持續時間、位元率和其他檔案詳細資訊。"
+      },
+      "changeTheme": {
+        "title": "改變主題",
+        "description": "為 EncodeX 選擇淺色或深色主題。"
+      },
+      "setUpAiProvider": {
+        "title": "設定 AI 提供者",
+        "description": "連接 AI 供應商以實現更智慧的 Copilot 規劃。"
+      },
+      "configureHardwareAcceleration": {
+        "title": "配置硬體加速",
+        "description": "選擇 EncodeX 如何使用您的 GPU。"
+      },
+      "enableMcpServer": {
+        "title": "啟用 MCP 伺服器",
+        "description": "讓本機 MCP 用戶端控制 EncodeX。"
+      },
+      "manageStartupNotifications": {
+        "title": "管理啟動和通知",
+        "description": "控制啟動行為和桌面通知。"
+      },
+      "viewLogs": {
+        "title": "查看日誌",
+        "description": "打開應用程式日誌控制台。"
+      },
+      "searchErrors": {
+        "title": "搜尋錯誤",
+        "description": "過濾日誌中的警告和錯誤。"
+      },
+      "reviewOperationHistory": {
+        "title": "查看操作記錄",
+        "description": "檢查已完成操作的審計追蹤。"
+      },
+      "downloadLogs": {
+        "title": "下載日誌",
+        "description": "將目前日誌儲存為文字檔案。"
+      },
+      "checkVersion": {
+        "title": "檢查版本",
+        "description": "查看安裝的 EncodeX 版本。"
+      },
+      "viewBuildInfo": {
+        "title": "查看建置資訊",
+        "description": "檢查此安裝的建置詳細資訊。"
+      },
+      "readAboutEncodeX": {
+        "title": "了解 EncodeX",
+        "description": "了解有關 EncodeX 的更多資訊。"
+      }
+    }
+  },
+  "history": {
+    "title": "操作歷史",
+    "search": "搜尋操作",
+    "empty": "沒有操作與目前過濾器相符。",
+    "clearConfirm": "清除所有操作記錄？",
+    "refresh": "重新整理",
+    "clear": "清除歷史記錄",
+    "remove": "刪除",
+    "details": "詳情",
+    "noSelection": "選擇一個操作以查看其詳細資訊。",
+    "count": "{{count}} 次運算",
+    "filteredCount": "{{count}} 個運算，共 {{total}} 個運算",
+    "status": "狀態",
+    "family": "操作",
+    "source": "來源",
+    "started": "開始",
+    "duration": "持續時間",
+    "input": "輸入",
+    "outputs": "輸出",
+    "error": "錯誤",
+    "metadata": "元數據",
+    "sort": "排序",
+    "allStatuses": "所有狀態",
+    "allFamilies": "所有操作",
+    "allSources": "所有來源",
+    "sortNewest": "最新的優先",
+    "sortOldest": "最老的在前",
+    "sortLongest": "最長的優先",
+    "sortShortest": "最短的優先",
+    "sortName": "名稱 A-Z",
+    "statusLabels": {
+      "succeeded": "成功了",
+      "failed": "失敗",
+      "cancelled": "取消"
+    },
+    "familyLabels": {
+      "convert": "轉換",
+      "audioExtract": "音訊擷取",
+      "imageCompress": "影像壓縮",
+      "videoCut": "影片剪輯",
+      "remux": "混用器",
+      "demux": "解復用器",
+      "batch": "批次佇列",
+      "automation": "自動化",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "介面",
+      "mcp": "MCP",
+      "automation": "自動化"
+    }
   }
 }

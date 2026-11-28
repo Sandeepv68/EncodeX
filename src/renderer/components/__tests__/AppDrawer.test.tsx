@@ -895,4 +895,35 @@ describe('AppDrawer', () => {
     const reduced = mediaRules(css, 'prefers-reduced-motion: reduce');
     expect(reduced.some((rule) => ICON_SVG_RULE.test(rule.selector) && /transition:\s*none/.test(rule.body))).toBe(true);
   });
+
+  it('scrolls the nav list vertically without reserving scrollbar width', () => {
+    renderDrawer();
+    const rules = cssRules(stylesheetText());
+    const navList = rules.find(
+      (rule) => /overflow-x:\s*hidden/.test(rule.body) && /overflow-y:\s*auto/.test(rule.body) && /scrollbar-width:\s*none/.test(rule.body),
+    );
+    expect(navList).toBeDefined();
+    expect(rules.some((rule) => rule.selector.includes('::-webkit-scrollbar') && /display:\s*none/.test(rule.body))).toBe(true);
+  });
+
+  it('shows a scroll affordance while more nav items are below', () => {
+    renderDrawer();
+    const navList = screen.getByTestId('nav-list');
+    Object.defineProperty(navList, 'clientHeight', { configurable: true, value: 120 });
+    Object.defineProperty(navList, 'scrollHeight', { configurable: true, value: 360 });
+    navList.scrollTop = 0;
+
+    fireEvent.scroll(navList);
+    expect(screen.getByTestId('nav-scroll-hint')).toBeInTheDocument();
+
+    navList.scrollTop = 240;
+    fireEvent.scroll(navList);
+    expect(screen.queryByTestId('nav-scroll-hint')).not.toBeInTheDocument();
+
+    const css = stylesheetText();
+    expect(css).toMatch(/@keyframes[^}]*translateY/);
+    expect(css).toMatch(/animation:[^;]*1\.4s ease-in-out infinite/);
+    const reduced = mediaRules(css, 'prefers-reduced-motion: reduce');
+    expect(reduced.some((rule) => /animation:\s*none/.test(rule.body))).toBe(true);
+  });
 });

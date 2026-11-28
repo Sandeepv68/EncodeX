@@ -433,6 +433,7 @@ describe('demuxStore', () => {
       '/in/movie.video.mp4',
       expect.objectContaining({ copy: true, map: ['0:v:0'], video: true, audio: false }),
       'FFMPEG',
+      { family: 'demux', source: 'gui', metadata: expect.objectContaining({ kind: expect.any(String) }) },
     );
     expect(useDemuxStore.getState().isConverting).toBe(false);
     expect(useDemuxStore.getState().progress).toBeNull();
@@ -453,6 +454,7 @@ describe('demuxStore', () => {
       '/in/movie.audio_0.mp3',
       expect.objectContaining({ copy: false, map: ['0:a:0'], audioCodec: 'mp3', video: false, audio: true }),
       'FFMPEG',
+      { family: 'demux', source: 'gui', metadata: expect.objectContaining({ kind: expect.any(String) }) },
     );
   });
 
@@ -475,6 +477,7 @@ describe('demuxStore', () => {
         audio: true,
       }),
       'FFMPEG',
+      { family: 'demux', source: 'gui', metadata: expect.objectContaining({ kind: expect.any(String) }) },
     );
   });
 
@@ -502,6 +505,7 @@ describe('demuxStore', () => {
       '/in/movie.video.webm',
       expect.objectContaining({ copy: false, map: ['0:v:0'], videoFilters: ['fps=30'] }),
       'FFMPEG',
+      { family: 'demux', source: 'gui', metadata: expect.objectContaining({ kind: expect.any(String) }) },
     );
   });
 

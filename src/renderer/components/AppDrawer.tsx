@@ -31,7 +31,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigationGuard } from '../NavigationGuardContext';
 import { Tooltip } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { NAV_ITEMS } from '../../shared/app-constants';
 import { QUEUE_STATUS } from '../../shared/media-options';
 import { pageIcons } from '../pageIcons';
@@ -54,6 +54,8 @@ import type { ConversionProgress } from '../../shared/types';
 import {
   DrawerDivider,
   NavList,
+  NavScrollRegion,
+  NavScrollHint,
   NavFooter,
   CondenseButton,
   NavItemButton,
@@ -85,6 +87,7 @@ const navKeyMap: Record<string, string> = {
   '/settings': 'settings',
   '/about': 'about',
   '/logs': 'logs',
+  '/history': 'history',
 };
 
 /**
@@ -239,6 +242,26 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
   }, []);
   const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null);
   const closeTimer = useRef<number | null>(null);
+  const navListRef = useRef<HTMLDivElement | null>(null);
+  const [hasMoreNavItems, setHasMoreNavItems] = useState(false);
+  const updateNavScrollHint = useCallback(() => {
+    const node = navListRef.current;
+    if (!node) return;
+    setHasMoreNavItems(node.scrollTop + node.clientHeight < node.scrollHeight - 1);
+  }, []);
+  useEffect(() => {
+    const node = navListRef.current;
+    if (!node) return;
+    updateNavScrollHint();
+    window.addEventListener('resize', updateNavScrollHint);
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(updateNavScrollHint);
+    observer?.observe(node);
+    Array.from(node.children).forEach((child) => observer?.observe(child));
+    return () => {
+      window.removeEventListener('resize', updateNavScrollHint);
+      observer?.disconnect();
+    };
+  });
 
   const cancelPendingClose = () => {
     if (closeTimer.current !== null) {
@@ -371,79 +394,86 @@ export default function AppDrawer({ isMobile, condensed, onToggleCondense, onNav
   return (
     <>
       <DrawerNav component="nav" aria-label={t('app.navigation')}>
-        <NavList>
-          {NAV_ITEMS.filter((item) => !(logsWindowOpen && item.to === '/logs') && (automationsEnabled || item.to !== '/automations')).map(
-            (item, index) => {
-              const label = t(`nav.${navKeyMap[item.to]}`);
-              // The job popover already names the page it is anchored to and pins to
-              // the same edge of the drawer, so the row tooltip stands down while
-              // that popover is open instead of stacking two cards on top of
-              // each other.
-              const tooltipTitle = condensed && !(popoverBlip !== null && blipForRoute(item.to) === popoverBlip) ? label : '';
-              return (
-                <Tooltip key={item.to} title={tooltipTitle} placement="right">
-                  <NavItemButton
-                    $condensed={condensed}
-                    data-testid={`nav-item-${item.to === '/' ? 'dashboard' : item.to.slice(1)}`}
-                    selected={location.pathname === item.to}
-                    $index={index}
-                    onMouseLeave={scheduleClose}
-                    onFocus={(e) => openPopover(e, item.to)}
-                    onBlur={scheduleClose}
-                    onClick={() => {
-                      closePopover();
-                      navigate(item.to);
-                      // Journey anchor (D9): every interaction is attributed to the tool
-                      // it happened in via the route badge stamped on subsequent events.
-                      recordAnalyticsEvent(createAnalyticsEvent('tool_opened', { route: item.to }));
-                      setAnalyticsContext({ route: item.to, jobKind: item.to === '/batch' ? 'batch' : undefined });
-                      if (isMobile) onNavigate();
-                    }}
-                  >
-                    <NavItemIcon $active={location.pathname === item.to} $condensed={condensed}>
-                      {pageIcons[item.to]}
-                    </NavItemIcon>
-                    {!condensed && <NavItemText primary={label} />}
-                    {item.to === '/convert' && isConverting && (
-                      <NavBlip
-                        $condensed={condensed}
-                        aria-hidden="true"
-                        data-testid="nav-convert-blip"
-                        onMouseEnter={(e) => openPopover(e, item.to)}
-                      />
-                    )}
-                    {item.to === '/audio-extract' && isExtractingAudio && (
-                      <NavBlip
-                        $condensed={condensed}
-                        aria-hidden="true"
-                        data-testid="nav-audio-extract-blip"
-                        onMouseEnter={(e) => openPopover(e, item.to)}
-                      />
-                    )}
-                    {item.to === '/video-cut' && isCutting && (
-                      <NavBlip
-                        $condensed={condensed}
-                        aria-hidden="true"
-                        data-testid="nav-video-cut-blip"
-                        onMouseEnter={(e) => openPopover(e, item.to)}
-                      />
-                    )}
-                    {item.to === '/batch' && batchJobCount > 0 && (
-                      <NavCountBadge
-                        $condensed={condensed}
-                        data-testid="nav-batch-blip"
-                        aria-label={t('batchQueue.badgeCount', { count: batchJobCount })}
-                        onMouseEnter={(e) => openPopover(e, item.to)}
-                      >
-                        {batchJobCount}
-                      </NavCountBadge>
-                    )}
-                  </NavItemButton>
-                </Tooltip>
-              );
-            },
+        <NavScrollRegion $hasMore={hasMoreNavItems} data-testid="nav-scroll-region">
+          <NavList ref={navListRef} onScroll={updateNavScrollHint} data-testid="nav-list">
+            {NAV_ITEMS.filter((item) => !(logsWindowOpen && item.to === '/logs') && (automationsEnabled || item.to !== '/automations')).map(
+              (item, index) => {
+                const label = t(`nav.${navKeyMap[item.to]}`);
+                // The job popover already names the page it is anchored to and pins to
+                // the same edge of the drawer, so the row tooltip stands down while
+                // that popover is open instead of stacking two cards on top of
+                // each other.
+                const tooltipTitle = condensed && !(popoverBlip !== null && blipForRoute(item.to) === popoverBlip) ? label : '';
+                return (
+                  <Tooltip key={item.to} title={tooltipTitle} placement="right">
+                    <NavItemButton
+                      $condensed={condensed}
+                      data-testid={`nav-item-${item.to === '/' ? 'dashboard' : item.to.slice(1)}`}
+                      selected={location.pathname === item.to}
+                      $index={index}
+                      onMouseLeave={scheduleClose}
+                      onFocus={(e) => openPopover(e, item.to)}
+                      onBlur={scheduleClose}
+                      onClick={() => {
+                        closePopover();
+                        navigate(item.to);
+                        // Journey anchor (D9): every interaction is attributed to the tool
+                        // it happened in via the route badge stamped on subsequent events.
+                        recordAnalyticsEvent(createAnalyticsEvent('tool_opened', { route: item.to }));
+                        setAnalyticsContext({ route: item.to, jobKind: item.to === '/batch' ? 'batch' : undefined });
+                        if (isMobile) onNavigate();
+                      }}
+                    >
+                      <NavItemIcon $active={location.pathname === item.to} $condensed={condensed}>
+                        {pageIcons[item.to]}
+                      </NavItemIcon>
+                      {!condensed && <NavItemText primary={label} />}
+                      {item.to === '/convert' && isConverting && (
+                        <NavBlip
+                          $condensed={condensed}
+                          aria-hidden="true"
+                          data-testid="nav-convert-blip"
+                          onMouseEnter={(e) => openPopover(e, item.to)}
+                        />
+                      )}
+                      {item.to === '/audio-extract' && isExtractingAudio && (
+                        <NavBlip
+                          $condensed={condensed}
+                          aria-hidden="true"
+                          data-testid="nav-audio-extract-blip"
+                          onMouseEnter={(e) => openPopover(e, item.to)}
+                        />
+                      )}
+                      {item.to === '/video-cut' && isCutting && (
+                        <NavBlip
+                          $condensed={condensed}
+                          aria-hidden="true"
+                          data-testid="nav-video-cut-blip"
+                          onMouseEnter={(e) => openPopover(e, item.to)}
+                        />
+                      )}
+                      {item.to === '/batch' && batchJobCount > 0 && (
+                        <NavCountBadge
+                          $condensed={condensed}
+                          data-testid="nav-batch-blip"
+                          aria-label={t('batchQueue.badgeCount', { count: batchJobCount })}
+                          onMouseEnter={(e) => openPopover(e, item.to)}
+                        >
+                          {batchJobCount}
+                        </NavCountBadge>
+                      )}
+                    </NavItemButton>
+                  </Tooltip>
+                );
+              },
+            )}
+          </NavList>
+          {hasMoreNavItems && (
+            <NavScrollHint data-testid="nav-scroll-hint" aria-hidden="true">
+              <FontAwesomeIcon icon={faChevronDown} />
+            </NavScrollHint>
           )}
-        </NavList>
+        </NavScrollRegion>
         <DrawerDivider />
         <NavFooter>
           {!isMobile && (

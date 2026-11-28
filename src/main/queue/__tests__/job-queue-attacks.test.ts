@@ -23,6 +23,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { EventEmitter } from 'events';
 import type { ConversionOptions, TranscoderType } from '../../../shared/types';
 import type { ITranscoder } from '../../transcoders/types';
+import { expectAppLog } from '../../../test-utils/crash-tripwire';
 
 vi.mock('electron', () => ({ app: { isPackaged: false } }));
 
@@ -670,4 +671,122 @@ describe('JobQueue - bulk and reentrancy', () => {
     expect(queue.getJobs().every((j) => j.error === 'unknown transcoder')).toBe(true);
     expect(queue.getConcurrency()).toBe(4);
   }, 120_000);
+});
+
+describe('JobQueue - history recording', () => {
+  let transcoders: FakeTranscoder[];
+  let historyRecorder: { record: ReturnType<typeof vi.fn> };
+
+  beforeEach(() => {
+    transcoders = [];
+    historyRecorder = { record: vi.fn().mockResolvedValue({ id: 'entry' }) };
+  });
+
+  it('records exactly one succeeded entry when a job completes', () => {
+    const transcoder = new FakeTranscoder();
+    transcoders.push(transcoder);
+    const { queue } = makeQueue(transcoders, { historyRecorder });
+    const id = queue.addJob('history-in.mp4', 'history-out.mp4', OPTS, 'FFMPEG' as TranscoderType);
+
+    queue.start();
+    transcoder.emitter.emit('end');
+
+    expect(historyRecorder.record).toHaveBeenCalledTimes(1);
+    expect(historyRecorder.record).toHaveBeenCalledWith(
+      expect.objectContaining({ family: 'batch', source: 'gui', status: 'succeeded', jobId: id, inputs: ['history-in.mp4'] }),
+    );
+  });
+
+  it('records exactly one failed entry when a job fails', () => {
+    const transcoder = new FakeTranscoder();
+    transcoders.push(transcoder);
+    const { queue } = makeQueue(transcoders, { historyRecorder });
+    const id = queue.addJob('history-fail-in.mp4', 'history-fail-out.mp4', OPTS, 'FFMPEG' as TranscoderType);
+
+    queue.start();
+    transcoder.emitter.emit('error', new Error('boom'));
+
+    expect(historyRecorder.record).toHaveBeenCalledTimes(1);
+    expect(historyRecorder.record).toHaveBeenCalledWith(
+      expect.objectContaining({ family: 'batch', status: 'failed', jobId: id, error: expect.objectContaining({ message: 'boom' }) }),
+    );
+  });
+
+  it('records exactly one cancelled entry when a job is cancelled', () => {
+    const transcoder = new FakeTranscoder();
+    transcoders.push(transcoder);
+    const { queue } = makeQueue(transcoders, { historyRecorder });
+    const id = queue.addJob('history-cancel-in.mp4', 'history-cancel-out.mp4', OPTS, 'FFMPEG' as TranscoderType);
+
+    queue.start();
+    queue.cancelJob(id);
+    transcoder.emitter.emit('error', Object.assign(new Error('killed'), { code: 'CANCELLED' }));
+
+    expect(historyRecorder.record).toHaveBeenCalledTimes(1);
+    expect(historyRecorder.record).toHaveBeenCalledWith(expect.objectContaining({ family: 'batch', status: 'cancelled', jobId: id }));
+  });
+});
+
+describe('JobQueue - hostile history recorders', () => {
+  it('records normalized errors for string and non-object failures', () => {
+    const recorder = { record: vi.fn().mockResolvedValue({ id: 'entry' }) };
+    const { queue } = makeQueue([], { historyRecorder: recorder });
+    const internals = queue as unknown as {
+      recordHistory: (job: unknown, status: string, err?: unknown) => void;
+    };
+    const job = {
+      id: 'job',
+      input: 'in.mp4',
+      output: 'out.mp4',
+      transcoder: 'FFMPEG',
+      createdAt: 1000,
+      priority: undefined,
+    };
+
+    internals.recordHistory(job, 'failed', 'plain failure');
+    expect(recorder.record.mock.calls[0][0].error).toEqual({ message: 'plain failure' });
+
+    recorder.record.mockClear();
+    internals.recordHistory(job, 'failed', null);
+    expect(recorder.record.mock.calls[0][0].error).toEqual({ message: 'null' });
+
+    recorder.record.mockClear();
+    internals.recordHistory(job, 'failed', Object.assign(new Error('coded failure'), { code: 'FFMPEG_FAILED' }));
+    expect(recorder.record.mock.calls[0][0].error).toEqual({ message: 'coded failure', code: 'FFMPEG_FAILED' });
+
+    recorder.record.mockClear();
+    internals.recordHistory(job, 'failed', Object.assign(new Error('numeric code'), { code: 123 }));
+    expect(recorder.record.mock.calls[0][0].error).toEqual({ message: 'numeric code' });
+  });
+
+  it('records a synchronous transcoder factory failure', () => {
+    const recorder = { record: vi.fn().mockResolvedValue({ id: 'entry' }) };
+    const queue = new (JobQueue as unknown as new (o: unknown) => InstanceType<typeof JobQueue>)({
+      concurrency: 1,
+      persistDelayMs: 1,
+      transcoderFactory: () => {
+        throw new Error('factory exploded');
+      },
+      historyRecorder: recorder,
+    });
+
+    queue.addJob('in.mp4', 'out.mp4', OPTS, 'FFMPEG' as TranscoderType);
+    queue.start();
+
+    expect(queue.getJobs()[0].status).toBe(QUEUE_STATUS.ERROR);
+    expect(recorder.record).toHaveBeenCalledWith(expect.objectContaining({ status: 'failed', error: { message: 'factory exploded' } }));
+  });
+
+  it('logs a non-Error recorder rejection', async () => {
+    expectAppLog('warn', 'main/queue/job-queue');
+    const recorder = { record: vi.fn().mockRejectedValue('record failed') };
+    const transcoders = [new FakeTranscoder()];
+    const { queue } = makeQueue(transcoders, { historyRecorder: recorder });
+
+    queue.addJob('in.mp4', 'out.mp4', OPTS, 'FFMPEG' as TranscoderType);
+    queue.start();
+    transcoders[0].emitter.emit('end');
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  });
 });

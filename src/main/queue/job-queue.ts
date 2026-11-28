@@ -14,6 +14,7 @@ import { EventEmitter } from 'events';
 import { randomUUID } from 'crypto';
 import { Logger } from '../../shared/logger';
 import { QueueJob, ConversionOptions, TranscoderType } from '../../shared/types';
+import type { HistoryRecorderLike, HistoryStatus } from '../../shared/history/types';
 import { ErrorCode } from '../../shared/errors';
 import { createTranscoder } from '../transcoders/factory';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
@@ -32,6 +33,7 @@ import {
   LOG_CANCELLING_ACTIVE_JOB,
   LOG_CANCEL_ALL_CLEARING,
   LOG_CANCEL_JOB,
+  LOG_HISTORY_RECORD_FAILED,
   LOG_JOB_COMPLETED,
   LOG_JOB_FAILED,
   LOG_JOB_THREW_ON_START,
@@ -60,6 +62,16 @@ import {
 export type { JobQueueOptions };
 
 const log = new Logger('main/queue/job-queue');
+
+function errorCode(err: unknown): string | undefined {
+  if (!err || typeof err !== 'object' || !('code' in err)) return undefined;
+  const code = (err as { code?: unknown }).code;
+  return typeof code === 'string' ? code : undefined;
+}
+
+function errorMessage(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
+}
 
 /**
  * Default debounce delay before a queue mutation is written to disk.
@@ -118,6 +130,7 @@ export class JobQueue extends EventEmitter {
   private readonly persistDelayMs: number;
   /** Factory used to create the transcoder running each job. */
   private readonly transcoderFactory: (type: TranscoderType) => ITranscoder;
+  private readonly historyRecorder?: HistoryRecorderLike;
   /** Pending debounced persistence timer, or null when none is scheduled. */
   private persistTimer: NodeJS.Timeout | null = null;
   /** True once at least one job reached a terminal state (DONE or non-cancelled
@@ -151,6 +164,7 @@ export class JobQueue extends EventEmitter {
     this.persistence = resolved.persistence;
     this.persistDelayMs = resolved.persistDelayMs ?? DEFAULT_PERSIST_DELAY_MS;
     this.transcoderFactory = resolved.transcoderFactory ?? createTranscoder;
+    this.historyRecorder = resolved.historyRecorder;
     this.loadPersistedState();
   }
 
@@ -393,6 +407,7 @@ export class JobQueue extends EventEmitter {
    */
   cancelJob(id: string): void {
     log.info(LOG_CANCEL_JOB, id);
+    const job = this.queue.find((item) => item.id === id);
     const transcoder = this.activeJobs.get(id);
     if (transcoder) {
       log.debug(LOG_CANCELLING_ACTIVE_JOB);
@@ -410,6 +425,7 @@ export class JobQueue extends EventEmitter {
       this.activeJobs.delete(id);
     }
     this.removeJob(id);
+    if (job) this.recordHistory(job, 'cancelled');
     if (transcoder) {
       this.processNext();
     }
@@ -429,6 +445,7 @@ export class JobQueue extends EventEmitter {
       transcoder.cancel();
     }
     for (const job of this.queue) {
+      this.recordHistory(job, 'cancelled');
       batchOutputClaims.release(job.output, job.id);
     }
     this.activeJobs.clear();
@@ -648,6 +665,33 @@ export class JobQueue extends EventEmitter {
     return this.queue.some((job) => job.id === id);
   }
 
+  private recordHistory(job: QueueJob, status: HistoryStatus, err?: unknown): void {
+    const recorder = this.historyRecorder;
+    if (!recorder) return;
+    void recorder
+      .record({
+        family: 'batch',
+        source: 'gui',
+        status,
+        startedAt: job.createdAt,
+        finishedAt: Date.now(),
+        inputs: [job.input],
+        outputs: [job.output],
+        transcoder: job.transcoder,
+        jobId: job.id,
+        metadata: { priority: job.priority ?? 0 },
+        ...(status === 'failed' && err !== undefined
+          ? {
+              error: {
+                message: errorMessage(err),
+                ...(errorCode(err) ? { code: errorCode(err) } : {}),
+              },
+            }
+          : {}),
+      })
+      .catch((recordError: unknown) => log.warn(LOG_HISTORY_RECORD_FAILED, job.id, errorMessage(recordError)));
+  }
+
   /**
    * Marks the job RUNNING, creates its transcoder, and wires the conversion
    * emitter. Registers the transcoder in `activeJobs` under the job id and
@@ -722,6 +766,9 @@ export class JobQueue extends EventEmitter {
         if (this.holdsJob(nextJob.id)) {
           this.emit('statusChange', nextJob);
         }
+        if (err?.code !== ErrorCode.CANCELLED) {
+          this.recordHistory(nextJob, 'failed', err);
+        }
         if (wasActive && err?.code !== ErrorCode.CANCELLED) {
           this.jobCompletedSinceLastDrain = true;
         }
@@ -745,6 +792,7 @@ export class JobQueue extends EventEmitter {
         if (this.holdsJob(nextJob.id)) {
           this.emit('statusChange', nextJob);
         }
+        this.recordHistory(nextJob, 'succeeded');
         if (wasActive) {
           this.jobCompletedSinceLastDrain = true;
         }
@@ -760,6 +808,7 @@ export class JobQueue extends EventEmitter {
       if (this.holdsJob(nextJob.id)) {
         this.emit('statusChange', nextJob);
       }
+      this.recordHistory(nextJob, 'failed', err);
       this.jobCompletedSinceLastDrain = true;
       // Recursing here would add a frame per failing job, and a crafted import
       // can make all 10 000 jobs fail synchronously. Inside a drain pass the

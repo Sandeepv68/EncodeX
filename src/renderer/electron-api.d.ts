@@ -34,6 +34,7 @@ import {
 import type { McpSettings } from '../shared/mcp-settings';
 import type { AiConnectTestResult, AiModelsListResult, AiSettingsUpdate, AiSettingsView } from '../shared/ai/settings';
 import type { AuditEntry } from '../shared/audit';
+import type { HistoryContext, HistoryEntry } from '../shared/history/types';
 import type { AutomationProgressEvent, AutomationStartRequest } from '../shared/automations/types';
 import type { CopilotPlan, CopilotPlanRequest } from '../shared/copilot';
 import type { AnalyticsEvent } from '../shared/analytics/events';
@@ -188,7 +189,11 @@ export interface ElectronAPI {
    *   TRANSCODER_TYPES).
    * @returns {Promise<void>} Resolves when the conversion completes.
    */
-  convertFile(input: string, output: string, options: ConversionOptions, transcoderType: string): Promise<void>;
+  convertFile(input: string, output: string, options: ConversionOptions, transcoderType: string, context?: HistoryContext): Promise<void>;
+  historyList(): Promise<HistoryEntry[]>;
+  historyGetThumbnail(id: string): Promise<string | null>;
+  historyClear(): Promise<void>;
+  historyRemove(id: string): Promise<boolean>;
   /**
    * Pauses the currently running single-file conversion over the
    * `IPC.PAUSE_CONVERSION` ('pause-conversion') channel. Safe to call when no
@@ -715,6 +720,7 @@ export interface ElectronAPI {
    * @returns {() => void} An unsubscribe function that removes the listener.
    */
   onQueueCancelled(cb: () => void): () => void;
+  onHistoryUpdated(cb: () => void): () => void;
   /**
    * Subscribes to the notification that a QUEUED job was reordered, pushed from
    * the main process over `IPC.QUEUE_MOVED` ('queue-moved').

@@ -1,6 +1,6 @@
 /**
  * @fileoverview Phase 5.3 axe matrix (finding F7): `assertNoAxeViolations` on
- * all 14 routed pages in both themes at the three layout breakpoints the app
+ * all 15 routed pages in both themes at the three layout breakpoints the app
  * ships.
  *
  * Before this suite, axe ran ad hoc on a handful of pages/components in their
@@ -19,7 +19,7 @@
  * token-level `colors.test.ts`.
  *
  * Runs as its own CI gate (`test:a11y`), the way the plan tables it, because
- * 72 axe runs are too slow for the shared unit tier.
+ * 90 axe runs are too slow for the shared unit tier.
  */
 
 import { describe, it, expect, afterAll, beforeAll } from 'vitest';
@@ -40,7 +40,7 @@ const WIDTHS: readonly number[] = [320, 768, 1440];
 /** Wraps a page subtree in the single landmark the real app provides. */
 const inMain = (children: ReactNode): ReactNode => <main>{children}</main>;
 
-describe('5.3 axe matrix (14 routes x light/dark x 320/768/1440)', () => {
+describe('5.3 axe matrix (15 routes x light/dark x 320/768/1440)', () => {
   let restoreScrollIntoView: (() => void) | undefined;
 
   beforeAll(() => {
@@ -52,7 +52,7 @@ describe('5.3 axe matrix (14 routes x light/dark x 320/768/1440)', () => {
   });
 
   it('covers the declared axes (guard against a loop that cannot empty out)', () => {
-    expect(PAGE_ROUTES).toHaveLength(14);
+    expect(PAGE_ROUTES).toHaveLength(15);
     expect(THEMES).toEqual(['light', 'dark']);
     expect(WIDTHS).toEqual([320, 768, 1440]);
   });

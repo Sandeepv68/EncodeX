@@ -89,6 +89,7 @@ describe('ImageCompress', () => {
       '/out/photo.jpg',
       { videoCodec: 'mjpeg', qscale: 23, scale: '1920x1080', pixelFormat: 'yuv420p', keepAspectRatio: true },
       'FFMPEG',
+      { family: 'image-compress', source: 'gui', metadata: { format: expect.any(String), quality: expect.any(Number) } },
     );
   });
 
@@ -107,6 +108,7 @@ describe('ImageCompress', () => {
       '/out/photo.jpg',
       { videoCodec: 'mjpeg', qscale: 23, scale: undefined, pixelFormat: 'yuv420p', keepAspectRatio: false },
       'FFMPEG',
+      { family: 'image-compress', source: 'gui', metadata: { format: expect.any(String), quality: expect.any(Number) } },
     );
   });
 
@@ -251,6 +253,7 @@ describe('ImageCompress', () => {
       '/out/photo.jpg',
       { videoCodec: 'mjpeg', qscale: 23, scale: undefined, pixelFormat: 'yuv420p', keepAspectRatio: true },
       'FFMPEG',
+      { family: 'image-compress', source: 'gui', metadata: { format: expect.any(String), quality: expect.any(Number) } },
     );
     expect(useToastStore.getState().toasts.some((t) => t.type === 'success' && t.message === 'toast.imageCompressed')).toBe(true);
     expect(screen.queryByText('100.0%')).not.toBeInTheDocument();
@@ -302,6 +305,7 @@ describe('ImageCompress', () => {
       '/out/photo.png',
       { videoCodec: 'png', qscale: 23, scale: undefined, pixelFormat: 'yuv420p', keepAspectRatio: true },
       'FFMPEG',
+      { family: 'image-compress', source: 'gui', metadata: { format: expect.any(String), quality: expect.any(Number) } },
     );
   });
 

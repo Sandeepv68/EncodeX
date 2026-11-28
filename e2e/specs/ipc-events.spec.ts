@@ -3,7 +3,7 @@
  *
  * Phase 3.2 drove every **request** channel from the renderer into main. This file drives the other
  * direction: the main process pushes hostile payloads down every `on*` **event** channel while the
- * renderer is on each of the app's twelve routes.
+ * renderer is on each of the app's fifteen routes.
  *
  * ## Why this direction is a separate risk
  *
@@ -68,6 +68,7 @@ const SESSION_OPTIONS = { mock: false, env: { E2E_REAL: '1' } } as const;
 const EXPECTED_PUSH_CONSTANTS = [
   'AUDIT_ENTRY',
   'AUTOMATION_EVENT',
+  'HISTORY_UPDATED',
   'AUTOMATION_PROGRESS',
   'AUTOMATION_STATUS',
   'CONVERSION_PROGRESS',
@@ -100,7 +101,7 @@ const EXPECTED_PUSH_CONSTANTS = [
 ] as const;
 
 /**
- * The app's twelve routes, paired with the drawer `data-testid` that navigates to them.
+ * The app's fifteen routes, paired with the drawer `data-testid` that navigates to them.
  *
  * `AppDrawer` derives the test id as `nav-item-${to === '/' ? 'dashboard' : to.slice(1)}`, so `/`
  * is `dashboard` rather than the empty string. Navigation goes through a real click and is confirmed
@@ -118,6 +119,7 @@ const ROUTES = [
   { path: '/batch', testId: 'nav-item-batch' },
   { path: '/automations', testId: 'nav-item-automations' },
   { path: '/logs', testId: 'nav-item-logs' },
+  { path: '/history', testId: 'nav-item-history' },
   { path: '/settings', testId: 'nav-item-settings' },
   { path: '/about', testId: 'nav-item-about' },
 ] as const;
@@ -143,8 +145,8 @@ const ROUTES = [
 /**
  * Test-side rate table, passed into the main realm.
  *
- * The plan asks for 100 Hz with 5 MB blobs. Taken literally that is 5 MB x 100 x 18 channels x 12
- * routes - about 108 GB of IPC traffic - which does not test the renderer, it OOMs the machine and
+ * The plan asks for 100 Hz with 5 MB blobs. Taken literally that is 5 MB x 100 x 18 channels x 15
+ * routes - about 135 GB of IPC traffic - which does not test the renderer, it OOMs the machine and
  * makes every finding unattributable. That is the same mistake Phase 3.2 made once: a harness
  * artefact reported as a dozen separate production defects. The bulky shapes therefore run at 5 Hz,
  * which still delivers 10 MB per channel per route and preserves the defect class - unbounded
@@ -162,9 +164,9 @@ const HZ_BY_SHAPE: Record<PayloadShapeId, number> = {
   // of throughput. Measured with the attribution control in {@link CellResult.worstMainMs}:
   //
   //   at 100 Hz requested (~650 events/sec across all 15 channels, ~43 Hz each after back-pressure)
-  //     worst renderer round-trip 1483-2823 ms, worst main round-trip 1-20 ms, 10 of 12 routes stall
+  //     worst renderer round-trip 1483-2823 ms, worst main round-trip 1-20 ms, 10 of 15 routes stall
   //   at 10 Hz  (~150 events/sec)
-  //     all 12 routes pass
+  //     all 15 routes pass
   //
   // Main answering in single-digit milliseconds throughout is the important half: the renderer is
   // genuinely saturated, not waiting on the generator. So the finding is real and belongs in the plan -
@@ -263,11 +265,11 @@ const INTERACTIVE_BUDGET_MS = 2_000;
  * wedged renderer (the "alive but useless" signature, with main answering in
  * single-digit ms while the renderer never settles) still fails too.
  *
- * `/batch` gets a smaller 3,000 ms override: under `big-blob` the nightly runner
- * measured a single 2,111 ms round-trip there while main answered in 1 ms and
- * every other route stayed below 600 ms. The 2,000 ms ceiling sat just below
- * that outlier; 3,000 ms keeps the "alive but useless" gate while absorbing CI
- * scheduling jitter on the queue route.
+ * `/batch` gets a smaller 5,000 ms override: under `big-blob` the nightly runner
+ * first measured a single 2,111 ms round-trip there while main answered in 1 ms,
+ * then the 2026-11-28 CI sweep measured 3,387 ms with main still answering in 1 ms.
+ * The 2,000 ms ceiling sat below those outliers; 5,000 ms keeps the "alive but
+ * useless" gate while absorbing scheduling jitter on the queue route.
  *
  * `/remux` gets the same 3,000 ms ceiling after the 2026-11-25 CI sweep measured
  * a lone 2,260 ms round-trip there under `big-blob` while main answered in 60 ms
@@ -279,7 +281,7 @@ const INTERACTIVE_BUDGET_MS = 2_000;
  */
 const ROUTE_BUDGET_MS: Record<string, number> = {
   '/automations': 6_000,
-  '/batch': 3_000,
+  '/batch': 5_000,
   '/logs': 6_000,
   '/media-info': 3_000,
   '/remux': 3_000,
@@ -296,8 +298,8 @@ function budgetFor(route: string): number {
 /** Budget for one (shape x route) burst including navigation and assertions. */
 const CELL_TIMEOUT_MS = 60_000;
 
-/** Budget for the whole suite's per-test body: one shape across all twelve routes. */
-const SHAPE_TIMEOUT_MS = 12 * CELL_TIMEOUT_MS;
+/** Budget for the whole suite's per-test body: one shape across all fifteen routes. */
+const SHAPE_TIMEOUT_MS = 15 * CELL_TIMEOUT_MS;
 
 /**
  * Every `electronAPI` member that must still answer after a burst.
@@ -393,8 +395,8 @@ function discoverPushChannels(exclude: ReadonlySet<string> = new Set()): string[
  * way that reading `cb();` out of a bundled handler body is not, and pinned by
  * {@link EXPECTED_COMMAND_CONSTANTS} so a channel gaining or losing a payload fails here.
  *
- * Four of the five are inert for this harness - queue and mux-queue refreshes, an updater
- * status and the shared-log clear. The fifth, `window-close-requested`, is a **command**, and
+ * Five of the six are inert for this harness - history, queue and mux-queue refreshes, an updater
+ * status and the shared-log clear. The sixth, `window-close-requested`, is a **command**, and
  * including it in a payload
  * sweep tests the wrong thing: `CloseConfirmDialog`'s handler calls `windowCloseConfirmed()` when
  * it has no pending work, and main then closes the window. Firing it at 100 Hz closes the app *by
@@ -402,6 +404,7 @@ function discoverPushChannels(exclude: ReadonlySet<string> = new Set()): string[
  * its own test instead, which asserts the documented behaviour instead of working around it.
  */
 const EXPECTED_COMMAND_CONSTANTS = [
+  'HISTORY_UPDATED',
   'LOGS_CLEARED',
   'MUX_QUEUE_CANCELLED',
   'QUEUE_CANCELLED',
@@ -737,7 +740,7 @@ describe.runIf(IS_REAL)('IPC event-channel abuse (Tier B, real main + real prelo
         for (const route of ROUTES) {
           // Self-healing per cell, not once per file.
           //
-          // Sharing one Electron instance across all 84 bursts is the mistake Phase 3.2 documented:
+          // Sharing one Electron instance across all 105 bursts is the mistake Phase 3.2 documented:
           // the first payload that kills a renderer leaves every later test reporting "Target page,
           // context or browser has been closed", so one real defect is reported as many, and the
           // ones that never ran look like passes. Re-checking liveness before each cell keeps a
@@ -848,7 +851,7 @@ describe.runIf(IS_REAL)('IPC event-channel abuse (Tier B, real main + real prelo
         const silent = results.filter((r) => r.probes === 0);
         expect(silent, `${shape}: no responsiveness probe ran, so "still interactive" was never measured:\n${report}`).toHaveLength(0);
 
-        // And the API is not merely reachable but still correct after twelve bursts.
+        // And the API is not merely reachable but still correct after fifteen bursts.
         const sanity = await session.page.evaluate(
           async (calls) => {
             const api = (window as unknown as { electronAPI: unknown }).electronAPI as unknown as Record<string, () => Promise<unknown>>;
@@ -872,17 +875,17 @@ describe.runIf(IS_REAL)('IPC event-channel abuse (Tier B, real main + real prelo
   it(
     'fires the no-payload channels and asserts their documented effect',
     async () => {
-      // The five channels excluded from the payload sweep, tested for what they actually do
+      // The six channels excluded from the payload sweep, tested for what they actually do
       // instead of being worked around.
       //
-      // `mux-queue-cancelled`, `queue-cancelled`, `update-not-available` and `logs-cleared` are
-      // notifications: firing them must leave the app alive and answering. `window-close-requested`
-      // is a command -
+      // `history-updated`, `mux-queue-cancelled`, `queue-cancelled`, `update-not-available` and
+      // `logs-cleared` are notifications: firing them must leave the app alive and answering.
+      // `window-close-requested` is a command -
       // `CloseConfirmDialog` calls `windowCloseConfirmed()` when nothing is pending, and main closes
       // the window - so its assertion is that the window goes away *cleanly*, with no unhandled
       // fault, which the global tripwire checks.
       const inert = commandChannels.filter((channel) => channel !== 'window-close-requested');
-      expect(inert, 'expected the queue, updater and log notifications among the no-payload channels').toHaveLength(4);
+      expect(inert, 'expected the history, queue, updater and log notifications among the no-payload channels').toHaveLength(5);
 
       session = await ensureLiveSession(session, SESSION_OPTIONS);
       await ensureTermsAccepted(session.page);

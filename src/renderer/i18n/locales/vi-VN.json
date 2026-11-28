@@ -31,7 +31,8 @@
     "remux": "Đóng gói lại",
     "demux": "Tách luồng",
     "copilot": "Copilot",
-    "automations": "Tự động hóa"
+    "automations": "Tự động hóa",
+    "history": "Lịch sử"
   },
   "dashboard": {
     "welcome": "Chào mừng đến với EncodeX",
@@ -46,7 +47,37 @@
     "descRemux": "Chuyển các luồng sang vùng chứa mới mà không tổn thất",
     "descDemux": "Tách các luồng của một tệp thành những tệp đầu riêng biệt",
     "descCopilot": "Lên kế hoạch chuyển đổi bằng cách mô tả một mục tiêu",
-    "descAutomations": "Xây dựng quy trình chuyển đổi có thể tái sử dụng trên canvas trực quan"
+    "descAutomations": "Xây dựng quy trình chuyển đổi có thể tái sử dụng trên canvas trực quan",
+    "actions": {
+      "viewSwitcher": "Chọn chế độ xem",
+      "dashboard": "Bảng điều khiển",
+      "quickLinks": "Liên kết nhanh"
+    },
+    "edit": {
+      "edit": "Sửa",
+      "done": "Hoàn thành",
+      "hint": "Kéo thả các thẻ để sắp xếp lại. Dùng menu nhóm của từng thẻ để tổ chức chúng.",
+      "dragHandle": "Di chuyển {{title}}",
+      "group": "Nhóm",
+      "newGroup": "Nhóm mới…",
+      "groupName": "Tên nhóm",
+      "create": "Tạo",
+      "rename": "Đổi tên",
+      "delete": "Xóa",
+      "resetLayout": "Đặt lại bố cục",
+      "groups": "Các nhóm",
+      "newGroupTitle": "Tạo nhóm",
+      "renameGroupTitle": "Đổi tên nhóm",
+      "deleteGroupTitle": "Xóa nhóm",
+      "deleteGroupMessage": "Các thẻ trong nhóm này sẽ được bỏ nhóm.",
+      "cardCount": "{{count}} thẻ",
+      "cancel": "Hủy"
+    },
+    "groups": {
+      "favourites": "Yêu thích",
+      "ungrouped": "Tất cả công cụ"
+    },
+    "descHistory": "Xem lại các hoạt động thành công, thất bại và bị hủy"
   },
   "gettingStarted": {
     "hint": "Mới đến đây?",
@@ -1508,5 +1539,315 @@
     "canvasNodeMove": "Đã di chuyển node đã chọn {{direction}}. Vị trí mới, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Nhấn enter hoặc space để chọn một cạnh. Sau đó bạn có thể nhấn delete để xóa nó hoặc escape để hủy.",
     "canvasHandleLabel": "Điểm kết nối"
+  },
+  "quickLinks": {
+    "title": "Liên kết nhanh",
+    "cardAria": "Mở {{title}}",
+    "links": {
+      "chatWithCopilot": {
+        "title": "Trò chuyện với phi công phụ",
+        "description": "Đặt câu hỏi hoặc mô tả những gì bạn muốn làm với phương tiện truyền thông của mình."
+      },
+      "describeGoal": {
+        "title": "Mô tả một mục tiêu",
+        "description": "Giải thích mục tiêu bằng ngôn ngữ đơn giản và để Copilot chuẩn bị công việc."
+      },
+      "planConversion": {
+        "title": "Lập kế hoạch chuyển đổi",
+        "description": "Biến mục tiêu thành kế hoạch mà bạn có thể xem lại trước khi thêm nó vào hàng đợi."
+      },
+      "findMomentInVideo": {
+        "title": "Tìm khoảnh khắc trong video",
+        "description": "Tìm kiếm bản ghi video để chuyển đến phần bạn cần."
+      },
+      "searchTranscript": {
+        "title": "Tìm kiếm bản ghi",
+        "description": "Xem qua bản ghi để tìm từ hoặc cụm từ bạn nhớ."
+      },
+      "translateSubtitles": {
+        "title": "Dịch phụ đề",
+        "description": "Dịch tập tin phụ đề sang ngôn ngữ khác."
+      },
+      "saveChat": {
+        "title": "Lưu cuộc trò chuyện",
+        "description": "Giữ cuộc trò chuyện Copilot hiện tại cho sau này."
+      },
+      "convertVideo": {
+        "title": "Chuyển đổi video",
+        "description": "Mã hóa lại video với định dạng, chất lượng và kích thước bạn đã chọn."
+      },
+      "convertAudio": {
+        "title": "Chuyển đổi âm thanh",
+        "description": "Thay đổi định dạng, codec hoặc tốc độ bit của tệp âm thanh."
+      },
+      "compressVideo": {
+        "title": "Nén video",
+        "description": "Giảm kích thước tệp của video trong khi vẫn giữ được kết quả có thể xem được."
+      },
+      "useConversionProfile": {
+        "title": "Sử dụng Hồ sơ chuyển đổi",
+        "description": "Chọn một cài đặt trước điền vào cài đặt mã hóa cho bạn."
+      },
+      "createCustomProfile": {
+        "title": "Tạo hồ sơ tùy chỉnh",
+        "description": "Lưu cài đặt mã hóa của riêng bạn dưới dạng hồ sơ có thể sử dụng lại."
+      },
+      "losslessCopy": {
+        "title": "Sao chép không mất dữ liệu",
+        "description": "Sao chép luồng mà không cần mã hóa lại để giữ nguyên chất lượng ban đầu."
+      },
+      "speedUpWithGpu": {
+        "title": "Tăng tốc với GPU",
+        "description": "Sử dụng khả năng tăng tốc phần cứng để mã hóa nhanh hơn."
+      },
+      "changeContainer": {
+        "title": "Thay đổi vùng chứa mà không cần mã hóa lại",
+        "description": "Chuyển đổi các vùng chứa như MP4 hoặc MKV mà không cần mã hóa lại."
+      },
+      "addAudioToVideo": {
+        "title": "Thêm âm thanh vào video",
+        "description": "Đính kèm bản âm thanh bên ngoài vào video."
+      },
+      "mergeAudioAndVideo": {
+        "title": "Hợp nhất âm thanh và video",
+        "description": "Kết hợp các bản âm thanh và video riêng biệt thành một tệp."
+      },
+      "addSubtitles": {
+        "title": "Thêm phụ đề",
+        "description": "Thêm phụ đề vào video mà không thay đổi hình ảnh."
+      },
+      "syncAudioDelay": {
+        "title": "Độ trễ âm thanh đồng bộ hóa",
+        "description": "Chuyển âm thanh sớm hơn hoặc muộn hơn để phù hợp với video."
+      },
+      "copyStreams": {
+        "title": "Sao chép luồng",
+        "description": "Chọn luồng nào sẽ giữ và sao chép chúng nguyên trạng."
+      },
+      "extractStreams": {
+        "title": "Trích xuất luồng",
+        "description": "Kéo các bản nhạc video, âm thanh hoặc phụ đề ra thành các tệp riêng biệt."
+      },
+      "splitAudioChannels": {
+        "title": "Tách kênh âm thanh",
+        "description": "Chia một bản âm thanh đa kênh thành các tệp riêng lẻ."
+      },
+      "saveSubtitles": {
+        "title": "Lưu phụ đề",
+        "description": "Trích xuất các dòng phụ đề thành các tập tin phụ đề độc lập."
+      },
+      "exportTracksSeparately": {
+        "title": "Xuất các bản nhạc riêng biệt",
+        "description": "Viết từng bản nhạc đã chọn vào tệp đầu ra của riêng nó."
+      },
+      "trimVideo": {
+        "title": "Cắt video",
+        "description": "Cắt video xuống phần bạn muốn giữ lại."
+      },
+      "cutClipByTime": {
+        "title": "Cắt Clip theo thời gian",
+        "description": "Đặt thời gian bắt đầu và kết thúc chính xác cho một clip."
+      },
+      "cutByDuration": {
+        "title": "Cắt theo thời lượng",
+        "description": "Đặt thời gian bắt đầu và thời lượng clip thay vì thời gian kết thúc."
+      },
+      "previewClip": {
+        "title": "Đoạn phim xem trước",
+        "description": "Kiểm tra kết quả đã cắt trước khi lưu."
+      },
+      "playClip": {
+        "title": "Phát đoạn phim",
+        "description": "Phát lại phân đoạn đã chọn trên dòng thời gian."
+      },
+      "removeAudioFromClip": {
+        "title": "Xóa âm thanh khỏi Clip",
+        "description": "Tạo một clip im lặng bằng cách loại bỏ đoạn âm thanh."
+      },
+      "extractAudioFromVideo": {
+        "title": "Trích xuất âm thanh từ video",
+        "description": "Lưu âm thanh từ video thành tập tin riêng."
+      },
+      "saveAudioAsMp3": {
+        "title": "Lưu âm thanh dưới dạng MP3",
+        "description": "Xuất âm thanh được trích xuất ở định dạng MP3."
+      },
+      "chooseAudioQuality": {
+        "title": "Chọn chất lượng âm thanh",
+        "description": "Chọn codec và tốc độ bit cho âm thanh được trích xuất."
+      },
+      "compressImage": {
+        "title": "Nén hình ảnh",
+        "description": "Làm cho hình ảnh nhỏ hơn trong khi vẫn giữ được vẻ đẹp."
+      },
+      "resizeImage": {
+        "title": "Thay đổi kích thước hình ảnh",
+        "description": "Thay đổi kích thước của hình ảnh trước khi lưu nó."
+      },
+      "changeImageFormat": {
+        "title": "Thay đổi định dạng hình ảnh",
+        "description": "Chuyển đổi hình ảnh sang định dạng tệp khác."
+      },
+      "newBatchTask": {
+        "title": "Nhiệm vụ hàng loạt mới",
+        "description": "Bắt đầu công việc nhiều tệp mới với cài đặt được chia sẻ."
+      },
+      "runBatchJobs": {
+        "title": "Chạy hàng loạt công việc",
+        "description": "Bắt đầu hàng đợi và xử lý tất cả công việc theo thứ tự."
+      },
+      "queueFiles": {
+        "title": "Tệp xếp hàng",
+        "description": "Thêm tập tin hoặc thư mục vào hàng đợi hàng loạt."
+      },
+      "retryFailedJobs": {
+        "title": "Thử lại công việc thất bại",
+        "description": "Chạy lại các công việc không thành công sau khi khắc phục sự cố."
+      },
+      "importQueue": {
+        "title": "Hàng đợi nhập",
+        "description": "Tải hàng loạt đã lưu từ một tệp."
+      },
+      "editJobOptions": {
+        "title": "Chỉnh sửa tùy chọn công việc",
+        "description": "Thay đổi tùy chọn mã hóa cho các công việc vẫn đang được xếp hàng đợi."
+      },
+      "runJobsThenShutDown": {
+        "title": "Chạy công việc rồi tắt máy",
+        "description": "Hãy để lô kết thúc và sau đó tắt nguồn máy tính."
+      },
+      "buildAutomation": {
+        "title": "Xây dựng tự động hóa",
+        "description": "Thiết kế một quy trình có thể tái sử dụng từ các nút phương tiện trên canvas."
+      },
+      "runAutomation": {
+        "title": "Chạy tự động hóa",
+        "description": "Chạy tự động hóa đã chọn đối với tệp đầu vào."
+      },
+      "viewRunHistory": {
+        "title": "Xem lịch sử chạy",
+        "description": "Xem lại các lần chạy tự động hóa trước đây và kết quả của chúng."
+      },
+      "saveAutomationPipeline": {
+        "title": "Lưu quy trình tự động hóa",
+        "description": "Lưu quy trình để bạn có thể chạy lại sau."
+      },
+      "inspectMediaFile": {
+        "title": "Kiểm tra tệp phương tiện",
+        "description": "Mở một tập tin và xem những gì bên trong nó."
+      },
+      "viewStreamDetails": {
+        "title": "Xem chi tiết luồng",
+        "description": "Kiểm tra luồng video, âm thanh và phụ đề."
+      },
+      "checkCodecs": {
+        "title": "Kiểm tra Codec",
+        "description": "Kiểm tra xem tập tin sử dụng codec nào."
+      },
+      "readFileMetadata": {
+        "title": "Đọc siêu dữ liệu tệp",
+        "description": "Xem vùng chứa, thời lượng, tốc độ bit và các chi tiết tệp khác."
+      },
+      "changeTheme": {
+        "title": "Thay đổi chủ đề",
+        "description": "Chọn chủ đề sáng hoặc tối cho EncodeX."
+      },
+      "setUpAiProvider": {
+        "title": "Thiết lập nhà cung cấp AI",
+        "description": "Kết nối nhà cung cấp AI để lập kế hoạch Copilot thông minh hơn."
+      },
+      "configureHardwareAcceleration": {
+        "title": "Định cấu hình tăng tốc phần cứng",
+        "description": "Chọn cách EncodeX sử dụng GPU của bạn."
+      },
+      "enableMcpServer": {
+        "title": "Kích hoạt máy chủ MCP",
+        "description": "Cho phép máy khách MCP cục bộ kiểm soát EncodeX."
+      },
+      "manageStartupNotifications": {
+        "title": "Quản lý khởi động và thông báo",
+        "description": "Kiểm soát hành vi khởi động và thông báo trên màn hình."
+      },
+      "viewLogs": {
+        "title": "Xem nhật ký",
+        "description": "Mở bảng điều khiển nhật ký ứng dụng."
+      },
+      "searchErrors": {
+        "title": "Lỗi tìm kiếm",
+        "description": "Lọc nhật ký để cảnh báo và lỗi."
+      },
+      "reviewOperationHistory": {
+        "title": "Xem lại lịch sử hoạt động",
+        "description": "Kiểm tra dấu vết kiểm tra cho các hoạt động đã hoàn thành."
+      },
+      "downloadLogs": {
+        "title": "Tải xuống nhật ký",
+        "description": "Lưu nhật ký hiện tại dưới dạng tệp văn bản."
+      },
+      "checkVersion": {
+        "title": "Kiểm tra phiên bản",
+        "description": "Xem phiên bản EncodeX nào được cài đặt."
+      },
+      "viewBuildInfo": {
+        "title": "Xem thông tin bản dựng",
+        "description": "Kiểm tra chi tiết bản dựng cho cài đặt này."
+      },
+      "readAboutEncodeX": {
+        "title": "Đọc về EncodeX",
+        "description": "Tìm hiểu thêm về EncodeX."
+      }
+    }
+  },
+  "history": {
+    "title": "Lịch sử hoạt động",
+    "search": "Hoạt động tìm kiếm",
+    "empty": "Không có hoạt động nào phù hợp với các bộ lọc hiện tại.",
+    "clearConfirm": "Xóa tất cả lịch sử hoạt động?",
+    "refresh": "Làm mới",
+    "clear": "Xóa lịch sử",
+    "remove": "Xóa",
+    "details": "Chi tiết",
+    "noSelection": "Chọn một thao tác để xem chi tiết của nó.",
+    "count": "{{count}} thao tác",
+    "filteredCount": "{{count}} trong tổng số {{total}} hoạt động",
+    "status": "Trạng thái",
+    "family": "hoạt động",
+    "source": "Nguồn",
+    "started": "Đã bắt đầu",
+    "duration": "Thời lượng",
+    "input": "đầu vào",
+    "outputs": "đầu ra",
+    "error": "Lỗi",
+    "metadata": "Siêu dữ liệu",
+    "sort": "Sắp xếp",
+    "allStatuses": "Tất cả trạng thái",
+    "allFamilies": "Mọi hoạt động",
+    "allSources": "Tất cả các nguồn",
+    "sortNewest": "Mới nhất đầu tiên",
+    "sortOldest": "Cũ nhất đầu tiên",
+    "sortLongest": "Đầu tiên dài nhất",
+    "sortShortest": "Đầu tiên ngắn nhất",
+    "sortName": "Tên A-Z",
+    "statusLabels": {
+      "succeeded": "thành công",
+      "failed": "thất bại",
+      "cancelled": "Đã hủy"
+    },
+    "familyLabels": {
+      "convert": "Chuyển đổi",
+      "audioExtract": "Trích xuất âm thanh",
+      "imageCompress": "Nén hình ảnh",
+      "videoCut": "Cắt video",
+      "remux": "Bản phối lại",
+      "demux": "Demux",
+      "batch": "Hàng đợi hàng loạt",
+      "automation": "Tự động hóa",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Giao diện",
+      "mcp": "MCP",
+      "automation": "Tự động hóa"
+    }
   }
 }

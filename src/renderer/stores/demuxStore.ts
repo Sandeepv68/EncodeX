@@ -347,7 +347,11 @@ export const useDemuxStore = create<DemuxState>((set, get) => ({
       log.info(LOG_DEMUX_STREAM, target.kind, target.index, LOG_ARROW, target.output);
       log.info(LOG_DEMUX_CONVERT_KIND, target.copy ? 'copy' : 're-encode');
       try {
-        await window.electronAPI.convertFile(input, target.output, optionsForTarget(target), TRANSCODER_TYPES[0]);
+        await window.electronAPI.convertFile(input, target.output, optionsForTarget(target), TRANSCODER_TYPES[0], {
+          family: 'demux',
+          source: 'gui',
+          metadata: { kind: target.kind, index: target.index, copy: target.copy },
+        });
         completed += 1;
       } catch (err: unknown) {
         const code = typeof (err as { code?: string })?.code === 'string' ? (err as { code: string }).code : undefined;

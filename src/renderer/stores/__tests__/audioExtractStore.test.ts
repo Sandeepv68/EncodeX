@@ -142,7 +142,11 @@ describe('audioExtractStore', () => {
   it('startExtract runs the conversion and completes successfully', async () => {
     useAudioExtractStore.setState({ input: 'in.mp4', output: 'out.mp3' });
     await useAudioExtractStore.getState().startExtract();
-    expect(convertFileMock).toHaveBeenCalledWith('in.mp4', 'out.mp3', { audioCodec: 'libmp3lame', audioBitrate: '192k' }, 'FFMPEG');
+    expect(convertFileMock).toHaveBeenCalledWith('in.mp4', 'out.mp3', { audioCodec: 'libmp3lame', audioBitrate: '192k' }, 'FFMPEG', {
+      family: 'audio-extract',
+      source: 'gui',
+      metadata: { codec: expect.any(String) },
+    });
     expect(useAudioExtractStore.getState().isConverting).toBe(false);
     expect(useAudioExtractStore.getState().progress).toBeNull();
     expect(useToastStore.getState().toasts).toHaveLength(1);

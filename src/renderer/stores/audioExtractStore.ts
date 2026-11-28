@@ -201,7 +201,11 @@ export const useAudioExtractStore = create<AudioExtractState>((set, get) => ({
     set({ isConverting: true, isPaused: false, progress: null });
     const extractStartedAt = Date.now();
     try {
-      await window.electronAPI.convertFile(input, output, { audioCodec, audioBitrate }, TRANSCODER_TYPES[0]);
+      await window.electronAPI.convertFile(input, output, { audioCodec, audioBitrate }, TRANSCODER_TYPES[0], {
+        family: 'audio-extract',
+        source: 'gui',
+        metadata: { codec: audioCodec },
+      });
       log.info(LOG_EXTRACTION_COMPLETED_SUCCESSFULLY);
       recordAnalyticsEvent(
         createAnalyticsEvent('audio_extract_completed', {

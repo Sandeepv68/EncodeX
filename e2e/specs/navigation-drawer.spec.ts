@@ -38,6 +38,7 @@ const NAV_ROWS: { id: string; label: string }[] = [
   { id: 'settings', label: 'Settings' },
   { id: 'about', label: 'About' },
   { id: 'logs', label: 'Logs' },
+  { id: 'history', label: 'History' },
 ];
 
 function navRow(page: Page, id: string) {

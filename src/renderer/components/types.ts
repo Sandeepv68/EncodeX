@@ -3,7 +3,7 @@
  * Defines prop shapes and shared types used across the component layer.
  */
 
-import type { ComponentProps, ReactNode, Ref, RefObject, ReactElement } from 'react';
+import type { ComponentProps, MouseEvent, ReactNode, Ref, RefObject, ReactElement } from 'react';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import type { Skeleton } from '@mui/material';
 import type { DraggableAttributes } from '@dnd-kit/core';
@@ -26,8 +26,11 @@ import type {
 } from '../../shared/types';
 import type { AIProviderId } from '../../shared/ai/types';
 import type { OnboardingGoal } from '../../shared/analytics/events';
+import type { HistoryEntry } from '../../shared/history/types';
+import type { HistoryLoadState, HistoryQuery } from '../stores/types';
 import type { TooltipProps } from '@mui/material/Tooltip';
 import type { BatchEncodingValues } from '../utils/types';
+import type { DashboardCardSpec } from '../pages/types';
 
 /**
  * Which navigation blip the job popover currently describes.
@@ -863,3 +866,75 @@ export interface ShortcutsHelpDialogProps {
 
 /** Shape of the transient parameter values for the pending preset. */
 export type PendingValues = Record<string, string>;
+
+/* ------------------------------------------------------------------ *
+ * Dashboard actions row
+ * ------------------------------------------------------------------ */
+
+/** Which of the two dashboard-family panels is currently active. */
+export type DashboardView = 'dashboard' | 'quick-links';
+
+/** Props for the shared Dashboard / Quick Links actions row. */
+export interface DashboardActionsRowProps {
+  view: DashboardView;
+  editing?: boolean;
+  onToggleView: () => void;
+  onToggleEdit?: () => void;
+}
+
+/** Props for a sortable dashboard card in edit mode. */
+export interface SortableDashboardCardProps {
+  card: DashboardCardSpec;
+  index: number;
+  onGroupMenu: (event: MouseEvent<HTMLElement>, route: string) => void;
+}
+
+/** Props for the edit-mode group bar. */
+export interface DashboardGroupBarProps {
+  groups: Array<{ id: string; name: string; count: number }>;
+  onGroupMenu: (event: MouseEvent<HTMLElement>, id: string) => void;
+  onNewGroup: () => void;
+  onReset: () => void;
+}
+
+export interface HistoryToolbarProps {
+  query: HistoryQuery;
+  resultCount: number;
+  totalCount: number;
+  onQueryChange: (patch: Partial<HistoryQuery>) => void;
+  onRefresh: () => void;
+  onClear: () => void;
+}
+
+export interface HistoryListProps {
+  entries: HistoryEntry[];
+  selectedId: string | null;
+  thumbnails: Record<string, string | null>;
+  loadState: HistoryLoadState;
+  error: string | null;
+  onSelect: (id: string) => void;
+  onRemove: (id: string) => void;
+  onLoadThumbnail: (entry: HistoryEntry) => void;
+}
+
+export interface HistoryRowProps {
+  entry: HistoryEntry;
+  selected: boolean;
+  thumbnail: string | null | undefined;
+  onSelect: (id: string) => void;
+  onRemove: (id: string) => void;
+  onLoadThumbnail: (entry: HistoryEntry) => void;
+}
+
+export interface HistoryDetailsProps {
+  entry: HistoryEntry | null;
+  thumbnail: string | null | undefined;
+  onClose: () => void;
+  onRemove: (id: string) => void;
+}
+
+export interface HistoryThumbnailProps {
+  entry: HistoryEntry;
+  thumbnail: string | null | undefined;
+  onLoadThumbnail: (entry: HistoryEntry) => void;
+}

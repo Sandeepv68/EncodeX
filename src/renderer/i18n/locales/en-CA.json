@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "Automations"
+    "automations": "Automations",
+    "history": "History"
   },
   "dashboard": {
     "welcome": "Welcome to EncodeX",
@@ -46,7 +47,37 @@
     "descRemux": "Remux streams losslessly into a new container",
     "descDemux": "Split a file's streams into separate output files",
     "descCopilot": "Plan conversions by describing a goal",
-    "descAutomations": "Build reusable conversion pipelines on a visual canvas"
+    "descAutomations": "Build reusable conversion pipelines on a visual canvas",
+    "actions": {
+      "viewSwitcher": "Choose a view",
+      "dashboard": "Dashboard",
+      "quickLinks": "Quick Links"
+    },
+    "edit": {
+      "edit": "Edit",
+      "done": "Done",
+      "hint": "Drag cards to rearrange them. Use each card's group menu to organize them.",
+      "dragHandle": "Move {{title}}",
+      "group": "Group",
+      "newGroup": "New group…",
+      "groupName": "Group name",
+      "create": "Create",
+      "rename": "Rename",
+      "delete": "Delete",
+      "resetLayout": "Reset layout",
+      "groups": "Groups",
+      "newGroupTitle": "Create a group",
+      "renameGroupTitle": "Rename group",
+      "deleteGroupTitle": "Delete group",
+      "deleteGroupMessage": "Cards in this group will become ungrouped.",
+      "cardCount": "{{count}} cards",
+      "cancel": "Cancel"
+    },
+    "groups": {
+      "favourites": "Favourites",
+      "ungrouped": "All tools"
+    },
+    "descHistory": "Review successful, failed, and cancelled operations"
   },
   "gettingStarted": {
     "hint": "New here?",
@@ -1508,5 +1539,315 @@
     "canvasNodeMove": "Moved selected node {{direction}}. New position, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Press enter or space to select an edge. You can then press delete to remove it or escape to cancel.",
     "canvasHandleLabel": "Handle"
+  },
+  "quickLinks": {
+    "title": "Quick Links",
+    "cardAria": "Open {{title}}",
+    "links": {
+      "chatWithCopilot": {
+        "title": "Chat with Copilot",
+        "description": "Ask a question or describe what you want to do with your media."
+      },
+      "describeGoal": {
+        "title": "Describe a Goal",
+        "description": "Explain a goal in plain language and let Copilot prepare the work."
+      },
+      "planConversion": {
+        "title": "Plan a Conversion",
+        "description": "Turn a goal into a plan you can review before adding it to the queue."
+      },
+      "findMomentInVideo": {
+        "title": "Find a Moment in a Video",
+        "description": "Search a video transcript to jump to the part you need."
+      },
+      "searchTranscript": {
+        "title": "Search Transcript",
+        "description": "Look through transcripts for words or phrases you remember."
+      },
+      "translateSubtitles": {
+        "title": "Translate Subtitles",
+        "description": "Translate subtitle files into another language."
+      },
+      "saveChat": {
+        "title": "Save Chat",
+        "description": "Keep the current Copilot conversation for later."
+      },
+      "convertVideo": {
+        "title": "Convert Video",
+        "description": "Re-encode a video with your chosen format, quality, and size."
+      },
+      "convertAudio": {
+        "title": "Convert Audio",
+        "description": "Change an audio file's format, codec, or bitrate."
+      },
+      "compressVideo": {
+        "title": "Compress Video",
+        "description": "Reduce a video's file size while keeping the result watchable."
+      },
+      "useConversionProfile": {
+        "title": "Use a Conversion Profile",
+        "description": "Pick a preset that fills in the encoding settings for you."
+      },
+      "createCustomProfile": {
+        "title": "Create Custom Profile",
+        "description": "Save your own encoding settings as a reusable profile."
+      },
+      "losslessCopy": {
+        "title": "Lossless Copy",
+        "description": "Copy streams without re-encoding to keep the original quality."
+      },
+      "speedUpWithGpu": {
+        "title": "Speed Up with GPU",
+        "description": "Use hardware acceleration to encode faster."
+      },
+      "changeContainer": {
+        "title": "Change Container Without Re-encoding",
+        "description": "Switch containers such as MP4 or MKV without re-encoding."
+      },
+      "addAudioToVideo": {
+        "title": "Add Audio to Video",
+        "description": "Attach an external audio track to a video."
+      },
+      "mergeAudioAndVideo": {
+        "title": "Merge Audio and Video",
+        "description": "Combine separate audio and video tracks into one file."
+      },
+      "addSubtitles": {
+        "title": "Add Subtitles",
+        "description": "Add subtitle tracks to a video without changing the picture."
+      },
+      "syncAudioDelay": {
+        "title": "Sync Audio Delay",
+        "description": "Shift audio earlier or later to line it up with video."
+      },
+      "copyStreams": {
+        "title": "Copy Streams",
+        "description": "Choose which streams to keep and copy them as-is."
+      },
+      "extractStreams": {
+        "title": "Extract Streams",
+        "description": "Pull video, audio, or subtitle tracks out into separate files."
+      },
+      "splitAudioChannels": {
+        "title": "Split Audio Channels",
+        "description": "Split a multichannel audio track into individual files."
+      },
+      "saveSubtitles": {
+        "title": "Save Subtitles",
+        "description": "Extract subtitle streams to standalone subtitle files."
+      },
+      "exportTracksSeparately": {
+        "title": "Export Tracks Separately",
+        "description": "Write each selected track to its own output file."
+      },
+      "trimVideo": {
+        "title": "Trim Video",
+        "description": "Cut a video down to the part you want to keep."
+      },
+      "cutClipByTime": {
+        "title": "Cut Clip by Time",
+        "description": "Set exact start and end times for a clip."
+      },
+      "cutByDuration": {
+        "title": "Cut by Duration",
+        "description": "Set a start time and clip length instead of an end time."
+      },
+      "previewClip": {
+        "title": "Preview Clip",
+        "description": "Check the trimmed result before you save it."
+      },
+      "playClip": {
+        "title": "Play Clip",
+        "description": "Play back the selected segment on the timeline."
+      },
+      "removeAudioFromClip": {
+        "title": "Remove Audio from Clip",
+        "description": "Create a silent clip by leaving out the audio track."
+      },
+      "extractAudioFromVideo": {
+        "title": "Extract Audio from Video",
+        "description": "Save the audio from a video as its own file."
+      },
+      "saveAudioAsMp3": {
+        "title": "Save Audio as MP3",
+        "description": "Export extracted audio in MP3 format."
+      },
+      "chooseAudioQuality": {
+        "title": "Choose Audio Quality",
+        "description": "Pick the codec and bitrate for the extracted audio."
+      },
+      "compressImage": {
+        "title": "Compress Image",
+        "description": "Make an image smaller while keeping it looking good."
+      },
+      "resizeImage": {
+        "title": "Resize Image",
+        "description": "Change an image's dimensions before saving it."
+      },
+      "changeImageFormat": {
+        "title": "Change Image Format",
+        "description": "Convert an image to a different file format."
+      },
+      "newBatchTask": {
+        "title": "New Batch Task",
+        "description": "Start a new multi-file job with shared settings."
+      },
+      "runBatchJobs": {
+        "title": "Run Batch Jobs",
+        "description": "Start the queue and process all jobs in order."
+      },
+      "queueFiles": {
+        "title": "Queue Files",
+        "description": "Add files or a folder to the batch queue."
+      },
+      "retryFailedJobs": {
+        "title": "Retry Failed Jobs",
+        "description": "Run failed jobs again after fixing the problem."
+      },
+      "importQueue": {
+        "title": "Import Queue",
+        "description": "Load a saved batch queue from a file."
+      },
+      "editJobOptions": {
+        "title": "Edit Job Options",
+        "description": "Change encoding options for jobs that are still queued."
+      },
+      "runJobsThenShutDown": {
+        "title": "Run Jobs Then Shut Down",
+        "description": "Let the batch finish and then power off the computer."
+      },
+      "buildAutomation": {
+        "title": "Build Automation",
+        "description": "Design a reusable pipeline from media nodes on a canvas."
+      },
+      "runAutomation": {
+        "title": "Run Automation",
+        "description": "Run the selected automation against an input file."
+      },
+      "viewRunHistory": {
+        "title": "View Run History",
+        "description": "Review past automation runs and their results."
+      },
+      "saveAutomationPipeline": {
+        "title": "Save Automation Pipeline",
+        "description": "Save the pipeline so you can run it again later."
+      },
+      "inspectMediaFile": {
+        "title": "Inspect Media File",
+        "description": "Open a file and see what is inside it."
+      },
+      "viewStreamDetails": {
+        "title": "View Stream Details",
+        "description": "Inspect the video, audio, and subtitle streams."
+      },
+      "checkCodecs": {
+        "title": "Check Codecs",
+        "description": "Check which codecs the file uses."
+      },
+      "readFileMetadata": {
+        "title": "Read File Metadata",
+        "description": "View container, duration, bitrate, and other file details."
+      },
+      "changeTheme": {
+        "title": "Change Theme",
+        "description": "Choose a light or dark theme for EncodeX."
+      },
+      "setUpAiProvider": {
+        "title": "Set Up AI Provider",
+        "description": "Connect an AI provider for smarter Copilot planning."
+      },
+      "configureHardwareAcceleration": {
+        "title": "Configure Hardware Acceleration",
+        "description": "Choose how EncodeX uses your GPU."
+      },
+      "enableMcpServer": {
+        "title": "Enable MCP Server",
+        "description": "Let local MCP clients control EncodeX."
+      },
+      "manageStartupNotifications": {
+        "title": "Manage Startup & Notifications",
+        "description": "Control startup behavior and desktop notifications."
+      },
+      "viewLogs": {
+        "title": "View Logs",
+        "description": "Open the application log console."
+      },
+      "searchErrors": {
+        "title": "Search Errors",
+        "description": "Filter logs for warnings and errors."
+      },
+      "reviewOperationHistory": {
+        "title": "Review Operation History",
+        "description": "Check the audit trail for completed operations."
+      },
+      "downloadLogs": {
+        "title": "Download Logs",
+        "description": "Save the current logs as a text file."
+      },
+      "checkVersion": {
+        "title": "Check Version",
+        "description": "See which version of EncodeX is installed."
+      },
+      "viewBuildInfo": {
+        "title": "View Build Info",
+        "description": "Check build details for this installation."
+      },
+      "readAboutEncodeX": {
+        "title": "Read About EncodeX",
+        "description": "Learn more about EncodeX."
+      }
+    }
+  },
+  "history": {
+    "title": "Operation History",
+    "search": "Search operations",
+    "empty": "No operations match the current filters.",
+    "clearConfirm": "Clear all operation history?",
+    "refresh": "Refresh",
+    "clear": "Clear history",
+    "remove": "Remove",
+    "details": "Details",
+    "noSelection": "Select an operation to view its details.",
+    "count": "{{count}} operations",
+    "filteredCount": "{{count}} of {{total}} operations",
+    "status": "Status",
+    "family": "Operation",
+    "source": "Source",
+    "started": "Started",
+    "duration": "Duration",
+    "input": "Input",
+    "outputs": "Outputs",
+    "error": "Error",
+    "metadata": "Metadata",
+    "sort": "Sort",
+    "allStatuses": "All statuses",
+    "allFamilies": "All operations",
+    "allSources": "All sources",
+    "sortNewest": "Newest first",
+    "sortOldest": "Oldest first",
+    "sortLongest": "Longest first",
+    "sortShortest": "Shortest first",
+    "sortName": "Name A-Z",
+    "statusLabels": {
+      "succeeded": "Succeeded",
+      "failed": "Failed",
+      "cancelled": "Cancelled"
+    },
+    "familyLabels": {
+      "convert": "Convert",
+      "audioExtract": "Audio extraction",
+      "imageCompress": "Image compression",
+      "videoCut": "Video cut",
+      "remux": "Remux",
+      "demux": "Demux",
+      "batch": "Batch queue",
+      "automation": "Automation",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Interface",
+      "mcp": "MCP",
+      "automation": "Automation"
+    }
   }
 }

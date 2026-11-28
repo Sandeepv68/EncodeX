@@ -17,6 +17,9 @@ import { createTranscoder } from '../transcoders/factory';
 import type { ITranscoder } from '../transcoders/types';
 import { Logger } from '../../shared/logger';
 import { ConversionOptions, TranscoderType, ConversionProgress, RemuxInput } from '../../shared/types';
+import { HISTORY_LIMITS } from '../../shared/history/limits';
+import { parseHistoryContext } from '../../shared/history/schema';
+import type { HistoryContext, HistoryError, HistoryRecorderLike, HistoryStatus } from '../../shared/history/types';
 import { IPC } from '../../shared/ipc-channels';
 import { createError, ERROR_MESSAGES, ErrorCode, formatError } from '../../shared/errors';
 import { recordAnalyticsEvent } from '../../shared/analytics/AnalyticsService';
@@ -32,6 +35,7 @@ import {
   LOG_IPC_CONVERT_FILE_COMPLETED_SUCCESSFULLY,
   LOG_IPC_CONVERT_FILE_FAILED,
   LOG_IPC_CONVERT_FILE_THREW,
+  LOG_HISTORY_RECORD_FAILED,
   LOG_IPC_GET_MEDIA_INFO,
   LOG_IPC_GET_MEDIA_INFO_COMPLETED,
   LOG_IPC_GET_MEDIA_INFO_FAILED,
@@ -43,6 +47,46 @@ import {
 } from '../../shared/log-constants';
 
 const log = new Logger('main/ipc/conversion');
+
+function historyError(err: unknown): HistoryError | undefined {
+  if (typeof err === 'string') return { message: err };
+  if (!err || typeof err !== 'object') return undefined;
+  const candidate = err as { code?: unknown; message?: unknown; detail?: unknown };
+  const message = typeof candidate.message === 'string' ? candidate.message : String(err);
+  return {
+    ...(typeof candidate.code === 'string' ? { code: candidate.code } : {}),
+    message,
+    ...(typeof candidate.detail === 'string' ? { detail: candidate.detail } : {}),
+  };
+}
+
+function isCancelled(err: unknown): boolean {
+  if (err && typeof err === 'object' && 'code' in err && (err as { code?: unknown }).code === ErrorCode.CANCELLED) return true;
+  return formatError(err).code === ErrorCode.CANCELLED;
+}
+
+function describeError(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
+}
+
+function safeAdditionalInputs(options: unknown): RemuxInput[] {
+  if (!options || typeof options !== 'object') return [];
+  try {
+    const inputs = (options as { additionalInputs?: unknown }).additionalInputs;
+    return Array.isArray(inputs) ? (inputs as RemuxInput[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function safeHardwareAcceleration(options: unknown): boolean {
+  if (!options || typeof options !== 'object') return false;
+  try {
+    return (options as { hardwareAcceleration?: unknown }).hardwareAcceleration === true;
+  } catch {
+    return false;
+  }
+}
 
 /**
  * Registers all single-file conversion IPC handlers for the given window.
@@ -59,7 +103,7 @@ const log = new Logger('main/ipc/conversion');
  *   progress notifications on the IPC.CONVERSION_PROGRESS channel.
  * @returns {void} Nothing is returned.
  */
-export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender): void {
+export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender, historyRecorder?: HistoryRecorderLike): void {
   /** Transcoder of the conversion currently in flight, or null when idle. */
   let currentTranscoder: ITranscoder | null = null;
 
@@ -92,7 +136,14 @@ export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender)
 
   ipcMain.handle(
     IPC.CONVERT_FILE,
-    async (_event, input: string, output: string, options: ConversionOptions, transcoderType: TranscoderType) => {
+    async (
+      _event,
+      input: string,
+      output: string,
+      options: ConversionOptions,
+      transcoderType: TranscoderType,
+      contextCandidate?: unknown,
+    ) => {
       /**
        * Handles the IPC.CONVERT_FILE channel (convert-file).
        * Starts a single-file conversion on the selected transcoder backend and
@@ -117,8 +168,36 @@ export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender)
        *   the transcoder emits an error or createTranscoder()/convert()
        *   throws.
        */
-      log.info(LOG_IPC_CONVERT_FILE, input, LOG_ARROW, output, LOG_TRANSCODER, transcoderType, LOG_OPTIONS, JSON.stringify(options));
+      let record: (status: HistoryStatus, err?: unknown) => void = () => {};
       try {
+        log.info(LOG_IPC_CONVERT_FILE, input, LOG_ARROW, output, LOG_TRANSCODER, transcoderType, LOG_OPTIONS, JSON.stringify(options));
+        const startedAt = Date.now();
+        const context: HistoryContext = parseHistoryContext(contextCandidate) ?? { family: 'convert', source: 'gui' };
+        let recorded = false;
+        record = (status: HistoryStatus, err?: unknown): void => {
+          if (recorded || !historyRecorder) return;
+          recorded = true;
+          const error = status === 'failed' ? historyError(err) : undefined;
+          void historyRecorder
+            .record({
+              family: context.family,
+              source: context.source,
+              status,
+              startedAt,
+              finishedAt: Date.now(),
+              inputs: [input, ...safeAdditionalInputs(options).map((entry) => entry.path)].slice(0, HISTORY_LIMITS.maxPaths),
+              outputs: [output],
+              transcoder: transcoderType,
+              metadata: {
+                ...(context.metadata ?? {}),
+                jobKind: 'single',
+                mode: context.source,
+                hwAccel: safeHardwareAcceleration(options),
+              },
+              ...(error ? { error } : {}),
+            })
+            .catch((recordError: unknown) => log.warn(LOG_HISTORY_RECORD_FAILED, input, describeError(recordError)));
+        };
         const auxiliaryInputs: RemuxInput[] = options.additionalInputs ?? [];
         const auxiliaryPaths = [...auxiliaryInputs.map((entry) => entry.path), ...(options.chaptersFile ? [options.chaptersFile] : [])];
         const missingAuxiliary = auxiliaryPaths.find((path) => !existsSync(path));
@@ -162,6 +241,7 @@ export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender)
                 }
               });
             }
+            record(isCancelled(err) ? 'cancelled' : 'failed', err);
             reject(formatError(err));
           });
           emitter.on('end', () => {
@@ -174,10 +254,12 @@ export function registerConversionHandlers(_win: BrowserWindow, send: IpcSender)
                 mode: 'gui',
               }),
             );
+            record('succeeded');
             resolve();
           });
         });
       } catch (err: unknown) {
+        record(isCancelled(err) ? 'cancelled' : 'failed', err);
         log.error(LOG_IPC_CONVERT_FILE_THREW, err);
         throw formatError(err);
       }

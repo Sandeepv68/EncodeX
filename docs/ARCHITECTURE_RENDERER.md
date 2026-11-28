@@ -4,7 +4,7 @@
 
 ### Render tree
 
-All fourteen pages are code-split with a dynamic `import()` and loaded under a per-page `ErrorBoundary`. While a page chunk is in flight, the route renders that page's own loading skeleton:
+All fifteen pages are code-split with a dynamic `import()` and loaded under a per-page `ErrorBoundary`. While a page chunk is in flight, the route renders that page's own loading skeleton:
 
 | Page            | Route          | Purpose                                                        |
 | --------------- | -------------- | -------------------------------------------------------------- |
@@ -20,6 +20,7 @@ All fourteen pages are code-split with a dynamic `import()` and loaded under a p
 | Automations     | `/automations` | Visual pipeline editor (palette, canvas, inspector, run panel) |
 | Copilot         | `/copilot`     | Natural-language planning with optional AI providers           |
 | Logs            | `/logs`        | Live log viewer with level filter + download                   |
+| History         | `/history`     | Browsable operation history with search, filters and details   |
 | Settings        | `/settings`    | Tabbed: General (theme), Advanced (hwaccel, telemetry), AI     |
 | About           | `/about`       | App info, credits, "Check for Updates" button                  |
 
@@ -45,6 +46,7 @@ Zustand stores in `src/renderer/stores/`:
 | `automationStore` | Active automation definition, graph edits, validation, backend availability, run history and per-node/stage statuses |
 | `settingsStore`   | Settings + `localStorage` persistence (`encodex-theme`, etc.)       |
 | `logStore`        | Aggregated log entries (cap 2000), filter state, download           |
+| `historyStore`    | Operation history entries, query/filter state, selected entry, thumbnail cache |
 | `toastStore`      | Toast queue                                                         |
 | `updateStore`     | Update lifecycle state (check, available, downloading, downloaded, restart-scheduled, error) |
 | `remuxStore`      | Remux plan (target container, added streams, chapters, cover, sync) |

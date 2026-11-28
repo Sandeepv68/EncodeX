@@ -422,7 +422,11 @@ export const useRemuxStore = create<RemuxState>((set, get) => ({
       }),
     );
     try {
-      await window.electronAPI.convertFile(input, output, options, TRANSCODER_TYPES[0]);
+      await window.electronAPI.convertFile(input, output, options, TRANSCODER_TYPES[0], {
+        family: 'remux',
+        source: 'gui',
+        metadata: { container },
+      });
       log.info(LOG_REMUX_COMPLETE, input, LOG_ARROW, output);
       recordAnalyticsEvent(
         createAnalyticsEvent('remux_completed', {

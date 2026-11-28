@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "Automatiseringar"
+    "automations": "Automatiseringar",
+    "history": "Historia"
   },
   "dashboard": {
     "welcome": "Välkommen till EncodeX",
@@ -46,7 +47,37 @@
     "descRemux": "För över strömmar förlustfritt till en ny container",
     "descDemux": "Delar en fils strömmar i separata utdatafiler",
     "descCopilot": "Planera konverteringar genom att beskriva ett mål",
-    "descAutomations": "Bygg återanvändbara konverteringspipelines på en visuell arbetsyta"
+    "descAutomations": "Bygg återanvändbara konverteringspipelines på en visuell arbetsyta",
+    "actions": {
+      "viewSwitcher": "Välj en vy",
+      "dashboard": "Instrumentpanel",
+      "quickLinks": "Snabblänkar"
+    },
+    "edit": {
+      "edit": "Redigera",
+      "done": "Klara",
+      "hint": "Dra korten för att ordna om dem. Använd varje korts gruppmeny för att organisera dem.",
+      "dragHandle": "Flytta {{title}}",
+      "group": "Grupp",
+      "newGroup": "Ny grupp…",
+      "groupName": "Gruppnamn",
+      "create": "Skapa",
+      "rename": "Byt namn",
+      "delete": "Ta bort",
+      "resetLayout": "Återställ layout",
+      "groups": "Grupper",
+      "newGroupTitle": "Skapa en grupp",
+      "renameGroupTitle": "Byt namn på grupp",
+      "deleteGroupTitle": "Ta bort grupp",
+      "deleteGroupMessage": "Kort i den här gruppen blir ogrupperade.",
+      "cardCount": "{{count}} kort",
+      "cancel": "Avbryt"
+    },
+    "groups": {
+      "favourites": "Favoriter",
+      "ungrouped": "Alla verktyg"
+    },
+    "descHistory": "Granska lyckade, misslyckade och avbrutna operationer"
   },
   "gettingStarted": {
     "hint": "Ny här?",
@@ -1508,5 +1539,315 @@
     "canvasNodeMove": "Flyttade vald nod {{direction}}. Ny position, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Tryck på Enter eller blanksteg för att välja en koppling. Du kan sedan trycka på Delete för att ta bort den eller Escape för att avbryta.",
     "canvasHandleLabel": "Handtag"
+  },
+  "quickLinks": {
+    "title": "Snabblänkar",
+    "cardAria": "Öppna {{title}}",
+    "links": {
+      "chatWithCopilot": {
+        "title": "Chatta med Copilot",
+        "description": "Ställ en fråga eller beskriv vad du vill göra med dina media."
+      },
+      "describeGoal": {
+        "title": "Beskriv ett mål",
+        "description": "Förklara ett mål i klartext och låt Copilot förbereda arbetet."
+      },
+      "planConversion": {
+        "title": "Planera en konvertering",
+        "description": "Förvandla ett mål till en plan som du kan granska innan du lägger till det i kön."
+      },
+      "findMomentInVideo": {
+        "title": "Hitta ett ögonblick i en video",
+        "description": "Sök efter en videotranskription för att hoppa till den del du behöver."
+      },
+      "searchTranscript": {
+        "title": "Sök transkription",
+        "description": "Titta igenom avskrifter efter ord eller fraser du kommer ihåg."
+      },
+      "translateSubtitles": {
+        "title": "Översätt undertexter",
+        "description": "Översätt undertextfiler till ett annat språk."
+      },
+      "saveChat": {
+        "title": "Spara Chatt",
+        "description": "Behåll den aktuella Copilot-konversationen för senare."
+      },
+      "convertVideo": {
+        "title": "Konvertera video",
+        "description": "Koda om en video med ditt valda format, kvalitet och storlek."
+      },
+      "convertAudio": {
+        "title": "Konvertera ljud",
+        "description": "Ändra en ljudfils format, codec eller bithastighet."
+      },
+      "compressVideo": {
+        "title": "Komprimera video",
+        "description": "Minska en videos filstorlek samtidigt som resultatet kan ses."
+      },
+      "useConversionProfile": {
+        "title": "Använd en konverteringsprofil",
+        "description": "Välj en förinställning som fyller i kodningsinställningarna åt dig."
+      },
+      "createCustomProfile": {
+        "title": "Skapa anpassad profil",
+        "description": "Spara dina egna kodningsinställningar som en återanvändbar profil."
+      },
+      "losslessCopy": {
+        "title": "Förlustfri kopia",
+        "description": "Kopiera strömmar utan omkodning för att behålla originalkvaliteten."
+      },
+      "speedUpWithGpu": {
+        "title": "Snabba upp med GPU",
+        "description": "Använd hårdvaruacceleration för att koda snabbare."
+      },
+      "changeContainer": {
+        "title": "Byt behållare utan omkodning",
+        "description": "Byt behållare som MP4 eller MKV utan omkodning."
+      },
+      "addAudioToVideo": {
+        "title": "Lägg till ljud till video",
+        "description": "Bifoga ett externt ljudspår till en video."
+      },
+      "mergeAudioAndVideo": {
+        "title": "Slå ihop ljud och video",
+        "description": "Kombinera separata ljud- och videospår till en fil."
+      },
+      "addSubtitles": {
+        "title": "Lägg till undertexter",
+        "description": "Lägg till undertextspår till en video utan att ändra bilden."
+      },
+      "syncAudioDelay": {
+        "title": "Synkronisera ljudfördröjning",
+        "description": "Byt ljud tidigare eller senare för att anpassa det till video."
+      },
+      "copyStreams": {
+        "title": "Kopiera strömmar",
+        "description": "Välj vilka strömmar som ska behållas och kopiera dem som de är."
+      },
+      "extractStreams": {
+        "title": "Extrahera strömmar",
+        "description": "Dra ut video-, ljud- eller undertextspår till separata filer."
+      },
+      "splitAudioChannels": {
+        "title": "Dela ljudkanaler",
+        "description": "Dela upp ett flerkanaligt ljudspår i enskilda filer."
+      },
+      "saveSubtitles": {
+        "title": "Spara undertexter",
+        "description": "Extrahera undertextströmmar till fristående undertextfiler."
+      },
+      "exportTracksSeparately": {
+        "title": "Exportera spår separat",
+        "description": "Skriv varje valt spår till sin egen utdatafil."
+      },
+      "trimVideo": {
+        "title": "Trimma video",
+        "description": "Klipp ner en video till den del du vill behålla."
+      },
+      "cutClipByTime": {
+        "title": "Klipp klipp efter tid",
+        "description": "Ställ in exakta start- och sluttider för ett klipp."
+      },
+      "cutByDuration": {
+        "title": "Klipp efter varaktighet",
+        "description": "Ställ in en starttid och klipplängd istället för en sluttid."
+      },
+      "previewClip": {
+        "title": "Förhandsgranska klipp",
+        "description": "Kontrollera det beskurna resultatet innan du sparar det."
+      },
+      "playClip": {
+        "title": "Spela klipp",
+        "description": "Spela upp det valda segmentet på tidslinjen."
+      },
+      "removeAudioFromClip": {
+        "title": "Ta bort ljud från klippet",
+        "description": "Skapa ett tyst klipp genom att utelämna ljudspåret."
+      },
+      "extractAudioFromVideo": {
+        "title": "Extrahera ljud från video",
+        "description": "Spara ljudet från en video som en egen fil."
+      },
+      "saveAudioAsMp3": {
+        "title": "Spara ljud som MP3",
+        "description": "Exportera extraherat ljud i MP3-format."
+      },
+      "chooseAudioQuality": {
+        "title": "Välj Ljudkvalitet",
+        "description": "Välj codec och bithastighet för det extraherade ljudet."
+      },
+      "compressImage": {
+        "title": "Komprimera bild",
+        "description": "Gör en bild mindre samtidigt som den ser bra ut."
+      },
+      "resizeImage": {
+        "title": "Ändra storlek på bild",
+        "description": "Ändra en bilds mått innan du sparar den."
+      },
+      "changeImageFormat": {
+        "title": "Ändra bildformat",
+        "description": "Konvertera en bild till ett annat filformat."
+      },
+      "newBatchTask": {
+        "title": "Ny batchuppgift",
+        "description": "Starta ett nytt jobb med flera filer med delade inställningar."
+      },
+      "runBatchJobs": {
+        "title": "Kör batchjobb",
+        "description": "Starta kön och bearbeta alla jobb i ordning."
+      },
+      "queueFiles": {
+        "title": "Kö filer",
+        "description": "Lägg till filer eller en mapp till batchkön."
+      },
+      "retryFailedJobs": {
+        "title": "Försök igen misslyckade jobb",
+        "description": "Kör misslyckade jobb igen efter att ha åtgärdat problemet."
+      },
+      "importQueue": {
+        "title": "Importkö",
+        "description": "Ladda en sparad batchkö från en fil."
+      },
+      "editJobOptions": {
+        "title": "Redigera jobbalternativ",
+        "description": "Ändra kodningsalternativ för jobb som fortfarande är i kö."
+      },
+      "runJobsThenShutDown": {
+        "title": "Kör jobb och stäng sedan av",
+        "description": "Låt batchen slutföras och stäng sedan av datorn."
+      },
+      "buildAutomation": {
+        "title": "Bygg automation",
+        "description": "Designa en återanvändbar pipeline från medianoder på en duk."
+      },
+      "runAutomation": {
+        "title": "Kör automatisering",
+        "description": "Kör den valda automatiseringen mot en indatafil."
+      },
+      "viewRunHistory": {
+        "title": "Visa körhistorik",
+        "description": "Granska tidigare automatiseringskörningar och deras resultat."
+      },
+      "saveAutomationPipeline": {
+        "title": "Spara Automation Pipeline",
+        "description": "Spara pipelinen så att du kan köra den igen senare."
+      },
+      "inspectMediaFile": {
+        "title": "Inspektera mediafilen",
+        "description": "Öppna en fil och se vad som finns i den."
+      },
+      "viewStreamDetails": {
+        "title": "Visa information om stream",
+        "description": "Inspektera video-, ljud- och undertextströmmarna."
+      },
+      "checkCodecs": {
+        "title": "Kontrollera codecs",
+        "description": "Kontrollera vilka codecs som filen använder."
+      },
+      "readFileMetadata": {
+        "title": "Läs filmetadata",
+        "description": "Visa behållare, varaktighet, bithastighet och annan filinformation."
+      },
+      "changeTheme": {
+        "title": "Ändra tema",
+        "description": "Välj ett ljust eller mörkt tema för EncodeX."
+      },
+      "setUpAiProvider": {
+        "title": "Konfigurera AI-leverantör",
+        "description": "Anslut en AI-leverantör för smartare Copilot-planering."
+      },
+      "configureHardwareAcceleration": {
+        "title": "Konfigurera hårdvaruacceleration",
+        "description": "Välj hur EncodeX använder din GPU."
+      },
+      "enableMcpServer": {
+        "title": "Aktivera MCP Server",
+        "description": "Låt lokala MCP-klienter styra EncodeX."
+      },
+      "manageStartupNotifications": {
+        "title": "Hantera start och aviseringar",
+        "description": "Kontrollera startbeteende och skrivbordsaviseringar."
+      },
+      "viewLogs": {
+        "title": "Visa loggar",
+        "description": "Öppna programloggkonsolen."
+      },
+      "searchErrors": {
+        "title": "Sökfel",
+        "description": "Filtrera loggar för varningar och fel."
+      },
+      "reviewOperationHistory": {
+        "title": "Granska operationshistorik",
+        "description": "Kontrollera revisionsspåret för slutförda operationer."
+      },
+      "downloadLogs": {
+        "title": "Ladda ner loggar",
+        "description": "Spara de aktuella loggarna som en textfil."
+      },
+      "checkVersion": {
+        "title": "Kontrollera version",
+        "description": "Se vilken version av EncodeX som är installerad."
+      },
+      "viewBuildInfo": {
+        "title": "Visa bygginformation",
+        "description": "Kontrollera byggdetaljer för denna installation."
+      },
+      "readAboutEncodeX": {
+        "title": "Läs om EncodeX",
+        "description": "Lär dig mer om EncodeX."
+      }
+    }
+  },
+  "history": {
+    "title": "Operationshistorik",
+    "search": "Sökoperationer",
+    "empty": "Inga operationer matchar de aktuella filtren.",
+    "clearConfirm": "Rensa all drifthistorik?",
+    "refresh": "Uppdatera",
+    "clear": "Rensa historik",
+    "remove": "Ta bort",
+    "details": "Detaljer",
+    "noSelection": "Välj en operation för att se dess detaljer.",
+    "count": "{{count}} operationer",
+    "filteredCount": "{{count}} av {{total}} operationer",
+    "status": "Status",
+    "family": "Drift",
+    "source": "Källa",
+    "started": "Startade",
+    "duration": "Varaktighet",
+    "input": "Input",
+    "outputs": "Utgångar",
+    "error": "Fel",
+    "metadata": "Metadata",
+    "sort": "Sortera",
+    "allStatuses": "Alla statusar",
+    "allFamilies": "Alla operationer",
+    "allSources": "Alla källor",
+    "sortNewest": "Nyaste först",
+    "sortOldest": "Äldst först",
+    "sortLongest": "Längst först",
+    "sortShortest": "Kortast först",
+    "sortName": "Namn A-Z",
+    "statusLabels": {
+      "succeeded": "Lyckades",
+      "failed": "Misslyckades",
+      "cancelled": "Avbruten"
+    },
+    "familyLabels": {
+      "convert": "Konvertera",
+      "audioExtract": "Ljudextraktion",
+      "imageCompress": "Bildkomprimering",
+      "videoCut": "Videoklipp",
+      "remux": "Remux",
+      "demux": "Demux",
+      "batch": "Batchkö",
+      "automation": "Automatisering",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Gränssnitt",
+      "mcp": "MCP",
+      "automation": "Automatisering"
+    }
   }
 }

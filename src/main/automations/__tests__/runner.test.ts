@@ -1,4 +1,4 @@
-﻿import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+﻿import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { EventEmitter } from 'events';
 import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'fs';
 import { tmpdir } from 'os';
@@ -113,12 +113,14 @@ describe('AutomationRunner', () => {
   }
 
   it('runs a two-stage pipeline, emits progress/status events, and removes the run directory', async () => {
+    const historyRecorder = { record: vi.fn().mockResolvedValue({ id: 'entry' }) };
     const runner = new AutomationRunner({
       userDataDir,
       eventBus: bus,
       checkBmfAvailability: availableBmf,
       transcoderFactory: (_type: TranscoderType) => new FakeTranscoder('succeed'),
       runIdGenerator: () => 'run-1',
+      historyRecorder,
     });
     const directory = runDirectory('run-1', 'custom');
 
@@ -136,6 +138,10 @@ describe('AutomationRunner', () => {
     expect(FakeTranscoder.instances[1].calls[0].output).toBe('C:/final.m4a');
     expect(events.some((event) => event.nodeId === 'op-1' && event.status === 'running' && typeof event.progress === 'number')).toBe(true);
     expect(events.some((event) => event.nodeId === 'op-2' && event.status === 'succeeded')).toBe(true);
+    expect(historyRecorder.record).toHaveBeenCalledTimes(1);
+    expect(historyRecorder.record).toHaveBeenCalledWith(
+      expect.objectContaining({ family: 'automation', source: 'automation', status: 'succeeded', runId: 'run-1' }),
+    );
   });
 
   it('keeps the whole run directory when intermediate files are retained', async () => {
@@ -199,12 +205,14 @@ describe('AutomationRunner', () => {
   });
 
   it('cancels the active transcoder, emits cancelled statuses, and removes the run directory', async () => {
+    const historyRecorder = { record: vi.fn().mockResolvedValue({ id: 'entry' }) };
     const runner = new AutomationRunner({
       userDataDir,
       eventBus: bus,
       checkBmfAvailability: availableBmf,
       transcoderFactory: () => new FakeTranscoder('wait'),
       runIdGenerator: () => 'run-cancel',
+      historyRecorder,
     });
     const directory = runDirectory('run-cancel');
 
@@ -217,6 +225,10 @@ describe('AutomationRunner', () => {
     await waitFor(() => !existsSync(directory));
     expect(FakeTranscoder.instances[0].cancelCount).toBe(1);
     expect(events.some((event) => event.nodeId === 'op-2' && event.status === 'cancelled')).toBe(true);
+    expect(historyRecorder.record).toHaveBeenCalledTimes(1);
+    expect(historyRecorder.record).toHaveBeenCalledWith(
+      expect.objectContaining({ family: 'automation', status: 'cancelled', runId: 'run-cancel' }),
+    );
   });
 
   it('treats repeated cancels as idempotent and ignores late cancels after a terminal state', async () => {
@@ -262,12 +274,14 @@ describe('AutomationRunner', () => {
 
   it('removes the run directory after a failed run', async () => {
     expectAppLog('error', 'main/automations/runner');
+    const historyRecorder = { record: vi.fn().mockResolvedValue({ id: 'entry' }) };
     const runner = new AutomationRunner({
       userDataDir,
       eventBus: bus,
       checkBmfAvailability: availableBmf,
       transcoderFactory: () => new FakeTranscoder('fail'),
       runIdGenerator: () => 'run-fail',
+      historyRecorder,
     });
     const directory = runDirectory('run-fail');
     bus.on('status', (event: AutomationProgressEvent) => {
@@ -279,6 +293,15 @@ describe('AutomationRunner', () => {
     await waitFor(() => !existsSync(directory));
 
     expect(events.some((event) => event.nodeId === 'op-1' && event.status === 'failed')).toBe(true);
+    expect(historyRecorder.record).toHaveBeenCalledTimes(1);
+    expect(historyRecorder.record).toHaveBeenCalledWith(
+      expect.objectContaining({
+        family: 'automation',
+        status: 'failed',
+        runId: 'run-fail',
+        error: expect.objectContaining({ message: 'An unexpected error occurred. Please try again.' }),
+      }),
+    );
   });
 
   it('cancels all active runs on one runner and process-wide', async () => {

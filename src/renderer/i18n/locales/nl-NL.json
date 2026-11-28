@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "Automatiseringen"
+    "automations": "Automatiseringen",
+    "history": "Geschiedenis"
   },
   "dashboard": {
     "welcome": "Welkom bij EncodeX",
@@ -46,7 +47,37 @@
     "descRemux": "Verplaatst streams verliesvrij naar een nieuwe container",
     "descDemux": "Splitst de streams van een bestand in afzonderlijke uitvoerbestanden",
     "descCopilot": "Conversies plannen door een doel te beschrijven",
-    "descAutomations": "Bouw herbruikbare conversiepipelines op een visueel canvas"
+    "descAutomations": "Bouw herbruikbare conversiepipelines op een visueel canvas",
+    "actions": {
+      "viewSwitcher": "Kies een weergave",
+      "dashboard": "Dashboard",
+      "quickLinks": "Snelkoppelingen"
+    },
+    "edit": {
+      "edit": "Bewerken",
+      "done": "Klaar",
+      "hint": "Sleep de kaarten om ze opnieuw te rangschikken. Gebruik het groepmenu van elke kaart om ze te organiseren.",
+      "dragHandle": "{{title}} verplaatsen",
+      "group": "Groep",
+      "newGroup": "Nieuwe groep…",
+      "groupName": "Groepsnaam",
+      "create": "Aanmaken",
+      "rename": "Hernoemen",
+      "delete": "Verwijderen",
+      "resetLayout": "Indeling terugzetten",
+      "groups": "Groepen",
+      "newGroupTitle": "Een groep aanmaken",
+      "renameGroupTitle": "Groep hernoemen",
+      "deleteGroupTitle": "Groep verwijderen",
+      "deleteGroupMessage": "Kaarten in deze groep worden niet meer gegroepeerd.",
+      "cardCount": "{{count}} kaarten",
+      "cancel": "Annuleren"
+    },
+    "groups": {
+      "favourites": "Favorieten",
+      "ungrouped": "Alle tools"
+    },
+    "descHistory": "Beoordeel succesvolle, mislukte en geannuleerde bewerkingen"
   },
   "gettingStarted": {
     "hint": "Nieuw hier?",
@@ -1508,5 +1539,315 @@
     "canvasNodeMove": "Geselecteerde knoop {{direction}} verplaatst. Nieuwe positie, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Druk op Enter of spatie om een verbinding te selecteren. Daarna kun je op Delete drukken om hem te verwijderen of op Escape om te annuleren.",
     "canvasHandleLabel": "Handgreep"
+  },
+  "quickLinks": {
+    "title": "Snelkoppelingen",
+    "cardAria": "{{title}} openen",
+    "links": {
+      "chatWithCopilot": {
+        "title": "Chat met Copiloot",
+        "description": "Stel een vraag of beschrijf wat u met uw media wilt doen."
+      },
+      "describeGoal": {
+        "title": "Beschrijf een doel",
+        "description": "Leg een doel in duidelijke taal uit en laat Copilot het werk voorbereiden."
+      },
+      "planConversion": {
+        "title": "Plan een conversie",
+        "description": "Zet een doel om in een plan dat u kunt beoordelen voordat u het aan de wachtrij toevoegt."
+      },
+      "findMomentInVideo": {
+        "title": "Zoek een moment in een video",
+        "description": "Zoek in een videotranscriptie om naar het gewenste gedeelte te gaan."
+      },
+      "searchTranscript": {
+        "title": "Zoek transcript",
+        "description": "Kijk door transcripties naar woorden of zinsdelen die u zich herinnert."
+      },
+      "translateSubtitles": {
+        "title": "Ondertitels vertalen",
+        "description": "Vertaal ondertitelbestanden naar een andere taal."
+      },
+      "saveChat": {
+        "title": "Chat opslaan",
+        "description": "Bewaar het huidige Copilot-gesprek voor later."
+      },
+      "convertVideo": {
+        "title": "Converteer video",
+        "description": "Codeer een video opnieuw met het door u gekozen formaat, de kwaliteit en het formaat."
+      },
+      "convertAudio": {
+        "title": "Audio converteren",
+        "description": "Wijzig de indeling, codec of bitsnelheid van een audiobestand."
+      },
+      "compressVideo": {
+        "title": "Video comprimeren",
+        "description": "Verklein de bestandsgrootte van een video terwijl het resultaat zichtbaar blijft."
+      },
+      "useConversionProfile": {
+        "title": "Gebruik een conversieprofiel",
+        "description": "Kies een voorinstelling die de coderingsinstellingen voor u invult."
+      },
+      "createCustomProfile": {
+        "title": "Maak een aangepast profiel",
+        "description": "Sla uw eigen coderingsinstellingen op als een herbruikbaar profiel."
+      },
+      "losslessCopy": {
+        "title": "Verliesloze kopie",
+        "description": "Kopieer streams zonder opnieuw te coderen om de originele kwaliteit te behouden."
+      },
+      "speedUpWithGpu": {
+        "title": "Versnel met GPU",
+        "description": "Gebruik hardwareversnelling om sneller te coderen."
+      },
+      "changeContainer": {
+        "title": "Wijzig de container zonder opnieuw te coderen",
+        "description": "Schakel tussen containers zoals MP4 of MKV zonder opnieuw te coderen."
+      },
+      "addAudioToVideo": {
+        "title": "Voeg audio toe aan video",
+        "description": "Voeg een externe audiotrack toe aan een video."
+      },
+      "mergeAudioAndVideo": {
+        "title": "Voeg audio en video samen",
+        "description": "Combineer afzonderlijke audio- en videotracks in één bestand."
+      },
+      "addSubtitles": {
+        "title": "Ondertitels toevoegen",
+        "description": "Voeg ondertiteltracks toe aan een video zonder de afbeelding te wijzigen."
+      },
+      "syncAudioDelay": {
+        "title": "Synchroniseer audiovertraging",
+        "description": "Verplaats audio eerder of later om het op één lijn te brengen met video."
+      },
+      "copyStreams": {
+        "title": "Kopieer stromen",
+        "description": "Kies welke streams u wilt behouden en kopieer ze zoals ze zijn."
+      },
+      "extractStreams": {
+        "title": "Stromen extraheren",
+        "description": "Trek video-, audio- of ondertiteltracks uit in afzonderlijke bestanden."
+      },
+      "splitAudioChannels": {
+        "title": "Audiokanalen splitsen",
+        "description": "Splits een meerkanaals audiotrack in afzonderlijke bestanden."
+      },
+      "saveSubtitles": {
+        "title": "Ondertitels opslaan",
+        "description": "Pak ondertitelstreams uit naar zelfstandige ondertitelbestanden."
+      },
+      "exportTracksSeparately": {
+        "title": "Tracks afzonderlijk exporteren",
+        "description": "Schrijf elke geselecteerde track naar een eigen uitvoerbestand."
+      },
+      "trimVideo": {
+        "title": "Video inkorten",
+        "description": "Knip een video af tot het gedeelte dat u wilt behouden."
+      },
+      "cutClipByTime": {
+        "title": "Clip op tijd knippen",
+        "description": "Stel exacte begin- en eindtijden in voor een clip."
+      },
+      "cutByDuration": {
+        "title": "Knippen op duur",
+        "description": "Stel een starttijd en cliplengte in in plaats van een eindtijd."
+      },
+      "previewClip": {
+        "title": "Voorbeeldclip",
+        "description": "Controleer het bijgesneden resultaat voordat u het opslaat."
+      },
+      "playClip": {
+        "title": "Speel fragment af",
+        "description": "Speel het geselecteerde segment af op de tijdlijn."
+      },
+      "removeAudioFromClip": {
+        "title": "Audio uit clip verwijderen",
+        "description": "Maak een stille clip door de audiotrack weg te laten."
+      },
+      "extractAudioFromVideo": {
+        "title": "Audio uit video extraheren",
+        "description": "Sla de audio van een video op als een eigen bestand."
+      },
+      "saveAudioAsMp3": {
+        "title": "Audio opslaan als MP3",
+        "description": "Exporteer geëxtraheerde audio in MP3-formaat."
+      },
+      "chooseAudioQuality": {
+        "title": "Kies Audiokwaliteit",
+        "description": "Kies de codec en bitrate voor de geëxtraheerde audio."
+      },
+      "compressImage": {
+        "title": "Comprimeer afbeelding",
+        "description": "Maak een afbeelding kleiner terwijl deze er goed uitziet."
+      },
+      "resizeImage": {
+        "title": "Formaat van afbeelding wijzigen",
+        "description": "Wijzig de afmetingen van een afbeelding voordat u deze opslaat."
+      },
+      "changeImageFormat": {
+        "title": "Wijzig het afbeeldingsformaat",
+        "description": "Converteer een afbeelding naar een ander bestandsformaat."
+      },
+      "newBatchTask": {
+        "title": "Nieuwe batchtaak",
+        "description": "Start een nieuwe taak met meerdere bestanden met gedeelde instellingen."
+      },
+      "runBatchJobs": {
+        "title": "Batchtaken uitvoeren",
+        "description": "Start de wachtrij en verwerk alle opdrachten op volgorde."
+      },
+      "queueFiles": {
+        "title": "Wachtrijbestanden",
+        "description": "Voeg bestanden of een map toe aan de batchwachtrij."
+      },
+      "retryFailedJobs": {
+        "title": "Probeer mislukte taken opnieuw",
+        "description": "Voer mislukte taken opnieuw uit nadat u het probleem hebt opgelost."
+      },
+      "importQueue": {
+        "title": "Importwachtrij",
+        "description": "Laad een opgeslagen batchwachtrij vanuit een bestand."
+      },
+      "editJobOptions": {
+        "title": "Taakopties bewerken",
+        "description": "Wijzig de coderingsopties voor taken die nog in de wachtrij staan."
+      },
+      "runJobsThenShutDown": {
+        "title": "Taken uitvoeren en vervolgens afsluiten",
+        "description": "Laat de batch eindigen en schakel vervolgens de computer uit."
+      },
+      "buildAutomation": {
+        "title": "Automatisering bouwen",
+        "description": "Ontwerp een herbruikbare pijplijn vanuit mediaknooppunten op een canvas."
+      },
+      "runAutomation": {
+        "title": "Voer automatisering uit",
+        "description": "Voer de geselecteerde automatisering uit op basis van een invoerbestand."
+      },
+      "viewRunHistory": {
+        "title": "Bekijk de rungeschiedenis",
+        "description": "Bekijk eerdere automatiseringsruns en hun resultaten."
+      },
+      "saveAutomationPipeline": {
+        "title": "Bewaar de automatiseringspijplijn",
+        "description": "Sla de pijplijn op, zodat u deze later opnieuw kunt uitvoeren."
+      },
+      "inspectMediaFile": {
+        "title": "Mediabestand inspecteren",
+        "description": "Open een bestand en kijk wat erin zit."
+      },
+      "viewStreamDetails": {
+        "title": "Bekijk streamdetails",
+        "description": "Inspecteer de video-, audio- en ondertitelstreams."
+      },
+      "checkCodecs": {
+        "title": "Controleer codecs",
+        "description": "Controleer welke codecs het bestand gebruikt."
+      },
+      "readFileMetadata": {
+        "title": "Metagegevens van bestanden lezen",
+        "description": "Bekijk container, duur, bitrate en andere bestandsdetails."
+      },
+      "changeTheme": {
+        "title": "Wijzig thema",
+        "description": "Kies een licht of donker thema voor EncodeX."
+      },
+      "setUpAiProvider": {
+        "title": "AI-provider instellen",
+        "description": "Sluit een AI-provider aan voor slimmere Copilot-planning."
+      },
+      "configureHardwareAcceleration": {
+        "title": "Configureer hardwareversnelling",
+        "description": "Kies hoe EncodeX uw GPU gebruikt."
+      },
+      "enableMcpServer": {
+        "title": "Schakel MCP-server in",
+        "description": "Laat lokale MCP-clients EncodeX beheren."
+      },
+      "manageStartupNotifications": {
+        "title": "Beheer het opstarten en meldingen",
+        "description": "Beheer het opstartgedrag en bureaubladmeldingen."
+      },
+      "viewLogs": {
+        "title": "Bekijk logboeken",
+        "description": "Open de applicatielogconsole."
+      },
+      "searchErrors": {
+        "title": "Zoekfouten",
+        "description": "Filter logs op waarschuwingen en fouten."
+      },
+      "reviewOperationHistory": {
+        "title": "Bekijk de operatiegeschiedenis",
+        "description": "Controleer het audittraject voor voltooide bewerkingen."
+      },
+      "downloadLogs": {
+        "title": "Logboeken downloaden",
+        "description": "Sla de huidige logs op als tekstbestand."
+      },
+      "checkVersion": {
+        "title": "Controleer versie",
+        "description": "Bekijk welke versie van EncodeX is geïnstalleerd."
+      },
+      "viewBuildInfo": {
+        "title": "Bekijk bouwinformatie",
+        "description": "Controleer de builddetails voor deze installatie."
+      },
+      "readAboutEncodeX": {
+        "title": "Lees meer over EncodeX",
+        "description": "Meer informatie over EncodeX."
+      }
+    }
+  },
+  "history": {
+    "title": "Operatie Geschiedenis",
+    "search": "Zoekbewerkingen",
+    "empty": "Er zijn geen bewerkingen die overeenkomen met de huidige filters.",
+    "clearConfirm": "Alle bedieningsgeschiedenis wissen?",
+    "refresh": "Vernieuwen",
+    "clear": "Geschiedenis wissen",
+    "remove": "Verwijderen",
+    "details": "Details",
+    "noSelection": "Selecteer een bewerking om de details ervan te bekijken.",
+    "count": "{{count}} bewerkingen",
+    "filteredCount": "{{count}} van {{total}} bewerkingen",
+    "status": "Status",
+    "family": "Operatie",
+    "source": "Bron",
+    "started": "Gestart",
+    "duration": "Duur",
+    "input": "Invoer",
+    "outputs": "Uitgangen",
+    "error": "Fout",
+    "metadata": "Metagegevens",
+    "sort": "Sorteren",
+    "allStatuses": "Alle statussen",
+    "allFamilies": "Alle operaties",
+    "allSources": "Alle bronnen",
+    "sortNewest": "Nieuwste eerst",
+    "sortOldest": "Oudste eerst",
+    "sortLongest": "Langste eerst",
+    "sortShortest": "Kortste eerst",
+    "sortName": "Naam A-Z",
+    "statusLabels": {
+      "succeeded": "Geslaagd",
+      "failed": "Mislukt",
+      "cancelled": "Geannuleerd"
+    },
+    "familyLabels": {
+      "convert": "Converteren",
+      "audioExtract": "Audio-extractie",
+      "imageCompress": "Beeldcompressie",
+      "videoCut": "Video-opname",
+      "remux": "Remux",
+      "demux": "Demux",
+      "batch": "Batch-wachtrij",
+      "automation": "Automatisering",
+      "mcp": "MCP"
+    },
+    "sourceLabels": {
+      "gui": "Interface",
+      "mcp": "MCP",
+      "automation": "Automatisering"
+    }
   }
 }

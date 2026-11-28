@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "コパイロット",
-    "automations": "オートメーション"
+    "automations": "オートメーション",
+    "history": "履歴"
   },
   "dashboard": {
     "welcome": "EncodeX へようこそ",
@@ -46,7 +47,37 @@
     "descRemux": "ストリームを無損失で新しいコンテナーに移します",
     "descDemux": "ファイルのストリームを個別の出力ファイルに分割します",
     "descCopilot": "目標を説明して変換を計画する",
-    "descAutomations": "ビジュアルキャンバスで再利用可能な変換パイプラインを構築"
+    "descAutomations": "ビジュアルキャンバスで再利用可能な変換パイプラインを構築",
+    "actions": {
+      "viewSwitcher": "表示を選択",
+      "dashboard": "ダッシュボード",
+      "quickLinks": "クイックリンク"
+    },
+    "edit": {
+      "edit": "編集",
+      "done": "完了",
+      "hint": "カードをドラッグして並べ替えられます。各カードのグループメニューで整理できます。",
+      "dragHandle": "{{title}} を移動",
+      "group": "グループ",
+      "newGroup": "新しいグループ…",
+      "groupName": "グループ名",
+      "create": "作成",
+      "rename": "名前を変更",
+      "delete": "削除",
+      "resetLayout": "レイアウトをリセット",
+      "groups": "グループ",
+      "newGroupTitle": "グループを作成",
+      "renameGroupTitle": "グループの名前を変更",
+      "deleteGroupTitle": "グループを削除",
+      "deleteGroupMessage": "このグループのカードはグループから解除されます。",
+      "cardCount": "{{count}} 枚のカード",
+      "cancel": "キャンセル"
+    },
+    "groups": {
+      "favourites": "お気に入り",
+      "ungrouped": "すべてのツール"
+    },
+    "descHistory": "成功したオペレーション、失敗したオペレーション、キャンセルされたオペレーションを確認する"
   },
   "gettingStarted": {
     "hint": "はじめてですか？",
@@ -1508,5 +1539,315 @@
     "canvasNodeMove": "選択したノードを {{direction}} に移動しました。新しい位置: x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Enter または Space で接続線を選択します。Delete で削除するか、Escape でキャンセルできます。",
     "canvasHandleLabel": "ハンドル"
+  },
+  "quickLinks": {
+    "title": "クイックリンク",
+    "cardAria": "{{title}} を開く",
+    "links": {
+      "chatWithCopilot": {
+        "title": "副操縦士とチャットする",
+        "description": "質問するか、メディアで何をしたいのか説明してください。"
+      },
+      "describeGoal": {
+        "title": "目標を説明する",
+        "description": "目標をわかりやすい言葉で説明し、Copilot に作業の準備をさせます。"
+      },
+      "planConversion": {
+        "title": "変換を計画する",
+        "description": "目標をキューに追加する前に確認できる計画に変換します。"
+      },
+      "findMomentInVideo": {
+        "title": "ビデオ内の瞬間を見つける",
+        "description": "ビデオのトランスクリプトを検索して、必要な部分にジャンプします。"
+      },
+      "searchTranscript": {
+        "title": "トランスクリプトの検索",
+        "description": "覚えている単語やフレーズのトランスクリプトを調べます。"
+      },
+      "translateSubtitles": {
+        "title": "字幕を翻訳する",
+        "description": "字幕ファイルを別の言語に翻訳します。"
+      },
+      "saveChat": {
+        "title": "チャットを保存する",
+        "description": "現在の副操縦士の会話は後で保存してください。"
+      },
+      "convertVideo": {
+        "title": "ビデオを変換する",
+        "description": "選択した形式、品質、サイズでビデオを再エンコードします。"
+      },
+      "convertAudio": {
+        "title": "オーディオを変換する",
+        "description": "オーディオ ファイルの形式、コーデック、またはビットレートを変更します。"
+      },
+      "compressVideo": {
+        "title": "ビデオを圧縮する",
+        "description": "結果を視聴可能な状態に保ちながら、ビデオのファイル サイズを削減します。"
+      },
+      "useConversionProfile": {
+        "title": "変換プロファイルを使用する",
+        "description": "エンコード設定を入力するプリセットを選択します。"
+      },
+      "createCustomProfile": {
+        "title": "カスタムプロファイルの作成",
+        "description": "独自のエンコード設定を再利用可能なプロファイルとして保存します。"
+      },
+      "losslessCopy": {
+        "title": "ロスレスコピー",
+        "description": "再エンコードせずにストリームをコピーして、元の品質を維持します。"
+      },
+      "speedUpWithGpu": {
+        "title": "GPUによる高速化",
+        "description": "ハードウェア アクセラレーションを使用してエンコードを高速化します。"
+      },
+      "changeContainer": {
+        "title": "再エンコードせずにコンテナを変更する",
+        "description": "MP4 や MKV などのコンテナを再エンコードせずに切り替えます。"
+      },
+      "addAudioToVideo": {
+        "title": "ビデオにオーディオを追加する",
+        "description": "外部オーディオ トラックをビデオに添付します。"
+      },
+      "mergeAudioAndVideo": {
+        "title": "オーディオとビデオを結合する",
+        "description": "別々のオーディオ トラックとビデオ トラックを 1 つのファイルに結合します。"
+      },
+      "addSubtitles": {
+        "title": "字幕を追加する",
+        "description": "画像を変更せずにビデオに字幕トラックを追加します。"
+      },
+      "syncAudioDelay": {
+        "title": "同期オーディオ遅延",
+        "description": "オーディオを前後に移動してビデオと並べます。"
+      },
+      "copyStreams": {
+        "title": "ストリームのコピー",
+        "description": "保持するストリームを選択し、そのままコピーします。"
+      },
+      "extractStreams": {
+        "title": "ストリームの抽出",
+        "description": "ビデオ、オーディオ、または字幕トラックを個別のファイルに抽出します。"
+      },
+      "splitAudioChannels": {
+        "title": "オーディオチャンネルの分割",
+        "description": "マルチチャンネル オーディオ トラックを個別のファイルに分割します。"
+      },
+      "saveSubtitles": {
+        "title": "字幕の保存",
+        "description": "字幕ストリームをスタンドアロンの字幕ファイルに抽出します。"
+      },
+      "exportTracksSeparately": {
+        "title": "トラックを個別にエクスポートする",
+        "description": "選択した各トラックを独自の出力ファイルに書き込みます。"
+      },
+      "trimVideo": {
+        "title": "ビデオのトリミング",
+        "description": "保存したい部分だけビデオを切り取ります。"
+      },
+      "cutClipByTime": {
+        "title": "時間ごとにクリップをカット",
+        "description": "クリップの正確な開始時間と終了時間を設定します。"
+      },
+      "cutByDuration": {
+        "title": "期間ごとにカット",
+        "description": "終了時間の代わりに開始時間とクリップの長さを設定します。"
+      },
+      "previewClip": {
+        "title": "クリップのプレビュー",
+        "description": "トリミング結果を保存する前に確認してください。"
+      },
+      "playClip": {
+        "title": "クリップを再生する",
+        "description": "タイムライン上で選択したセグメントを再生します。"
+      },
+      "removeAudioFromClip": {
+        "title": "クリップからオーディオを削除",
+        "description": "オーディオ トラックを省略して、サイレント クリップを作成します。"
+      },
+      "extractAudioFromVideo": {
+        "title": "ビデオから音声を抽出する",
+        "description": "ビデオの音声を独自のファイルとして保存します。"
+      },
+      "saveAudioAsMp3": {
+        "title": "オーディオを MP3 として保存",
+        "description": "抽出したオーディオを MP3 形式でエクスポートします。"
+      },
+      "chooseAudioQuality": {
+        "title": "オーディオ品質を選択してください",
+        "description": "抽出されたオーディオのコーデックとビットレートを選択します。"
+      },
+      "compressImage": {
+        "title": "画像を圧縮する",
+        "description": "見栄えを維持しながら画像を小さくします。"
+      },
+      "resizeImage": {
+        "title": "画像のサイズを変更する",
+        "description": "画像を保存する前に画像の寸法を変更します。"
+      },
+      "changeImageFormat": {
+        "title": "画像フォーマットの変更",
+        "description": "画像を別のファイル形式に変換します。"
+      },
+      "newBatchTask": {
+        "title": "新しいバッチタスク",
+        "description": "共有設定を使用して新しい複数ファイル ジョブを開始します。"
+      },
+      "runBatchJobs": {
+        "title": "バッチジョブの実行",
+        "description": "キューを開始し、すべてのジョブを順番に処理します。"
+      },
+      "queueFiles": {
+        "title": "キューファイル",
+        "description": "ファイルまたはフォルダーをバッチ キューに追加します。"
+      },
+      "retryFailedJobs": {
+        "title": "失敗したジョブを再試行する",
+        "description": "問題を修正した後、失敗したジョブを再度実行します。"
+      },
+      "importQueue": {
+        "title": "インポートキュー",
+        "description": "保存されたバッチ キューをファイルからロードします。"
+      },
+      "editJobOptions": {
+        "title": "ジョブオプションの編集",
+        "description": "まだキューにあるジョブのエンコード オプションを変更します。"
+      },
+      "runJobsThenShutDown": {
+        "title": "ジョブを実行してからシャットダウンする",
+        "description": "バッチを終了させてから、コンピューターの電源を切ります。"
+      },
+      "buildAutomation": {
+        "title": "ビルドオートメーション",
+        "description": "キャンバス上のメディア ノードから再利用可能なパイプラインを設計します。"
+      },
+      "runAutomation": {
+        "title": "自動化の実行",
+        "description": "選択したオートメーションを入力ファイルに対して実行します。"
+      },
+      "viewRunHistory": {
+        "title": "実行履歴の表示",
+        "description": "過去の自動化の実行とその結果を確認します。"
+      },
+      "saveAutomationPipeline": {
+        "title": "自動化パイプラインの保存",
+        "description": "後で再度実行できるようにパイプラインを保存します。"
+      },
+      "inspectMediaFile": {
+        "title": "メディアファイルを検査する",
+        "description": "ファイルを開いて、その中に何が入っているかを確認します。"
+      },
+      "viewStreamDetails": {
+        "title": "ストリームの詳細を表示する",
+        "description": "ビデオ、オーディオ、字幕のストリームを検査します。"
+      },
+      "checkCodecs": {
+        "title": "コーデックをチェックする",
+        "description": "ファイルがどのコーデックを使用しているかを確認してください。"
+      },
+      "readFileMetadata": {
+        "title": "ファイルのメタデータの読み取り",
+        "description": "コンテナ、再生時間、ビットレート、その他のファイルの詳細を表示します。"
+      },
+      "changeTheme": {
+        "title": "テーマの変更",
+        "description": "EncodeX の明るいテーマまたは暗いテーマを選択します。"
+      },
+      "setUpAiProvider": {
+        "title": "AI プロバイダーのセットアップ",
+        "description": "AI プロバイダーに接続して、よりスマートな Copilot 計画を実現します。"
+      },
+      "configureHardwareAcceleration": {
+        "title": "ハードウェア アクセラレーションの構成",
+        "description": "EncodeX が GPU を使用する方法を選択します。"
+      },
+      "enableMcpServer": {
+        "title": "MCP サーバーを有効にする",
+        "description": "ローカル MCP クライアントに EncodeX を制御させます。"
+      },
+      "manageStartupNotifications": {
+        "title": "起動と通知の管理",
+        "description": "起動動作とデスクトップ通知を制御します。"
+      },
+      "viewLogs": {
+        "title": "ログの表示",
+        "description": "アプリケーション ログ コンソールを開きます。"
+      },
+      "searchErrors": {
+        "title": "検索エラー",
+        "description": "警告とエラーのログをフィルタリングします。"
+      },
+      "reviewOperationHistory": {
+        "title": "操作履歴の確認",
+        "description": "完了した操作の監査証跡を確認します。"
+      },
+      "downloadLogs": {
+        "title": "ログのダウンロード",
+        "description": "現在のログをテキスト ファイルとして保存します。"
+      },
+      "checkVersion": {
+        "title": "バージョンの確認",
+        "description": "EncodeX のどのバージョンがインストールされているかを確認します。"
+      },
+      "viewBuildInfo": {
+        "title": "ビルド情報の表示",
+        "description": "このインストールのビルドの詳細を確認してください。"
+      },
+      "readAboutEncodeX": {
+        "title": "EncodeX について読む",
+        "description": "EncodeX について詳しくは、こちらをご覧ください。"
+      }
+    }
+  },
+  "history": {
+    "title": "操作履歴",
+    "search": "オペレーションを検索",
+    "empty": "現在のフィルターに一致する操作はありません。",
+    "clearConfirm": "すべての操作履歴を消去しますか？",
+    "refresh": "更新",
+    "clear": "履歴を消去",
+    "remove": "削除",
+    "details": "詳細",
+    "noSelection": "操作を選択して詳細を表示します。",
+    "count": "{{count}}件の操作",
+    "filteredCount": "{{total}}件中{{count}}件のオペレーション",
+    "status": "ステータス",
+    "family": "操作",
+    "source": "出典",
+    "started": "開始",
+    "duration": "期間",
+    "input": "入力",
+    "outputs": "出力",
+    "error": "エラー",
+    "metadata": "メタデータ",
+    "sort": "並べ替え",
+    "allStatuses": "すべてのステータス",
+    "allFamilies": "すべてのオペレーション",
+    "allSources": "すべてのソース",
+    "sortNewest": "新しいものから表示",
+    "sortOldest": "古い順",
+    "sortLongest": "長い順",
+    "sortShortest": "短い順",
+    "sortName": "名前（A～Z）",
+    "statusLabels": {
+      "succeeded": "成功しました",
+      "failed": "失敗",
+      "cancelled": "キャンセル済み"
+    },
+    "familyLabels": {
+      "convert": "変換",
+      "audioExtract": "音声抽出",
+      "imageCompress": "画像圧縮",
+      "videoCut": "動画カット",
+      "remux": "リミックス",
+      "demux": "デマルチプレクサ",
+      "batch": "バッチキュー",
+      "automation": "自動化",
+      "mcp": "CD46抗原"
+    },
+    "sourceLabels": {
+      "gui": "インターフェイス",
+      "mcp": "CD46抗原",
+      "automation": "自動化"
+    }
   }
 }

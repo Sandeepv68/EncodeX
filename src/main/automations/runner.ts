@@ -3,12 +3,15 @@
  */
 
 import { Logger } from '../../shared/logger';
+import { LOG_HISTORY_RECORD_FAILED } from '../../shared/log-constants';
 import { IPC } from '../../shared/ipc-channels';
 import { aggregateProgress } from '../queue/mux-job-runner';
 import { checkBmfAvailable } from '../transcoders/bmf-availability';
 import { compileAutomation } from '../../shared/automations/compile';
 import { newAutomationRunId } from '../../shared/automations/defaults';
 import { parseAutomationDefinition } from '../../shared/automations/schema';
+import { HISTORY_LIMITS } from '../../shared/history/limits';
+import type { HistoryStatus } from '../../shared/history/types';
 import { createError, ErrorCode, ERROR_MESSAGES, cancelledError, formatError } from '../../shared/errors';
 import type {
   AutomationDefinition,
@@ -51,8 +54,29 @@ function isCancelledError(err: unknown): boolean {
   return typeof err === 'object' && err !== null && (err as { code?: string }).code === ErrorCode.CANCELLED;
 }
 
+function historyStatus(status: AutomationRunStatus): HistoryStatus | undefined {
+  if (status === 'succeeded' || status === 'failed' || status === 'cancelled') return status;
+  return undefined;
+}
+
+function historyError(err: unknown): string | undefined {
+  if (typeof err === 'string') return err;
+  if (err && typeof err === 'object' && 'message' in err) {
+    const message = (err as { message?: unknown }).message;
+    if (typeof message === 'string') return message;
+  }
+  return undefined;
+}
+
+function historyErrorCode(err: unknown): string | undefined {
+  if (!err || typeof err !== 'object' || !('code' in err)) return undefined;
+  const code = (err as { code?: unknown }).code;
+  return typeof code === 'string' ? code : undefined;
+}
+
 export class AutomationRunner {
   private readonly eventBus: AutomationEventBus;
+  private readonly historyRecorder?: AutomationRunnerOptions['historyRecorder'];
   private readonly transcoderFactory?: AutomationTranscoderFactory;
   private readonly checkBmfAvailability: () => { available: boolean; missing: string[] };
   private readonly runIdGenerator: () => string;
@@ -60,6 +84,7 @@ export class AutomationRunner {
 
   constructor(private readonly options: AutomationRunnerOptions) {
     this.eventBus = options.eventBus ?? new AutomationEventBus();
+    this.historyRecorder = options.historyRecorder;
     this.transcoderFactory = options.transcoderFactory;
     this.checkBmfAvailability = options.checkBmfAvailability ?? checkBmfAvailable;
     this.runIdGenerator = options.runIdGenerator ?? newAutomationRunId;
@@ -97,6 +122,11 @@ export class AutomationRunner {
     const active: ActiveAutomationRun = {
       runId,
       automationId: parsed.id,
+      automationName: parsed.name,
+      inputPath: plan.inputPath,
+      outputPath: plan.outputPath,
+      stepCount: plan.steps.length,
+      startedAt: Date.now(),
       runDirectory,
       keepIntermediateFiles: parsed.settings.keepIntermediateFiles,
       cancelled: false,
@@ -161,11 +191,41 @@ export class AutomationRunner {
     this.eventBus.emitProgress(payload);
   }
 
+  private recordHistory(active: ActiveAutomationRun, status: AutomationRunStatus, extra: Partial<AutomationProgressEvent>): void {
+    const recorder = this.historyRecorder;
+    const entryStatus = historyStatus(status);
+    if (!recorder || !entryStatus) return;
+    const message = extra.error ? historyError(extra.error) : undefined;
+    const code = extra.error ? historyErrorCode(extra.error) : undefined;
+    const outputs = [...new Set([active.outputPath, extra.outputPath].filter(Boolean))] as string[];
+    void recorder
+      .record({
+        family: 'automation',
+        source: 'automation',
+        status: entryStatus,
+        startedAt: active.startedAt,
+        finishedAt: Date.now(),
+        inputs: active.inputPath ? [active.inputPath] : [],
+        outputs: outputs.slice(0, HISTORY_LIMITS.maxPaths),
+        runId: active.runId,
+        metadata: {
+          automationId: active.automationId,
+          ...(active.automationName ? { automationName: active.automationName } : {}),
+          ...(active.stepCount !== undefined ? { steps: active.stepCount } : {}),
+        },
+        ...(message ? { error: { message, ...(code ? { code } : {}) } } : {}),
+      })
+      .catch((recordError: unknown) => {
+        log.warn(LOG_HISTORY_RECORD_FAILED, active.runId, historyError(recordError) ?? String(recordError));
+      });
+  }
+
   private finishRun(active: ActiveAutomationRun, status: AutomationRunStatus, extra: Partial<AutomationProgressEvent> = {}): void {
     if (active.terminal) return;
     active.terminal = true;
     active.cancelCurrent = undefined;
     this.emitRun(active, status, extra);
+    this.recordHistory(active, status, extra);
   }
 
   private async executePlan(active: ActiveAutomationRun, definition: AutomationDefinition, plan: AutomationPlan): Promise<void> {

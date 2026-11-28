@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copilot",
-    "automations": "Nammineersinnaasut"
+    "automations": "Nammineersinnaasut",
+    "history": "null"
   },
   "dashboard": {
     "welcome": "EncodeX-imut tikilluaritsi",
@@ -46,7 +47,37 @@
     "descRemux": "Stream-it timersoqutissanut nuakkut, tamannalu anneralugu",
     "descDemux": "Fileup stream-it annilarutinut immikkoortinnaveersaarpaa",
     "descCopilot": "Plaaneri tassaaneq allaqillugu allanngortitaasunik",
-    "descAutomations": "Nutsikkat allanngortitsinermut aqumusseqatigiissutit takuneqarsinnaasut sanaakkit"
+    "descAutomations": "Nutsikkat allanngortitsinermut aqumusseqatigiissutit takuneqarsinnaasut sanaakkit",
+    "actions": {
+      "viewSwitcher": "Toqqaruk takussutissiaq",
+      "dashboard": "Oqarfigissaaneq",
+      "quickLinks": "Attaveqaat akikkaartut"
+    },
+    "edit": {
+      "edit": "Allanngoruk",
+      "done": "Naammassineqartoq",
+      "hint": "Kortit igitsiguk inissiaat allanngortinniarlugit. Korti tamarmik gruppi toqqarnerat atorlugit immikkoortoqqusiguk.",
+      "dragHandle": "Nuussikuk {{title}}",
+      "group": "Gruppi",
+      "newGroup": "Gruppi nutaaq…",
+      "groupName": "Gruppi ateq",
+      "create": "Uggunnaaruk",
+      "rename": "Ateq allanngoruk",
+      "delete": "Peeruk",
+      "resetLayout": "Aaqqissuussineq taqqorigit",
+      "groups": "Gruppit",
+      "newGroupTitle": "Gruppi uggunnaaruk",
+      "renameGroupTitle": "Gruppi ateq allanngoruk",
+      "deleteGroupTitle": "Gruppi peeruk",
+      "deleteGroupMessage": "Kortit gruppimiittut gruppeqanngiartut.",
+      "cardCount": "{{count}} kortit",
+      "cancel": "Piumasuunngit"
+    },
+    "groups": {
+      "favourites": "Kissaateqartut",
+      "ungrouped": "Atortorissaarutit tamarmik"
+    },
+    "descHistory": "null"
   },
   "gettingStarted": {
     "hint": "Nutaaq?",
@@ -1508,5 +1539,315 @@
     "canvasNodeMove": "Node toqqakkat {{direction}}-mut nuunneqarpoq. Sumiiffik nutaaq, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Enter imaluunniit Space tooruk sinaaq toqqarniarlugu. Kingorna Delete tooruk peersinniarlugu Escape-luuni atorunnaarsinniarlugu.",
     "canvasHandleLabel": "Tigusiffik"
+  },
+  "quickLinks": {
+    "title": "Attaveqaat akikkaartut",
+    "cardAria": "Ammat {{title}}",
+    "links": {
+      "chatWithCopilot": {
+        "title": "Copilot oqaloqatigiuk",
+        "description": "Apeqquteqarit imaluunniit tusagassiuutini qanoq iliorniarnersutit nassuiarlugu."
+      },
+      "describeGoal": {
+        "title": "Anguniagaq nassuiarlugu",
+        "description": "Anguniagaq oqaatsit atorlugit nassuiarlugu Copilot-illu suliassaq piareersarlugu."
+      },
+      "planConversion": {
+        "title": "Pilersaarusiorlugu allanngortitsineq",
+        "description": "Anguniagaq pilersaarummut allanngortiguk, taanna queue-mut ilanngunneqannginnerani nalilersorsinnaallugu."
+      },
+      "findMomentInVideo": {
+        "title": "Videomi piffissaq nassaariuk",
+        "description": "Videomik allaaserisaq ujaruk, pisariaqartinneqartumut ingerlaqqinnissamut."
+      },
+      "searchTranscript": {
+        "title": "Ujaasineq Allaaserisaq",
+        "description": "Oqaatsit imaluunniit oqaaseqatigiit eqqaamasatit allattorsimaffimmiittut misissoruk."
+      },
+      "translateSubtitles": {
+        "title": "Oqaasersiuussineq Allagartat",
+        "description": "Allagarsiivimmi filit oqaatsinut allanut nutserneqassapput."
+      },
+      "saveChat": {
+        "title": "Oqaloqatigiinneq annaakkit",
+        "description": "Ullumikkut Copilot-imik oqaloqatigiinneq kingusinnerusukkut ilanngukkit."
+      },
+      "convertVideo": {
+        "title": "Videomik allanngortitsineq",
+        "description": "Videomik toqqakkannik formatimik, pitsaassutsimik aamma annertussusilimmik kodeqarit."
+      },
+      "convertAudio": {
+        "title": "Audio allanngortiguk",
+        "description": "Nipit filiata formatia, codec imaluunniit bitrate allanngortiguk."
+      },
+      "compressVideo": {
+        "title": "Video komprimererlugu",
+        "description": "Videop filiata annertussusaa annikillisikkit, taamaalillunilu inerneq isiginnaarneqarsinnaalluni."
+      },
+      "useConversionProfile": {
+        "title": "Konverteringsprofili atorlugu",
+        "description": "Toqqaruk preset, taanna ilinnut kode-mik inissititernernik immersuissaaq."
+      },
+      "createCustomProfile": {
+        "title": "Profilimik naleqqussagaasumik pilersitsineq",
+        "description": "Nammineq kode-mik inissititersimasatit atorneqarsinnaasutut profilitut allattukkit."
+      },
+      "losslessCopy": {
+        "title": "Taperneqanngitsumik Kopi",
+        "description": "Stream-it kodeqartinnagit kopierlugit, pitsaassutsip aallaqqaasiutaasoq ataqqiniarlugu."
+      },
+      "speedUpWithGpu": {
+        "title": "GPU atorlugu sukkassuseq",
+        "description": "Hardware-mik akulerussineq atorlugu sukkanerusumik kodeqarsinnaavutit."
+      },
+      "changeContainer": {
+        "title": "Container-imik allanngortitsineq Kode-qanngitsumik",
+        "description": "Container-inik soorlu MP4-mik imaluunniit MKV-mik allanngortitsineq kode-lerneq ajorlugit."
+      },
+      "addAudioToVideo": {
+        "title": "Videomut Audio ilanngukkit",
+        "description": "Videomut avatangiisinut tunngasunik nipilersorneq ilanngukkit."
+      },
+      "mergeAudioAndVideo": {
+        "title": "Audio aamma Video ataatsimoortillugit",
+        "description": "Nipit aamma videot immikkut ittut ataatsimoortillugit ataatsimoortillugit."
+      },
+      "addSubtitles": {
+        "title": "Allagarsiinerit ilanngukkit",
+        "description": "Assilisaq allanngortinnagu videomut allaaserisat ilanngukkit."
+      },
+      "syncAudioDelay": {
+        "title": "Synkronisering Aud-ip kinguarsarneqarnera",
+        "description": "Nipit siusinnerusukkut kingusinnerusukkulluunniit allanngortiguk videomut naleqqussarniarlugu."
+      },
+      "copyStreams": {
+        "title": "Kopi Streams",
+        "description": "Stream-it sorliit pigissanerlugit toqqaruk aammalu as-is-imik kopierlugit."
+      },
+      "extractStreams": {
+        "title": "Strøm-it uuttortarlugit",
+        "description": "Video, nipilersuutit imaluunniit allagartat immikkut filinut ikkukkit."
+      },
+      "splitAudioChannels": {
+        "title": "Nipit kanaliinik avitseqatigiinneq",
+        "description": "Nipilersorneq arlalinnik kanalilik filinut ataasiakkaanut agguaakkit."
+      },
+      "saveSubtitles": {
+        "title": "Allagarsiussat annaakkit",
+        "description": "Allagarsiivimmi stream-it nammineerluni allagarsiivimmi filinut uuttortaruk."
+      },
+      "exportTracksSeparately": {
+        "title": "Export Tracks Immikkut",
+        "description": "Track-it toqqarneqarsimasut ataasiakkaat nammineq output-fil-imut allattukkit."
+      },
+      "trimVideo": {
+        "title": "Videomik ikkussineq",
+        "description": "Videomik allamut ikkukkit, ilaasoq pigiinnarniarlugu."
+      },
+      "cutClipByTime": {
+        "title": "Piffissaq malillugu Klippi",
+        "description": "Klippimut piffissaq eqqortoq aallartiffiusoq aamma naggatissaq inissiguk."
+      },
+      "cutByDuration": {
+        "title": "Sivisussusaa malillugu ikkussorneqarpoq",
+        "description": "Piffissaq aallartiffissaq aamma klippip sivisussusaa piffissaq naammassiffissaq taarsiullugu inissiguk."
+      },
+      "previewClip": {
+        "title": "Siusinnerusukkut Clip",
+        "description": "Inerneq trimmeqarsimasoq misissukkit, taanna annaannginnerani."
+      },
+      "playClip": {
+        "title": "Klip-imik tusarnaartitsineq",
+        "description": "Piffissap ingerlanerani immikkoortoq toqqarneqarsimasoq tusarnaartitsissutigiuk."
+      },
+      "removeAudioFromClip": {
+        "title": "Clip-imiit Audio-mik piiaaneq",
+        "description": "Nipilersorneq qimallugu klippimik nipimik pilersitsigit."
+      },
+      "extractAudioFromVideo": {
+        "title": "Videomiit Audio uuttortarlugu",
+        "description": "Videomiit nipilersorneq nammineq filitut allattorlugu."
+      },
+      "saveAudioAsMp3": {
+        "title": "Nipit MP3-tut allattorlugit",
+        "description": "Nipit uuttorneqartut MP3-mik formateqarlutik avammut tuniukkit."
+      },
+      "chooseAudioQuality": {
+        "title": "Toqqaruk Nipit pitsaassusaat",
+        "description": "Nipit uuttorneqartut pillugit codec aamma bitrate toqqaruk."
+      },
+      "compressImage": {
+        "title": "Assilisaq komprimererlugu",
+        "description": "Assilisaq minnerulersikkit, pitsaasumik isikkoqarluni."
+      },
+      "resizeImage": {
+        "title": "Assip annertussusaa allanngortiguk",
+        "description": "Assip annaanneqarnissaa sioqqullugu annertussusaa allanngortiguk."
+      },
+      "changeImageFormat": {
+        "title": "Assip Formatia allanngortiguk",
+        "description": "Assilisaq allamik filformatimut allanngortiguk."
+      },
+      "newBatchTask": {
+        "title": "Nutaaq Batch-imik suliassaq",
+        "description": "Multi-file-imik suliaq nutaaq aallartiguk, inissititernerit ataatsimoorussat atorlugit."
+      },
+      "runBatchJobs": {
+        "title": "Batch-imik suliassanik ingerlatsineq",
+        "description": "Queue aallartiguk suliassallu tamarmik aaqqissuussamik suliariuk."
+      },
+      "queueFiles": {
+        "title": "Queue-filer",
+        "description": "Batch-queue-mut filit imaluunniit mappe ilanngukkit."
+      },
+      "retryFailedJobs": {
+        "title": "Suliassat kukkuneqarsimasut misilittarlugit",
+        "description": "Ajornartorsiut aaqqinneqareerpat suliassat kukkuneqarsimasut ingerlateqqikkit."
+      },
+      "importQueue": {
+        "title": "Import queue",
+        "description": "Filemit batch-queue-mik annaaneqarsimasoq ikkukkit."
+      },
+      "editJobOptions": {
+        "title": "Suliffiit toqqagassat allanngortiguk",
+        "description": "Suliffinnut suli queue-miittunut kode-lersinnaaneq allanngortiguk."
+      },
+      "runJobsThenShutDown": {
+        "title": "Run Jobs Taava Sulerlugu",
+        "description": "Batch-i naammassiniarlugu kingornalu qarasaasiaq qamillugu."
+      },
+      "buildAutomation": {
+        "title": "Automatiserineq sanaartorlugu",
+        "description": "Media-node-nit atorneqarsinnaasumik pipeline-mik lærred-imi sananeq."
+      },
+      "runAutomation": {
+        "title": "Automatiserineq ingerlatiguk",
+        "description": "Automatiserineq toqqarneqarsimasoq input-fil-imut atatillugu ingerlaguk."
+      },
+      "viewRunHistory": {
+        "title": "Run-ip oqaluttuassartaa takuuk",
+        "description": "Automatiserinermi ingerlaarnerit siornatigut aammalu taakku inerneri misissoruk."
+      },
+      "saveAutomationPipeline": {
+        "title": "Automatisering-imik pilersaarusiorneq",
+        "description": "Piffissaq annaakkit kingusinnerusukkut ingerlateqqissinnaajumallugu."
+      },
+      "inspectMediaFile": {
+        "title": "Mediafil misissoruk",
+        "description": "Filemik ammaruk, tassanilu suna imaqarnersoq takuuk."
+      },
+      "viewStreamDetails": {
+        "title": "Stream-ip kisitsisit takukkit",
+        "description": "Video, nipilersuutit aamma allaaserisat stream-it misissoruk."
+      },
+      "checkCodecs": {
+        "title": "Kodekit misissukkit",
+        "description": "Filemi codec-it sorliit atorneqarnersut misissukkit."
+      },
+      "readFileMetadata": {
+        "title": "Atuarlugu File Metadata",
+        "description": "Container, sivisussuseq, bitrate, aamma filit allat takukkit."
+      },
+      "changeTheme": {
+        "title": "Tema allanngortiguk",
+        "description": "EncodeX-imut tema qaammaarisoq imaluunniit qaammaarisoq toqqaruk."
+      },
+      "setUpAiProvider": {
+        "title": "AI-mik pilersuisoq atorlugu",
+        "description": "Copilot-imik pilersaarusiorneq pitsaanerusoq pillugu AI-mik pilersuisoq attaveqarfigiuk."
+      },
+      "configureHardwareAcceleration": {
+        "title": "Hardware-mik akulerussineq aaqqissuutikkit",
+        "description": "EncodeX-ip GPU-t qanoq atortarneraa toqqaruk."
+      },
+      "enableMcpServer": {
+        "title": "MCP-server-imik atuineq",
+        "description": "Lokalit MCP-klientit EncodeX-imik aqutsisinnaavaat."
+      },
+      "manageStartupNotifications": {
+        "title": "Aallartitsineq & nalunaarutit aqutsigit",
+        "description": "Aallartitsinermi pissusilersuutit aamma skrivebordimi nalunaarutit aqukkit."
+      },
+      "viewLogs": {
+        "title": "Logit takukkit",
+        "description": "Applikationit log-konsoliat ammaruk."
+      },
+      "searchErrors": {
+        "title": "Ujaasinermi Kukkunerit",
+        "description": "Misissuinerit aamma kukkunernut log-it filtererlugit."
+      },
+      "reviewOperationHistory": {
+        "title": "Ingerlatsinermi oqaluttuassartaq misissoqqissaarlugu",
+        "description": "Ingerlatsinerit naammassineqarsimasut pillugit kukkunersiuineq misissukkit."
+      },
+      "downloadLogs": {
+        "title": "Aaneqarsinnaavoq Logit",
+        "description": "Logit ullumikkut atuuttut allattukkatut allattorlugit."
+      },
+      "checkVersion": {
+        "title": "Versioni misissukkit",
+        "description": "EncodeX-ip sorleq versionia installerneqarsimanersoq takuuk."
+      },
+      "viewBuildInfo": {
+        "title": "Sanaartornermut paasissutissat takukkit",
+        "description": "Installernermut tassunga build-ip kisitsisit misissukkit."
+      },
+      "readAboutEncodeX": {
+        "title": "EncodeX pillugu atuarit",
+        "description": "EncodeX pillugu paasisaqarnerorusukkuit."
+      }
+    }
+  },
+  "history": {
+    "title": "null",
+    "search": "Ujarlerit",
+    "empty": "set\" is a keyword. It's a summary of \"set",
+    "clearConfirm": "null",
+    "refresh": "null",
+    "clear": "Toqqagassanut",
+    "remove": "Ataatsimiinerit pisussat piikit",
+    "details": "null",
+    "noSelection": "null",
+    "count": "{{count}} ingerlatsinerit",
+    "filteredCount": "null",
+    "status": "Qanuilinganinga",
+    "family": "null",
+    "source": "null",
+    "started": "null",
+    "duration": "null",
+    "input": "Naammangittuq Iliniku.",
+    "outputs": "null",
+    "error": "DVD ajutoorpoq",
+    "metadata": "null",
+    "sort": "null",
+    "allStatuses": "Inuit",
+    "allFamilies": "Inuit",
+    "allSources": "Inuit",
+    "sortNewest": "Siulliq Ateq",
+    "sortOldest": "Siulliq Ateq",
+    "sortLongest": "Siulliq Ateq",
+    "sortShortest": "Siulliq Ateq",
+    "sortName": "null",
+    "statusLabels": {
+      "succeeded": "Nalunairli tusarnaagaq.",
+      "failed": "Nalunairli itigaqtuq.",
+      "cancelled": "null"
+    },
+    "familyLabels": {
+      "convert": "null",
+      "audioExtract": "null",
+      "imageCompress": "Background image mode.",
+      "videoCut": "Tarrijaassaq",
+      "remux": "null",
+      "demux": "null",
+      "batch": "null",
+      "automation": "null",
+      "mcp": "null"
+    },
+    "sourceLabels": {
+      "gui": "Assiliartalimmik menutalik anillaffigilerpat taavalu Text-itut allaffissaq aallartillugu",
+      "mcp": "null",
+      "automation": "null"
+    }
   }
 }

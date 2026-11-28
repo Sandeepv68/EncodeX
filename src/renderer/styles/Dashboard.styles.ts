@@ -66,31 +66,33 @@ export const DashboardSubtitle = styled(Typography)(({ theme }) => ({
 }));
 
 export const FeatureCard = styled(Card, {
-  shouldForwardProp: (prop) => prop !== 'gradientAngle' && prop !== '$animationDelay',
-})<{ gradientAngle?: number; $animationDelay?: string }>(({ theme, gradientAngle = 180, $animationDelay }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  width: '100%',
-  position: 'relative',
-  overflow: 'hidden',
-  backgroundColor: theme.palette.background.paper,
-  backgroundImage: `linear-gradient(${gradientAngle}deg, ${theme.palette.primary.main}${theme.palette.mode === 'dark' ? '0F' : '1A'} 0%, ${theme.palette.background.paper} 55%)`,
-  border: `${theme.typography.pxToRem(1)} solid`,
-  borderColor: theme.palette.divider,
-  boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
-  transition: 'box-shadow 0.2s, border-color 0.2s, transform 0.2s, background-image 0.2s',
-  animation: `${fadeSlideUp(theme)} 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards`,
-  animationDelay: $animationDelay,
-  '@media (prefers-reduced-motion: reduce)': {
-    animation: 'none',
-  },
-  '&:hover': {
-    borderColor: theme.palette.primary.main,
-    transform: `translateY(${theme.typography.pxToRem(-2)})`,
-    backgroundImage: `linear-gradient(${gradientAngle}deg, ${theme.palette.primary.main}${theme.palette.mode === 'dark' ? '1A' : '26'} 0%, ${theme.palette.background.paper} 65%)`,
-    boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_HOVER_DARK : SHADOWS(theme).SOFT_HOVER_LIGHT,
-  },
-}));
+  shouldForwardProp: (prop) => prop !== 'gradientAngle' && prop !== '$animationDelay' && prop !== '$static' && prop !== '$dragOverlay',
+})<{ gradientAngle?: number; $animationDelay?: string; $static?: boolean; $dragOverlay?: boolean }>(
+  ({ theme, gradientAngle = 180, $animationDelay, $static, $dragOverlay }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    position: 'relative',
+    overflow: 'hidden',
+    backgroundColor: theme.palette.background.paper,
+    backgroundImage: `linear-gradient(${gradientAngle}deg, ${theme.palette.primary.main}${theme.palette.mode === 'dark' ? '0F' : '1A'} 0%, ${theme.palette.background.paper} 55%)`,
+    border: `${theme.typography.pxToRem(1)} solid`,
+    borderColor: theme.palette.divider,
+    boxShadow: $dragOverlay ? theme.shadows[8] : theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_DARK : SHADOWS(theme).SOFT_LIGHT,
+    transition: 'box-shadow 0.2s, border-color 0.2s, transform 0.2s, background-image 0.2s',
+    animation: $static ? 'none' : `${fadeSlideUp(theme)} 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards`,
+    animationDelay: $static ? undefined : $animationDelay,
+    '@media (prefers-reduced-motion: reduce)': {
+      animation: 'none',
+    },
+    '&:hover': {
+      borderColor: theme.palette.primary.main,
+      transform: `translateY(${theme.typography.pxToRem(-2)})`,
+      backgroundImage: `linear-gradient(${gradientAngle}deg, ${theme.palette.primary.main}${theme.palette.mode === 'dark' ? '1A' : '26'} 0%, ${theme.palette.background.paper} 65%)`,
+      boxShadow: theme.palette.mode === 'dark' ? SHADOWS(theme).SOFT_HOVER_DARK : SHADOWS(theme).SOFT_HOVER_LIGHT,
+    },
+  }),
+);
 
 export const CardLink = styled(CardActionArea)(({ theme }) => ({
   padding: theme.spacing(2),

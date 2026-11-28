@@ -1202,3 +1202,11 @@ export const LOG_LOGS_GET_HISTORY = 'logsGetHistory:';
 export const LOG_LOGS_PUBLISH = 'logsPublishEntries:';
 /** @const {string} Logged when the renderer asks main to clear the shared log history. */
 export const LOG_LOGS_CLEAR = 'logsClear:';
+export const LOG_HISTORY_STORE_CORRUPT = 'Operation history store is unreadable:';
+export const LOG_HISTORY_STORE_RECOVERED = 'Operation history recovered from backup';
+export const LOG_HISTORY_THUMBNAIL_FAILED = 'Operation history thumbnail failed:';
+export const LOG_HISTORY_RECORD_FAILED = 'Failed to record operation history:';
+export const LOG_IPC_HISTORY_LIST = 'historyList called';
+export const LOG_IPC_HISTORY_GET_THUMBNAIL = 'historyGetThumbnail called';
+export const LOG_IPC_HISTORY_CLEAR = 'historyClear called';
+export const LOG_IPC_HISTORY_REMOVE = 'historyRemove called';

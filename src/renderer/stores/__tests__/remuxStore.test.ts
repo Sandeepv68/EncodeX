@@ -355,6 +355,7 @@ describe('remuxStore', () => {
         copyChapters: true,
       }),
       'FFMPEG',
+      { family: 'remux', source: 'gui', metadata: { container: expect.any(String) } },
     );
     expect(useRemuxStore.getState().isConverting).toBe(false);
     expect(useRemuxStore.getState().progress).toBeNull();
@@ -483,6 +484,7 @@ describe('remuxStore', () => {
         extraArgs: ['-c:a', 'copy'],
       }),
       'FFMPEG',
+      { family: 'remux', source: 'gui', metadata: { container: expect.any(String) } },
     );
   });
 
@@ -501,6 +503,7 @@ describe('remuxStore', () => {
       '/out/out.mkv',
       expect.objectContaining({ copy: false, videoFilters: ['fps=30', 'hue=s=0'] }),
       'FFMPEG',
+      { family: 'remux', source: 'gui', metadata: { container: expect.any(String) } },
     );
   });
 

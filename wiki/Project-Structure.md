@@ -164,7 +164,7 @@ src/
 │   │   ├── views/                     # Batch, Capabilities, Confirm, Convert, Error, Inspector, Job, Lab, MediaInfo, Plan, Profiles, Queue, Workflow
 │   │   ├── kit/                       # Shared view primitives
 │   │   └── standalone/                # Entry external hosts run in their iframe
-│   ├── components/                    # Shared UI components (72 modules: 54 top-level + copilot/ and settings/ subfolders) <!-- drift:renderer-components=83 --> <!-- drift:renderer-components-top=53 -->
+│   ├── components/                    # Shared UI components (72 modules: 54 top-level + copilot/ and settings/ subfolders) <!-- drift:renderer-components=92 --> <!-- drift:renderer-components-top=57 -->
 │   │   └── types.ts                   # Shared component prop shapes
 │   ├── constants/
 │   │   ├── shortcuts.ts               # 71 keyboard shortcuts registry (11 sections) + tooltip hints <!-- drift:shortcuts=71 --> <!-- drift:shortcut-sections=11 -->
@@ -173,11 +173,11 @@ src/
 │   │   └── types.ts                   # Codec option + progress subset types
 │   ├── i18n/                          # i18next config, RTL provider, 56 locales (36 base language subtags) <!-- drift:locales=56 --> <!-- drift:locale-subtags=36 -->
 │   │   └── types.ts                   # Locale metadata + flag component types
-│   ├── pages/                         # 13 code-split page components (Convert, Remux, Demux, Copilot, BatchQueue, Dashboard, MediaInfo, ImageCompress, AudioExtract, VideoCut, Settings, Logs, About) <!-- drift:renderer-pages=14 -->
+│   ├── pages/                         # 13 code-split page components (Convert, Remux, Demux, Copilot, BatchQueue, Dashboard, MediaInfo, ImageCompress, AudioExtract, VideoCut, Settings, Logs, About) <!-- drift:renderer-pages=15 -->
 │   │   └── types.ts                   # Page-level prop and view-model types
-│   ├── stores/                        # 21 Zustand stores (queue, muxQueue, conversion, settings, profile, terms, batchConfig, audioExtract, videoCut, logs, errors, toasts, update, task, dismissedAlerts, aiSettings, aiConnection, audit, copilotChats, remux, demux) <!-- drift:renderer-stores=22 -->
+│   ├── stores/                        # 21 Zustand stores (queue, muxQueue, conversion, settings, profile, terms, batchConfig, audioExtract, videoCut, logs, errors, toasts, update, task, dismissedAlerts, aiSettings, aiConnection, audit, copilotChats, remux, demux) <!-- drift:renderer-stores=24 -->
 │   │   └── types.ts                   # Zustand store state shapes + actions
-│   ├── styles/                        # Extracted MUI style constants per component (76 modules + Copilot/Settings subfolders) <!-- drift:renderer-styles=79 -->
+│   ├── styles/                        # Extracted MUI style constants per component (76 modules + Copilot/Settings subfolders) <!-- drift:renderer-styles=83 -->
 │   ├── utils/                         # formatters, preview cache helpers, easter egg dates, batch options
 │   │   └── types.ts                   # Shared renderer utility types
 │   └── types.ts                       # Color mode / theme context types
@@ -191,7 +191,7 @@ src/
     ├── types.ts                       # Domain interfaces (ConversionOptions, MediaInfo, ...)
     ├── terms.ts                       # Versioned Terms & Conditions (TERMS_VERSION)
     ├── logger.ts                      # Timestamped logger (main/renderer)
-    ├── log-constants.ts               # Shared log message constants (598 exported) <!-- drift:log-constants=598 -->
+    ├── log-constants.ts               # Shared log message constants (598 exported) <!-- drift:log-constants=606 -->
     ├── validation.ts                  # Time/scale/bitrate/range validation helpers
     ├── math.ts                        # Math helpers (clamp, round, percent)
     ├── progress.ts                    # Progress/ETA computation helpers

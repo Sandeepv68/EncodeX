@@ -31,7 +31,8 @@
     "remux": "Remux",
     "demux": "Demux",
     "copilot": "Copiloto",
-    "automations": "Automações"
+    "automations": "Automações",
+    "history": "História"
   },
   "dashboard": {
     "welcome": "Bem-vindo ao EncodeX",
@@ -46,7 +47,37 @@
     "descRemux": "Transfere os fluxos sem perdas para um novo contentor",
     "descDemux": "Divide os fluxos de um ficheiro em ficheiros de saída separados",
     "descCopilot": "Planeie conversões descrevendo uma meta",
-    "descAutomations": "Crie pipelines de conversão reutilizáveis num canvas visual"
+    "descAutomations": "Crie pipelines de conversão reutilizáveis num canvas visual",
+    "actions": {
+      "viewSwitcher": "Escolher uma vista",
+      "dashboard": "Painel",
+      "quickLinks": "Ligações rápidas"
+    },
+    "edit": {
+      "edit": "Editar",
+      "done": "Concluir",
+      "hint": "Arraste os cartões para os reorganizar. Utilize o menu de grupo de cada cartão para os organizar.",
+      "dragHandle": "Mover {{title}}",
+      "group": "Grupo",
+      "newGroup": "Novo grupo…",
+      "groupName": "Nome do grupo",
+      "create": "Criar",
+      "rename": "Renomear",
+      "delete": "Eliminar",
+      "resetLayout": "Repor a disposição",
+      "groups": "Grupos",
+      "newGroupTitle": "Criar um grupo",
+      "renameGroupTitle": "Renomear grupo",
+      "deleteGroupTitle": "Eliminar grupo",
+      "deleteGroupMessage": "Os cartões deste grupo ficarão sem grupo.",
+      "cardCount": "Número de cartões: {{count}}",
+      "cancel": "Cancelar"
+    },
+    "groups": {
+      "favourites": "Favoritos",
+      "ungrouped": "Todas as ferramentas"
+    },
+    "descHistory": "Reveja as operações bem-sucedidas, com falha e canceladas"
   },
   "gettingStarted": {
     "hint": "Novo por aqui?",
@@ -1508,5 +1539,315 @@
     "canvasNodeMove": "Nó selecionado movido {{direction}}. Nova posição, x: {{x}}, y: {{y}}",
     "canvasEdgeDescription": "Prima Enter ou Espaço para selecionar uma conexão. Depois, pode primir Delete para a remover ou Esc para cancelar.",
     "canvasHandleLabel": "Conector"
+  },
+  "quickLinks": {
+    "title": "Ligações rápidas",
+    "cardAria": "Abrir {{title}}",
+    "links": {
+      "chatWithCopilot": {
+        "title": "Converse com o Copiloto",
+        "description": "Faça uma pergunta ou descreva o que você deseja fazer com sua mídia."
+      },
+      "describeGoal": {
+        "title": "Descreva uma meta",
+        "description": "Explique uma meta em linguagem simples e deixe o Copilot preparar o trabalho."
+      },
+      "planConversion": {
+        "title": "Planeje uma conversão",
+        "description": "Transforme uma meta em um plano que você pode revisar antes de adicioná-lo à fila."
+      },
+      "findMomentInVideo": {
+        "title": "Encontre um momento em um vídeo",
+        "description": "Pesquise uma transcrição de vídeo para ir para a parte que você precisa."
+      },
+      "searchTranscript": {
+        "title": "Transcrição da pesquisa",
+        "description": "Procure nas transcrições palavras ou frases de que você se lembra."
+      },
+      "translateSubtitles": {
+        "title": "Traduzir legendas",
+        "description": "Traduza arquivos de legenda para outro idioma."
+      },
+      "saveChat": {
+        "title": "Salvar bate-papo",
+        "description": "Mantenha a conversa atual do Copilot para mais tarde."
+      },
+      "convertVideo": {
+        "title": "Converter vídeo",
+        "description": "Recodifique um vídeo com o formato, qualidade e tamanho escolhido."
+      },
+      "convertAudio": {
+        "title": "Converter áudio",
+        "description": "Altere o formato, codec ou taxa de bits de um arquivo de áudio."
+      },
+      "compressVideo": {
+        "title": "Compactar vídeo",
+        "description": "Reduza o tamanho do arquivo de um vídeo enquanto mantém o resultado assistível."
+      },
+      "useConversionProfile": {
+        "title": "Use um perfil de conversão",
+        "description": "Escolha uma predefinição que preencha as configurações de codificação para você."
+      },
+      "createCustomProfile": {
+        "title": "Criar perfil personalizado",
+        "description": "Salve suas próprias configurações de codificação como um perfil reutilizável."
+      },
+      "losslessCopy": {
+        "title": "Cópia sem perdas",
+        "description": "Copie fluxos sem recodificação para manter a qualidade original."
+      },
+      "speedUpWithGpu": {
+        "title": "Acelere com GPU",
+        "description": "Use aceleração de hardware para codificar mais rapidamente."
+      },
+      "changeContainer": {
+        "title": "Alterar contêiner sem recodificar",
+        "description": "Troque contêineres como MP4 ou MKV sem recodificação."
+      },
+      "addAudioToVideo": {
+        "title": "Adicionar áudio ao vídeo",
+        "description": "Anexe uma trilha de áudio externa a um vídeo."
+      },
+      "mergeAudioAndVideo": {
+        "title": "Mesclar áudio e vídeo",
+        "description": "Combine faixas separadas de áudio e vídeo em um arquivo."
+      },
+      "addSubtitles": {
+        "title": "Adicionar legendas",
+        "description": "Adicione faixas de legenda a um vídeo sem alterar a imagem."
+      },
+      "syncAudioDelay": {
+        "title": "Atraso de sincronização de áudio",
+        "description": "Mude o áudio mais cedo ou mais tarde para alinhá-lo com o vídeo."
+      },
+      "copyStreams": {
+        "title": "Copiar fluxos",
+        "description": "Escolha quais streams manter e copie-os como estão."
+      },
+      "extractStreams": {
+        "title": "Extrair fluxos",
+        "description": "Extraia faixas de vídeo, áudio ou legendas em arquivos separados."
+      },
+      "splitAudioChannels": {
+        "title": "Dividir canais de áudio",
+        "description": "Divida uma trilha de áudio multicanal em arquivos individuais."
+      },
+      "saveSubtitles": {
+        "title": "Salvar legendas",
+        "description": "Extraia fluxos de legendas para arquivos de legenda independentes."
+      },
+      "exportTracksSeparately": {
+        "title": "Exportar faixas separadamente",
+        "description": "Grave cada faixa selecionada em seu próprio arquivo de saída."
+      },
+      "trimVideo": {
+        "title": "Cortar vídeo",
+        "description": "Corte um vídeo até a parte que você deseja manter."
+      },
+      "cutClipByTime": {
+        "title": "Cortar clipe por tempo",
+        "description": "Defina horários exatos de início e término para um clipe."
+      },
+      "cutByDuration": {
+        "title": "Cortar por duração",
+        "description": "Defina um horário de início e duração do clipe em vez de um horário de término."
+      },
+      "previewClip": {
+        "title": "Visualizar clipe",
+        "description": "Verifique o resultado cortado antes de salvá-lo."
+      },
+      "playClip": {
+        "title": "Reproduzir clipe",
+        "description": "Reproduza o segmento selecionado na linha do tempo."
+      },
+      "removeAudioFromClip": {
+        "title": "Remover áudio do clipe",
+        "description": "Crie um clipe silencioso deixando de fora a trilha de áudio."
+      },
+      "extractAudioFromVideo": {
+        "title": "Extraia áudio do vídeo",
+        "description": "Salve o áudio de um vídeo como um arquivo próprio."
+      },
+      "saveAudioAsMp3": {
+        "title": "Salvar áudio como MP3",
+        "description": "Exporte o áudio extraído em formato MP3."
+      },
+      "chooseAudioQuality": {
+        "title": "Escolha a qualidade do áudio",
+        "description": "Escolha o codec e a taxa de bits do áudio extraído."
+      },
+      "compressImage": {
+        "title": "Compactar imagem",
+        "description": "Diminua uma imagem, mantendo-a com boa aparência."
+      },
+      "resizeImage": {
+        "title": "Redimensionar imagem",
+        "description": "Altere as dimensões de uma imagem antes de salvá-la."
+      },
+      "changeImageFormat": {
+        "title": "Alterar formato de imagem",
+        "description": "Converta uma imagem em um formato de arquivo diferente."
+      },
+      "newBatchTask": {
+        "title": "Nova tarefa em lote",
+        "description": "Inicie um novo trabalho de vários arquivos com configurações compartilhadas."
+      },
+      "runBatchJobs": {
+        "title": "Executar trabalhos em lote",
+        "description": "Inicie a fila e processe todos os trabalhos em ordem."
+      },
+      "queueFiles": {
+        "title": "Fila de arquivos",
+        "description": "Adicione arquivos ou uma pasta à fila em lote."
+      },
+      "retryFailedJobs": {
+        "title": "Tentar novamente trabalhos com falha",
+        "description": "Execute os trabalhos com falha novamente após corrigir o problema."
+      },
+      "importQueue": {
+        "title": "Fila de importação",
+        "description": "Carregue uma fila em lote salva de um arquivo."
+      },
+      "editJobOptions": {
+        "title": "Editar opções de trabalho",
+        "description": "Altere as opções de codificação para trabalhos que ainda estão na fila."
+      },
+      "runJobsThenShutDown": {
+        "title": "Execute trabalhos e depois desligue",
+        "description": "Deixe o lote terminar e desligue o computador."
+      },
+      "buildAutomation": {
+        "title": "Automação de construção",
+        "description": "Projete um pipeline reutilizável a partir de nós de mídia em uma tela."
+      },
+      "runAutomation": {
+        "title": "Executar automação",
+        "description": "Execute a automação selecionada em um arquivo de entrada."
+      },
+      "viewRunHistory": {
+        "title": "Ver histórico de execução",
+        "description": "Revise execuções de automação anteriores e seus resultados."
+      },
+      "saveAutomationPipeline": {
+        "title": "Salvar pipeline de automação",
+        "description": "Salve o pipeline para poder executá-lo novamente mais tarde."
+      },
+      "inspectMediaFile": {
+        "title": "Inspecionar arquivo de mídia",
+        "description": "Abra um arquivo e veja o que há dentro dele."
+      },
+      "viewStreamDetails": {
+        "title": "Ver detalhes da transmissão",
+        "description": "Inspecione os fluxos de vídeo, áudio e legendas."
+      },
+      "checkCodecs": {
+        "title": "Verifique os codecs",
+        "description": "Verifique quais codecs o arquivo usa."
+      },
+      "readFileMetadata": {
+        "title": "Ler metadados do arquivo",
+        "description": "Veja o contêiner, a duração, a taxa de bits e outros detalhes do arquivo."
+      },
+      "changeTheme": {
+        "title": "Alterar tema",
+        "description": "Escolha um tema claro ou escuro para EncodeX."
+      },
+      "setUpAiProvider": {
+        "title": "Configurar provedor de IA",
+        "description": "Conecte um provedor de IA para um planejamento Copilot mais inteligente."
+      },
+      "configureHardwareAcceleration": {
+        "title": "Configurar aceleração de hardware",
+        "description": "Escolha como o EncodeX usa sua GPU."
+      },
+      "enableMcpServer": {
+        "title": "Habilitar servidor MCP",
+        "description": "Deixe os clientes MCP locais controlarem o EncodeX."
+      },
+      "manageStartupNotifications": {
+        "title": "Gerenciar inicialização e notificações",
+        "description": "Controle o comportamento de inicialização e as notificações da área de trabalho."
+      },
+      "viewLogs": {
+        "title": "Ver registros",
+        "description": "Abra o console de log do aplicativo."
+      },
+      "searchErrors": {
+        "title": "Erros de pesquisa",
+        "description": "Filtre os logs em busca de avisos e erros."
+      },
+      "reviewOperationHistory": {
+        "title": "Revise o histórico de operações",
+        "description": "Verifique a trilha de auditoria para operações concluídas."
+      },
+      "downloadLogs": {
+        "title": "Baixar registros",
+        "description": "Salve os logs atuais como um arquivo de texto."
+      },
+      "checkVersion": {
+        "title": "Verifique a versão",
+        "description": "Veja qual versão do EncodeX está instalada."
+      },
+      "viewBuildInfo": {
+        "title": "Ver informações da versão",
+        "description": "Verifique os detalhes da compilação para esta instalação."
+      },
+      "readAboutEncodeX": {
+        "title": "Leia sobre EncodeX",
+        "description": "Saiba mais sobre EncodeX."
+      }
+    }
+  },
+  "history": {
+    "title": "Histórico de operações",
+    "search": "Operações de pesquisa",
+    "empty": "Nenhuma operação corresponde aos filtros atuais.",
+    "clearConfirm": "Limpar todo o histórico de operações?",
+    "refresh": "Atualizar",
+    "clear": "Limpar histórico",
+    "remove": "Remover",
+    "details": "Detalhes",
+    "noSelection": "Selecione uma operação para visualizar os seus detalhes.",
+    "count": "{{count}} operações",
+    "filteredCount": "{{count}} de {{total}} operações",
+    "status": "Estado",
+    "family": "Operação",
+    "source": "Fonte",
+    "started": "Iniciado",
+    "duration": "Duração",
+    "input": "Entrada",
+    "outputs": "Resultados",
+    "error": "Erro",
+    "metadata": "Metadados",
+    "sort": "Classificar",
+    "allStatuses": "Todos os estados",
+    "allFamilies": "Todas as operações",
+    "allSources": "Todas as fontes",
+    "sortNewest": "O mais novo primeiro",
+    "sortOldest": "Mais antigo primeiro",
+    "sortLongest": "Mais longo primeiro",
+    "sortShortest": "Mais curto primeiro",
+    "sortName": "Nome A-Z",
+    "statusLabels": {
+      "succeeded": "Sucesso",
+      "failed": "Falha",
+      "cancelled": "Cancelado"
+    },
+    "familyLabels": {
+      "convert": "Converter",
+      "audioExtract": "Extração de áudio",
+      "imageCompress": "Compressão de imagem",
+      "videoCut": "Corte de vídeo",
+      "remux": "Remux",
+      "demux": "Demux",
+      "batch": "Fila de lote",
+      "automation": "Automação",
+      "mcp": "PCM"
+    },
+    "sourceLabels": {
+      "gui": "Interface",
+      "mcp": "PCM",
+      "automation": "Automação"
+    }
   }
 }

@@ -558,6 +558,11 @@ export default function VideoCut() {
             ...(includeAudio ? {} : { audio: false }),
           },
           transcoder,
+          {
+            family: 'video-cut',
+            source: 'gui',
+            metadata: { useDuration, includeAudio, trimSeconds },
+          },
         );
         taskPromise
           .then(() => {

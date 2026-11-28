@@ -9,6 +9,7 @@ import { AutomationRunner, forwardAutomationEvents } from '../runner';
 import { AutomationEventBus } from '../events';
 import { IPC } from '../../../shared/ipc-channels';
 import type { AutomationDefinition, AutomationProgressEvent, AutomationRuntime } from '../../../shared/automations/types';
+import type { HistoryRecorderLike } from '../../../shared/history/types';
 import type { ConversionProgress, TranscoderType } from '../../../shared/types';
 import type { ITranscoder } from '../../transcoders/types';
 
@@ -106,10 +107,13 @@ describe('automation runner branch coverage', () => {
     rmSync(userDataDir, { recursive: true, force: true });
   });
 
-  function runner(options: { behavior?: BranchTranscoder['behavior']; factoryThrows?: boolean } = {}): AutomationRunner {
+  function runner(
+    options: { behavior?: BranchTranscoder['behavior']; factoryThrows?: boolean; historyRecorder?: HistoryRecorderLike } = {},
+  ): AutomationRunner {
     return new AutomationRunner({
       userDataDir,
       eventBus: bus,
+      historyRecorder: options.historyRecorder,
       checkBmfAvailability: () => ({ available: true, missing: [] }),
       transcoderFactory: (_type: TranscoderType) => {
         if (options.factoryThrows) throw new Error('factory crashed');
@@ -266,5 +270,80 @@ describe('automation runner branch coverage', () => {
 
     expect(events.filter((event) => event.status === 'cancelled').map((event) => event.nodeId)).toEqual(['op-1', 'op-2', '']);
     expect(BranchTranscoder.instances).toHaveLength(0);
+  });
+
+  it('records history with normalized status, error and metadata values', () => {
+    const record = vi.fn().mockResolvedValue({ id: 'entry' });
+    const instance = runner({ historyRecorder: { record } });
+    const active = {
+      runId: 'run-branch',
+      automationId: 'auto-branch',
+      automationName: 'Branch',
+      inputPath: '/in.mov',
+      outputPath: '/out.mp4',
+      stepCount: 2,
+      startedAt: 1000,
+      runDirectory: join(userDataDir, 'run-branch'),
+      keepIntermediateFiles: false,
+      cancelled: false,
+      terminal: false,
+    };
+    const internals = instance as unknown as {
+      recordHistory: (run: typeof active, status: AutomationProgressEvent['status'], extra: Partial<AutomationProgressEvent>) => void;
+    };
+
+    internals.recordHistory(active, 'running', {});
+    expect(record).not.toHaveBeenCalled();
+
+    internals.recordHistory(active, 'succeeded', { outputPath: '/out-2.mp4' });
+    expect(record).toHaveBeenCalledWith(
+      expect.objectContaining({
+        family: 'automation',
+        source: 'automation',
+        status: 'succeeded',
+        inputs: ['/in.mov'],
+        outputs: ['/out.mp4', '/out-2.mp4'],
+        runId: 'run-branch',
+        metadata: { automationId: 'auto-branch', automationName: 'Branch', steps: 2 },
+      }),
+    );
+
+    const extra = (error: unknown): Partial<AutomationProgressEvent> => ({ error }) as unknown as Partial<AutomationProgressEvent>;
+    record.mockClear();
+    internals.recordHistory(active, 'failed', extra('plain error'));
+    expect(record.mock.calls[0][0]).toMatchObject({ error: { message: 'plain error' } });
+
+    record.mockClear();
+    internals.recordHistory(active, 'failed', extra({ message: 'object error', code: 'E_FAIL' }));
+    expect(record.mock.calls[0][0]).toMatchObject({ error: { message: 'object error', code: 'E_FAIL' } });
+
+    record.mockClear();
+    internals.recordHistory(active, 'failed', extra({ message: 42, code: 7 }));
+    expect(record.mock.calls[0][0].error).toBeUndefined();
+
+    record.mockClear();
+    internals.recordHistory(active, 'cancelled', extra(42));
+    expect(record.mock.calls[0][0].error).toBeUndefined();
+  });
+
+  it('logs a non-Error history recorder rejection', async () => {
+    expectAppLog('warn', 'main/automations/runner');
+    const record = vi.fn().mockRejectedValue('record failed');
+    const instance = runner({ historyRecorder: { record } });
+    const active = {
+      runId: 'run-branch',
+      automationId: 'auto-branch',
+      startedAt: 1000,
+      runDirectory: join(userDataDir, 'run-branch'),
+      keepIntermediateFiles: false,
+      cancelled: false,
+      terminal: false,
+    };
+    const internals = instance as unknown as {
+      recordHistory: (run: typeof active, status: AutomationProgressEvent['status'], extra: Partial<AutomationProgressEvent>) => void;
+    };
+
+    internals.recordHistory(active, 'failed', { error: 'boom' });
+    await new Promise((resolve) => setTimeout(resolve, 0));
   });
 });

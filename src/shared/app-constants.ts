@@ -140,4 +140,5 @@ export const NAV_ITEMS = [
   { to: '/settings', label: 'Settings' },
   { to: '/about', label: 'About' },
   { to: '/logs', label: 'Logs' },
+  { to: '/history', label: 'History' },
 ] as const;

@@ -112,6 +112,11 @@ const ALWAYS_IDENTICAL = new Set([
   // keeps the product terms.
   'muxQueue.kindRemux',
   'muxQueue.kindDemux',
+  'history.familyLabels.demux',
+  'history.familyLabels.mcp',
+  'history.familyLabels.remux',
+  'history.sourceLabels.gui',
+  'history.sourceLabels.mcp',
 ]);
 
 /**
@@ -167,6 +172,15 @@ const COGNATE_IDENTICAL: Record<string, Set<string>> = {
   'muxQueue.start': new Set(['da-DK', 'nb-NO']),
   'muxQueue.pause': new Set(['fr-BE', 'fr-CA', 'fr-FR', 'nb-NO']),
   'muxQueue.detailsTargets': new Set(['da-DK', 'fil-PH', 'it-IT', 'ms-MY', 'ms-SG', 'tl-PH']),
+  'history.status': new Set(['af-ZA', 'da-DK', 'de-BE', 'de-DE', 'id-ID', 'ms-MY', 'ms-SG', 'nb-NO', 'nl-BE', 'nl-NL', 'sv-SE']),
+  'history.metadata': new Set(['af-ZA', 'da-DK', 'fil-PH', 'id-ID', 'ms-MY', 'ms-SG', 'nb-NO', 'sv-SE', 'tl-PH']),
+  'history.details': new Set(['nl-BE', 'nl-NL']),
+  'history.error': new Set(['es-AR', 'es-CL', 'es-ES', 'es-MX', 'fil-PH', 'tl-PH']),
+  'history.source': new Set(['fr-BE', 'fr-CA', 'fr-FR']),
+  'history.input': new Set(['ms-MY', 'ms-SG', 'sv-SE', 'tl-PH']),
+  'history.familyLabels.batch': new Set(['fil-PH', 'tl-PH']),
+  'history.familyLabels.automation': new Set(['tl-PH']),
+  'history.sourceLabels.automation': new Set(['tl-PH']),
 };
 
 /**
@@ -188,7 +202,11 @@ const COGNATE_IDENTICAL: Record<string, Set<string>> = {
 export const NON_ENGLISH_REQUIRED = new Set(
   [...baseLocale.keys].filter(
     (key) =>
-      key.startsWith('copilot.') || key.startsWith('settings.ai.') || key.startsWith('gettingStarted.') || key.startsWith('muxQueue.'),
+      key.startsWith('copilot.') ||
+      key.startsWith('settings.ai.') ||
+      key.startsWith('gettingStarted.') ||
+      key.startsWith('muxQueue.') ||
+      key.startsWith('history.'),
   ),
 );
 
